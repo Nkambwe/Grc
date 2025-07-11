@@ -1,0 +1,34 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Grc.Middleware.Api",
+    "version": "1.0"
+  },
+  "paths": {
+    "/grc": {
+      "get": {
+        "tags": [
+          "Grc"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/health/checkstatus": {
+      "get": {
+        "tags": [
+          "MiddlewareHealth"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": { }
+}

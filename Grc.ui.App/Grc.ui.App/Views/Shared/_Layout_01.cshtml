@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@await Html.GenerateTitleAsync()</title>
+
+    @{
+        // Add all your CSS files
+        Html.AddCssFileParts("~/lib/bootstrap/dist/css/bootstrap.css");
+        Html.AddCssFileParts("~/lib/metro/css/metro.css");
+        Html.AddCssFileParts("~/lib/metro/css/panda-style.css");
+        Html.AddCssFileParts("~/lib/icons/metro/icons.css");
+        Html.AddCssFileParts("~/lib/icons/material-design/css/materialdesignicons.css");
+        Html.AddCssFileParts("~/lib/icons/coreui-icons/css/all.css");
+        Html.AddCssFileParts("~/lib/sweet-alert/sweet-alert.css");
+        Html.AddCssFileParts("~/css/grc-style.css", excludeFromBundle: false);
+    }
+
+    @Html.GenerateCssFiles()
+    @Html.GenerateHeadCustom()
+</head>
+<body class="@Html.GeneratePageCssClasses()">
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    @{
+        // Add all your script files
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/bootstrap/dist/js/bootstrap.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/metro/js/metro.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/metro/js/highlight.min.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/metro/js/panda-app.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/metro/js/app.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/metro/js/apexcharts.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/js/script.js");
+    }
+
+    @Html.GenerateScripts(ResourceLocation.Footer)
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

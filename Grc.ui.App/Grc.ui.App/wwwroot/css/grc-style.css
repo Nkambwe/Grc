@@ -1,0 +1,36 @@
+body {
+    font-family: 'Noto Sans', sans-serif;
+	font-size: 1rem);
+    line-height: 1.5;
+    font-style: normal;
+    font-weight: 400;
+	opacity:1;
+}
+
+.no-service-img-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 20px;
+}
+
+    .no-service-img-box img:not([alt]) {
+        height:200px;
+        width:200px;
+        filter: blur(1.1px) !important;
+    }
+
+.header-label-1 {
+    font-weight: 600 !important;
+    font-size: 5em;
+}
+
+.header-label-2 {
+    font-size: 2em;
+    font-weight: 600 !important;
+    color: #fb3838;
+}
+
+.header-label-3 {
+    font-size: 1.5em;
+}

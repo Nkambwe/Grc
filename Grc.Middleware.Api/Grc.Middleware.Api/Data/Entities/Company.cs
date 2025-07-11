@@ -1,0 +1,27 @@
+﻿namespace Grc.Middleware.Api.Data.Entities {
+
+    public class Company : BaseEntity {
+
+        public string CompanyName { get; set; }
+        public override string ToString() => $"{CompanyName}";
+
+        public override bool Equals(object obj) {
+
+            if (obj is not Company)
+                return false;
+
+            if (ReferenceEquals(this, obj))
+                return true;
+
+            var item = (Company)obj;
+
+            if (item.IsNew() || IsNew())
+                return false;
+
+            return item.CompanyName.Equals(CompanyName) && item.Id.Equals(Id);
+        }
+
+        public override int GetHashCode() => ToString().GetHashCode() ^ 31 ;
+    }
+
+}

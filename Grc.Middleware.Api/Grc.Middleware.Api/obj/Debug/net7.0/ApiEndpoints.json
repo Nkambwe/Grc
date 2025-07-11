@@ -1,0 +1,22 @@
+[
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.GrcController",
+    "Method": "Index",
+    "RelativePath": "grc",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.MiddlewareHealthController",
+    "Method": "CheckDatabaseConnection",
+    "RelativePath": "grc/health/checkstatus",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]
