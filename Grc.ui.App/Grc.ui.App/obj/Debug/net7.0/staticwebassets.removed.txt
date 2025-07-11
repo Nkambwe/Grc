@@ -1,0 +1,1 @@
+C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\wwwroot\lib\select-2\select2-boostrap-5-theme.min.css

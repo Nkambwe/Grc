@@ -1,4 +1,4 @@
-class App {
+class GrcApp {
     static intervals = [];
 
     constructor() {
@@ -26,7 +26,7 @@ class App {
     }
 
     async loadPage(){
-        for(let interval of App.intervals) {
+        for(let interval of GrcApp.intervals) {
             clearInterval(interval);
         }
 
@@ -91,9 +91,9 @@ class App {
     }
 }
 
-globalThis.App = App;
+globalThis.GrcApp = GrcApp;
 
 $(function(){
-    new App();
+    new GrcApp();
 })
 

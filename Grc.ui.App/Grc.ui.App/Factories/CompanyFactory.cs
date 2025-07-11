@@ -3,7 +3,7 @@ using Grc.ui.App.Services;
 
 namespace Grc.ui.App.Factories {
 
-    public class CompanyFactory : ICompanyFactory {
+    public class CompanyFactory : IRegistrationFactory {
 
         protected readonly ICompanyService _orgService;
 
@@ -11,7 +11,13 @@ namespace Grc.ui.App.Factories {
             _orgService = orgService;
         }
 
-        public Task<CompanyRegistrationModel> PrepareCompanyRegistrationModelAsync()
-            => Task.FromResult(new CompanyRegistrationModel());
+        public Task<CompanyRegistrationModel> PrepareCompanyRegistrationModelAsync() {
+            var company = new CompanyRegistrationModel(){
+                CompanyName = string.Empty,
+                Alias = string.Empty,
+                RegistrationNumber = string.Empty
+            };
+            return Task.FromResult(company);
+        }
     }
 }

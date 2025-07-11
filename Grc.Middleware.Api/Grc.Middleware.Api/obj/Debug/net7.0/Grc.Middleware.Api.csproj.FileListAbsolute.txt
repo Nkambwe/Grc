@@ -201,6 +201,7 @@ C:\Projects\Grc_Project\Grc\Grc.Middleware.Api\Grc.Middleware.Api\obj\Debug\net7
 C:\Projects\Grc_Project\Grc\Grc.Middleware.Api\Grc.Middleware.Api\obj\Debug\net7.0\Grc.Middleware.Api.csproj.CoreCompileInputs.cache
 C:\Projects\Grc_Project\Grc\Grc.Middleware.Api\Grc.Middleware.Api\obj\Debug\net7.0\Grc.Middleware.Api.MvcApplicationPartsAssemblyInfo.cs
 C:\Projects\Grc_Project\Grc\Grc.Middleware.Api\Grc.Middleware.Api\obj\Debug\net7.0\Grc.Middleware.Api.MvcApplicationPartsAssemblyInfo.cache
+C:\Projects\Grc_Project\Grc\Grc.Middleware.Api\Grc.Middleware.Api\obj\Debug\net7.0\Grc.Middleware.Api.sourcelink.json
 C:\Projects\Grc_Project\Grc\Grc.Middleware.Api\Grc.Middleware.Api\obj\Debug\net7.0\scopedcss\bundle\Grc.Middleware.Api.styles.css
 C:\Projects\Grc_Project\Grc\Grc.Middleware.Api\Grc.Middleware.Api\obj\Debug\net7.0\staticwebassets.build.json
 C:\Projects\Grc_Project\Grc\Grc.Middleware.Api\Grc.Middleware.Api\obj\Debug\net7.0\staticwebassets.development.json

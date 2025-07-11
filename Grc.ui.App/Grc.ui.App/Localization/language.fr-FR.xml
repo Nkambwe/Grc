@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Language Name="French" IsDefault="false" IsRightToLeft="false">
+	<LocaleResource Name="App.Version">
+		<Value>GRC 1.2</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Registration.Header">
+		<Value>Configuration du système</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.System.Language">
+		<Value>Langue du système</Value>
+	</LocaleResource>
+	<LocaleResource Name="Registration.Title">
+		<Value>Enregistrement de l’entreprise</Value>
+	</LocaleResource>
+	<LocaleResource Name="Register.Company.Fields.CompanyName">
+		<Value>Nom de l’entreprise</Value>
+	</LocaleResource>
+	<LocaleResource Name="Register.Company.Fields.Alias">
+		<Value>Ou Pseudonyme</Value>
+	</LocaleResource>
+	<LocaleResource Name="Register.Company.Fields.RegistrationNumber">
+		<Value>Numéro d’enregistrement</Value>
+	</LocaleResource>
+	<LocaleResource Name="Register.Navigation.Previous">
+		<Value>Précédent</Value>
+	</LocaleResource>
+	<LocaleResource Name="Register.Navigation.Next">
+		<Value>Suivant</Value>
+	</LocaleResource>
+	<LocaleResource Name="Register.Navigation.Submit">
+		<Value>Enregistrer</Value>
+	</LocaleResource>
+</Language>

@@ -10,12 +10,15 @@
         // Add all your CSS files
         Html.AddCssFileParts("~/lib/bootstrap/dist/css/bootstrap.css");
         Html.AddCssFileParts("~/lib/metro/css/metro.css");
-        Html.AddCssFileParts("~/lib/metro/css/panda-style.css");
         Html.AddCssFileParts("~/lib/icons/metro/icons.css");
         Html.AddCssFileParts("~/lib/icons/material-design/css/materialdesignicons.css");
         Html.AddCssFileParts("~/lib/icons/coreui-icons/css/all.css");
         Html.AddCssFileParts("~/lib/sweet-alert/sweet-alert.css");
+        Html.AddCssFileParts("~/lib/select-2/select2.min.css");
+        Html.AddCssFileParts("~/lib/select-2/select2-bootstrap-5-theme.min.css");
+        Html.AddCssFileParts("~/css/color-pallete.css");
         Html.AddCssFileParts("~/css/grc-style.css", excludeFromBundle: false);
+        Html.AddCssFileParts("~/css/register-styles.css", excludeFromBundle: false);
     }
 
     @Html.GenerateCssFiles()
@@ -33,12 +36,12 @@
         // Add all your script files
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/bootstrap/dist/js/bootstrap.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/bootstrap/dist/js/bootstrap.bundle.min.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/bootstrap/dist/js/select2.min.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/metro/js/metro.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/metro/js/highlight.min.js");
-        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/metro/js/panda-app.js");
-        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/metro/js/app.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/metro/js/apexcharts.js");
-        Html.AddScriptParts(ResourceLocation.Footer, "~/js/script.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/js/register-script.js");
     }
 
     @Html.GenerateScripts(ResourceLocation.Footer)

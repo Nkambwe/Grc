@@ -1,7 +1,10 @@
 ﻿namespace Grc.ui.App.Models {
 
     public class CompanyRegistrationModel {
-        public string Name { get; set; }
+        public string CompanyName { get; set; }
+        public string Alias { get; set; }
+        public string RegistrationNumber { get; set; }
+        public string SyatemLanguage { get; set; }
     }
 
 }

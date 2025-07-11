@@ -40,8 +40,8 @@ C:\Projects\Grc\Grc.ui.App\Grc.ui.App\obj\Debug\net7.0\Grc.ui.App.genruntimeconf
 C:\Projects\Grc\Grc.ui.App\Grc.ui.App\obj\Debug\net7.0\ref\Grc.ui.App.dll
 C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\appsettings.Development.json
 C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\appsettings.json
-C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Grc.ui.App.staticwebassets.endpoints.json
 C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Grc.ui.App.staticwebassets.runtime.json
+C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Grc.ui.App.staticwebassets.endpoints.json
 C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Grc.ui.App.exe
 C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Grc.ui.App.deps.json
 C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Grc.ui.App.runtimeconfig.json
@@ -59,6 +59,7 @@ C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\obj\Debug\net7.0\Grc.ui.App.cs
 C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\obj\Debug\net7.0\Grc.ui.App.MvcApplicationPartsAssemblyInfo.cache
 C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\obj\Debug\net7.0\Grc.ui.App.RazorAssemblyInfo.cache
 C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\obj\Debug\net7.0\Grc.ui.App.RazorAssemblyInfo.cs
+C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\obj\Debug\net7.0\Grc.ui.App.sourcelink.json
 C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\obj\Debug\net7.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\obj\Debug\net7.0\scopedcss\bundle\Grc.ui.App.styles.css
 C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\obj\Debug\net7.0\scopedcss\projectbundle\Grc.ui.App.bundle.scp.css

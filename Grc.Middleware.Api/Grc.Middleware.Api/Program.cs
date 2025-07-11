@@ -1,4 +1,3 @@
-using Grc.Middleware.Api;
 using System.Diagnostics;
 
 namespace Grc.Middleware.Api {

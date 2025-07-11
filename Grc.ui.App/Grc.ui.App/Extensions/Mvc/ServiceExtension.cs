@@ -25,6 +25,8 @@ namespace Grc.ui.App.Extensions.Mvc {
             //..register service
             services.AddScoped<IMiddlewareHealthService, MiddlewareHealthService>();
             services.AddScoped<IGrcHtml, GrcHtml>();
+            services.AddScoped<IGRCFileProvider, GRCFileProvider>();
+            services.AddScoped<ILocalizationService, LocalizationService>();
             services.AddScoped<IGrcBaseService, GrcBaseService>();
             services.AddScoped<ISystemAccessService, SystemAccessService>();
             services.AddScoped<ICompanyService, CompanyService>();
@@ -32,7 +34,7 @@ namespace Grc.ui.App.Extensions.Mvc {
             
             
             //..register factories 
-            services.AddScoped<ICompanyFactory, CompanyFactory>();
+            services.AddScoped<IRegistrationFactory, CompanyFactory>();
             
             //..sessionExtensions manager
             services.AddScoped<SessionManager>();

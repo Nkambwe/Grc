@@ -1,7 +1,7 @@
 ﻿using Grc.ui.App.Models;
 
 namespace Grc.ui.App.Factories {
-    public interface ICompanyFactory {
+    public interface IRegistrationFactory {
          Task<CompanyRegistrationModel> PrepareCompanyRegistrationModelAsync();
     }
 }

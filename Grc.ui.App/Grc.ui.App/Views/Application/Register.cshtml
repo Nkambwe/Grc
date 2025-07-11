@@ -1,9 +1,115 @@
-﻿@{
-    ViewData["Title"] = "REGISTER COMPANY";
+﻿@model CompanyRegistrationModel
+
+@{
+    ViewData["Title"] = ILocalize.GetLocalizedLabel("Registration.Title");
+    Layout = "_Layout_01";
 }
 
-<div class="text-center">
-    <h1 class="display-4 text-danger">Sorry!</h1>
-    <p>GRC NO SERVICE</p>
+<div class="registration-container">   
+
+    <div class="registration-header">
+
+        <div class="row">
+
+            <div class="col-sm-12">
+                <div class="reg-header">
+                    <span>@ILocalize.GetLocalizedLabel("App.Version")</span>
+                    <span>@ILocalize.GetLocalizedLabel("App.Registration.Header")</span>
+                </div>
+                <div class="reg-progress">
+                    <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 50%;" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">Step 1 of 2</div>
+                </div>
+            </div>
+
+            <div class="col-sm-12">
+
+                <div class="registration-content row">
+
+                    <form id="registration-form" class="col-sm-12" autocomplete="off" method="post" asp-action="Register">
+
+                        <section id="step-1" class="form-step">
+
+                            <fieldset>
+
+                                <legend>Company Information</legend>
+
+                                <div class="form-group mb-3">
+                                    <label for="Syatem_Language">@ILocalize.GetLocalizedLabel("App.System.Language")</label>
+                                    <select id="Syatem_Language" class="form-control language-select" name="SyatemLanguage" value="@Model.SyatemLanguage" required>
+                                        @foreach (var lang in ILocalize.GetAvailableLanguages()){
+                                            <option value="@lang.Code">@lang.Name</option>
+                                        }
+                                    </select>
+
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="Company_Name">@ILocalize.GetLocalizedLabel("Register.Company.Fields.CompanyName")</label>
+                                    <input type="text" class="form-control" id="Company_Name" name="CompanyName" value="@Model.CompanyName" required>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="Company_Alias">@ILocalize.GetLocalizedLabel("Register.Company.Fields.Alias")</label>
+                                    <input type="text" class="form-control" id="Company_Alias" name="Alias" value="@Model.Alias" required>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="Registration_Number">@ILocalize.GetLocalizedLabel("Register.Company.Fields.RegistrationNumber")</label>
+                                    <input type="text" class="form-control" id="Registration_Number" name="RegistrationNumber" value="@Model.RegistrationNumber" required>
+                                </div>
+
+                            </fieldset>
+
+                        </section>
+
+                        <section id="step-2" class="form-step">
+
+                            <fieldset>
+
+                                <legend>System Administrator</legend>
+
+                                <div class="form-group mb-3">
+                                    
+                                    <span class="display-5 text-primary">
+                                        Create login details for System Administrator
+                                    </span>
+
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="Company_Name">@ILocalize.GetLocalizedLabel("Register.Company.Fields.CompanyName")</label>
+                                    <input type="text" class="form-control" id="Company_Name" name="CompanyName" value="@Model.CompanyName" required>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="Company_Alias">@ILocalize.GetLocalizedLabel("Register.Company.Fields.Alias")</label>
+                                    <input type="text" class="form-control" id="Company_Alias" name="Alias" value="@Model.Alias" required>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="Registration_Number">@ILocalize.GetLocalizedLabel("Register.Company.Fields.RegistrationNumber")</label>
+                                    <input type="text" class="form-control" id="Registration_Number" name="RegistrationNumber" value="@Model.RegistrationNumber" required>
+                                </div>
+
+                            </fieldset>
+
+                        </section>
+
+                    </form>
+
+                    <div class="step-navigation col-sm-12">
+                        <button id="prev-btn" class="btn btn-secondary" disabled>@ILocalize.GetLocalizedLabel("Register.Navigation.Previous")</button>
+                        <button id="next-btn" class="btn btn-primary">@ILocalize.GetLocalizedLabel("Register.Navigation.Next")</button>
+                        <button id="submit-btn" class="btn btn-success" style="display: none;">@ILocalize.GetLocalizedLabel("Register.Navigation.Submit")</button>
+                    </div>
+
+                </div>
+
+            </div>
+            
+        </div>
+        
+    </div>
+ 
 </div>
 
