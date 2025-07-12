@@ -54,7 +54,6 @@ wwwroot\lib\bootstrap\dist\js\bootstrap.js
 wwwroot\lib\bootstrap\dist\js\bootstrap.js.map
 wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
 wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
-wwwroot\lib\bootstrap\dist\js\select2.min.js
 wwwroot\lib\bootstrap\LICENSE
 wwwroot\lib\chartjs\Chart.bundle.js
 wwwroot\lib\chartjs\Chart.bundle.min.js
@@ -110,8 +109,13 @@ wwwroot\lib\metro\js\apexcharts.js
 wwwroot\lib\metro\js\highlight.min.js
 wwwroot\lib\metro\js\metro.all.js
 wwwroot\lib\metro\js\metro.js
-wwwroot\lib\select-2\select2.min.css
-wwwroot\lib\select-2\select2-bootstrap-5-theme.min.css
+wwwroot\lib\select-2\css\select2.css
+wwwroot\lib\select-2\css\select2.min.css
+wwwroot\lib\select-2\css\select2-bootstrap.min.css
+wwwroot\lib\select-2\js\select2.full.js
+wwwroot\lib\select-2\js\select2.full.min.js
+wwwroot\lib\select-2\js\select2.js
+wwwroot\lib\select-2\js\select2.min.js
 wwwroot\lib\sweet-alert\sweet-alert.css
 wwwroot\lib\sweet-alert\sweet-alert.js
 wwwroot\lib\sweet-alert\sweet-alert.min.js

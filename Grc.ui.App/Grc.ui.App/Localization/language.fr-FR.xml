@@ -9,8 +9,17 @@
 	<LocaleResource Name="App.System.Language">
 		<Value>Langue du système</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Label.Example">
+		<Value>Exemple: </Value>
+	</LocaleResource>
 	<LocaleResource Name="Registration.Title">
 		<Value>Enregistrement de l’entreprise</Value>
+	</LocaleResource>
+	<LocaleResource Name="Registration.Admin.Info">
+		<Value>Détails de l’administrateur système</Value>
+	</LocaleResource>
+	<LocaleResource Name="Registration.Admin.Access">
+		<Value>Détails de connexion au système</Value>
 	</LocaleResource>
 	<LocaleResource Name="Register.Company.Fields.CompanyName">
 		<Value>Nom de l’entreprise</Value>
@@ -21,13 +30,115 @@
 	<LocaleResource Name="Register.Company.Fields.RegistrationNumber">
 		<Value>Numéro d’enregistrement</Value>
 	</LocaleResource>
-	<LocaleResource Name="Register.Navigation.Previous">
+	<LocaleResource Name="User.Fields.FirstName">
+		<Value>Prénom</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Fields.MidlleName">
+		<Value>Autre nom</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Fields.Surname">
+		<Value>Nom</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Fields.Email">
+		<Value>Email</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Fields.PhoneNumber">
+		<Value>Téléphone</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Fields.UserName">
+		<Value>Nom de l'utilisateur</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Fields.Password">
+		<Value>Mot de passe</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Fields.ConfirmPassword">
+		<Value>Confirmer le mot de passe</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Fields.PFNumber">
+		<Value>Numéro PF</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Fields.SolId">
+		<Value>ID Sol de l’agence</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Fields.Department">
+		<Value>Département</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Fields.DepartmentUnit">
+		<Value>Unité du département</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Fields.Role">
+		<Value>Rôle système</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Fields.IsActive">
+		<Value>Actif</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Fields.IsDeleted">
+		<Value>Marquer comme supprimé</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Fields.IsVerified">
+		<Value>Vérifié</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Error.FirstNameRequired">
+		<Value>Le champ Prénom est requis</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Error.SurnameRequired">
+		<Value>Le champ Nom est requis</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Error.UserameRequired">
+		<Value>Le champ Nom d’utilisateur est requis</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Error.PasswordRequired">
+		<Value>Le champ Mot de passe est requis</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Error.ConfirmPasswordRequired">
+		<Value>	Le champ Confirmer le mot de passe est requis</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Error.PFNumberRequired">
+		<Value>Le champ Numéro PF est requis</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Error.SolIdRequired">
+		<Value>Le champ ID Sol est requis</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Error.DepartmentRequired">
+		<Value>Le champ Département est requis</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Error.SystemRoleRequired">
+		<Value>Le champ Rôle système est requis</Value>
+	</LocaleResource>
+	<LocaleResource Name="Button.Previous">
 		<Value>Précédent</Value>
 	</LocaleResource>
-	<LocaleResource Name="Register.Navigation.Next">
+	<LocaleResource Name="Button.Next">
 		<Value>Suivant</Value>
 	</LocaleResource>
-	<LocaleResource Name="Register.Navigation.Submit">
+	<LocaleResource Name="Button.Delete">
+		<Value>Supprimer</Value>
+	</LocaleResource>
+	<LocaleResource Name="Button.Cancel">
+		<Value>Annuler</Value>
+	</LocaleResource>
+	<LocaleResource Name="Button.Confirm">
+		<Value>Confirmer</Value>
+	</LocaleResource>
+	<LocaleResource Name="Button.Push">
+		<Value>Pousser </Value>
+	</LocaleResource>
+	<LocaleResource Name="Button.On">
+		<Value>Activé </Value>
+	</LocaleResource>
+	<LocaleResource Name="Button.Off">
+		<Value>Désactivé </Value>
+	</LocaleResource>
+	<LocaleResource Name="Button.Okay">
+		<Value>OK</Value>
+	</LocaleResource>
+	<LocaleResource Name="Button.Yes">
+		<Value>Oui</Value>
+	</LocaleResource>
+	<LocaleResource Name="Button.No">
+		<Value>Non</Value>
+	</LocaleResource>
+	<LocaleResource Name="Button.Submit">
 		<Value>Enregistrer</Value>
 	</LocaleResource>
 </Language>

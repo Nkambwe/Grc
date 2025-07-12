@@ -1,10 +1,12 @@
-﻿using Grc.ui.App.Extensions.Http;
+﻿using Grc.ui.App.Defaults;
+using Grc.ui.App.Extensions.Http;
 using Grc.ui.App.Extensions.Mvc;
 using Grc.ui.App.Http.Endpoints;
 using Grc.ui.App.Middleware;
 using Grc.ui.App.Routes;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Localization;
 
 namespace Grc.ui.App {
 
@@ -25,6 +27,7 @@ namespace Grc.ui.App {
             services.Configure<LoggingOptions>(_configuration.GetSection(LoggingOptions.SectionName));
             services.Configure<MiddlewareOptions>(_configuration.GetSection(MiddlewareOptions.SectionName));
             services.Configure<EndpointTypeOptions>(_configuration.GetSection(EndpointTypeOptions.SectionName));
+            services.Configure<LanguageOptions>(_configuration.GetSection(LanguageOptions.SectionName));
         
             //..register appSettings variable providers
             services.AddScoped<IEnvironmentProvider, EnvironmentProvider>();
@@ -110,7 +113,19 @@ namespace Grc.ui.App {
         
             //..register middleware health monitor
             app.UseMiddleware<HealthCheckMiddleware>();
-        
+
+            //..get localizaed languages
+            var LanguageOptions = _configuration.GetSection("LanguageOptions").Get<LanguageOptions>();
+            var supportedCultures = LanguageOptions?.SupportedCultures ?? Array.Empty<string>();
+            var localizationOptions = new RequestLocalizationOptions()
+                .AddSupportedCultures(supportedCultures)
+                .AddSupportedUICultures(supportedCultures)
+                .SetDefaultCulture(LanguageOptions?.DefaultCulture?? CommonDefaults.DefaultLanguageCulture);
+
+            //..add cookie provider for localization
+            localizationOptions.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider());
+            app.UseRequestLocalization(localizationOptions);
+
             //..register routes
             var routePublisher = app.Services.GetRequiredService<IRoutePublisher>();
             routePublisher.RegisterRoutes(app);

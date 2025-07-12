@@ -16,6 +16,12 @@ namespace Grc.ui.App.Services {
         /// </summary>
         /// <returns></returns>
         IList<SystemLanguage> GetAvailableLanguages();
+
+        /// <summary>
+        /// Save a language for the System
+        /// </summary>
+        /// <param name="languageCode">Language code</param>
+        void SaveCurrentLanguage(string languageCode);
     }
 
 }

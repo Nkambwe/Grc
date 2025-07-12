@@ -1,4 +1,4 @@
-/*
+﻿/*
  * File Type    : Style Sheet 1.0 July 2025
  * Created by   : Nkambwe John Mark
  * Company      : PostBank Uganda Limited
@@ -24,8 +24,24 @@ body {
     opacity: 1;
 }
 
-:root {
-    
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 77%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.password-toggle:hover {
+    opacity: 1;
+    color: var(--purple-dark);
+    transition: all .5s ease-out
+}
+
+.password-wrapper {
+    position: relative;
 }
 
 .header-label-1 {
@@ -64,4 +80,140 @@ body {
 
 .page-not-section {
 
+}
+
+/* Step Form Container */
+.form-steps {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+/* Step Navigation */
+.step-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.step {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto;
+    background: #e9ecef;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #6c757d;
+    border: 3px solid #e9ecef;
+}
+
+.step-title {
+    margin-top: 10px;
+    color: #6c757d;
+}
+
+.step.active .step-number {
+    background: #fff;
+    border-color: #0d6efd;
+    color: #0d6efd;
+}
+
+.step.active .step-title {
+    color: #0d6efd;
+}
+
+.step.completed .step-number {
+    background: #0d6efd;
+    border-color: #0d6efd;
+    color: white;
+}
+
+/* Connector lines between steps */
+.step:not(:last-child):after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: #e9ecef;
+    top: 20px;
+    left: 50%;
+    z-index: -1;
+}
+
+/* Form Steps */
+.form-step {
+    display: none;
+    animation: fadeIn 0.5s ease;
+}
+
+.form-step.active {
+    display: block;
+}
+
+/* Navigation Buttons */
+.form-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.btn-prev {
+    order: 1;
+}
+
+.btn-next {
+    order: 2;
+}
+
+.is-invalid {
+    border-color: #dc3545 !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.field-validation-error {
+    color: #dc3545;
+    font-size: 0.875em;
+    display: block;
+    margin-top: 0.25rem;
+}
+
+/* Validation Summary Box */
+#validation-summary {
+    margin-bottom: 1.5rem;
+}
+
+#validation-summary {
+    display: none; 
+}
+
+#validation-summary i {
+    margin-right: 8px;
+    font-size: 1.2em;
+    vertical-align: middle;
+}
+
+.btn-submit {
+    order: 3;
+    display: none;
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }

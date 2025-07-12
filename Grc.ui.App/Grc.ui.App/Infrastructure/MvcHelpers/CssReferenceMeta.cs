@@ -1,16 +1,16 @@
-﻿namespace Grc.ui.App.MvcHelpers {
+﻿namespace Grc.ui.App.Infrastructure.MvcHelpers {
 
     /// <summary>
-    /// Script reference metadata
+    /// CSS reference metadata
     /// </summary>
-    public class ScriptReferenceMeta {
+    public class CssReferenceMeta {
         /// <summary>
         /// Source
         /// </summary>
         public string Src { get; set; }
 
         /// <summary>
-        /// A value indicating whether to exclude the script from bundling
+        /// A value indicating whether to exclude the style sheet from bundling
         /// </summary>
         public bool ExcludeFromBundle { get; set; }
 
@@ -19,5 +19,4 @@
         /// </summary>
         public bool IsLocal { get; set; }
     }
-
 }

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Html;
 
 
-namespace Grc.ui.App.MvcHelpers {
+namespace Grc.ui.App.Infrastructure.MvcHelpers {
 
     /// <summary>
     /// Represents a HTML helper interface
@@ -44,6 +44,7 @@ namespace Grc.ui.App.MvcHelpers {
         /// <param name="debugSrc"></param>
         /// <param name="excludeFromBundle"></param>
         void AppendCssFileParts(string src, string debugSrc = "", bool excludeFromBundle = false);
+        
         /// <summary>
         /// Append script element
         /// </summary>
@@ -117,5 +118,26 @@ namespace Grc.ui.App.MvcHelpers {
         /// </summary>
         /// <returns>Generated HTML string</returns>
         IHtmlContent GenerateHeadCustom();
+
+        /// <summary>
+        /// Returns markup that is not HTML encoded
+        /// </summary>
+        /// <param name="value">HTML markup</param>
+        /// <returns>HTML content</returns>
+        IHtmlContent Raw(string value);
+
+        /// <summary>
+        /// HTML encode the specified value
+        /// </summary>
+        /// <param name="value">Value to encode</param>
+        /// <returns>Encoded value</returns>
+        string Encode(string value);
+
+        /// <summary>
+        /// HTML encode the specified object
+        /// </summary>
+        /// <param name="value">Object to encode</param>
+        /// <returns>Encoded value</returns>
+        string Encode(object value);
     }
 }

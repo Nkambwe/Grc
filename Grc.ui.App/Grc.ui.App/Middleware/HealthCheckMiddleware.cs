@@ -42,8 +42,8 @@ namespace Grc.ui.App.Middleware {
                     return;
                 }
                 
-                _logger.LogInformation("Health check passed, redirecting to /Login/userlogin");
-                context.Response.Redirect("/Login/userlogin");
+                _logger.LogInformation("Health check passed, redirecting to /login/userlogin");
+                context.Response.Redirect("/login/userlogin");
                 return;
             } catch (Exception ex) {
                 _logger.LogError(ex, "Error during health check");

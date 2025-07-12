@@ -1,8 +1,10 @@
 ﻿using Grc.ui.App.Defaults;
 using Grc.ui.App.Dtos;
 using Grc.ui.App.Helpers;
+using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Utils;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -15,11 +17,13 @@ namespace Grc.ui.App.Services {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private IList<SystemLanguage> _availableLanguages;
         private readonly IGRCFileProvider _fileProvider;
-
+        private readonly IWebHelper _webHelper;
         public LocalizationService(IApplicationLoggerFactory loggerFactory,
-                                   IHttpContextAccessor httpContextAccessor, 
+                                   IHttpContextAccessor httpContextAccessor,
+                                   IWebHelper webHelper,
                                    IGRCFileProvider fileProvider) {
             _httpContextAccessor = httpContextAccessor;
+            _webHelper = webHelper;
             _fileProvider = fileProvider;
             _logger = loggerFactory.CreateLogger("app_services");
             _logger.Channel = $"LOCALIZER-{DateTime.Now:yyyyMMddHHmmss}";
@@ -124,6 +128,15 @@ namespace Grc.ui.App.Services {
             if (language != null)
                 return language;
 
+            //..let's find by current browser culture
+            if (httpContext.Request.Headers.TryGetValue(HeaderNames.AcceptLanguage, out var userLanguages)) {
+                var userLanguage = userLanguages.FirstOrDefault()?.Split(',').FirstOrDefault() ?? string.Empty;
+                if (!string.IsNullOrEmpty(userLanguage)) {
+                    //right. we do "StartsWith" (not "Equals") because we have shorten codes (not full culture names)
+                    language = availableLanguages.FirstOrDefault(l => userLanguage.StartsWith(l.Code, StringComparison.InvariantCultureIgnoreCase));
+                }
+            }
+
             //..let's return the default one
             language = availableLanguages.FirstOrDefault(l => l.IsDefault);
              _logger.LogActivity($"DEFAULT LANG :: {JsonSerializer.Serialize(language)}", "INFO");
@@ -150,6 +163,28 @@ namespace Grc.ui.App.Services {
                 return labelName;
 
             return resourceValue;
+        }
+
+        /// <summary>
+        /// Get current browser culture
+        /// </summary>
+        /// <returns>Current culture</returns>
+        public string GetBrowserCulture() {
+             _httpContextAccessor.HttpContext.Request.Headers.TryGetValue(HeaderNames.AcceptLanguage, out var userLanguages);
+            return userLanguages.FirstOrDefault()?.Split(',').FirstOrDefault() ?? CommonDefaults.DefaultLanguageCulture;
+        }
+
+        public void SaveCurrentLanguage(string languageCode) {
+            var httpContext = _httpContextAccessor.HttpContext;
+            var cookieOptions = new CookieOptions {
+                Expires = DateTime.Now.AddHours(24),
+                HttpOnly = true,
+                Secure = _webHelper.IsCurrentConnectionSecured()
+            };
+
+            var cookieName = $"{CookieDefaults.Prefix}{CookieDefaults.LanguageCookie}";
+            httpContext.Response.Cookies.Delete(cookieName);
+            httpContext.Response.Cookies.Append(cookieName, languageCode, cookieOptions);
         }
 
     }

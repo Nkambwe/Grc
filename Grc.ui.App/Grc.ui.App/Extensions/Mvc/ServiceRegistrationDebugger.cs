@@ -33,7 +33,15 @@ namespace Grc.ui.App.Extensions.Mvc {
             } catch (Exception ex) {
                 Console.WriteLine($"MiddlewareOptions not registered: {ex.Message}");
             }
-        
+            
+            try {
+                var langOptions = serviceProvider.GetRequiredService<IOptions<LanguageOptions>>();
+                Console.WriteLine($"LanguageOptions registered - Default Culture: {langOptions.Value.DefaultCulture}");
+                Console.WriteLine($"Supported Cultures : {langOptions.Value.SupportedCultures}");
+            } catch (Exception ex) {
+                Console.WriteLine($"LanguageOptions not registered: {ex.Message}");
+            }
+
             try {
                 var endpointOptions = serviceProvider.GetRequiredService<IOptions<EndpointTypeOptions>>();
                 Console.WriteLine($"EndpointType registered - Health.Status: {endpointOptions.Value.Health.Status}");

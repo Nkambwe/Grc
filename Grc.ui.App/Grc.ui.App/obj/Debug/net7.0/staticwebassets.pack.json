@@ -233,10 +233,6 @@
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map"
     },
     {
-      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\bootstrap\\dist\\js\\select2.min.js",
-      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\select2.min.js"
-    },
-    {
       "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\chartjs\\Chart.bundle.js",
       "PackagePath": "staticwebassets\\lib\\chartjs\\Chart.bundle.js"
     },
@@ -453,12 +449,32 @@
       "PackagePath": "staticwebassets\\lib\\metro\\js\\metro.js"
     },
     {
-      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\select-2\\select2-bootstrap-5-theme.min.css",
-      "PackagePath": "staticwebassets\\lib\\select-2\\select2-bootstrap-5-theme.min.css"
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\select-2\\css\\select2-bootstrap.min.css",
+      "PackagePath": "staticwebassets\\lib\\select-2\\css\\select2-bootstrap.min.css"
     },
     {
-      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\select-2\\select2.min.css",
-      "PackagePath": "staticwebassets\\lib\\select-2\\select2.min.css"
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\select-2\\css\\select2.css",
+      "PackagePath": "staticwebassets\\lib\\select-2\\css\\select2.css"
+    },
+    {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\select-2\\css\\select2.min.css",
+      "PackagePath": "staticwebassets\\lib\\select-2\\css\\select2.min.css"
+    },
+    {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\select-2\\js\\select2.full.js",
+      "PackagePath": "staticwebassets\\lib\\select-2\\js\\select2.full.js"
+    },
+    {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\select-2\\js\\select2.full.min.js",
+      "PackagePath": "staticwebassets\\lib\\select-2\\js\\select2.full.min.js"
+    },
+    {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\select-2\\js\\select2.js",
+      "PackagePath": "staticwebassets\\lib\\select-2\\js\\select2.js"
+    },
+    {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\select-2\\js\\select2.min.js",
+      "PackagePath": "staticwebassets\\lib\\select-2\\js\\select2.min.js"
     },
     {
       "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweet-alert.css",

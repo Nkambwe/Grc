@@ -3,18 +3,19 @@
         public int Priority => 0;
 
         public void RegisterRoutes(IEndpointRouteBuilder routeBuilder) {
-            // 404
-            routeBuilder.MapControllerRoute(
-                name: "404",
-                pattern: "/Error/Status404/",
-                defaults: new { controller = "Error", action = "Status404" }
-            );
-
+            
             // Dashboard
             routeBuilder.MapControllerRoute(
                 name: "dashboard",
                 pattern: "/dashboard/",
                 defaults: new { controller = "Application", action = "Index" }
+            );
+
+            // Dashboard
+            routeBuilder.MapControllerRoute(
+                name: "login",
+                pattern: "/login/userlogin",
+                defaults: new { controller = "Application", action = "Login" }
             );
 
             // No service
@@ -30,11 +31,24 @@
                 pattern: "/org/register/",
                 defaults: new { controller = "Application", action = "Register" }
             );
+            // Create organization
+            routeBuilder.MapControllerRoute(
+                name: "languagechange",
+                pattern: "/org/changeLanguage/",
+                defaults: new { controller = "Application", action = "ChangeLanguage" }
+            );
+
+            // 404
+            routeBuilder.MapControllerRoute(
+                name: "404",
+                pattern: "/Error/Status404/",
+                defaults: new { controller = "Error", action = "Status404" }
+            );
 
             // User login (default)
             routeBuilder.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Login}/{action=UserLogin}/{id?}"
+                pattern: "{controller=Application}/{action=Login}/{id?}"
             );
         }
     }

@@ -2,7 +2,8 @@
 using Grc.ui.App.Factories;
 using Grc.ui.App.Helpers;
 using Grc.ui.App.Http;
-using Grc.ui.App.MvcHelpers;
+using Grc.ui.App.Infrastructure;
+using Grc.ui.App.Infrastructure.MvcHelpers;
 using Grc.ui.App.Routes;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
@@ -10,7 +11,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Grc.ui.App.Extensions.Mvc {
 
-     public static class ServiceExtension {
+    public static class ServiceExtension {
 
         /// <summary>
         /// Application logging
@@ -41,6 +42,7 @@ namespace Grc.ui.App.Extensions.Mvc {
 
             //..allow html helpers to acces current action context
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddSingleton<IWebHelper, WebHelper>();
             return services;
         }
 
