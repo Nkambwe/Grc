@@ -7,6 +7,7 @@
         var $nextBtn = $('.btn-next');
         var $submitBtn = $('.btn-submit');
         var currentStep = 0;
+        var $form = $('#registration-form');
 
         //..initialize
         showStep(currentStep);
@@ -72,16 +73,39 @@
         function validateStep(stepIndex) {
             var isValid = true;
             var $currentFields = $steps.eq(stepIndex).find('[required]');
+           
         
             $currentFields.each(function() {
                 var $field = $(this);
+                var fieldName = $field.attr('name'); 
+                var $validationSpan = $(`[data-valmsg-for='${fieldName}']`);
+
                 if (!$field.val().trim()) {
                     $field.addClass('is-invalid');
                     isValid = false;
+
+                    //..show validation message if span exists
+                    if ($validationSpan.length) {
+                        $validationSpan.addClass('show-error');
+                    }
                 } else {
                     $field.removeClass('is-invalid');
+
+                    //..clear validation message
+                    if ($validationSpan.length) {
+                         $validationSpan.removeClass('show-error');
+                    }
                 }
             });
+
+            if (!isValid) {
+                $('#validation-summary').removeClass('d-none');
+                $('html, body').animate({
+                    scrollTop: $steps.eq(currentStep).offset().top - 100
+                }, 500);
+            } else {
+                $('#validation-summary').addClass('d-none');
+            }
 
             return isValid;
         }

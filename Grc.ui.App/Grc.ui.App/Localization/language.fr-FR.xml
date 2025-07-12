@@ -30,6 +30,21 @@
 	<LocaleResource Name="Register.Company.Fields.RegistrationNumber">
 		<Value>Numéro d’enregistrement</Value>
 	</LocaleResource>
+	<LocaleResource Name="Registration.Error.General">
+		<Value>Veuillez corriger les erreurs à cette étape avant de continuer</Value>
+	</LocaleResource>
+	<LocaleResource Name="Company.Error.CompanyNameRequired">
+		<Value>Le champ Nom de l’entreprise est requis.</Value>
+	</LocaleResource>
+	<LocaleResource Name="Company.Error.AliasRequired">
+		<Value>Fournissez un alias (nom court) pour l’entreprise.</Value>
+	</LocaleResource>
+	<LocaleResource Name="Company.Error.RegNumberRequired">
+		<Value>Fournissez le numéro d’enregistrement de l’entreprise</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Error.EmailRequired">
+		<Value>Le champ Adresse e-mail est requis.</Value>
+	</LocaleResource>
 	<LocaleResource Name="User.Fields.FirstName">
 		<Value>Prénom</Value>
 	</LocaleResource>

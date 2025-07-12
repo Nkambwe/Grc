@@ -185,17 +185,17 @@ body {
 .field-validation-error {
     color: #dc3545;
     font-size: 0.875em;
-    display: block;
+    display: none;
     margin-top: 0.25rem;
+}
+
+.show-error {
+    display: block!important;
 }
 
 /* Validation Summary Box */
 #validation-summary {
     margin-bottom: 1.5rem;
-}
-
-#validation-summary {
-    display: none; 
 }
 
 #validation-summary i {

@@ -31,6 +31,9 @@
 	<LocaleResource Name="Register.Company.Fields.RegistrationNumber">
 		<Value>Registration Number</Value>
 	</LocaleResource>
+	<LocaleResource Name="Registration.Error.General">
+		<Value>Please correct the errors in the current step before proceeding.</Value>
+	</LocaleResource>
 	<LocaleResource Name="User.Fields.FirstName">
 		<Value>First Name</Value>
 	</LocaleResource>
@@ -79,6 +82,18 @@
 	<LocaleResource Name="User.Fields.IsVerified">
 		<Value>Is Verified</Value>
 	</LocaleResource>
+	<LocaleResource Name="Company.Error.CompanyNameRequired">
+		<Value>Company name Field is required</Value>
+	</LocaleResource>
+	<LocaleResource Name="Company.Error.AliasRequired">
+		<Value>Provide an Alias (Short name) for the company</Value>
+	</LocaleResource>
+	<LocaleResource Name="Company.Error.RegNumberRequired">
+		<Value>Provide company Registration Number</Value>
+	</LocaleResource>
+	<LocaleResource Name="User.Error.EmailRequired">
+		<Value>Email Address Field is required</Value>
+	</LocaleResource>	
 	<LocaleResource Name="User.Error.FirstNameRequired">
 		<Value>FirstName Field is required</Value>
 	</LocaleResource>
