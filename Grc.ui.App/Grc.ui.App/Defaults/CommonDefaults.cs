@@ -1,7 +1,11 @@
 ﻿namespace Grc.ui.App.Defaults {
 
     public class CommonDefaults {
-        // <summary>
+        /// <summary>
+        /// Gets Application Version
+        /// </summary>
+        public static string AppVersion => "GRC SUITE 1.3";
+        /// <summary>
         /// Gets a request path to the keep alive URL
         /// </summary>
         public static string KeepAlivePath => "keepalive/index";

@@ -66,8 +66,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>mrchxhvt3t</Fingerprint>
-      <Integrity>HtDpBA6UOIvLDEcJ/7/RRTil6u1VR5eHUrome48j+tM=</Integrity>
+      <Fingerprint>8j66k4rokl</Fingerprint>
+      <Integrity>bMXrglbw1a6buHcib7YqtA742j6uLJKgqwlpQVeW2E4=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\register-styles.css'))</OriginalItemSpec>
@@ -84,8 +84,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>uvwpa2sa5x</Fingerprint>
-      <Integrity>Rruq4wO0ZyuJOb3ogixaHkq50Sm8S+ftmBkkOiptEcY=</Integrity>
+      <Fingerprint>wbeejh7lxi</Fingerprint>
+      <Integrity>DMdjcadJG/B3Wgn0VAKNBjc+iLdxQCUJBO4bSt0GlMs=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\favicon.ico'))</OriginalItemSpec>
@@ -156,8 +156,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>sy151uzmnv</Fingerprint>
-      <Integrity>zN2neCtaCauIf9fGfbSM+/uhmfYQkqzivudCz5UIAz0=</Integrity>
+      <Fingerprint>wcak3roo7q</Fingerprint>
+      <Integrity>kN826QxX4KKxuyK/ulOEF/K1eSqb15V5P1ZJk3HmuGA=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\logo.png'))</OriginalItemSpec>

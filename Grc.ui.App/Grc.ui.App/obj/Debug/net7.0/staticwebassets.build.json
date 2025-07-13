@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "W32DnctHO3+9s1X/hw/IMo2x2odaB+0afWiJXgOAFco=",
+  "Hash": "ZPUrgkmWiFUJAwNIXh+arJw+BblKP0UkFbWM1f2OCBI=",
   "Source": "Grc.ui.App",
   "BasePath": "_content/Grc.ui.App",
   "Mode": "Default",
@@ -136,8 +136,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "mrchxhvt3t",
-      "Integrity": "HtDpBA6UOIvLDEcJ/7/RRTil6u1VR5eHUrome48j+tM=",
+      "Fingerprint": "8j66k4rokl",
+      "Integrity": "bMXrglbw1a6buHcib7YqtA742j6uLJKgqwlpQVeW2E4=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\register-styles.css"
@@ -157,8 +157,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "uvwpa2sa5x",
-      "Integrity": "Rruq4wO0ZyuJOb3ogixaHkq50Sm8S+ftmBkkOiptEcY=",
+      "Fingerprint": "wbeejh7lxi",
+      "Integrity": "DMdjcadJG/B3Wgn0VAKNBjc+iLdxQCUJBO4bSt0GlMs=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\favicon.ico"
@@ -220,8 +220,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "sy151uzmnv",
-      "Integrity": "zN2neCtaCauIf9fGfbSM+/uhmfYQkqzivudCz5UIAz0=",
+      "Fingerprint": "wcak3roo7q",
+      "Integrity": "kN826QxX4KKxuyK/ulOEF/K1eSqb15V5P1ZJk3HmuGA=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\logo.png"
@@ -2848,6 +2848,51 @@
       ]
     },
     {
+      "Route": "css/register-styles.8j66k4rokl.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\register-styles.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "8661"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"bMXrglbw1a6buHcib7YqtA742j6uLJKgqwlpQVeW2E4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 13 Jul 2025 08:44:09 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "8j66k4rokl"
+        },
+        {
+          "Name": "label",
+          "Value": "css/register-styles.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-bMXrglbw1a6buHcib7YqtA742j6uLJKgqwlpQVeW2E4="
+        }
+      ]
+    },
+    {
       "Route": "css/register-styles.css",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\register-styles.css",
       "Selectors": [],
@@ -2858,7 +2903,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4081"
+          "Value": "8661"
         },
         {
           "Name": "Content-Type",
@@ -2866,11 +2911,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"HtDpBA6UOIvLDEcJ/7/RRTil6u1VR5eHUrome48j+tM=\""
+          "Value": "\"bMXrglbw1a6buHcib7YqtA742j6uLJKgqwlpQVeW2E4=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 12 Jul 2025 15:33:16 GMT"
+          "Value": "Sun, 13 Jul 2025 08:44:09 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -2880,52 +2925,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-HtDpBA6UOIvLDEcJ/7/RRTil6u1VR5eHUrome48j+tM="
-        }
-      ]
-    },
-    {
-      "Route": "css/register-styles.mrchxhvt3t.css",
-      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\register-styles.css",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "4081"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"HtDpBA6UOIvLDEcJ/7/RRTil6u1VR5eHUrome48j+tM=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sat, 12 Jul 2025 15:33:16 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "mrchxhvt3t"
-        },
-        {
-          "Name": "label",
-          "Value": "css/register-styles.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-HtDpBA6UOIvLDEcJ/7/RRTil6u1VR5eHUrome48j+tM="
+          "Value": "sha256-bMXrglbw1a6buHcib7YqtA742j6uLJKgqwlpQVeW2E4="
         }
       ]
     },
@@ -2940,7 +2940,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "113438"
+          "Value": "114913"
         },
         {
           "Name": "Content-Type",
@@ -2948,11 +2948,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"Rruq4wO0ZyuJOb3ogixaHkq50Sm8S+ftmBkkOiptEcY=\""
+          "Value": "\"DMdjcadJG/B3Wgn0VAKNBjc+iLdxQCUJBO4bSt0GlMs=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 08 Jul 2025 22:16:40 GMT"
+          "Value": "Sun, 13 Jul 2025 02:11:50 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -2962,12 +2962,12 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-Rruq4wO0ZyuJOb3ogixaHkq50Sm8S+ftmBkkOiptEcY="
+          "Value": "sha256-DMdjcadJG/B3Wgn0VAKNBjc+iLdxQCUJBO4bSt0GlMs="
         }
       ]
     },
     {
-      "Route": "favicon.uvwpa2sa5x.ico",
+      "Route": "favicon.wbeejh7lxi.ico",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\favicon.ico",
       "Selectors": [],
       "ResponseHeaders": [
@@ -2977,7 +2977,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "113438"
+          "Value": "114913"
         },
         {
           "Name": "Content-Type",
@@ -2985,11 +2985,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"Rruq4wO0ZyuJOb3ogixaHkq50Sm8S+ftmBkkOiptEcY=\""
+          "Value": "\"DMdjcadJG/B3Wgn0VAKNBjc+iLdxQCUJBO4bSt0GlMs=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 08 Jul 2025 22:16:40 GMT"
+          "Value": "Sun, 13 Jul 2025 02:11:50 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -2999,7 +2999,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "uvwpa2sa5x"
+          "Value": "wbeejh7lxi"
         },
         {
           "Name": "label",
@@ -3007,7 +3007,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-Rruq4wO0ZyuJOb3ogixaHkq50Sm8S+ftmBkkOiptEcY="
+          "Value": "sha256-DMdjcadJG/B3Wgn0VAKNBjc+iLdxQCUJBO4bSt0GlMs="
         }
       ]
     },
@@ -3034,7 +3034,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 12 Jul 2025 14:51:09 GMT"
+          "Value": "Sun, 13 Jul 2025 03:16:32 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3071,7 +3071,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 12 Jul 2025 14:51:09 GMT"
+          "Value": "Sun, 13 Jul 2025 03:16:32 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3116,7 +3116,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 12 Jul 2025 14:51:09 GMT"
+          "Value": "Sun, 13 Jul 2025 03:16:32 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3161,7 +3161,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 12 Jul 2025 14:51:09 GMT"
+          "Value": "Sun, 13 Jul 2025 03:16:32 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3350,7 +3350,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "130529"
+          "Value": "68172"
         },
         {
           "Name": "Content-Type",
@@ -3358,11 +3358,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"zN2neCtaCauIf9fGfbSM+/uhmfYQkqzivudCz5UIAz0=\""
+          "Value": "\"kN826QxX4KKxuyK/ulOEF/K1eSqb15V5P1ZJk3HmuGA=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 08 Jul 2025 22:11:00 GMT"
+          "Value": "Sun, 13 Jul 2025 03:15:08 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3372,12 +3372,12 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-zN2neCtaCauIf9fGfbSM+/uhmfYQkqzivudCz5UIAz0="
+          "Value": "sha256-kN826QxX4KKxuyK/ulOEF/K1eSqb15V5P1ZJk3HmuGA="
         }
       ]
     },
     {
-      "Route": "images/logo.sy151uzmnv.png",
+      "Route": "images/logo.wcak3roo7q.png",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\images\\logo.png",
       "Selectors": [],
       "ResponseHeaders": [
@@ -3387,7 +3387,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "130529"
+          "Value": "68172"
         },
         {
           "Name": "Content-Type",
@@ -3395,11 +3395,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"zN2neCtaCauIf9fGfbSM+/uhmfYQkqzivudCz5UIAz0=\""
+          "Value": "\"kN826QxX4KKxuyK/ulOEF/K1eSqb15V5P1ZJk3HmuGA=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 08 Jul 2025 22:11:00 GMT"
+          "Value": "Sun, 13 Jul 2025 03:15:08 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3409,7 +3409,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "sy151uzmnv"
+          "Value": "wcak3roo7q"
         },
         {
           "Name": "label",
@@ -3417,7 +3417,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-zN2neCtaCauIf9fGfbSM+/uhmfYQkqzivudCz5UIAz0="
+          "Value": "sha256-kN826QxX4KKxuyK/ulOEF/K1eSqb15V5P1ZJk3HmuGA="
         }
       ]
     },
