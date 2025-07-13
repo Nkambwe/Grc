@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "X0dz0Y5yoUcy51winWxZDlHLAZIh0eaLWR2uTTMs3SQ=",
+  "Hash": "BDNVzVi95LGL9R9IWHDeRpbBP4CO0ntZB3v/1qc0GW8=",
   "Source": "Grc.ui.App",
   "BasePath": "_content/Grc.ui.App",
   "Mode": "Default",
@@ -136,8 +136,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "f0buchpdss",
-      "Integrity": "P9MLd+pB1nUTPTx10GV6/Zi81F3rcRbStCuLvHvPCBg=",
+      "Fingerprint": "7djed63vcu",
+      "Integrity": "dbGthTgIkGzyqBvS7n0/kFW3spi2ywAiVyxO/uend7I=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\register-styles.css"
@@ -283,8 +283,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "vh3euz7am1",
-      "Integrity": "M0Oxr8ab64NsDstzI4F52IVT4/Xi1PgmcaV2BsZkieU=",
+      "Fingerprint": "hc5g71s05b",
+      "Integrity": "77W/CFQABLjFX7iHlnF8xdugGEL2aY8/ytRM5H/eP5g=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\register-script.js"
@@ -1254,6 +1254,69 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\LICENSE"
+    },
+    {
+      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\bulma\\bulma.css",
+      "SourceId": "Grc.ui.App",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\",
+      "BasePath": "_content/Grc.ui.App",
+      "RelativePath": "lib/bulma/bulma#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "u8fnyearl2",
+      "Integrity": "7mYxbCSi9ilxkTvOUOEIRzSbnNbQVTjKVIJVibdbWQE=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\lib\\bulma\\bulma.css"
+    },
+    {
+      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\bulma\\bulma.css.map",
+      "SourceId": "Grc.ui.App",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\",
+      "BasePath": "_content/Grc.ui.App",
+      "RelativePath": "lib/bulma/bulma.css#[.{fingerprint}]?.map",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "bqwfqhfl0f",
+      "Integrity": "jT7803wxktvxDmz4y8KVhbqQfsNk8Xbf0d7tAhfPKWE=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\lib\\bulma\\bulma.css.map"
+    },
+    {
+      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\bulma\\bulma.min.css",
+      "SourceId": "Grc.ui.App",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\",
+      "BasePath": "_content/Grc.ui.App",
+      "RelativePath": "lib/bulma/bulma.min#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "h244cvzee5",
+      "Integrity": "Z/om3xyp6V2PKtx8BPobFfo9JCV0cOvBDMaLmquRS+4=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\lib\\bulma\\bulma.min.css"
     },
     {
       "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\chartjs\\Chart.bundle.js",
@@ -2932,6 +2995,51 @@
       ]
     },
     {
+      "Route": "css/register-styles.7djed63vcu.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\register-styles.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "12904"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"dbGthTgIkGzyqBvS7n0/kFW3spi2ywAiVyxO/uend7I=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 13 Jul 2025 23:43:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "7djed63vcu"
+        },
+        {
+          "Name": "label",
+          "Value": "css/register-styles.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-dbGthTgIkGzyqBvS7n0/kFW3spi2ywAiVyxO/uend7I="
+        }
+      ]
+    },
+    {
       "Route": "css/register-styles.css",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\register-styles.css",
       "Selectors": [],
@@ -2942,7 +3050,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "10500"
+          "Value": "12904"
         },
         {
           "Name": "Content-Type",
@@ -2950,11 +3058,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"P9MLd+pB1nUTPTx10GV6/Zi81F3rcRbStCuLvHvPCBg=\""
+          "Value": "\"dbGthTgIkGzyqBvS7n0/kFW3spi2ywAiVyxO/uend7I=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 13 Jul 2025 13:37:59 GMT"
+          "Value": "Sun, 13 Jul 2025 23:43:45 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -2964,52 +3072,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-P9MLd+pB1nUTPTx10GV6/Zi81F3rcRbStCuLvHvPCBg="
-        }
-      ]
-    },
-    {
-      "Route": "css/register-styles.f0buchpdss.css",
-      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\register-styles.css",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "10500"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"P9MLd+pB1nUTPTx10GV6/Zi81F3rcRbStCuLvHvPCBg=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 13 Jul 2025 13:37:59 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "f0buchpdss"
-        },
-        {
-          "Name": "label",
-          "Value": "css/register-styles.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-P9MLd+pB1nUTPTx10GV6/Zi81F3rcRbStCuLvHvPCBg="
+          "Value": "sha256-dbGthTgIkGzyqBvS7n0/kFW3spi2ywAiVyxO/uend7I="
         }
       ]
     },
@@ -3670,6 +3733,51 @@
       ]
     },
     {
+      "Route": "js/register-script.hc5g71s05b.js",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\register-script.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "12382"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"77W/CFQABLjFX7iHlnF8xdugGEL2aY8/ytRM5H/eP5g=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 13 Jul 2025 23:19:58 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "hc5g71s05b"
+        },
+        {
+          "Name": "label",
+          "Value": "js/register-script.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-77W/CFQABLjFX7iHlnF8xdugGEL2aY8/ytRM5H/eP5g="
+        }
+      ]
+    },
+    {
       "Route": "js/register-script.js",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\register-script.js",
       "Selectors": [],
@@ -3680,7 +3788,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4420"
+          "Value": "12382"
         },
         {
           "Name": "Content-Type",
@@ -3688,11 +3796,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"M0Oxr8ab64NsDstzI4F52IVT4/Xi1PgmcaV2BsZkieU=\""
+          "Value": "\"77W/CFQABLjFX7iHlnF8xdugGEL2aY8/ytRM5H/eP5g=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 13 Jul 2025 13:39:18 GMT"
+          "Value": "Sun, 13 Jul 2025 23:19:58 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3702,52 +3810,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-M0Oxr8ab64NsDstzI4F52IVT4/Xi1PgmcaV2BsZkieU="
-        }
-      ]
-    },
-    {
-      "Route": "js/register-script.vh3euz7am1.js",
-      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\register-script.js",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "4420"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"M0Oxr8ab64NsDstzI4F52IVT4/Xi1PgmcaV2BsZkieU=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 13 Jul 2025 13:39:18 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "vh3euz7am1"
-        },
-        {
-          "Name": "label",
-          "Value": "js/register-script.js"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-M0Oxr8ab64NsDstzI4F52IVT4/Xi1PgmcaV2BsZkieU="
+          "Value": "sha256-77W/CFQABLjFX7iHlnF8xdugGEL2aY8/ytRM5H/eP5g="
         }
       ]
     },
@@ -7520,6 +7583,252 @@
         {
           "Name": "integrity",
           "Value": "sha256-ZH6pA6BSx6fuHZvdaKph1DwUJ+VSYilIiEQu8ilnvqk="
+        }
+      ]
+    },
+    {
+      "Route": "lib/bulma/bulma.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\bulma\\bulma.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "763923"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"7mYxbCSi9ilxkTvOUOEIRzSbnNbQVTjKVIJVibdbWQE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 19 Apr 2025 13:01:36 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-7mYxbCSi9ilxkTvOUOEIRzSbnNbQVTjKVIJVibdbWQE="
+        }
+      ]
+    },
+    {
+      "Route": "lib/bulma/bulma.css.bqwfqhfl0f.map",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\bulma\\bulma.css.map",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "92785"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/plain"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"jT7803wxktvxDmz4y8KVhbqQfsNk8Xbf0d7tAhfPKWE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 19 Apr 2025 13:01:36 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "bqwfqhfl0f"
+        },
+        {
+          "Name": "label",
+          "Value": "lib/bulma/bulma.css.map"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-jT7803wxktvxDmz4y8KVhbqQfsNk8Xbf0d7tAhfPKWE="
+        }
+      ]
+    },
+    {
+      "Route": "lib/bulma/bulma.css.map",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\bulma\\bulma.css.map",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "92785"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/plain"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"jT7803wxktvxDmz4y8KVhbqQfsNk8Xbf0d7tAhfPKWE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 19 Apr 2025 13:01:36 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-jT7803wxktvxDmz4y8KVhbqQfsNk8Xbf0d7tAhfPKWE="
+        }
+      ]
+    },
+    {
+      "Route": "lib/bulma/bulma.min.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\bulma\\bulma.min.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "677931"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Z/om3xyp6V2PKtx8BPobFfo9JCV0cOvBDMaLmquRS+4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 19 Apr 2025 13:01:36 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Z/om3xyp6V2PKtx8BPobFfo9JCV0cOvBDMaLmquRS+4="
+        }
+      ]
+    },
+    {
+      "Route": "lib/bulma/bulma.min.h244cvzee5.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\bulma\\bulma.min.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "677931"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Z/om3xyp6V2PKtx8BPobFfo9JCV0cOvBDMaLmquRS+4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 19 Apr 2025 13:01:36 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "h244cvzee5"
+        },
+        {
+          "Name": "label",
+          "Value": "lib/bulma/bulma.min.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Z/om3xyp6V2PKtx8BPobFfo9JCV0cOvBDMaLmquRS+4="
+        }
+      ]
+    },
+    {
+      "Route": "lib/bulma/bulma.u8fnyearl2.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\bulma\\bulma.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "763923"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"7mYxbCSi9ilxkTvOUOEIRzSbnNbQVTjKVIJVibdbWQE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 19 Apr 2025 13:01:36 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "u8fnyearl2"
+        },
+        {
+          "Name": "label",
+          "Value": "lib/bulma/bulma.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-7mYxbCSi9ilxkTvOUOEIRzSbnNbQVTjKVIJVibdbWQE="
         }
       ]
     },

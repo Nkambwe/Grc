@@ -1,6 +1,6 @@
-﻿
-using Grc.ui.App.Enums;
+﻿using Grc.ui.App.Enums;
 using Grc.ui.App.Factories;
+using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
@@ -13,11 +13,12 @@ namespace Grc.ui.App.Controllers {
         private readonly IRegistrationFactory _registrationFactory;
         private readonly ILocalizationService _localizationService;
 
-        public ApplicationController(IApplicationLoggerFactory loggerFactory, 
+        public ApplicationController(IWebHelper webHelper,
+                                     IApplicationLoggerFactory loggerFactory, 
                                      IEnvironmentProvider environment,
                                      IRegistrationFactory registrationFactory,
                                      ILocalizationService localizationService):
-            base(loggerFactory, environment){
+            base(loggerFactory, environment, webHelper){
             _registrationFactory = registrationFactory;
             _localizationService = localizationService;
             Logger.Channel = $"APPLICATION-{DateTime.Now:yyyyMMddHHmmss}";
@@ -45,16 +46,54 @@ namespace Grc.ui.App.Controllers {
             return View(model);
         }
 
-        [HttpPost]
         public IActionResult Register(CompanyRegistrationModel model) {
             if (!ModelState.IsValid) {
-                 Notify("Invalid data. Please check your data and try again", "GRC VALIDATION", NotificationType.Error);
+                //..if it's an ajax request just return json with validation errors
+                if (WebHelper.IsAjaxRequest(Request)) {
+                    var errors = ModelState
+                        .Where(x => x.Value.Errors.Count > 0)
+                        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
+                    return Json(new { success = false, errors = errors });
+                }
+        
+                //..for non-Ajax requests we return the view with validation errors
+                Notify("Please clear the errors and Try again","GRC MESSAGE", NotificationType.Error);
                 return View(model); 
             }
+    
+            try {
+                // TODO: Save registration to database
+                // Example:
+                // await _registrationService.RegisterCompanyAsync(model);
+        
+                //..for ajax requests, return json success response
+                if (WebHelper.IsAjaxRequest(Request)) {
+                    return Json(new { 
+                        success = true, 
+                        redirectUrl = Url.Action("Login", "Application") 
+                    });
+                }
+        
+                //..for non-Ajax requests just redirect normally
+                return RedirectToAction("Login", "Application");
+            } catch (Exception ex) {
+                //..log the exception
+                Logger.LogActivity("Error during company registration");
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
 
-            //..TODO --save reistration
-            //..redirect to login
-            return RedirectToAction("Login", "Application");
+                string msg = "An error occurred during registration. Please try again.";
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest") {
+                    return Json(new { 
+                        success = false, 
+                        errors = new { general = new[] { msg } }
+                    });
+                }
+                
+                Notify(msg,"GRC MESSAGE", NotificationType.Error);
+                ModelState.AddModelError("", msg);
+                return View(model);
+            }
         }
 
         [HttpGet]

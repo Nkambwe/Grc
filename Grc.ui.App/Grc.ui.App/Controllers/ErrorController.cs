@@ -1,4 +1,5 @@
-﻿using Grc.ui.App.Models;
+﻿using Grc.ui.App.Infrastructure;
+using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -7,8 +8,10 @@ namespace Grc.ui.App.Controllers {
 
     public class ErrorController : GrcBaseController {
 
-        public ErrorController(IApplicationLoggerFactory loggerFactory, IEnvironmentProvider environment) 
-            : base(loggerFactory, environment) {
+        public ErrorController(IWebHelper webHelper, 
+                               IApplicationLoggerFactory loggerFactory, 
+                               IEnvironmentProvider environment) 
+            : base(loggerFactory, environment, webHelper) {
         }
 
         public IActionResult Status404() {

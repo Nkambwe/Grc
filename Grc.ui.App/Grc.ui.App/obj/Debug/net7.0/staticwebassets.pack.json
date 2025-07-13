@@ -233,6 +233,18 @@
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map"
     },
     {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\bulma\\bulma.css",
+      "PackagePath": "staticwebassets\\lib\\bulma\\bulma.css"
+    },
+    {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\bulma\\bulma.css.map",
+      "PackagePath": "staticwebassets\\lib\\bulma\\bulma.css.map"
+    },
+    {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\bulma\\bulma.min.css",
+      "PackagePath": "staticwebassets\\lib\\bulma\\bulma.min.css"
+    },
+    {
       "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\chartjs\\Chart.bundle.js",
       "PackagePath": "staticwebassets\\lib\\chartjs\\Chart.bundle.js"
     },

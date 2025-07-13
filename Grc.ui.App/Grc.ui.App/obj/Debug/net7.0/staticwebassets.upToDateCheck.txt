@@ -55,6 +55,9 @@ wwwroot\lib\bootstrap\dist\js\bootstrap.js.map
 wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
 wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
 wwwroot\lib\bootstrap\LICENSE
+wwwroot\lib\bulma\bulma.css
+wwwroot\lib\bulma\bulma.css.map
+wwwroot\lib\bulma\bulma.min.css
 wwwroot\lib\chartjs\Chart.bundle.js
 wwwroot\lib\chartjs\Chart.bundle.min.js
 wwwroot\lib\chartjs\Chart.css

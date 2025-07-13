@@ -480,6 +480,79 @@ button.swal2-deny.swal2-styled {
     padding: 8px !important;
     background-color: var(--white-base) !important;
 }
+
+/*..form validation styles */
+.form-control.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.form-control.is-valid {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.field-validation-error {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: none;
+}
+
+    .field-validation-error.show-error {
+        display: block;
+    }
+
+/*..password toggle styling */
+.password-wrapper {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #6c757d;
+    z-index: 10;
+}
+
+    .password-toggle:hover {
+        color: #495057;
+    }
+
+/*..loading state for submit button */
+.btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.step.completed .step-number span {
+    opacity: 1;
+    color: var(--white-base) !important;
+}
+    .step-nav .step.completed .step-number::after {
+        content: "✓";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .step-nav .step.completed .step-number span {
+        opacity: 0;
+    }
+
+/*..validation summary styling */
+#validation-summary {
+    margin-bottom: 1rem;
+}
+
+    #validation-summary i {
+        margin-right: 0.5rem;
+    }
+
 /*@media (min-width: 576px) {
     .main-container {
         max-width: 540px;
