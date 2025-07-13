@@ -6,6 +6,7 @@ using System.Diagnostics;
 namespace Grc.ui.App.Controllers {
 
     public class ErrorController : GrcBaseController {
+
         public ErrorController(IApplicationLoggerFactory loggerFactory, IEnvironmentProvider environment) 
             : base(loggerFactory, environment) {
         }

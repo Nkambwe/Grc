@@ -1,9 +1,10 @@
-﻿using Grc.ui.App.Factories;
+﻿
+using Grc.ui.App.Enums;
+using Grc.ui.App.Factories;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection;
 
 namespace Grc.ui.App.Controllers {
 
@@ -28,6 +29,8 @@ namespace Grc.ui.App.Controllers {
 
         [HttpGet]
         public IActionResult Login() {
+            
+            //Notify("Failed to save data", "FAILED TO SAVE", NotificationType.Error);
             return View();
         }
 
@@ -45,17 +48,18 @@ namespace Grc.ui.App.Controllers {
         [HttpPost]
         public IActionResult Register(CompanyRegistrationModel model) {
             if (!ModelState.IsValid) {
+                 Notify("Invalid data. Please check your data and try again", "GRC VALIDATION", NotificationType.Error);
                 return View(model); 
             }
 
             //..TODO --save reistration
-
             //..redirect to login
             return RedirectToAction("Login", "Application");
         }
 
         [HttpGet]
         public virtual IActionResult ChangeLanguage(string language) {
+             //Notify("Successfully saved");
             _localizationService.SaveCurrentLanguage(language);
             return RedirectToAction("Register", "Application");
         }

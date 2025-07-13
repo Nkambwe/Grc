@@ -110,6 +110,12 @@
             return isValid;
         }
 
+        $('#System_Language').select2({
+            width: '100%',
+            height:'35',
+            theme: 'default', 
+            dropdownCssClass: 'custom-select2-dropdown' 
+        });
     });
    
     $('#System_Language').on('change', function () {

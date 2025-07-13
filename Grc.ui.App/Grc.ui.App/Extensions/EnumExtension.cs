@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
+using System.Runtime.Serialization;
 
 namespace Grc.ui.App.Extensions {
 
@@ -15,6 +16,24 @@ namespace Grc.ui.App.Extensions {
             FieldInfo field = value.GetType().GetField(value.ToString());
             DescriptionAttribute attribute = (DescriptionAttribute)Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute));
             return attribute == null ? value.ToString() : attribute.Description;
+        }
+
+        /// <summary>
+        /// Gets the EnumMember value from an enum value if specified, 
+        /// otherwise returns the enum name as string
+        /// </summary>
+        /// <param name="enumValue">The enum value</param>
+        /// <returns>The EnumMember value or enum name</returns>
+        public static string GetEnumMemberValue(this Enum enumValue)
+        {
+            if (enumValue == null)
+                throw new ArgumentNullException(nameof(enumValue));
+
+            return enumValue.GetType()
+                          .GetMember(enumValue.ToString())
+                          .First()
+                          .GetCustomAttribute<EnumMemberAttribute>()?
+                          .Value ?? enumValue.ToString();
         }
  
     }

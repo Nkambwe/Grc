@@ -9,7 +9,6 @@ namespace Grc.ui.App.Services {
     public class MiddlewareHealthService : IMiddlewareHealthService {
 
         private readonly IEndpointTypeProvider _endpointProvider;
-        private readonly MiddlewareOptions _middlewareOptions;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IEnvironmentProvider _environment;
         private readonly IApplicationLogger _logger;
@@ -20,7 +19,6 @@ namespace Grc.ui.App.Services {
                                        IEnvironmentProvider environment) {
             _endpointProvider = endpointProvider;
             _httpClientFactory = httpClientFactory;
-            _middlewareOptions = middlewareOptions.Value;
             _environment = environment;
             _logger = loggerFactory.CreateLogger("app_services");
             _logger.Channel = $"HEALTH-CHECK-{DateTime.Now:yyyyMMddHHmmss}";

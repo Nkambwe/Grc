@@ -477,16 +477,32 @@
       "PackagePath": "staticwebassets\\lib\\select-2\\js\\select2.min.js"
     },
     {
-      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweet-alert.css",
-      "PackagePath": "staticwebassets\\lib\\sweet-alert\\sweet-alert.css"
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweetalert2.all.js",
+      "PackagePath": "staticwebassets\\lib\\sweet-alert\\sweetalert2.all.js"
     },
     {
-      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweet-alert.js",
-      "PackagePath": "staticwebassets\\lib\\sweet-alert\\sweet-alert.js"
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweetalert2.all.min.js",
+      "PackagePath": "staticwebassets\\lib\\sweet-alert\\sweetalert2.all.min.js"
     },
     {
-      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweet-alert.min.js",
-      "PackagePath": "staticwebassets\\lib\\sweet-alert\\sweet-alert.min.js"
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweetalert2.css",
+      "PackagePath": "staticwebassets\\lib\\sweet-alert\\sweetalert2.css"
+    },
+    {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\toastr\\toastr.css",
+      "PackagePath": "staticwebassets\\lib\\toastr\\toastr.css"
+    },
+    {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\toastr\\toastr.js.map",
+      "PackagePath": "staticwebassets\\lib\\toastr\\toastr.js.map"
+    },
+    {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\toastr\\toastr.min.css",
+      "PackagePath": "staticwebassets\\lib\\toastr\\toastr.min.css"
+    },
+    {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\toastr\\toastr.min.js",
+      "PackagePath": "staticwebassets\\lib\\toastr\\toastr.min.js"
     },
     {
       "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.Grc.ui.App.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",

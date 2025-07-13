@@ -14,13 +14,16 @@
         Html.AddCssFileParts("~/lib/icons/metro/icons.css");
         Html.AddCssFileParts("~/lib/icons/material-design/css/materialdesignicons.css");
         Html.AddCssFileParts("~/lib/icons/coreui-icons/css/all.css");
-        Html.AddCssFileParts("~/lib/sweet-alert/sweet-alert.css");
         Html.AddCssFileParts("~/lib/select-2/css/select2.min.css");
+        Html.AddCssFileParts("~/lib/toastr/toastr.css");
         Html.AddCssFileParts("~/css/color-pallete.css");
+        Html.AddCssFileParts("~/lib/sweet-alert/sweetalert2.css");
         Html.AddCssFileParts("~/css/grc-style.css", excludeFromBundle: false);
-        Html.AddCssFileParts("~/css/register-styles.css", excludeFromBundle: false);
+        Html.AddCssFileParts("~/css/register-styles.css", excludeFromBundle: false);   
     }
 
+    <script src="~/lib/toastr/toastr.min.js"></script>
+    <script src="~/lib/sweet-alert/sweetalert2.all.min.js"></script>
     @Html.GenerateCssFiles()
     @Html.GenerateHeadCustom()
 </head>

@@ -116,6 +116,10 @@ wwwroot\lib\select-2\js\select2.full.js
 wwwroot\lib\select-2\js\select2.full.min.js
 wwwroot\lib\select-2\js\select2.js
 wwwroot\lib\select-2\js\select2.min.js
-wwwroot\lib\sweet-alert\sweet-alert.css
-wwwroot\lib\sweet-alert\sweet-alert.js
-wwwroot\lib\sweet-alert\sweet-alert.min.js
+wwwroot\lib\sweet-alert\sweetalert2.all.js
+wwwroot\lib\sweet-alert\sweetalert2.all.min.js
+wwwroot\lib\sweet-alert\sweetalert2.css
+wwwroot\lib\toastr\toastr.css
+wwwroot\lib\toastr\toastr.js.map
+wwwroot\lib\toastr\toastr.min.css
+wwwroot\lib\toastr\toastr.min.js

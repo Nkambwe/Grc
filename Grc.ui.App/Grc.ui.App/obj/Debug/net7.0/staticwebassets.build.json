@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "ZPUrgkmWiFUJAwNIXh+arJw+BblKP0UkFbWM1f2OCBI=",
+  "Hash": "X0dz0Y5yoUcy51winWxZDlHLAZIh0eaLWR2uTTMs3SQ=",
   "Source": "Grc.ui.App",
   "BasePath": "_content/Grc.ui.App",
   "Mode": "Default",
@@ -136,8 +136,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "8j66k4rokl",
-      "Integrity": "bMXrglbw1a6buHcib7YqtA742j6uLJKgqwlpQVeW2E4=",
+      "Fingerprint": "f0buchpdss",
+      "Integrity": "P9MLd+pB1nUTPTx10GV6/Zi81F3rcRbStCuLvHvPCBg=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\register-styles.css"
@@ -283,8 +283,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "wq9dcfzqgn",
-      "Integrity": "mErqO6nlidQ48BxrCPh/nv/0jR54TbqtaZjXjaasTb8=",
+      "Fingerprint": "vh3euz7am1",
+      "Integrity": "M0Oxr8ab64NsDstzI4F52IVT4/Xi1PgmcaV2BsZkieU=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\register-script.js"
@@ -2537,12 +2537,12 @@
       "OriginalItemSpec": "wwwroot\\lib\\select-2\\js\\select2.min.js"
     },
     {
-      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweet-alert.css",
+      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweetalert2.all.js",
       "SourceId": "Grc.ui.App",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\",
       "BasePath": "_content/Grc.ui.App",
-      "RelativePath": "lib/sweet-alert/sweet-alert#[.{fingerprint}]?.css",
+      "RelativePath": "lib/sweet-alert/sweetalert2.all#[.{fingerprint}]?.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -2551,19 +2551,19 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "y97bmfmcy4",
-      "Integrity": "lstTTjehkXEhf45IeimMhPYz5ZK0Ahn3NMdMcFpmky8=",
+      "Fingerprint": "rhis9e1h15",
+      "Integrity": "YcJJll5e/aqCgu2F9ODZfA6qtpCE9zkINu6MyjTRegc=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\lib\\sweet-alert\\sweet-alert.css"
+      "OriginalItemSpec": "wwwroot\\lib\\sweet-alert\\sweetalert2.all.js"
     },
     {
-      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweet-alert.js",
+      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweetalert2.all.min.js",
       "SourceId": "Grc.ui.App",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\",
       "BasePath": "_content/Grc.ui.App",
-      "RelativePath": "lib/sweet-alert/sweet-alert#[.{fingerprint}]?.js",
+      "RelativePath": "lib/sweet-alert/sweetalert2.all.min#[.{fingerprint}]?.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -2572,19 +2572,19 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "tuenf6lp61",
-      "Integrity": "C340B2ozfCHXHIZcQ8c7cvZrOENsWF2oTvCqeaVTaJA=",
+      "Fingerprint": "3f1uyff8g8",
+      "Integrity": "Ua8fKA4E1l7RSqT5HOjK0m/PrSwP41XFTs++qmtWey8=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\lib\\sweet-alert\\sweet-alert.js"
+      "OriginalItemSpec": "wwwroot\\lib\\sweet-alert\\sweetalert2.all.min.js"
     },
     {
-      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweet-alert.min.js",
+      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweetalert2.css",
       "SourceId": "Grc.ui.App",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\",
       "BasePath": "_content/Grc.ui.App",
-      "RelativePath": "lib/sweet-alert/sweet-alert.min#[.{fingerprint}]?.js",
+      "RelativePath": "lib/sweet-alert/sweetalert2#[.{fingerprint}]?.css",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -2593,11 +2593,95 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "lcshamvuqq",
-      "Integrity": "O4QYFBhf8Rqav8kHgSXfFDnriYHX9/w31CJundeF5A8=",
+      "Fingerprint": "2ipw1uql29",
+      "Integrity": "GgJJvQLLKVhZAkffHx8bdXO90+gwU/6Fv9g9riAWzJo=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\lib\\sweet-alert\\sweet-alert.min.js"
+      "OriginalItemSpec": "wwwroot\\lib\\sweet-alert\\sweetalert2.css"
+    },
+    {
+      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\toastr\\toastr.css",
+      "SourceId": "Grc.ui.App",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\",
+      "BasePath": "_content/Grc.ui.App",
+      "RelativePath": "lib/toastr/toastr#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "7znil99lx5",
+      "Integrity": "He3QEBKoL/nMXlVsoM7S2C2kjFQqS5L+mgA+F8LpG+U=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\lib\\toastr\\toastr.css"
+    },
+    {
+      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\toastr\\toastr.js.map",
+      "SourceId": "Grc.ui.App",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\",
+      "BasePath": "_content/Grc.ui.App",
+      "RelativePath": "lib/toastr/toastr.js#[.{fingerprint}]?.map",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "jw5ahztbe4",
+      "Integrity": "nRbxbT2OMR+pVY0F1YTTON6te+8/bDRLNNEFXtkWbbM=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\lib\\toastr\\toastr.js.map"
+    },
+    {
+      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\toastr\\toastr.min.css",
+      "SourceId": "Grc.ui.App",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\",
+      "BasePath": "_content/Grc.ui.App",
+      "RelativePath": "lib/toastr/toastr.min#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "fuwkiubrsj",
+      "Integrity": "R91pD48xW+oHbpJYGn5xR0Q7tMhH4xOrWn1QqMRINtA=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\lib\\toastr\\toastr.min.css"
+    },
+    {
+      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\toastr\\toastr.min.js",
+      "SourceId": "Grc.ui.App",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\",
+      "BasePath": "_content/Grc.ui.App",
+      "RelativePath": "lib/toastr/toastr.min#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "uhmk5snb2d",
+      "Integrity": "Hgwq1OBpJ276HUP9H3VJkSv9ZCGRGQN+JldPJ8pNcUM=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\lib\\toastr\\toastr.min.js"
     }
   ],
   "Endpoints": [
@@ -2848,51 +2932,6 @@
       ]
     },
     {
-      "Route": "css/register-styles.8j66k4rokl.css",
-      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\register-styles.css",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "8661"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"bMXrglbw1a6buHcib7YqtA742j6uLJKgqwlpQVeW2E4=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 13 Jul 2025 08:44:09 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "8j66k4rokl"
-        },
-        {
-          "Name": "label",
-          "Value": "css/register-styles.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-bMXrglbw1a6buHcib7YqtA742j6uLJKgqwlpQVeW2E4="
-        }
-      ]
-    },
-    {
       "Route": "css/register-styles.css",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\register-styles.css",
       "Selectors": [],
@@ -2903,7 +2942,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "8661"
+          "Value": "10500"
         },
         {
           "Name": "Content-Type",
@@ -2911,11 +2950,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"bMXrglbw1a6buHcib7YqtA742j6uLJKgqwlpQVeW2E4=\""
+          "Value": "\"P9MLd+pB1nUTPTx10GV6/Zi81F3rcRbStCuLvHvPCBg=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 13 Jul 2025 08:44:09 GMT"
+          "Value": "Sun, 13 Jul 2025 13:37:59 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -2925,7 +2964,52 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-bMXrglbw1a6buHcib7YqtA742j6uLJKgqwlpQVeW2E4="
+          "Value": "sha256-P9MLd+pB1nUTPTx10GV6/Zi81F3rcRbStCuLvHvPCBg="
+        }
+      ]
+    },
+    {
+      "Route": "css/register-styles.f0buchpdss.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\register-styles.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10500"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"P9MLd+pB1nUTPTx10GV6/Zi81F3rcRbStCuLvHvPCBg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 13 Jul 2025 13:37:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "f0buchpdss"
+        },
+        {
+          "Name": "label",
+          "Value": "css/register-styles.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-P9MLd+pB1nUTPTx10GV6/Zi81F3rcRbStCuLvHvPCBg="
         }
       ]
     },
@@ -3034,7 +3118,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 13 Jul 2025 03:16:32 GMT"
+          "Value": "Sun, 13 Jul 2025 11:56:38 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3071,7 +3155,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 13 Jul 2025 03:16:32 GMT"
+          "Value": "Sun, 13 Jul 2025 11:56:38 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3116,7 +3200,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 13 Jul 2025 03:16:32 GMT"
+          "Value": "Sun, 13 Jul 2025 11:56:38 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3161,7 +3245,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 13 Jul 2025 03:16:32 GMT"
+          "Value": "Sun, 13 Jul 2025 11:56:38 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3596,7 +3680,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4247"
+          "Value": "4420"
         },
         {
           "Name": "Content-Type",
@@ -3604,11 +3688,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"mErqO6nlidQ48BxrCPh/nv/0jR54TbqtaZjXjaasTb8=\""
+          "Value": "\"M0Oxr8ab64NsDstzI4F52IVT4/Xi1PgmcaV2BsZkieU=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 12 Jul 2025 15:35:51 GMT"
+          "Value": "Sun, 13 Jul 2025 13:39:18 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3618,12 +3702,12 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-mErqO6nlidQ48BxrCPh/nv/0jR54TbqtaZjXjaasTb8="
+          "Value": "sha256-M0Oxr8ab64NsDstzI4F52IVT4/Xi1PgmcaV2BsZkieU="
         }
       ]
     },
     {
-      "Route": "js/register-script.wq9dcfzqgn.js",
+      "Route": "js/register-script.vh3euz7am1.js",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\register-script.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -3633,7 +3717,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4247"
+          "Value": "4420"
         },
         {
           "Name": "Content-Type",
@@ -3641,11 +3725,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"mErqO6nlidQ48BxrCPh/nv/0jR54TbqtaZjXjaasTb8=\""
+          "Value": "\"M0Oxr8ab64NsDstzI4F52IVT4/Xi1PgmcaV2BsZkieU=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 12 Jul 2025 15:35:51 GMT"
+          "Value": "Sun, 13 Jul 2025 13:39:18 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3655,7 +3739,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "wq9dcfzqgn"
+          "Value": "vh3euz7am1"
         },
         {
           "Name": "label",
@@ -3663,7 +3747,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-mErqO6nlidQ48BxrCPh/nv/0jR54TbqtaZjXjaasTb8="
+          "Value": "sha256-M0Oxr8ab64NsDstzI4F52IVT4/Xi1PgmcaV2BsZkieU="
         }
       ]
     },
@@ -12442,8 +12526,8 @@
       ]
     },
     {
-      "Route": "lib/sweet-alert/sweet-alert.css",
-      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweet-alert.css",
+      "Route": "lib/sweet-alert/sweetalert2.2ipw1uql29.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweetalert2.css",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -12452,7 +12536,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "11031"
+          "Value": "34815"
         },
         {
           "Name": "Content-Type",
@@ -12460,122 +12544,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"lstTTjehkXEhf45IeimMhPYz5ZK0Ahn3NMdMcFpmky8=\""
+          "Value": "\"GgJJvQLLKVhZAkffHx8bdXO90+gwU/6Fv9g9riAWzJo=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 19 Oct 2014 15:05:37 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-lstTTjehkXEhf45IeimMhPYz5ZK0Ahn3NMdMcFpmky8="
-        }
-      ]
-    },
-    {
-      "Route": "lib/sweet-alert/sweet-alert.js",
-      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweet-alert.js",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "21490"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"C340B2ozfCHXHIZcQ8c7cvZrOENsWF2oTvCqeaVTaJA=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 19 Oct 2014 15:05:37 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-C340B2ozfCHXHIZcQ8c7cvZrOENsWF2oTvCqeaVTaJA="
-        }
-      ]
-    },
-    {
-      "Route": "lib/sweet-alert/sweet-alert.min.js",
-      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweet-alert.min.js",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "8691"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"O4QYFBhf8Rqav8kHgSXfFDnriYHX9/w31CJundeF5A8=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 19 Oct 2014 15:05:37 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-O4QYFBhf8Rqav8kHgSXfFDnriYHX9/w31CJundeF5A8="
-        }
-      ]
-    },
-    {
-      "Route": "lib/sweet-alert/sweet-alert.min.lcshamvuqq.js",
-      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweet-alert.min.js",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "8691"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"O4QYFBhf8Rqav8kHgSXfFDnriYHX9/w31CJundeF5A8=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 19 Oct 2014 15:05:37 GMT"
+          "Value": "Sun, 13 Jul 2025 11:22:04 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -12585,21 +12558,21 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "lcshamvuqq"
+          "Value": "2ipw1uql29"
         },
         {
           "Name": "label",
-          "Value": "lib/sweet-alert/sweet-alert.min.js"
+          "Value": "lib/sweet-alert/sweetalert2.css"
         },
         {
           "Name": "integrity",
-          "Value": "sha256-O4QYFBhf8Rqav8kHgSXfFDnriYHX9/w31CJundeF5A8="
+          "Value": "sha256-GgJJvQLLKVhZAkffHx8bdXO90+gwU/6Fv9g9riAWzJo="
         }
       ]
     },
     {
-      "Route": "lib/sweet-alert/sweet-alert.tuenf6lp61.js",
-      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweet-alert.js",
+      "Route": "lib/sweet-alert/sweetalert2.all.js",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweetalert2.all.js",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -12608,7 +12581,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "21490"
+          "Value": "173350"
         },
         {
           "Name": "Content-Type",
@@ -12616,11 +12589,48 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"C340B2ozfCHXHIZcQ8c7cvZrOENsWF2oTvCqeaVTaJA=\""
+          "Value": "\"YcJJll5e/aqCgu2F9ODZfA6qtpCE9zkINu6MyjTRegc=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 19 Oct 2014 15:05:37 GMT"
+          "Value": "Sun, 13 Jul 2025 11:22:19 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-YcJJll5e/aqCgu2F9ODZfA6qtpCE9zkINu6MyjTRegc="
+        }
+      ]
+    },
+    {
+      "Route": "lib/sweet-alert/sweetalert2.all.min.3f1uyff8g8.js",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweetalert2.all.min.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "78778"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Ua8fKA4E1l7RSqT5HOjK0m/PrSwP41XFTs++qmtWey8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 13 Jul 2025 11:22:12 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -12630,21 +12640,21 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "tuenf6lp61"
+          "Value": "3f1uyff8g8"
         },
         {
           "Name": "label",
-          "Value": "lib/sweet-alert/sweet-alert.js"
+          "Value": "lib/sweet-alert/sweetalert2.all.min.js"
         },
         {
           "Name": "integrity",
-          "Value": "sha256-C340B2ozfCHXHIZcQ8c7cvZrOENsWF2oTvCqeaVTaJA="
+          "Value": "sha256-Ua8fKA4E1l7RSqT5HOjK0m/PrSwP41XFTs++qmtWey8="
         }
       ]
     },
     {
-      "Route": "lib/sweet-alert/sweet-alert.y97bmfmcy4.css",
-      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweet-alert.css",
+      "Route": "lib/sweet-alert/sweetalert2.all.min.js",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweetalert2.all.min.js",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -12653,7 +12663,89 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "11031"
+          "Value": "78778"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Ua8fKA4E1l7RSqT5HOjK0m/PrSwP41XFTs++qmtWey8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 13 Jul 2025 11:22:12 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ua8fKA4E1l7RSqT5HOjK0m/PrSwP41XFTs++qmtWey8="
+        }
+      ]
+    },
+    {
+      "Route": "lib/sweet-alert/sweetalert2.all.rhis9e1h15.js",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweetalert2.all.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "173350"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"YcJJll5e/aqCgu2F9ODZfA6qtpCE9zkINu6MyjTRegc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 13 Jul 2025 11:22:19 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "rhis9e1h15"
+        },
+        {
+          "Name": "label",
+          "Value": "lib/sweet-alert/sweetalert2.all.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-YcJJll5e/aqCgu2F9ODZfA6qtpCE9zkINu6MyjTRegc="
+        }
+      ]
+    },
+    {
+      "Route": "lib/sweet-alert/sweetalert2.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweetalert2.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "34815"
         },
         {
           "Name": "Content-Type",
@@ -12661,11 +12753,48 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"lstTTjehkXEhf45IeimMhPYz5ZK0Ahn3NMdMcFpmky8=\""
+          "Value": "\"GgJJvQLLKVhZAkffHx8bdXO90+gwU/6Fv9g9riAWzJo=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 19 Oct 2014 15:05:37 GMT"
+          "Value": "Sun, 13 Jul 2025 11:22:04 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-GgJJvQLLKVhZAkffHx8bdXO90+gwU/6Fv9g9riAWzJo="
+        }
+      ]
+    },
+    {
+      "Route": "lib/toastr/toastr.7znil99lx5.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\toastr\\toastr.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "7575"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"He3QEBKoL/nMXlVsoM7S2C2kjFQqS5L+mgA+F8LpG+U=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 13 Jul 2025 09:35:24 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -12675,15 +12804,298 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "y97bmfmcy4"
+          "Value": "7znil99lx5"
         },
         {
           "Name": "label",
-          "Value": "lib/sweet-alert/sweet-alert.css"
+          "Value": "lib/toastr/toastr.css"
         },
         {
           "Name": "integrity",
-          "Value": "sha256-lstTTjehkXEhf45IeimMhPYz5ZK0Ahn3NMdMcFpmky8="
+          "Value": "sha256-He3QEBKoL/nMXlVsoM7S2C2kjFQqS5L+mgA+F8LpG+U="
+        }
+      ]
+    },
+    {
+      "Route": "lib/toastr/toastr.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\toastr\\toastr.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "7575"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"He3QEBKoL/nMXlVsoM7S2C2kjFQqS5L+mgA+F8LpG+U=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 13 Jul 2025 09:35:24 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-He3QEBKoL/nMXlVsoM7S2C2kjFQqS5L+mgA+F8LpG+U="
+        }
+      ]
+    },
+    {
+      "Route": "lib/toastr/toastr.js.jw5ahztbe4.map",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\toastr\\toastr.js.map",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "25633"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/plain"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"nRbxbT2OMR+pVY0F1YTTON6te+8/bDRLNNEFXtkWbbM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 13 Jul 2025 09:35:24 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "jw5ahztbe4"
+        },
+        {
+          "Name": "label",
+          "Value": "lib/toastr/toastr.js.map"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-nRbxbT2OMR+pVY0F1YTTON6te+8/bDRLNNEFXtkWbbM="
+        }
+      ]
+    },
+    {
+      "Route": "lib/toastr/toastr.js.map",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\toastr\\toastr.js.map",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "25633"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/plain"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"nRbxbT2OMR+pVY0F1YTTON6te+8/bDRLNNEFXtkWbbM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 13 Jul 2025 09:35:24 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-nRbxbT2OMR+pVY0F1YTTON6te+8/bDRLNNEFXtkWbbM="
+        }
+      ]
+    },
+    {
+      "Route": "lib/toastr/toastr.min.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\toastr\\toastr.min.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6454"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"R91pD48xW+oHbpJYGn5xR0Q7tMhH4xOrWn1QqMRINtA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 13 Jul 2025 09:35:24 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-R91pD48xW+oHbpJYGn5xR0Q7tMhH4xOrWn1QqMRINtA="
+        }
+      ]
+    },
+    {
+      "Route": "lib/toastr/toastr.min.fuwkiubrsj.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\toastr\\toastr.min.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6454"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"R91pD48xW+oHbpJYGn5xR0Q7tMhH4xOrWn1QqMRINtA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 13 Jul 2025 09:35:24 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "fuwkiubrsj"
+        },
+        {
+          "Name": "label",
+          "Value": "lib/toastr/toastr.min.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-R91pD48xW+oHbpJYGn5xR0Q7tMhH4xOrWn1QqMRINtA="
+        }
+      ]
+    },
+    {
+      "Route": "lib/toastr/toastr.min.js",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\toastr\\toastr.min.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5251"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Hgwq1OBpJ276HUP9H3VJkSv9ZCGRGQN+JldPJ8pNcUM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 13 Jul 2025 09:35:24 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Hgwq1OBpJ276HUP9H3VJkSv9ZCGRGQN+JldPJ8pNcUM="
+        }
+      ]
+    },
+    {
+      "Route": "lib/toastr/toastr.min.uhmk5snb2d.js",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\toastr\\toastr.min.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5251"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Hgwq1OBpJ276HUP9H3VJkSv9ZCGRGQN+JldPJ8pNcUM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 13 Jul 2025 09:35:24 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "uhmk5snb2d"
+        },
+        {
+          "Name": "label",
+          "Value": "lib/toastr/toastr.min.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Hgwq1OBpJ276HUP9H3VJkSv9ZCGRGQN+JldPJ8pNcUM="
         }
       ]
     }

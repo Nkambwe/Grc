@@ -1,0 +1,19 @@
+﻿@if (TempData["Message"] != null) {
+
+    <script>
+        var msg = @Html.Raw(TempData["Message"]!.ToString());
+        Swal.fire({
+            title: msg.title,      
+            text: msg.message,    
+            icon: msg.icon,       
+            
+            showCancelButton: true,
+            confirmButtonText: "Yes, proceed!",
+            cancelButtonText: "Cancel",
+            customClass: {
+                confirmButton: "swal2-confirm",
+                cancelButton: "swal2-cancel"
+            }
+        });
+    </script>
+}
