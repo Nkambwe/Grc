@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "BDNVzVi95LGL9R9IWHDeRpbBP4CO0ntZB3v/1qc0GW8=",
+  "Hash": "zrs90dffyC3taiIkLhB4B4VTL3DUgGCM7vcK+JC0SPY=",
   "Source": "Grc.ui.App",
   "BasePath": "_content/Grc.ui.App",
   "Mode": "Default",
@@ -136,8 +136,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "7djed63vcu",
-      "Integrity": "dbGthTgIkGzyqBvS7n0/kFW3spi2ywAiVyxO/uend7I=",
+      "Fingerprint": "lgw0o0fqsb",
+      "Integrity": "VSy05sv7VYZ49Qr8T7i0TRR4BbF9F3HOz9MpK7nvhKc=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\register-styles.css"
@@ -2995,51 +2995,6 @@
       ]
     },
     {
-      "Route": "css/register-styles.7djed63vcu.css",
-      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\register-styles.css",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "12904"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"dbGthTgIkGzyqBvS7n0/kFW3spi2ywAiVyxO/uend7I=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 13 Jul 2025 23:43:45 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "7djed63vcu"
-        },
-        {
-          "Name": "label",
-          "Value": "css/register-styles.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-dbGthTgIkGzyqBvS7n0/kFW3spi2ywAiVyxO/uend7I="
-        }
-      ]
-    },
-    {
       "Route": "css/register-styles.css",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\register-styles.css",
       "Selectors": [],
@@ -3050,7 +3005,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "12904"
+          "Value": "13695"
         },
         {
           "Name": "Content-Type",
@@ -3058,11 +3013,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"dbGthTgIkGzyqBvS7n0/kFW3spi2ywAiVyxO/uend7I=\""
+          "Value": "\"VSy05sv7VYZ49Qr8T7i0TRR4BbF9F3HOz9MpK7nvhKc=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 13 Jul 2025 23:43:45 GMT"
+          "Value": "Mon, 14 Jul 2025 00:26:52 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3072,7 +3027,52 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-dbGthTgIkGzyqBvS7n0/kFW3spi2ywAiVyxO/uend7I="
+          "Value": "sha256-VSy05sv7VYZ49Qr8T7i0TRR4BbF9F3HOz9MpK7nvhKc="
+        }
+      ]
+    },
+    {
+      "Route": "css/register-styles.lgw0o0fqsb.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\register-styles.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "13695"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VSy05sv7VYZ49Qr8T7i0TRR4BbF9F3HOz9MpK7nvhKc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Jul 2025 00:26:52 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "lgw0o0fqsb"
+        },
+        {
+          "Name": "label",
+          "Value": "css/register-styles.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-VSy05sv7VYZ49Qr8T7i0TRR4BbF9F3HOz9MpK7nvhKc="
         }
       ]
     },
