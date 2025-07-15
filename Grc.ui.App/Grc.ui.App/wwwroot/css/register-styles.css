@@ -55,6 +55,87 @@ aside {
     height: calc(100vh - 10%);
 }
 
+/*..base container */
+.no-service-base-container {
+    background-color: #ffffff;
+    color: #006d77; /* dark cyan */
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/*..header Bar */
+.no-service-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background-color: var(--white-base);
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/*..logo styling */
+.no-service-logo .service-logo {
+    height: 48px;
+    width: auto;
+}
+
+/*..banner text */
+.no-service-banner .service-banner {
+    color: var(--teal-dark-slightly);
+    font-size: 1.5rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.no-service-content-wrapper {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+}
+
+.no-service-container{
+    flex-grow: 1;
+    text-align: center !important;
+}
+section.no-service-section {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 40px;
+    text-align: center;
+}
+
+.no-service-container {
+    height: 100%;
+    width:100%;
+    text-align: center !important;
+}
+
+.no-service-img-box img:not([alt]) {
+    height: 100%;
+    width: 900px;
+    filter: blur(.5px) !important;
+}
+section.no-service-section {
+    height: 100%;
+}
+
+.header-label-1 {
+    color: #ffc107;
+}
+
+.header-label-2 {
+    color: #006d77;
+}
+
+.header-label-3 {
+    color: #555;
+}
+
 .registration-container {
     margin: 0;
     padding: 0;
@@ -237,7 +318,7 @@ aside {
 .footer-container {
     color: var(--grey-dark) !important;
     opacity: 1;
-    padding: 10px;
+    padding: 5px 10px;
     width: 100%;
     text-align: center;
     font-size: 1.2rem;
@@ -578,6 +659,20 @@ button.swal2-deny.swal2-styled {
     #validation-summary i {
         margin-right: 0.5rem;
     }
+
+
+@media (max-width: 768px) {
+    .no-service-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .no-service-banner .service-banner {
+        font-size: 1.2rem;
+    }
+}
+
 
 /*@media (min-width: 576px) {
     .main-container {

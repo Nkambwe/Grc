@@ -89,8 +89,9 @@ namespace Grc.ui.App.Controllers {
             return RedirectToAction("Register", "Application");
         }
 
-        public  IActionResult NoService(){ 
-            return View();
+        public  async Task<IActionResult> NoService(){
+            var model = await _registrationFactory.PrepareNoServiceModelAsync();
+            return View(model);
         }
 
         #region Helper Methods

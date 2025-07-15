@@ -1,12 +1,11 @@
 {
   "Version": 1,
-  "Hash": "4PeCcCNKndqhN/Mr2PiuYOpothIRNohKB4C9IYjJ7tg=",
+  "Hash": "4XHFc7vb209aazXGc8iUNBeH2TwAwW4jk7TDC2Kg/Hc=",
   "Source": "Grc.Middleware.Api",
   "BasePath": "_content/Grc.Middleware.Api",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [],
-  "Assets": [],
-  "Endpoints": []
+  "Assets": []
 }

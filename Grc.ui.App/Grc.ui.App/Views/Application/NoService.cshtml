@@ -1,23 +1,34 @@
-﻿@{
+﻿@model NoServiceModel
+@{
     Layout = "_Layout_01";
     ViewData["Title"] = "GRC SERVICES";
 }
 
-<div class="no-service-container">   
-    <div class="no-serice-header">
-        <div class="no-service-img-box">   
-            <img src="~/images/500.png"/>
+<div class="no-service-base-container">
+    <div class="no-service-header">
+        <div class="no-service-logo">
+            <img id="serviceLogo" class="service-logo" src="~/images/logo.png" alt="logo" />
         </div>
-    
+        <div class="no-service-banner">
+            <span class="display-1 service-banner ">
+                @Html.Raw(ILocalize.GetLocalizedLabel("App.Version"))
+            </span>
+        </div>
     </div>
-    <div class="no-sevice-container text-center">
 
-        <section class="no-sevice-section">
-            <h1 class="display-1 text-warning fw-normal header-label-1">500</h1>
-            <h5 class="display-5 fw-normal header-label-2">Service Error! GRC Middleware Unavailable</h5>
-            <h6 class="display-6  header-label-3">The server is temporarily unavailable. Please try again later</h6>
-        </section>
+    <div class="no-service-container">
+
+        <div class="no-service-content-wrapper">
+            <div class="no-service-container"">
+                <section class="no-service-section">
+                    <h1 class="display-1 text-warning fw-normal header-label-1">@Model.StatusCode</h1>
+                    <h5 class="display-5 fw-normal header-label-2">@Model.ErrorName</h5>
+                    <h6 class="display-6 header-label-3">Middleware is unreachable. Please check connection</h6>
+                </section>
+            </div>
+        </div>
 
     </div>
 </div>
+
 
