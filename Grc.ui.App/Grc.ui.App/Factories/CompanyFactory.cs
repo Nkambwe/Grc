@@ -6,10 +6,10 @@ namespace Grc.ui.App.Factories {
 
     public class CompanyFactory : IRegistrationFactory {
 
-        private readonly ICompanyService _orgService;
+        private readonly IInstallService _orgService;
         private readonly IHttpContextAccessor _httpContext;
 
-        public CompanyFactory(IHttpContextAccessor httpContext, ICompanyService orgService) { 
+        public CompanyFactory(IHttpContextAccessor httpContext, IInstallService orgService) { 
             _orgService = orgService;
             _httpContext = httpContext;
         }

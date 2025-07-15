@@ -1,4 +1,5 @@
-﻿using Grc.ui.App.Models;
+﻿using AutoMapper;
+using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
 
 namespace Grc.ui.App.Services {
@@ -7,8 +8,9 @@ namespace Grc.ui.App.Services {
         public WorkspaceService(IApplicationLoggerFactory loggerFactory, 
                                 IHttpClientFactory httpClientFactory,
                                 IEnvironmentProvider environment, 
-                                IEndpointTypeProvider endpointType)
-            : base(loggerFactory, httpClientFactory, environment,endpointType) {
+                                IEndpointTypeProvider endpointType,
+                                IMapper mapper)
+            : base(loggerFactory, httpClientFactory, environment,endpointType, mapper) {
             Logger.Channel = $"WORKSPACE-{DateTime.Now:yyyyMMddHHmmss}";
         }
 

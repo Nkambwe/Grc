@@ -483,12 +483,12 @@ button.swal2-deny.swal2-styled {
 /*..form validation styles */
 .form-control.is-invalid {
     border-color: var(--pink-tarn-accent);
-    box-shadow: 0 0 0 0.2rem var(--black-trans-20);
+    box-shadow: 0 0 0 0.2rem var(--crimson-trans-01);
 }
 
 .form-control.is-valid {
     border-color: var(--green-tarn-accent);
-    box-shadow: 0 0 0 0.2rem var(--black-trans-20);
+    box-shadow: 0 0 0 0.2rem var(--teal-light-extra);
 }
 
 .field-validation-error {

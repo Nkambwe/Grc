@@ -157,8 +157,6 @@ namespace Grc.ui.App.Services {
             var resourceValue = language.Resources
                 .Where(r => r.Name.Equals(labelName, StringComparison.InvariantCultureIgnoreCase))
                 .Select(r => r.Value).FirstOrDefault();
-            _logger.LogActivity($"LABEL CODE  :: {labelName}", "INFO");
-            _logger.LogActivity($"LABEL VALUE :: {resourceValue}", "INFO");
             if (string.IsNullOrEmpty(resourceValue))
                 return labelName;
 

@@ -7,6 +7,7 @@ namespace Grc.ui.App.Utils {
         private readonly EndpointTypeOptions _options;
         public SystemAccessEndpoints Sam => _options.Sam;
         public HealthEndpoint Health => _options.Health;
+        public RegistrationEndpoints Registration => _options.Registration;
 
         public EndpointTypeProvider(IOptions<EndpointTypeOptions> options) {
             _options = options.Value;  

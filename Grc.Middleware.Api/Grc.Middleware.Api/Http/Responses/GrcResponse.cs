@@ -1,5 +1,4 @@
-﻿using Grc.Middleware.Api.Exceptions;
-
+﻿
 namespace Grc.Middleware.Api.Http.Responses {
 
     /// <summary>
@@ -16,7 +15,7 @@ namespace Grc.Middleware.Api.Http.Responses {
     /// </remarks>
     public class GrcResponse<T> where T : class {
         public bool HasError { get; }
-        public GrcError Error { get; set; }
+        public ResponseError Error { get; set; }
         public T Data { get; set; }
 
         /// <summary>
@@ -33,7 +32,7 @@ namespace Grc.Middleware.Api.Http.Responses {
         /// Ctr for failed responses
         /// </summary>
         /// <param name="error">Error response data object</param>
-        public GrcResponse(GrcError error) {
+        public GrcResponse(ResponseError error) {
             HasError = true;
             Error = error;
             Data = null;

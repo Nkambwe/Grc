@@ -9,7 +9,6 @@
     <Folder Include="Core\Entities\Compliance\" />
     <Folder Include="Core\Entities\Audits\" />
     <Folder Include="Core\Entities\Sam\" />
-    <Folder Include="Http\Requests\" />
   </ItemGroup>
 
   <ItemGroup>

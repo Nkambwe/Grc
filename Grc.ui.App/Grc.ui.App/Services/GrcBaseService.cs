@@ -1,4 +1,5 @@
-﻿using Grc.ui.App.Utils;
+﻿using AutoMapper;
+using Grc.ui.App.Utils;
 using System.Text;
 using System.Text.Json;
 
@@ -8,16 +9,19 @@ namespace Grc.ui.App.Services {
         protected readonly HttpClient GrcHttpClient;
         protected readonly IApplicationLogger Logger;
         protected readonly IEnvironmentProvider Environment;
-        protected readonly IEndpointTypeProvider EndpointType;
+        protected readonly IEndpointTypeProvider EndpointProvider;
         protected readonly JsonSerializerOptions JsonOptions;
+        protected readonly IMapper Mapper;
 
         public GrcBaseService(IApplicationLoggerFactory loggerFactory, 
                               IHttpClientFactory httpClientFactory,
                               IEnvironmentProvider environment,
-                              IEndpointTypeProvider endpointType) {
+                              IEndpointTypeProvider endpointType,
+                              IMapper mapper) {
             Logger = loggerFactory.CreateLogger("app_services");
             Environment = environment;
-            EndpointType = endpointType;
+            EndpointProvider = endpointType;
+            Mapper = mapper;
             JsonOptions = new JsonSerializerOptions {
                 PropertyNameCaseInsensitive = true,
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,

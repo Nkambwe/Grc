@@ -1,4 +1,5 @@
-﻿using Grc.ui.App.Http.Requests;
+﻿using AutoMapper;
+using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
@@ -10,8 +11,9 @@ namespace Grc.ui.App.Http {
         public SystemAccessService(IApplicationLoggerFactory loggerFactory, 
                                    IHttpClientFactory httpClientFactory,
                                    IEnvironmentProvider environment, 
-                                   IEndpointTypeProvider endpointType)
-            : base(loggerFactory, httpClientFactory, environment,endpointType) {
+                                   IEndpointTypeProvider endpointType,
+                                   IMapper mapper)
+            : base(loggerFactory, httpClientFactory, environment,endpointType,mapper) {
             Logger.Channel = $"SAM-{DateTime.Now:yyyyMMddHHmmss}";
         }
 
@@ -85,7 +87,7 @@ namespace Grc.ui.App.Http {
         /// </summary>
         /// <returns></returns>
         public async Task LogoutAsync() {
-            await DeleteAsync(EndpointType.Sam.Logout);
+            await DeleteAsync(EndpointProvider.Sam.Logout);
         }
     }
 

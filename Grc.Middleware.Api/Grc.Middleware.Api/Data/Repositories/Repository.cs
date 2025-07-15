@@ -4,6 +4,7 @@ using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Microsoft.Data.SqlClient;
+using Grc.Middleware.Api.Helpers;
 using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Grc.Middleware.Api.Data.Repositories {
@@ -376,7 +377,6 @@ namespace Grc.Middleware.Api.Data.Repositories {
             var bulkConfig = new BulkConfig {
                 SetOutputIdentity = true,
                 PreserveInsertOrder = true,
-                //update all properties
                 UpdateByProperties = null
             };
 
@@ -403,7 +403,7 @@ namespace Grc.Middleware.Api.Data.Repositories {
                 return false;
             }
 
-            // Convert expressions to property names
+            //..convert expressions to property names
             var propertyNames = propertySelectors
                 .Select(GetPropertyName)
                 .Where(name => !string.IsNullOrEmpty(name))
@@ -412,7 +412,6 @@ namespace Grc.Middleware.Api.Data.Repositories {
             var bulkConfig = new BulkConfig {
                 SetOutputIdentity = true,
                 PreserveInsertOrder = true,
-                //update selected properties
                 UpdateByProperties = propertyNames
             };
 
@@ -426,13 +425,111 @@ namespace Grc.Middleware.Api.Data.Repositories {
                 return false;
             }
         }
+        public virtual async Task<PagedResult<T>> PageAllAsync(int page, int size, bool includeDeleted) {
+            //..make sure page size is never negative
+            page = Math.Max(1, page);   
+            size = Math.Max(1, size);  
+            var dbSet = context.Set<T>();
+
+            var query = includeDeleted ? dbSet : dbSet.Where(m => !m.IsDeleted);
+            var totalRecords = await query.CountAsync();
+            var entities = await query.Skip((page - 1) * size).Take(size).ToListAsync();
+
+            return new PagedResult<T> {
+                Entities = entities,
+                Count = totalRecords,
+                Page = page,
+                Size = size
+            };
+        }
+
+        public virtual async Task<PagedResult<T>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted) {
+            //make sure page size is never negative
+            page = Math.Max(1, page);   
+            size = Math.Max(1, size);  
+            var dbSet = context.Set<T>();
+
+            var query = includeDeleted ? dbSet : dbSet.Where(m => !m.IsDeleted);
+            var totalRecords = await dbSet.CountAsync(token);
+            var entities = await query.Skip((page - 1) * size).Take(size).ToListAsync(token);
+
+            return new PagedResult<T> {
+                Entities = entities,
+                Count = totalRecords,
+                Page = page,
+                Size = size
+            };
+        }
+
+        public virtual async Task<PagedResult<T>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<T, bool>> where = null) {
+            //..make sure page size is never negative
+            page = Math.Max(1, page);   
+            size = Math.Max(1, size);  
+            var dbSet = context.Set<T>();
+            var query = where != null ? dbSet.Where(where) : dbSet;
+    
+            //..handle soft deleted entities
+            if (!includeDeleted && typeof(T).GetProperty("IsDeleted") != null) {
+                var parameter = Expression.Parameter(typeof(T), "x");
+                var property = Expression.Property(parameter, "IsDeleted");
+                var comparison = Expression.Equal(property, Expression.Constant(false));
+                var lambda = Expression.Lambda<Func<T, bool>>(comparison, parameter);
+
+                query = query.Where(lambda);
+            }
+    
+            var totalCount = await query.CountAsync();
+            var entities = await query.Skip((page - 1) * size).Take(size).ToListAsync();
+   
+            return new PagedResult<T> {
+                Entities = entities,
+                Count = totalCount,
+                Page = page,
+                Size = size
+            };
+        }
+
+        public virtual async Task<PagedResult<T>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<T, bool>> where = null, bool includeDeleted = false) {
+            //..make sure page size is never negative
+            page = Math.Max(1, page);   
+            size = Math.Max(1, size);  
+            var dbSet = context.Set<T>();
+    
+            var query = where != null ? dbSet.Where(where) : dbSet;
+    
+            //..handle soft deleted entities
+            if (!includeDeleted && typeof(T).GetProperty("IsDeleted") != null) {
+                var parameter = Expression.Parameter(typeof(T), "x");
+                var property = Expression.Property(parameter, "IsDeleted");
+                var comparison = Expression.Equal(property, Expression.Constant(false));
+                var lambda = Expression.Lambda<Func<T, bool>>(comparison, parameter);
+        
+                query = query.Where(lambda);
+            }
+    
+            var totalCount = await query.CountAsync(token);
+            var entities = await query.Skip((page - 1) * size).Take(size).ToListAsync(token);
+    
+            return new PagedResult<T> {
+                Entities = entities,
+                Count = totalCount,
+                Page = page,
+                Size = size
+            };
+        }
 
         #region Helper Methods
+
+        /// <summary>
+        /// Extract class property name form class property
+        /// </summary>
+        /// <param name="where">Filter Predicate</param>
+        /// <returns>Property name</returns>
         private static string GetPropertyName(Expression<Func<T, object>> where) {
             if (where.Body is MemberExpression exMember) {
                 return exMember.Member.Name;
             } else if (where.Body is UnaryExpression unary) {
-                // Handle nullable properties
+                //..for handling nullable properties
                 if (unary.Operand is MemberExpression operand) {
                     return operand.Member.Name;
                 }

@@ -1,5 +1,6 @@
 ﻿using Grc.ui.App.Enums;
 using Grc.ui.App.Factories;
+using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
@@ -12,16 +13,19 @@ namespace Grc.ui.App.Controllers {
 
         private readonly IRegistrationFactory _registrationFactory;
         private readonly ILocalizationService _localizationService;
+        private readonly IInstallService _installService;
 
         public ApplicationController(IWebHelper webHelper,
                                      IApplicationLoggerFactory loggerFactory, 
                                      IEnvironmentProvider environment,
                                      IRegistrationFactory registrationFactory,
-                                     ILocalizationService localizationService):
-            base(loggerFactory, environment, webHelper){
+                                     ILocalizationService localizationService,
+                                     IInstallService installService) :
+            base(loggerFactory, environment, webHelper) {
             _registrationFactory = registrationFactory;
             _localizationService = localizationService;
             Logger.Channel = $"APPLICATION-{DateTime.Now:yyyyMMddHHmmss}";
+            _installService = installService;
         }
 
         public IActionResult Index() {
@@ -30,13 +34,18 @@ namespace Grc.ui.App.Controllers {
 
         [HttpGet]
         public IActionResult Login() {
-            
             //Notify("Failed to save data", "FAILED TO SAVE", NotificationType.Error);
             return View();
         }
 
         [HttpPost]
-        public IActionResult Logout() {
+        public IActionResult Login(LoginModel model) {
+            //Notify("Failed to save data", "FAILED TO SAVE", NotificationType.Error);
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Logout(LogoutModel model) {
             return View();
         }
         
@@ -46,53 +55,30 @@ namespace Grc.ui.App.Controllers {
             return View(model);
         }
 
-        public IActionResult Register(CompanyRegistrationModel model) {
+        [HttpPost]
+        public virtual async Task<IActionResult> Register(CompanyRegistrationModel model) {
             if (!ModelState.IsValid) {
-                //..if it's an ajax request just return json with validation errors
-                if (WebHelper.IsAjaxRequest(Request)) {
-                    var errors = ModelState
-                        .Where(x => x.Value.Errors.Count > 0)
-                        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
-                    return Json(new { success = false, errors = errors });
-                }
-        
-                //..for non-Ajax requests we return the view with validation errors
-                Notify("Please clear the errors and Try again","GRC MESSAGE", NotificationType.Error);
-                return View(model); 
+                return HandleValidationErrors(model);
             }
     
             try {
-                // TODO: Save registration to database
-                // Example:
-                // await _registrationService.RegisterCompanyAsync(model);
-        
-                //..for ajax requests, return json success response
-                if (WebHelper.IsAjaxRequest(Request)) {
-                    return Json(new { 
-                        success = true, 
-                        redirectUrl = Url.Action("Login", "Application") 
-                    });
+                //..register company
+                var grcResponse = await _installService.RegisterCompanyAsync(model);
+                if (grcResponse.HasError) {
+                    return HandleServiceError(grcResponse.Error, model);
                 }
         
-                //..for non-Ajax requests just redirect normally
-                return RedirectToAction("Login", "Application");
+                //..success response
+                var serviceResponse = grcResponse.Data;
+                if (IsSuccessfulResponse(serviceResponse)) {
+                    return HandleSuccess();
+                }
+        
+                //..failed response
+                return HandleServiceFailure(serviceResponse, model);
+        
             } catch (Exception ex) {
-                //..log the exception
-                Logger.LogActivity("Error during company registration");
-                Logger.LogActivity($"{ex.Message}", "ERROR");
-                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
-
-                string msg = "An error occurred during registration. Please try again.";
-                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest") {
-                    return Json(new { 
-                        success = false, 
-                        errors = new { general = new[] { msg } }
-                    });
-                }
-                
-                Notify(msg,"GRC MESSAGE", NotificationType.Error);
-                ModelState.AddModelError("", msg);
-                return View(model);
+                return HandleException(ex, model);
             }
         }
 
@@ -106,6 +92,92 @@ namespace Grc.ui.App.Controllers {
         public  IActionResult NoService(){ 
             return View();
         }
+
+        #region Helper Methods
+
+        private IActionResult HandleValidationErrors(CompanyRegistrationModel model) {
+
+            //..for Ajax call
+            if (WebHelper.IsAjaxRequest(Request)) {
+                var errors = ModelState
+                    .Where(x => x.Value.Errors.Count > 0)
+                    .ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
+                return Json(new { success = false, errors = errors });
+            }
+    
+            //..for none Ajax call
+            Notify("Please clear the errors and Try again", "GRC MESSAGE", NotificationType.Error);
+            return View(model);
+        }
+
+        private IActionResult HandleServiceError(GrcResponseError error, CompanyRegistrationModel model) {
+            string errorMessage = $"{error.Code} - {error.Message}";
+            Logger.LogActivity($"Registration failed: {errorMessage}");
+    
+            //..for Ajax call
+            if (WebHelper.IsAjaxRequest(Request)) {
+                var errors = new { general = new[] { errorMessage } };
+                return Json(new { success = false, errors = errors });
+            }
+    
+            //..for none Ajax call
+            Notify(error.Message, "GRC MESSAGE", NotificationType.Error);
+            return View(model);
+        }
+
+        private IActionResult HandleSuccess() {
+            if (WebHelper.IsAjaxRequest(Request)) {
+                return Json(new { 
+                    success = true, 
+                    redirectUrl = Url.Action("Login", "Application") 
+                });
+            }
+            return RedirectToAction("Login", "Application");
+        }
+
+        private IActionResult HandleServiceFailure(ServiceResponse serviceResponse, CompanyRegistrationModel model) {
+            string errorMessage = serviceResponse != null 
+                ? $"{serviceResponse.StatusCode} - {serviceResponse.Message}" 
+                : "Unknown error occurred";
+        
+            //..for Ajax call
+            if (WebHelper.IsAjaxRequest(Request)) {
+                var errors = new { general = new[] { errorMessage } };
+                return Json(new { success = false, errors = errors });
+            }
+    
+            //..for none Ajax call
+            Notify("Registration failed. Please try again.", "GRC MESSAGE", NotificationType.Error);
+            return View(model);
+        }
+
+        private IActionResult HandleException(Exception ex, CompanyRegistrationModel model) {
+            Logger.LogActivity("Error during company registration");
+            Logger.LogActivity($"{ex.Message}", "ERROR");
+            Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+    
+            string msg = "An error occurred during registration. Please try again.";
+    
+            //..for Ajax call
+            if (WebHelper.IsAjaxRequest(Request)) {
+                return Json(new { 
+                    success = false, 
+                    errors = new { general = new[] { msg } }
+                });
+            }
+    
+            //..for none Ajax calls
+            Notify(msg, "GRC MESSAGE", NotificationType.Error);
+            ModelState.AddModelError("", msg);
+            return View(model);
+        }
+
+        private bool IsSuccessfulResponse(ServiceResponse serviceResponse) {
+            return serviceResponse != null && 
+                    serviceResponse.Status && 
+                    serviceResponse.StatusCode == (int)GrcStatusCodes.SUCCESS;
+        }
+        #endregion
 
     }
 }

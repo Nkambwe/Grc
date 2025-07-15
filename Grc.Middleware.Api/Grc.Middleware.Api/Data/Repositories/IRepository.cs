@@ -1,4 +1,5 @@
 ﻿using Grc.Middleware.Api.Data.Entities;
+using Grc.Middleware.Api.Helpers;
 using System.Linq.Expressions;
 
 namespace Grc.Middleware.Api.Data.Repositories {
@@ -179,6 +180,48 @@ namespace Grc.Middleware.Api.Data.Repositories {
         /// <param name="propertySelectors">List of properyies to update</param>
         /// <returns></returns>
         Task<bool> BulkyUpdateAsync(T[] entities, params Expression<Func<T, object>>[] propertySelectors);
+
+        
+    /// <summary>
+    /// Page all records seleceted
+    /// </summary>
+    /// <param name="page">Page number</param>
+    /// <param name="size">Number of entities to take</param>
+    /// <param name="includeDeleted">Flag to include deleted entities in the search</param>
+    /// <returns></returns>
+    Task<PagedResult<T>> PageAllAsync(int page, int size, bool includeDeleted);
+
+    /// <summary>
+    /// Page all entities selected in a query
+    /// </summary>
+    /// <param name="token">Cancellation token</param>
+    /// <param name="page">Page number</param>
+    /// <param name="size">Number of entities to take</param>
+    /// <param name="includeDeleted">Flag to include deleted entities in the search</param>
+    /// <returns></returns>
+    Task<PagedResult<T>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted);
+
+    /// <summary>
+    /// Pagenate records that fit predicate
+    /// </summary>
+    /// <param name="page">Page number</param>
+    /// <param name="size">Page size</param>
+    /// <param name="includeDeleted">Flag to include deleted entities in the search</param>
+    /// <param name="where">Filter predicate</param>
+    /// <returns></returns>
+    Task<PagedResult<T>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<T, bool>> where = null);
+
+    /// <summary>
+    ///  Pagenate records that fit predicate
+    /// </summary>
+    /// <param name="token"></param>
+    /// <param name="page">Page number</param>
+    /// <param name="size">Page size</param>
+    /// <param name="includeDeleted">Flag to include deleted entities in the search</param>
+    /// <param name="where">Filter predicate</param>
+    /// <returns></returns>
+    Task<PagedResult<T>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<T, bool>> where = null, bool includeDeleted = false);
+
     }
 
 }

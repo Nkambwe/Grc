@@ -2,7 +2,7 @@
 <Language Name="English US" IsDefault="true" IsRightToLeft="false">
 	Example
 	<LocaleResource Name="App.Version">
-		<Value>GRC 1.2</Value>
+		<Value>GRC SUITE 1.2</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Registration.Header">
 		<Value>System Setup</Value>

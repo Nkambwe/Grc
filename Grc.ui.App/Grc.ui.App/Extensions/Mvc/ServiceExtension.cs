@@ -30,7 +30,7 @@ namespace Grc.ui.App.Extensions.Mvc {
             services.AddScoped<ILocalizationService, LocalizationService>();
             services.AddScoped<IGrcBaseService, GrcBaseService>();
             services.AddScoped<ISystemAccessService, SystemAccessService>();
-            services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<IInstallService, InstallService>();
             services.AddScoped<IWorkspaceService, WorkspaceService>();
             
             

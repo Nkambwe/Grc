@@ -57,7 +57,31 @@
             e.preventDefault();
             
             if (validateAllSteps()) {
-                submitFormWithAjax();
+                //..show confirmation dialog
+                Swal.fire({
+                    title: "Complete Registration",
+                    text: "Are you sure you want to complete the company registration?",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonText: "OK",
+                    cancelButtonText: "Cancel",
+                    customClass: {
+                        confirmButton: "swal2-confirm",
+                        cancelButton: "swal2-cancel"
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        submitFormWithAjax();
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: "Invalid Data",
+                    text: "Please correct the errors in the form and try again.",
+                    icon: "error",
+                    confirmButtonColor: "#f41369",
+                    confirmButtonText: "OK"
+                });
             }
         });
 
@@ -240,32 +264,77 @@
         }
 
         function submitFormWithAjax() {
-            //..show loading state
-            $submitBtn.prop('disabled', true).text('Processing...');
+             //..show loading SweetAlert
+            Swal.fire({
+                title: 'Processing Registration...',
+                text: 'Please wait while we process your registration...',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             
             //..prepare form data
             var formData = $form.serialize();
             
             $.ajax({
-                url: $form.attr('action'),
+                url: $form.attr('action') || '/Application/Register',
                 type: 'POST',
                 data: formData,
                 dataType: 'json',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
                 success: function(response) {
                     if (response.success) {
-                        //..success - redirect to login
-                        window.location.href = response.redirectUrl || '/Application/Login';
+                        //..if success, show success message then redirect
+                        Swal.fire({
+                            title: "Registration Successful!",
+                            text: "Company registration has been completed successfully.",
+                            icon: "success",
+                            confirmButton: "swal2-confirm",
+                            confirmButtonText: "Continue to Login"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = response.redirectUrl || '/Application/Login';
+                            }
+                        });
                     } else {
                         //..handle server-side validation errors
                         handleServerValidationErrors(response.errors);
-                        $submitBtn.prop('disabled', false).text('Submit');
+                        
+                        Swal.fire({
+                            title: "Registration Failed",
+                            text: "Please correct the errors in the form and try again.",
+                            icon: "error",
+                             confirmButton: "swal2-confirm",
+                            confirmButtonText: "OK"
+                        });
                     }
                 },
                 error: function(xhr, status, error) {
                     //..handle Ajax errors
                     console.error('Ajax error:', error);
-                    alert('An error occurred while processing your request. Please try again.');
-                    $submitBtn.prop('disabled', false).text('Submit');
+                    console.log('Server response:', xhr.responseText);
+                    
+                    let errorMessage = 'An error occurred while processing your request. Please try again.';
+                    
+                    if (xhr.status === 405) {
+                        errorMessage = 'Method not allowed. Please check the server configuration.';
+                    } else if (xhr.status === 404) {
+                        errorMessage = 'Registration endpoint not found. Please contact support.';
+                    } else if (xhr.status === 500) {
+                        errorMessage = 'Server error occurred. Please try again later.';
+                    }
+                    
+                    Swal.fire({
+                        title: "Request Failed",
+                        text: errorMessage,
+                        icon: "error",
+                        confirmButton: "swal2-confirm",
+                        confirmButtonText: "OK"
+                    });
                 }
             });
         }
@@ -283,6 +352,13 @@
                     
                     if ($field.length) {
                         $field.addClass('is-invalid');
+                        
+                        //..find which step this field belongs to
+                        var stepIndex = $field.closest('.form-step').index();
+                        if (stepIndex >= 0 && stepIndex < currentStep) {
+                            currentStep = stepIndex;
+                            showStep(currentStep);
+                        }
                     }
                     
                     if ($validationSpan.length && errorMessages.length > 0) {
@@ -293,6 +369,14 @@
             
             //..show validation summary
             $('#validation-summary').removeClass('d-none');
+            
+            //..scroll to first error
+            var $firstError = $('.form-control.is-invalid').first();
+            if ($firstError.length) {
+                $('html, body').animate({
+                    scrollTop: $firstError.offset().top - 100
+                }, 500);
+            }
         }
         
         //..validation helper functions
