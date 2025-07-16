@@ -1,5 +1,7 @@
+using AutoMapper;
 using Grc.Middleware.Api.Data.Entities;
 using Grc.Middleware.Api.Enums;
+using Grc.Middleware.Api.Factories;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Services;
@@ -17,8 +19,9 @@ namespace Grc.Middleware.Api.Controllers {
 
         public GrcController(IServiceLoggerFactory loggerFactory, 
                              IEnvironmentProvider environment,
-                             ICompanyService companyService) 
-            : base(loggerFactory, environment) {
+                             ICompanyService companyService,
+                             IMapper mapper) 
+            : base(loggerFactory, mapper, environment) {
             _companyService = companyService;
         }
 
@@ -29,32 +32,56 @@ namespace Grc.Middleware.Api.Controllers {
 
         [HttpPost("registration/register")]
         [Produces("application/json")]
-        public async Task<IActionResult> Register([FromBody] RegistrationRequest request) { 
-            Logger.LogActivity("Process company record for persistance", "INFO");
-            if (request == null) { 
+        public async Task<IActionResult> Register([FromBody] RegistrationRequest request) {
+
+            try {
+                Logger.LogActivity("Process company record for persistance", "INFO");
+                if (request == null) { 
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "The company registration model cannot be null"
+                    );
+        
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                //..create company
+                var company = Mapper.Map<Company>(request);
+                company.Branches.Add(new BranchFactory().CreateMainBranch());
+
+                //..map system admin record
+                var admin = Mapper.Map<Company>(request);
+                
+
+                var result = await Task.FromResult(company); //_companyService.CreateCompanyAsync(company);
+
+                var response = new GeneralResponse(){ 
+                    Status = true,
+                    StatusCode = (int)ResponseCodes.SUCCESS,
+                    Message = "Registration completed successfully"    
+                };
+
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                return Ok(response); 
+                
+            } catch (Exception ex) { 
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
                 var error = new ResponseError(
                     ResponseCodes.BADREQUEST,
-                    "Request record cannot be empty",
-                    "The company registration model cannot be null"
+                    $"Oops! Something thing went wrong",
+                    $"System Error - {ex.Message}"
                 );
         
-                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
                 return Ok(new GrcResponse<GeneralResponse>(error));
             }
-
-            Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
-
-            var company = new Company();
-            var result = await Task.FromResult(company); //_companyService.CreateCompanyAsync(company);
-
-            var response = new GeneralResponse(){ 
-                Status = true,
-                StatusCode = (int)ResponseCodes.SUCCESS,
-                Message = "Registration completed successfully"    
-            };
-        
-            Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
-            return Ok(response);    
+            
+               
         }
     }
 }

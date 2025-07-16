@@ -4,7 +4,7 @@ wwwroot\css\grc-style.css
 wwwroot\css\register-styles.css
 wwwroot\favicon.ico
 wwwroot\images\404.png
-wwwroot\images\500.png
+wwwroot\images\503.png
 wwwroot\images\logo.png
 wwwroot\images\no_service.png
 wwwroot\js\grc-app.js

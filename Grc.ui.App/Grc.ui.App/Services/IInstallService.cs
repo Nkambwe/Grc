@@ -9,6 +9,6 @@ namespace Grc.ui.App.Services {
         /// </summary>
         /// <param name="model">Company model to register</param>
         /// <returns>Service response object</returns>
-        Task<GrcResponse<ServiceResponse>> RegisterCompanyAsync(CompanyRegistrationModel model);
+        Task<GrcResponse<ServiceResponse>> RegisterCompanyAsync(CompanyRegistrationModel model, string ipAddress);
     }
 }

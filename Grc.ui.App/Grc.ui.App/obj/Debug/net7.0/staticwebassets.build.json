@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "GiUry9ihnh5/qKy/3SVqrrRnpSRKK5+tA7fTbAiHNCU=",
+  "Hash": "ACx+hb+cKIGnOw8IcB4EbgrbhVBdVeRoJIRLqq0CkBI=",
   "Source": "Grc.ui.App",
   "BasePath": "_content/Grc.ui.App",
   "Mode": "Default",
@@ -153,12 +153,12 @@
       "OriginalItemSpec": "wwwroot\\images\\404.png"
     },
     {
-      "Identity": "C:\\Projects\\CS\\GRC\\grc-suite-github\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\images\\500.png",
+      "Identity": "C:\\Projects\\CS\\GRC\\grc-suite-github\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\images\\503.png",
       "SourceId": "Grc.ui.App",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Projects\\CS\\GRC\\grc-suite-github\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\",
       "BasePath": "_content/Grc.ui.App",
-      "RelativePath": "images/500.png",
+      "RelativePath": "images/503.png",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -167,7 +167,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\images\\500.png"
+      "OriginalItemSpec": "wwwroot\\images\\503.png"
     },
     {
       "Identity": "C:\\Projects\\CS\\GRC\\grc-suite-github\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\images\\logo.png",

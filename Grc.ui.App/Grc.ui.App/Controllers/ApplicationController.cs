@@ -63,7 +63,7 @@ namespace Grc.ui.App.Controllers {
     
             try {
                 //..register company
-                var grcResponse = await _installService.RegisterCompanyAsync(model);
+                var grcResponse = await _installService.RegisterCompanyAsync(model,WebHelper.GetCurrentIpAddress());
                 if (grcResponse.HasError) {
                     return HandleServiceError(grcResponse.Error, model);
                 }
@@ -89,8 +89,9 @@ namespace Grc.ui.App.Controllers {
             return RedirectToAction("Register", "Application");
         }
 
-        public  IActionResult NoService(){ 
-            return View();
+        public  async Task<IActionResult> NoService(){
+            var model = await _registrationFactory.PrepareNoServiceModelAsync();
+            return View(model);
         }
 
         #region Helper Methods

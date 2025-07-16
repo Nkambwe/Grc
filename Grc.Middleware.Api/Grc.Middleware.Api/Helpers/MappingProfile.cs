@@ -1,19 +1,22 @@
 ﻿using AutoMapper;
+using Grc.Middleware.Api.Data.Entities;
+using Grc.Middleware.Api.Http.Requests;
 
 namespace Grc.Middleware.Api.Helpers {
     public class MappingProfile : Profile {
 
-        public MappingProfile() { 
-            //CreateMap<Branch, BranchResponse>()
-            //    .ForMember(dest => dest.Id, opt => opt.MapFrom(o => o.Id))
-            //    .ForMember(dest => dest.Code, opt => opt.MapFrom(o => (o.BranchCode??string.Empty).Trim()))
-            //    .ForMember(dest => dest.Name, opt => opt.MapFrom(o => (o.BranchName ?? string.Empty).Trim()))
-            //    .ForMember(dest => dest.Active, opt => opt.MapFrom(o => o.IsActive))
-            //    .ForMember(dest => dest.Deleted, opt => opt.MapFrom(o => o.IsDeleted))
-            //    .ForMember(dest => dest.AddedBy, opt => opt.MapFrom(o => (o.CreatedBy ?? string.Empty).Trim()))
-            //    .ForMember(dest => dest.AddedOn, opt => opt.MapFrom(o => o.CreatedOn))
-            //    .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(o => (o.LastModifiedBy ?? string.Empty).Trim()))
-            //    .ForMember(dest => dest.ModifiedOn, opt => opt.MapFrom(o => o.LastModifiedOn));
+        public MappingProfile() {
+            CreateMap<RegistrationRequest, Company>()
+                .ForMember(co => co.Id, reg => reg.MapFrom(o => 0))
+                .ForMember(co => co.CompanyName, reg => reg.MapFrom(o => (o.CompanyName ?? string.Empty).Trim()))
+                .ForMember(co => co.ShortName, reg => reg.MapFrom(o => (o.Alias ?? string.Empty).Trim()))
+                .ForMember(co => co.RegistrationNumber, reg => reg.MapFrom(o => (o.RegNumber ?? string.Empty).Trim()))
+                .ForMember(co => co.SystemLanguage, reg => reg.MapFrom(o => o.Language))
+                .ForMember(co => co.IsDeleted, reg => reg.MapFrom(o => false))
+                .ForMember(co => co.CreatedBy, reg => reg.MapFrom(o => (o.CreatedBy ?? string.Empty).Trim()))
+                .ForMember(co => co.CreatedOn, reg => reg.MapFrom(o => o.CreatedOn))
+                .ForMember(co => co.LastModifiedBy, reg => reg.MapFrom(o => (o.ModifiedBy ?? string.Empty).Trim()))
+                .ForMember(co => co.CreatedOn, reg => reg.MapFrom(o => o.CreatedOn));
         }
 
     }

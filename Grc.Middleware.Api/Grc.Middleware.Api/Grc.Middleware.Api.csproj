@@ -6,9 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Core\Entities\Compliance\" />
-    <Folder Include="Core\Entities\Audits\" />
-    <Folder Include="Core\Entities\Sam\" />
+    <Compile Remove="Core\**" />
+    <Content Remove="Core\**" />
+    <EmbeddedResource Remove="Core\**" />
+    <None Remove="Core\**" />
   </ItemGroup>
 
   <ItemGroup>
