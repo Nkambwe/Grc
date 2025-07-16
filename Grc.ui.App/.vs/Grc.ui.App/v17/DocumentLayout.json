@@ -96,8 +96,7 @@
               "RelativeToolTip": "Grc.ui.App\\Services\\IInstallService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-15T02:19:28.338Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-15T02:19:28.338Z"
             },
             {
               "$type": "Document",
@@ -109,8 +108,7 @@
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\CompanyService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-15T02:18:21.728Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-15T02:18:21.728Z"
             },
             {
               "$type": "Document",
@@ -122,8 +120,7 @@
               "RelativeToolTip": "Grc.ui.App\\Controllers\\ApplicationController.cs",
               "ViewState": "AgIAADQAAAAAAAAAAAAowD4AAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-15T01:57:01.65Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-15T01:57:01.65Z"
             },
             {
               "$type": "Document",
@@ -135,8 +132,7 @@
               "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\register-script.js",
               "ViewState": "AgIAABYBAAAAAAAAAAAowBABAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-07-15T01:39:26.416Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-15T01:39:26.416Z"
             },
             {
               "$type": "Document",
@@ -148,8 +144,7 @@
               "RelativeToolTip": "Grc.ui.App\\wwwroot\\css\\register-styles.css",
               "ViewState": "AgIAAM4BAAAAAAAAAAAAANwBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-07-15T01:28:56.069Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-15T01:28:56.069Z"
             },
             {
               "$type": "Document",
@@ -161,8 +156,7 @@
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\ICompanyService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-15T01:17:26.028Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-15T01:17:26.028Z"
             },
             {
               "$type": "Document",
@@ -174,27 +168,7 @@
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\GrcController.cs",
               "ViewState": "AgIAABkAAAAAAAAAAAA8wDQAAABDAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-15T01:13:01.852Z",
-              "EditorCaption": ""
-            }
-          ]
-        },
-        {
-          "DockedWidth": 268,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "MappingProfile.cs",
-              "DocumentMoniker": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Helpers\\MappingProfile.cs",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Helpers\\MappingProfile.cs",
-              "ToolTip": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Helpers\\MappingProfile.cs",
-              "RelativeToolTip": "Grc.ui.App\\Helpers\\MappingProfile.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-15T02:38:06.979Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-15T01:13:01.852Z"
             }
           ]
         }
@@ -217,6 +191,19 @@
           "DockedWidth": 200,
           "SelectedChildIndex": 0,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MappingProfile.cs",
+              "DocumentMoniker": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Helpers\\MappingProfile.cs",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Helpers\\MappingProfile.cs",
+              "ToolTip": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Helpers\\MappingProfile.cs",
+              "RelativeToolTip": "Grc.ui.App\\Helpers\\MappingProfile.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-15T02:38:06.979Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 9,
