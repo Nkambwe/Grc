@@ -28,5 +28,8 @@ namespace Grc.ui.App.Factories {
             };
             return Task.FromResult(company);
         }
+
+        public Task<NoServiceModel> PrepareNoServiceModelAsync()
+            => Task.FromResult(new NoServiceModel());
     }
 }
