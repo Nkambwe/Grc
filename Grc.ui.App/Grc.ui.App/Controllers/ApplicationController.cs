@@ -63,7 +63,7 @@ namespace Grc.ui.App.Controllers {
     
             try {
                 //..register company
-                var grcResponse = await _installService.RegisterCompanyAsync(model);
+                var grcResponse = await _installService.RegisterCompanyAsync(model,WebHelper.GetCurrentIpAddress());
                 if (grcResponse.HasError) {
                     return HandleServiceError(grcResponse.Error, model);
                 }

@@ -1,9 +1,13 @@
 ﻿namespace Grc.Middleware.Api.Data.Entities {
 
     public class Company : BaseEntity {
-
         public string CompanyName { get; set; }
+        public string ShortName { get; set; }
+        public string RegistrationNumber{get;set;}
+        public string SystemLanguage {get;set;}
         public override string ToString() => $"{CompanyName}";
+
+        public virtual ICollection<Branch> Branches { get; set; }
 
         public override bool Equals(object obj) {
 

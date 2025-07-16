@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Helpers;
+using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
@@ -21,7 +22,7 @@ namespace Grc.ui.App.Services {
             Logger.Channel = $"COMPANY-{DateTime.Now:yyyyMMddHHmmss}";
         }
 
-        public async Task<GrcResponse<ServiceResponse>> RegisterCompanyAsync(CompanyRegistrationModel model) {
+        public async Task<GrcResponse<ServiceResponse>> RegisterCompanyAsync(CompanyRegistrationModel model, string ipAddress) {
             //..validate input
             if(model == null) {
                 var error = new GrcResponseError(
@@ -37,11 +38,8 @@ namespace Grc.ui.App.Services {
             try {
                 //..map request
                 Logger.LogActivity($"REQUEST MODEL: {JsonSerializer.Serialize(model)}");
-                var request = Mapper.Map<CompanyRegistrationModel>(model);
-
-                //..TODO Map missing fields from automapper
-                //{"CompanyName":"Pearl Bank Uganda","Alias":"PBU","RegistrationNumber":"C89001","SystemLanguage":"fr",
-                //"SystemAdmin":{"Id":0,"FirstName":"Nkambwe","LastName":"Mark","MiddleName":"John","UserName":"mnkambwe","Password":"Password10!","ConfirmPassword":"Password10!","EmailAddress":"jo.jomac.mac801@gmail.com","PhoneNumber":"0773204651","PFNumber":"52603","SolId":null,"RoleId":0,"DepartmentId":0,"UnitCode":null,"IsActive":false,"IsVerified":false,"IsLogged":false,"CreatedOn":null,"CreatedBy":null,"ModifiedOn":null,"ModifiedBy":null}}
+                var request = Mapper.Map<CompanyRegiatrationRequest>(model);
+                request.IPAddress = ipAddress;
 
                 Logger.LogActivity($"REQUEST MAP: {JsonSerializer.Serialize(request)}");
                 var jsonContent = JsonSerializer.Serialize(request, JsonOptions);

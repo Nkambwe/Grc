@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Projects\\CS\\GRC\\grc-suite-github\\Grc\\Grc.ui.App\\Grc.ui.App\\Grc.ui.App.csproj": {}
+    "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Grc.ui.App.csproj": {}
   },
   "projects": {
-    "C:\\Projects\\CS\\GRC\\grc-suite-github\\Grc\\Grc.ui.App\\Grc.ui.App\\Grc.ui.App.csproj": {
+    "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Grc.ui.App.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Projects\\CS\\GRC\\grc-suite-github\\Grc\\Grc.ui.App\\Grc.ui.App\\Grc.ui.App.csproj",
+        "projectUniqueName": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Grc.ui.App.csproj",
         "projectName": "Grc.ui.App",
-        "projectPath": "C:\\Projects\\CS\\GRC\\grc-suite-github\\Grc\\Grc.ui.App\\Grc.ui.App\\Grc.ui.App.csproj",
-        "packagesPath": "C:\\Users\\Mark.Nkambwe\\.nuget\\packages\\",
-        "outputPath": "C:\\Projects\\CS\\GRC\\grc-suite-github\\Grc\\Grc.ui.App\\Grc.ui.App\\obj\\",
+        "projectPath": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Grc.ui.App.csproj",
+        "packagesPath": "C:\\Users\\Macjohnan\\.nuget\\packages\\",
+        "outputPath": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Mark.Nkambwe\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Macjohnan\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -39,7 +39,13 @@
           "warnAsError": [
             "NU1605"
           ]
-        }
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net7.0": {
@@ -85,7 +91,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -38,5 +38,38 @@ namespace Grc.Middleware.Api.Http.Requests {
 
         [JsonPropertyName("password")]
         public string Password { get; set; }
+
+        [JsonPropertyName("solId")]
+        public string SolId { get; set; }
+
+        [JsonPropertyName("roleId")]
+        public long RoleId { get; set; }
+
+        [JsonPropertyName("departmentId")]
+        public long DepartmentId { get; set; }
+
+        [JsonPropertyName("unitCode")]
+        public string UnitCode { get; set; }
+
+        [JsonPropertyName("isActive")]
+        public bool IsActive { get; set; }
+
+        [JsonPropertyName("isVerified")]
+        public bool IsVerified { get; set; }
+
+        [JsonPropertyName("isLogged")]
+        public bool IsLogged { get; set; }
+
+        [JsonPropertyName("createdOn")]
+        public DateTime? CreatedOn { get; set; }
+
+        [JsonPropertyName("createdBy")]
+        public string CreatedBy { get; set; }
+
+        [JsonPropertyName("modifiedOn")]
+        public DateTime? ModifiedOn { get; set; }
+
+        [JsonPropertyName("modifiedBy")]
+        public string ModifiedBy { get; set; }
     }
 }
