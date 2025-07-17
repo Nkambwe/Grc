@@ -4,12 +4,12 @@ using Grc.ui.App.Services;
 
 namespace Grc.ui.App.Factories {
 
-    public class CompanyFactory : IRegistrationFactory {
+    public class RegistrationFactory : IRegistrationFactory {
 
         private readonly IInstallService _orgService;
         private readonly IHttpContextAccessor _httpContext;
 
-        public CompanyFactory(IHttpContextAccessor httpContext, IInstallService orgService) { 
+        public RegistrationFactory(IHttpContextAccessor httpContext, IInstallService orgService) { 
             _orgService = orgService;
             _httpContext = httpContext;
         }

@@ -1,4 +1,4 @@
-﻿using Grc.Middleware.Api.Data.Entities;
+﻿using Grc.Middleware.Api.Data.Entities.Org;
 using Grc.Middleware.Api.Utils;
 
 namespace Grc.Middleware.Api.Data.Repositories {

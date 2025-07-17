@@ -156,4 +156,10 @@
 	<LocaleResource Name="Button.Submit">
 		<Value>Save</Value>
 	</LocaleResource>
+
+
+    <LocaleResource Name="Error.Occurance">
+        <Value>Error Ocuurred! System error has occurred</Value>
+    </LocaleResource>
+
 </Language>

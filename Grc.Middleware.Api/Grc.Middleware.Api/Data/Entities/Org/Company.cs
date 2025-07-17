@@ -1,10 +1,10 @@
-﻿namespace Grc.Middleware.Api.Data.Entities {
+﻿namespace Grc.Middleware.Api.Data.Entities.Org {
 
     public class Company : BaseEntity {
         public string CompanyName { get; set; }
         public string ShortName { get; set; }
-        public string RegistrationNumber{get;set;}
-        public string SystemLanguage {get;set;}
+        public string RegistrationNumber { get; set; }
+        public string SystemLanguage { get; set; }
         public override string ToString() => $"{CompanyName}";
 
         public virtual ICollection<Branch> Branches { get; set; }
@@ -25,7 +25,7 @@
             return item.CompanyName.Equals(CompanyName) && item.Id.Equals(Id);
         }
 
-        public override int GetHashCode() => ToString().GetHashCode() ^ 31 ;
+        public override int GetHashCode() => ToString().GetHashCode() ^ 31;
     }
 
 }

@@ -35,7 +35,7 @@ namespace Grc.ui.App.Extensions.Mvc {
             
             
             //..register factories 
-            services.AddScoped<IRegistrationFactory, CompanyFactory>();
+            services.AddScoped<IRegistrationFactory, RegistrationFactory>();
             
             //..sessionExtensions manager
             services.AddScoped<SessionManager>();

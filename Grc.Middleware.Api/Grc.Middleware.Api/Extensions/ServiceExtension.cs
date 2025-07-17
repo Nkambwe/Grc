@@ -41,6 +41,7 @@ namespace Grc.Middleware.Api.Extensions {
             //..register service
             services.AddScoped<IBaseService, BaseService>();
             services.AddScoped<ICompanyService, CompanyService>();
+            
 
             //allow html helpers to acces current action context
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();

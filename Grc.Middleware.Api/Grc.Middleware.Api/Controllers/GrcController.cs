@@ -1,9 +1,11 @@
 using AutoMapper;
-using Grc.Middleware.Api.Data.Entities;
+using Grc.Middleware.Api.Data.Entities.Org;
+using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Factories;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
+using Grc.Middleware.Api.Security;
 using Grc.Middleware.Api.Services;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +19,12 @@ namespace Grc.Middleware.Api.Controllers {
 
         private readonly ICompanyService _companyService;
 
-        public GrcController(IServiceLoggerFactory loggerFactory, 
+        public GrcController(IObjectCypher cypher,
+            IServiceLoggerFactory loggerFactory, 
                              IEnvironmentProvider environment,
                              ICompanyService companyService,
                              IMapper mapper) 
-            : base(loggerFactory, mapper, environment) {
+            : base(cypher, loggerFactory, mapper, environment) {
             _companyService = companyService;
         }
 
@@ -50,13 +53,16 @@ namespace Grc.Middleware.Api.Controllers {
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 //..create company
                 var company = Mapper.Map<Company>(request);
-                company.Branches.Add(new BranchFactory().CreateMainBranch());
+                var admin = Mapper.Map<SystemUser>(request);
+                //..hash the password
+                admin.PasswordHash = ExtendedHashMapper.HashPassword(admin.PasswordHash);
+                //..encrypt fields
+                Cypher.EncryptProperties(admin, request.EncryptFields);
 
-                //..map system admin record
-                var admin = Mapper.Map<Company>(request);
-                
-
-                var result = await Task.FromResult(company); //_companyService.CreateCompanyAsync(company);
+                //..create branch
+                company.Branches.Add(new BranchFactory().CreateMainBranch(admin));
+                //..create company
+                var result = await _companyService.CreateCompanyAsync(company);
 
                 var response = new GeneralResponse(){ 
                     Status = true,

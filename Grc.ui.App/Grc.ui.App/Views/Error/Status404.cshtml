@@ -1,22 +1,32 @@
-﻿@{
+﻿@model NotFoundModel
+@{
     ViewData["Title"] = "404";
     Layout = "_Layout_01";
 }
 
-<div class="page-not-container">
-    <div class="page-not-header">
-        <div class="page-not-img-box">
-            <img src="~/images/404.png" />
+<div class="no-service-base-container">
+    <div class="no-service-header">
+        <div class="no-service-logo">
+            <img id="serviceLogo" class="service-logo" src="~/images/logo.png" alt="logo" />
         </div>
-
+        <div class="no-service-banner">
+            <span class="display-1 service-banner ">
+                @Html.Raw(ILocalize.GetLocalizedLabel("App.Version"))
+            </span>
+        </div>
     </div>
-    <div class="page-not-content text-center">
 
-        <section class="page-not-section">
-            <h1 class="display-1 text-warning fw-normal header-label-1">404</h1>
-            <h5 class="display-5 fw-normal header-label-2">PAGE NOT FOUND</h5>
-            <h6 class="display-6  header-label-3">The resource your looking for does not exist or has been moved</h6>
-        </section>
+    <div class="no-service-container">
+
+        <div class="no-service-content-wrapper">
+            <div class="no-service-container"">
+                <section class="no-service-section">
+                    <h1 class="display-1 text-warning fw-normal header-label-1">@Model.StatusCode</h1>
+                    <h5 class="display-5 fw-normal header-label-2">@Model.ErrorName</h5>
+                    <h6 class="display-6 header-label-3">The resource your looking for does not exist or has been moved</h6>
+                </section>
+            </div>
+        </div>
 
     </div>
 </div>

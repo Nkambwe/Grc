@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.HttpOverrides;
 using Grc.Middleware.Api.Utils;
 using Grc.Middleware.Api.Extensions;
+using Grc.Middleware.Api.Security;
 
 namespace Grc.Middleware.Api {
 
@@ -29,7 +30,8 @@ namespace Grc.Middleware.Api {
             services.AddScoped<IServiceLoggerFactory, ServiceLoggerFactory>();
             services.AddScoped<IDataConnectionProvider, DataConnectionProvider>();
             services.AddScoped<IUrlProvider, UrlProvider>();
- 
+            services.AddScoped<IObjectCypher, ObjectCypher>();
+
             // database connection
             services.ConfigureDatabaseConnection(Configuration);
             

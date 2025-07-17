@@ -1,10 +1,10 @@
-﻿namespace Grc.Middleware.Api.Data.Entities {
+﻿namespace Grc.Middleware.Api.Data.Entities.Org {
 
-    public class Branch: BaseEntity {
+    public class Branch : BaseEntity {
         public long CompanyId { get; set; }
         public string BranchName { get; set; }
         public string SolId { get; set; }
-        public override string ToString() => $"{SolId}-{BranchName}";
+       
 
         public virtual Company Company { get; set; }
         public virtual ICollection<Department> Departments { get; set; }
@@ -22,9 +22,9 @@
             if (item.IsNew() || IsNew())
                 return false;
 
-            return item.SolId.Equals(SolId) && item.BranchName.Equals(BranchName); 
+            return item.SolId.Equals(SolId) && item.BranchName.Equals(BranchName);
         }
-
-        public override int GetHashCode() => ToString().GetHashCode() ^ 31 ;
+        public override string ToString() => $"{SolId}-{BranchName}";
+        public override int GetHashCode() => ToString().GetHashCode() ^ 31;
     }
 }

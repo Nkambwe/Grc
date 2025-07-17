@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Microsoft.Data.SqlClient;
 using Grc.Middleware.Api.Helpers;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Grc.Middleware.Api.Data.Repositories {
     public class Repository<T> : IRepository<T> where T : BaseEntity {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
+using Grc.Middleware.Api.Data.Entities.Org;
 
 namespace Grc.Middleware.Api.Data.Entities.Configurations {
     public class BranchEntityConfiguration {

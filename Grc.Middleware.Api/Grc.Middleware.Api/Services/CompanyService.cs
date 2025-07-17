@@ -1,5 +1,5 @@
 ﻿using Grc.Middleware.Api.Data.Containers;
-using Grc.Middleware.Api.Data.Entities;
+using Grc.Middleware.Api.Data.Entities.Org;
 using Grc.Middleware.Api.Utils;
 using System.Text.Json;
 
