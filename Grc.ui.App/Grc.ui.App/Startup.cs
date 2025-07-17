@@ -1,6 +1,7 @@
 ﻿using Grc.ui.App.Defaults;
 using Grc.ui.App.Extensions.Http;
 using Grc.ui.App.Extensions.Mvc;
+using Grc.ui.App.Factories;
 using Grc.ui.App.Http.Endpoints;
 using Grc.ui.App.Middleware;
 using Grc.ui.App.Routes;
@@ -35,7 +36,8 @@ namespace Grc.ui.App {
         
             //..register logger factory
             services.AddScoped<IApplicationLoggerFactory, ApplicationLoggerFactory>();
-        
+            services.AddScoped<IErrorFactory, ErrorFactory>();
+
             //..register auto mapper
             services.ObjectMapper();
         
