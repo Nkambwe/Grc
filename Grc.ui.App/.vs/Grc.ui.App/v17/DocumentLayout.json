@@ -79,8 +79,7 @@
               "RelativeToolTip": "Grc.ui.App\\Controllers\\ApplicationController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-17T02:04:37.975Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-17T02:04:37.975Z"
             },
             {
               "$type": "Document",
@@ -92,8 +91,7 @@
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Security\\ObjectCypher.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-17T02:03:25.543Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-17T02:03:25.543Z"
             },
             {
               "$type": "Document",
@@ -105,8 +103,7 @@
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Repositories\\Repository.cs",
               "ViewState": "AgIAADYAAAAAAAAAAAAAwAYAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-17T02:02:33.264Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-17T02:02:33.264Z"
             },
             {
               "$type": "Document",
@@ -118,8 +115,7 @@
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Extensions\\ServiceExtension.cs",
               "ViewState": "AgIAABAAAAAAAAAAAAAvwBUAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-17T02:00:46.214Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-17T02:00:46.214Z"
             },
             {
               "$type": "Document",
@@ -131,8 +127,7 @@
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Startup.cs",
               "ViewState": "AgIAABgAAAAAAAAAAAAAwCAAAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-17T01:59:42.799Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-17T01:59:42.799Z"
             },
             {
               "$type": "Document",
@@ -144,8 +139,7 @@
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\CompanyService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAABFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-17T01:57:29.445Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-17T01:57:29.445Z"
             },
             {
               "$type": "Document",
@@ -157,8 +151,7 @@
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Factories\\BranchFactory.cs",
               "ViewState": "AgIAAFgAAAAAAAAAAAAkwGwAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-17T00:48:02.004Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-17T00:48:02.004Z"
             },
             {
               "$type": "Document",
@@ -183,8 +176,7 @@
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\GrcController.cs",
               "ViewState": "AgIAAAwAAAAAAAAAAAAAABgAAAA8AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-16T01:59:42.045Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-16T01:59:42.045Z"
             }
           ]
         }
@@ -230,8 +222,7 @@
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Entities\\System\\SystemUser.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-17T01:34:03.841Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-17T01:34:03.841Z"
             },
             {
               "$type": "Document",
@@ -243,8 +234,7 @@
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Helpers\\MappingProfile.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAA6wBYAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-16T02:11:10.417Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-16T02:11:10.417Z"
             }
           ]
         }
