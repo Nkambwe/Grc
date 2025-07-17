@@ -7,7 +7,6 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
 using System.Text;
 using System.Text.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Grc.ui.App.Services {
 
