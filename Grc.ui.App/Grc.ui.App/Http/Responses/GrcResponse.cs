@@ -12,9 +12,14 @@
     /// "Your profile is not configure for resources above 40,000,000 UGX"));
     /// </remarks>
     public class GrcResponse<T> where T : class {
-        public bool HasError { get; }
+        public bool HasError { get; set; } 
         public GrcResponseError Error { get; set; }
         public T Data { get; set; }
+
+        /// <summary>
+        /// Default C'tr
+        /// </summary>
+        public GrcResponse() { }
 
         /// <summary>
         /// Ctr for success responses

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "nziQWt76wOIGGfK6uhR0KBwED/XNR5QtV48XhilMTv8=",
+  "Hash": "y/g9H8Z2+BDzeLdJKHaLy7fWq+rxjVV8EzCeHyD0bgY=",
   "Source": "Grc.ui.App",
   "BasePath": "_content/Grc.ui.App",
   "Mode": "Default",
@@ -283,8 +283,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "6l7x3e73o6",
-      "Integrity": "qq+NKU9iAJgOhfiGce42fgvmiY/Bf9q/k0+EzsBkbVA=",
+      "Fingerprint": "0cb9tue7x3",
+      "Integrity": "oLZQlxlokTloDXmrGxYhjA9yFDV1g7jlU5DT/i/tpKw=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\register-script.js"
@@ -3733,7 +3733,7 @@
       ]
     },
     {
-      "Route": "js/register-script.6l7x3e73o6.js",
+      "Route": "js/register-script.0cb9tue7x3.js",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\register-script.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -3743,7 +3743,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "16254"
+          "Value": "17138"
         },
         {
           "Name": "Content-Type",
@@ -3751,11 +3751,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"qq+NKU9iAJgOhfiGce42fgvmiY/Bf9q/k0+EzsBkbVA=\""
+          "Value": "\"oLZQlxlokTloDXmrGxYhjA9yFDV1g7jlU5DT/i/tpKw=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 15 Jul 2025 02:41:45 GMT"
+          "Value": "Fri, 18 Jul 2025 05:10:06 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3765,7 +3765,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "6l7x3e73o6"
+          "Value": "0cb9tue7x3"
         },
         {
           "Name": "label",
@@ -3773,7 +3773,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-qq+NKU9iAJgOhfiGce42fgvmiY/Bf9q/k0+EzsBkbVA="
+          "Value": "sha256-oLZQlxlokTloDXmrGxYhjA9yFDV1g7jlU5DT/i/tpKw="
         }
       ]
     },
@@ -3788,7 +3788,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "16254"
+          "Value": "17138"
         },
         {
           "Name": "Content-Type",
@@ -3796,11 +3796,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"qq+NKU9iAJgOhfiGce42fgvmiY/Bf9q/k0+EzsBkbVA=\""
+          "Value": "\"oLZQlxlokTloDXmrGxYhjA9yFDV1g7jlU5DT/i/tpKw=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 15 Jul 2025 02:41:45 GMT"
+          "Value": "Fri, 18 Jul 2025 05:10:06 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3810,7 +3810,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-qq+NKU9iAJgOhfiGce42fgvmiY/Bf9q/k0+EzsBkbVA="
+          "Value": "sha256-oLZQlxlokTloDXmrGxYhjA9yFDV1g7jlU5DT/i/tpKw="
         }
       ]
     },

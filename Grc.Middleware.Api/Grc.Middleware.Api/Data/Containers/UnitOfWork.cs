@@ -2,6 +2,9 @@
 using Grc.Middleware.Api.Data.Repositories;
 using Grc.Middleware.Api.Utils;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace Grc.Middleware.Api.Data.Containers {
 
@@ -11,7 +14,7 @@ namespace Grc.Middleware.Api.Data.Containers {
         private readonly IDbContextFactory<GrcContext> _contextFactory;
         private readonly Dictionary<Type, object> _repositories;
         private readonly IServiceProvider _serviceProvider;
-        private GrcContext _context; 
+        public GrcContext Context { get;} 
         private bool _disposed;
 
         public ICompanyRepository CompanyRepository { get; private set; }
@@ -27,10 +30,10 @@ namespace Grc.Middleware.Api.Data.Containers {
             _repositories = new Dictionary<Type, object>();
         
             //.. db context instance for this unit of work
-            _context = _contextFactory.CreateDbContext();
+            Context = _contextFactory.CreateDbContext();
         
             //..initalize repositories
-            CompanyRepository = _serviceProvider.GetService<ICompanyRepository>() ?? new CompanyRepository(_loggerFactory, _context);
+            CompanyRepository =  new CompanyRepository(_loggerFactory, Context);
         }
 
         /// <summary>
@@ -44,7 +47,7 @@ namespace Grc.Middleware.Api.Data.Containers {
             }
 
             // Create repository with shared context instead of context factory
-            var repository = new Repository<T>(_loggerFactory, _context);
+            var repository = new Repository<T>(_loggerFactory, Context);
             _repositories[typeof(T)] = repository;
             return repository;
         }
@@ -55,9 +58,37 @@ namespace Grc.Middleware.Api.Data.Containers {
         /// <returns>Number of affected records</returns>
         public async Task<int> SaveChangesAsync() {
             try {
-                return await _context.SaveChangesAsync();
+                //..validate string lengths before saving
+                var validationErrors = ValidateStringLengths();
+                if (validationErrors.Any()) {
+                    _logger.LogActivity("String length validation errors:", "ERROR");
+                    foreach (var error in validationErrors) {
+                        _logger.LogActivity(error, "ERROR");
+                    }
+                    throw new InvalidOperationException($"String length validation failed: {string.Join("; ", validationErrors)}");
+                }
+        
+                //..log tracked entities
+                var trackedEntities = Context.ChangeTracker.Entries().ToList();
+                _logger.LogActivity($"Tracked entities count: {trackedEntities.Count}", "DEBUG");
+        
+                return await Context.SaveChangesAsync();
             } catch (Exception ex) {
-                _logger.LogActivity($"SaveChangesAsync failed: {ex.Message}", "DBOPS");
+                _logger.LogActivity($"SaveChangesAsync failed: {ex.Message}", "ERROR");
+        
+                //..log all inner exceptions
+                var innerEx = ex.InnerException;
+                var level = 1;
+                while (innerEx != null) {
+                    _logger.LogActivity($"Inner Exception (Level {level}): {innerEx.Message}", "ERROR");
+                    _logger.LogActivity($"Inner Exception Type: {innerEx.GetType().Name}", "ERROR");
+                    if (innerEx.StackTrace != null) {
+                        _logger.LogActivity($"Inner StackTrace: {innerEx.StackTrace}", "ERROR");
+                    }
+                    innerEx = innerEx.InnerException;
+                    level++;
+                }
+        
                 _logger.LogActivity($"STACKTRACE: {ex.StackTrace}", "ERROR");
                 throw;
             }
@@ -69,9 +100,36 @@ namespace Grc.Middleware.Api.Data.Containers {
         /// <returns>Number of affected records</returns>
         public int SaveChanges() {
             try {
-                return _context.SaveChanges();
+                var validationErrors = ValidateStringLengths();
+                    if (validationErrors.Any()) {
+                        _logger.LogActivity("String length validation errors:", "ERROR");
+                        foreach (var error in validationErrors) {
+                            _logger.LogActivity(error, "ERROR");
+                        }
+                        throw new InvalidOperationException($"String length validation failed: {string.Join("; ", validationErrors)}");
+                    }
+        
+                    // Log tracked entities
+                    var trackedEntities = Context.ChangeTracker.Entries().ToList();
+                    _logger.LogActivity($"Tracked entities count: {trackedEntities.Count}", "DEBUG");
+        
+                return Context.SaveChanges();
             } catch (Exception ex) {
-                _logger.LogActivity($"SaveChanges failed: {ex.Message}", "DBOPS");
+                _logger.LogActivity($"SaveChangesAsync failed: {ex.Message}", "ERROR");
+        
+                //..log all inner exceptions
+                var innerEx = ex.InnerException;
+                var level = 1;
+                while (innerEx != null) {
+                    _logger.LogActivity($"Inner Exception (Level {level}): {innerEx.Message}", "ERROR");
+                    _logger.LogActivity($"Inner Exception Type: {innerEx.GetType().Name}", "ERROR");
+                    if (innerEx.StackTrace != null) {
+                        _logger.LogActivity($"Inner StackTrace: {innerEx.StackTrace}", "ERROR");
+                    }
+                    innerEx = innerEx.InnerException;
+                    level++;
+                }
+        
                 _logger.LogActivity($"STACKTRACE: {ex.StackTrace}", "ERROR");
                 throw;
             }
@@ -85,7 +143,7 @@ namespace Grc.Middleware.Api.Data.Containers {
             if (!_disposed) {
                 if (isManuallyDisposing) {
                     //..dispose the context
-                    _context?.Dispose();
+                    Context?.Dispose();
                 
                     //..clear repositories
                     _repositories.Clear();
@@ -105,5 +163,39 @@ namespace Grc.Middleware.Api.Data.Containers {
         ~UnitOfWork() {
             Dispose(false);
         }
+
+        #region Protected Methods
+        /// <summary>
+        /// Validate object properties before saving
+        /// </summary>
+        /// <returns></returns>
+        protected virtual List<string> ValidateStringLengths() {
+            var errors = new List<string>();
+    
+            foreach (var entry in Context.ChangeTracker.Entries()) {
+                if (entry.State == EntityState.Added || entry.State == EntityState.Modified) {
+                    var entity = entry.Entity;
+                    var entityType = Context.Model.FindEntityType(entity.GetType());
+            
+                    if (entityType != null) {
+                        foreach (var property in entityType.GetProperties()) {
+                            var value = entry.Property(property.Name).CurrentValue?.ToString();
+                    
+                            if (!string.IsNullOrEmpty(value)) {
+                                var maxLength = property.GetMaxLength();
+                                if (maxLength.HasValue && value.Length > maxLength.Value) {
+                                    errors.Add($"Entity: {entity.GetType().Name}, Property: {property.Name}, " +
+                                               $"Value Length: {value.Length}, Max Length: {maxLength.Value}, " +
+                                               $"Value: {value[..Math.Min(50, value.Length)]}...");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+    
+            return errors;
+        }
+        #endregion
     }
 }

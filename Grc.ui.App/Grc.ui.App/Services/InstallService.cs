@@ -5,6 +5,7 @@ using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
+using Microsoft.AspNetCore.Http;
 using System.Text;
 using System.Text.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -82,25 +83,48 @@ namespace Grc.ui.App.Services {
                 //..read and deserialize response
                 var responseData = await svrcResponse.Content.ReadAsStringAsync();
                 Logger.LogActivity($"Response Data: {responseData}");
-
-                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                var result = JsonSerializer.Deserialize<ServiceResponse>(responseData, options);
-        
-                if (result == null) {
-                    Logger.LogActivity("Deserialization Error! Unable to deserialize response object", "ERROR");
-            
+                try {
+                    var options = new JsonSerializerOptions { 
+                        PropertyNameCaseInsensitive = true,
+                        WriteIndented = true
+                    };
+    
+                    Logger.LogActivity("Starting deserialization...");
+                    var result = JsonSerializer.Deserialize<GrcResponse<ServiceResponse>>(responseData, options);
+    
+                    if (result == null) {
+                        Logger.LogActivity("Deserialization returned null", "ERROR");
+                        var error = new GrcResponseError(
+                            GrcStatusCodes.SERVERERROR,
+                            "System Data Error",
+                            "Deserialization returned null"
+                        );
+                        return new GrcResponse<ServiceResponse>(error);
+                    }
+    
+                    Logger.LogActivity($"Deserialization successful. HasError: {result.HasError}");
+                    Logger.LogActivity($"SERVICE RESULT: {JsonSerializer.Serialize(result, options)}");
+                    return result;
+                } catch (JsonException jex) {
+                    Logger.LogActivity($"Deserialization Failed: {jex.Message}", "ERROR");
                     var error = new GrcResponseError(
                         GrcStatusCodes.SERVERERROR,
-                        "Ooops! Sorry, something went wrong",
-                        "Data format error. Could not format data"
+                        "System Data Error",
+                        $"Failed to deserialize response. An error has occurred"
                     );
-            
-                    Logger.LogActivity($"DESERIALIZATION ERROR: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                } catch (Exception ex) { 
+                    Logger.LogActivity($"Unexpected deserialization error: {ex.Message}", "ERROR");
+                    Logger.LogActivity($"Exception Type: {ex.GetType().Name}", "ERROR");
+                    Logger.LogActivity($"StackTrace: {ex.StackTrace}", "ERROR");
+    
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.SERVERERROR,
+                        "System Data Error",
+                        $"Unexpected deserialization error: {ex.Message}"
+                    );
                     return new GrcResponse<ServiceResponse>(error);
                 }
-
-                Logger.LogActivity($"SERVICE SUCCESS: {JsonSerializer.Serialize(result)}");
-                return new GrcResponse<ServiceResponse>(result);
 
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");

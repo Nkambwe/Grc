@@ -60,19 +60,24 @@ namespace Grc.Middleware.Api.Controllers {
                 Cypher.EncryptProperties(admin, request.EncryptFields);
 
                 //..create branch
-                company.Branches.Add(new BranchFactory().CreateMainBranch(admin));
+                List<Branch> branches = new() { new BranchFactory().CreateMainBranch(admin) };
+                company.Branches = branches;
                 //..create company
                 var result = await _companyService.CreateCompanyAsync(company);
 
-                var response = new GeneralResponse(){ 
-                    Status = true,
-                    StatusCode = (int)ResponseCodes.SUCCESS,
-                    Message = "Registration completed successfully"    
-                };
-
-                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
-                return Ok(response); 
-                
+                var response = new GeneralResponse();
+                if(result){
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Registration completed successfully";    
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else { 
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to complete regiatration. An error occurrred";  
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+                 return Ok(response);
             } catch (Exception ex) { 
                 Logger.LogActivity($"{ex.Message}", "ERROR");
                 Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");

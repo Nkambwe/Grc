@@ -4,6 +4,7 @@ using Grc.Middleware.Api.Data.Repositories;
 namespace Grc.Middleware.Api.Data.Containers {
 
     public interface IUnitOfWork : IDisposable {
+        public GrcContext Context { get;} 
         IRepository<T> GetRepository<T>() where T : BaseEntity;
         ICompanyRepository CompanyRepository { get; }
         Task<int> SaveChangesAsync(); 

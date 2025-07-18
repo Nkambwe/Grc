@@ -30,7 +30,7 @@ namespace Grc.ui.App.Helpers {
             .ForMember(dest => dest.IsVerified, opt => opt.MapFrom(src => false))
             .ForMember(dest => dest.IsLogged, opt => opt.MapFrom(src => false))
             .ForMember(dest => dest.Action, opt => opt.MapFrom(src => Activity.COMPANYREGISTRATION.GetDescription()))
-            .ForMember(dest => dest.EncryptFields, opt => opt.MapFrom(src => new string[]{"FirstName", "LastName", "MiddleName", "Email", "PhoneNumber", "PFNumber", "UserName", "Password" }))
+            .ForMember(dest => dest.EncryptFields, opt => opt.MapFrom(src => new string[]{"FirstName", "LastName", "OtherName", "Email", "PhoneNumber", "PFNumber", "UserName", "Password" }))
             .ForMember(dest => dest.DecryptFields, opt => opt.MapFrom(src => new string[]{ }))
             .ForMember(dest => dest.CreatedOn, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => "1"))

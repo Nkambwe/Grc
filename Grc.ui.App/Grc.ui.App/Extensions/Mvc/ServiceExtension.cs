@@ -25,7 +25,7 @@ namespace Grc.ui.App.Extensions.Mvc {
 
             //..register service
             services.AddScoped<IMiddlewareHealthService, MiddlewareHealthService>();
-            services.AddScoped<IGrcHtml, GrcHtml>();
+            
             services.AddScoped<IGRCFileProvider, GRCFileProvider>();
             services.AddScoped<ILocalizationService, LocalizationService>();
             services.AddScoped<IGrcBaseService, GrcBaseService>();
@@ -42,7 +42,8 @@ namespace Grc.ui.App.Extensions.Mvc {
 
             //..allow html helpers to acces current action context
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            services.AddSingleton<IWebHelper, WebHelper>();
+            services.AddScoped<IGrcHtml, GrcHtml>();
+            services.AddScoped<IWebHelper, WebHelper>();
             return services;
         }
 

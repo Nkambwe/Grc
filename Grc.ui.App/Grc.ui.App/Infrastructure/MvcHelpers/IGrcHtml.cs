@@ -27,7 +27,17 @@ namespace Grc.ui.App.Infrastructure.MvcHelpers {
         /// <param name="part">Title part</param>
         /// <returns>Generated HTML string</returns>
         Task<IHtmlContent> GenerateTitleAsync(bool addDefaultTitle = true, string part = "");
+        /// <summary>
+        /// Generate anti-forgery token for CSRF protection
+        /// </summary>
+        /// <returns>Anti-forgery token as HTML content</returns>
+        IHtmlContent AntiForgeryToken();
 
+        /// <summary>
+        /// Get anti-forgery token value for AJAX requests
+        /// </summary>
+        /// <returns>Anti-forgery token value</returns>
+        string GetAntiForgeryTokenValue();
         /// <summary>
         /// Add script element
         /// </summary>

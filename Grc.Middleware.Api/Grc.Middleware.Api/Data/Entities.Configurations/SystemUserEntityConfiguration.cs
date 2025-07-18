@@ -8,14 +8,14 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
         public static void Configure(EntityTypeBuilder<SystemUser> builder) {
             builder.ToTable("TBL_GRC_SYSTEM_USERS");
             builder.HasKey(u => u.Id);
-            builder.Property(u => u.PersonalFileNumber).HasColumnName("Pf_No").HasMaxLength(10).IsFixedLength().IsRequired();
-            builder.Property(u => u.FirstName).HasColumnName("FirstName").HasMaxLength(180).IsRequired();
-            builder.Property(u => u.LastName).HasColumnName("LastName").HasMaxLength(180).IsRequired();
-            builder.Property(u => u.OtherName).HasColumnName("OtherName").HasMaxLength(180).IsRequired(false);
-            builder.Property(u => u.PhoneNumber).HasColumnName("Phone").HasMaxLength(30).IsFixedLength().IsRequired(false);
-            builder.Property(u => u.EmailAddress).HasColumnName("Email").HasMaxLength(255).IsRequired();
-            builder.Property(u => u.Username).HasColumnName("Username").HasMaxLength(250).IsRequired();
-            builder.Property(u => u.PasswordHash).HasColumnName("PasswordHash").HasMaxLength(255).IsRequired();
+            builder.Property(u => u.PersonalFileNumber).HasColumnName("Pf_No").HasColumnType("VARCHAR(MAX)").IsFixedLength().IsRequired();
+            builder.Property(u => u.FirstName).HasColumnName("FirstName").HasColumnType("VARCHAR(MAX)").IsRequired();
+            builder.Property(u => u.LastName).HasColumnName("LastName").HasColumnType("VARCHAR(MAX)").IsRequired();
+            builder.Property(u => u.OtherName).HasColumnName("OtherName").HasColumnType("VARCHAR(MAX)").IsRequired(false);
+            builder.Property(u => u.PhoneNumber).HasColumnName("Phone").HasColumnType("VARCHAR(MAX)").IsFixedLength().IsRequired(false);
+            builder.Property(u => u.EmailAddress).HasColumnName("Email").HasColumnType("VARCHAR(MAX)").IsRequired();
+            builder.Property(u => u.Username).HasColumnName("Username").HasColumnType("VARCHAR(MAX)").IsRequired();
+            builder.Property(u => u.PasswordHash).HasColumnName("PasswordHash").HasColumnType("VARCHAR(MAX)").IsRequired();
             builder.Property(u => u.RoleId).HasColumnName("Role_id").IsRequired();
             builder.Property(u => u.DepartmentId).HasColumnName("Department_id").IsRequired();
             builder.Property(u => u.BranchSolId).HasColumnName("Sol_id").HasMaxLength(10).IsFixedLength().IsRequired();

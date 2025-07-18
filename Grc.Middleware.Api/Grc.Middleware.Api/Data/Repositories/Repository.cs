@@ -517,6 +517,11 @@ namespace Grc.Middleware.Api.Data.Repositories {
             };
         }
 
+        
+        public int GetContextHashCode()
+            => context.GetType().GetHashCode();
+
+
         #region Helper Methods
 
         /// <summary>

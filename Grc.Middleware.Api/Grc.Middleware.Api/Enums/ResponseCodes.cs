@@ -4,6 +4,8 @@ namespace Grc.Middleware.Api.Enums {
 
     public enum ResponseCodes {
         [Description("Processing")]
+        FAILED = 100,
+        [Description("Processing")]
         PROCESSING = 102,
         [Description("Password has expired")]
         PASSWORDEXPIRED = 103,

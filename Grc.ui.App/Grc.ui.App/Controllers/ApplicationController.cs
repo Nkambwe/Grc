@@ -1,11 +1,14 @@
 ﻿using Grc.ui.App.Enums;
 using Grc.ui.App.Factories;
+using Grc.ui.App.Filters;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using System.Text.Json;
 
 namespace Grc.ui.App.Controllers {
 
@@ -56,6 +59,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
         public virtual async Task<IActionResult> Register(CompanyRegistrationModel model) {
             if (!ModelState.IsValid) {
                 return HandleValidationErrors(model);
@@ -64,6 +68,7 @@ namespace Grc.ui.App.Controllers {
             try {
                 //..register company
                 var grcResponse = await _installService.RegisterCompanyAsync(model,WebHelper.GetCurrentIpAddress());
+                Logger.LogActivity($"REGISTER RESPONSE: {JsonSerializer.Serialize(grcResponse)}");
                 if (grcResponse.HasError) {
                     return HandleServiceError(grcResponse.Error, model);
                 }
@@ -117,6 +122,7 @@ namespace Grc.ui.App.Controllers {
     
             //..for Ajax call
             if (WebHelper.IsAjaxRequest(Request)) {
+                Logger.LogActivity($"Sending to Ajax >>>>> ");
                 var errors = new { general = new[] { errorMessage } };
                 return Json(new { success = false, errors = errors });
             }

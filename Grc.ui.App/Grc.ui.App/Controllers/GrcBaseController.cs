@@ -3,6 +3,7 @@ using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Utils;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -20,6 +21,12 @@ namespace Grc.ui.App.Controllers {
             Logger = loggerFactory.CreateLogger("app_controllers");
             Environment = environment;
             WebHelper = webHelper;
+        }
+
+        protected string GetAntiForgeryToken() {
+            var antiforgery = HttpContext.RequestServices.GetRequiredService<IAntiforgery>();
+            var tokenSet = antiforgery.GetAndStoreTokens(HttpContext);
+            return tokenSet.RequestToken;
         }
 
         public void Notify(string message, string title = "GRC NOTIFICATION", NotificationType type=NotificationType.Success) {

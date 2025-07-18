@@ -5,6 +5,11 @@ using System.Linq.Expressions;
 namespace Grc.Middleware.Api.Data.Repositories {
 
     public interface IRepository<T> where T : BaseEntity {
+         /// <summary>
+         /// DBContext HashCode
+         /// </summary>
+         /// <returns></returns>
+         int GetContextHashCode();
 
         /// <summary>
         /// Get entity by Id. Check whether to returned deleted entities <see cref="ISoftDelete"/>

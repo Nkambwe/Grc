@@ -2,12 +2,16 @@
 using Grc.ui.App.Extensions.Http;
 using Grc.ui.App.Extensions.Mvc;
 using Grc.ui.App.Factories;
+using Grc.ui.App.Filters;
 using Grc.ui.App.Http.Endpoints;
+using Grc.ui.App.Infrastructure.MvcHelpers;
 using Grc.ui.App.Middleware;
 using Grc.ui.App.Routes;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor;
 
 namespace Grc.ui.App {
 
@@ -44,7 +48,7 @@ namespace Grc.ui.App {
             // Add middleware client
             services.AddApiClients(_configuration);
         
-            //..register application session - FIXED: Use consistent timeout value
+            //..register application session 
             var sessionOptions = _configuration.GetSection("MiddlewareOptions").Get<MiddlewareOptions>();
             int timeOut = sessionOptions?.IdleSessionTime ?? 30;
             services.AddApplicationSession(options => 
@@ -56,6 +60,16 @@ namespace Grc.ui.App {
                 options.Cookie.SameSite = SameSiteMode.Lax;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
+
+            //..add anti-forgery services
+            services.AddAntiforgery(options => {
+                options.HeaderName = "X-CSRF-TOKEN";
+                options.Cookie.Name = "__RequestVerificationToken";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SameSite = SameSiteMode.Strict;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+            });
+            services.AddScoped<GrcAntiForgeryTokenAttribute>();
         
             //..configure HttpClient with base URL
             var middlewareOptions = _configuration.GetSection("MiddlewareOptions").Get<MiddlewareOptions>();
@@ -71,6 +85,16 @@ namespace Grc.ui.App {
         
             //..add MVC
             services.AddControllersWithViews();
+
+            //..configure razor pages options
+            services.Configure<RazorViewEngineOptions>(options => {
+                options.ViewLocationFormats.Add("/Views/Shared/TagHelpers/{0}.cshtml");
+            });
+
+            //..register taghelper
+            services.AddScoped<GrcAntiForgeryTokenTagHelper>();
+
+            //..authentication cookies
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
         
             //..add logging 

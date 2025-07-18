@@ -5,6 +5,9 @@
     Layout = "_Layout_01";
 }
 
+<!-- Antiforegry token-->
+<grc-antiforgery-token as-meta="true"></grc-antiforgery-token>
+
 <div class="registration-container">
 
     <div class="reg-header-container">
@@ -208,7 +211,7 @@
 
                         <div class="form-group mb-3">
                             <label for="User_UserName" class="col-form-label">
-                                @Html.Raw(ILocalize.GetLocalizedLabel("User.Fields.UserNamer"))
+                                @Html.Raw(ILocalize.GetLocalizedLabel("User.Fields.UserName"))
                             </label>
                             <input id="User_UserName" type="text" name="SystemAdmin.UserName" asp-for="SystemAdmin.UserName" class="form-control" 
                             placeholder="@ILocalize.GetLocalizedLabel("App.Label.Example") WOLSMI90300" autocomplete="off" required>

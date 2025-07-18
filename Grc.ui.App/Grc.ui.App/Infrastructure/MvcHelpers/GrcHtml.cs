@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Grc.ui.App.Enums;
+using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 
 namespace Grc.ui.App.Infrastructure.MvcHelpers {
@@ -21,6 +23,8 @@ namespace Grc.ui.App.Infrastructure.MvcHelpers {
         #region Fields
 
         private readonly IActionContextAccessor _actionContextAccessor;
+        private readonly IHtmlHelper _htmlHelper;
+        private readonly IAntiforgery _antiforgery;
         private readonly IUrlHelperFactory _urlHelperFactory;
         private readonly IHostEnvironment _webHostEnvironment;
         private readonly HtmlEncoder _htmlEncoder;
@@ -42,14 +46,41 @@ namespace Grc.ui.App.Infrastructure.MvcHelpers {
 
         public GrcHtml(
             IActionContextAccessor actionContextAccessor,
+
+            IHtmlHelper htmlHelper, 
+            IAntiforgery antiforgery,
             IUrlHelperFactory urlHelperFactory,
             IHostEnvironment webHostEnvironment,
             HtmlEncoder htmlEncoder) {
             _actionContextAccessor = actionContextAccessor;
+            _htmlHelper = htmlHelper;
+            _antiforgery = antiforgery;
             _urlHelperFactory = urlHelperFactory;
             _webHostEnvironment = webHostEnvironment;
             _htmlEncoder = htmlEncoder;
             _siteTitle = "GRC ";
+        }
+
+        #endregion
+
+        #region AntiForgery
+
+        public IHtmlContent AntiForgeryToken() {
+            var httpContext = _actionContextAccessor.ActionContext?.HttpContext;
+            if (httpContext == null)
+                return new HtmlString(string.Empty);
+
+            var tokenSet = _antiforgery.GetAndStoreTokens(httpContext);
+            return new HtmlString($"<input name=\"__RequestVerificationToken\" type=\"hidden\" value=\"{tokenSet.RequestToken}\" />");
+        }
+
+        public string GetAntiForgeryTokenValue() {
+            var httpContext = _actionContextAccessor.ActionContext?.HttpContext;
+            if (httpContext == null)
+                return string.Empty;
+
+            var tokenSet = _antiforgery.GetAndStoreTokens(httpContext);
+            return tokenSet.RequestToken;
         }
 
         #endregion

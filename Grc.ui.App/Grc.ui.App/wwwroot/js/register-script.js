@@ -284,7 +284,8 @@
                 data: formData,
                 dataType: 'json',
                 headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': getAntiForgeryToken()
                 },
                 success: function(response) {
                     if (response.success) {
@@ -301,6 +302,7 @@
                             }
                         });
                     } else {
+                        console.log("ERROR ", response.errors);
                         //..handle server-side validation errors
                         handleServerValidationErrors(response.errors);
                         
@@ -317,6 +319,19 @@
                     //..handle Ajax errors
                     console.error('Ajax error:', error);
                     console.log('Server response:', xhr.responseText);
+
+                    //..add specific handling for CSRF errors
+                    if (xhr.status === 400 && xhr.responseText.includes('antiforgery')) {
+                        Swal.fire({
+                            title: "Security Error",
+                            text: "Security token validation failed. Please refresh the page and try again.",
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                        return;
+                    }
                     
                     let errorMessage = 'An error occurred while processing your request. Please try again.';
                     
@@ -400,8 +415,13 @@
             //..at least 8 characters, 1 uppercase, 1 lowercase, 1 number, 1 special character
             return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(value);
         }
-    });
+
+        function getAntiForgeryToken() {
+            return $('meta[name="csrf-token"]').attr('content');
+        }
    
+    });
+
     $('#System_Language').on('change', function () {
         var selectedLang = $(this).val();
         if (selectedLang && selectedLang !== 'None') {
