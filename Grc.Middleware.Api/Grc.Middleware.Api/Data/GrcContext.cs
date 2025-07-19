@@ -9,6 +9,7 @@ namespace Grc.Middleware.Api.Data {
         public DbSet<Company> Organizations { get; set; }
         public DbSet<Branch> Branches { get; set; }
         public DbSet<Department> Departments { get; set; }
+        public DbSet<DepartmentUnit> DepartmentUnits { get; set; }
         public DbSet<SystemRoleGroup> RoleGroups { get; set; }
         public DbSet<SystemRole> SystemRoles { get; set; }
         public DbSet<SystemUser> SystemUsers { get; set; }
@@ -21,6 +22,7 @@ namespace Grc.Middleware.Api.Data {
             CompanyEntityConfiguration.Configure(modelBuilder.Entity<Company>());
             BranchEntityConfiguration.Configure(modelBuilder.Entity<Branch>());
             DepartmentEntityConfiguration.Configure(modelBuilder.Entity<Department>());
+            DepartmentUnitEntityConfiguration.Configure(modelBuilder.Entity<DepartmentUnit>());
             SystemRoleGroupEntityConfiguration.Configure(modelBuilder.Entity<SystemRoleGroup>());
             SystemRoleEntityConfiguration.Configure(modelBuilder.Entity<SystemRole>());
             SystemUserEntityConfiguration.Configure(modelBuilder.Entity<SystemUser>());

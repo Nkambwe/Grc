@@ -7,7 +7,6 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using System.Text.Json;
 
 namespace Grc.ui.App.Controllers {
@@ -70,7 +69,7 @@ namespace Grc.ui.App.Controllers {
                 var grcResponse = await _installService.RegisterCompanyAsync(model,WebHelper.GetCurrentIpAddress());
                 Logger.LogActivity($"REGISTER RESPONSE: {JsonSerializer.Serialize(grcResponse)}");
                 if (grcResponse.HasError) {
-                    return HandleServiceError(grcResponse.Error, model);
+                    return HandleServiceError(grcResponse, model);
                 }
         
                 //..success response
@@ -116,16 +115,16 @@ namespace Grc.ui.App.Controllers {
             return View(model);
         }
 
-        private IActionResult HandleServiceError(GrcResponseError error, CompanyRegistrationModel model) {
+        private IActionResult HandleServiceError(GrcResponse<ServiceResponse> response, CompanyRegistrationModel model) {
+            var error = response.Error;
             string errorMessage = $"{error.Code} - {error.Message}";
             Logger.LogActivity($"Registration failed: {errorMessage}");
     
             //..for Ajax call
-            if (WebHelper.IsAjaxRequest(Request)) {
+             if (WebHelper.IsAjaxRequest(Request)) {
                 Logger.LogActivity($"Sending to Ajax >>>>> ");
-                var errors = new { general = new[] { errorMessage } };
-                return Json(new { success = false, errors = errors });
-            }
+                return Json(response);
+             }
     
             //..for none Ajax call
             Notify(error.Message, "GRC MESSAGE", NotificationType.Error);

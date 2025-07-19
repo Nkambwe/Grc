@@ -2,9 +2,6 @@
 using Grc.Middleware.Api.Data.Repositories;
 using Grc.Middleware.Api.Utils;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 
 namespace Grc.Middleware.Api.Data.Containers {
 
@@ -23,7 +20,7 @@ namespace Grc.Middleware.Api.Data.Containers {
                           IDbContextFactory<GrcContext> contextFactory,
                           IServiceProvider serviceProvider) {
             _loggerFactory = loggerFactory;
-            _logger = _loggerFactory.CreateLogger("grc_data");
+            _logger = _loggerFactory.CreateLogger("data_log");
             _logger.Channel = $"UOW-{DateTime.Now:yyyyMMddHHmmss}";
             _contextFactory = contextFactory;
             _serviceProvider = serviceProvider;

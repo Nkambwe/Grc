@@ -7,9 +7,9 @@ namespace Grc.Middleware.Api.Data.Entities.Org {
         public string DepartmenCode { get; set; }
         public string DepartmentName { get; set; }
         public string Alias { get; set; }
-
         public virtual Branch Branch { get; set; }
         public virtual ICollection<SystemUser> Users {get; set;}
+        public virtual ICollection<DepartmentUnit> Units { get; set; }
         public override bool Equals(object obj) {
 
             if (obj is not Department)

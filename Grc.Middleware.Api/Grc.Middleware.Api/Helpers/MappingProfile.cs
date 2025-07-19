@@ -28,7 +28,7 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(us => us.EmailAddress, reg => reg.MapFrom(o => (o.Email ?? string.Empty).Trim()))
                 .ForMember(us => us.Username, reg => reg.MapFrom(o => (o.UserName ?? string.Empty).Trim()))
                 .ForMember(us => us.PasswordHash, reg => reg.MapFrom(o => (o.Password ?? string.Empty).Trim()))
-                .ForMember(us => us.PersonalFileNumber, reg => reg.MapFrom(o => (o.PFNumber ?? string.Empty).Trim()))
+                .ForMember(us => us.PFNumber, reg => reg.MapFrom(o => (o.PFNumber ?? string.Empty).Trim()))
                 .ForMember(us => us.BranchSolId, reg => reg.MapFrom(o => (o.SolId ?? "MAIN").Trim()))
                 .ForMember(us => us.PhoneNumber, reg => reg.MapFrom(o => o.PhoneNumber))
                 .ForMember(us => us.DepartmentUnit, reg => reg.MapFrom(o => o.UnitCode))

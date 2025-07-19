@@ -55,7 +55,7 @@ namespace Grc.Middleware.Api.Factories {
                                 Username = HashGenerator.EncryptString("Super"),
                                 EmailAddress = HashGenerator.EncryptString("grc.system@pearlbank.co.ug"),
                                 PasswordHash = HashGenerator.EncryptString(ExtendedHashMapper.HashPassword("super390@pbu")),
-                                PersonalFileNumber = HashGenerator.EncryptString("00001"),
+                                PFNumber = HashGenerator.EncryptString("00001"),
                                 BranchSolId = "MAIN",
                                 PhoneNumber = HashGenerator.EncryptString("390400800800"),
                                 IsActive = true,

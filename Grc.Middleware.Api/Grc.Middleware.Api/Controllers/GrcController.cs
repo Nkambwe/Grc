@@ -10,6 +10,7 @@ using Grc.Middleware.Api.Services;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Grc.Middleware.Api.Controllers {
 
@@ -77,7 +78,8 @@ namespace Grc.Middleware.Api.Controllers {
                     response.Message = "Failed to complete regiatration. An error occurrred";  
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
                 }
-                 return Ok(response);
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
             } catch (Exception ex) { 
                 Logger.LogActivity($"{ex.Message}", "ERROR");
                 Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");

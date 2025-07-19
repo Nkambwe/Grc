@@ -100,7 +100,7 @@ namespace Grc.Middleware.Api.Extensions {
             //..create logger
             using var provider = services.BuildServiceProvider();
             var loggerFactory = provider.GetRequiredService<IServiceLoggerFactory>();
-            var _logger = loggerFactory.CreateLogger("grc_middleware_log");
+            var _logger = loggerFactory.CreateLogger("middleware_log");
             _logger.Channel = $"DBCONNECTION-{DateTime.Now:yyyyMMddHHmmss}";
             _logger.LogActivity("Attempting DB Connection...", "GRC_CONFIG");
             try {

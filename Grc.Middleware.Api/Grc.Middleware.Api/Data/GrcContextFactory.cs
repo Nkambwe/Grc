@@ -14,7 +14,7 @@ namespace Grc.Middleware.Api.Data {
         public GrcContextFactory(IServiceLoggerFactory loggerFactory, 
                                  IDataConnectionProvider dataConnectionProvider,
                                  IEnvironmentProvider environment) { 
-            _logger = loggerFactory.CreateLogger("grc_middleware_log");
+            _logger = loggerFactory.CreateLogger("middleware_log");
             _logger.Channel = $"DBCONNECTION-{DateTime.Now:yyyyMMddHHmmss}";
             _dataConnectionProvider = dataConnectionProvider;
             _environment = environment;

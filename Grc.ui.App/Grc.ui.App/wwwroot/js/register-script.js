@@ -288,31 +288,93 @@
                     'X-CSRF-TOKEN': getAntiForgeryToken()
                 },
                 success: function(response) {
-                    if (response.success) {
+                    //..check if response indicates success
+                    const isSuccess = !response.sasError && response.data && response.data.status === true;
+
+                    if (isSuccess) {
                         //..if success, show success message then redirect
+                        const successMessage = response.data.message || "Company registration has been completed successfully.";
+
                         Swal.fire({
                             title: "Registration Successful!",
-                            text: "Company registration has been completed successfully.",
+                            text: successMessage,
                             icon: "success",
-                            confirmButton: "swal2-confirm",
-                            confirmButtonText: "Continue to Login"
+                            confirmButtonText: "Continue to Login",
+                            customClass: {
+                                confirmButton: "swal2-confirm",
+                            }
+                            
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 window.location.href = response.redirectUrl || '/Application/Login';
                             }
                         });
                     } else {
-                        console.log("ERROR ", response.errors);
-                        //..handle server-side validation errors
-                        handleServerValidationErrors(response.errors);
-                        
-                        Swal.fire({
-                            title: "Registration Failed",
-                            text: "Please correct the errors in the form and try again.",
-                            icon: "error",
-                             confirmButton: "swal2-confirm",
-                            confirmButtonText: "OK"
-                        });
+
+                        //..handle different types of errors
+                        let errorTitle = "Registration Failed";
+                        let errorMessage = "Please correct the errors in the form and try again.";
+
+                        if (response.hasError && response.error) {
+                            //..handle service or system errors 
+                            errorTitle = response.error.message || "System Error";
+                            errorMessage = response.error.description || "An error occurred during registration.";
+            
+                            console.log("SERVICE ERROR:", response.error);
+            
+                            // Show the specific error message from server
+                            Swal.fire({
+                                title: errorTitle,
+                                text: errorMessage,
+                                icon: "error",
+                                confirmButtonText: "OK",
+                                customClass: {
+                                    confirmButton: "swal2-confirm",
+                                }
+                            });
+                        } else if (!response.hasError && response.data && response.data.status === false) {
+                            //..handle business logic failures where HasError=false but Status=false
+                            errorTitle = "Registration Failed";
+                            errorMessage = response.data.message || "Registration could not be completed.";
+            
+                            console.log("BUSINESS ERROR:", response.data);
+            
+                            Swal.fire({
+                                title: errorTitle,
+                                text: errorMessage,
+                                icon: "error",
+                                confirmButtonText: "OK",
+                                customClass: {
+                                    confirmButton: "swal2-confirm",
+                                }
+                            });
+                        } else if (response.errors) {
+                            //..handle validation errors (your existing logic)
+                            console.log("VALIDATION ERRORS:", response.errors);
+                            handleServerValidationErrors(response.errors);
+            
+                            Swal.fire({
+                                title: "Validation Errors",
+                                text: "Please correct the errors in the form and try again.",
+                                icon: "error",
+                                confirmButtonText: "OK",
+                                customClass: {
+                                    confirmButton: "swal2-confirm",
+                                }
+                            });
+                        } else {
+                            //..handle unknown error format
+                            console.log("UNKNOWN ERROR:", response);
+                            Swal.fire({
+                                title: "Unknown Error",
+                                text: "An unexpected error occurred. Please try again.",
+                                icon: "error",
+                                confirmButtonText: "OK",
+                                customClass: {
+                                    confirmButton: "swal2-confirm",
+                                }
+                            });
+                        }
                     }
                 },
                 error: function(xhr, status, error) {
@@ -326,7 +388,10 @@
                             title: "Security Error",
                             text: "Security token validation failed. Please refresh the page and try again.",
                             icon: "error",
-                            confirmButtonText: "OK"
+                            confirmButtonText: "OK",
+                            customClass: {
+                                confirmButton: "swal2-confirm",
+                            }
                         }).then(() => {
                             window.location.reload();
                         });
@@ -347,8 +412,10 @@
                         title: "Request Failed",
                         text: errorMessage,
                         icon: "error",
-                        confirmButton: "swal2-confirm",
-                        confirmButtonText: "OK"
+                        confirmButtonText: "OK",
+                        customClass: {
+                            confirmButton: "swal2-confirm",
+                        }
                     });
                 }
             });

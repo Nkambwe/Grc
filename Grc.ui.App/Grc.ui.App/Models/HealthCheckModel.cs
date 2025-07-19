@@ -9,7 +9,7 @@ namespace Grc.ui.App.Models {
         [JsonPropertyName("isConnected")]
         public bool IsConnected { get; set; }
 
-        [JsonPropertyName("hasCompany")]
+        [JsonPropertyName("hasCompanies")]
         public bool HasCompany { get; set; }
 
     }
