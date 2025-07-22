@@ -1,6 +1,5 @@
 ﻿using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Org;
-using Grc.Middleware.Api.Data.Repositories;
 using Grc.Middleware.Api.Utils;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -9,17 +8,16 @@ namespace Grc.Middleware.Api.Services {
 
     public class CompanyService : BaseService, ICompanyService {
 
-        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
 
-        public CompanyService(IUnitOfWorkFactory unitOfWorkFactory, IServiceLoggerFactory loggerFactory)
-            : base(loggerFactory) {
-             _unitOfWorkFactory = unitOfWorkFactory;
+        public CompanyService(IUnitOfWorkFactory unitOfWorkFactory, 
+                             IServiceLoggerFactory loggerFactory)
+            : base(loggerFactory, unitOfWorkFactory) {
             Logger.Channel = $"COMPANY-{DateTime.Now:yyyMMddHHmmss}";
         }
 
         public async Task<bool> CreateCompanyAsync(Company company) {
 
-            using var uow = _unitOfWorkFactory.Create();
+            using var uow = UowFactory.Create();
             Logger.LogActivity("Save company record >>>>", "INFO");
     
             try {

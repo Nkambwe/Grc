@@ -16,6 +16,8 @@ namespace Grc.Middleware.Api.Data.Containers {
 
         public ICompanyRepository CompanyRepository { get; private set; }
 
+        public IUserRepository UserRepository { get; private set; }
+
         public UnitOfWork(IServiceLoggerFactory loggerFactory,
                           IDbContextFactory<GrcContext> contextFactory,
                           IServiceProvider serviceProvider) {
@@ -31,6 +33,7 @@ namespace Grc.Middleware.Api.Data.Containers {
         
             //..initalize repositories
             CompanyRepository =  new CompanyRepository(_loggerFactory, Context);
+            UserRepository =  new UserRepository(_loggerFactory, Context);
         }
 
         /// <summary>
@@ -147,6 +150,7 @@ namespace Grc.Middleware.Api.Data.Containers {
                 
                     //..clear repository references
                     CompanyRepository = null;
+                    UserRepository = null;
                 }
             }
             _disposed = true;

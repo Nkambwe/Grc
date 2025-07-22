@@ -16,7 +16,7 @@ namespace Grc.ui.App.Controllers {
                                IEnvironmentProvider environment,
                                IErrorFactory errorFactory,
                                ILocalizationService localizationService) 
-            : base(loggerFactory, environment, webHelper) {
+            : base(loggerFactory, environment, webHelper, localizationService) {
             _errorFactory = errorFactory;
             _localizationService = localizationService;
         }

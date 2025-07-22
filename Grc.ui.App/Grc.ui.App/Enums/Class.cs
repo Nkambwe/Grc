@@ -4,5 +4,7 @@ namespace Grc.ui.App.Enums {
     public enum Activity {
         [Description("Company Registration")]
         COMPANYREGISTRATION = 0,
+        [Description("User Login")]
+        LOGIN = 1,
     }
 }

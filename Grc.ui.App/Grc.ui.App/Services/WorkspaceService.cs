@@ -9,8 +9,9 @@ namespace Grc.ui.App.Services {
                                 IHttpClientFactory httpClientFactory,
                                 IEnvironmentProvider environment, 
                                 IEndpointTypeProvider endpointType,
+                                IHttpHandler handler,
                                 IMapper mapper)
-            : base(loggerFactory, httpClientFactory, environment,endpointType, mapper) {
+            : base(loggerFactory, handler, environment,endpointType, mapper) {
             Logger.Channel = $"WORKSPACE-{DateTime.Now:yyyyMMddHHmmss}";
         }
 

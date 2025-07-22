@@ -163,6 +163,10 @@ namespace Grc.Middleware.Api.Data.Repositories {
         /// <param name="excludeDeleted">Flag to exclude deleted entities in the search</param>
         /// <returns>Task containg search result for entity</returns>
         Task<bool> ExistsAsync(Expression<Func<T, bool>> where, bool excludeDeleted = false);
+        
+        Task<int> CountAsync();
+
+        Task<int> CountAsync(Expression<Func<T, bool>> where);
 
         /// <summary>
         /// Bulk inserts to the database

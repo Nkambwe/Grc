@@ -23,15 +23,17 @@ namespace Grc.ui.App.Extensions.Mvc {
             services.AddSingleton<IRouteProvider, RouteProvider>();
             services.AddSingleton<IRoutePublisher, RoutePublisher>();
 
-            //..register service
+            //..register health service
             services.AddScoped<IMiddlewareHealthService, MiddlewareHealthService>();
-            
-            services.AddScoped<IGRCFileProvider, GRCFileProvider>();
-            services.AddScoped<ILocalizationService, LocalizationService>();
+            services.AddScoped<IHttpHandler, HttpHandler>();
             services.AddScoped<IGrcBaseService, GrcBaseService>();
+            services.AddScoped<IGRCFileProvider, GRCFileProvider>();
+            services.AddScoped<IWorkspaceService, WorkspaceService>();
+           
+            services.AddScoped<ILocalizationService, LocalizationService>();
             services.AddScoped<ISystemAccessService, SystemAccessService>();
             services.AddScoped<IInstallService, InstallService>();
-            services.AddScoped<IWorkspaceService, WorkspaceService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
             
             
             //..register factories 

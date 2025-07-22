@@ -1,0 +1,60 @@
+﻿@using Grc.ui.App.Enums
+@using Grc.ui.App.Defaults
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@await Html.GenerateTitleAsync()</title>
+
+    @{
+        // Add all your CSS files
+        Html.AddCssFileParts("~/lib/bootstrap/dist/css/bootstrap.css");
+        Html.AddCssFileParts("~/lib/icons/metro/icons.css");
+        Html.AddCssFileParts("~/lib/icons/material-design/css/materialdesignicons.css");
+        Html.AddCssFileParts("~/lib/icons/coreui-icons/css/all.css");
+        Html.AddCssFileParts("~/lib/select-2/css/select2.min.css");
+        Html.AddCssFileParts("~/lib/toastr/toastr.css");
+        Html.AddCssFileParts("~/css/color-pallete.css");
+        Html.AddCssFileParts("~/lib/sweet-alert/sweetalert2.css");
+        Html.AddCssFileParts("~/css/grc-style.css", excludeFromBundle: false);
+        Html.AddCssFileParts("~/css/register-styles.css", excludeFromBundle: false);
+    }
+
+    <script src="~/lib/toastr/toastr.min.js"></script>
+    <script src="~/lib/sweet-alert/sweetalert2.all.min.js"></script>
+    @Html.GenerateCssFiles()
+    @Html.GenerateHeadCustom()
+</head>
+<body class="@Html.GeneratePageCssClasses()">
+
+    <div class="main-container">
+        <main role="main" class="inner-container">
+            @RenderBody()
+        </main>
+
+        <footer class="grc-footer">
+            <div class="footer-container">
+                Pearl Bank Uganda Limited &copy; @DateTime.Now.Year -  @CommonDefaults.AppVersion
+            </div>
+        </footer>
+    </div>
+
+    @{
+        // Add all your script files
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery-validation/dist/jquery.validate.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/select-2/js/select2.full.min.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/bootstrap/dist/js/bootstrap.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/js/register-script.js");
+    }
+
+    @Html.GenerateScripts(ResourceLocation.Footer)
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>
+
+

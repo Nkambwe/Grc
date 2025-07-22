@@ -18,6 +18,12 @@
                 defaults: new { controller = "Application", action = "Login" }
             );
 
+            routeBuilder.MapControllerRoute(
+                name: "logout",
+                pattern: "/app/logout",
+                defaults: new { controller = "Application", action = "Login" }
+            );
+
             // No service
             routeBuilder.MapControllerRoute(
                 name: "noservice",
@@ -33,7 +39,7 @@
             );
             // Create organization
             routeBuilder.MapControllerRoute(
-                name: "languagechange",
+                name: "language-change",
                 pattern: "/org/changeLanguage/",
                 defaults: new { controller = "Application", action = "ChangeLanguage" }
             );
@@ -45,11 +51,24 @@
                 defaults: new { controller = "Error", action = "Status404" }
             );
 
+            routeBuilder.MapControllerRoute(
+                name: "admin-settings",
+                pattern: "admin/settings",
+                defaults: new { area = "Admin", controller = "Settings", action = "Index" }
+            );
+            
+            // Admin areas
+            routeBuilder.MapControllerRoute(
+                name: "areas",
+                pattern: "{area:exists}/{controller=Support}/{action=Index}/{id?}"
+            );
+
             // User login (default)
             routeBuilder.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Application}/{action=Login}/{id?}"
             );
+
         }
     }
 }

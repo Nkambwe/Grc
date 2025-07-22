@@ -1,6 +1,7 @@
 ﻿using Grc.ui.App.Enums;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Filters;
+using Grc.ui.App.Http;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
@@ -12,22 +13,28 @@ using System.Text.Json;
 namespace Grc.ui.App.Controllers {
 
     public class ApplicationController : GrcBaseController {
-
+        private readonly IAuthenticationService _authService;
+        private readonly ISystemAccessService _accessService;
         private readonly IRegistrationFactory _registrationFactory;
-        private readonly ILocalizationService _localizationService;
         private readonly IInstallService _installService;
+        private readonly ILoginFactory _loginFactory;
 
         public ApplicationController(IWebHelper webHelper,
                                      IApplicationLoggerFactory loggerFactory, 
                                      IEnvironmentProvider environment,
                                      IRegistrationFactory registrationFactory,
                                      ILocalizationService localizationService,
-                                     IInstallService installService) :
-            base(loggerFactory, environment, webHelper) {
+                                     IInstallService installService,
+                                     IAuthenticationService authService,
+                                     ISystemAccessService accessService,
+                                     ILoginFactory loginFactory) :
+            base(loggerFactory, environment, webHelper, localizationService) {
             _registrationFactory = registrationFactory;
-            _localizationService = localizationService;
             Logger.Channel = $"APPLICATION-{DateTime.Now:yyyyMMddHHmmss}";
             _installService = installService;
+            _authService = authService;
+            _accessService = accessService;
+            _loginFactory = loginFactory;
         }
 
         public IActionResult Index() {
@@ -36,14 +43,25 @@ namespace Grc.ui.App.Controllers {
 
         [HttpGet]
         public IActionResult Login() {
-            //Notify("Failed to save data", "FAILED TO SAVE", NotificationType.Error);
-            return View();
+            var loginModel = _loginFactory.PrepareLoginModelAsync();
+            return View(loginModel);
         }
 
         [HttpPost]
-        public IActionResult Login(LoginModel model) {
-            //Notify("Failed to save data", "FAILED TO SAVE", NotificationType.Error);
-            return View();
+        [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
+        public virtual async Task<IActionResult> Login(LoginModel model) {
+            if (!ModelState.IsValid) {
+                return View(model);
+            }
+
+            var user = await _authService.AuthenticateAsync(model, WebHelper.GetCurrentIpAddress()); 
+            if (user == null) {
+                ModelState.AddModelError("", "Invalid login.");
+                return View(model);
+            }
+
+            await _authService.SignInAsync(user, model.RememberMe);
+            return RedirectToAction("Index", "Application");
         }
 
         [HttpPost]
@@ -89,7 +107,7 @@ namespace Grc.ui.App.Controllers {
         [HttpGet]
         public virtual IActionResult ChangeLanguage(string language) {
              //Notify("Successfully saved");
-            _localizationService.SaveCurrentLanguage(language);
+            LocalizationService.SaveCurrentLanguage(language);
             return RedirectToAction("Register", "Application");
         }
 

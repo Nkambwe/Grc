@@ -21,6 +21,7 @@ namespace Grc.Middleware.Api.Extensions {
         public static void RegisterRepositories(this IServiceCollection services) {
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<ICompanyRepository, CompanyRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
         }
 
         /// <summary>
@@ -41,8 +42,8 @@ namespace Grc.Middleware.Api.Extensions {
             //..register service
             services.AddScoped<IBaseService, BaseService>();
             services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<ISystemAccessService, SystemAccessService>();
             
-
             //allow html helpers to acces current action context
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         }

@@ -9,18 +9,22 @@
 	<LocaleResource Name="App.Label.Example">
 		<Value>For Example. </Value>
 	</LocaleResource>
-	<LocaleResource Name="Registration.Title">
-		<Value>Company Registration</Value>
-	</LocaleResource>
-	<LocaleResource Name="Registration.Admin.Info">
-		<Value>System Administrator Details</Value>
-	</LocaleResource>
-	<LocaleResource Name="Registration.Admin.Access">
-		<Value>System Login Details</Value>
-	</LocaleResource>
 	<LocaleResource Name="App.System.Language">
 		<Value>System Language</Value>
 	</LocaleResource>
+    <LocaleResource Name="App.Label.Welcome">
+        <Value>Welcome back</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Registration.Title">
+        <Value>Company Registration</Value>
+    </LocaleResource>
+    <LocaleResource Name="Registration.Admin.Info">
+        <Value>System Administrator Details</Value>
+    </LocaleResource>
+    <LocaleResource Name="Registration.Admin.Access">
+        <Value>System Login Details</Value>
+    </LocaleResource>
 	<LocaleResource Name="Register.Company.Fields.CompanyName">
 		<Value>Company Name</Value>
 	</LocaleResource>

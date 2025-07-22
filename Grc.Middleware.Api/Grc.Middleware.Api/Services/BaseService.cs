@@ -1,13 +1,16 @@
-﻿using Grc.Middleware.Api.Utils;
+﻿using Grc.Middleware.Api.Data.Containers;
+using Grc.Middleware.Api.Utils;
 
 namespace Grc.Middleware.Api.Services {
 
     public class BaseService : IBaseService {
 
         protected readonly IServiceLogger Logger;
-
-        public BaseService(IServiceLoggerFactory loggerFactory) { 
-             Logger = loggerFactory.CreateLogger();
+        protected readonly IUnitOfWorkFactory UowFactory;
+        public BaseService(IServiceLoggerFactory loggerFactory,
+            IUnitOfWorkFactory uowFactory) { 
+            Logger = loggerFactory.CreateLogger();
+            UowFactory = uowFactory;
         }
     }
 

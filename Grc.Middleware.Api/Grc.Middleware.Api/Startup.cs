@@ -43,14 +43,22 @@ namespace Grc.Middleware.Api {
 
             //..register services
             services.RegisterServices();
+
+            //..add authentication cookies
+            services.AddAuthentication("Cookies").AddCookie("Cookies", options => {
+                options.Cookie.Name = ".Grc.Auth";
+                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
+            services.AddAuthorization();
             
-            //Mvc configurations
+            //..Mvc configurations
             services.AddRazorPages();
             services.AddEndpointsApiExplorer();
             services.AddControllers().AddJsonOptions(options => {
-                //keep JSON Property names as they are
+                //..keep JSON Property names as they are
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;
-                //format JSON data to make it more readable
+                //..format JSON data to make it more readable
                 options.JsonSerializerOptions.WriteIndented = true;
             });
 

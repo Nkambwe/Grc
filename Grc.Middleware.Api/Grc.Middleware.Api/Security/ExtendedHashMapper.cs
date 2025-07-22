@@ -67,5 +67,8 @@ namespace Grc.Middleware.Api.Security {
             }
             return Convert.ToBase64String(saltBytes);
         }
+
+        public static string[] GetEncryptedUserFields()
+            => new string[]{"FirstName", "LastName", "OtherName", "Email", "PhoneNumber", "PFNumber", "UserName"};
     }
 }

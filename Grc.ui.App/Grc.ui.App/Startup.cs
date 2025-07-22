@@ -10,7 +10,6 @@ using Grc.ui.App.Routes;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 
 namespace Grc.ui.App {
@@ -41,6 +40,7 @@ namespace Grc.ui.App {
             //..register logger factory
             services.AddScoped<IApplicationLoggerFactory, ApplicationLoggerFactory>();
             services.AddScoped<IErrorFactory, ErrorFactory>();
+            services.AddScoped<ILoginFactory, LoginFactory>();
 
             //..register auto mapper
             services.ObjectMapper();
@@ -70,12 +70,31 @@ namespace Grc.ui.App {
                 options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
             });
             services.AddScoped<GrcAntiForgeryTokenAttribute>();
+
+            services.AddAuthentication("Cookies").AddCookie("Cookies", options => {
+                options.Cookie.Name = CookieDefaults.UserCookie;
+                options.LoginPath = "/login/userlogin";
+                options.LogoutPath = "/app/logout";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                options.SlidingExpiration = true;
+            });
+            services.AddAuthorization();
         
-            //..configure HttpClient with base URL
+            //..configure HttpClient middleware client
             var middlewareOptions = _configuration.GetSection("MiddlewareOptions").Get<MiddlewareOptions>();
             services.AddHttpClient("MiddlewareClient", client => {
-                if (!string.IsNullOrEmpty(middlewareOptions?.BaseUrl)) {
-                    client.BaseAddress = new Uri(middlewareOptions.BaseUrl.TrimEnd('/') + '/');
+                var envOptions = _configuration.GetSection("EnvironmentOptions").Get<EnvironmentOptions>();
+                
+                if (!(bool)envOptions?.IsLive) {
+                    //..Configure uat environment
+                    if (!string.IsNullOrEmpty(middlewareOptions?.BaseUrl)) {
+                        client.BaseAddress = new Uri(middlewareOptions.BaseUrl.TrimEnd('/') + '/');
+                    }
+                } else {
+                     //..Configure production environment
+                    if (!string.IsNullOrEmpty(middlewareOptions?.ProdBaseUrl)) {
+                        client.BaseAddress = new Uri(middlewareOptions.ProdBaseUrl.TrimEnd('/') + '/');
+                    }
                 }
                 client.Timeout = TimeSpan.FromSeconds(30);
             });

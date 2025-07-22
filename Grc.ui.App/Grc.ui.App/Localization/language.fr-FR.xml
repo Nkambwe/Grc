@@ -12,6 +12,10 @@
 	<LocaleResource Name="App.Label.Example">
 		<Value>Exemple: </Value>
 	</LocaleResource>
+    <LocaleResource Name="App.Label.Welcome">
+        <Value>Bon retour</Value>
+    </LocaleResource>
+    
 	<LocaleResource Name="Registration.Title">
 		<Value>Enregistrement de l’entreprise</Value>
 	</LocaleResource>
