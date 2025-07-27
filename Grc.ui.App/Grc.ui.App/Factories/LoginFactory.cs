@@ -5,9 +5,16 @@ namespace Grc.ui.App.Factories {
 
         public Task<LoginModel> PrepareLoginModelAsync() {
             return Task.FromResult(new LoginModel() {
-                UsernameOrEmail = string.Empty,
+                Username = string.Empty,
                 Password = string.Empty,
                 RememberMe = false
+            });
+        }
+
+        public Task<UsernameValidationModel> PrepareUsernameValidationModelAsync(string username, string ipAddress) {
+            return Task.FromResult(new UsernameValidationModel() {
+                Username = username,
+                IPAddress = ipAddress,
             });
         }
     }

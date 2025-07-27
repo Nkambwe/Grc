@@ -1,6 +1,7 @@
 ﻿using Grc.ui.App.Enums;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Filters;
+using Grc.ui.App.Helpers;
 using Grc.ui.App.Http;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
@@ -8,6 +9,7 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Text.Json;
 
 namespace Grc.ui.App.Controllers {
@@ -38,35 +40,122 @@ namespace Grc.ui.App.Controllers {
         }
 
         public IActionResult Index() {
+            if (!User.Identity?.IsAuthenticated == true) {
+                return RedirectToAction("Login");
+            }
+
             return View();
         }
 
         [HttpGet]
-        public IActionResult Login() {
-            var loginModel = _loginFactory.PrepareLoginModelAsync();
+        public async Task<IActionResult> Login() {
+            if (User.Identity?.IsAuthenticated == true) {
+                return RedirectToAction("Index");
+            }
+
+            var loginModel = await _loginFactory.PrepareLoginModelAsync();
             return View(loginModel);
+        }
+
+        [HttpPost]
+        [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
+        public async Task<IActionResult> ValidateUsername(LoginModel model) {
+            if (string.IsNullOrWhiteSpace(model.Username)) {
+                return HandleUsernameValidationError(LocalizationService.GetLocalizedLabel("App.Message.EnterUsername"), model);
+            }
+
+            try {
+                var grcResponse = await _accessService.ValidateUsernameAsync( await _loginFactory.PrepareUsernameValidationModelAsync(model.Username, WebHelper.GetCurrentIpAddress()));
+                if (grcResponse.HasError) {
+                     return HandleUsernameValidationError(grcResponse.Error.Message, model);
+                }
+                
+                //..username is valid, prepare for password stage
+                model.IsUsernameValidated = true;
+                model.DisplayName = grcResponse.Data.DisplayName;
+                model.CurrentStage = LoginStage.Password;
+
+                if (WebHelper.IsAjaxRequest(Request)) {
+                    return Json(new { 
+                        success = true, 
+                        displayName = grcResponse.Data.DisplayName,
+                        message = LocalizationService.GetLocalizedLabel("App.Message.EnterPassword"),
+                        stage = "password"
+                    });
+                }
+
+                return View(model);
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Username {model.Username} validation error: {ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+                model.IsUsernameValidated = false;
+                model.DisplayName = ex.Message;
+                model.CurrentStage = LoginStage.Username;
+                return HandleUsernameValidationError(LocalizationService.GetLocalizedLabel("Error.Service.Unavailable"), model);
+            }
         }
 
         [HttpPost]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
         public virtual async Task<IActionResult> Login(LoginModel model) {
             if (!ModelState.IsValid) {
-                return View(model);
+                return HandleValidationErrors(model);
             }
 
-            var user = await _authService.AuthenticateAsync(model, WebHelper.GetCurrentIpAddress()); 
-            if (user == null) {
-                ModelState.AddModelError("", "Invalid login.");
-                return View(model);
-            }
+            try {
 
-            await _authService.SignInAsync(user, model.RememberMe);
-            return RedirectToAction("Index", "Application");
+                Logger.LogActivity($"Attempting authentication for user: {model.Username}");
+                var response = await _authService.AuthenticateAsync(model, WebHelper.GetCurrentIpAddress());
+                Logger.LogActivity($"REGISTER RESPONSE: {JsonSerializer.Serialize(response)}");
+                if (response.HasError) {
+                    return HandleLoginError(response, model);
+                }
+
+                await _authService.SignInAsync(response.Data, model.RememberMe);
+                 Logger.LogActivity($"User successfully authenticated: {model.Username}");
+                if (WebHelper.IsAjaxRequest(Request)) {
+                    return Json(new {
+                        success = true,
+                        redirectUrl = Url.Action("Index", "Application"),
+                        message = "Login successful"
+                    });
+                }
+
+                return RedirectToAction("Index", "Application");
+            } catch (Exception ex) {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    LocalizationService.GetLocalizedLabel("Error.Occurance"),
+                    "Could not complete login due to system error"
+                );
+        
+                Logger.LogActivity($"LOGIN ERROR: {JsonSerializer.Serialize(error)}");
+                return HandleLoginError(new GrcResponse<UserModel>(error), model);
+            }
         }
 
         [HttpPost]
-        public IActionResult Logout(LogoutModel model) {
-            return View();
+        public async Task<IActionResult> Logout() {
+            try {
+                Logger.LogActivity($"User logging out: {User.Identity?.Name}", "INFO");
+                await _authService.SignOutAsync();
+            
+                if (WebHelper.IsAjaxRequest(Request))
+                {
+                    return Json(new { 
+                        success = true, 
+                        redirectUrl = Url.Action("Login", "Application")
+                    });
+                }
+            
+                return RedirectToAction("Login");
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error during logout :: {ex.Message}" );
+                Logger.LogActivity($"{ex.StackTrace}" );
+                return RedirectToAction("Login");
+            }
         }
         
         [HttpGet]
@@ -106,7 +195,6 @@ namespace Grc.ui.App.Controllers {
 
         [HttpGet]
         public virtual IActionResult ChangeLanguage(string language) {
-             //Notify("Successfully saved");
             LocalizationService.SaveCurrentLanguage(language);
             return RedirectToAction("Register", "Application");
         }
@@ -117,6 +205,21 @@ namespace Grc.ui.App.Controllers {
         }
 
         #region Helper Methods
+
+        private IActionResult HandleValidationErrors(LoginModel model) {
+
+            //..for Ajax call
+            if (WebHelper.IsAjaxRequest(Request)) {
+                var errors = ModelState
+                    .Where(x => x.Value.Errors.Count > 0)
+                    .ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
+                return Json(new { success = false, errors = errors });
+            }
+    
+            //..for none Ajax call
+            Notify(LocalizationService.GetLocalizedLabel("Error.Clear"), "GRC MESSAGE", NotificationType.Error);
+            return View(model);
+        }
 
         private IActionResult HandleValidationErrors(CompanyRegistrationModel model) {
 
@@ -129,7 +232,7 @@ namespace Grc.ui.App.Controllers {
             }
     
             //..for none Ajax call
-            Notify("Please clear the errors and Try again", "GRC MESSAGE", NotificationType.Error);
+            Notify(LocalizationService.GetLocalizedLabel("Error.Clear"), "GRC MESSAGE", NotificationType.Error);
             return View(model);
         }
 
@@ -138,7 +241,7 @@ namespace Grc.ui.App.Controllers {
             string errorMessage = $"{error.Code} - {error.Message}";
             Logger.LogActivity($"Registration failed: {errorMessage}");
     
-            //..for Ajax call
+             //..for Ajax call
              if (WebHelper.IsAjaxRequest(Request)) {
                 Logger.LogActivity($"Sending to Ajax >>>>> ");
                 return Json(response);
@@ -162,7 +265,7 @@ namespace Grc.ui.App.Controllers {
         private IActionResult HandleServiceFailure(ServiceResponse serviceResponse, CompanyRegistrationModel model) {
             string errorMessage = serviceResponse != null 
                 ? $"{serviceResponse.StatusCode} - {serviceResponse.Message}" 
-                : "Unknown error occurred";
+                : LocalizationService.GetLocalizedLabel("Error.Unknown");
         
             //..for Ajax call
             if (WebHelper.IsAjaxRequest(Request)) {
@@ -171,7 +274,7 @@ namespace Grc.ui.App.Controllers {
             }
     
             //..for none Ajax call
-            Notify("Registration failed. Please try again.", "GRC MESSAGE", NotificationType.Error);
+            Notify(LocalizationService.GetLocalizedLabel("Registration.Error.Failed"), "GRC MESSAGE", NotificationType.Error);
             return View(model);
         }
 
@@ -201,6 +304,33 @@ namespace Grc.ui.App.Controllers {
                     serviceResponse.Status && 
                     serviceResponse.StatusCode == (int)GrcStatusCodes.SUCCESS;
         }
+
+        private IActionResult HandleUsernameValidationError(string errorMessage, LoginModel model) {
+            if (WebHelper.IsAjaxRequest(Request)) {
+                return Json(new { 
+                    success = false, 
+                    message = errorMessage,
+                    stage = "username"
+                });
+            }
+    
+            ModelState.AddModelError("Username", errorMessage);
+            return View(model);
+        }
+
+        private IActionResult HandleLoginError(GrcResponse<UserModel> response, LoginModel model) {
+            var error = response.Error;
+            string errorMessage = $"{error.Code} - {error.Message}";
+            Logger.LogActivity($"Login failed: {errorMessage}");
+            if (WebHelper.IsAjaxRequest(Request)) {
+                Logger.LogActivity($"Sending to Ajax >>>>> ");
+                return Json(response);
+             }
+    
+            ModelState.AddModelError("Password", errorMessage);
+            return View(model);
+        }
+
         #endregion
 
     }

@@ -6,5 +6,7 @@ namespace Grc.ui.App.Enums {
         COMPANYREGISTRATION = 0,
         [Description("User Login")]
         LOGIN = 1,
+        [Description("Login Username validation")]
+        USERNAMEVALIDATION = 2,
     }
 }

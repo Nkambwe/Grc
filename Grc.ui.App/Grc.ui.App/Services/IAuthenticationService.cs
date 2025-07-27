@@ -1,5 +1,4 @@
-﻿
-using Grc.ui.App.Http.Requests;
+﻿using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Models;
 
 namespace Grc.ui.App.Services {
@@ -13,7 +12,7 @@ namespace Grc.ui.App.Services {
         /// <returns>
         /// Task containing logged in user record
         /// </returns>
-        Task<UserModel> AuthenticateAsync(LoginModel user, string ipAddress);
+        Task<GrcResponse<UserModel>> AuthenticateAsync(LoginModel user, string ipAddress);
         /// <summary>
         /// Signin current loggedin user
         /// </summary>
@@ -30,7 +29,7 @@ namespace Grc.ui.App.Services {
         /// Get the current loggedin user
         /// </summary>
         /// <returns></returns>
-        Task<UserModel> GetCurrentUserAsync();
+        Task<GrcResponse<UserModel>> GetCurrentUserAsync();
 
         /// <summary>
         /// Check whether user is signed in
@@ -40,19 +39,6 @@ namespace Grc.ui.App.Services {
         /// </returns>
         Task<bool> IsSignedIn();
 
-        /// <summary>
-        /// Send one time login password via mail
-        /// </summary>
-        /// <param name="requestModel">Request model</param>
-        /// <returns></returns>
-        //Task SendOnetimePasswordAsync(PasswordResetModel requestModel);
-        
-        /// <summary>
-        /// Send in temporarly 2 factor login via phone
-        /// </summary>
-        /// <param name="requestModel">Request model</param>
-        /// <returns></returns>
-        //Task SendLoginCodeAsync(PasswordResetModel requestModel);
     }
 
 }

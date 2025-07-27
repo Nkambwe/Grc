@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace Grc.ui.App.Http.Responses {
+
     public class UserResponse {
         [JsonPropertyName("firstName")]
         public string FirstName { get; set; }

@@ -3,6 +3,7 @@ using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
 using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Models;
+using Microsoft.AspNetCore.Components;
 
 namespace Grc.ui.App.Helpers {
 
@@ -30,20 +31,19 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(dest => dest.IsVerified, opt => opt.MapFrom(src => false))
                 .ForMember(dest => dest.IsLogged, opt => opt.MapFrom(src => false))
                 .ForMember(dest => dest.Action, opt => opt.MapFrom(src => Activity.COMPANYREGISTRATION.GetDescription()))
-                .ForMember(dest => dest.EncryptFields, opt => opt.MapFrom(src => new string[]{"FirstName", "LastName", "OtherName", "Email", "PhoneNumber", "PFNumber", "UserName", "Password" }))
+                .ForMember(dest => dest.EncryptFields, opt => opt.MapFrom(src => new string[]{"FirstName", "LastName", "OtherName", "Email", "PhoneNumber", "PFNumber", "Password" }))
                 .ForMember(dest => dest.DecryptFields, opt => opt.MapFrom(src => new string[]{ }))
                 .ForMember(dest => dest.CreatedOn, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => "1"))
                 .ForMember(dest => dest.ModifiedOn, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => "1"));
 
-             CreateMap<LoginModel, UserSignInRequest>()
-                .ForMember(dest => dest.UsernameOrEmail, opt => opt.MapFrom(src => src.UsernameOrEmail))
-                .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password))
-                .ForMember(dest => dest.Action, opt => opt.MapFrom(src => Activity.LOGIN.GetDescription()))
-                .ForMember(dest => dest.DecryptFields, opt => opt.MapFrom(src => new string[]{ }))
-                .ForMember(dest => dest.DecryptFields, opt => opt.MapFrom(src => new string[]{ }))
-                .ForMember(dest => dest.IsPersistent, opt => opt.MapFrom(src => src.RememberMe));
+             CreateMap<UsernameValidationModel, UsernameValidationRequest>()
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Username))
+                .ForMember(dest => dest.IPAddress, opt => opt.MapFrom(src => src.IPAddress))
+                .ForMember(dest => dest.Action, opt => opt.MapFrom(src => Activity.USERNAMEVALIDATION.GetDescription()))
+                .ForMember(dest => dest.EncryptFields, opt => opt.MapFrom(src => src.Encrypt))
+                .ForMember(dest => dest.DecryptFields, opt => opt.MapFrom(src => src.Decrypt));
         }
     }
 }

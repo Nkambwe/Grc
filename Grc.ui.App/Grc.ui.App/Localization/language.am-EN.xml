@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Language Name="English US" IsDefault="true" IsRightToLeft="false">
-	Example
 	<LocaleResource Name="App.Version">
 		<Value>GRC SUITE 1.2</Value>
 	</LocaleResource>
@@ -14,9 +13,14 @@
 		<Value>Example. </Value>
 	</LocaleResource>
     <LocaleResource Name="App.Label.Welcome">
-        <Value>Welcome back</Value>
+        <Value>Welcome!</Value>
     </LocaleResource>
-    
+    <LocaleResource Name="App.Label.Signin">
+        <Value>Sign in</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Preparing">
+        <Value>Will be ready in a momemnt...</Value>
+    </LocaleResource>
 	<LocaleResource Name="Registration.Title">
 		<Value>Company Registration</Value>
 	</LocaleResource>
@@ -38,7 +42,10 @@
 	<LocaleResource Name="Registration.Error.General">
 		<Value>Please correct the errors in the current step before proceeding.</Value>
 	</LocaleResource>
-	<LocaleResource Name="User.Fields.FirstName">
+    <LocaleResource Name="Registration.Error.Failed">
+        <Value>Registration failed. Please try again.</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.FirstName">
 		<Value>First Name</Value>
 	</LocaleResource>
 	<LocaleResource Name="User.Fields.MidlleName">
@@ -161,11 +168,41 @@
 	<LocaleResource Name="Button.Submit">
 		<Value>Save</Value>
 	</LocaleResource>
-
-
-
+    <LocaleResource Name="Button.Signin">
+        <Value>Sign In</Value>
+    </LocaleResource>
+    <LocaleResource Name="Login.Enter.Username">
+        <Value>Enter Username</Value>
+    </LocaleResource>
+    <LocaleResource Name="Login.Enter.Password">
+        <Value>Enter Password</Value>
+    </LocaleResource>
+    <LocaleResource Name="Login.Enter.Remember.Me">
+        <Value>Remember Me</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Message.EnterPassword">
+        <Value>Password required for login</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Message.EnterUsername">
+        <Value>Username required for login</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Message.InvalidPassword">
+        <Value>Password provided is not correct</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Authentication.Failed">
+        <Value>Authentication failed. Please try again.</Value>
+    </LocaleResource>
     <LocaleResource Name="Error.Occurance">
         <Value>Error Ocuurred! System error has occurred</Value>
     </LocaleResource>
-    
+    <LocaleResource Name="Error.Clear">
+        <Value>Please clear the errors and Try again</Value>
+    </LocaleResource>
+    <LocaleResource Name="Error.Unknown">
+        <Value>Unknown error has occurred</Value>
+    </LocaleResource>
+    <LocaleResource Name="Error.Service.Unavailable">
+        <Value>Service unavailable. Please try again later.</Value>
+    </LocaleResource>
+
 </Language>

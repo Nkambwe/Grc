@@ -1,8 +1,111 @@
-﻿@{
-    Layout = "_Layout_01";
+﻿@using Grc.ui.App.Defaults
+@model LoginModel
+
+@{
+    Layout = "_Login_Layout";
     ViewData["Title"] = "GRC LOGIN";
 }
 
-<div class="main-container">
-    <h1 class="display-1 text-success">Login</h1>
+<!--antiforegry token-->
+
+<div class="login-container">
+
+    <div class="login-card">
+
+        <div class="login-header">
+
+           <div class="logo-box">
+                <img src="~/images/logo-white.png" />
+                <span>PostBank</span>
+           </div>
+
+            <h1>@Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Signin"))</h1>
+
+        </div>
+
+        <div id="username-stage" class="login-stage active">
+            <form id="username-form" class="login-form" novalidate>
+                <div class="form-group">
+                    <input type="text" 
+                           id="username-input" 
+                           name="Username" 
+                           class="form-control" 
+                           autocomplete="username"
+                           asp-for="Username"
+                           required>
+                    <label for="username-input" class="form-label">@Html.Raw(ILocalize.GetLocalizedLabel("Login.Enter.Username"))</label>
+                    <div id="username-error" class="error-message"></div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-login">
+                    <span class="btn-text">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Next"))</span>
+                    <span class="btn-spinner" style="display: none;">
+                        <i class="spinner"></i>
+                    </span>
+                </button>
+            </form>
+        </div>
+
+        <div id="password-stage" class="login-stage">
+
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="mdi mdi-account-lock"></i>
+                </div>
+                <div class="user-details">
+                    <span class="username-display" id="username-display"></span>
+                    <span class="display-name" id="display-name"></span>
+                </div>
+                <button type="button" class="btn-back" id="back-to-username">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+
+            <form id="password-form" class="login-form">
+                <input type="hidden" id="validated-username" name="UsernameOrEmail">
+                <div class="form-group">
+                    <input type="password"
+                           id="password-input"
+                           name="Password"
+                           class="form-control"
+                           asp-for="Password"
+                           autocomplete="current-password"
+                           placeholder=" "
+                           required>
+                    <label for="password-input" class="form-label">@Html.Raw(ILocalize.GetLocalizedLabel("Login.Enter.Password"))</label>
+                    <i class="mdi mdi-eye password-toggle" id="toggle-password"></i>
+                    <div id="password-error" class="error-message"></div>
+                </div>
+                <div class="form-group remember-me">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="RememberMe" id="remember-me">
+                        <span class="checkmark"></span>
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Login.Enter.Remember.Me"))
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary btn-login">
+                    <span class="btn-text">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Signin"))</span>
+                    <span class="btn-spinner" style="display: none;">
+                        <i class="spinner"></i>
+                    </span>
+                </button>
+            </form>
+
+        </div>
+
+        <div id="success-stage" class="login-stage">
+            <div class="success-content">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>@Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Welcome"))</h3>
+                <p>@Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Welcome"))</p>
+            </div>
+        </div>
+
+        <div class="login-footer">
+            <span>@CommonDefaults.AppVersion &copy; @DateTime.Now.Year PostBank</span>
+        </div>
+
+    </div>
+
 </div>

@@ -7,6 +7,7 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
 using System.Text.Json;
 
 namespace Grc.ui.App.Areas.Admin.Controllers {
@@ -27,19 +28,32 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         public async Task<IActionResult> Index(){
-            var currentUser = await _authService.GetCurrentUserAsync();
-            
-            var model = new AdminDashboardModel{
-                WelcomeMessage = $"{LocalizationService.GetLocalizedLabel("App.Label.Welcome")}, {currentUser?.FirstName}!",
-                TotalUsers = await _accessService.CountAllUsersAsync(),
-                ActiveUsers = await _accessService.CountActiveUsersAsync(),
-                LastLogin = DateTime.UtcNow
-            };
+            var model = new AdminDashboardModel();
+            try {
+                var grcResponse = await _authService.GetCurrentUserAsync();
+                if (grcResponse.HasError) {
+                    return HandleLoginErrors(grcResponse.Error.Message, model);
+                }
+
+                var currentUser = grcResponse.Data;
+                model.WelcomeMessage = $"{LocalizationService.GetLocalizedLabel("App.Label.Welcome")}, {currentUser?.FirstName}!";
+                model.TotalUsers = await _accessService.CountAllUsersAsync();
+                model.ActiveUsers = await _accessService.CountActiveUsersAsync();
+                model.LastLogin = DateTime.UtcNow;
+            } catch(Exception ex){ 
+                Logger.LogActivity($"Username validation error: {ex.Message}", "ERROR");
+                return HandleLoginErrors(LocalizationService.GetLocalizedLabel("Error.Service.Unavailable"), model);
+            }
 
             return View(model);
         }
 
-        public void Notify(string message, string title = "GRC NOTIFICATION", NotificationType type=NotificationType.Success) {
+        private IActionResult HandleLoginErrors(string error, AdminDashboardModel model) {
+            //..TODO redirect to login
+            return View(model);
+        }
+
+        public void Notify(string message, string title = "GRC NOTIFICATION", NotificationType type = NotificationType.Success) {
             var notificationMessage = new NotificationMessage() {
                 Title = title,
                 Message = message,

@@ -1,4 +1,5 @@
-﻿using Grc.ui.App.Models;
+﻿using Grc.ui.App.Http.Responses;
+using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 
 namespace Grc.ui.App.Http {
@@ -12,7 +13,7 @@ namespace Grc.ui.App.Http {
         /// <returns>
         /// Task containing user with provided ID or null
         /// </returns>
-        Task<UserModel> GetUserByIdAsync(long userId);
+        Task<GrcResponse<UserModel>> GetUserByIdAsync(long userId);
 
         /// <summary>
         /// Get user info by user email address
@@ -21,7 +22,7 @@ namespace Grc.ui.App.Http {
         /// <returns>
         /// Task containing user with provided email address or null
         /// </returns>
-        Task<UserModel> GetUserByEmailAsync(string email);
+        Task<GrcResponse<UserModel>> GetUserByEmailAsync(string email);
         
         /// <summary>
         /// Get user info by user email address
@@ -30,8 +31,16 @@ namespace Grc.ui.App.Http {
         /// <returns>
         /// Task containing user with provided email address or null
         /// </returns>
-        Task<UserModel> GetUserByUsernameAsync(string username);
+        Task<GrcResponse<UserModel>> GetUserByUsernameAsync(string username);
 
+        /// <summary>
+        /// Get user validation
+        /// </summary>
+        /// <param name="model">Login model to validate agnest</param>
+        /// <returns>
+        /// </returns>
+        Task<GrcResponse<UsernameValidationResponse>> ValidateUsernameAsync(UsernameValidationModel model);
+        
         /// <summary>
         /// Get total count for all users in the system
         /// </summary>
@@ -45,6 +54,7 @@ namespace Grc.ui.App.Http {
         /// </summary>
         /// <returns></returns>
         Task<int> CountActiveUsersAsync();
+
     }
 
 }

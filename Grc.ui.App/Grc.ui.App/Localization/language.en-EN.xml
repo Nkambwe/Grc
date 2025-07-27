@@ -6,14 +6,17 @@
 	<LocaleResource Name="App.Registration.Header">
 		<Value>System Setup</Value>
 	</LocaleResource>
+    <LocaleResource Name="App.System.Language">
+        <Value>System Language</Value>
+    </LocaleResource>
 	<LocaleResource Name="App.Label.Example">
 		<Value>For Example. </Value>
 	</LocaleResource>
-	<LocaleResource Name="App.System.Language">
-		<Value>System Language</Value>
-	</LocaleResource>
     <LocaleResource Name="App.Label.Welcome">
         <Value>Welcome back</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Signin">
+        <Value>Sign in</Value>
     </LocaleResource>
     
     <LocaleResource Name="Registration.Title">
@@ -37,6 +40,9 @@
 	<LocaleResource Name="Registration.Error.General">
 		<Value>Please correct the errors in the current step before proceeding.</Value>
 	</LocaleResource>
+    <LocaleResource Name="Registration.Error.Failed">
+        <Value>Registration failed. Please try again.</Value>
+    </LocaleResource>
 	<LocaleResource Name="User.Fields.FirstName">
 		<Value>First Name</Value>
 	</LocaleResource>
@@ -161,9 +167,38 @@
 		<Value>Save</Value>
 	</LocaleResource>
 
-
+    <LocaleResource Name="Button.Signin">
+        <Value>Sign In</Value>
+    </LocaleResource>
+    <LocaleResource Name="Login.Enter.Username">
+        <Value>Enter Username</Value>
+    </LocaleResource>
+    <LocaleResource Name="Login.Enter.Password">
+        <Value>Enter Password</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Message.EnterPassword">
+        <Value>Password required for login</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Message.EnterUsername">
+        <Value>Username required for login</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Message.InvalidPassword">
+        <Value>Password provided is not correct</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Authentication.Failed">
+        <Value>Authentication failed. Please try again.</Value>
+    </LocaleResource>
     <LocaleResource Name="Error.Occurance">
         <Value>Error Ocuurred! System error has occurred</Value>
     </LocaleResource>
-
+    <LocaleResource Name="Error.Clear">
+        <Value>Please clear the errors and Try again</Value>
+    </LocaleResource>
+    <LocaleResource Name="Error.Unknown">
+        <Value>Unknown error has occurred</Value>
+    </LocaleResource>
+    <LocaleResource Name="Error.Service.Unavailable">
+        <Value>Service unavailable. Please try again later.</Value>
+    </LocaleResource>
+    
 </Language>

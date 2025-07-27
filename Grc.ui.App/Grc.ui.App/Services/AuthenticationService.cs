@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Grc.ui.App.Enums;
 using Grc.ui.App.Helpers;
 using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
@@ -9,6 +10,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using NuGet.Protocol.Plugins;
 using System.Net;
 using System.Security.Claims;
+using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Grc.ui.App.Services {
 
@@ -27,25 +30,37 @@ namespace Grc.ui.App.Services {
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<UserModel> AuthenticateAsync(LoginModel user, string ipAddress) {
+        public async Task<GrcResponse<UserModel>> AuthenticateAsync(LoginModel model, string ipAddress) {
+            //..validate login request
+            if(model == null) {
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    "Request record cannot be empty",
+                    "Invalid user request"
+                );
+        
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<UserModel>(error);
+            }
+
             try {
-                var request = Mapper.Map<UserSignInRequest>(user);
+                
+                var request = Mapper.Map<UserSignInRequest>(model);
                 request.IPAddress = ipAddress;
 
-                var endpoint = $"{EndpointProvider.Sam.Users}/signin";
+                var endpoint = $"{EndpointProvider.Sam.Users}/auth";
                 var response = await HttpHandler.PostAsync<UserSignInRequest, UserModel>(endpoint, request);
-
                 if (!response.HasError)
                     return null;
 
-                return Mapper.Map<UserModel>(response.Data);
+                return new GrcResponse<UserModel>(response.Data); 
             } catch (Exception ex) {
                 Logger.LogActivity($"Authentication failed: {ex.Message}", "ERROR");
                 throw new GRCException("Uanble to authenticate user.", ex);
             }
         }
 
-        public async Task<UserModel> GetCurrentUserAsync() {
+        public async Task<GrcResponse<UserModel>>GetCurrentUserAsync() {
             try {
                 var endpoint = $"{EndpointProvider.Sam.Users}/current-user";
                 var response = await HttpHandler.GetAsync<UserResponse>(endpoint);
@@ -54,8 +69,7 @@ namespace Grc.ui.App.Services {
                     return null;
                 }
 
-                var user = Mapper.Map<UserModel>(response.Data);
-                return user;
+                return new GrcResponse<UserModel>(Mapper.Map<UserModel>(response.Data)); 
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"GetCurrentUser failed: {httpEx.Message}", "ERROR");
                 throw new GRCException("Could not retrieve current user. Network issue.", httpEx);
@@ -134,42 +148,6 @@ namespace Grc.ui.App.Services {
                 throw new GRCException("An unexpected error occurred during sign out.", ex);
             }
         }
-        
-        //public async Task SendLoginCodeAsync(PasswordResetModel requestModel) {
-        //    try {
-        //        var endpoint = $"{EndpointProvider.Sam.Sambase}/auth/sendcode";
-
-        //        var request = Mapper.Map<ForgotPasswordPhoneRequest>(requestModel);
-        //        var response = await HttpHandler.SendAsync(HttpMethod.Post, endpoint, request);
-        //        if (response.HasError) {
-        //            Logger.LogActivity($"Failed to fetch current user: {response.Error?.Message}", "WARNING");
-        //        }
-        //    } catch (HttpRequestException httpEx) {
-        //        Logger.LogActivity($"GetCurrentUser failed: {httpEx.Message}", "ERROR");
-        //        throw new GRCException("Could not retrieve current user. Network issue.", httpEx);
-        //    } catch (Exception ex) {
-        //        Logger.LogActivity($"Unexpected error in GetCurrentUser: {ex.Message}", "ERROR");
-        //        throw new GRCException("An error occurred while getting the current user.", ex);
-        //    }
-        //}
-
-        //public async Task SendOnetimePasswordAsync(PasswordResetModel requestModel) {
-        //    try {
-        //        var endpoint = $"{EndpointProvider.Sam.Sambase}/auth/sendcode";
-
-        //        var request = Mapper.Map<ForgotPasswordEmailRequest>(requestModel);
-        //        var response = await HttpHandler.SendAsync(HttpMethod.Post, endpoint, request);
-        //        if (response.HasError) {
-        //            Logger.LogActivity($"Failed to fetch current user: {response.Error?.Message}", "WARNING");
-        //        }
-        //    } catch (HttpRequestException httpEx) {
-        //        Logger.LogActivity($"GetCurrentUser failed: {httpEx.Message}", "ERROR");
-        //        throw new GRCException("Could not retrieve current user. Network issue.", httpEx);
-        //    } catch (Exception ex) {
-        //        Logger.LogActivity($"Unexpected error in GetCurrentUser: {ex.Message}", "ERROR");
-        //        throw new GRCException("An error occurred while getting the current user.", ex);
-        //    }
-        //}
 
     }
 

@@ -1,13 +1,16 @@
 wwwroot\css\app.css
 wwwroot\css\color-pallete.css
 wwwroot\css\grc-style.css
+wwwroot\css\login-style.css
 wwwroot\css\register-styles.css
 wwwroot\favicon.ico
 wwwroot\images\404.png
 wwwroot\images\503.png
 wwwroot\images\logo.png
+wwwroot\images\logo-white.png
 wwwroot\images\no_service.png
 wwwroot\js\grc-app.js
+wwwroot\js\login-script.js
 wwwroot\js\register-script.js
 wwwroot\lib\bootstrap\dist\css\bootstrap.css
 wwwroot\lib\bootstrap\dist\css\bootstrap.css.map

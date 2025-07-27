@@ -11,6 +11,13 @@
                 defaults: new { controller = "Application", action = "Index" }
             );
 
+            // validate username
+            routeBuilder.MapControllerRoute(
+                name: "login",
+                pattern: "/login/validate-username",
+                defaults: new { controller = "Application", action = "ValidateUsername" }
+            );
+
             // Dashboard
             routeBuilder.MapControllerRoute(
                 name: "login",
@@ -21,7 +28,7 @@
             routeBuilder.MapControllerRoute(
                 name: "logout",
                 pattern: "/app/logout",
-                defaults: new { controller = "Application", action = "Login" }
+                defaults: new { controller = "Application", action = "Logout" }
             );
 
             // No service

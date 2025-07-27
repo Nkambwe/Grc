@@ -17,6 +17,10 @@
       "PackagePath": "staticwebassets\\css\\grc-style.css"
     },
     {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\login-style.css",
+      "PackagePath": "staticwebassets\\css\\login-style.css"
+    },
+    {
       "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\register-styles.css",
       "PackagePath": "staticwebassets\\css\\register-styles.css"
     },
@@ -33,6 +37,10 @@
       "PackagePath": "staticwebassets\\images\\503.png"
     },
     {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\images\\logo-white.png",
+      "PackagePath": "staticwebassets\\images\\logo-white.png"
+    },
+    {
       "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\images\\logo.png",
       "PackagePath": "staticwebassets\\images\\logo.png"
     },
@@ -43,6 +51,10 @@
     {
       "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\grc-app.js",
       "PackagePath": "staticwebassets\\js\\grc-app.js"
+    },
+    {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\login-script.js",
+      "PackagePath": "staticwebassets\\js\\login-script.js"
     },
     {
       "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\register-script.js",

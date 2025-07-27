@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "htcprtbtK5fykzq43mDA25+t5tJNTbm2tb4n5P6WSk4=",
+  "Hash": "2Loms+FTnXVDrkbbk/+Bk5EU0UyBGjghxLTYFoXIrJY=",
   "Source": "Grc.ui.App",
   "BasePath": "_content/Grc.ui.App",
   "Mode": "Default",
@@ -122,6 +122,27 @@
       "OriginalItemSpec": "wwwroot\\css\\grc-style.css"
     },
     {
+      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\login-style.css",
+      "SourceId": "Grc.ui.App",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\",
+      "BasePath": "_content/Grc.ui.App",
+      "RelativePath": "css/login-style#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "phtbvvkguf",
+      "Integrity": "DQW45MPudi4eEXG85jbOseHIiNN555Ov7gtSUfXNpV0=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\login-style.css"
+    },
+    {
       "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\register-styles.css",
       "SourceId": "Grc.ui.App",
       "SourceType": "Discovered",
@@ -227,6 +248,27 @@
       "OriginalItemSpec": "wwwroot\\images\\logo.png"
     },
     {
+      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\images\\logo-white.png",
+      "SourceId": "Grc.ui.App",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\",
+      "BasePath": "_content/Grc.ui.App",
+      "RelativePath": "images/logo-white#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "hsh1wi1ibv",
+      "Integrity": "r7cEPi1nBN2fcZwGlBwdZBQeUCb7+lSlKgsZgdHB3Bo=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\logo-white.png"
+    },
+    {
       "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\images\\no_service.png",
       "SourceId": "Grc.ui.App",
       "SourceType": "Discovered",
@@ -267,6 +309,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\grc-app.js"
+    },
+    {
+      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\login-script.js",
+      "SourceId": "Grc.ui.App",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\",
+      "BasePath": "_content/Grc.ui.App",
+      "RelativePath": "js/login-script#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "9853lie5pi",
+      "Integrity": "x+U4C6pk6UnHF4WG0sAKC7U/C6MMis7cJ5cxm6AdT/4=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\login-script.js"
     },
     {
       "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\register-script.js",
@@ -2995,6 +3058,88 @@
       ]
     },
     {
+      "Route": "css/login-style.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\login-style.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "7612"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"DQW45MPudi4eEXG85jbOseHIiNN555Ov7gtSUfXNpV0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 27 Jul 2025 15:41:50 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-DQW45MPudi4eEXG85jbOseHIiNN555Ov7gtSUfXNpV0="
+        }
+      ]
+    },
+    {
+      "Route": "css/login-style.phtbvvkguf.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\login-style.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "7612"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"DQW45MPudi4eEXG85jbOseHIiNN555Ov7gtSUfXNpV0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 27 Jul 2025 15:41:50 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "phtbvvkguf"
+        },
+        {
+          "Name": "label",
+          "Value": "css/login-style.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-DQW45MPudi4eEXG85jbOseHIiNN555Ov7gtSUfXNpV0="
+        }
+      ]
+    },
+    {
       "Route": "css/register-styles.css",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\register-styles.css",
       "Selectors": [],
@@ -3181,7 +3326,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 27 Jul 2025 04:01:40 GMT"
+          "Value": "Sun, 27 Jul 2025 12:21:35 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3218,7 +3363,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 27 Jul 2025 04:01:40 GMT"
+          "Value": "Sun, 27 Jul 2025 12:21:35 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3263,7 +3408,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 27 Jul 2025 04:01:40 GMT"
+          "Value": "Sun, 27 Jul 2025 12:21:35 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3308,7 +3453,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 27 Jul 2025 04:01:40 GMT"
+          "Value": "Sun, 27 Jul 2025 12:21:35 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3569,6 +3714,88 @@
       ]
     },
     {
+      "Route": "images/logo-white.hsh1wi1ibv.png",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\images\\logo-white.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6091"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"r7cEPi1nBN2fcZwGlBwdZBQeUCb7+lSlKgsZgdHB3Bo=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 27 Jul 2025 09:47:21 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "hsh1wi1ibv"
+        },
+        {
+          "Name": "label",
+          "Value": "images/logo-white.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-r7cEPi1nBN2fcZwGlBwdZBQeUCb7+lSlKgsZgdHB3Bo="
+        }
+      ]
+    },
+    {
+      "Route": "images/logo-white.png",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\images\\logo-white.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6091"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"r7cEPi1nBN2fcZwGlBwdZBQeUCb7+lSlKgsZgdHB3Bo=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 27 Jul 2025 09:47:21 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-r7cEPi1nBN2fcZwGlBwdZBQeUCb7+lSlKgsZgdHB3Bo="
+        }
+      ]
+    },
+    {
       "Route": "images/no_service.l2051bc2o6.png",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\images\\no_service.png",
       "Selectors": [],
@@ -3729,6 +3956,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-DDMrpaLIHLeykhywHiOsih8ONgmKwyVMLSeawdEOsDI="
+        }
+      ]
+    },
+    {
+      "Route": "js/login-script.9853lie5pi.js",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\login-script.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "9675"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"x+U4C6pk6UnHF4WG0sAKC7U/C6MMis7cJ5cxm6AdT/4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 27 Jul 2025 15:51:33 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "9853lie5pi"
+        },
+        {
+          "Name": "label",
+          "Value": "js/login-script.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-x+U4C6pk6UnHF4WG0sAKC7U/C6MMis7cJ5cxm6AdT/4="
+        }
+      ]
+    },
+    {
+      "Route": "js/login-script.js",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\login-script.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "9675"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"x+U4C6pk6UnHF4WG0sAKC7U/C6MMis7cJ5cxm6AdT/4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 27 Jul 2025 15:51:33 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-x+U4C6pk6UnHF4WG0sAKC7U/C6MMis7cJ5cxm6AdT/4="
         }
       ]
     },

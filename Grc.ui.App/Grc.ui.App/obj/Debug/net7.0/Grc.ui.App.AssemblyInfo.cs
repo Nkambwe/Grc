@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Grc.ui.App")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7820a783cd934f456c27a5572a29671261fb5384")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4162fc618b2127d196f03869cc45dc4190e9ae69")]
 [assembly: System.Reflection.AssemblyProductAttribute("Grc.ui.App")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Grc.ui.App")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
