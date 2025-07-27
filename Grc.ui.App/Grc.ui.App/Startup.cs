@@ -71,7 +71,7 @@ namespace Grc.ui.App {
             });
             services.AddScoped<GrcAntiForgeryTokenAttribute>();
 
-            services.AddAuthentication("Cookies").AddCookie("Cookies", options => {
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options => {
                 options.Cookie.Name = CookieDefaults.UserCookie;
                 options.LoginPath = "/login/userlogin";
                 options.LogoutPath = "/app/logout";
@@ -113,9 +113,6 @@ namespace Grc.ui.App {
             //..register taghelper
             services.AddScoped<GrcAntiForgeryTokenTagHelper>();
 
-            //..authentication cookies
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
-        
             //..add logging 
             services.AddLogging(builder => {
                 builder.AddConsole();
