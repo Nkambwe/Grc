@@ -1,4 +1,5 @@
-﻿using Grc.Middleware.Api.Data.Containers;
+﻿using AutoMapper;
+using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Org;
 using Grc.Middleware.Api.Utils;
 using System.Text.Json;
@@ -10,8 +11,8 @@ namespace Grc.Middleware.Api.Services {
 
 
         public CompanyService(IUnitOfWorkFactory unitOfWorkFactory, 
-                             IServiceLoggerFactory loggerFactory)
-            : base(loggerFactory, unitOfWorkFactory) {
+                             IServiceLoggerFactory loggerFactory, IMapper mapper)
+            : base(loggerFactory, unitOfWorkFactory, mapper) {
             Logger.Channel = $"COMPANY-{DateTime.Now:yyyMMddHHmmss}";
         }
 

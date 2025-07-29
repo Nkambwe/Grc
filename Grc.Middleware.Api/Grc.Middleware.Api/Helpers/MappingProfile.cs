@@ -2,6 +2,7 @@
 using Grc.Middleware.Api.Data.Entities.Org;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Http.Requests;
+using Grc.Middleware.Api.Http.Responses;
 
 namespace Grc.Middleware.Api.Helpers {
     public class MappingProfile : Profile {
@@ -41,6 +42,32 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(us => us.CreatedOn, reg => reg.MapFrom(o => o.CreatedOn))
                 .ForMember(us => us.LastModifiedBy, reg => reg.MapFrom(o => (o.ModifiedBy ?? string.Empty).Trim()))
                 .ForMember(us => us.CreatedOn, reg => reg.MapFrom(o => o.CreatedOn));
+
+            //..map user from registration
+            CreateMap<SystemUser, AuthenticationResponse>()
+                .ForMember(a => a.UserId, reg => reg.MapFrom(o => 0))
+                .ForMember(a => a.FirstName, reg => reg.MapFrom(o => (o.FirstName ?? string.Empty).Trim()))
+                .ForMember(a => a.LastName, reg => reg.MapFrom(o => (o.LastName ?? string.Empty).Trim()))
+                .ForMember(a => a.MiddleName, reg => reg.MapFrom(o => (o.OtherName ?? string.Empty).Trim()))
+                .ForMember(a => a.Email, reg => reg.MapFrom(o => (o.EmailAddress ?? string.Empty).Trim()))
+                .ForMember(a => a.Username, reg => reg.MapFrom(o => (o.Username ?? string.Empty).Trim()))
+                .ForMember(a => a.Password, reg => reg.MapFrom(o => (o.PasswordHash ?? string.Empty).Trim()))
+                .ForMember(a => a.PFNumber, reg => reg.MapFrom(o => (o.PFNumber ?? string.Empty).Trim()))
+                .ForMember(a => a.SolId, reg => reg.MapFrom(o => (o.BranchSolId ?? "MAIN").Trim()))
+                .ForMember(a => a.PhoneNumber, reg => reg.MapFrom(o => o.PhoneNumber))
+                .ForMember(a => a.RoleId, reg => reg.MapFrom(o => o.RoleId))
+                .ForMember(a => a.RoleName, reg => reg.MapFrom(o => o.Role.RoleName))
+                .ForMember(a => a.DepartmentId, reg => reg.MapFrom(o => o.DepartmentId))
+                .ForMember(a => a.DepartmentCode, reg => reg.MapFrom(o => o.Department.DepartmenCode))
+                .ForMember(a => a.UnitCode, reg => reg.MapFrom(o => o.DepartmentUnit))
+                .ForMember(a => a.IsActive, reg => reg.MapFrom(o => o.IsActive))
+                .ForMember(a => a.IsVerified, reg => reg.MapFrom(o => o.IsVerified))
+                .ForMember(a => a.IsApproved, reg => reg.MapFrom(o => o.IsApproved))
+                .ForMember(a => a.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
+                .ForMember(a => a.RedirectUrl, reg => reg.MapFrom(o => string.Empty))
+                .ForMember(a => a.Favourites, reg => reg.MapFrom(o => new List<string>()))
+                .ForMember(a => a.Views, reg => reg.MapFrom(o => new List<string>()))
+                .ForMember(a => a.Claims, reg => reg.MapFrom(o => new Dictionary<string, object>()));
         }
 
     }

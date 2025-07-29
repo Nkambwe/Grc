@@ -28,6 +28,121 @@ namespace Grc.Middleware.Api.Controllers {
             _accessService = accessService;
         }
 
+        [HttpPost("sam/users/validate-username")]
+        public async Task<IActionResult> ValidateUsername([FromBody] UsernameValidationRequest request) {
+
+            try {
+                Logger.LogActivity("Validate username at login", "INFO");
+                if (request == null) { 
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+        
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                var response = await _accessService.ValidateUsernameAsync(request.Username);
+                if(response != null){  
+                    //..decrypt firstName
+                    if(!string.IsNullOrEmpty(response.DisplayName)){ 
+                        request.DecryptFields = new string[] { "DisplayName"};
+                        response = Cypher.DecryptProperties(response, request.DecryptFields);
+                    }
+                    
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    return Ok(new GrcResponse<UsernameValidationResponse>(response));
+                } else { 
+                    var error = new ResponseError(
+                        ResponseCodes.FAILED,
+                        $"Oops! Something thing went wrong",
+                        "Failed to validate username. An error occurrred"
+                    ); 
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<UsernameValidationResponse>(error));
+                }
+            } catch (Exception ex) { 
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var error = new ResponseError(
+                    ResponseCodes.BADREQUEST,
+                    $"Oops! Something thing went wrong",
+                    $"System Error - {ex.Message}"
+                );
+        
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<UsernameValidationResponse>(error));
+            }
+
+        }
+
+        [HttpPost("sam/users/auth")]
+        public async Task<IActionResult> AuthenticateAsync([FromBody] LoginRequest request) {
+            try {
+                Logger.LogActivity("Authenticate user at login", "INFO");
+        
+                if (request == null || string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password)) { 
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Username and password are required",
+                        "Invalid login credentials"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<AuthenticationResponse>(error));
+                }
+
+                Logger.LogActivity($"Authentication Request >> {JsonSerializer.Serialize(new { Username = request.Username, HasPassword = !string.IsNullOrEmpty(request.Password) })}", "INFO");
+        
+                var response = await _accessService.AuthenticateUserAsync(request.Username);
+                if(response != null && response.IsAuthenticated) {  
+                    //..decrypt sensitive fields 
+                    if(!string.IsNullOrEmpty(response.Username) || !string.IsNullOrEmpty(response.Email)){ 
+                        request.DecryptFields = new string[] { "PFNumber", "Email", "FirstName", "LastName", "PhoneNumber", "Password" };
+                        response = Cypher.DecryptProperties(response, request.DecryptFields);
+                    }
+
+                    //..authenticate user
+                    if(response.IsActive && !response.IsDeleted) { 
+                        response.IsAuthenticated = ExtendedHashMapper.VerifyPassword(request.Password, response.Password);
+                    }
+
+                    Logger.LogActivity($"AUTHENTICATION SUCCESS: User {request.Username} authenticated successfully");
+                    return Ok(new GrcResponse<AuthenticationResponse>(response));
+                } else { 
+                    var error = new ResponseError(
+                        ResponseCodes.UNAUTHORIZED,
+                        "Invalid username or password",
+                        "Authentication failed - please check your credentials"
+                    ); 
+            
+                    Logger.LogActivity($"AUTHENTICATION FAILED: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<AuthenticationResponse>(error));
+                }
+            } catch (Exception ex) { 
+                Logger.LogActivity($"Authentication Error: {ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+        
+                var error = new ResponseError(
+                    ResponseCodes.SERVERERROR,
+                    "Authentication service temporarily unavailable",
+                    $"System Error - {ex.Message}"
+                );
+
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<AuthenticationResponse>(error));
+            }
+        }
+
+        //[HttpGet("sam/users/signin")]
+        //public async Task<IActionResult> Signin([FromBody] LoginRequest loginRequest) {
+
+        //}
+        
         [Authorize]
         [HttpGet("sam/users/current-user")]
         public async Task<IActionResult> GetCurrentUser() {
@@ -66,14 +181,14 @@ namespace Grc.Middleware.Api.Controllers {
                 Cypher.EncryptProperties(user, ExtendedHashMapper.GetEncryptedUserFields());
                 
                 //..map user record to response
-                var record = Mapper.Map<UserResponse>(user);
+                var record = Mapper.Map<AuthenticationResponse>(user);
                 record.SolId = user.BranchSolId;
                 record.RoleId = user.RoleId;
                 record.DepartmentId = user.DepartmentId;
                 record.Favourites = new();
                 record.Views = new();
 
-                return Ok(new GrcResponse<UserResponse>(record));
+                return Ok(new GrcResponse<AuthenticationResponse>(record));
             } catch (Exception ex) { 
                 Logger.LogActivity($"{ex.Message}", "ERROR");
                 Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
@@ -85,15 +200,10 @@ namespace Grc.Middleware.Api.Controllers {
                 );
         
                 Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
-                return Ok(new GrcResponse<UserResponse>(error));
+                return Ok(new GrcResponse<AuthenticationResponse>(error));
             }
             
         }
-
-        //[HttpGet("sam/users/signin")]
-        //public async Task<IActionResult> Signin([FromBody] LoginRequest loginRequest) {
-
-        //}
 
     }
 }

@@ -2,7 +2,7 @@
 
     public class LoginRequest {
         public long UserId { get; set; }
-        public string UsernameOrEmail { get; set; }
+        public string Username { get; set; }
         public string Password { get; set; }
         public bool IsPersistent { get; set; }
         public string Action { get; set; }

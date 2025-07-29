@@ -1,12 +1,67 @@
 ﻿using Grc.Middleware.Api.Data.Entities.System;
+using Grc.Middleware.Api.Http.Responses;
 
 namespace Grc.Middleware.Api.Services {
     public interface ISystemAccessService: IBaseService {
+        /// <summary>
+        /// Get user record by ID
+        /// </summary>
+        /// <param name="id">User ID to look for</param>
+        /// <returns>
+        /// Task containg System user record
+        /// </returns>
         Task<SystemUser> GetByIdAsync(long id);
+        /// <summary>
+        /// Get user record by Email address
+        /// </summary>
+        /// <param name="email">User email to look for</param>
+        /// <returns>
+        /// Task containg System user record
+        /// </returns>
         Task<SystemUser> GetByEmailAsync(string email);
+        /// <summary>
+        /// Get user record by username
+        /// </summary>
+        /// <param name="username">User role ID</param>
+        /// <returns>
+        /// Task containg System role name
+        /// </returns>
         Task<SystemUser> GetByUsernameAsync(string username);
+        /// <summary>
+        /// Get user role by username address
+        /// </summary>
+        /// <param name="userId">User username to look for</param>
+        /// <returns>
+        /// Task containg System user record
+        /// </returns>
         Task<string> GetUserRoleAsync(long userId);
+        /// <summary>
+        /// Get total count of users in the system
+        /// </summary>
+        /// <returns>
+        /// Task containg System user count
+        /// </returns>
         Task<int> GetTotalUsersCountAsync();
+        /// <summary>
+        /// Get total count of active users in the system
+        /// </summary>
+        /// <returns>
+        /// Task containg count of active system users
+        /// </returns>
         Task<int> GetActiveUsersCountAsync();
+        /// <summary>
+        /// Validate username in the system
+        /// </summary>
+        /// <param name="username">Username to verify</param>
+        /// <returns>
+        /// Task containg verification response of username
+        /// </returns>
+        Task<UsernameValidationResponse> ValidateUsernameAsync(string username);
+        /// <summary>
+        /// Authenticate system user
+        /// </summary>
+        /// <param name="username">Username to authenticate</param>
+        /// <returns></returns>
+        Task<AuthenticationResponse> AuthenticateUserAsync(string username);
     }
 }
