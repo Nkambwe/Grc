@@ -99,10 +99,10 @@ namespace Grc.Middleware.Api.Controllers {
                 Logger.LogActivity($"Authentication Request >> {JsonSerializer.Serialize(new { Username = request.Username, HasPassword = !string.IsNullOrEmpty(request.Password) })}", "INFO");
         
                 var response = await _accessService.AuthenticateUserAsync(request.Username);
-                if(response != null && response.IsAuthenticated) {  
+                if(response != null) {  
                     //..decrypt sensitive fields 
-                    if(!string.IsNullOrEmpty(response.Username) || !string.IsNullOrEmpty(response.Email)){ 
-                        request.DecryptFields = new string[] { "PFNumber", "Email", "FirstName", "LastName", "PhoneNumber", "Password" };
+                    if(!string.IsNullOrEmpty(response.Username) || !string.IsNullOrEmpty(response.EmailAddress)){ 
+                        request.DecryptFields = new string[] { "PFNumber", "EmailAddress", "FirstName", "LastName", "MiddleName", "PhoneNumber", "Password" };
                         response = Cypher.DecryptProperties(response, request.DecryptFields);
                     }
 

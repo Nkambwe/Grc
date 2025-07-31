@@ -97,7 +97,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
-        public virtual async Task<IActionResult> Login(LoginModel model) {
+        public virtual async Task<IActionResult> Login([FromBody] LoginModel model) {
             if (!ModelState.IsValid) {
                 return HandleValidationErrors(model);
             }

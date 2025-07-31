@@ -8,5 +8,7 @@ namespace Grc.ui.App.Enums {
         LOGIN = 1,
         [Description("Login Username validation")]
         USERNAMEVALIDATION = 2,
+        [Description("User authentication")]
+        AUTHENTICATE = 3,
     }
 }

@@ -259,7 +259,7 @@ namespace Grc.Middleware.Api.Services {
                 }
 
                 // Check if user is active
-                if (!user.IsDeleted) {
+                if (user.IsDeleted) {
                     Logger.LogActivity($"Deleted user attempted login: {username}", "WARN");
                     response.IsAuthenticated = false;
                     response.Message = $"User account was deleted";

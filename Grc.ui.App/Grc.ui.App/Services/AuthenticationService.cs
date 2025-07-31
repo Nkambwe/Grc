@@ -49,11 +49,7 @@ namespace Grc.ui.App.Services {
                 request.IPAddress = ipAddress;
 
                 var endpoint = $"{EndpointProvider.Sam.Users}/auth";
-                var response = await HttpHandler.PostAsync<UserSignInRequest, UserModel>(endpoint, request);
-                if (!response.HasError)
-                    return null;
-
-                return new GrcResponse<UserModel>(response.Data); 
+                return await HttpHandler.PostAsync<UserSignInRequest, UserModel>(endpoint, request);
             } catch (Exception ex) {
                 Logger.LogActivity($"Authentication failed: {ex.Message}", "ERROR");
                 throw new GRCException("Uanble to authenticate user.", ex);

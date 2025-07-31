@@ -14,8 +14,8 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("middleName")]
         public string MiddleName { get; set; }
 
-        [JsonPropertyName("email")]
-        public string Email { get; set; }
+        [JsonPropertyName("emailAddress")]
+        public string EmailAddress { get; set; }
 
         [JsonPropertyName("phone")]
         public string PhoneNumber { get; set; }

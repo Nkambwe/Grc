@@ -49,7 +49,7 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(a => a.FirstName, reg => reg.MapFrom(o => (o.FirstName ?? string.Empty).Trim()))
                 .ForMember(a => a.LastName, reg => reg.MapFrom(o => (o.LastName ?? string.Empty).Trim()))
                 .ForMember(a => a.MiddleName, reg => reg.MapFrom(o => (o.OtherName ?? string.Empty).Trim()))
-                .ForMember(a => a.Email, reg => reg.MapFrom(o => (o.EmailAddress ?? string.Empty).Trim()))
+                .ForMember(a => a.EmailAddress, reg => reg.MapFrom(o => (o.EmailAddress ?? string.Empty).Trim()))
                 .ForMember(a => a.Username, reg => reg.MapFrom(o => (o.Username ?? string.Empty).Trim()))
                 .ForMember(a => a.Password, reg => reg.MapFrom(o => (o.PasswordHash ?? string.Empty).Trim()))
                 .ForMember(a => a.PFNumber, reg => reg.MapFrom(o => (o.PFNumber ?? string.Empty).Trim()))
@@ -68,6 +68,7 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(a => a.Favourites, reg => reg.MapFrom(o => new List<string>()))
                 .ForMember(a => a.Views, reg => reg.MapFrom(o => new List<string>()))
                 .ForMember(a => a.Claims, reg => reg.MapFrom(o => new Dictionary<string, object>()));
+        
         }
 
     }

@@ -52,7 +52,7 @@
             }
         });
         
-        await authenticateUser(formData);
+        await authenticateUser(username, password);
     });
     
     // Back button
@@ -111,7 +111,9 @@
                     const errorData = JSON.parse(error.responseText);
                     errorMessage = errorData.message || errorMessage;
                 } catch (parseError) {
-                    // Keep default error message
+                    //..keep default error message
+                    errorMessage = "Ajax error-check it out in JS";
+                    console.log('Supposed to show default error message');
                 }
             }
             
@@ -122,30 +124,36 @@
     }
     
     //..authenticate user function
-    async function authenticateUser(formData) {
+     async function authenticateUser(username, password) {
         const $button = $passwordForm.find('.btn-login');
         setButtonLoading($button, true);
         clearErrors();
         
         try {
             const token = getAntiForgeryToken();
-            console.log('Sending token in headers:', token);
+            console.log('Authenticating user:', username);
             
-            // Add token to FormData if not already present
-            if (!formData.has('__RequestVerificationToken')) {
-                formData.append('__RequestVerificationToken', token);
-            }
-            
+            //..create login data
+            const loginData = {
+                Username: username,
+                Password: password,
+                IsUsernameValidated: true,
+                DisplayName:username,
+                RememberMe: $('#remember-me').is(':checked')
+            };
+            console.log('Authentication body:', loginData);
             const response = await $.ajax({
                 url: '/login/userlogin',
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': token
+                    'X-CSRF-TOKEN': token,
+                    'Content-Type': 'application/json'
                 },
-                data: formData,
-                processData: false,
-                contentType: false
+                data: JSON.stringify(loginData),
+                dataType: 'json'
             });
+            
+            console.log('Authentication response:', response);
             
             if (response.success) {
                 //..show success stage
@@ -158,7 +166,16 @@
                 }, 1500);
                 
             } else {
-                showError('password', response.message || 'Authentication failed');
+                //..handle different types of errors
+                let errorMessage = 'Authentication failed. Please try again.';
+                
+                if (response.error && response.error.message) {
+                    errorMessage = response.error.message;
+                } else if (response.message) {
+                    errorMessage = response.message;
+                }
+                
+                showError('password', errorMessage);
             }
             
         } catch (error) {
@@ -166,14 +183,24 @@
             let errorMessage = 'Authentication failed. Please try again.';
             
             //..handle jQuery AJAX error object
-            if (error.responseJSON && error.responseJSON.message) {
-                errorMessage = error.responseJSON.message;
+            if (error.responseJSON) {
+                if (error.responseJSON.error && error.responseJSON.error.message) {
+                    errorMessage = error.responseJSON.error.message;
+                } else if (error.responseJSON.message) {
+                    errorMessage = error.responseJSON.message;
+                }
             } else if (error.responseText) {
                 try {
                     const errorData = JSON.parse(error.responseText);
-                    errorMessage = errorData.message || errorMessage;
+                    if (errorData.error && errorData.error.message) {
+                        errorMessage = errorData.error.message;
+                    } else if (errorData.message) {
+                        errorMessage = errorData.message;
+                    }
                 } catch (parseError) {
-                    //..keep default error message
+                   //..keep default error message
+                    errorMessage = "Ajax error-check it out in JS";
+                    console.log('Supposed to show default error message');
                 }
             }
             

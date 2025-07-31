@@ -155,6 +155,9 @@
           "IsPersistent": {
             "type": "boolean"
           },
+          "IsValidated": {
+            "type": "boolean"
+          },
           "Action": {
             "type": "string",
             "nullable": true

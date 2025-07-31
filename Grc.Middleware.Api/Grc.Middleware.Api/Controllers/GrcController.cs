@@ -91,9 +91,7 @@ namespace Grc.Middleware.Api.Controllers {
         
                 Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
                 return Ok(new GrcResponse<GeneralResponse>(error));
-            }
-            
-               
+            }    
         }
     }
 }

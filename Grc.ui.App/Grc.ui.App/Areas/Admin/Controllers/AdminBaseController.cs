@@ -19,5 +19,6 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             WebHelper = webHelper;
             LocalizationService = localizationService;
         }
+
     }
 }
