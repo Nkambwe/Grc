@@ -34,7 +34,7 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("roleId")]
         public long RoleId { get; set; }
 
-        [JsonPropertyName("role")]
+        [JsonPropertyName("roleName")]
         public string RoleName { get; set; }
 
         [JsonPropertyName("departmentId")]

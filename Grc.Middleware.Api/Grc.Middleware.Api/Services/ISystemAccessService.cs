@@ -1,4 +1,5 @@
 ﻿using Grc.Middleware.Api.Data.Entities.System;
+using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 
 namespace Grc.Middleware.Api.Services {
@@ -63,5 +64,32 @@ namespace Grc.Middleware.Api.Services {
         /// <param name="username">Username to authenticate</param>
         /// <returns></returns>
         Task<AuthenticationResponse> AuthenticateUserAsync(string username);
+        /// <summary>
+        ///  Update system user loggout
+        /// </summary>
+        /// <param name="userId">User ID to login</param>
+        /// <param name="loginTime">Login date and time</param>
+        /// <returns></returns>
+        Task UpdateLastLoginAsync(long userId, DateTime loginTime);
+        /// <summary>
+        /// Update system user loggout
+        /// </summary>
+        /// <param name="userId">User ID to login</param>
+        /// <param name="loginTime">Login date and time</param>
+        /// <returns></returns>
+        Task UpdateLoginStatusAsync(long userId, DateTime loginTime);
+        /// <summary>
+        /// Log failed login for the user
+        /// </summary>
+        /// <param name="userId">User ID</param>
+        /// <param name="ipAddress">IP Address</param>
+        /// <returns></returns>
+        Task<bool> LogFailedLoginAsync(long userId, string ipAddress);
+        /// <summary>
+        /// Lock user account
+        /// </summary>
+        /// <param name="userId">User ID</param>
+        /// <returns></returns>
+        Task LockUserAccountAsync(long userId);
     }
 }

@@ -22,6 +22,7 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAttemptRepository, AttemptRepository>();
         }
 
         /// <summary>

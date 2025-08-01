@@ -14,9 +14,11 @@ namespace Grc.Middleware.Api.Data.Containers {
         public GrcContext Context { get;} 
         private bool _disposed;
 
-        public ICompanyRepository CompanyRepository { get; private set; }
+        public ICompanyRepository CompanyRepository { get; set; }
+        public IUserRepository UserRepository { get; set; }
+        public IAttemptRepository AttemptRepository { get; set; }
 
-        public IUserRepository UserRepository { get; private set; }
+        GrcContext IUnitOfWork.Context => throw new NotImplementedException();
 
         public UnitOfWork(IServiceLoggerFactory loggerFactory,
                           IDbContextFactory<GrcContext> contextFactory,
@@ -151,6 +153,7 @@ namespace Grc.Middleware.Api.Data.Containers {
                     //..clear repository references
                     CompanyRepository = null;
                     UserRepository = null;
+                    AttemptRepository = null;
                 }
             }
             _disposed = true;
@@ -197,6 +200,7 @@ namespace Grc.Middleware.Api.Data.Containers {
     
             return errors;
         }
+
         #endregion
     }
 }

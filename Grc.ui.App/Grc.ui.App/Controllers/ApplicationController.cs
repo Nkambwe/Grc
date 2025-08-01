@@ -9,7 +9,8 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
+using System.Data;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace Grc.ui.App.Controllers {
@@ -59,6 +60,50 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
+        public virtual async Task<IActionResult> Login([FromBody] LoginModel model) {
+            if (!ModelState.IsValid) {
+                return HandleValidationErrors(model);
+            }
+
+            try {
+
+                Logger.LogActivity($"Attempting authentication for user: {model.Username}");
+                var response = await _authService.AuthenticateAsync(model, WebHelper.GetCurrentIpAddress());
+                Logger.LogActivity($"REGISTER RESPONSE: {JsonSerializer.Serialize(response)}");
+                if (response.HasError) {
+                    return HandleLoginError(response, model);
+                }
+
+                await _authService.SignInAsync(response.Data, model.RememberMe);
+                 Logger.LogActivity($"User successfully authenticated: {model.Username}");
+
+                //..determine redirect URL based on user roles
+                string redirectUrl = DetermineRedirectUrl(response.Data.RoleName);
+                if (WebHelper.IsAjaxRequest(Request)) {
+                    return Json(new {
+                        success = true,
+                        redirectUrl,
+                        message = "Login successful"
+                    });
+                }
+
+                 return Redirect(redirectUrl);
+            } catch (Exception ex) {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    LocalizationService.GetLocalizedLabel("Error.Occurance"),
+                    "Could not complete login due to system error"
+                );
+        
+                Logger.LogActivity($"LOGIN ERROR: {JsonSerializer.Serialize(error)}");
+                return HandleLoginError(new GrcResponse<UserModel>(error), model);
+            }
+        }
+        
+        [HttpPost]
+        [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
         public async Task<IActionResult> ValidateUsername(LoginModel model) {
             if (string.IsNullOrWhiteSpace(model.Username)) {
                 return HandleUsernameValidationError(LocalizationService.GetLocalizedLabel("App.Message.EnterUsername"), model);
@@ -96,54 +141,23 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
-        [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
-        public virtual async Task<IActionResult> Login([FromBody] LoginModel model) {
-            if (!ModelState.IsValid) {
-                return HandleValidationErrors(model);
-            }
-
-            try {
-
-                Logger.LogActivity($"Attempting authentication for user: {model.Username}");
-                var response = await _authService.AuthenticateAsync(model, WebHelper.GetCurrentIpAddress());
-                Logger.LogActivity($"REGISTER RESPONSE: {JsonSerializer.Serialize(response)}");
-                if (response.HasError) {
-                    return HandleLoginError(response, model);
-                }
-
-                await _authService.SignInAsync(response.Data, model.RememberMe);
-                 Logger.LogActivity($"User successfully authenticated: {model.Username}");
-                if (WebHelper.IsAjaxRequest(Request)) {
-                    return Json(new {
-                        success = true,
-                        redirectUrl = Url.Action("Index", "Application"),
-                        message = "Login successful"
-                    });
-                }
-
-                return RedirectToAction("Index", "Application");
-            } catch (Exception ex) {
-                Logger.LogActivity($"{ex.Message}", "ERROR");
-                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
-                var error = new GrcResponseError(
-                    GrcStatusCodes.BADREQUEST,
-                    LocalizationService.GetLocalizedLabel("Error.Occurance"),
-                    "Could not complete login due to system error"
-                );
-        
-                Logger.LogActivity($"LOGIN ERROR: {JsonSerializer.Serialize(error)}");
-                return HandleLoginError(new GrcResponse<UserModel>(error), model);
-            }
-        }
-
-        [HttpPost]
         public async Task<IActionResult> Logout() {
             try {
-                Logger.LogActivity($"User logging out: {User.Identity?.Name}", "INFO");
+
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var username = User.Identity?.Name;
+                Logger.LogActivity($"User logging out: {username}", "INFO");
+
+                //..update logged_in status in database before signing out
+                if (!string.IsNullOrEmpty(userId)) {
+                    _ = long.TryParse(userId, out long id);
+                    await _accessService.UpdateLoggedInStatusAsync(id, false, WebHelper.GetCurrentIpAddress());
+                }
+                
+                //..sign out from cookie authentication
                 await _authService.SignOutAsync();
             
-                if (WebHelper.IsAjaxRequest(Request))
-                {
+                if (WebHelper.IsAjaxRequest(Request)) {
                     return Json(new { 
                         success = true, 
                         redirectUrl = Url.Action("Login", "Application")
@@ -329,6 +343,19 @@ namespace Grc.ui.App.Controllers {
     
             ModelState.AddModelError("Password", errorMessage);
             return View(model);
+        }
+
+        private string DetermineRedirectUrl(string roleName) {
+            if(!string.IsNullOrWhiteSpace(roleName)){
+                //..route to admin
+                if (roleName.Equals("Administrator") || roleName.Equals("Support")) {
+                    return Url.Action("Index", "Support", new { area = "Admin" });
+                }
+
+            }
+
+            //..default redirect for normal users
+            return Url.Action("Index", "Application");
         }
 
         #endregion

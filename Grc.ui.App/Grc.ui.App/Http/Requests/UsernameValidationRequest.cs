@@ -5,4 +5,5 @@ namespace Grc.ui.App.Http.Requests {
         [JsonPropertyName("username")]
         public string Username { get; set; } = string.Empty;
     }
+
 }

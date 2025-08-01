@@ -55,6 +55,14 @@ namespace Grc.ui.App.Http {
         /// <returns></returns>
         Task<int> CountActiveUsersAsync();
 
+        /// <summary>
+        /// Update the user logged in status
+        /// </summary>
+        /// <param name="userId">User ID for user to logout</param>
+        /// <param name="isLoggedIn">Logged in status</param>
+        /// <param name="ipAddress">IP Address for current user</param>
+        /// <returns></returns>
+        Task UpdateLoggedInStatusAsync(long userId, bool isLoggedIn, string ipAddress);
     }
 
 }

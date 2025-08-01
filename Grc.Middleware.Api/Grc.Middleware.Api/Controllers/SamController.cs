@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Http.Requests;
@@ -11,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Grc.Middleware.Api.Controllers {
 
@@ -111,6 +111,14 @@ namespace Grc.Middleware.Api.Controllers {
                         response.IsAuthenticated = ExtendedHashMapper.VerifyPassword(request.Password, response.Password);
                     }
 
+                    if (response.IsAuthenticated) {
+                        //..update the last login for user
+                         await _accessService.UpdateLastLoginAsync(response.UserId, DateTime.Now);
+                    } else { 
+                        //..lock account if attempts completed
+                         await _accessService.LockUserAccountAsync(response.UserId);
+                    }
+
                     Logger.LogActivity($"AUTHENTICATION SUCCESS: User {request.Username} authenticated successfully");
                     return Ok(new GrcResponse<AuthenticationResponse>(response));
                 } else { 
@@ -138,11 +146,19 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
-        //[HttpGet("sam/users/signin")]
-        //public async Task<IActionResult> Signin([FromBody] LoginRequest loginRequest) {
+        [HttpPost("sam/users/logout")]
+        public async Task<IActionResult> Logout([FromBody] LogoutRequest logoutRequest) {
+            try {
+                Logger.LogActivity($"Action - {logoutRequest.Action} on IP Address {logoutRequest.IPAddress}", "INFO");
+                await _accessService.UpdateLoginStatusAsync(logoutRequest.UserId, DateTime.Now);
+                return Ok();
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error updating logged_in status for user {logoutRequest.UserId}: {ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+                return StatusCode(500, "An error occurred while logging out.");
+            }
+        }
 
-        //}
-        
         [Authorize]
         [HttpGet("sam/users/current-user")]
         public async Task<IActionResult> GetCurrentUser() {

@@ -2,6 +2,7 @@
 using Grc.Middleware.Api.Utils;
 
 namespace Grc.Middleware.Api.Data.Repositories {
+
     public class CompanyRepository : Repository<Company>, ICompanyRepository {
 
         public CompanyRepository(IServiceLoggerFactory loggerFactory, GrcContext context) 
@@ -14,4 +15,5 @@ namespace Grc.Middleware.Api.Data.Repositories {
         public async Task<IList<Company>> GetActiveCompaniesAsync()
             => await GetAllAsync(includeDeleted: false);
     }
+
 }

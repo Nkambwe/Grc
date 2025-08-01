@@ -146,7 +146,6 @@ namespace Grc.Middleware.Api.Data.Repositories {
             return await query.FirstOrDefaultAsync();
         }
 
-
         public IList<T> GetAll(bool includeDeleted = false) {
             IQueryable<T> query = context.Set<T>();
 
@@ -161,7 +160,6 @@ namespace Grc.Middleware.Api.Data.Repositories {
             IQueryable<T> query = context.Set<T>();
             return await query.Where(e => includeDeleted || EF.Property<bool>(e, "IsDeleted") == false).ToListAsync();
         }
-
 
         public IList<T> GetAll(Expression<Func<T, bool>> where, bool includeDeleted = false) {
             IQueryable<T> query = context.Set<T>();
@@ -360,7 +358,6 @@ namespace Grc.Middleware.Api.Data.Repositories {
             }
         }
 
-
         public async Task<bool> BulkyUpdateAsync(T[] entities) {
             if (entities is null || entities.Length == 0) {
                 Logger.LogActivity("Bulk update operation canceled: Empty list.", "DBOPS");
@@ -424,6 +421,7 @@ namespace Grc.Middleware.Api.Data.Repositories {
                 return false;
             }
         }
+        
         public virtual async Task<PagedResult<T>> PageAllAsync(int page, int size, bool includeDeleted) {
             //..make sure page size is never negative
             page = Math.Max(1, page);   
@@ -517,10 +515,8 @@ namespace Grc.Middleware.Api.Data.Repositories {
             };
         }
 
-        
         public int GetContextHashCode()
             => context.GetType().GetHashCode();
-
 
         #region Helper Methods
 
@@ -549,7 +545,6 @@ namespace Grc.Middleware.Api.Data.Repositories {
             => await context.Set<T>().CountAsync(where);
 
         #endregion
-
 
     }
 }

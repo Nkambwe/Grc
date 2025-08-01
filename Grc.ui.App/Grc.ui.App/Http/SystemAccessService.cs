@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Grc.ui.App.Enums;
+using Grc.ui.App.Extensions;
 using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
+using System.Reflection;
 using System.Text.Json;
 
 namespace Grc.ui.App.Http {
@@ -38,6 +40,35 @@ namespace Grc.ui.App.Http {
 
         public Task<GrcResponse<UserModel>> GetUserByUsernameAsync(string username) {
             throw new NotImplementedException();
+        }
+
+        public async Task UpdateLoggedInStatusAsync(long userId, bool isLoggedIn, string ipAddress) {
+            try {
+                //..create request
+                var model = new LogoutRequest(){ 
+                    UserId = userId,
+                    IsLoggedOut = isLoggedIn,
+                    IPAddress = ipAddress,
+                    Action = Activity.LOGIN.GetDescription(),
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>()
+                };
+                 
+                //..map endpoint
+                var endpoint = $"{EndpointProvider.Sam.Users}/logout";
+
+                //..post request
+                await HttpHandler.PostAsync<LogoutRequest>(endpoint, model);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Logout failed: {ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+                var error = new GrcResponseError(
+                    (int)GrcStatusCodes.SERVERERROR,
+                    "User loggout failed, an error occurred",
+                    ex.Message
+                ); 
+                Logger.LogActivity($"SYSTEM ACCESS RESPONSE: {JsonSerializer.Serialize(error)}");
+             }
         }
 
         public async Task<GrcResponse<UsernameValidationResponse>> ValidateUsernameAsync(UsernameValidationModel model) {

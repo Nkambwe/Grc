@@ -6,8 +6,9 @@ namespace Grc.Middleware.Api.Data.Containers {
     public interface IUnitOfWork : IDisposable {
         public GrcContext Context { get;} 
         IRepository<T> GetRepository<T>() where T : BaseEntity;
-        ICompanyRepository CompanyRepository { get; }
-        IUserRepository UserRepository { get; }
+        ICompanyRepository CompanyRepository { get; set;}
+        IUserRepository UserRepository { get; set;}
+        IAttemptRepository AttemptRepository { get; set; }
         Task<int> SaveChangesAsync(); 
         int SaveChanges(); 
     }

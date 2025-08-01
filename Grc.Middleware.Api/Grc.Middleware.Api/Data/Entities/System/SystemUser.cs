@@ -23,6 +23,7 @@ namespace Grc.Middleware.Api.Data.Entities.System {
         public DateTime? LastPasswordChange { get; set; }
         public virtual Department Department { get; set; }
         public virtual SystemRole Role { get; set; }
+        public virtual ICollection<LoginAttempt> Attempts { get; set; }
         public override bool Equals(object obj) {
 
             if (obj is not SystemUser)
