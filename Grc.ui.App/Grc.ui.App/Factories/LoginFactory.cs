@@ -17,6 +17,13 @@ namespace Grc.ui.App.Factories {
                 IPAddress = ipAddress,
             });
         }
+
+        public Task<LogoutModel> PrepareLogoutModelAsync(long userId, string ipAddress){ 
+            return Task.FromResult(new LogoutModel() {
+                UserId = userId,
+                IPAddress = ipAddress,
+            });
+        }
     }
 
 }

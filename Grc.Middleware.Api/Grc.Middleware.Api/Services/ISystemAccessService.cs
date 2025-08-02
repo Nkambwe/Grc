@@ -77,7 +77,7 @@ namespace Grc.Middleware.Api.Services {
         /// <param name="userId">User ID to login</param>
         /// <param name="loginTime">Login date and time</param>
         /// <returns></returns>
-        Task UpdateLoginStatusAsync(long userId, DateTime loginTime);
+        Task<bool> UpdateLoginStatusAsync(long userId, DateTime loginTime);
         /// <summary>
         /// Log failed login for the user
         /// </summary>

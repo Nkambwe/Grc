@@ -48,7 +48,7 @@ namespace Grc.Middleware.Api.Services {
 
         public async Task<SystemUser> GetByIdAsync(long id) {
             using var uow = UowFactory.Create();
-            Logger.LogActivity("Retrieve user by email", "INFO");
+            Logger.LogActivity("Retrieve user by ID", "INFO");
     
             try {
 
@@ -292,7 +292,7 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task UpdateLoginStatusAsync(long userId, DateTime loginTime) {
+        public async  Task<bool> UpdateLoginStatusAsync(long userId, DateTime loginTime) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update the logout of user with ID {userId}", "INFO");
     
@@ -311,7 +311,10 @@ namespace Grc.Middleware.Api.Services {
                    
                     var result = await uow.SaveChangesAsync();
                     Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
                 }
+
+                return false;
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve user role: {ex.Message}", "ERROR");
         

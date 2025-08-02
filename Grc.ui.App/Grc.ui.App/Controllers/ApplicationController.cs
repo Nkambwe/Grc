@@ -143,19 +143,21 @@ namespace Grc.ui.App.Controllers {
         [HttpPost]
         public async Task<IActionResult> Logout() {
             try {
-
+                var ipAddress = WebHelper.GetCurrentIpAddress();
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 var username = User.Identity?.Name;
                 Logger.LogActivity($"User logging out: {username}", "INFO");
 
                 //..update logged_in status in database before signing out
+                long id = 0;
                 if (!string.IsNullOrEmpty(userId)) {
-                    _ = long.TryParse(userId, out long id);
-                    await _accessService.UpdateLoggedInStatusAsync(id, false, WebHelper.GetCurrentIpAddress());
+                    _ = long.TryParse(userId, out id);
+                    await _accessService.UpdateLoggedInStatusAsync(id, false, ipAddress);
                 }
                 
                 //..sign out from cookie authentication
-                await _authService.SignOutAsync();
+                var model = await _loginFactory.PrepareLogoutModelAsync(id, ipAddress);
+                await _authService.SignOutAsync(model);
             
                 if (WebHelper.IsAjaxRequest(Request)) {
                     return Json(new { 

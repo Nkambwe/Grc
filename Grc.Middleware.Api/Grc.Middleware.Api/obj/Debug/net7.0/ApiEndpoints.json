@@ -63,6 +63,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "Logout",
+    "RelativePath": "grc/sam/users/logout",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "logoutRequest",
+        "Type": "Grc.Middleware.Api.Http.Requests.LogoutRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
     "Method": "ValidateUsername",
     "RelativePath": "grc/sam/users/validate-username",
     "HttpMethod": "POST",

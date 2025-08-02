@@ -8,7 +8,6 @@ using Grc.Middleware.Api.Services;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using System.Text.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -28,6 +27,7 @@ namespace Grc.Middleware.Api.Controllers {
             _accessService = accessService;
         }
 
+        #region Authentication
         [HttpPost("sam/users/validate-username")]
         public async Task<IActionResult> ValidateUsername([FromBody] UsernameValidationRequest request) {
 
@@ -150,8 +150,15 @@ namespace Grc.Middleware.Api.Controllers {
         public async Task<IActionResult> Logout([FromBody] LogoutRequest logoutRequest) {
             try {
                 Logger.LogActivity($"Action - {logoutRequest.Action} on IP Address {logoutRequest.IPAddress}", "INFO");
-                await _accessService.UpdateLoginStatusAsync(logoutRequest.UserId, DateTime.Now);
-                return Ok();
+                var status = await _accessService.UpdateLoginStatusAsync(logoutRequest.UserId, DateTime.Now);
+                if(!status){
+                    var error = new ResponseError(
+                        ResponseCodes.NOTUPDATE,
+                        "Login status not updated",
+                        "An error occurred! could not update login status");
+                     return Ok(new GrcResponse<StatusResponse>(error));
+                } 
+               return Ok(new GrcResponse<StatusResponse>(new StatusResponse(){Status = status}));
             } catch (Exception ex) {
                 Logger.LogActivity($"Error updating logged_in status for user {logoutRequest.UserId}: {ex.Message}", "ERROR");
                 Logger.LogActivity($"{ex.StackTrace}", "ERROR");
@@ -159,67 +166,265 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
-        [Authorize]
-        [HttpGet("sam/users/current-user")]
-        public async Task<IActionResult> GetCurrentUser() {
+        #endregion
+
+        #region User Records
+
+        [HttpPost("sam/users/getById")]
+        public async Task<IActionResult> GetUserByIdAsync([FromBody] UserRequest request) {
             try {
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                var email = User.Identity.Name;
+                Logger.LogActivity("Get user by ID", "INFO");
 
-                if (string.IsNullOrWhiteSpace(userId)) { 
+                if (request == null){
                     var error = new ResponseError(
-                        ResponseCodes.NOTFOUND,
-                        "Current user record not found",
-                        "User session might be invalidated"
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
                     );
-        
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<GeneralResponse>(error));
+                    return Ok(new GrcResponse<UserResponse>(error));
                 }
 
-                 Logger.LogActivity($"User Claims :: User ID >{userId}, Email {email}", "INFO");
-                if(!long.TryParse(userId, out long currentId)) { 
-                    currentId = 0;
-                }
-                SystemUser user = await _accessService.GetByIdAsync(currentId);
-                if(user == null) { 
+                if (request.UserId == 0){
                     var error = new ResponseError(
-                        ResponseCodes.NOTFOUND,
-                        "Current user record not found",
-                        "User session might be invalidated"
+                        ResponseCodes.BADREQUEST,
+                        "Request User ID is required",
+                        "Invalid request User ID"
                     );
-        
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<GeneralResponse>(error));
+                    return Ok(new GrcResponse<UserResponse>(error));
                 }
-                
-                //..decrypt user record
-                Cypher.EncryptProperties(user, ExtendedHashMapper.GetEncryptedUserFields());
-                
-                //..map user record to response
-                var record = Mapper.Map<AuthenticationResponse>(user);
-                record.SolId = user.BranchSolId;
-                record.RoleId = user.RoleId;
-                record.DepartmentId = user.DepartmentId;
-                record.Favourites = new();
-                record.Views = new();
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
 
-                return Ok(new GrcResponse<AuthenticationResponse>(record));
-            } catch (Exception ex) { 
+                var response = await _accessService.GetByIdAsync(request.UserId);
+                if (response != null) {
+                    //..map response
+                    var userRecord = Mapper.Map<UserResponse>(response);
+                    request.DecryptFields = new string[] { "FirstName", "LastName", "MiddleName", "EmailAddress", "PhoneNumber", "PFNumber" };
+                    userRecord = Cypher.DecryptProperties(userRecord, request.DecryptFields);
+
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    return Ok(new GrcResponse<UserResponse>(userRecord));
+                } else {
+                    var error = new ResponseError(
+                        ResponseCodes.FAILED,
+                        "User not found",
+                        "No user matched the provided ID"
+                    );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<UserResponse>(error));
+                }
+            } catch (Exception ex) {
                 Logger.LogActivity($"{ex.Message}", "ERROR");
                 Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
 
                 var error = new ResponseError(
                     ResponseCodes.BADREQUEST,
-                    $"Oops! Something thing went wrong",
+                    "Oops! Something went wrong",
                     $"System Error - {ex.Message}"
                 );
-        
                 Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
-                return Ok(new GrcResponse<AuthenticationResponse>(error));
+                return Ok(new GrcResponse<UserResponse>(error));
             }
-            
         }
+
+        [HttpPost("sam/users/getByUsername")]
+        public async Task<IActionResult> GetByUsername([FromBody] UserRequest request) {
+            try {
+                Logger.LogActivity("Get user by Username", "INFO");
+
+                if (request == null) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<UserResponse>(error));
+                }
+
+                if (string.IsNullOrWhiteSpace(request.Username)) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request username is required",
+                        "Invalid request username"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<UserResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var response = await _accessService.GetByUsernameAsync(request.Username);
+                if (response != null) {
+                    //..map response
+                    var userRecord = Mapper.Map<UserResponse>(response);
+                    request.DecryptFields = new string[] { "FirstName", "LastName", "MiddleName", "EmailAddress", "PhoneNumber", "PFNumber" };
+                    userRecord = Cypher.DecryptProperties(userRecord, request.DecryptFields);
+
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    return Ok(new GrcResponse<UserResponse>(userRecord));
+                } else {
+                    var error = new ResponseError(
+                        ResponseCodes.FAILED,
+                        "User not found",
+                        "No user matched the provided ID"
+                    );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<UserResponse>(error));
+                }
+            } catch (Exception ex) {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var error = new ResponseError(
+                    ResponseCodes.BADREQUEST,
+                    "Oops! Something went wrong",
+                    $"System Error - {ex.Message}"
+                );
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<UserResponse>(error));
+            }
+        }
+
+        [HttpPost("sam/users/getByEmail")]
+        public async Task<IActionResult> GetByEmail([FromBody] UserRequest request) {
+            try {
+                Logger.LogActivity("Get user by Email", "INFO");
+
+                if (request == null) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<UserResponse>(error));
+                }
+                
+                if (string.IsNullOrWhiteSpace(request.Email)) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request Email Address is required",
+                        "Invalid request Email Address"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<UserResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var response = await _accessService.GetByEmailAsync(request.Email);
+                if (response != null) {
+                    //..map response
+                    var userRecord = Mapper.Map<UserResponse>(response);
+                    request.DecryptFields = new string[] { "FirstName", "LastName", "MiddleName", "EmailAddress", "PhoneNumber", "PFNumber" };
+                    userRecord = Cypher.DecryptProperties(userRecord, request.DecryptFields);
+
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    return Ok(new GrcResponse<UserResponse>(userRecord));
+                } else {
+                    var error = new ResponseError(
+                        ResponseCodes.FAILED,
+                        "User not found",
+                        "No user matched the provided ID"
+                    );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<UserResponse>(error));
+                }
+            } catch (Exception ex) {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var error = new ResponseError(
+                    ResponseCodes.BADREQUEST,
+                    "Oops! Something went wrong",
+                    $"System Error - {ex.Message}"
+                );
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<UserResponse>(error));
+            }
+        }
+        
+        [HttpPost("sam/users/countUsers")]
+        public async Task<IActionResult> CountUsers([FromBody] GeneralRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+
+                if (request == null) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RecordCountResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+
+                var count = await _accessService.GetTotalUsersCountAsync();
+                //..map response
+                var countResponse = new RecordCountResponse() {
+                    Count = count
+                };
+                
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(countResponse)}");
+                return Ok(new GrcResponse<RecordCountResponse>(countResponse));
+            } catch (Exception ex) {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var error = new ResponseError(
+                    ResponseCodes.BADREQUEST,
+                    "Oops! Something went wrong",
+                    $"System Error - {ex.Message}"
+                );
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<RecordCountResponse>(error));
+            }
+        }
+
+        [HttpPost("sam/users/countActiveUsers")]
+        public async Task<IActionResult> CountActiveUsers([FromBody] GeneralRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+
+                if (request == null) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RecordCountResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+
+                var count = await _accessService.GetActiveUsersCountAsync();
+                //..map response
+                var countResponse = new RecordCountResponse() {
+                    Count = count
+                };
+                
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(countResponse)}");
+                return Ok(new GrcResponse<RecordCountResponse>(countResponse));
+            } catch (Exception ex) {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var error = new ResponseError(
+                    ResponseCodes.BADREQUEST,
+                    "Oops! Something went wrong",
+                    $"System Error - {ex.Message}"
+                );
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<RecordCountResponse>(error));
+            }
+        }
+        
+        #endregion
 
     }
 }

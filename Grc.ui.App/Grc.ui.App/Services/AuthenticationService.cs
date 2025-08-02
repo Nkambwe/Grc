@@ -7,6 +7,7 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Net;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -25,6 +26,37 @@ namespace Grc.ui.App.Services {
                     IMapper mapper) 
                     : base(loggerFactory, httpHandler, environment, endpointType, mapper) {
             _httpContextAccessor = httpContextAccessor;
+        }
+  
+        public async Task<GrcResponse<UserModel>> GetUserByUsernameAsync(string username, string ipAddress) {
+
+            if(string.IsNullOrWhiteSpace(username)) {
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    "Username is required",
+                    "Invalid user request"
+                );
+        
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<UserModel>(error);
+            }
+
+            try {
+                
+                var request = new UserByNameRequest() {
+                    UserId = 0,
+                    Username = username,
+                    IPAddress = ipAddress,
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>(),
+                };
+
+                var endpoint = $"{EndpointProvider.Sam.Users}/auth";
+                return await HttpHandler.PostAsync<UserByNameRequest, UserModel>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve user record for {username}: {ex.Message}", "ERROR");
+                throw new GRCException("Uanble to retrieve user.", ex);
+            }
         }
 
         public async Task<GrcResponse<UserModel>> AuthenticateAsync(LoginModel model, string ipAddress) {
@@ -53,22 +85,79 @@ namespace Grc.ui.App.Services {
             }
         }
 
-        public async Task<GrcResponse<UserModel>>GetCurrentUserAsync() {
+        public async Task<GrcResponse<UserModel>> GetCurrentUserAsync(string ipAddress) {
+
+             Logger.LogActivity($"Get Current Loggedin User", "INFO");
             try {
-                var endpoint = $"{EndpointProvider.Sam.Users}/current-user";
-                var response = await HttpHandler.GetAsync<UserResponse>(endpoint);
-                if (response.HasError) {
-                    Logger.LogActivity($"Failed to fetch current user: {response.Error?.Message}", "WARNING");
-                    return null;
+                var httpContext = _httpContextAccessor.HttpContext;
+                if (httpContext?.User?.Identity?.IsAuthenticated != true) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.UNAUTHORIZED,
+                        "User not authenticated",
+                        "No authenticated user found"
+                    );
+                    return new GrcResponse<UserModel>(error);
                 }
 
-                return new GrcResponse<UserModel>(Mapper.Map<UserModel>(response.Data)); 
-            } catch (HttpRequestException httpEx) {
-                Logger.LogActivity($"GetCurrentUser failed: {httpEx.Message}", "ERROR");
-                throw new GRCException("Could not retrieve current user. Network issue.", httpEx);
+                var userId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var username = httpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+                var email = httpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+                var displayName = httpContext.User.FindFirst("DisplayName")?.Value;
+                var firstName = httpContext.User.FindFirst("FirstName")?.Value;
+                var lastName = httpContext.User.FindFirst("LastName")?.Value;
+                var roleName = httpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+                var roleId = httpContext.User.FindFirst("RoleId")?.Value;
+
+                // If basic claims are available, use them
+                if (!string.IsNullOrEmpty(userId) && !string.IsNullOrEmpty(username)) {
+                    long id = long.Parse(userId);
+                    var userModel = new UserModel {
+                        Id = id,
+                        UserName = username,
+                        EmailAddress = email,
+                        DisplayName = displayName,
+                        FirstName = firstName,
+                        LastName = lastName,
+                        RoleName = roleName,
+                        IsLogged = true
+                    };
+
+                    return new GrcResponse<UserModel>(userModel);
+                }
+
+                //..fetch from the DB for missing claims
+                var userIdString = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!string.IsNullOrEmpty(userIdString) && long.TryParse(userIdString, out long currentId)) {
+
+                    var endpoint = $"{EndpointProvider.Sam.Users}/getById";
+            
+                    // Add authorization header with current user's token or use a service account
+                    var model = new UserByIdRequest() {
+                        UserId = 0,
+                        RecordId = currentId,
+                        IPAddress = ipAddress,
+                        EncryptFields = Array.Empty<string>(),
+                        DecryptFields = Array.Empty<string>(),
+                    };
+                    return await HttpHandler.PostAsync<UserByIdRequest, UserModel>(endpoint,model);
+                }
+
+                //..fallback error
+                var fallbackError = new GrcResponseError(
+                    GrcStatusCodes.NOTFOUND,
+                    "User information not found",
+                    "Unable to retrieve current user information"
+                );
+                return new GrcResponse<UserModel>(fallbackError);
             } catch (Exception ex) {
-                Logger.LogActivity($"Unexpected error in GetCurrentUser: {ex.Message}", "ERROR");
-                throw new GRCException("An error occurred while getting the current user.", ex);
+                Logger.LogActivity($"Error retrieving current user Info: {ex.Message}", "Error");
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "Error retrieving user information",
+                    ex.Message
+                );
+
+                return new GrcResponse<UserModel>(error);
             }
         }
 
@@ -100,11 +189,19 @@ namespace Grc.ui.App.Services {
                  var claims = new List<Claim>{
                     new(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new(ClaimTypes.Name, user.EmailAddress),
-                    new("FullName", $"{user.FirstName} {user.LastName}" ?? ""),
-                    new(ClaimTypes.Role, $"{user.RoleId}" ?? "User")
+                    new("DisplayName", $"{user.FirstName}" ?? ""),
+                    new("FirstName", $"{user.FirstName}" ?? ""),
+                    new("LastName", $"{user.LastName}" ?? ""),
+                    new(ClaimTypes.Role, $"{user.RoleName}" ?? "User"),
+                    new("RoleId", $"{user.RoleId}" ?? ""),
+                    new("PhoneNumber", $"{user.PhoneNumber}" ?? ""),
+                    new("PFNumber", $"{user.PFNumber}" ?? ""),
+                    new("UnitCode", $"{user.UnitCode}" ?? ""),
+                    new("DepartmentId", $"{user.DepartmentId}" ?? "")
+
                  };
 
-                var claimsIdentity = new ClaimsIdentity(claims, "Cookies");
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties {
                     IsPersistent = isPersistent,
                     AllowRefresh = true,
@@ -125,14 +222,20 @@ namespace Grc.ui.App.Services {
             }
         }
 
-        public async Task SignOutAsync() {
+        public async Task SignOutAsync(LogoutModel model) {
             try {
-                var endpoint = $"{EndpointProvider.Sam.Sambase}/auth/signout";
-                await HttpHandler.PostAsync<object>(endpoint, null);
-                Logger.LogActivity("User signed out successfully.");
 
-                 var httpContext = _httpContextAccessor.HttpContext!;
-                 await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                var request = Mapper.Map<LogoutRequest>(model);
+                var endpoint = $"{EndpointProvider.Sam.Users}/logout";
+                var response = await HttpHandler.PostAsync<LogoutRequest, StatusResponse>(endpoint, request);
+                if(response.HasError) { 
+                    Logger.LogActivity($"Failed to signout user on server. {response.Error.Message}");
+                } else {
+                    Logger.LogActivity("User signed out successfully.");
+                }
+                
+                var httpContext = _httpContextAccessor.HttpContext!;
+                await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"SignOut failed (network): {httpEx.Message}", "ERROR");
                 throw new GRCException("Failed to sign out. Network issue.", httpEx);

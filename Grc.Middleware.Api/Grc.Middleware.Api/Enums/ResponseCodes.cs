@@ -44,7 +44,9 @@ namespace Grc.Middleware.Api.Enums {
         [Description("Service Unavailable")]
         SERVICEUNVAILABLE = 503,
         [Description("Network Authentication Required")]
-        AUTHENTICATIONREQUIRED = 511
+        AUTHENTICATIONREQUIRED = 511,
+        [Description("Not Updated")]
+        NOTUPDATE = 502,
     }
 
 }

@@ -45,7 +45,7 @@ namespace Grc.Middleware.Api.Helpers {
 
             //..map user from registration
             CreateMap<SystemUser, AuthenticationResponse>()
-                .ForMember(a => a.UserId, reg => reg.MapFrom(o => 0))
+                .ForMember(a => a.UserId, reg => reg.MapFrom(o => o.Id))
                 .ForMember(a => a.FirstName, reg => reg.MapFrom(o => (o.FirstName ?? string.Empty).Trim()))
                 .ForMember(a => a.LastName, reg => reg.MapFrom(o => (o.LastName ?? string.Empty).Trim()))
                 .ForMember(a => a.MiddleName, reg => reg.MapFrom(o => (o.OtherName ?? string.Empty).Trim()))

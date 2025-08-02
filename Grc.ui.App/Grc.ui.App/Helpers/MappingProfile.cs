@@ -56,7 +56,13 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(u => u.EncryptFields, opt => opt.MapFrom(src => new string[]{ }))
                 .ForMember(u => u.DecryptFields, opt => opt.MapFrom(src => new string[]{"FirstName", "LastName", "OtherName", "Email", "PhoneNumber", "PFNumber"}));
                 
-            
+            //..map logout model
+            CreateMap<LoginModel,LogoutRequest>()
+                .ForMember(u => u.UserId, reg => reg.MapFrom(o => 0))
+                .ForMember(u => u.Action, opt => opt.MapFrom(src => Activity.AUTHENTICATE.GetDescription()))
+                .ForMember(u => u.EncryptFields, opt => opt.MapFrom(src => new string[]{ }))
+                .ForMember(u => u.DecryptFields, opt => opt.MapFrom(src => new string[]{"FirstName", "LastName", "OtherName", "Email", "PhoneNumber", "PFNumber"}));
+                
         }
     }
 }

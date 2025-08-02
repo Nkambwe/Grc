@@ -1,4 +1,5 @@
-﻿using Grc.ui.App.Http.Responses;
+﻿using Grc.ui.App.Http.Requests;
+using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 
@@ -10,28 +11,34 @@ namespace Grc.ui.App.Http {
         /// Get user info by Database ID
         /// </summary>
         /// <param name="userId">User ID to look for</param>
+        /// <param name="ipAddress">Current login IP Address of the requesting user</param>
+        /// <param name="requestingUserId">User ID of the requesting user</param>
         /// <returns>
         /// Task containing user with provided ID or null
         /// </returns>
-        Task<GrcResponse<UserModel>> GetUserByIdAsync(long userId);
+        Task<GrcResponse<UserModel>> GetUserByIdAsync(long userId, long requestingUserId, string ipAddress);
 
         /// <summary>
         /// Get user info by user email address
         /// </summary>
         /// <param name="email">User email address to look for</param>
+        /// <param name="ipAddress">Current login IP Address of the requesting user</param>
+        /// <param name="requestingUserId">User ID of the requesting user</param>
         /// <returns>
         /// Task containing user with provided email address or null
         /// </returns>
-        Task<GrcResponse<UserModel>> GetUserByEmailAsync(string email);
+        Task<GrcResponse<UserModel>> GetUserByEmailAsync(string email, long requestingUserId,string ipAddress);
         
         /// <summary>
         /// Get user info by user email address
         /// </summary>
         /// <param name="username">Username to look for</param>
+        /// <param name="ipAddress">Current login IP Address of the requesting user</param>
+        /// <param name="requestingUserId">User ID of the requesting user</param>
         /// <returns>
         /// Task containing user with provided email address or null
         /// </returns>
-        Task<GrcResponse<UserModel>> GetUserByUsernameAsync(string username);
+        Task<GrcResponse<UserModel>> GetUserByUsernameAsync(string username, long requestingUserId, string ipAddress);
 
         /// <summary>
         /// Get user validation
@@ -44,16 +51,18 @@ namespace Grc.ui.App.Http {
         /// <summary>
         /// Get total count for all users in the system
         /// </summary>
-        /// <returns>
-        /// Task containing number of users in the system
-        /// </returns>
-        Task<int> CountAllUsersAsync();
+        /// <param name="ipAddress">Current login IP Address of the requesting user</param>
+        /// <param name="requestingUserId">User ID of the requesting user</param>
+        /// <returns>Task containing number of users in the system</returns>
+        Task<RecordCountResponse> CountAllUsersAsync(long requestingUserId, string ipAddress);
 
         /// <summary>
         /// Get count of active users in the system
         /// </summary>
-        /// <returns></returns>
-        Task<int> CountActiveUsersAsync();
+        /// <param name="ipAddress">Current login IP Address of the requesting user</param>
+        /// <param name="requestingUserId">User ID of the requesting user</param>
+        /// <returns>Task containing count of active users</returns>
+        Task<RecordCountResponse> CountActiveUsersAsync(long requestingUserId, string ipAddress);
 
         /// <summary>
         /// Update the user logged in status

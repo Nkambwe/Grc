@@ -30,15 +30,16 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         public async Task<IActionResult> Index(){
             var model = new AdminDashboardModel();
             try {
-                var grcResponse = await _authService.GetCurrentUserAsync();
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError) {
                     return HandleLoginErrors(grcResponse.Error.Message, model);
                 }
 
                 var currentUser = grcResponse.Data;
                 model.WelcomeMessage = $"{LocalizationService.GetLocalizedLabel("App.Label.Welcome")}, {currentUser?.FirstName}!";
-                model.TotalUsers = await _accessService.CountAllUsersAsync();
-                model.ActiveUsers = await _accessService.CountActiveUsersAsync();
+                model.TotalUsers = (await _accessService.CountAllUsersAsync(currentUser.Id, ipAddress)).Count;
+                model.ActiveUsers = (await _accessService.CountActiveUsersAsync(currentUser.Id, ipAddress)).Count;
                 model.LastLogin = DateTime.UtcNow;
             } catch(Exception ex){ 
                 Logger.LogActivity($"Username validation error: {ex.Message}", "ERROR");
