@@ -5,6 +5,10 @@
       "PackagePath": "staticwebassets\\Grc.ui.App.hgjspktsa7.bundle.scp.css"
     },
     {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-style.css",
+      "PackagePath": "staticwebassets\\css\\admin-style.css"
+    },
+    {
       "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\app.css",
       "PackagePath": "staticwebassets\\css\\app.css"
     },
@@ -47,6 +51,10 @@
     {
       "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\images\\no_service.png",
       "PackagePath": "staticwebassets\\images\\no_service.png"
+    },
+    {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-script.js",
+      "PackagePath": "staticwebassets\\js\\admin-script.js"
     },
     {
       "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\grc-app.js",

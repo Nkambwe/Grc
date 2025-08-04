@@ -1,0 +1,9 @@
+﻿@model IEnumerable<QuickActionModel>
+<div class="quick-actions">
+    @foreach (var action in Model)
+    {
+        <button class="button is-small is-rounded @action.CssClass" onclick="location.href='@action.Url'">
+            <i class="@action.IconClass mr-2"></i>@action.Label
+        </button>
+    }
+</div>

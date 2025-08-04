@@ -53,12 +53,82 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
-    "Method": "GetCurrentUser",
-    "RelativePath": "grc/sam/users/current-user",
-    "HttpMethod": "GET",
+    "Method": "CountActiveUsers",
+    "RelativePath": "grc/sam/users/countActiveUsers",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "CountUsers",
+    "RelativePath": "grc/sam/users/countUsers",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "GetByEmail",
+    "RelativePath": "grc/sam/users/getByEmail",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.UserRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "GetUserByIdAsync",
+    "RelativePath": "grc/sam/users/getById",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.UserRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "GetByUsername",
+    "RelativePath": "grc/sam/users/getByUsername",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.UserRequest",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

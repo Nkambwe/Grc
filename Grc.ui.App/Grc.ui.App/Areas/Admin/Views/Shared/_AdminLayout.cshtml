@@ -18,8 +18,7 @@
         Html.AddCssFileParts("~/lib/toastr/toastr.css");
         Html.AddCssFileParts("~/css/color-pallete.css");
         Html.AddCssFileParts("~/lib/sweet-alert/sweetalert2.css");
-        Html.AddCssFileParts("~/css/grc-style.css", excludeFromBundle: false);
-        Html.AddCssFileParts("~/css/register-styles.css", excludeFromBundle: false);
+        Html.AddCssFileParts("~/css/admin-style.css", excludeFromBundle: false);
     }
 
     <script src="~/lib/toastr/toastr.min.js"></script>
@@ -29,26 +28,268 @@
 </head>
 <body class="@Html.GeneratePageCssClasses()">
 
-    <div class="main-container">
-        <main role="main" class="inner-container">
-            @RenderBody()
-        </main>
+    <div class="layout-wrapper">
 
-        <footer class="grc-footer">
-            <div class="footer-container">
-                Pearl Bank Uganda Limited &copy; @DateTime.Now.Year -  @CommonDefaults.AppVersion
+        <header class="header-bar">
+            <div>
+                <img src="~/images/logo.png" />
             </div>
-        </footer>
-    </div>
 
+            <div class="is-flex is-align-items-center">
+                <h1 class="title is-5 mb-0 ml-3">@Model.Banner</h1>
+            </div>
+
+            <div class="ml-auto is-flex is-align-items-center">
+                <div class="user-avator">
+                    <span class="app-serach">
+                        <i class="mdi mdi-feature-search-outline"></i>
+                    </span>
+                </div>
+                <div class="user-avator">
+                    <span class="avator-initials">NJ</span>
+                </div>
+                <div class="user-avator">
+                    <span class="avator-bell">
+                        <i class="mdi mdi-bell-ring-outline"></i>
+                    </span>
+                    <span class="notification-count">5</span>
+                </div>
+                <div class="dropdown is-right" id="userDropdown">
+                    <div class="dropdown-trigger">
+                        <button class="button is-ghost" onclick="toggleDropdown()">
+                            <i class="fas fa-user-circle"></i>
+                            <i class="fas fa-angle-down ml-2"></i>
+                        </button>
+                    </div>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-content">
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-user mr-2"></i>Profile
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-cog mr-2"></i>Settings
+                            </a>
+                            <hr class="dropdown-divider">
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </header>
+
+        <div class="layout-wrapper">
+
+            <aside class="sidebar-container">
+
+                <nav class="sidebar bg-light">
+                    <div class="sidebar-geader">
+                        <button>
+                            <span class="menu-icon">
+                                <i class="mdi mdi-menu"></i></>
+                            </span>
+                        </button>
+                        <span>Pearl Bank</span>
+                    </div>
+                    <ul class="sidebar-menu">
+                        <li class="sidebar-item">
+                            <a href="/Admin/Dashboard">
+                                <span class="menu-icon">
+                                    <i class="mdi mdi-home-outline"></i></>
+                                </span>
+                                <span class="sidebar-text">Home</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item with-submenu">
+                            <a href="#" class="toggle-submenu" data-id="recent-menu">
+                                <span class="menu-icon">
+                                    <i class="mdi mdi-clock-time-seven-outline"></i></>
+                                </span>
+                                <span>Recent</span>
+                                <span class="drop-icon">
+                                    <i class="mdi mdi-chevron-down"></i>
+                                </span>
+                            </a>
+                            @await Component.InvokeAsync("Recent", new { model = Model.Recents })
+                            
+                        </li>
+                        <li class="sidebar-item with-submenu">
+                            <a href="#" class="toggle-submenu" data-id="favourites-menu">
+                                <span class="menu-icon">
+                                    <i class="mdi mdi-pin-off-outline"></i></>
+                                </span>
+                                <span>Pinned</span>
+                                <span class="drop-icon">
+                                    <i class="mdi mdi-chevron-down"></i>
+                                </span>
+                            </a>
+                            @await Component.InvokeAsync("Favourites", new { model = Model.Favourites })
+                        </li>
+                        <li class="sidebar-separator">
+                            <span class="separator-label">Workbench</span>
+                            <span class="separator-line"></span>
+                        </li>
+                        <li class="sidebar-item with-submenu">
+                            <a href="/Admin/Departments">
+                                <span class="menu-icon">
+                                    <i class="mdi mdi-share-all-outline"></i>
+                                </span>
+                                <span class="sidebar-text">Departments</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item with-submenu">
+                            <a href="/Admin/Users">
+                                <span class="menu-icon">
+                                    <i class="mdi mdi-account-outline"></i>
+                                </span>
+                                <span class="sidebar-text">System Users</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item with-submenu">
+                            <a href="#" class="toggle-submenu" data-id="permissions-menu">
+                                <span class="menu-icon">
+                                    <i class="mdi mdi-server-security"></i>
+                                </span>
+                                <span>Permissions</span>
+                                <span class="drop-icon">
+                                    <i class="mdi mdi-chevron-down"></i>
+                                </span>
+                            </a>
+                            <ul id="permissions-menu" class="sidebar-submenu">
+                                <li class="sidebar-item with-submenu">
+                                    <a href="/Admin/Permissions/Assign">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-shield-check-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">Assign Permissions</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item with-submenu">
+                                    <a href="/Admin/Permissions/Sets">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-shield-account-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">Role Permissions</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item with-submenu">
+                                    <a href="/Admin/Permissions/Sets">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-account-convert-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">Role Delegation</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="sidebar-separator">
+                            <span class="separator-label">Configurations</span>
+                            <span class="separator-line"></span>
+                        </li>
+
+                        <li class="sidebar-item with-submenu">
+                            <a href="#" class="toggle-submenu" data-id="user-configuration-menu">
+                                <span class="menu-icon">
+                                    <i class="mdi mdi-account-cog-outline"></i>
+                                </span>
+                                <span>User settings</span>
+                                <span class="drop-icon">
+                                    <i class="mdi mdi-chevron-down"></i>
+                                </span>
+                            </a>
+                            <ul id="user-configuration-menu" class="sidebar-submenu">
+                                <li class="sidebar-item with-submenu">
+                                    <a href="/Admin/configuration/ipaddresses">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-ip-network-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">IP Addresses</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item with-submenu">
+                                    <a href="/Admin/configuration/userdata">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-account-details-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">User data</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item with-submenu">
+                                    <a href="/Admin/configuration/usergroups">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-account-group-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">User Groups</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item with-submenu">
+                                    <a href="/Admin/configuration/roles">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-account-box-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">User Roles</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item with-submenu">
+                                    <a href="/Admin/configuration/authentication">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-account-question-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">Authentication</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="sidebar-item with-submenu">
+                            <a href="/Admin/configuration/encryption">
+                                <span class="menu-icon">
+                                    <i class="mdi mdi-lock-outline"></i>
+                                </span>
+                                <span class="sidebar-text">Entity Encryption</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item with-submenu">
+                            <a href="/Admin/configuration/systemerrors">
+                                <span class="menu-icon">
+                                    <i class="mdi mdi-bug-outline"></i>
+                                </span>
+                                <span class="sidebar-text">System Errors</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item with-submenu">
+                            <a href="/Admin/configuration/systemactivity">
+                                <span class="menu-icon">
+                                    <i class="mdi mdi-bell-ring-outline"></i>
+                                </span>
+                                <span class="sidebar-text">System Activities</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+
+            </aside>
+            <main class="main-content" id="mainContent">
+
+                @RenderBody()
+            </main>
+        </div>
+
+    </div>
+    
     @{
-        // Add all your script files
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery-validation/dist/jquery.validate.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/select-2/js/select2.full.min.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/bootstrap/dist/js/bootstrap.js");
-        Html.AddScriptParts(ResourceLocation.Footer, "~/js/register-script.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-script.js");
     }
 
     @Html.GenerateScripts(ResourceLocation.Footer)

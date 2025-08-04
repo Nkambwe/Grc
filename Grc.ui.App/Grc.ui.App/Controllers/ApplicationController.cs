@@ -41,11 +41,13 @@ namespace Grc.ui.App.Controllers {
         }
 
         public IActionResult Index() {
-            if (!User.Identity?.IsAuthenticated == true) {
-                return RedirectToAction("Login");
-            }
+            if (User.Identity.IsAuthenticated) {
+                var role = User.FindFirst(ClaimTypes.Role)?.Value;
+                var redirectUrl = DetermineRedirectUrl(role);
+                return Redirect(redirectUrl);
+            } 
 
-            return View();
+            return RedirectToAction("Login");
         }
 
         [HttpGet]

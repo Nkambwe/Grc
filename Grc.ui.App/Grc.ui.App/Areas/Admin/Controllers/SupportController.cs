@@ -7,7 +7,6 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection;
 using System.Text.Json;
 
 namespace Grc.ui.App.Areas.Admin.Controllers {
@@ -40,6 +39,29 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 model.WelcomeMessage = $"{LocalizationService.GetLocalizedLabel("App.Label.Welcome")}, {currentUser?.FirstName}!";
                 model.TotalUsers = (await _accessService.CountAllUsersAsync(currentUser.Id, ipAddress)).Count;
                 model.ActiveUsers = (await _accessService.CountActiveUsersAsync(currentUser.Id, ipAddress)).Count;
+
+                model.QuickActions = new List<QuickActionModel> {
+                    new() { Label = "Add User", IconClass = "mdi mdi-account-multiple-plus-outline", Url = "/Admin/User/Add" },
+                    new() { Label = "New Dept", IconClass = "mdi mdi-share-all-outline", Url = "/Admin/Department/Add" },
+                    new() { Label = "Assign Permissions", IconClass = "mdi mdi-shield-check-outline", Url = "/Admin/Permissions/Index" }
+                    // Load from DB or user prefs in future
+                };
+                
+                model.Recents = new List<RecentModel> {
+                    new() { Label = "Add User", IconClass = "mdi mdi-account-multiple-plus-outline", Url = "/Admin/User/Add" },
+                    new() { Label = "New Dept", IconClass = "mdi mdi-share-all-outline", Url = "/Admin/Department/Add" },
+                    new() { Label = "Assign Permissions", IconClass = "mdi mdi-shield-check-outline", Url = "/Admin/Permissions/Index" },
+                    new() { Label = "User Data", IconClass = "mdi mdi-account-details-outline", Url = "/Admin/User" },
+                    new() { Label = "User Goups", IconClass = "mdi mdi-account-group-outline", Url = "/Admin/Reports" }
+                    // Load from session
+                };
+
+                model.Favourites = new List<FavouriteModel> {
+                    new() { Label = "User Data", IconClass = "mdi mdi-account-details-outline", Url = "/Admin/User" },
+                    new() { Label = "User Groups", IconClass = "mdi mdi-account-group-outline", Url = "/Admin/Reports" }
+                };
+
+
                 model.LastLogin = DateTime.UtcNow;
             } catch(Exception ex){ 
                 Logger.LogActivity($"Username validation error: {ex.Message}", "ERROR");

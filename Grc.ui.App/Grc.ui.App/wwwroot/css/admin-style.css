@@ -1,0 +1,508 @@
+﻿/* Reset and base styles */
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Helvetica, Arial, 'Noto Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+}
+
+:root {
+    --header-height: 60px;
+    --sidebar-width: 250px;
+    --sidebar-collapsed-width: 60px;
+    --primary-color: #006d77;
+    --secondary-color: #1a73e8;
+    --background-color: #f4f5f7;
+    --sidebar-bg: #ffffff;
+    --border-color: #e1e5e9;
+    --text-color: #333;
+    --hover-bg: #e0eaff;
+    --separator-color: #ddd;
+}
+
+/* Layout wrapper */
+.layout-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* Header styles */
+.header-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--header-height);
+    background-color: var(--black-accent-green);
+    color: var(--teal-light-strong);
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    z-index: 1000;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+    /* Logo container */
+    .header-bar > div:first-child {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    .header-bar img {
+        height: 40px;
+        width: auto;
+        max-width: 150px;
+        object-fit: contain;
+    }
+
+    .header-bar .is-flex {
+        flex: 1;
+        margin-left: 1rem;
+        min-width: 85%;
+    }
+
+    .header-bar .title {
+        color: var(--teal-light-strong);
+        font-size: 1.25rem;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .header-bar .ml-auto {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+/* Mobile menu toggle */
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-right: 0.5rem;
+}
+
+/* User controls in header */
+.user-avator {
+    display: flex;
+    align-items: center;
+    margin-left: 1rem;
+    position: relative;
+}
+
+.avator-initials {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    color: var(--white-base);
+    background-color: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.notification-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #ff4757;
+    color: white;
+    border-radius: 10px;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 18px;
+    text-align: center;
+}
+
+/* Dropdown styles */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 5px);
+    right: 0;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    min-width: 180px;
+    display: none;
+    z-index: 1050; 
+    margin-top: 0;
+}
+
+.dropdown.is-active .dropdown-menu {
+    display: block;
+    animation: dropdownFadeIn 0.2s ease;
+}
+
+.dropdown-content {
+    padding: 0.5rem 0;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+    .dropdown-item:hover {
+        background-color: var(--hover-bg);
+    }
+
+.dropdown-divider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 0.5rem 0;
+    border: none;
+}
+
+/* Main layout container */
+.layout-wrapper:last-child {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    margin-top: var(--header-height);
+    overflow: hidden;
+}
+
+/* Sidebar container */
+.sidebar-container {
+    width: var(--sidebar-width);
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+    transition: width 0.3s ease;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+    .sidebar-container.collapsed {
+        width: var(--sidebar-collapsed-width);
+    }
+
+/* Sidebar styles */
+.sidebar {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.sidebar-geader {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--primary-color);
+}
+
+    .sidebar-geader button {
+        background: none;
+        border: none;
+        color: var(--primary-color);
+        font-size: 1.25rem;
+        cursor: pointer;
+        margin-right: 0.75rem;
+        padding: 0.25rem;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+    }
+
+        .sidebar-geader button:hover {
+            color: var(--teal-light-strong);
+            background-color: transparent;
+            transition: all .3s ease-in-out;
+        }
+
+/* Sidebar menu */
+.sidebar-menu {
+    list-style: none;
+    padding: 0.5rem 0;
+    margin: 0;
+}
+
+.sidebar-item {
+    margin: 0.125rem 0.5rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+    .sidebar-item a {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: var(--text-color);
+        text-decoration: none;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        position: relative;
+    }
+
+    .sidebar-item:hover a {
+        color: var(--teal-dark-slightly);
+        background-color: transparent;
+        transition: all .3s ease-in-out;
+    }
+
+    .sidebar-item.active a {
+        color: var(--teal-light-strong);
+        background-color: transparent;
+        transition: all .3s ease-in-out;
+    }
+
+    .sidebar-item .menu-icon {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 0.75rem;
+        flex-shrink: 0;
+    }
+
+.sidebar-text {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-container.collapsed .sidebar-text {
+    opacity: 0;
+}
+
+.drop-icon {
+    margin-left: auto;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-item.with-submenu.open .drop-icon {
+    transform: rotate(180deg);
+}
+
+.sidebar-container.collapsed .drop-icon {
+    display: none;
+}
+
+/* Sidebar separators */
+.sidebar-separator {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1rem 0.5rem 1rem;
+    margin: 0.5rem 0;
+    position: relative;
+}
+
+.separator-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--grey-dark-slightly);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background-color: var(--black-trans);
+    padding-right: 0.75rem;
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-container.collapsed .separator-label {
+    opacity: 0;
+}
+
+.separator-line {
+    flex: 1;
+    height: 1px;
+    background-color: var(--separator-color);
+    position: relative;
+}
+
+.sidebar-container.collapsed .separator-line {
+    display: none;
+}
+
+/* When collapsed, show separator as a simple line */
+.sidebar-container.collapsed .sidebar-separator {
+    justify-content: center;
+    padding: 0.5rem 1rem;
+}
+
+    .sidebar-container.collapsed .sidebar-separator::after {
+        content: '';
+        width: 24px;
+        height: 1px;
+        background-color: var(--separator-color);
+    }
+
+/* Sidebar submenu */
+.sidebar-submenu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background-color: rgba(0,0,0,0.02);
+    border-radius: 6px;
+    margin: 0;
+}
+
+    .sidebar-submenu.open {
+        max-height: 500px;
+        padding: 0.25rem 0;
+    }
+
+    .sidebar-submenu .sidebar-item {
+        margin: 0.125rem 0;
+    }
+
+        .sidebar-submenu .sidebar-item a {
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            font-size: 13px;
+        }
+
+.sidebar-container.collapsed .sidebar-submenu {
+    display: none;
+}
+
+/* Main content */
+.main-content {
+    flex: 1;
+    padding: 1.5rem;
+    background-color: var(--background-color);
+    overflow-y: auto;
+    transition: margin-left 0.3s ease;
+}
+
+/* Button styles */
+.button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+    .button.is-ghost {
+        background: transparent;
+    }
+
+        .button.is-ghost:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+/* Utility classes */
+.is-flex {
+    display: flex;
+}
+
+.is-align-items-center {
+    align-items: center;
+}
+
+.ml-auto {
+    margin-left: auto;
+}
+
+.ml-2 {
+    margin-left: 0.5rem;
+}
+
+.ml-3 {
+    margin-left: 0.75rem;
+}
+
+.mb-0 {
+    margin-bottom: 0;
+}
+
+.mr-2 {
+    margin-right: 0.5rem;
+}
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Responsive design */
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: block;
+    }
+
+    /* Logo adjustments for mobile */
+    .header-bar img {
+        height: 32px;
+        max-width: 120px;
+    }
+
+    /* Hide or truncate title on mobile */
+    .header-bar .title {
+        font-size: 1rem;
+        display: none; 
+        max-width: 100px;
+        font-size: 0.9rem;
+    }
+
+    .sidebar-container {
+        position: fixed;
+        top: var(--header-height);
+        left: -var(--sidebar-width);
+        height: calc(100vh - var(--header-height));
+        z-index: 999;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        transition: left 0.3s ease;
+    }
+
+        .sidebar-container.open {
+            left: 0;
+        }
+
+        .sidebar-container.collapsed {
+            left: -var(--sidebar-collapsed-width);
+        }
+
+            .sidebar-container.collapsed.open {
+                left: 0;
+                width: var(--sidebar-collapsed-width);
+            }
+
+    .main-content {
+        width: 100%;
+        margin-left: 0;
+    }
+}

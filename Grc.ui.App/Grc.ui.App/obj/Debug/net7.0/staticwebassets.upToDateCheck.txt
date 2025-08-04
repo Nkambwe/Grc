@@ -1,3 +1,4 @@
+wwwroot\css\admin-style.css
 wwwroot\css\app.css
 wwwroot\css\color-pallete.css
 wwwroot\css\grc-style.css
@@ -9,6 +10,7 @@ wwwroot\images\503.png
 wwwroot\images\logo.png
 wwwroot\images\logo-white.png
 wwwroot\images\no_service.png
+wwwroot\js\admin-script.js
 wwwroot\js\grc-app.js
 wwwroot\js\login-script.js
 wwwroot\js\register-script.js

@@ -1,8 +1,81 @@
-﻿@{
-    Layout = "_Layout_01";
+﻿@model AdminDashboardModel
+@{
+    Layout = "_AdminLayout";
     ViewData["Title"] = "GRC ADMIN";
 }
-
-<div class="main-container">
-    <h1 class="display-1 text-success">Admin Dashboard</h1>
+<div class="box">
+    <h3 class="title is-5">Quick Actions</h3>
+    @await Component.InvokeAsync("QuickActions", new { model = Model.QuickActions })
 </div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-number" id="totalUsers">@Model.TotalUsers</div>
+        <div class="stat-label">Total Users</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-user-check"></i>
+        </div>
+        <div class="stat-number" id="activeUsers">@Model.ActiveUsers</div>
+        <div class="stat-label">Active Users</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-user-times"></i>
+        </div>
+        <div class="stat-number" id="disabledUsers">0</div>
+        <div class="stat-label">Disabled Users</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-user-minus"></i>
+        </div>
+        <div class="stat-number" id="deletedUsers">0</div>
+        <div class="stat-label">Deleted Users</div>
+    </div>
+</div>
+
+<div class="box">
+    <h3 class="title is-5">Recent Activity</h3>
+    <div class="table-container">
+        <table class="table is-fullwidth is-striped">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="activityTable">
+                <tr>
+                    <td>2 minutes ago</td>
+                    <td>john.doe@example.com</td>
+                    <td>User Login</td>
+                    <td><span class="tag is-success">Success</span></td>
+                </tr>
+                <tr>
+                    <td>5 minutes ago</td>
+                    <td>jane.smith@example.com</td>
+                    <td>Password Reset</td>
+                    <td><span class="tag is-info">Completed</span></td>
+                </tr>
+                <tr>
+                    <td>12 minutes ago</td>
+                    <td>admin@example.com</td>
+                    <td>User Created</td>
+                    <td><span class="tag is-success">Success</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+

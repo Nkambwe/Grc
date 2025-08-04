@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Views\Shared\Components\Sidebar\" />
     <Folder Include="Views\Shared\TagHelpers\" />
   </ItemGroup>
 

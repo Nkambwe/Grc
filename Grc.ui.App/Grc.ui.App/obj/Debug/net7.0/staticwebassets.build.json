@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "L3k2qUQ6SjTeqgiamBDlupuqqSzlmjn5YwLbZjDGhKI=",
+  "Hash": "dzDzT7l2acL+wARGPr0nLXn6THTw0ll+zec+BF/fk/s=",
   "Source": "Grc.ui.App",
   "BasePath": "_content/Grc.ui.App",
   "Mode": "Default",
@@ -57,6 +57,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\obj\\Debug\\net7.0\\scopedcss\\projectbundle\\Grc.ui.App.bundle.scp.css"
+    },
+    {
+      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-style.css",
+      "SourceId": "Grc.ui.App",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\",
+      "BasePath": "_content/Grc.ui.App",
+      "RelativePath": "css/admin-style#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "558768xdhc",
+      "Integrity": "+VqP652dQZA0H8nR5+ZbIg5RqDCbY0Qqs95+O/NLDwk=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\admin-style.css"
     },
     {
       "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\app.css",
@@ -288,6 +309,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\no_service.png"
+    },
+    {
+      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-script.js",
+      "SourceId": "Grc.ui.App",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\",
+      "BasePath": "_content/Grc.ui.App",
+      "RelativePath": "js/admin-script#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "4hdwx39nj2",
+      "Integrity": "OAmfCUzGaMNKF8yTK4L//G9QXH2ke/kbvVzf5F2lCKo=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\admin-script.js"
     },
     {
       "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\grc-app.js",
@@ -2812,6 +2854,88 @@
   ],
   "Endpoints": [
     {
+      "Route": "css/admin-style.558768xdhc.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-style.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10256"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"+VqP652dQZA0H8nR5+ZbIg5RqDCbY0Qqs95+O/NLDwk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 04 Aug 2025 03:34:57 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "558768xdhc"
+        },
+        {
+          "Name": "label",
+          "Value": "css/admin-style.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-+VqP652dQZA0H8nR5+ZbIg5RqDCbY0Qqs95+O/NLDwk="
+        }
+      ]
+    },
+    {
+      "Route": "css/admin-style.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-style.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10256"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"+VqP652dQZA0H8nR5+ZbIg5RqDCbY0Qqs95+O/NLDwk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 04 Aug 2025 03:34:57 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-+VqP652dQZA0H8nR5+ZbIg5RqDCbY0Qqs95+O/NLDwk="
+        }
+      ]
+    },
+    {
       "Route": "css/app.css",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\app.css",
       "Selectors": [],
@@ -3326,7 +3450,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 02 Aug 2025 06:18:14 GMT"
+          "Value": "Mon, 04 Aug 2025 02:48:25 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3363,7 +3487,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 02 Aug 2025 06:18:14 GMT"
+          "Value": "Mon, 04 Aug 2025 02:48:25 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3408,7 +3532,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 02 Aug 2025 06:18:14 GMT"
+          "Value": "Mon, 04 Aug 2025 02:48:25 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3453,7 +3577,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 02 Aug 2025 06:18:14 GMT"
+          "Value": "Mon, 04 Aug 2025 02:48:25 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3874,6 +3998,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-Y4OMh1OdkJbG+N8FU2FMJ7eMew+TmAkvsgUeGuUCvcU="
+        }
+      ]
+    },
+    {
+      "Route": "js/admin-script.4hdwx39nj2.js",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-script.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10860"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"OAmfCUzGaMNKF8yTK4L//G9QXH2ke/kbvVzf5F2lCKo=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 04 Aug 2025 02:25:56 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "4hdwx39nj2"
+        },
+        {
+          "Name": "label",
+          "Value": "js/admin-script.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-OAmfCUzGaMNKF8yTK4L//G9QXH2ke/kbvVzf5F2lCKo="
+        }
+      ]
+    },
+    {
+      "Route": "js/admin-script.js",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-script.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10860"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"OAmfCUzGaMNKF8yTK4L//G9QXH2ke/kbvVzf5F2lCKo=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 04 Aug 2025 02:25:56 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-OAmfCUzGaMNKF8yTK4L//G9QXH2ke/kbvVzf5F2lCKo="
         }
       ]
     },

@@ -3,7 +3,7 @@
         public int Priority => 0;
 
         public void RegisterRoutes(IEndpointRouteBuilder routeBuilder) {
-            
+
             // Dashboard
             routeBuilder.MapControllerRoute(
                 name: "dashboard",
@@ -67,7 +67,7 @@
             // Admin areas
             routeBuilder.MapControllerRoute(
                 name: "areas",
-                pattern: "{area:exists}/{controller=Support}/{action=Index}/{id?}"
+                pattern: "{area}/{controller=Support}/{action=Index}/{id?}"
             );
 
             // User login (default)
