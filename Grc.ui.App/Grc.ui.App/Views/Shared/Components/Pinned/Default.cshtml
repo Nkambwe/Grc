@@ -1,0 +1,17 @@
+﻿@model IPinnedModelFactory
+
+<ul id="pinned-menu" class="sidebar-submenu">
+    @foreach (var item in Model.PinnedItems)
+    {
+        <li class="sidebar-item">
+            <a asp-controller="@item.Controller" asp-action="@item.Action" asp-area="@item.Area">
+                <span class="menu-icon">
+                    <i class="@item.IconClass"></i>
+                </span>
+                <span class="sidebar-text">
+                    @Html.Raw(Model.ILocalize.GetLocalizedLabel(@item.Label))
+                </span>
+            </a>
+        </li>
+    }
+</ul>

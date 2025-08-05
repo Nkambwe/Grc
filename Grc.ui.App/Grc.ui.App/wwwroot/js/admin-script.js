@@ -1,23 +1,33 @@
-﻿// Admin Dashboard JavaScript with jQuery
-$(document).ready(function() {
+﻿$(document).ready(function() {
+     // User dropdown toggle
+    window.toggleDropdown = function() {
+        console.log("Clicked");
+        $('#userDropdown').toggleClass('is-active');
+    };
+
+     $('.avator-button').on('click', function(e) {
+        e.preventDefault();
+        $('#userDropdown').toggleClass('is-active');
+    });
     
-    // Sidebar toggle functionality
+    //..close dropdown on escape key
+    $(document).keydown(function(event) {
+        if (event.key === 'Escape') {
+            $('#userDropdown').removeClass('is-active');
+        }
+    });
+
+    //..sidebar toggle functionality
     function toggleSidebar() {
         const $sidebarContainer = $('.sidebar-container');
         const isMobile = $(window).width() <= 768;
-        
         if (isMobile) {
-            // On mobile, toggle the 'open' class
+            //..on mobile, toggle the 'open' class
             $sidebarContainer.toggleClass('open');
         } else {
-            // On desktop, toggle the 'collapsed' class
+            //..on desktop, toggle the 'collapsed' class
             $sidebarContainer.toggleClass('collapsed');
         }
-    }
-    
-    // Dropdown functionality
-    function toggleDropdown() {
-        $('#userDropdown').toggleClass('is-active');
     }
     
     // Submenu toggle functionality

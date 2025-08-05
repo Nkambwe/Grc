@@ -1,9 +1,15 @@
-﻿@model IEnumerable<QuickActionModel>
+﻿@model IQuickActionModelFactory
+
 <div class="quick-actions">
-    @foreach (var action in Model)
+    @foreach (var item in Model.QuickActionItems)
     {
-        <button class="button is-small is-rounded @action.CssClass" onclick="location.href='@action.Url'">
-            <i class="@action.IconClass mr-2"></i>@action.Label
-        </button>
+        <a asp-controller="@item.Controller" asp-action="@item.Action" asp-area="@item.Area">
+            <span class="menu-icon">
+                <i class="@item.IconClass"></i>
+            </span>
+            <span class="sidebar-text">
+                @Html.Raw(Model.ILocalize.GetLocalizedLabel(@item.Label))
+            </span>
+        </a>
     }
 </div>

@@ -18,6 +18,77 @@
     <LocaleResource Name="App.Label.Signin">
         <Value>Sign in</Value>
     </LocaleResource>
+
+
+    <LocaleResource Name="App.User.Views">
+        <Value>Views</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.User.Settings">
+        <Value>Settings</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.User.Logout">
+        <Value>Logout</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Home">
+        <Value>Home</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Recent">
+        <Value>Recent</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Pinned">
+        <Value>Pinned</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Workbench">
+        <Value>Workbench</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Departments">
+        <Value>Departments</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Users">
+        <Value>System Users</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions">
+        <Value>Permissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions.Assign">
+        <Value>Assign Permissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions.Role">
+        <Value>Role Permissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions.Role">
+        <Value>Role Delegation</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations">
+        <Value>Configurations</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Settings">
+        <Value>User settings</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.IP">
+        <Value>IP Addresses</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Data">
+        <Value>User data</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Groups">
+        <Value>User Groups</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Roles">
+        <Value>User Roles</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Authentication">
+        <Value>Authentication</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Encryption">
+        <Value>Entity Encryption</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Errors">
+        <Value>System Errors</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Activities">
+		<Value>System Activities</Value>
+	</LocaleResource>
     
     <LocaleResource Name="Registration.Title">
         <Value>Company Registration</Value>

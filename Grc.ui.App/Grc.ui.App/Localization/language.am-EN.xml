@@ -1,173 +1,243 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<Language Name="English US" IsDefault="true" IsRightToLeft="false">
-	<LocaleResource Name="App.Version">
-		<Value>GRC SUITE 1.2</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Registration.Header">
-		<Value>System Setup</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.System.Language">
-		<Value>System Language</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Example">
-		<Value>Example. </Value>
-	</LocaleResource>
+<Language Name="English-UK" IsDefault="false" IsRightToLeft="false">
+    <LocaleResource Name="App.Version">
+        <Value>GRC SUITE 1.2</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Registration.Header">
+        <Value>System Setup</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.System.Language">
+        <Value>System Language</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Example">
+        <Value>For Example. </Value>
+    </LocaleResource>
     <LocaleResource Name="App.Label.Welcome">
-        <Value>Welcome!</Value>
+        <Value>Welcome back</Value>
     </LocaleResource>
     <LocaleResource Name="App.Label.Signin">
         <Value>Sign in</Value>
     </LocaleResource>
-    <LocaleResource Name="App.Label.Preparing">
-        <Value>Will be ready in a momemnt...</Value>
+
+
+    <LocaleResource Name="App.User.Views">
+        <Value>Views</Value>
     </LocaleResource>
-	<LocaleResource Name="Registration.Title">
-		<Value>Company Registration</Value>
-	</LocaleResource>
-	<LocaleResource Name="Registration.Admin.Info">
-		<Value>System Administrator Details</Value>
-	</LocaleResource>
-	<LocaleResource Name="Registration.Admin.Access">
-		<Value>System Login Details</Value>
-	</LocaleResource>
-	<LocaleResource Name="Register.Company.Fields.CompanyName">
-		<Value>Company Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Register.Company.Fields.Alias">
-		<Value>Alias</Value>
-	</LocaleResource>
-	<LocaleResource Name="Register.Company.Fields.RegistrationNumber">
-		<Value>Registration Number</Value>
-	</LocaleResource>
-	<LocaleResource Name="Registration.Error.General">
-		<Value>Please correct the errors in the current step before proceeding.</Value>
-	</LocaleResource>
+    <LocaleResource Name="App.User.Settings">
+        <Value>Settings</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.User.Logout">
+        <Value>Logout</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Home">
+        <Value>Home</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Recent">
+        <Value>Recent</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Pinned">
+        <Value>Pinned</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Workbench">
+        <Value>Workbench</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Departments">
+        <Value>Departments</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Users">
+        <Value>System Users</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions">
+        <Value>Permissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions.Assign">
+        <Value>Assign Permissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions.Role">
+        <Value>Role Permissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions.Role">
+        <Value>Role Delegation</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations">
+        <Value>Configurations</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Settings">
+        <Value>User settings</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.IP">
+        <Value>IP Addresses</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Data">
+        <Value>User data</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Groups">
+        <Value>User Groups</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Roles">
+        <Value>User Roles</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Authentication">
+        <Value>Authentication</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Encryption">
+        <Value>Entity Encryption</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Errors">
+        <Value>System Errors</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Activities">
+        <Value>System Activities</Value>
+    </LocaleResource>
+
+    <LocaleResource Name="Registration.Title">
+        <Value>Company Registration</Value>
+    </LocaleResource>
+    <LocaleResource Name="Registration.Admin.Info">
+        <Value>System Administrator Details</Value>
+    </LocaleResource>
+    <LocaleResource Name="Registration.Admin.Access">
+        <Value>System Login Details</Value>
+    </LocaleResource>
+    <LocaleResource Name="Register.Company.Fields.CompanyName">
+        <Value>Company Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Register.Company.Fields.Alias">
+        <Value>Alias</Value>
+    </LocaleResource>
+    <LocaleResource Name="Register.Company.Fields.RegistrationNumber">
+        <Value>Registration Number</Value>
+    </LocaleResource>
+    <LocaleResource Name="Registration.Error.General">
+        <Value>Please correct the errors in the current step before proceeding.</Value>
+    </LocaleResource>
     <LocaleResource Name="Registration.Error.Failed">
         <Value>Registration failed. Please try again.</Value>
     </LocaleResource>
     <LocaleResource Name="User.Fields.FirstName">
-		<Value>First Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.MidlleName">
-		<Value>Middle Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.Surname">
-		<Value>Surname</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.UserName">
-		<Value>Username</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.Email">
-		<Value>Email</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.PhoneNumber">
-		<Value>Phone Number</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.Password">
-		<Value>Password</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.ConfirmPassword">
-		<Value>Confirm Password</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.PFNumber">
-		<Value>PF Number</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.SolId">
-		<Value>Branch SolID</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.Department">
-		<Value>Department</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.DepartmentUnit">
-		<Value>Department Unit</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.Role">
-		<Value>System Role</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.IsActive">
-		<Value>Is Active</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.IsDeleted">
-		<Value>Mark As Deleted</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.IsVerified">
-		<Value>Is Verified</Value>
-	</LocaleResource>
-	<LocaleResource Name="Company.Error.CompanyNameRequired">
-		<Value>Company name Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="Company.Error.AliasRequired">
-		<Value>Provide an Alias (Short name) for the company</Value>
-	</LocaleResource>
-	<LocaleResource Name="Company.Error.RegNumberRequired">
-		<Value>Provide company Registration Number</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.EmailRequired">
-		<Value>Email Address Field is required</Value>
-	</LocaleResource>	
-	<LocaleResource Name="User.Error.FirstNameRequired">
-		<Value>FirstName Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.SurnameRequired">
-		<Value>LastName Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.UserameRequired">
-		<Value>Username Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.PasswordRequired">
-		<Value>Password Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.ConfirmPasswordRequired">
-		<Value>Confirm Password Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.PFNumberRequired">
-		<Value>PF Number Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.SolIdRequired">
-		<Value>Sol ID Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.DepartmentRequired">
-		<Value>Department Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.SystemRoleRequired">
-		<Value>System Role Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Previous">
-		<Value>Previous</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Next">
-		<Value>Next</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Delete">
-		<Value>Delete</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Cancel">
-		<Value>Cancel</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Confirm">
-		<Value>Confirm</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Push">
-		<Value>Push</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.On">
-		<Value>On</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Off">
-		<Value>Off</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Okay">
-		<Value>OK</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Yes">
-		<Value>Yes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.No">
-		<Value>No</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Submit">
-		<Value>Save</Value>
-	</LocaleResource>
+        <Value>First Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.MidlleName">
+        <Value>Middle Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.Surname">
+        <Value>Surname</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.UserName">
+        <Value>Username</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.Email">
+        <Value>Email</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.PhoneNumber">
+        <Value>Phone Number</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.Password">
+        <Value>Password</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.ConfirmPassword">
+        <Value>Confirm Password</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.PFNumber">
+        <Value>PF Number</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.SolId">
+        <Value>Branch SolID</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.Department">
+        <Value>Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.DepartmentUnit">
+        <Value>Department Unit</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.Role">
+        <Value>System Role</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.IsActive">
+        <Value>Is Active</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.IsDeleted">
+        <Value>Mark As Deleted</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.IsVerified">
+        <Value>Is Verified</Value>
+    </LocaleResource>
+    <LocaleResource Name="Company.Error.CompanyNameRequired">
+        <Value>Company name Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="Company.Error.AliasRequired">
+        <Value>Provide an Alias (Short name) for the company</Value>
+    </LocaleResource>
+    <LocaleResource Name="Company.Error.RegNumberRequired">
+        <Value>Provide company Registration Number</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.EmailRequired">
+        <Value>Email Address Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.FirstNameRequired">
+        <Value>FirstName Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.SurnameRequired">
+        <Value>Surname Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.UserameRequired">
+        <Value>Username Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.PasswordRequired">
+        <Value>Password Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.ConfirmPasswordRequired">
+        <Value>Confirm Password Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.PFNumberRequired">
+        <Value>PF Number Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.SolIdRequired">
+        <Value>Sol ID Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.DepartmentRequired">
+        <Value>Department Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.SystemRoleRequired">
+        <Value>User Role Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Previous">
+        <Value>Previous</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Next">
+        <Value>Next</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Delete">
+        <Value>Delete</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Cancel">
+        <Value>Cancel</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Confirm">
+        <Value>Confirm</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Push">
+        <Value>Push</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.On">
+        <Value>On</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Off">
+        <Value>Off</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Okay">
+        <Value>OK</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Yes">
+        <Value>Yes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.No">
+        <Value>No</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Submit">
+        <Value>Save</Value>
+    </LocaleResource>
+
     <LocaleResource Name="Button.Signin">
         <Value>Sign In</Value>
     </LocaleResource>
@@ -176,9 +246,6 @@
     </LocaleResource>
     <LocaleResource Name="Login.Enter.Password">
         <Value>Enter Password</Value>
-    </LocaleResource>
-    <LocaleResource Name="Login.Enter.Remember.Me">
-        <Value>Remember Me</Value>
     </LocaleResource>
     <LocaleResource Name="App.Message.EnterPassword">
         <Value>Password required for login</Value>

@@ -2,7 +2,9 @@
     public class RecentModel {
         public string Label { get; set; }
         public string IconClass { get; set; }
-        public string Url { get; set; }
-        public string CssClass { get; set; } = "is-primary";
+        public string Action { get; set; }
+        public string Controller { get; set; }
+        public string Area { get; set; }
+        public string CssClass { get; set; }
     }
 }

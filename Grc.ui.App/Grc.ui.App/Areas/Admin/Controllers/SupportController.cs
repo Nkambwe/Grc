@@ -39,28 +39,98 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 model.WelcomeMessage = $"{LocalizationService.GetLocalizedLabel("App.Label.Welcome")}, {currentUser?.FirstName}!";
                 model.TotalUsers = (await _accessService.CountAllUsersAsync(currentUser.Id, ipAddress)).Count;
                 model.ActiveUsers = (await _accessService.CountActiveUsersAsync(currentUser.Id, ipAddress)).Count;
+                model.Initials =$"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}";
 
                 model.QuickActions = new List<QuickActionModel> {
-                    new() { Label = "Add User", IconClass = "mdi mdi-account-multiple-plus-outline", Url = "/Admin/User/Add" },
-                    new() { Label = "New Dept", IconClass = "mdi mdi-share-all-outline", Url = "/Admin/Department/Add" },
-                    new() { Label = "Assign Permissions", IconClass = "mdi mdi-shield-check-outline", Url = "/Admin/Permissions/Index" }
+                    new() { 
+                        Label = "App.Menu.Users", 
+                        IconClass = "mdi mdi-account-outline", 
+                        Controller = "Support",
+                        Action = "Users",
+                        Area = "Admin",
+                        CssClass = "" 
+                    },
+                    new() { 
+                        Label = "App.Menu.Departments", 
+                        IconClass = "mdi mdi-share-all-outline", 
+                        Controller = "Support",
+                        Action = "Departments",
+                        Area = "Admin",
+                        CssClass = ""
+                    },
+                    new() { 
+                        Label = "App.Menu.Permissions.Assign", 
+                        IconClass = "mdi mdi-shield-check-outline", 
+                        Controller = "Support",
+                        Action = "AssignPermissions",
+                        Area = "Admin",
+                        CssClass = "" 
+                    }
                     // Load from DB or user prefs in future
                 };
                 
                 model.Recents = new List<RecentModel> {
-                    new() { Label = "Add User", IconClass = "mdi mdi-account-multiple-plus-outline", Url = "/Admin/User/Add" },
-                    new() { Label = "New Dept", IconClass = "mdi mdi-share-all-outline", Url = "/Admin/Department/Add" },
-                    new() { Label = "Assign Permissions", IconClass = "mdi mdi-shield-check-outline", Url = "/Admin/Permissions/Index" },
-                    new() { Label = "User Data", IconClass = "mdi mdi-account-details-outline", Url = "/Admin/User" },
-                    new() { Label = "User Goups", IconClass = "mdi mdi-account-group-outline", Url = "/Admin/Reports" }
+                    new() {
+                        Label = "App.Menu.Users", 
+                        IconClass = "mdi mdi-account-outline", 
+                        Controller = "Support",
+                        Action = "Users",
+                        Area = "Admin",
+                        CssClass = "" 
+                    },
+                    new() { 
+                        Label = "App.Menu.Departments", 
+                        IconClass = "mdi mdi-share-all-outline", 
+                        Controller = "Support",
+                        Action = "Departments",
+                        Area = "Admin",
+                        CssClass = ""
+                    },
+                    new() { 
+                        Label = "App.Menu.Permissions.Assign", 
+                        IconClass = "mdi mdi-shield-check-outline", 
+                        Controller = "Support",
+                        Action = "AssignPermissions",
+                        Area = "Admin",
+                        CssClass = "" 
+                    },
+                    new() { 
+                        Label = "App.Menu.Configurations.Data", 
+                        IconClass = "mdi mdi-account-details-outline", 
+                        Controller = "Configuration",
+                        Action = "UserData",
+                        Area = "Admin",
+                        CssClass = "" 
+                    },
+                    new() { 
+                        Label = "App.Menu.Configurations.Groups", 
+                        IconClass = "mdi mdi-account-group-outline", 
+                        Controller = "Configuration",
+                        Action = "UserGroups",
+                        Area = "Admin",
+                        CssClass = "" 
+                    }
                     // Load from session
                 };
 
-                model.Favourites = new List<FavouriteModel> {
-                    new() { Label = "User Data", IconClass = "mdi mdi-account-details-outline", Url = "/Admin/User" },
-                    new() { Label = "User Groups", IconClass = "mdi mdi-account-group-outline", Url = "/Admin/Reports" }
+                model.PinnedItems = new List<PinnedModel> {
+                    new() { 
+                        Label = "App.Menu.Configurations.Data", 
+                        IconClass = "mdi mdi-account-details-outline", 
+                        Controller = "Configuration",
+                        Action = "UserData",
+                        Area = "Admin",
+                        CssClass = "" 
+                    },
+                    new() { 
+                        Label = "App.Menu.Configurations.Groups", 
+                        IconClass = "mdi mdi-account-group-outline", 
+                        Controller = "Configuration",
+                        Action = "UserGroups",
+                        Area = "Admin",
+                        CssClass = "" 
+                    }
                 };
-
 
                 model.LastLogin = DateTime.UtcNow;
             } catch(Exception ex){ 
@@ -69,6 +139,63 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             }
 
             return View(model);
+        }
+
+        public async Task<IActionResult> Departments() {
+            return View();
+        }
+
+        public async Task<IActionResult> Users() {
+            return View();
+        }
+        
+        public async Task<IActionResult> Roles() {
+             return View();
+        }
+
+        public async Task<IActionResult> PermissionSets() {
+            return View();
+        }
+        
+        public async Task<IActionResult> AssignPermissions() {
+            return View();
+        }
+
+        public async Task<IActionResult> PermissionDelegation() {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Logout() {
+            try {
+                var username = User.Identity?.Name;
+                Logger.LogActivity($"Admin user initiating logout: {username}", "INFO");
+        
+                if (WebHelper.IsAjaxRequest(Request)) {
+                    //..for AJAX requests, return the logout URL
+                    return Json(new { 
+                        success = true, 
+                        redirectUrl = Url.Action("Logout", "Application", new { area = "" }),
+                        message = "Logging out..."
+                    });
+                }
+        
+                //..for non-AJAX, redirect directly
+                return RedirectToAction("Logout", "Application", new { area = "" });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error during admin logout: {ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                if (WebHelper.IsAjaxRequest(Request)) {
+                    return Json(new { 
+                        success = false, 
+                        message = "Logout failed. Please try again." 
+                    });
+                }
+        
+                return RedirectToAction("Index", "Support");
+            }
         }
 
         private IActionResult HandleLoginErrors(string error, AdminDashboardModel model) {

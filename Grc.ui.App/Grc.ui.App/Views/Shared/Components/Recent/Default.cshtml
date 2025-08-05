@@ -1,14 +1,16 @@
-﻿@model IEnumerable<RecentModel>
+﻿@model IReceientModelFactory 
 
 <ul id="recent-menu" class="sidebar-submenu">
-    @foreach (var action in Model)
+    @foreach (var item in Model.RecentItems)
     {
         <li class="sidebar-item">
-            <a class="@action.CssClass" href="@action.Url">
+            <a asp-controller="@item.Controller" asp-action="@item.Action" asp-area="@item.Area">
                 <span class="menu-icon">
-                    <i class="@action.IconClass"></i>
+                    <i class="@item.IconClass"></i>
                 </span>
-                <span class="sidebar-text">@action.Label</span>
+                <span class="sidebar-text">
+                    @Html.Raw(Model.ILocalize.GetLocalizedLabel(@item.Label))
+                </span>
             </a>
         </li>
     }

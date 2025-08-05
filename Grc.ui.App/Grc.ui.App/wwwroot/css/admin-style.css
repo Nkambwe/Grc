@@ -1,16 +1,21 @@
 ﻿/* Reset and base styles */
 * {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
+html,
+body {
+    height: 100vh;
     font-family: Helvetica, Arial, 'Noto Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow: hidden;
+}
+
+body {
+    padding-top: 65px;
 }
 
 :root {
@@ -34,84 +39,152 @@ html, body {
     height: 100vh;
 }
 
-/* Header styles */
 .header-bar {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    height: var(--header-height);
-    background-color: var(--black-accent-green);
-    color: var(--teal-light-strong);
+    color: var(--grey-light-strong);
+    background: var(--black-accent-green);
+    border-bottom: 1px solid #e1e8ed;
     display: flex;
     align-items: center;
-    padding: 0 1rem;
     z-index: 1000;
-    border-bottom: 1px solid var(--border-color);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-    /* Logo container */
-    .header-bar > div:first-child {
-        display: flex;
-        align-items: center;
-        flex-shrink: 0;
-    }
-
-    .header-bar img {
-        height: 40px;
-        width: auto;
-        max-width: 150px;
-        object-fit: contain;
-    }
-
-    .header-bar .is-flex {
-        flex: 1;
-        margin-left: 1rem;
-        min-width: 85%;
-    }
-
-    .header-bar .title {
-        color: var(--teal-light-strong);
-        font-size: 1.25rem;
-        font-weight: 600;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .header-bar .ml-auto {
-        margin-left: auto;
-        display: flex;
-        align-items: center;
-        flex-shrink: 0;
-    }
-
-/* Mobile menu toggle */
-.mobile-menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
-    margin-right: 0.5rem;
-}
-
-/* User controls in header */
-.user-avator {
+.header-align-left {
     display: flex;
     align-items: center;
-    margin-left: 1rem;
+    flex: 1; 
+    gap: 1px;
+}
+
+.header-align-right {
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+    flex-shrink: 0;
+}
+
+.logo-box{
+    display: flex;
+    align-items: center;
+}
+
+    .logo-box img {
+        height: 32px;
+        width: auto;
+    }
+
+.menu-box {
+    display: flex;
+    height: 60px;
+    width: 58px;
+    margin-right: 10px
+}
+
+    .menu-box a {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: var(--black-accent-green);
+        background-color: var(--teal-dark-accent);
+        font-size: 24px;
+    }
+
+.app-banner {
+    margin-left: 0;
+}
+
+.title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--teal-dark-accent);
+    margin: 0;
+}
+
+.user-avator {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0; 
+}
+
+.app-search, .avator-bell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--grey-light-strong);
+    background: var(--black-accent-green);
+    transition: all 0.2s ease;
+}
+
+    .app-search:hover, .avator-bell:hover {
+        background: #e9ecef;
+        color: #495057;
+    }
+
+.notification-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-trigger {
+    display: flex;
+}
+
+.avator-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--white-base);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 25px;
+    transition: background 0.2s ease;
+}
+
+    .avator-button:hover span.drop-avator-icon {
+        color: var(--white-base);
+        transition: all .3s ease-in-out;
+    }
+
+.dropdown.is-right {
     position: relative;
 }
 
 .avator-initials {
     width: 36px;
     height: 36px;
+    flex-shrink: 0;
     border-radius: 50%;
+    background: var(--teal-dark-extra);
     color: var(--white-base);
-    background-color: rgba(255,255,255,0.2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -119,74 +192,71 @@ html, body {
     font-size: 14px;
 }
 
-.notification-count {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background-color: #ff4757;
-    color: white;
-    border-radius: 10px;
-    padding: 2px 6px;
-    font-size: 12px;
-    font-weight: 600;
-    min-width: 18px;
-    text-align: center;
+.drop-avator-icon {
+    color: #6c757d;
+    transition: transform 0.2s ease;
 }
 
-/* Dropdown styles */
-.dropdown {
-    position: relative;
+.dropdown.is-active .drop-avator-icon {
+    transform: rotate(180deg);
 }
 
-.dropdown-menu {
+.dropdown.is-right .dropdown-menu {
     position: absolute;
-    top: calc(100% + 5px);
+    top: 100%;
     right: 0;
-    background: white;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-    min-width: 180px;
-    display: none;
-    z-index: 1050; 
-    margin-top: 0;
+    margin-top: 5px;
+    background: var(--sidebar-bg);
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border: 1px solid #e1e8ed;
+    min-width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    display: block;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    z-index: 1001;
 }
 
 .dropdown.is-active .dropdown-menu {
-    display: block;
-    animation: dropdownFadeIn 0.2s ease;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }
 
-.dropdown-content {
-    padding: 0.5rem 0;
+.dropdown-content ul {
+    list-style: none;
+    padding: 8px 0;
 }
 
 .dropdown-item {
     display: flex;
     align-items: center;
-    padding: 0.75rem 1rem;
-    color: var(--text-color);
+    gap: 12px;
+    padding: 12px 16px;
+    color: #495057;
     text-decoration: none;
-    transition: background-color 0.2s;
+    transition: background 0.2s ease;
 }
 
     .dropdown-item:hover {
-        background-color: var(--hover-bg);
+        background: #f8f9fa;
+        color: #007bff;
     }
 
 .dropdown-divider {
-    height: 1px;
-    background-color: var(--border-color);
-    margin: 0.5rem 0;
     border: none;
+    border-top: 1px solid #e1e8ed;
+    margin: 8px 0;
 }
+
 
 /* Main layout container */
 .layout-wrapper:last-child {
     display: flex;
     flex-direction: row;
     flex: 1;
-    margin-top: var(--header-height);
     overflow: hidden;
 }
 
@@ -218,7 +288,9 @@ html, body {
     border-bottom: 1px solid var(--border-color);
     font-weight: 600;
     font-size: 1.1rem;
+    margin-left: 3px;
     color: var(--primary-color);
+    transition: all .5s ease-in-out;
 }
 
     .sidebar-geader button {
@@ -335,12 +407,13 @@ html, body {
 
 .sidebar-container.collapsed .separator-label {
     opacity: 0;
+    display: none;
 }
 
 .separator-line {
     flex: 1;
     height: 1px;
-    background-color: var(--separator-color);
+    background-color: var(--grey-light-strong);
     position: relative;
 }
 
@@ -348,7 +421,7 @@ html, body {
     display: none;
 }
 
-/* When collapsed, show separator as a simple line */
+/*..when collapsed, show separator as a simple line */
 .sidebar-container.collapsed .sidebar-separator {
     justify-content: center;
     padding: 0.5rem 1rem;
@@ -358,7 +431,7 @@ html, body {
         content: '';
         width: 24px;
         height: 1px;
-        background-color: var(--separator-color);
+        background-color: var(--grey-light-strong);
     }
 
 /* Sidebar submenu */
@@ -410,14 +483,6 @@ html, body {
     border-radius: 4px;
     transition: background-color 0.2s;
 }
-
-    .button.is-ghost {
-        background: transparent;
-    }
-
-        .button.is-ghost:hover {
-            background-color: rgba(255,255,255,0.1);
-        }
 
 /* Utility classes */
 .is-flex {

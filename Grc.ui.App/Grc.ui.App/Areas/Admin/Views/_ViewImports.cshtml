@@ -2,8 +2,11 @@
 @using Grc.ui.App.Infrastructure.MvcHelpers
 @using Grc.ui.App.Models
 @using Grc.ui.App.Enums
+@using Grc.ui.App.Services
+
+@inject ILocalizationService ILocalize
+@inject IGrcHtml Html
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, Grc.ui.App
 
-@inject IGrcHtml Html

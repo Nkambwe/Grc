@@ -41,6 +41,9 @@ namespace Grc.ui.App {
             services.AddScoped<IApplicationLoggerFactory, ApplicationLoggerFactory>();
             services.AddScoped<IErrorFactory, ErrorFactory>();
             services.AddScoped<ILoginFactory, LoginFactory>();
+            services.AddScoped<IReceientModelFactory, ReceientModelFactory>();
+            services.AddScoped<IPinnedModelFactory, PinnedModelFactory>();
+            services.AddScoped<IQuickActionModelFactory, QuickActionModelFactory>();
 
             //..register auto mapper
             services.ObjectMapper();
