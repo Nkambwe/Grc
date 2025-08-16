@@ -21,6 +21,7 @@ namespace Grc.ui.App.Controllers {
         private readonly IRegistrationFactory _registrationFactory;
         private readonly IInstallService _installService;
         private readonly ILoginFactory _loginFactory;
+        private readonly IDashboardFactory _dashboardFactory;
 
         public ApplicationController(IWebHelper webHelper,
                                      IApplicationLoggerFactory loggerFactory, 
@@ -30,7 +31,8 @@ namespace Grc.ui.App.Controllers {
                                      IInstallService installService,
                                      IAuthenticationService authService,
                                      ISystemAccessService accessService,
-                                     ILoginFactory loginFactory) :
+                                     ILoginFactory loginFactory,
+                                     IDashboardFactory dashboardFactory) :
             base(loggerFactory, environment, webHelper, localizationService) {
             _registrationFactory = registrationFactory;
             Logger.Channel = $"APPLICATION-{DateTime.Now:yyyyMMddHHmmss}";
@@ -38,6 +40,7 @@ namespace Grc.ui.App.Controllers {
             _authService = authService;
             _accessService = accessService;
             _loginFactory = loginFactory;
+            _dashboardFactory = dashboardFactory;
         }
 
         public IActionResult Index() {
@@ -48,6 +51,22 @@ namespace Grc.ui.App.Controllers {
             } 
 
             return RedirectToAction("Login");
+        }
+
+        public async Task<IActionResult> Dashboard() {
+
+            try{
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    return RedirectToAction("Login");
+                }
+
+                return View(await _dashboardFactory.PrepareUserDashboardModelAsync(grcResponse.Data));
+            } catch(Exception ex){ 
+                Logger.LogActivity($"Error Loading user dashboard: {ex.Message}", "ERROR");
+                return RedirectToAction("Login");
+            }
         }
 
         [HttpGet]
@@ -358,8 +377,8 @@ namespace Grc.ui.App.Controllers {
 
             }
 
-            //..default redirect for normal users
-            return Url.Action("Index", "Application");
+            // Redirect to dashboard
+            return Url.Action("Dashboard", "Application");
         }
 
         #endregion

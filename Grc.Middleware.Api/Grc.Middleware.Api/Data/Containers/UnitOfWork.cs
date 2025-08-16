@@ -30,12 +30,13 @@ namespace Grc.Middleware.Api.Data.Containers {
             _serviceProvider = serviceProvider;
             _repositories = new Dictionary<Type, object>();
         
-            //.. db context instance for this unit of work
+            //..db context instance for this unit of work
             Context = _contextFactory.CreateDbContext();
         
             //..initalize repositories
             CompanyRepository =  new CompanyRepository(_loggerFactory, Context);
             UserRepository =  new UserRepository(_loggerFactory, Context);
+            AttemptRepository =  new AttemptRepository(_loggerFactory, Context);
         }
 
         /// <summary>

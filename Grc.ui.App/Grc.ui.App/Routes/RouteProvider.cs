@@ -8,7 +8,7 @@
             routeBuilder.MapControllerRoute(
                 name: "dashboard",
                 pattern: "/dashboard/",
-                defaults: new { controller = "Application", action = "Index" }
+                defaults: new { controller = "Application", action = "Dashboard" } 
             );
 
             // validate username
@@ -18,13 +18,14 @@
                 defaults: new { controller = "Application", action = "ValidateUsername" }
             );
 
-            // Dashboard
+            // login user
             routeBuilder.MapControllerRoute(
                 name: "login",
                 pattern: "/login/userlogin",
                 defaults: new { controller = "Application", action = "Login" }
             );
 
+            // logout user
             routeBuilder.MapControllerRoute(
                 name: "logout",
                 pattern: "/app/logout",

@@ -112,7 +112,7 @@ namespace Grc.ui.App.Services {
                 if (!string.IsNullOrEmpty(userId) && !string.IsNullOrEmpty(username)) {
                     long id = long.Parse(userId);
                     var userModel = new UserModel {
-                        Id = id,
+                        UserId = id,
                         UserName = username,
                         EmailAddress = email,
                         DisplayName = displayName,
@@ -187,7 +187,7 @@ namespace Grc.ui.App.Services {
 
             try {
                  var claims = new List<Claim>{
-                    new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                     new(ClaimTypes.Name, user.EmailAddress),
                     new("DisplayName", $"{user.FirstName}" ?? ""),
                     new("FirstName", $"{user.FirstName}" ?? ""),

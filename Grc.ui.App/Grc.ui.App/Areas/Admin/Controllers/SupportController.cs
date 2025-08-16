@@ -1,12 +1,14 @@
 ﻿using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
+using Grc.ui.App.Factories;
 using Grc.ui.App.Http;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace Grc.ui.App.Areas.Admin.Controllers {
@@ -15,15 +17,18 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
     public class SupportController : AdminBaseController {
         private readonly ISystemAccessService _accessService;
         private readonly IAuthenticationService _authService;
+        private readonly ISupportDashboardFactory _dDashboardFactory;
         public SupportController(IApplicationLoggerFactory loggerFactory, 
                                  IEnvironmentProvider environment, 
                                  IWebHelper webHelper,
                                  ILocalizationService localizationService,
                                  ISystemAccessService accessService,
-                                 IAuthenticationService authService) 
+                                 IAuthenticationService authService,
+                                 ISupportDashboardFactory dDashboardFactory) 
             : base(loggerFactory, environment, webHelper, localizationService) {
            _accessService = accessService;
             _authService = authService;
+            _dDashboardFactory = dDashboardFactory;
         }
 
         public async Task<IActionResult> Index(){
@@ -36,103 +41,9 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                model.WelcomeMessage = $"{LocalizationService.GetLocalizedLabel("App.Label.Welcome")}, {currentUser?.FirstName}!";
-                model.TotalUsers = (await _accessService.CountAllUsersAsync(currentUser.Id, ipAddress)).Count;
-                model.ActiveUsers = (await _accessService.CountActiveUsersAsync(currentUser.Id, ipAddress)).Count;
-                model.Initials =$"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}";
-
-                model.QuickActions = new List<QuickActionModel> {
-                    new() { 
-                        Label = "App.Menu.Users", 
-                        IconClass = "mdi mdi-account-outline", 
-                        Controller = "Support",
-                        Action = "Users",
-                        Area = "Admin",
-                        CssClass = "" 
-                    },
-                    new() { 
-                        Label = "App.Menu.Departments", 
-                        IconClass = "mdi mdi-share-all-outline", 
-                        Controller = "Support",
-                        Action = "Departments",
-                        Area = "Admin",
-                        CssClass = ""
-                    },
-                    new() { 
-                        Label = "App.Menu.Permissions.Assign", 
-                        IconClass = "mdi mdi-shield-check-outline", 
-                        Controller = "Support",
-                        Action = "AssignPermissions",
-                        Area = "Admin",
-                        CssClass = "" 
-                    }
-                    // Load from DB or user prefs in future
-                };
-                
-                model.Recents = new List<RecentModel> {
-                    new() {
-                        Label = "App.Menu.Users", 
-                        IconClass = "mdi mdi-account-outline", 
-                        Controller = "Support",
-                        Action = "Users",
-                        Area = "Admin",
-                        CssClass = "" 
-                    },
-                    new() { 
-                        Label = "App.Menu.Departments", 
-                        IconClass = "mdi mdi-share-all-outline", 
-                        Controller = "Support",
-                        Action = "Departments",
-                        Area = "Admin",
-                        CssClass = ""
-                    },
-                    new() { 
-                        Label = "App.Menu.Permissions.Assign", 
-                        IconClass = "mdi mdi-shield-check-outline", 
-                        Controller = "Support",
-                        Action = "AssignPermissions",
-                        Area = "Admin",
-                        CssClass = "" 
-                    },
-                    new() { 
-                        Label = "App.Menu.Configurations.Data", 
-                        IconClass = "mdi mdi-account-details-outline", 
-                        Controller = "Configuration",
-                        Action = "UserData",
-                        Area = "Admin",
-                        CssClass = "" 
-                    },
-                    new() { 
-                        Label = "App.Menu.Configurations.Groups", 
-                        IconClass = "mdi mdi-account-group-outline", 
-                        Controller = "Configuration",
-                        Action = "UserGroups",
-                        Area = "Admin",
-                        CssClass = "" 
-                    }
-                    // Load from session
-                };
-
-                model.PinnedItems = new List<PinnedModel> {
-                    new() { 
-                        Label = "App.Menu.Configurations.Data", 
-                        IconClass = "mdi mdi-account-details-outline", 
-                        Controller = "Configuration",
-                        Action = "UserData",
-                        Area = "Admin",
-                        CssClass = "" 
-                    },
-                    new() { 
-                        Label = "App.Menu.Configurations.Groups", 
-                        IconClass = "mdi mdi-account-group-outline", 
-                        Controller = "Configuration",
-                        Action = "UserGroups",
-                        Area = "Admin",
-                        CssClass = "" 
-                    }
-                };
-
-                model.LastLogin = DateTime.UtcNow;
+                model = await _dDashboardFactory.PrepareAdminDashboardModelAsync(currentUser);
+                model.TotalUsers = (await _accessService.CountAllUsersAsync(currentUser.UserId, ipAddress)).Count;
+                model.ActiveUsers = (await _accessService.CountActiveUsersAsync(currentUser.UserId, ipAddress)).Count;
             } catch(Exception ex){ 
                 Logger.LogActivity($"Username validation error: {ex.Message}", "ERROR");
                 return HandleLoginErrors(LocalizationService.GetLocalizedLabel("Error.Service.Unavailable"), model);
@@ -165,36 +76,42 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             return View();
         }
 
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Logout() {
-            try {
+        public async Task<IActionResult> Logout() {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 var username = User.Identity?.Name;
-                Logger.LogActivity($"Admin user initiating logout: {username}", "INFO");
+                Logger.LogActivity($"Admin user logging out: {username}", "INFO");
         
-                if (WebHelper.IsAjaxRequest(Request)) {
-                    //..for AJAX requests, return the logout URL
-                    return Json(new { 
-                        success = true, 
-                        redirectUrl = Url.Action("Logout", "Application", new { area = "" }),
-                        message = "Logging out..."
-                    });
+                // Update logged_in status in database before signing out
+                long id = 0;
+                if (!string.IsNullOrEmpty(userId)) {
+                    _ = long.TryParse(userId, out id);
+                    await _accessService.UpdateLoggedInStatusAsync(id, false, ipAddress);
                 }
         
-                //..for non-AJAX, redirect directly
-                return RedirectToAction("Logout", "Application", new { area = "" });
+                //..sign out from cookie authentication
+                await _authService.SignOutAsync(new LogoutModel(){UserId = id, IPAddress = ipAddress});
+        
+                // Return JSON response for AJAX
+                return Json(new { 
+                    success = true, 
+                    redirectUrl = Url.Action("Login", "Application", new { area = "" }),
+                    message = "Logged out successfully"
+                });
+        
             } catch (Exception ex) {
                 Logger.LogActivity($"Error during admin logout: {ex.Message}", "ERROR");
-                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
-
-                if (WebHelper.IsAjaxRequest(Request)) {
-                    return Json(new { 
-                        success = false, 
-                        message = "Logout failed. Please try again." 
-                    });
-                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
         
-                return RedirectToAction("Index", "Support");
+                return Json(new { 
+                    success = false, 
+                    message = LocalizationService.GetLocalizedLabel("Error.Occurance"),
+                    error = new { message = "Logout failed. Please try again." }
+                });
             }
         }
 

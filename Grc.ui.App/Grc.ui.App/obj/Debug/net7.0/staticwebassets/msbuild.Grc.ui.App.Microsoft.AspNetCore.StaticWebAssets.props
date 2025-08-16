@@ -12,8 +12,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>ho83eq0pnf</Fingerprint>
-      <Integrity>sQSle/w3tD5et2VrC2m3G7ZjEushw5936xHdxQezCzg=</Integrity>
+      <Fingerprint>odtu7a8x8p</Fingerprint>
+      <Integrity>xICxx+EwfzT6I1wiBJyxBxMwoIU0wBNPyuWX9HcWeFo=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\admin-style.css'))</OriginalItemSpec>
@@ -66,8 +66,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>ph96qcqgi7</Fingerprint>
-      <Integrity>c+C33rO/s9jPU8kDkj1RnJEzGmbvQou6niNN77xeoyg=</Integrity>
+      <Fingerprint>alubk1430h</Fingerprint>
+      <Integrity>nqfev77s04gUddgIwcfPevm//jS0RXPxbwxy88Hkgt0=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\grc-style.css'))</OriginalItemSpec>
@@ -246,8 +246,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>001gbgc8t3</Fingerprint>
-      <Integrity>EFRPfXYpejAeoIDH2aiDu5O6axh8GZbbd5ho0mgyf6M=</Integrity>
+      <Fingerprint>s7a97kcvpx</Fingerprint>
+      <Integrity>CK0F2xpngj3Zua48oFOK/sJnMsJop9ZPLE9DYdCWYYI=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\admin-script.js'))</OriginalItemSpec>
@@ -264,8 +264,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>87rlchi7ii</Fingerprint>
-      <Integrity>DDMrpaLIHLeykhywHiOsih8ONgmKwyVMLSeawdEOsDI=</Integrity>
+      <Fingerprint>e0z1goekgi</Fingerprint>
+      <Integrity>frcCV1k9oG9oKj3dpUqdJg1PxRT2RSN/XKdLCPjaYaY=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\grc-app.js'))</OriginalItemSpec>

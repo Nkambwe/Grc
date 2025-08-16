@@ -382,6 +382,10 @@
     @Html.GenerateScripts(ResourceLocation.Footer)
     @await RenderSectionAsync("Scripts", required: false)
 
+    <script>
+        window.ADMIN_LOGOUT_URL = '@Url.Action("Logout", "Support", new { area = "Admin" })';
+    </script>
+
 </body>
 </html>
 

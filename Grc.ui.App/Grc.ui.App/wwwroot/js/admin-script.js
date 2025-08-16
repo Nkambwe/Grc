@@ -1,7 +1,119 @@
-﻿$(document).ready(function() {
+﻿
+async function performLogout(event) {
+    event.preventDefault();
+    // Show loading state
+    const logoutLink = event.currentTarget;
+    const originalHtml = logoutLink.innerHTML;
+    logoutLink.innerHTML = '<span><i class="mdi mdi-loading mdi-spin"></i></span><span>Logging out...</span>';
+    
+    try {
+        const token = getAntiForgeryToken();
+        console.log('Performing logout...');
+        
+        const response = await $.ajax({
+            url: window.ADMIN_LOGOUT_URL,
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': token,
+                'Content-Type': 'application/json'
+            },
+            dataType: 'json'
+        });
+        
+        console.log('Logout response:', response);
+        
+        if (response.success) {
+            console.log('Logout successful, redirecting...');
+            
+            //..show success message briefly before redirect
+            logoutLink.innerHTML = '<span><i class="mdi mdi-check"></i></span><span>Logged out!</span>';
+            
+            //..redirect after short delay
+            setTimeout(() => {
+                const redirectUrl = response.redirectUrl || '/Application/Login';
+                window.location.href = redirectUrl;
+            }, 1000);
+            
+        } else {
+            console.error('Logout failed:', response);
+            
+            //..show error message
+            let errorMessage = 'Logout failed. Please try again.';
+            if (response.error && response.error.message) {
+                errorMessage = response.error.message;
+            } else if (response.message) {
+                errorMessage = response.message;
+            }
+            
+            showToast(errorMessage, 'error');
+            logoutLink.innerHTML = originalHtml; 
+        }
+    } catch (error) {
+        console.error('Logout error:', error);
+        let errorMessage = 'Logout failed. Please try again.';
+        
+        //..error handling
+        if (error.responseJSON) {
+            if (error.responseJSON.error && error.responseJSON.error.message) {
+                errorMessage = error.responseJSON.error.message;
+            } else if (error.responseJSON.message) {
+                errorMessage = error.responseJSON.message;
+            }
+        } else if (error.responseText) {
+            try {
+                const errorData = JSON.parse(error.responseText);
+                if (errorData.error && errorData.error.message) {
+                    errorMessage = errorData.error.message;
+                } else if (errorData.message) {
+                    errorMessage = errorData.message;
+                }
+            } catch (parseError) {
+                errorMessage = "Logout error - check console for details";
+                console.log('Error parsing logout response');
+            }
+        }
+        
+        showToast(errorMessage, 'error');
+        logoutLink.innerHTML = originalHtml; 
+    }
+}
+
+function getAntiForgeryToken() {
+    //..get token from meta tag
+    let token = $('meta[name="csrf-token"]').attr('content');
+        
+    // Debug logging
+    console.log('CSRF Token from meta tag:', token);
+        
+    return token || '';
+}
+
+//..notifications
+function showToast(message, type = 'info') {
+    //..create toast element
+    const toast = $(`
+        <div class="toast-notification toast-${type}">
+            <i class="mdi ${type === 'success' ? 'mdi-check-circle' : 'mdi-alert-circle'}"></i>
+            <span>${message}</span>
+        </div>
+    `);
+    
+    //..add to page
+    $('body').append(toast);
+    
+    // Show with animation
+    setTimeout(() => toast.addClass('show'), 100);
+    
+    //..remove after delay
+    setTimeout(() => {
+        toast.removeClass('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+    
+$(document).ready(function() {
      // User dropdown toggle
     window.toggleDropdown = function() {
-        console.log("Clicked");
         $('#userDropdown').toggleClass('is-active');
     };
 
@@ -113,8 +225,8 @@
             }
         });
     }
-    
-    // Smooth transitions
+
+    //..smooth transitions
     function enableSmoothTransitions() {
         $('.sidebar-container').css({
             'transition': 'width 0.3s ease, left 0.3s ease'
@@ -150,27 +262,27 @@
         }
     });
     
-    // Handle sidebar item clicks (for better UX)
+    //..handle sidebar item clicks
     $('.sidebar-item a').on('click', function() {
-        // Remove active class from all items
+        //..remove active class from all items
         $('.sidebar-item').removeClass('active');
         // Add active class to clicked item
         $(this).closest('.sidebar-item').addClass('active');
     });
     
-    // Smooth scrolling for main content
+    //..smooth scrolling for main content
     $('.main-content').css({
         'scroll-behavior': 'smooth'
     });
     
-    // Auto-hide mobile sidebar when clicking main content
+    //..auto-hide mobile sidebar when clicking main content
     $('.main-content').on('click', function() {
         if ($(window).width() <= 768) {
             $('.sidebar-container').removeClass('open');
         }
     });
     
-    // Enhanced submenu functionality
+    //..improve submenu performance
     $('.sidebar-item.with-submenu > a').on('click', function(event) {
         if (!$(this).hasClass('toggle-submenu')) {
             const $parentItem = $(this).closest('.sidebar-item');
@@ -184,7 +296,7 @@
         }
     });
     
-    // Animate number counters (if you have notification counts, etc.)
+    //..animate number counters
     function animateCounters() {
         $('.notification-count').each(function() {
             const $counter = $(this);
@@ -202,12 +314,12 @@
         });
     }
     
-    // Add loading states for navigation
+    //..add loading states for navigation
     $('.sidebar-item a[href]:not([href="#"])').on('click', function() {
         const $link = $(this);
         const originalText = $link.find('.sidebar-text').text();
         
-        // Add loading state (optional)
+        //..add loading state
         $link.addClass('loading');
         
         // Remove loading state after a short delay (in case navigation is quick)

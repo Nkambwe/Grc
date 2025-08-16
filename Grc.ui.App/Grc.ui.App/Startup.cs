@@ -44,6 +44,8 @@ namespace Grc.ui.App {
             services.AddScoped<IReceientModelFactory, ReceientModelFactory>();
             services.AddScoped<IPinnedModelFactory, PinnedModelFactory>();
             services.AddScoped<IQuickActionModelFactory, QuickActionModelFactory>();
+            services.AddScoped<IDashboardFactory, DashboardFactory>();
+            services.AddScoped<ISupportDashboardFactory, SupportDashboardFactory>();
 
             //..register auto mapper
             services.ObjectMapper();

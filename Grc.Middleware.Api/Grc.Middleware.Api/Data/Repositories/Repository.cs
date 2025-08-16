@@ -261,6 +261,12 @@ namespace Grc.Middleware.Api.Data.Repositories {
                 return false;
             }
         }
+        
+        public async Task<int> CountAsync() 
+            => await context.Set<T>().CountAsync();
+
+        public async Task<int> CountAsync(Expression<Func<T, bool>> where)
+            => await context.Set<T>().CountAsync(where);
 
         public bool Delete(T entity, bool markAsDeleted = false) {
             ArgumentNullException.ThrowIfNull(entity);
@@ -537,12 +543,6 @@ namespace Grc.Middleware.Api.Data.Repositories {
 
             return null;
         }
-
-        public async Task<int> CountAsync() 
-            => await context.Set<T>().CountAsync();
-
-        public async Task<int> CountAsync(Expression<Func<T, bool>> where)
-            => await context.Set<T>().CountAsync(where);
 
         #endregion
 

@@ -13,6 +13,7 @@ namespace Grc.Middleware.Api.Data {
         public DbSet<SystemRoleGroup> RoleGroups { get; set; }
         public DbSet<SystemRole> SystemRoles { get; set; }
         public DbSet<SystemUser> SystemUsers { get; set; }
+        public DbSet<LoginAttempt> Attempts { get; set; }
 
         public GrcContext(DbContextOptions<GrcContext> options)  
             : base(options){
@@ -26,6 +27,7 @@ namespace Grc.Middleware.Api.Data {
             SystemRoleGroupEntityConfiguration.Configure(modelBuilder.Entity<SystemRoleGroup>());
             SystemRoleEntityConfiguration.Configure(modelBuilder.Entity<SystemRole>());
             SystemUserEntityConfiguration.Configure(modelBuilder.Entity<SystemUser>());
+            LoginAttemptEntityConfiguration.Configure(modelBuilder.Entity<LoginAttempt>());
             base.OnModelCreating(modelBuilder);
         }
     }

@@ -423,7 +423,7 @@ namespace Grc.Middleware.Api.Services {
                 var cutoffTime = DateTime.UtcNow.AddMinutes(-15);
 
                 //..get attempts
-                var failedAttempts  = await uow.AttemptRepository.CountAsync(u => u.Id == userId && u.AttemptTime >= cutoffTime && !u.IsSuccessful);
+                var failedAttempts  = await uow.AttemptRepository.CountAsync(u => u.UserId == userId && u.AttemptTime >= cutoffTime && !u.IsSuccessful);
                  if (failedAttempts >= 5){ 
 
                     var user = await uow.UserRepository.GetAsync(userId);
