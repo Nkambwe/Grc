@@ -34,7 +34,8 @@ namespace Grc.ui.App.Extensions.Mvc {
             services.AddScoped<ISystemAccessService, SystemAccessService>();
             services.AddScoped<IInstallService, InstallService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
-            
+            services.AddScoped<IPinnedService, PinnedService>();
+            services.AddScoped<IQuickActionService, QuickActionService>();
             
             //..register factories 
             services.AddScoped<IRegistrationFactory, RegistrationFactory>();

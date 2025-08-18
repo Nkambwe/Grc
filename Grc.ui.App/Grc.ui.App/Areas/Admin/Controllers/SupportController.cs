@@ -41,6 +41,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
                 model = await _dDashboardFactory.PrepareAdminDashboardModelAsync(currentUser);
                 model.TotalUsers = (await _accessService.CountAllUsersAsync(currentUser.UserId, ipAddress)).Count;
                 model.ActiveUsers = (await _accessService.CountActiveUsersAsync(currentUser.UserId, ipAddress)).Count;

@@ -29,7 +29,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 16 Aug 2025 05:53:31 GMT"
+          "Value": "Mon, 18 Aug 2025 02:43:35 GMT"
         }
       ],
       "EndpointProperties": [
@@ -74,7 +74,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 16 Aug 2025 05:53:31 GMT"
+          "Value": "Mon, 18 Aug 2025 02:43:35 GMT"
         }
       ],
       "EndpointProperties": [
@@ -331,7 +331,7 @@
       ]
     },
     {
-      "Route": "css/grc-style.alubk1430h.css",
+      "Route": "css/grc-style.334aonyr92.css",
       "AssetFile": "css/grc-style.css",
       "Selectors": [],
       "ResponseHeaders": [
@@ -345,7 +345,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "407"
+          "Value": "6012"
         },
         {
           "Name": "Content-Type",
@@ -353,21 +353,21 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"nqfev77s04gUddgIwcfPevm//jS0RXPxbwxy88Hkgt0=\""
+          "Value": "\"L+fkW+2EeJpHuLcVCrDGlObr6gBIJeIXgw2a8ClQOjY=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 16 Aug 2025 05:13:27 GMT"
+          "Value": "Sat, 16 Aug 2025 11:02:52 GMT"
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "alubk1430h"
+          "Value": "334aonyr92"
         },
         {
           "Name": "integrity",
-          "Value": "sha256-nqfev77s04gUddgIwcfPevm//jS0RXPxbwxy88Hkgt0="
+          "Value": "sha256-L+fkW+2EeJpHuLcVCrDGlObr6gBIJeIXgw2a8ClQOjY="
         },
         {
           "Name": "label",
@@ -390,7 +390,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "407"
+          "Value": "6012"
         },
         {
           "Name": "Content-Type",
@@ -398,17 +398,17 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"nqfev77s04gUddgIwcfPevm//jS0RXPxbwxy88Hkgt0=\""
+          "Value": "\"L+fkW+2EeJpHuLcVCrDGlObr6gBIJeIXgw2a8ClQOjY=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 16 Aug 2025 05:13:27 GMT"
+          "Value": "Sat, 16 Aug 2025 11:02:52 GMT"
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-nqfev77s04gUddgIwcfPevm//jS0RXPxbwxy88Hkgt0="
+          "Value": "sha256-L+fkW+2EeJpHuLcVCrDGlObr6gBIJeIXgw2a8ClQOjY="
         }
       ]
     },
@@ -1229,6 +1229,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-frcCV1k9oG9oKj3dpUqdJg1PxRT2RSN/XKdLCPjaYaY="
+        }
+      ]
+    },
+    {
+      "Route": "js/grc-sidebar.js",
+      "AssetFile": "js/grc-sidebar.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5161"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"YP4N0KoLCjrcWkhtmazpa5IjvuzVxQB/Fx+6QOZaH38=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 16 Aug 2025 10:20:33 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-YP4N0KoLCjrcWkhtmazpa5IjvuzVxQB/Fx+6QOZaH38="
+        }
+      ]
+    },
+    {
+      "Route": "js/grc-sidebar.kzii1gz7q5.js",
+      "AssetFile": "js/grc-sidebar.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5161"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"YP4N0KoLCjrcWkhtmazpa5IjvuzVxQB/Fx+6QOZaH38=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 16 Aug 2025 10:20:33 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "kzii1gz7q5"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-YP4N0KoLCjrcWkhtmazpa5IjvuzVxQB/Fx+6QOZaH38="
+        },
+        {
+          "Name": "label",
+          "Value": "js/grc-sidebar.js"
         }
       ]
     },

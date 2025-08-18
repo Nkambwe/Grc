@@ -1,9 +1,12 @@
-﻿<!DOCTYPE html>
+﻿@using Grc.ui.App.Enums
+@using Grc.ui.App.Defaults
+
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    <grc-antiforgery-token as-meta="true"></grc-antiforgery-token>
         <title>@await Html.GenerateTitleAsync()</title>
 
         @{
@@ -29,13 +32,277 @@
         <div class="grc-wrapper">
 
             <header class="grc-header-bar">
-                <span class="display-1">Top Header</span>
+
+                <div class="menu-box">
+                    <a href="/grc/extensions">
+                        <span>
+                        <i class="mdi mdi-menu"></i>
+                        </span>
+                    </a>
+                </div>
+
+                <div class="header-align-left">
+
+                    <div class="logo-box">
+                        <img src="~/images/logo.png" />
+                    </div>
+
+                    <div class="app-banner">
+                        <h1 class="title is-5 mb-0 ml-3">@Model.Banner</h1>
+                    </div>
+
+                </div>
+
+                <div class="header-align-right">
+                    <div class="user-avator">
+                        <span class="app-serach">
+                            <i class="mdi mdi-feature-search-outline"></i>
+                        </span>
+                    </div>
+
+                    <div class="user-avator">
+                        <span class="avator-bell">
+                            <i class="mdi mdi-bell-ring-outline"></i>
+                        </span>
+                        <span class="notification-count">5</span>
+                    </div>
+                    <div class="dropdown is-right" id="userDropdown">
+                        <div class="dropdown-trigger">
+                            <button class="button avator-button" onclick="toggleDropdown()">
+                                <div class="user-avator">
+                                    <span class="avator-initials">@Model.Initials</span>
+                                </div>
+                                <span class="drop-avator-icon">
+                                    <i class="mdi mdi-chevron-down"></i>
+                                </span>
+                            </button>
+                        </div>
+                        <div class="dropdown-menu">
+                            <div class="dropdown-content">
+                                <ul>
+                                    <li>
+                                        <a href="#" class="dropdown-item">
+                                            <span>
+                                                <i class="mdi mdi-account-cog"></i>
+                                            </span>
+                                            <span>
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.User.Views"))
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="dropdown-item">
+                                            <span>
+                                                <i class="mdi mdi-account-cog"></i>
+                                            </span>
+                                            <span>
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.User.Settings"))
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li>
+                                        <a href="" class="dropdown-item" onclick="performLogout(event)">
+                                            <span>
+                                                <i class="mdi mdi-logout"></i>
+                                            </span>
+                                            <span>
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.User.Logout"))
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </header>
 
             <div class="gr-content-wrapper">
 
                 <aside class="sidebar-container">
-                    <span class="display-1">Side Bar</span>
+
+                    <nav class="sidebar bg-light">
+                        <div class="sidebar-brand">
+                            <span>Pearl Bank</span>
+                        </div>
+
+                        <ul class="sidebar-menu">
+                            <li class="sidebar-item">
+                                <a asp-controller="Support" asp-action="Index" asp-area="Admin">
+                                    <span class="menu-icon">
+                                        <i class="mdi mdi-home-outline"></i></>
+                                    </span>
+                                    <span class="sidebar-text">
+                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Home"))
+                                    </span>
+                                </a>
+                            </li>
+
+                            <li class="sidebar-item with-submenu">
+                                <a href="" class="toggle-submenu" data-id="recent-menu">
+                                    <span class="menu-icon">
+                                        <i class="mdi mdi-clock-time-seven-outline"></i></>
+                                    </span>
+                                    <span>
+                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Recent"))
+                                    </span>
+                                    <span class="drop-icon">
+                                        <i class="mdi mdi-chevron-down"></i>
+                                    </span>
+                                </a>
+                                @await Component.InvokeAsync("Recent", new { model = Model.Recents })
+
+                            </li>
+
+                            <li class="sidebar-item with-submenu">
+                                <a href="" class="toggle-submenu" data-id="pinned-menu">
+                                    <span class="menu-icon">
+                                        <i class="mdi mdi-pin-off-outline"></i></>
+                                    </span>
+                                    <span>
+                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Pinned"))
+                                    </span>
+                                    <span class="drop-icon">
+                                        <i class="mdi mdi-chevron-down"></i>
+                                    </span>
+                                </a>
+                                @await Component.InvokeAsync("Pinned", new { model = Model.PinnedItems })
+                            </li>
+
+                            <li class="sidebar-separator">
+                                <span class="separator-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Workbench"))
+                                </span>
+                                <span class="separator-line"></span>
+                            </li>
+
+                            <li class="sidebar-item with-submenu">
+
+                                <a href="" class="toggle-submenu" data-id="regiters-menu">
+                                    <span class="menu-icon">
+                                        <i class="mdi mdi-folder-open-outline"></i>
+                                    </span>
+                                    <span>
+                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers"))
+                                    </span>
+                                    <span class="drop-icon">
+                                        <i class="mdi mdi-chevron-down"></i>
+                                    </span>
+                                </a>
+
+                                <ul id="regiters-menu" class="sidebar-submenu">
+                                    <li class="sidebar-item">
+                                        <a asp-controller="Registers" asp-action="StandardsRegister">
+                                            <span class="menu-icon">
+                                                <i class="mdi mdi-decagram-outline"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Standards"))
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="sidebar-item">
+                                        <a asp-controller="Registers" asp-action="StrategicRegister" asp-area="Admin">
+                                            <span class="menu-icon">
+                                                <i class="mdi mdi-image-filter-center-focus-strong-outline"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Strategy"))
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="sidebar-item">
+                                        <a asp-controller="Registers" asp-action="PolicyRegister" asp-area="Admin">
+                                            <span class="menu-icon">
+                                                <i class="mdi mdi-directions"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Policy"))
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="sidebar-item">
+                                        <a asp-controller="Registers" asp-action="ProcessMaps" asp-area="Admin">
+                                            <span class="menu-icon">
+                                                <i class="mdi mdi-hubspot"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Process"))
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </li>
+
+
+                        <li class="sidebar-item with-submenu">
+
+                            <a href="" class="toggle-submenu" data-id="workflow-menu">
+                                <span class="menu-icon">
+                                    <i class="mdi mdi-folder-open-outline"></i>
+                                </span>
+                                <span>
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers"))
+                                </span>
+                                <span class="drop-icon">
+                                    <i class="mdi mdi-chevron-down"></i>
+                                </span>
+                            </a>
+
+                            <ul id="workflow-menu" class="sidebar-submenu">
+                                <li class="sidebar-item">
+                                    <a asp-controller="Registers" asp-action="StandardsRegister">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-decagram-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Standards"))
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a asp-controller="Registers" asp-action="StrategicRegister" asp-area="Admin">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-image-filter-center-focus-strong-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Strategy"))
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a asp-controller="Registers" asp-action="PolicyRegister" asp-area="Admin">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-directions"></i>
+                                        </span>
+                                        <span class="sidebar-text">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Policy"))
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a asp-controller="Registers" asp-action="ProcessMaps" asp-area="Admin">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-hubspot"></i>
+                                        </span>
+                                        <span class="sidebar-text">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Process"))
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </li>
+                        </ul>
+
+                    </nav>
+
                 </aside>
 
                 <main id="mainContainer" role="main" class="grc-content-container">
@@ -53,9 +320,9 @@
             Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/lib/select-2/js/select2.full.min.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/lib/bootstrap/dist/js/bootstrap.js");
-            Html.AddScriptParts(ResourceLocation.Footer, "~/lib/metro/js/metro.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/lib/metro/js/highlight.min.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/lib/metro/js/apexcharts.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/js/grc-sidebar.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/js/grc-app.js");
         }
 

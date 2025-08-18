@@ -89,6 +89,22 @@
     <LocaleResource Name="App.Menu.Configurations.Activities">
         <Value>System Activities</Value>
     </LocaleResource>
+    
+    <LocaleResource Name="App.Menu.Registers">
+        <Value>Registers</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Registers.Standards">
+        <Value>Standards Registers</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Registers.Strategy">
+        <Value>Strategic Registers</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Registers.Policy">
+        <Value>Policy Registers</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Registers.Process">
+        <Value>Process Mapping</Value>
+    </LocaleResource>
 
     <LocaleResource Name="Registration.Title">
         <Value>Company Registration</Value>

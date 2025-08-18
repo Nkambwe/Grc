@@ -14,6 +14,8 @@ namespace Grc.Middleware.Api.Data {
         public DbSet<SystemRole> SystemRoles { get; set; }
         public DbSet<SystemUser> SystemUsers { get; set; }
         public DbSet<LoginAttempt> Attempts { get; set; }
+        public DbSet<UserQuickAction> QuickActions { get; set; }
+        public DbSet<UserPinnedItem> PinnedItems { get; set; }
 
         public GrcContext(DbContextOptions<GrcContext> options)  
             : base(options){
@@ -28,6 +30,9 @@ namespace Grc.Middleware.Api.Data {
             SystemRoleEntityConfiguration.Configure(modelBuilder.Entity<SystemRole>());
             SystemUserEntityConfiguration.Configure(modelBuilder.Entity<SystemUser>());
             LoginAttemptEntityConfiguration.Configure(modelBuilder.Entity<LoginAttempt>());
+            QuickActionEntityConfiguration.Configure(modelBuilder.Entity<UserQuickAction>());
+            PinnedItemEntityConfiguration.Configure(modelBuilder.Entity<UserPinnedItem>());
+            
             base.OnModelCreating(modelBuilder);
         }
     }

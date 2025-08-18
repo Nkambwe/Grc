@@ -61,6 +61,10 @@
       "PackagePath": "staticwebassets\\js\\grc-app.js"
     },
     {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\grc-sidebar.js",
+      "PackagePath": "staticwebassets\\js\\grc-sidebar.js"
+    },
+    {
       "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\login-script.js",
       "PackagePath": "staticwebassets\\js\\login-script.js"
     },

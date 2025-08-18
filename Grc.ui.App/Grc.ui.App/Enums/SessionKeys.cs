@@ -29,8 +29,10 @@ namespace Grc.ui.App.Enums {
         Theme,
 
         [Description("language")]
-        Language
-
+        Language,
+        
+        [Description("RecentItems")]
+        RecentItems 
     }
 
 }

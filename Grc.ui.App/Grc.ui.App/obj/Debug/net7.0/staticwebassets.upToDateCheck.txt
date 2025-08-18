@@ -12,6 +12,7 @@ wwwroot\images\logo-white.png
 wwwroot\images\no_service.png
 wwwroot\js\admin-script.js
 wwwroot\js\grc-app.js
+wwwroot\js\grc-sidebar.js
 wwwroot\js\login-script.js
 wwwroot\js\register-script.js
 wwwroot\lib\bootstrap\dist\css\bootstrap.css

@@ -68,7 +68,26 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(a => a.Favourites, reg => reg.MapFrom(o => new List<string>()))
                 .ForMember(a => a.Views, reg => reg.MapFrom(o => new List<string>()))
                 .ForMember(a => a.Claims, reg => reg.MapFrom(o => new Dictionary<string, object>()));
-        
+
+            //..map quick actions
+            CreateMap<UserQuickAction, QuickActionResponse>()
+                .ForMember(a => a.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(a => a.Label, reg => reg.MapFrom(o => (o.Label ?? string.Empty).Trim()))
+                .ForMember(a => a.IconClass, reg => reg.MapFrom(o => (o.IconClass ?? string.Empty).Trim()))
+                .ForMember(a => a.Controller, reg => reg.MapFrom(o => (o.Controller ?? string.Empty).Trim()))
+                .ForMember(a => a.Action, reg => reg.MapFrom(o => (o.Action ?? string.Empty).Trim()))
+                .ForMember(a => a.Area, reg => reg.MapFrom(o => (o.Area ?? string.Empty).Trim()))
+                .ForMember(a => a.CssClass, reg => reg.MapFrom(o => (o.CssClass ?? string.Empty).Trim()));
+
+            //..map pinned items
+            CreateMap<UserPinnedItem, PinnedItemResponse>()
+                .ForMember(a => a.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(a => a.Label, reg => reg.MapFrom(o => (o.Label ?? string.Empty).Trim()))
+                .ForMember(a => a.IconClass, reg => reg.MapFrom(o => (o.IconClass ?? string.Empty).Trim()))
+                .ForMember(a => a.Controller, reg => reg.MapFrom(o => (o.Controller ?? string.Empty).Trim()))
+                .ForMember(a => a.Action, reg => reg.MapFrom(o => (o.Action ?? string.Empty).Trim()))
+                .ForMember(a => a.Area, reg => reg.MapFrom(o => (o.Area ?? string.Empty).Trim()))
+                .ForMember(a => a.CssClass, reg => reg.MapFrom(o => (o.CssClass ?? string.Empty).Trim()));
         }
 
     }

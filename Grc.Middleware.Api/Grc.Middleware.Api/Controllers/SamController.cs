@@ -1,15 +1,12 @@
 ﻿using AutoMapper;
-using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Security;
 using Grc.Middleware.Api.Services;
 using Grc.Middleware.Api.Utils;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Grc.Middleware.Api.Controllers {
 
@@ -18,17 +15,23 @@ namespace Grc.Middleware.Api.Controllers {
     [Route("grc")]
     public class SamController : GrcControllerBase {
         private readonly ISystemAccessService _accessService;
+        private readonly IQuickActionService _quickActionService;
+        private readonly IPinnedItemService _pinnedItemService;
         public SamController(IObjectCypher cypher, 
                             IServiceLoggerFactory loggerFactory, 
                             IMapper mapper, 
                             IEnvironmentProvider environment,
-                            ISystemAccessService accessService) 
+                            ISystemAccessService accessService,
+                            IQuickActionService quickActionService,
+                            IPinnedItemService pinnedItemService) 
                             : base(cypher, loggerFactory, mapper, environment) {
             _accessService = accessService;
+            _quickActionService = quickActionService;
+            _pinnedItemService = pinnedItemService;
         }
 
         #region Authentication
-        [HttpPost("sam/users/validate-username")]
+        [HttpPost("sam/users/validate-username")] 
         public async Task<IActionResult> ValidateUsername([FromBody] UsernameValidationRequest request) {
 
             try {
@@ -185,7 +188,7 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<UserResponse>(error));
                 }
 
-                if (request.UserId == 0){
+                if (request.RecordId == 0){
                     var error = new ResponseError(
                         ResponseCodes.BADREQUEST,
                         "Request User ID is required",
@@ -196,7 +199,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
 
-                var response = await _accessService.GetByIdAsync(request.UserId);
+                var response = await _accessService.GetByIdAsync(request.RecordId);
                 if (response != null) {
                     //..map response
                     var userRecord = Mapper.Map<UserResponse>(response);
@@ -424,6 +427,92 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
         
+        [HttpPost("sam/users/getQuickActions")]
+        public async Task<IActionResult> GetQuickActions([FromBody] UserRequest request) {
+            try {
+                Logger.LogActivity("Get user Quick Action menu", "INFO");
+
+                if (request == null){
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<IList<QuickActionResponse>>(error));
+                }
+
+                if (request.RecordId == 0){
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request User ID is required",
+                        "Invalid request User ID"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<IList<QuickActionResponse>>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var actions = await _quickActionService.GetUserQuickActionAsync(request.RecordId);
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(actions)}");
+                return Ok(new GrcResponse<IList<QuickActionResponse>>(actions));
+            } catch (Exception ex) {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var error = new ResponseError(
+                    ResponseCodes.BADREQUEST,
+                    "Oops! Something went wrong",
+                    $"System Error - {ex.Message}"
+                );
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<IList<QuickActionResponse>>(error));
+            }
+        }
+        
+        [HttpPost("sam/users/getPinnedItems")]
+        public async Task<IActionResult> GetPinnedItems([FromBody] UserRequest request) {
+            try {
+                Logger.LogActivity("Get user Pinned item menu", "INFO");
+
+                if (request == null){
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<IList<PinnedItemResponse>>(error));
+                }
+
+                if (request.RecordId == 0){
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request User ID is required",
+                        "Invalid request User ID"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<IList<PinnedItemResponse>>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var actions = await _pinnedItemService.GetUserPinnedItemsAsync(request.RecordId);
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(actions)}");
+                return Ok(new GrcResponse<IList<PinnedItemResponse>>(actions));
+            } catch (Exception ex) {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var error = new ResponseError(
+                    ResponseCodes.BADREQUEST,
+                    "Oops! Something went wrong",
+                    $"System Error - {ex.Message}"
+                );
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<IList<PinnedItemResponse>>(error));
+            }
+        }
+
         #endregion
 
     }

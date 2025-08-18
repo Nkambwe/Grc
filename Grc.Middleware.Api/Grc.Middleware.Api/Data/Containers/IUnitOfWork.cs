@@ -9,6 +9,8 @@ namespace Grc.Middleware.Api.Data.Containers {
         ICompanyRepository CompanyRepository { get; set;}
         IUserRepository UserRepository { get; set;}
         IAttemptRepository AttemptRepository { get; set; }
+        IQuickActionRepository QuickActionRepository { get; set; }
+        IPinnedItemRepository PinnedItemRepository { get; set; }
         Task<int> SaveChangesAsync(); 
         int SaveChanges(); 
     }

@@ -2,6 +2,7 @@
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
 using Grc.ui.App.Http.Requests;
+using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Models;
 using Microsoft.AspNetCore.Components;
 
@@ -64,6 +65,42 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(u => u.EncryptFields, opt => opt.MapFrom(src => new string[]{ }))
                 .ForMember(u => u.DecryptFields, opt => opt.MapFrom(src => new string[]{"FirstName", "LastName", "OtherName", "Email", "PhoneNumber", "PFNumber"}));
 
+            //..map actions
+            CreateMap<QuickAction, QuickActionModel>()
+                .ForMember(q => q.Label, reg => reg.MapFrom(o => (o.Label ?? string.Empty).Trim()))
+                .ForMember(q => q.IconClass, reg => reg.MapFrom(o => (o.IconClass ?? string.Empty).Trim()))
+                .ForMember(q => q.Action, reg => reg.MapFrom(o => (o.Action ?? string.Empty).Trim()))
+                .ForMember(q => q.Controller, reg => reg.MapFrom(o => o.Controller))
+                .ForMember(q => q.Area, reg => reg.MapFrom(o => o.Area))
+                .ForMember(q => q.CssClass, reg => reg.MapFrom(o => o.CssClass));
+            
+            //..map actions
+            CreateMap<QuickActionModel, QuickAction>()
+                .ForMember(q => q.Label, reg => reg.MapFrom(o => (o.Label ?? string.Empty).Trim()))
+                .ForMember(q => q.IconClass, reg => reg.MapFrom(o => (o.IconClass ?? string.Empty).Trim()))
+                .ForMember(q => q.Action, reg => reg.MapFrom(o => (o.Action ?? string.Empty).Trim()))
+                .ForMember(q => q.Controller, reg => reg.MapFrom(o => o.Controller))
+                .ForMember(q => q.Area, reg => reg.MapFrom(o => o.Area))
+                .ForMember(q => q.CssClass, reg => reg.MapFrom(o => o.CssClass));
+
+            
+            //..map pins
+            CreateMap<PinnedItem, PinnedModel>()
+                .ForMember(q => q.Label, reg => reg.MapFrom(o => (o.Label ?? string.Empty).Trim()))
+                .ForMember(q => q.IconClass, reg => reg.MapFrom(o => (o.IconClass ?? string.Empty).Trim()))
+                .ForMember(q => q.Action, reg => reg.MapFrom(o => (o.Action ?? string.Empty).Trim()))
+                .ForMember(q => q.Controller, reg => reg.MapFrom(o => o.Controller))
+                .ForMember(q => q.Area, reg => reg.MapFrom(o => o.Area))
+                .ForMember(q => q.CssClass, reg => reg.MapFrom(o => o.CssClass));
+            
+            //..map pins
+            CreateMap<PinnedModel, PinnedItem>()
+                .ForMember(q => q.Label, reg => reg.MapFrom(o => (o.Label ?? string.Empty).Trim()))
+                .ForMember(q => q.IconClass, reg => reg.MapFrom(o => (o.IconClass ?? string.Empty).Trim()))
+                .ForMember(q => q.Action, reg => reg.MapFrom(o => (o.Action ?? string.Empty).Trim()))
+                .ForMember(q => q.Controller, reg => reg.MapFrom(o => o.Controller))
+                .ForMember(q => q.Area, reg => reg.MapFrom(o => o.Area))
+                .ForMember(q => q.CssClass, reg => reg.MapFrom(o => o.CssClass));
         }
     }
 }

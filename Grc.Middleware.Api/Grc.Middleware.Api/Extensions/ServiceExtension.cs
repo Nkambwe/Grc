@@ -23,6 +23,8 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAttemptRepository, AttemptRepository>();
+            services.AddScoped<IQuickActionRepository, QuickActionRepository>();
+            services.AddScoped<IPinnedItemRepository, PinnedItemRepository>();
         }
 
         /// <summary>
@@ -44,6 +46,8 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IBaseService, BaseService>();
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<ISystemAccessService, SystemAccessService>();
+            services.AddScoped<IQuickActionService, QuickActionService>();
+            services.AddScoped<IPinnedItemService, PinnedItemService>();
             
             //allow html helpers to acces current action context
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();

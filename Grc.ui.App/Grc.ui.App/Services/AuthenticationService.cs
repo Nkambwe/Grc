@@ -133,7 +133,7 @@ namespace Grc.ui.App.Services {
             
                     // Add authorization header with current user's token or use a service account
                     var model = new UserByIdRequest() {
-                        UserId = 0,
+                        UserId = currentId,
                         RecordId = currentId,
                         IPAddress = ipAddress,
                         EncryptFields = Array.Empty<string>(),

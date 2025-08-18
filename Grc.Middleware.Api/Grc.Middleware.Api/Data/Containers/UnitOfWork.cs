@@ -6,19 +6,26 @@ using Microsoft.EntityFrameworkCore;
 namespace Grc.Middleware.Api.Data.Containers {
 
     public class UnitOfWork : IUnitOfWork {
+
+        #region Fields
+        private bool _disposed;
         private readonly IServiceLogger _logger;
         private readonly IServiceLoggerFactory _loggerFactory;
         private readonly IDbContextFactory<GrcContext> _contextFactory;
         private readonly Dictionary<Type, object> _repositories;
         private readonly IServiceProvider _serviceProvider;
-        public GrcContext Context { get;} 
-        private bool _disposed;
+        #endregion
 
+        public GrcContext Context { get;}
+
+        #region Repositories
         public ICompanyRepository CompanyRepository { get; set; }
         public IUserRepository UserRepository { get; set; }
         public IAttemptRepository AttemptRepository { get; set; }
+        public IQuickActionRepository QuickActionRepository  { get; set; }
+        public IPinnedItemRepository PinnedItemRepository { get; set; }
 
-        GrcContext IUnitOfWork.Context => throw new NotImplementedException();
+        #endregion
 
         public UnitOfWork(IServiceLoggerFactory loggerFactory,
                           IDbContextFactory<GrcContext> contextFactory,
@@ -37,6 +44,8 @@ namespace Grc.Middleware.Api.Data.Containers {
             CompanyRepository =  new CompanyRepository(_loggerFactory, Context);
             UserRepository =  new UserRepository(_loggerFactory, Context);
             AttemptRepository =  new AttemptRepository(_loggerFactory, Context);
+            QuickActionRepository = new QuickActionRepository(_loggerFactory, Context); 
+            PinnedItemRepository = new PinnedItemRepository(_loggerFactory, Context);
         }
 
         /// <summary>
@@ -155,6 +164,8 @@ namespace Grc.Middleware.Api.Data.Containers {
                     CompanyRepository = null;
                     UserRepository = null;
                     AttemptRepository = null;
+                    QuickActionRepository = null;
+                    PinnedItemRepository = null;
                 }
             }
             _disposed = true;
