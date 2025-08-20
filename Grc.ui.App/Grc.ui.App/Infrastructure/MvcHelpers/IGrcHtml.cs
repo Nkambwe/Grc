@@ -149,5 +149,13 @@ namespace Grc.ui.App.Infrastructure.MvcHelpers {
         /// <param name="value">Object to encode</param>
         /// <returns>Encoded value</returns>
         string Encode(object value);
+
+        /// <summary>
+        /// Renders a partial view asynchronously
+        /// </summary>
+        /// <param name="partialViewName">The name of the partial view</param>
+        /// <param name="model">The model to pass to the partial view</param>
+        /// <returns>HTML content</returns>
+        Task<IHtmlContent> PartialAsync(string partialViewName, object model = null);
     }
 }

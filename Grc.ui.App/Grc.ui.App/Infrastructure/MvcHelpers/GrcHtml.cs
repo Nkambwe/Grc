@@ -451,6 +451,13 @@ namespace Grc.ui.App.Infrastructure.MvcHelpers {
 
         #endregion
 
+        #region Html inherited methods
+
+        public virtual async Task<IHtmlContent> PartialAsync(string partialViewName, object model = null)
+            => await _htmlHelper.PartialAsync(partialViewName, model);
+
+        #endregion
+
         #region HTML Helper Methods
 
         /// <summary>

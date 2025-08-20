@@ -5,6 +5,7 @@ using Grc.ui.App.Factories;
 using Grc.ui.App.Filters;
 using Grc.ui.App.Http.Endpoints;
 using Grc.ui.App.Infrastructure.MvcHelpers;
+using Grc.ui.App.Menus;
 using Grc.ui.App.Middleware;
 using Grc.ui.App.Routes;
 using Grc.ui.App.Utils;
@@ -36,7 +37,7 @@ namespace Grc.ui.App {
             //..register appSettings variable providers
             services.AddScoped<IEnvironmentProvider, EnvironmentProvider>();
             services.AddScoped<IEndpointTypeProvider, EndpointTypeProvider>();
-        
+
             //..register logger factory
             services.AddScoped<IApplicationLoggerFactory, ApplicationLoggerFactory>();
             services.AddScoped<IErrorFactory, ErrorFactory>();
@@ -46,6 +47,10 @@ namespace Grc.ui.App {
             services.AddScoped<IQuickActionModelFactory, QuickActionModelFactory>();
             services.AddScoped<IDashboardFactory, DashboardFactory>();
             services.AddScoped<ISupportDashboardFactory, SupportDashboardFactory>();
+
+            //..register session manager
+            services.AddScoped<SessionManager>();
+            services.AddSingleton<ISupportMenuRegistry, SupportMenuRegistry>();
 
             //..register auto mapper
             services.ObjectMapper();
@@ -106,9 +111,14 @@ namespace Grc.ui.App {
         
             //..register services
             services.RegisterServices();
-        
+            
+            //..register filters
+            services.AddScoped<RecentMenuItemAttribute>();
+
             //..add MVC
-            services.AddControllersWithViews();
+            services.AddControllersWithViews(options => {
+                options.Filters.AddService<RecentMenuItemAttribute>();
+            });
 
             //..configure razor pages options
             services.Configure<RazorViewEngineOptions>(options => {
