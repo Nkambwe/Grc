@@ -61,6 +61,17 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             return View();
         }
         
+        public async Task<IActionResult> ActiveUsers() {
+            return View();
+        }
+        public async Task<IActionResult> DisabledUsers() {
+            return View();
+        }
+        
+        public async Task<IActionResult> UnapprovedUsers() {
+            return View();
+        }
+
         public async Task<IActionResult> Roles() {
              return View();
         }
@@ -76,7 +87,22 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         public async Task<IActionResult> PermissionDelegation() {
             return View();
         }
+        
+        public async Task<IActionResult> Bugs() {
+             return View();
+        }
+        
+        public async Task<IActionResult> NewBugs() {
+             return View();
+        }
 
+        public async Task<IActionResult> BugFixes() {
+             return View();
+        }
+        
+        public async Task<IActionResult> UserReportedBugs() {
+             return View();
+        }
 
         [HttpPost]
         public async Task<IActionResult> Logout() {

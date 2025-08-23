@@ -319,8 +319,6 @@ body {
 }
 
 .sidebar-item {
-    margin: 0.125rem 0.5rem;
-    border-radius: 6px;
     transition: all 0.2s ease;
 }
 
@@ -330,7 +328,6 @@ body {
         padding: 0.75rem 1rem;
         color: var(--text-color);
         text-decoration: none;
-        border-radius: 6px;
         transition: all 0.2s ease;
         position: relative;
     }
@@ -342,8 +339,9 @@ body {
     }
 
     .sidebar-item.active a {
+        font-weight:600;
         color: var(--teal-light-strong);
-        background-color: transparent;
+        background-color: var(--teal-light-extra);
         transition: all .3s ease-in-out;
     }
 
@@ -353,7 +351,7 @@ body {
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-right: 0.75rem;
+        margin-right: 2rem;
         flex-shrink: 0;
     }
 
@@ -540,6 +538,196 @@ body {
 
 .toast-error {
     background: #dc3545;
+}
+
+.action-box {
+    margin:0;
+    padding:0;
+}
+
+.title-box {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1rem 0.5rem;
+    position: relative;
+    gap: 1rem;
+}
+
+.title-line {
+    flex: 1;
+    height: 1px;
+    background-color: var(--teal-dark-slightly);
+}
+
+.stats-grid-title,
+.action-box-title {
+    color: var(--teal-dark-slightly);
+    font-size: 1.3em;
+    font-weight: 600;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.quick-actions {
+    display:flex;
+}
+
+    .quick-actions a {
+        background: transparent;
+        margin: 0 10px;
+        display: flex;
+        padding: 10px;
+        cursor: pointer;
+        color: var(--teal-dark-slightly);
+        text-decoration: none;
+        transition: all .3s ease-in-out;
+    }
+
+        .quick-actions a:hover {
+            color: var(--teal-medium-accent);
+            transition: all .3s ease-in-out;
+        }
+
+        .quick-actions a span {
+            display: inline-block;
+            font-size: 1.2em;
+            padding: 5px;
+        }
+        .quick-actions a span:first-child {
+            margin-right:5px;
+        }
+        
+
+.stats-grid {
+    display:flex;
+    flex-direction:column;
+}
+
+
+.stats-content {
+    display: flex;
+    width: 100%;
+    padding: 10px;
+    gap: 1rem;
+}
+
+.stat-card {
+    padding: 10px;
+    width: 230px;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+}
+
+.stat-card-light {
+    border: none;
+}
+
+.stat-card-colored {
+    background-color: var(--teal-dark-slightly);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
+
+.stat-title {
+    padding: 5px;
+    color: var(--grey-light-strong);
+    font-weight: 600;
+    text-align:center;
+}
+    .stat-title span {
+        display: block;
+        width: 100%;
+        text-align: center;
+    }
+
+.stat-icon {
+}
+
+.stat-number {
+    height: 50px;
+}
+    .stat-number span {
+        display: block;
+        height: 100%;
+        text-align: center;
+        font-size: 2em;
+        color: var(--grey-dark-slightly);
+    }
+
+.stat-separator {
+    display: block;
+    width: 100%;
+    height: 3px;
+    
+}
+
+.stat-separator-default {
+    background-color: var(--grey-light-slightly);
+}
+
+.stat-separator-primary {
+    background-color: var(--teal-dark-slightly);
+}
+
+.stat-separator-danger {
+    background-color: var(--pink-dark-slightly);
+}
+
+.stat-separator-warning {
+    background-color: var(--amber-dark-slightly);
+}
+
+.stat-separator-colored {
+    background: var(--teal-light);
+}
+
+    .stat-separator-colored .stat-number span,
+    .stat-card-colored .stat-number span,
+.stat-card-colored .stat-title {
+    color: var(--teal-light);
+}
+
+.stat-link {
+    display: flex;
+    color: var(--teal-dark-accent);
+    padding: 10px;
+    font-weight: 600;
+    cursor:pointer;
+    text-decoration: none;
+    background: transparent;
+    transition: all .3s ease-in-out;
+}
+
+.stat-link-color {
+    display: flex;
+    color: var(--teal-light);
+    padding: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    background: transparent;
+    transition: all .3s ease-in-out;
+}
+
+.stat-link span {
+    display:inline-block;
+}
+
+    .stat-link:hover {
+        color: var(--teal-medium-accent);
+        transition: all .3s ease-in-out;
+    }
+
+.stat-link-color:hover {
+    color: var(--white-base);
+    transition: all .3s ease-in-out;
+}
+
+.stat-link span:first-child,
+.stat-link-color:first-child {
+    margin-right: 5px
+}
+
+.stat-label {
 }
 
 @keyframes dropdownFadeIn {

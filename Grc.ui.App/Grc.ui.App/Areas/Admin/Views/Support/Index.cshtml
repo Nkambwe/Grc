@@ -3,47 +3,186 @@
     Layout = "_AdminLayout";
     ViewData["Title"] = "GRC ADMIN";
 }
-<div class="box">
-    <h3 class="title is-5">Quick Actions</h3>
+<div class="action-box">
+    <div class="title-box">
+        <h3 class="display-1 action-box-title">Quick Actions</h3>
+        <span class="title-line"></span>
+    </div>
+
     @await Component.InvokeAsync("QuickActions", new { model = Model.QuickActions })
 </div>
 
 <div class="stats-grid">
-    <div class="stat-card">
-        <div class="stat-icon">
-            <i class="fas fa-users"></i>
-        </div>
-        <div class="stat-number" id="totalUsers">@Model.TotalUsers</div>
-        <div class="stat-label">Total Users</div>
+
+    <div class="title-box">
+        <h3 class="display-1 stats-grid-title">System Users</h3>
+        <span class="title-line"></span>
     </div>
 
-    <div class="stat-card">
-        <div class="stat-icon">
-            <i class="fas fa-user-check"></i>
+    <div class="stats-content">
+        <div class="stat-card stat-card-light">
+            <div class="stat-title">
+                <span>TOTAL USERS</span>
+            </div>
+            <div class="stat-number" id="totalUsers">
+                <span>@Model.TotalUsers</span>
+            </div>
+            <span class="stat-separator stat-separator-default"></span>
+            <a class="stat-link" asp-controller="Support" asp-action="Users" asp-area="Admin">
+                <span><i class="mdi mdi-chevron-right"></i></span>
+                <span>See more..</span>
+            </a>
         </div>
-        <div class="stat-number" id="activeUsers">@Model.ActiveUsers</div>
-        <div class="stat-label">Active Users</div>
-    </div>
 
-    <div class="stat-card">
-        <div class="stat-icon">
-            <i class="fas fa-user-times"></i>
+        <div class="stat-card stat-card-light">
+            <div class="stat-title">
+                <span>ACTIVE USERS</span>
+            </div>
+            <div class="stat-number" id="activeUsers">
+                <span>@Model.ActiveUsers</span>
+            </div>
+            <span class="stat-separator stat-separator-primary"></span>
+            <a class="stat-link" asp-controller="Support" asp-action="ActiveUsers" asp-area="Admin">
+                <span><i class="mdi mdi-chevron-right"></i></span>
+                <span>See more..</span>
+            </a>
         </div>
-        <div class="stat-number" id="disabledUsers">0</div>
-        <div class="stat-label">Disabled Users</div>
-    </div>
 
-    <div class="stat-card">
-        <div class="stat-icon">
-            <i class="fas fa-user-minus"></i>
+        <div class="stat-card stat-card-light">
+            <div class="stat-title">
+                <span>DISABLED USERS</span>
+            </div>
+            <div class="stat-number" id="disabledUsers">
+                <span>0</span>
+            </div>
+            <span class="stat-separator stat-separator-danger"></span>
+            <a class="stat-link" asp-controller="Support" asp-action="DisabledUsers" asp-area="Admin">
+                <span><i class="mdi mdi-chevron-right"></i></span>
+                <span>See more..</span>
+            </a>
         </div>
-        <div class="stat-number" id="deletedUsers">0</div>
-        <div class="stat-label">Deleted Users</div>
+
+        <div class="stat-card stat-card-light">
+            <div class="stat-title">
+                <span>PENSING APPROVALS</span>
+            </div>
+            <div class="stat-number" id="unapprovedUsers">
+                <span>0</span>
+            </div>
+            <span class="stat-separator stat-separator-warning"></span>
+            <a class="stat-link" asp-controller="Support" asp-action="UnapprovedUsers" asp-area="Admin">
+                <span><i class="mdi mdi-chevron-right"></i></span>
+                <span>See more..</span>
+            </a>
+        </div>
+
+        <div class="stat-card stat-card-light">
+            <div class="stat-title">
+                <span>PENSING VERIFICATION</span>
+            </div>
+            <div class="stat-number" id="unverifiedUsers">
+                <span>0</span>
+            </div>
+            <span class="stat-separator stat-separator-warning"></span>
+            <a class="stat-link" asp-controller="Support" asp-action="UnapprovedUsers" asp-area="Admin">
+                <span><i class="mdi mdi-chevron-right"></i></span>
+                <span>See more..</span>
+            </a>
+        </div>
+
+        <div class="stat-card stat-card-light">
+            <div class="stat-title">
+                <span>DELETED ACCOUNTS</span>
+            </div>
+            <div class="stat-number" id="deletedUsers">
+                <span>0</span>
+            </div>
+            <span class="stat-separator stat-separator-danger"></span>
+            <a class="stat-link" asp-controller="Support" asp-action="UnapprovedUsers" asp-area="Admin">
+                <span><i class="mdi mdi-chevron-right"></i></span>
+                <span>See more..</span>
+            </a>
+        </div>
+
     </div>
+    
 </div>
 
-<div class="box">
-    <h3 class="title is-5">Recent Activity</h3>
+<div class="stats-grid">
+
+    <div class="title-box">
+        <h3 class="display-1 stats-grid-title">Bug Tracking</h3>
+        <span class="title-line"></span>
+    </div>
+
+    <div class="stats-content">
+        <div class="stat-card stat-card-colored">
+            <div class="stat-title">
+                <span>TOTAL BUGS</span>
+            </div>
+            <div class="stat-number" id="totalBugs">
+                <span>5</span>
+            </div>
+            <span class="stat-separator stat-separator-colored"></span>
+            <a class="stat-link-color" asp-controller="Support" asp-action="Bugs" asp-area="Admin">
+                <span><i class="mdi mdi-chevron-right"></i></span>
+                <span>See more..</span>
+            </a>
+        </div>
+
+        <div class="stat-card stat-card-colored">
+            <div class="stat-title">
+                <span>NEW BUGS</span>
+            </div>
+            <div class="stat-number" id="newBugs">
+                <span>1</span>
+            </div>
+            <span class="stat-separator stat-separator-danger"></span>
+            <a class="stat-link-color" asp-controller="Support" asp-action="NewBugs" asp-area="Admin">
+                <span><i class="mdi mdi-chevron-right"></i></span>
+                <span>See more..</span>
+            </a>
+        </div>
+
+        <div class="stat-card stat-card-colored">
+            <div class="stat-title">
+                <span>UNDER FIXING</span>
+            </div>
+            <div class="stat-number" id="bugFixing">
+                <span>4</span>
+            </div>
+            <span class="stat-separator stat-separator-warning"></span>
+            <a class="stat-link-color" asp-controller="Support" asp-action="BugFixes" asp-area="Admin">
+                <span><i class="mdi mdi-chevron-right"></i></span>
+                <span>See more..</span>
+            </a>
+        </div>
+
+        <div class="stat-card stat-card-colored">
+            <div class="stat-title">
+                <span>USER REPORTED</span>
+            </div>
+            <div class="stat-number" id="userReportedBugs">
+                <span>0</span>
+            </div>
+            <span class="stat-separator stat-separator-warning"></span>
+            <a class="stat-link-color" asp-controller="Support" asp-action="UserReportedBugs" asp-area="Admin">
+                <span><i class="mdi mdi-chevron-right"></i></span>
+                <span>See more..</span>
+            </a>
+        </div>
+
+    </div>
+    
+</div>
+
+<div class="bugs-box">
+
+    <div class="title-box">
+        <h3 class="display-1 stats-grid-title">Recent Activity</h3>
+        <span class="title-line"></span>
+    </div>
+
     <div class="table-container">
         <table class="table is-fullwidth is-striped">
             <thead>

@@ -3,28 +3,24 @@
   "WorkspaceRootPath": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc_project\\grc\\grc.ui.app\\grc.ui.app\\menus\\supportmenuregistry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\menus\\supportmenuregistry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc_project\\grc\\grc.ui.app\\grc.ui.app\\areas\\admin\\views\\support\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\admin\\views\\support\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc_project\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\css\\admin-style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\css\\admin-style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc_project\\grc\\grc.ui.app\\grc.ui.app\\areas\\admin\\controllers\\supportcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\admin\\controllers\\supportcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc_project\\grc\\grc.ui.app\\grc.ui.app\\areas\\admin\\views\\shared\\_adminlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\admin\\views\\shared\\_adminlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc_project\\grc\\grc.ui.app\\grc.ui.app\\infrastructure\\mvchelpers\\grchtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\infrastructure\\mvchelpers\\grchtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc_project\\grc\\grc.ui.app\\grc.ui.app\\infrastructure\\mvchelpers\\igrchtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\infrastructure\\mvchelpers\\igrchtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc_project\\grc\\grc.ui.app\\grc.ui.app\\localization\\language.am-en.xml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
       "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\localization\\language.am-en.xml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc_project\\grc\\grc.ui.app\\grc.ui.app\\http\\responses\\quickaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\http\\responses\\quickaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,7 +30,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 142,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -58,15 +54,28 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "SupportMenuRegistry.cs",
-              "DocumentMoniker": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Menus\\SupportMenuRegistry.cs",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Menus\\SupportMenuRegistry.cs",
-              "ToolTip": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Menus\\SupportMenuRegistry.cs",
-              "RelativeToolTip": "Grc.ui.App\\Menus\\SupportMenuRegistry.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGIAAABBAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "SupportController.cs",
+              "DocumentMoniker": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Controllers\\SupportController.cs",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Admin\\Controllers\\SupportController.cs",
+              "ToolTip": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Controllers\\SupportController.cs",
+              "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Controllers\\SupportController.cs",
+              "ViewState": "AgIAAE0AAAAAAAAAAAAowGIAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-20T02:37:44.231Z",
+              "WhenOpened": "2025-08-23T03:58:31.335Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Views\\Support\\Index.cshtml",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Admin\\Views\\Support\\Index.cshtml",
+              "ToolTip": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Views\\Support\\Index.cshtml",
+              "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Views\\Support\\Index.cshtml",
+              "ViewState": "AgIAAGYAAAAAAAAAAAAAAL0AAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-08-23T02:50:31.167Z",
               "EditorCaption": ""
             }
           ]
@@ -93,53 +102,28 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "_AdminLayout.cshtml",
-              "DocumentMoniker": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
-              "ToolTip": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
-              "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
-              "ViewState": "AgIAADwBAAAAAAAAAAAAAF4BAABYAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-08-20T02:36:38.983Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "GrcHtml.cs",
-              "DocumentMoniker": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Infrastructure\\MvcHelpers\\GrcHtml.cs",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Infrastructure\\MvcHelpers\\GrcHtml.cs",
-              "ToolTip": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Infrastructure\\MvcHelpers\\GrcHtml.cs",
-              "RelativeToolTip": "Grc.ui.App\\Infrastructure\\MvcHelpers\\GrcHtml.cs",
-              "ViewState": "AgIAABUAAAAAAAAAAAAewOYBAAASAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-20T02:08:39.2Z",
+              "Title": "admin-style.css",
+              "DocumentMoniker": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-style.css",
+              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\css\\admin-style.css",
+              "ToolTip": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-style.css",
+              "RelativeToolTip": "Grc.ui.App\\wwwroot\\css\\admin-style.css",
+              "ViewState": "AgIAADsBAAAAAAAAAAAAAGMBAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-08-23T02:51:33.302Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "IGrcHtml.cs",
-              "DocumentMoniker": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Infrastructure\\MvcHelpers\\IGrcHtml.cs",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Infrastructure\\MvcHelpers\\IGrcHtml.cs",
-              "ToolTip": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Infrastructure\\MvcHelpers\\IGrcHtml.cs",
-              "RelativeToolTip": "Grc.ui.App\\Infrastructure\\MvcHelpers\\IGrcHtml.cs",
-              "ViewState": "AgIAAG8AAAAAAAAAAAA1wJcAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-20T02:07:54.799Z",
+              "Title": "_AdminLayout.cshtml",
+              "DocumentMoniker": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
+              "ToolTip": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
+              "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAIkAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-08-20T02:36:38.983Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "QuickAction.cs",
-              "DocumentMoniker": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Http\\Responses\\QuickAction.cs",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Http\\Responses\\QuickAction.cs",
-              "ToolTip": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Http\\Responses\\QuickAction.cs",
-              "RelativeToolTip": "Grc.ui.App\\Http\\Responses\\QuickAction.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-18T02:33:58.996Z"
             },
             {
               "$type": "Document",
@@ -151,8 +135,7 @@
               "RelativeToolTip": "Grc.ui.App\\Localization\\language.am-EN.xml",
               "ViewState": "AgIAAEUAAAAAAAAAAAAAAGUAAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003576|",
-              "WhenOpened": "2025-08-17T13:30:24.466Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-17T13:30:24.466Z"
             }
           ]
         }
