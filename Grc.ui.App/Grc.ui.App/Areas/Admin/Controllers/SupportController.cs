@@ -7,6 +7,7 @@ using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text.Json;
@@ -18,14 +19,19 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         private readonly ISystemAccessService _accessService;
         private readonly IAuthenticationService _authService;
         private readonly ISupportDashboardFactory _dDashboardFactory;
+        
         public SupportController(IApplicationLoggerFactory loggerFactory, 
                                  IEnvironmentProvider environment, 
                                  IWebHelper webHelper,
                                  ILocalizationService localizationService,
                                  ISystemAccessService accessService,
                                  IAuthenticationService authService,
-                                 ISupportDashboardFactory dDashboardFactory) 
-            : base(loggerFactory, environment, webHelper, localizationService) {
+                                 ISupportDashboardFactory dDashboardFactory,
+                                 IErrorService errorService,
+                                 IGrcErrorFactory errorFactory,
+                                 SessionManager sessionManager) 
+            : base(loggerFactory, environment, webHelper, localizationService, 
+                  errorService, errorFactory, sessionManager) {
            _accessService = accessService;
             _authService = authService;
             _dDashboardFactory = dDashboardFactory;
@@ -43,8 +49,19 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 var currentUser = grcResponse.Data;
                 currentUser.LastLoginIpAddress = ipAddress;
                 model = await _dDashboardFactory.PrepareAdminDashboardModelAsync(currentUser);
-                model.TotalUsers = (await _accessService.CountAllUsersAsync(currentUser.UserId, ipAddress)).Count;
-                model.ActiveUsers = (await _accessService.CountActiveUsersAsync(currentUser.UserId, ipAddress)).Count;
+                var stats = (await _accessService.StatisticAsync(currentUser.UserId, ipAddress));
+                model.TotalUsers = stats.TotalUsers;
+                model.ActiveUsers = stats.ActiveUsers;
+                model.DeactivatedUsers= stats.DeactivatedUsers;
+                model.UnApprovedUsers= stats.UnApprovedUsers;
+                model.UnverifiedUsers = stats.UnverifiedUsers;
+                model.DeletedUsers= stats.DeletedUsers;
+                model.TotalBugs = stats.TotalBugs;
+                model.NewBugs = stats.NewBugs;
+                model.BugFixes = stats.BugFixes;
+                model.BugProgress = stats.BugProgress;
+                model.UserReportedBugs = stats.UserReportedBugs;
+
             } catch(Exception ex){ 
                 Logger.LogActivity($"Username validation error: {ex.Message}", "ERROR");
                 return HandleLoginErrors(LocalizationService.GetLocalizedLabel("Error.Service.Unavailable"), model);
@@ -53,55 +70,115 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             return View(model);
         }
 
-        public async Task<IActionResult> Departments() {
+        public async Task<IActionResult> Departments() {;
+            string error_msg = "Department exception occurred";
+            string error_source = $"SUPPORT CONTROLLER - Departments";
+            string error_stacktrace = $"Error details";
+            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
             return View();
         }
 
         public async Task<IActionResult> Users() {
+            string error_msg = "Users exception occurred";
+            string error_source = $"SUPPORT CONTROLLER - Users";
+            string error_stacktrace = $"Error details";
+            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
             return View();
         }
         
         public async Task<IActionResult> ActiveUsers() {
+            string error_msg = "Active users exception occurred";
+            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
+            string error_stacktrace = $"Error details";
+            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
             return View();
         }
         public async Task<IActionResult> DisabledUsers() {
+            string error_msg = "DisabledUsers exception occurred";
+            string error_source = $"SUPPORT CONTROLLER - Users";
+            string error_stacktrace = $"Error details";
+            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
             return View();
         }
         
         public async Task<IActionResult> UnapprovedUsers() {
+            string error_msg = "Unapproved users exception occurred";
+            string error_source = $"SUPPORT CONTROLLER - UnapprovedUsers";
+            string error_stacktrace = $"Error details";
+            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
             return View();
         }
 
         public async Task<IActionResult> Roles() {
-             return View();
+            var ex = HttpContext.Features.Get<IExceptionHandlerFeature>();
+            string error_msg = ex.Error.Message;
+            string error_source = $"SUPPORT CONTROLLER - {ex.Error.Source}";
+            string error_stacktrace = $"{ex.Error.StackTrace}";
+            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
+            return View();
         }
 
         public async Task<IActionResult> PermissionSets() {
+            var ex = HttpContext.Features.Get<IExceptionHandlerFeature>();
+            string error_msg = ex.Error.Message;
+            string error_source = $"SUPPORT CONTROLLER - {ex.Error.Source}";
+            string error_stacktrace = $"{ex.Error.StackTrace}";
+            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
             return View();
         }
         
         public async Task<IActionResult> AssignPermissions() {
+            var ex = HttpContext.Features.Get<IExceptionHandlerFeature>();
+            string error_msg = ex.Error.Message;
+            string error_source = $"SUPPORT CONTROLLER - {ex.Error.Source}";
+            string error_stacktrace = $"{ex.Error.StackTrace}";
+            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
             return View();
         }
 
         public async Task<IActionResult> PermissionDelegation() {
+            var ex = HttpContext.Features.Get<IExceptionHandlerFeature>();
+            string error_msg = ex.Error.Message;
+            string error_source = $"SUPPORT CONTROLLER - {ex.Error.Source}";
+            string error_stacktrace = $"{ex.Error.StackTrace}";
+            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
             return View();
         }
         
         public async Task<IActionResult> Bugs() {
-             return View();
+            var ex = HttpContext.Features.Get<IExceptionHandlerFeature>();
+            string error_msg = ex.Error.Message;
+            string error_source = $"SUPPORT CONTROLLER - {ex.Error.Source}";
+            string error_stacktrace = $"{ex.Error.StackTrace}";
+            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
+            return View();
         }
         
         public async Task<IActionResult> NewBugs() {
-             return View();
+            var ex = HttpContext.Features.Get<IExceptionHandlerFeature>();
+            string error_msg = ex.Error.Message;
+            string error_source = $"SUPPORT CONTROLLER - {ex.Error.Source}";
+            string error_stacktrace = $"{ex.Error.StackTrace}";
+            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
+            return View();
         }
 
         public async Task<IActionResult> BugFixes() {
-             return View();
+            var ex = HttpContext.Features.Get<IExceptionHandlerFeature>();
+            string error_msg = ex.Error.Message;
+            string error_source = $"SUPPORT CONTROLLER - {ex.Error.Source}";
+            string error_stacktrace = $"{ex.Error.StackTrace}";
+            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
+            return View();
         }
         
         public async Task<IActionResult> UserReportedBugs() {
-             return View();
+            var ex = HttpContext.Features.Get<IExceptionHandlerFeature>();
+            string error_msg = ex.Error.Message;
+            string error_source = $"SUPPORT CONTROLLER - {ex.Error.Source}";
+            string error_stacktrace = $"{ex.Error.StackTrace}";
+            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
+            return View();
         }
 
         [HttpPost]
@@ -134,6 +211,8 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 Logger.LogActivity($"Error during admin logout: {ex.Message}", "ERROR");
                 Logger.LogActivity($"{ex.StackTrace}", "ERROR");
         
+                //..capture error to bug tracker
+                 _= await ProcessErrorAsync(ex.Message, "SUPPORTCONTROLLER-LOGOUT", ex.StackTrace);
                 return Json(new { 
                     success = false, 
                     message = LocalizationService.GetLocalizedLabel("Error.Occurance"),

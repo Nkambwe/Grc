@@ -62,13 +62,49 @@ namespace Grc.ui.App.Http {
                 var endpoint = $"{EndpointProvider.Sam.Users}/countUsers";
                 var response = await HttpHandler.PostAsync<GrcRequest,RecordCountResponse>(endpoint, request);
                 if(response.HasError) { 
-                    
+                    return new(){ Count = 0};
                 }
 
                 return response.Data;
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve user record count for all users: {ex.Message}", "ERROR");
                 throw new GRCException("Uanble to retrieve user count", ex);
+            }
+        }
+
+        public async Task<AdminCountResponse> StatisticAsync(long requestingUserId, string ipAddress) {
+            try {
+                Logger.LogActivity($"Retrieve count for all users", "INFO");
+                var request = new GrcRequest() {
+                    UserId = requestingUserId,
+                    Action = Activity.STATISTICS.GetDescription(),
+                    IPAddress = ipAddress,
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>(),
+                };
+
+                var endpoint = $"{EndpointProvider.Sam.Users}/statistics";
+                var response = await HttpHandler.PostAsync<GrcRequest,AdminCountResponse>(endpoint, request);
+                if(response.HasError) { 
+                    return new(){
+                        TotalUsers = 0,
+                        ActiveUsers = 0,
+                        DeactivatedUsers= 0,
+                        UnApprovedUsers= 0,
+                        UnverifiedUsers = 0,
+                        DeletedUsers= 0,
+                        TotalBugs = 0,
+                        NewBugs = 0,
+                        BugFixes = 0,
+                        BugProgress = 0,
+                        UserReportedBugs = 0
+                    };
+                }
+
+                return response.Data;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve user statistics: {ex.Message}", "ERROR");
+                throw new GRCException("Uanble to retrieve user statistics", ex);
             }
         }
 

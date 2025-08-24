@@ -82,7 +82,6 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(q => q.Controller, reg => reg.MapFrom(o => o.Controller))
                 .ForMember(q => q.Area, reg => reg.MapFrom(o => o.Area))
                 .ForMember(q => q.CssClass, reg => reg.MapFrom(o => o.CssClass));
-
             
             //..map pins
             CreateMap<PinnedItem, PinnedModel>()
@@ -101,6 +100,40 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(q => q.Controller, reg => reg.MapFrom(o => o.Controller))
                 .ForMember(q => q.Area, reg => reg.MapFrom(o => o.Area))
                 .ForMember(q => q.CssClass, reg => reg.MapFrom(o => o.CssClass));
+
+            CreateMap<CurrentUserResponse, CurrentUserModel>()
+                .ForMember(m => m.UserId, reg => reg.MapFrom(o => o.UserId))
+                .ForMember(m => m.PersonnelFileNumber, reg => reg.MapFrom(o => (o.PersonnelFileNumber ?? string.Empty).Trim()))
+                .ForMember(m => m.Username, reg => reg.MapFrom(o => (o.Username ?? string.Empty).Trim()))
+                .ForMember(m => m.Email, reg => reg.MapFrom(o => o.Email))
+                .ForMember(m => m.FirstName, reg => reg.MapFrom(o => o.FirstName))
+                .ForMember(m => m.LastName, reg => reg.MapFrom(o => o.LastName));
+
+            CreateMap<AssignedBranchResponse, BranchModel>()
+                .ForMember(b => b.BranchId, reg => reg.MapFrom(o => o.BranchId))
+                .ForMember(b => b.OrganizationId, reg => reg.MapFrom(o => o.OrganizationId))
+                .ForMember(b => b.SolId, reg => reg.MapFrom(o => (o.SolId ?? string.Empty).Trim()))
+                .ForMember(b => b.OrganizationName, reg => reg.MapFrom(o => o.OrganizationName))
+                .ForMember(b => b.OrgAlias, reg => reg.MapFrom(o => o.OrgAlias))
+                .ForMember(b => b.BranchName, reg => reg.MapFrom(o => o.BranchName));
+            
+            CreateMap<PreferenceResponse, UserPreferenceModel>()
+                .ForMember(p => p.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(p => p.Theme, reg => reg.MapFrom(o => (o.Theme ?? string.Empty).Trim()))
+                .ForMember(p => p.Language, reg => reg.MapFrom(o => (o.Language ?? string.Empty).Trim()));
+
+            CreateMap<UserViewResponse, UserViewModel>()
+                .ForMember(v => v.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(v => v.Name, reg => reg.MapFrom(o => (o.Name ?? string.Empty).Trim()))
+                .ForMember(v => v.View, reg => reg.MapFrom(o => o.View));
+
+            CreateMap<GrcErrorModel, ErrorRequest>()
+                .ForMember(e => e.CompanyId, reg => reg.MapFrom(o => o.CompanyId))
+                .ForMember(e => e.UserId, reg => reg.MapFrom(o => o.UserId))
+                .ForMember(e => e.Message, reg => reg.MapFrom(o => (o.Message ?? string.Empty).Trim()))
+                .ForMember(e => e.Source, reg => reg.MapFrom(o => (o.Source ?? string.Empty).Trim()))
+                .ForMember(e => e.Severity, reg => reg.MapFrom(o => (o.Severity ?? "ERROR").Trim()))
+                .ForMember(e => e.StackTrace, reg => reg.MapFrom(o => o.StackTrace));
         }
     }
 }

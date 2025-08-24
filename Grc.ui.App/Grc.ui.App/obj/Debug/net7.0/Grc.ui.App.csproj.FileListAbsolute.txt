@@ -77,6 +77,7 @@ C:\Projects\CS\GRC\grc-suite-github\Grc\Grc.ui.App\Grc.ui.App\obj\Debug\net7.0\G
 C:\Projects\CS\GRC\grc-suite-github\Grc\Grc.ui.App\Grc.ui.App\obj\Debug\net7.0\ref\Grc.ui.App.dll
 C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\appsettings.Development.json
 C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\appsettings.json
+C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\libman.json
 C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Grc.ui.App.staticwebassets.runtime.json
 C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Grc.ui.App.staticwebassets.endpoints.json
 C:\Projects\Grc_Project\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Grc.ui.App.exe

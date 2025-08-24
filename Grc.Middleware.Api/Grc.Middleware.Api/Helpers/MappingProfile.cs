@@ -88,6 +88,24 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(a => a.Action, reg => reg.MapFrom(o => (o.Action ?? string.Empty).Trim()))
                 .ForMember(a => a.Area, reg => reg.MapFrom(o => (o.Area ?? string.Empty).Trim()))
                 .ForMember(a => a.CssClass, reg => reg.MapFrom(o => (o.CssClass ?? string.Empty).Trim()));
+
+            
+            //..map pinned items
+            CreateMap<ErrorRequest, SystemError>()
+                .ForMember(e => e.CompanyId, reg => reg.MapFrom(o => o.CompanyId))
+                .ForMember(e => e.ErrorMessage, reg => reg.MapFrom(o => (o.Message ?? string.Empty).Trim()))
+                .ForMember(e => e.ErrorSource, reg => reg.MapFrom(o => (o.Source ?? string.Empty).Trim()))
+                .ForMember(e => e.StackTrace, reg => reg.MapFrom(o => (o.StackTrace ?? string.Empty).Trim()))
+                .ForMember(e => e.Severity, reg => reg.MapFrom(o => (o.Severity ?? string.Empty).Trim()))
+                .ForMember(e => e.Assigned, reg => reg.MapFrom(o => false))
+                .ForMember(e => e.IsDeleted, reg => reg.MapFrom(o => false))
+                .ForMember(e => e.FixStatus, reg => reg.MapFrom(o => "OPEN"))
+                .ForMember(e => e.ReportedOn, reg => reg.MapFrom(o => DateTime.Now))
+                .ForMember(e => e.CreatedOn, reg => reg.MapFrom(o => DateTime.Now))
+                .ForMember(e => e.CreatedBy, reg => reg.MapFrom(o => $"{o.UserId}"))
+                .ForMember(e => e.IsUserReported, reg => reg.MapFrom(o => false));
+
+
         }
 
     }

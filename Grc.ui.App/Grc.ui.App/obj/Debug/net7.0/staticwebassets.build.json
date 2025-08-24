@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "4gyRqS7bC/WFzT9xV8ZG+zgEoXrEy3zdcJkfc78B91c=",
+  "Hash": "gML4dkAd9nXp0evPR8sl8TINlcH2SiYxyB5GjcbyFmo=",
   "Source": "Grc.ui.App",
   "BasePath": "_content/Grc.ui.App",
   "Mode": "Default",
@@ -73,8 +73,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "rb0z5543kw",
-      "Integrity": "Z0WJS/XWm0FcY3ZTLt9EtO4KundwnIx1FWmyI5fc/zE=",
+      "Fingerprint": "539wr4wxff",
+      "Integrity": "/z4XQj6XQ5S8YUX7a4ANiyBKP1G2y6qT45Kt49k4xtQ=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\admin-style.css"
@@ -330,6 +330,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\admin-script.js"
+    },
+    {
+      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\bug-signalr-script.js",
+      "SourceId": "Grc.ui.App",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\",
+      "BasePath": "_content/Grc.ui.App",
+      "RelativePath": "js/bug-signalr-script#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "scaa5hvkjv",
+      "Integrity": "7Esrr5k6QR1qgd2/jGqxA6at1WwS/a4EepCq8PRYmw8=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\bug-signalr-script.js"
     },
     {
       "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\grc-app.js",
@@ -2726,6 +2747,48 @@
       "OriginalItemSpec": "wwwroot\\lib\\select-2\\js\\select2.min.js"
     },
     {
+      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\signalr\\signalr.js",
+      "SourceId": "Grc.ui.App",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\",
+      "BasePath": "_content/Grc.ui.App",
+      "RelativePath": "lib/signalr/signalr#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "v0fgjha4aq",
+      "Integrity": "DydZJF9HMqg4GRwdXNzjdJuaFpnlVaE2mLZXYYa2L+Q=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\lib\\signalr\\signalr.js"
+    },
+    {
+      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\signalr\\signalr.min.js",
+      "SourceId": "Grc.ui.App",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\",
+      "BasePath": "_content/Grc.ui.App",
+      "RelativePath": "lib/signalr/signalr.min#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "a39ckpyprj",
+      "Integrity": "+k7RplYeBZa1wx3zb0fBaSYRX6xF3PAvq1Cgp55YC04=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\lib\\signalr\\signalr.min.js"
+    },
+    {
       "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\sweet-alert\\sweetalert2.all.js",
       "SourceId": "Grc.ui.App",
       "SourceType": "Discovered",
@@ -2875,6 +2938,51 @@
   ],
   "Endpoints": [
     {
+      "Route": "css/admin-style.539wr4wxff.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-style.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "15860"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"/z4XQj6XQ5S8YUX7a4ANiyBKP1G2y6qT45Kt49k4xtQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 24 Aug 2025 04:47:02 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "539wr4wxff"
+        },
+        {
+          "Name": "label",
+          "Value": "css/admin-style.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-/z4XQj6XQ5S8YUX7a4ANiyBKP1G2y6qT45Kt49k4xtQ="
+        }
+      ]
+    },
+    {
       "Route": "css/admin-style.css",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-style.css",
       "Selectors": [],
@@ -2885,7 +2993,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "15645"
+          "Value": "15860"
         },
         {
           "Name": "Content-Type",
@@ -2893,11 +3001,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"Z0WJS/XWm0FcY3ZTLt9EtO4KundwnIx1FWmyI5fc/zE=\""
+          "Value": "\"/z4XQj6XQ5S8YUX7a4ANiyBKP1G2y6qT45Kt49k4xtQ=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 23 Aug 2025 06:26:14 GMT"
+          "Value": "Sun, 24 Aug 2025 04:47:02 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -2907,52 +3015,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-Z0WJS/XWm0FcY3ZTLt9EtO4KundwnIx1FWmyI5fc/zE="
-        }
-      ]
-    },
-    {
-      "Route": "css/admin-style.rb0z5543kw.css",
-      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-style.css",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "15645"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"Z0WJS/XWm0FcY3ZTLt9EtO4KundwnIx1FWmyI5fc/zE=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sat, 23 Aug 2025 06:26:14 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "rb0z5543kw"
-        },
-        {
-          "Name": "label",
-          "Value": "css/admin-style.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-Z0WJS/XWm0FcY3ZTLt9EtO4KundwnIx1FWmyI5fc/zE="
+          "Value": "sha256-/z4XQj6XQ5S8YUX7a4ANiyBKP1G2y6qT45Kt49k4xtQ="
         }
       ]
     },
@@ -3471,7 +3534,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 18 Aug 2025 02:43:35 GMT"
+          "Value": "Sun, 24 Aug 2025 15:42:48 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3508,7 +3571,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 18 Aug 2025 02:43:35 GMT"
+          "Value": "Sun, 24 Aug 2025 15:42:48 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3553,7 +3616,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 18 Aug 2025 02:43:35 GMT"
+          "Value": "Sun, 24 Aug 2025 15:42:48 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3598,7 +3661,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 18 Aug 2025 02:43:35 GMT"
+          "Value": "Sun, 24 Aug 2025 15:42:48 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -4101,6 +4164,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-CK0F2xpngj3Zua48oFOK/sJnMsJop9ZPLE9DYdCWYYI="
+        }
+      ]
+    },
+    {
+      "Route": "js/bug-signalr-script.js",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\bug-signalr-script.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2590"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"7Esrr5k6QR1qgd2/jGqxA6at1WwS/a4EepCq8PRYmw8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 24 Aug 2025 15:40:56 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-7Esrr5k6QR1qgd2/jGqxA6at1WwS/a4EepCq8PRYmw8="
+        }
+      ]
+    },
+    {
+      "Route": "js/bug-signalr-script.scaa5hvkjv.js",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\bug-signalr-script.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2590"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"7Esrr5k6QR1qgd2/jGqxA6at1WwS/a4EepCq8PRYmw8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 24 Aug 2025 15:40:56 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "scaa5hvkjv"
+        },
+        {
+          "Name": "label",
+          "Value": "js/bug-signalr-script.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-7Esrr5k6QR1qgd2/jGqxA6at1WwS/a4EepCq8PRYmw8="
         }
       ]
     },
@@ -13449,6 +13594,170 @@
         {
           "Name": "integrity",
           "Value": "sha256-X/Ppa3outjctKJsF9yFFuYy5UFD7AsdiwgUT9VJ/Yd8="
+        }
+      ]
+    },
+    {
+      "Route": "lib/signalr/signalr.js",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\signalr\\signalr.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "159289"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"DydZJF9HMqg4GRwdXNzjdJuaFpnlVaE2mLZXYYa2L+Q=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 24 Aug 2025 13:04:04 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-DydZJF9HMqg4GRwdXNzjdJuaFpnlVaE2mLZXYYa2L+Q="
+        }
+      ]
+    },
+    {
+      "Route": "lib/signalr/signalr.min.a39ckpyprj.js",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\signalr\\signalr.min.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "47392"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"+k7RplYeBZa1wx3zb0fBaSYRX6xF3PAvq1Cgp55YC04=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 24 Aug 2025 13:04:04 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "a39ckpyprj"
+        },
+        {
+          "Name": "label",
+          "Value": "lib/signalr/signalr.min.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-+k7RplYeBZa1wx3zb0fBaSYRX6xF3PAvq1Cgp55YC04="
+        }
+      ]
+    },
+    {
+      "Route": "lib/signalr/signalr.min.js",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\signalr\\signalr.min.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "47392"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"+k7RplYeBZa1wx3zb0fBaSYRX6xF3PAvq1Cgp55YC04=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 24 Aug 2025 13:04:04 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-+k7RplYeBZa1wx3zb0fBaSYRX6xF3PAvq1Cgp55YC04="
+        }
+      ]
+    },
+    {
+      "Route": "lib/signalr/signalr.v0fgjha4aq.js",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\signalr\\signalr.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "159289"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"DydZJF9HMqg4GRwdXNzjdJuaFpnlVaE2mLZXYYa2L+Q=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 24 Aug 2025 13:04:04 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "v0fgjha4aq"
+        },
+        {
+          "Name": "label",
+          "Value": "lib/signalr/signalr.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-DydZJF9HMqg4GRwdXNzjdJuaFpnlVaE2mLZXYYa2L+Q="
         }
       ]
     },

@@ -16,21 +16,85 @@ namespace Grc.Middleware.Api.Controllers {
     [ApiController]
     [Route("grc")]
     public class GrcController : GrcControllerBase {
-
         private readonly ICompanyService _companyService;
 
         public GrcController(IObjectCypher cypher,
             IServiceLoggerFactory loggerFactory, 
                              IEnvironmentProvider environment,
                              ICompanyService companyService,
-                             IMapper mapper) 
-            : base(cypher, loggerFactory, mapper, environment) {
+                             IMapper mapper,
+                             IErrorNotificationService errorService,
+                             ISystemErrorService systemErrorService) 
+            : base(cypher, loggerFactory, mapper, environment, 
+                  errorService, systemErrorService) {
             _companyService = companyService;
         }
 
         [HttpGet]
         public IActionResult Index() { 
             return Ok("Welcome to GRC Suite! ");    
+        }
+
+        [HttpPost("errors/saveerror")] 
+        public async Task<IActionResult> SaveError([FromBody] ErrorRequest request) {
+            try{
+                Logger.LogActivity("Saving error to the database", "INFO");
+                if (request == null) { 
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid error object"
+                    );
+        
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                //..create system error object
+                var errorObj = Mapper.Map<SystemError>(request);
+                errorObj.Severity = DetermineSeverity(request.Message);
+
+                //..send real-time notification
+                await ErrorService.NotifyNewErrorAsync(errorObj);
+
+                //..get updated counts and notify
+                var errorCounts = await SystemErrorService.GetErrorCountsAsync(request.CompanyId);
+                await ErrorService.NotifyCountAsync(
+                    errorCounts.TotalBugs, 
+                    errorCounts.NewBugs
+                );
+
+                //..save error object to the database
+                var result = await SystemErrorService.SaveErrorAsync(errorObj);
+                var response = new GeneralResponse();
+                if(result){
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Error captured and saved successfully";  
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else { 
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to capture error to database. An error occurrred";  
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                Logger.LogActivity($"ERROR CAPTURE: {JsonSerializer.Serialize(response)}");
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) { 
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var error = new ResponseError(
+                    ResponseCodes.BADREQUEST,
+                    $"Oops! Something thing went wrong",
+                    $"System Error - {ex.Message}"
+                );
+        
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }    
         }
 
         [HttpPost("registration/register")]
@@ -92,6 +156,14 @@ namespace Grc.Middleware.Api.Controllers {
                 Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
                 return Ok(new GrcResponse<GeneralResponse>(error));
             }    
+        }
+
+        private string DetermineSeverity(string message) {
+            if (message.Contains("Critical") || message.Contains("Fatal"))
+                return "CRITICAL";
+            if (message.Contains("Warning"))
+                return "WARNING";
+            return "ERROR";
         }
     }
 }

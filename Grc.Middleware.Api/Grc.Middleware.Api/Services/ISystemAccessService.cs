@@ -1,4 +1,5 @@
-﻿using Grc.Middleware.Api.Data.Entities.System;
+﻿using Azure.Core;
+using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 
@@ -43,6 +44,13 @@ namespace Grc.Middleware.Api.Services {
         /// Task containg System user count
         /// </returns>
         Task<int> GetTotalUsersCountAsync();
+        /// <summary>
+        /// Get dashbaord statistics
+        /// </summary>
+        /// <returns>
+        /// Task containg count for various dasboard statistics
+        /// </returns>
+        Task<AdminCountResponse> GetAdminiDashboardStatisticsAsync();
         /// <summary>
         /// Get total count of active users in the system
         /// </summary>
@@ -91,5 +99,12 @@ namespace Grc.Middleware.Api.Services {
         /// <param name="userId">User ID</param>
         /// <returns></returns>
         Task LockUserAccountAsync(long userId);
+        /// <summary>
+        /// Process user workspace
+        /// </summary>
+        /// <param name="userId">User ID</param>
+        /// <param name="ipAddress">IP Address</param>
+        /// <returns>Task containing user workspace</returns>
+        Task<WorkspaceResponse> GetWorkspaceAsync(long userId, string ipAddress);
     }
 }

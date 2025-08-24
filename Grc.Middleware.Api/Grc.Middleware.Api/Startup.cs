@@ -32,17 +32,20 @@ namespace Grc.Middleware.Api {
             services.AddScoped<IUrlProvider, UrlProvider>();
             services.AddScoped<IObjectCypher, ObjectCypher>();
 
-            // database connection
+            //..database connection
             services.ConfigureDatabaseConnection(Configuration);
             
-            //register UnitOfWork
+            //..register UnitOfWork
             services.RegisterUnitOfWork();
 
-            //register Repositories
+            //..register Repositories
             services.RegisterRepositories();
 
             //..register services
             services.RegisterServices();
+
+            //..register signalR
+            services.AddSignalR();
 
             //..add authentication cookies
             services.AddAuthentication("Cookies").AddCookie("Cookies", options => {
@@ -102,10 +105,19 @@ namespace Grc.Middleware.Api {
             app.UseForwardedHeaders(new ForwardedHeadersOptions {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
+
+            //..use global exceptions
+            app.UseGlobalExceptionHandling();
  
             app.UseRouting();
+            app.UseCors();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
+
+            //..map SignalR Hubs
+            app.MapHub<SystemBugHub>("/bughub");
+            //app.MapHub<ChatHub>("/chathub");
             app.Run();
 
         }

@@ -9,11 +9,32 @@ namespace Grc.Middleware.Api.Services {
 
     public class CompanyService : BaseService, ICompanyService {
 
-
         public CompanyService(IUnitOfWorkFactory unitOfWorkFactory, 
-                             IServiceLoggerFactory loggerFactory, IMapper mapper)
+                             IServiceLoggerFactory loggerFactory, 
+                             IMapper mapper)
             : base(loggerFactory, unitOfWorkFactory, mapper) {
             Logger.Channel = $"COMPANY-{DateTime.Now:yyyMMddHHmmss}";
+        }
+
+        public async Task<Company> GetDefaultCompanyAsync() {
+
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Get default compay record>>>>", "INFO");
+            try {
+                return(await uow.CompanyRepository.GetAllAsync()).FirstOrDefault();
+            } catch (Exception ex) {
+                Logger.LogActivity($"GetDefaultCompanyAsync failed: {ex.Message}", "ERROR");
+        
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+        
+                //..re-throw to the controller handle
+                throw; 
+            }
         }
 
         public async Task<bool> CreateCompanyAsync(Company company) {

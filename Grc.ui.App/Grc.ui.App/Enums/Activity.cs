@@ -20,6 +20,8 @@ namespace Grc.ui.App.Enums {
         [Description("Retrieve user record by email")]
         RETRIVEUSERBYEMAIL = 7,
         [Description("Retrieve record count for users")]
-        COUNTUSERS = 8
+        COUNTUSERS = 8,
+        [Description("Retrieve user statistics")]
+        STATISTICS = 9
     }
 }

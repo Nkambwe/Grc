@@ -26,6 +26,8 @@ namespace Grc.Middleware.Api.Data.Entities.System {
         public virtual ICollection<LoginAttempt> Attempts { get; set; }
         public virtual ICollection<UserQuickAction> QuickActions { get; set; }
         public virtual ICollection<UserPinnedItem> PinnedItems { get; set; }
+        public virtual ICollection<UserPrefference> Prefferences { get; set; }
+        public virtual ICollection<UserView> Views { get; set; }
         public override bool Equals(object obj) {
 
             if (obj is not SystemUser)

@@ -20,11 +20,14 @@ namespace Grc.Middleware.Api.Data.Containers {
 
         #region Repositories
         public ICompanyRepository CompanyRepository { get; set; }
+        public IBranchRepository BranchRepository { get; set; }
         public IUserRepository UserRepository { get; set; }
+        public IUserViewRepository UserViewRepository{get; set;}
+        public IUserPreferenceRepository UserPreferenceRepository { get; set;}
         public IAttemptRepository AttemptRepository { get; set; }
         public IQuickActionRepository QuickActionRepository  { get; set; }
         public IPinnedItemRepository PinnedItemRepository { get; set; }
-
+        public ISystemErrorRespository SystemErrorRespository {get;set;}
         #endregion
 
         public UnitOfWork(IServiceLoggerFactory loggerFactory,
@@ -42,10 +45,14 @@ namespace Grc.Middleware.Api.Data.Containers {
         
             //..initalize repositories
             CompanyRepository =  new CompanyRepository(_loggerFactory, Context);
+            BranchRepository =  new BranchRepository(_loggerFactory, Context);
             UserRepository =  new UserRepository(_loggerFactory, Context);
+            UserViewRepository = new UserViewRepository(_loggerFactory, Context);
+            UserPreferenceRepository = new UserPreferenceRepository(_loggerFactory, Context);
             AttemptRepository =  new AttemptRepository(_loggerFactory, Context);
             QuickActionRepository = new QuickActionRepository(_loggerFactory, Context); 
             PinnedItemRepository = new PinnedItemRepository(_loggerFactory, Context);
+            SystemErrorRespository = new SystemErrorRespository(_loggerFactory, Context);
         }
 
         /// <summary>
@@ -162,10 +169,14 @@ namespace Grc.Middleware.Api.Data.Containers {
                 
                     //..clear repository references
                     CompanyRepository = null;
+                    BranchRepository = null;
                     UserRepository = null;
                     AttemptRepository = null;
                     QuickActionRepository = null;
                     PinnedItemRepository = null;
+                    SystemErrorRespository = null;
+                    UserPreferenceRepository = null;
+                    UserViewRepository = null;
                 }
             }
             _disposed = true;

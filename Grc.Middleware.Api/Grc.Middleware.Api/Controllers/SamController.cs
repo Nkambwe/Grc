@@ -23,8 +23,11 @@ namespace Grc.Middleware.Api.Controllers {
                             IEnvironmentProvider environment,
                             ISystemAccessService accessService,
                             IQuickActionService quickActionService,
-                            IPinnedItemService pinnedItemService) 
-                            : base(cypher, loggerFactory, mapper, environment) {
+                            IPinnedItemService pinnedItemService,
+                            IErrorNotificationService errorService,
+                            ISystemErrorService systemErrorService) 
+                            : base(cypher, loggerFactory, mapper, environment,
+                                  errorService, systemErrorService) {
             _accessService = accessService;
             _quickActionService = quickActionService;
             _pinnedItemService = pinnedItemService;
@@ -168,6 +171,105 @@ namespace Grc.Middleware.Api.Controllers {
                 return StatusCode(500, "An error occurred while logging out.");
             }
         }
+        
+        #endregion
+
+        #region Dashboard
+
+        [HttpPost("sam/users/statistics")]
+        public async Task<IActionResult> Statistics([FromBody] GeneralRequest request) {
+                try {
+                    Logger.LogActivity($"{request.Action}", "INFO");
+
+                    if (request == null) {
+                        var error = new ResponseError(
+                            ResponseCodes.BADREQUEST,
+                            "Request record cannot be empty",
+                            "Invalid request body"
+                        );
+                        Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<AdminCountResponse>(error));
+                    }
+
+                    Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+
+                    var statistics = await _accessService.GetAdminiDashboardStatisticsAsync();
+                    //..map response
+                    if(statistics == null){ 
+                        statistics = new AdminCountResponse() {
+                            TotalUsers = 0,
+                            ActiveUsers = 0,
+                            DeactivatedUsers= 0,
+                            UnApprovedUsers= 0,
+                            UnverifiedUsers = 0,
+                            DeletedUsers= 0,
+                            TotalBugs = 0,
+                            NewBugs = 0,
+                            BugFixes = 0,
+                            BugProgress = 0,
+                            UserReportedBugs = 0
+                        };
+                    }
+
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(statistics)}");
+                    return Ok(new GrcResponse<AdminCountResponse>(statistics));
+                } catch (Exception ex) {
+                    Logger.LogActivity($"{ex.Message}", "ERROR");
+                    Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Oops! Something went wrong",
+                        $"System Error - {ex.Message}"
+                    );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<AdminCountResponse>(error));
+                }
+            }
+        
+        [HttpPost("sam/users/getworkspace")]
+        public async Task<IActionResult> Workspace([FromBody] UserRequest request) {
+                try {
+                    Logger.LogActivity($"{request.Action}", "INFO");
+
+                    if (request == null) {
+                        var error = new ResponseError(
+                            ResponseCodes.BADREQUEST,
+                            "Request record cannot be empty",
+                            "Invalid request body"
+                        );
+                        Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<WorkspaceResponse>(error));
+                    }
+
+                    Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                    var workspace = await _accessService.GetWorkspaceAsync(request.RecordId, request.IPAddress);
+                    workspace ??= new WorkspaceResponse() {
+                        CurrentUser = null,
+                        Permissions = new List<string>(),
+                        UserViews = new List<UserViewResponse>()
+                    };
+
+                    if(workspace.CurrentUser != null){ 
+                        string[] decrypt = new string[] { "PersonnelFileNumber", "Email", "FirstName", "LastName" };
+                        workspace.CurrentUser = Cypher.DecryptProperties(workspace.CurrentUser, decrypt);
+                    }
+
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(workspace)}");
+                    return Ok(new GrcResponse<WorkspaceResponse>(workspace));
+                } catch (Exception ex) {
+                    Logger.LogActivity($"{ex.Message}", "ERROR");
+                    Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Oops! Something went wrong",
+                        $"System Error - {ex.Message}"
+                    );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<WorkspaceResponse>(error));
+                }
+            }
 
         #endregion
 

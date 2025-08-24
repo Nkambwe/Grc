@@ -1,4 +1,6 @@
-﻿namespace Grc.Middleware.Api.Data.Entities.Org {
+﻿using Grc.Middleware.Api.Data.Entities.System;
+
+namespace Grc.Middleware.Api.Data.Entities.Org {
 
     public class Company : BaseEntity {
         public string CompanyName { get; set; }
@@ -8,6 +10,7 @@
         public override string ToString() => $"{CompanyName}";
 
         public virtual ICollection<Branch> Branches { get; set; }
+        public virtual ICollection<SystemError> SystemErrors { get; set; }
 
         public override bool Equals(object obj) {
 

@@ -32,8 +32,12 @@ namespace Grc.ui.App.Controllers {
                                      IAuthenticationService authService,
                                      ISystemAccessService accessService,
                                      ILoginFactory loginFactory,
-                                     IDashboardFactory dashboardFactory) :
-            base(loggerFactory, environment, webHelper, localizationService) {
+                                     IDashboardFactory dashboardFactory,
+                                     IErrorService errorService,
+                                     IGrcErrorFactory grcErrorFactory,
+                                     SessionManager sessionManager) :
+            base(loggerFactory, environment, webHelper, localizationService, 
+                errorService, grcErrorFactory, sessionManager) {
             _registrationFactory = registrationFactory;
             Logger.Channel = $"APPLICATION-{DateTime.Now:yyyyMMddHHmmss}";
             _installService = installService;
@@ -65,6 +69,9 @@ namespace Grc.ui.App.Controllers {
                 return View(await _dashboardFactory.PrepareUserDashboardModelAsync(grcResponse.Data));
             } catch(Exception ex){ 
                 Logger.LogActivity($"Error Loading user dashboard: {ex.Message}", "ERROR");
+
+                //..capture error to bug tracker
+                 _= await ProcessErrorAsync(ex.Message, "APPLICATIONCONTROLLER-DASHBORAD", ex.StackTrace);
                 return RedirectToAction("Login");
             }
         }
@@ -117,7 +124,9 @@ namespace Grc.ui.App.Controllers {
                     LocalizationService.GetLocalizedLabel("Error.Occurance"),
                     "Could not complete login due to system error"
                 );
-        
+
+                //..capture error to bug tracker
+                 _= await ProcessErrorAsync(ex.Message, "APPLICATIONCONTROLLER-LOGIN", ex.StackTrace);
                 Logger.LogActivity($"LOGIN ERROR: {JsonSerializer.Serialize(error)}");
                 return HandleLoginError(new GrcResponse<UserModel>(error), model);
             }
@@ -157,6 +166,9 @@ namespace Grc.ui.App.Controllers {
                 model.IsUsernameValidated = false;
                 model.DisplayName = ex.Message;
                 model.CurrentStage = LoginStage.Username;
+
+                //..capture error to bug tracker
+                 _= await ProcessErrorAsync(ex.Message, "APPLICATIONCONTROLLER-VALIDATEUSERNAME", ex.StackTrace);
                 return HandleUsernameValidationError(LocalizationService.GetLocalizedLabel("Error.Service.Unavailable"), model);
             }
         }
@@ -191,6 +203,9 @@ namespace Grc.ui.App.Controllers {
             } catch (Exception ex) {
                 Logger.LogActivity($"Error during logout :: {ex.Message}" );
                 Logger.LogActivity($"{ex.StackTrace}" );
+
+                //..capture error to bug tracker
+                 _= await ProcessErrorAsync(ex.Message, "APPLICATIONCONTROLLER-LOGOUT", ex.StackTrace);
                 return RedirectToAction("Login");
             }
         }
@@ -226,6 +241,8 @@ namespace Grc.ui.App.Controllers {
                 return HandleServiceFailure(serviceResponse, model);
         
             } catch (Exception ex) {
+                //..capture error to bug tracker
+                 _= await ProcessErrorAsync(ex.Message, "APPLICATIONCONTROLLER-REGISTER-COMPANY", ex.StackTrace);
                 return HandleException(ex, model);
             }
         }

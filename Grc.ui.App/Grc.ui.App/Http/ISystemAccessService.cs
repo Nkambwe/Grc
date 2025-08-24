@@ -1,5 +1,4 @@
-﻿using Grc.ui.App.Http.Requests;
-using Grc.ui.App.Http.Responses;
+﻿using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 
@@ -55,6 +54,14 @@ namespace Grc.ui.App.Http {
         /// <param name="requestingUserId">User ID of the requesting user</param>
         /// <returns>Task containing number of users in the system</returns>
         Task<RecordCountResponse> CountAllUsersAsync(long requestingUserId, string ipAddress);
+
+        /// <summary>
+        /// Get all user statistics
+        /// </summary>
+        /// <param name="ipAddress">Current login IP Address of the requesting user</param>
+        /// <param name="requestingUserId">User ID of the requesting user</param>
+        /// <returns>Task containing user dashboard statistics/returns>
+        Task<AdminCountResponse> StatisticAsync(long requestingUserId, string ipAddress);
 
         /// <summary>
         /// Get count of active users in the system

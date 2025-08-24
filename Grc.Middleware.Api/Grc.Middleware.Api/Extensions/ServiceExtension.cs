@@ -21,10 +21,14 @@ namespace Grc.Middleware.Api.Extensions {
         public static void RegisterRepositories(this IServiceCollection services) {
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<ICompanyRepository, CompanyRepository>();
+            services.AddScoped<IBranchRepository, BranchRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserViewRepository, UserViewRepository>();
+            services.AddScoped<IUserPreferenceRepository, UserPreferenceRepository>();
             services.AddScoped<IAttemptRepository, AttemptRepository>();
             services.AddScoped<IQuickActionRepository, QuickActionRepository>();
             services.AddScoped<IPinnedItemRepository, PinnedItemRepository>();
+            services.AddScoped<ISystemErrorRespository, SystemErrorRespository>();
         }
 
         /// <summary>
@@ -43,6 +47,8 @@ namespace Grc.Middleware.Api.Extensions {
         public static void RegisterServices(this IServiceCollection services) {
 
             //..register service
+            services.AddScoped<IErrorNotificationService, ErrorNotificationService>();
+            services.AddScoped<ISystemErrorService, SystemErrorService>();
             services.AddScoped<IBaseService, BaseService>();
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<ISystemAccessService, SystemAccessService>();

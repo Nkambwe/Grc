@@ -15,8 +15,12 @@ namespace Grc.ui.App.Controllers {
                                IApplicationLoggerFactory loggerFactory, 
                                IEnvironmentProvider environment,
                                IErrorFactory errorFactory,
-                               ILocalizationService localizationService) 
-            : base(loggerFactory, environment, webHelper, localizationService) {
+                               ILocalizationService localizationService,
+                               IErrorService errorService, 
+                               IGrcErrorFactory grcErrorFactory,
+                                 SessionManager sessionManager) 
+            : base(loggerFactory, environment, webHelper, localizationService, 
+                  errorService, grcErrorFactory, sessionManager) {
             _errorFactory = errorFactory;
             _localizationService = localizationService;
         }

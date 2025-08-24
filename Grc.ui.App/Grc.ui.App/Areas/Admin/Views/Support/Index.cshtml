@@ -53,7 +53,7 @@
                 <span>DISABLED USERS</span>
             </div>
             <div class="stat-number" id="disabledUsers">
-                <span>0</span>
+                <span>@Model.DeactivatedUsers</span>
             </div>
             <span class="stat-separator stat-separator-danger"></span>
             <a class="stat-link" asp-controller="Support" asp-action="DisabledUsers" asp-area="Admin">
@@ -67,7 +67,7 @@
                 <span>PENSING APPROVALS</span>
             </div>
             <div class="stat-number" id="unapprovedUsers">
-                <span>0</span>
+                <span>@Model.UnApprovedUsers</span>
             </div>
             <span class="stat-separator stat-separator-warning"></span>
             <a class="stat-link" asp-controller="Support" asp-action="UnapprovedUsers" asp-area="Admin">
@@ -81,7 +81,7 @@
                 <span>PENSING VERIFICATION</span>
             </div>
             <div class="stat-number" id="unverifiedUsers">
-                <span>0</span>
+                <span>@Model.UnverifiedUsers</span>
             </div>
             <span class="stat-separator stat-separator-warning"></span>
             <a class="stat-link" asp-controller="Support" asp-action="UnapprovedUsers" asp-area="Admin">
@@ -95,7 +95,7 @@
                 <span>DELETED ACCOUNTS</span>
             </div>
             <div class="stat-number" id="deletedUsers">
-                <span>0</span>
+                <span>@Model.DeletedUsers</span>
             </div>
             <span class="stat-separator stat-separator-danger"></span>
             <a class="stat-link" asp-controller="Support" asp-action="UnapprovedUsers" asp-area="Admin">
@@ -121,7 +121,7 @@
                 <span>TOTAL BUGS</span>
             </div>
             <div class="stat-number" id="totalBugs">
-                <span>5</span>
+                <span>@Model.TotalBugs</span>
             </div>
             <span class="stat-separator stat-separator-colored"></span>
             <a class="stat-link-color" asp-controller="Support" asp-action="Bugs" asp-area="Admin">
@@ -135,7 +135,7 @@
                 <span>NEW BUGS</span>
             </div>
             <div class="stat-number" id="newBugs">
-                <span>1</span>
+                <span>@Model.NewBugs</span>
             </div>
             <span class="stat-separator stat-separator-danger"></span>
             <a class="stat-link-color" asp-controller="Support" asp-action="NewBugs" asp-area="Admin">
@@ -146,12 +146,26 @@
 
         <div class="stat-card stat-card-colored">
             <div class="stat-title">
-                <span>UNDER FIXING</span>
+                <span>IN PROGRESS</span>
             </div>
             <div class="stat-number" id="bugFixing">
-                <span>4</span>
+                <span>@Model.BugProgress</span>
             </div>
             <span class="stat-separator stat-separator-warning"></span>
+            <a class="stat-link-color" asp-controller="Support" asp-action="BugProgress" asp-area="Admin">
+                <span><i class="mdi mdi-chevron-right"></i></span>
+                <span>See more..</span>
+            </a>
+        </div>
+
+        <div class="stat-card stat-card-colored">
+            <div class="stat-title">
+                <span>RESOLVED</span>
+            </div>
+            <div class="stat-number" id="bugFixing">
+                <span>@Model.BugFixes</span>
+            </div>
+            <span class="stat-separator stat-separator-colored-primary"></span>
             <a class="stat-link-color" asp-controller="Support" asp-action="BugFixes" asp-area="Admin">
                 <span><i class="mdi mdi-chevron-right"></i></span>
                 <span>See more..</span>
@@ -163,7 +177,7 @@
                 <span>USER REPORTED</span>
             </div>
             <div class="stat-number" id="userReportedBugs">
-                <span>0</span>
+                <span>@Model.UserReportedBugs</span>
             </div>
             <span class="stat-separator stat-separator-warning"></span>
             <a class="stat-link-color" asp-controller="Support" asp-action="UserReportedBugs" asp-area="Admin">
@@ -216,5 +230,9 @@
         </table>
     </div>
 </div>
+
+<script>
+    const backendApiUrl = '@Model.MiddlwareUrl';
+</script>
 
 

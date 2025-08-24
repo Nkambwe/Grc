@@ -172,6 +172,50 @@ namespace Grc.Middleware.Api.Services {
                 throw; 
             }
         }
+        
+        public async Task<AdminCountResponse> GetAdminiDashboardStatisticsAsync() {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Admin Dashboard Statistics", "INFO");
+    
+            try {
+                // Get all user counts sequentially
+                var totalUsers = await uow.UserRepository.CountAsync();
+                var activeUsers = await uow.UserRepository.CountAsync(u => u.IsActive);
+                var deactivatedUsers = await uow.UserRepository.CountAsync(u => !u.IsActive);
+                var unApprovedUsers = await uow.UserRepository.CountAsync(u => !(bool)u.IsApproved); 
+                var unverifiedUsers = await uow.UserRepository.CountAsync(u => !(bool)u.IsVerified); 
+                var deletedUsers = await uow.UserRepository.CountAsync(u => u.IsDeleted); 
+        
+                // Get all bug counts sequentially
+                var totalBugs = await uow.SystemErrorRespository.CountAsync();
+                var newBugs = await uow.SystemErrorRespository.CountAsync(b => b.FixStatus == "OPEN"); 
+                var bugFixes = await uow.SystemErrorRespository.CountAsync(b => b.FixStatus == "CLOSED"); 
+                var bugProgressTask = await uow.SystemErrorRespository.CountAsync(b => b.FixStatus == "PROGRESS");
+                var userReportedBugsTask = await uow.SystemErrorRespository.CountAsync(b => b.IsUserReported); 
+        
+                return new AdminCountResponse {
+                    TotalUsers = totalUsers,
+                    ActiveUsers = activeUsers,
+                    DeactivatedUsers = deactivatedUsers,
+                    UnApprovedUsers = unApprovedUsers,
+                    UnverifiedUsers = unverifiedUsers,
+                    DeletedUsers = deletedUsers,
+                    TotalBugs = totalBugs,
+                    NewBugs = newBugs,
+                    BugFixes = bugFixes,
+                    BugProgress = bugProgressTask,
+                    UserReportedBugs = userReportedBugsTask
+                };
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve admin dashboard statistics: {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                throw;
+            }
+        }
 
         public async Task<UsernameValidationResponse> ValidateUsernameAsync(string username) {
             using var uow = UowFactory.Create();
@@ -460,5 +504,76 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
+        public async Task<WorkspaceResponse> GetWorkspaceAsync(long userId, string ipAddress) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Generating user workspace for user ID {userId} at IP Address {ipAddress}", "INFO");
+            
+            WorkspaceResponse workspace = null;
+            try {
+                // Get all user counts sequentially
+                var user = await uow.UserRepository.GetAsync(u => u.Id == userId, false, u => u.Role);
+                if (user != null) {
+
+                    //..generate workspace info
+                    workspace = new WorkspaceResponse {
+                        CurrentUser = new() {
+                            UserId = user.Id,
+                            PersonnelFileNumber = user.PFNumber,
+                            Username = user.Username,
+                            Email = user.EmailAddress,
+                            FirstName = user.FirstName,
+                            LastName = user.LastName
+                        },
+
+                        RoleId = user.RoleId,
+                        Role = user.Role?.RoleName?? string.Empty,
+                    };
+
+                    //..get brnch info
+                    string solId = user.BranchSolId?.ToString();
+                    if(!string.IsNullOrWhiteSpace(solId)) { 
+                        var branch = await uow.BranchRepository.GetAsync(b => b.SolId == solId, true, b => b.Company);
+                        if (branch != null) { 
+                            workspace.AssignedBranch = new() {
+                                BranchId = branch.Id,
+                                SolId = branch.SolId,
+                                BranchName = branch.BranchName, 
+                                OrganizationId = branch.Company?.Id ?? 0,
+                                OrganizationName = branch.Company?.CompanyName ?? string.Empty,
+                                OrgAlias = branch.Company?.ShortName ?? string.Empty
+                            };
+                        }
+                    }
+
+                    //..get prefferences
+                    var preference = await uow.UserPreferenceRepository.GetAsync(u => u.UserId == user.Id);
+                    if (preference != null) { 
+                        workspace.Preferences = new() { 
+                            Id = preference.Id,
+                            Theme = preference.Theme,
+                            Language = preference.Language
+                        };
+                    }
+
+                    var views = await uow.UserViewRepository.GetAllAsync(u => u.UserId == user.Id, false);
+                    if (views.Count > 0) { 
+                        workspace.UserViews = (from view in views select new UserViewResponse() {
+                            Id = view.Id,
+                            Name = view.Name,
+                            View = view,
+                        }).ToList();
+                    }
+                }
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to process user workspace: {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }  
+            }
+
+            return workspace;
+        }
     }
 }

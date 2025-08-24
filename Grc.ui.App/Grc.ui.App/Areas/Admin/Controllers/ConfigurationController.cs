@@ -1,4 +1,5 @@
-﻿using Grc.ui.App.Http;
+﻿using Grc.ui.App.Factories;
+using Grc.ui.App.Http;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
@@ -16,8 +17,12 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                                  IWebHelper webHelper,
                                  ILocalizationService localizationService,
                                  ISystemAccessService accessService,
-                                 IAuthenticationService authService) 
-            : base(loggerFactory, environment, webHelper, localizationService) {
+                                 IAuthenticationService authService,
+                                 IErrorService errorService,
+                                 IGrcErrorFactory errorFactory,
+                                 SessionManager sessionManager) 
+            : base(loggerFactory, environment, webHelper, localizationService, 
+                  errorService, errorFactory, sessionManager) {
            _accessService = accessService;
             _authService = authService;
         }

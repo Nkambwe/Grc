@@ -11,6 +11,7 @@ wwwroot\images\logo.png
 wwwroot\images\logo-white.png
 wwwroot\images\no_service.png
 wwwroot\js\admin-script.js
+wwwroot\js\bug-signalr-script.js
 wwwroot\js\grc-app.js
 wwwroot\js\grc-sidebar.js
 wwwroot\js\login-script.js
@@ -125,6 +126,8 @@ wwwroot\lib\select-2\js\select2.full.js
 wwwroot\lib\select-2\js\select2.full.min.js
 wwwroot\lib\select-2\js\select2.js
 wwwroot\lib\select-2\js\select2.min.js
+wwwroot\lib\signalr\signalr.js
+wwwroot\lib\signalr\signalr.min.js
 wwwroot\lib\sweet-alert\sweetalert2.all.js
 wwwroot\lib\sweet-alert\sweetalert2.all.min.js
 wwwroot\lib\sweet-alert\sweetalert2.css

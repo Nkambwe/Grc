@@ -377,7 +377,11 @@
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/select-2/js/select2.full.min.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/bootstrap/dist/js/bootstrap.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-script.js");
+
     }
+    <script src="~/lib/signalr/signalr.js"></script>
+    <script src="~/lib/signalr/signalr.min.js"></script>
+    <script src="~/js/bug-signalr-script.js"></script>
 
     @Html.GenerateScripts(ResourceLocation.Footer)
     @await RenderSectionAsync("Scripts", required: false)

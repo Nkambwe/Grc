@@ -676,6 +676,10 @@ body {
     background-color: var(--amber-dark-slightly);
 }
 
+.stat-separator-colored-primary {
+    background-color: var(--green-dark-light-accent);
+}
+
 .stat-separator-colored {
     background: var(--teal-light);
 }

@@ -2,6 +2,7 @@
 using Grc.ui.App.Extensions.Http;
 using System.Security.Claims;
 using Grc.ui.App.Services;
+using Grc.ui.App.Infrastructure;
 
 namespace Grc.ui.App.Middleware {
 
@@ -18,7 +19,7 @@ namespace Grc.ui.App.Middleware {
             _sessionTimeout = sessionTimeout;
         }
 
-        public async Task InvokeAsync(HttpContext context, SessionManager sessionManager) {
+        public async Task InvokeAsync(HttpContext context, SessionManager sessionManager, IWebHelper webHelper) {
 
             //..skip session checks for static files and API endpoints that don't need session
             if (context.Request.Path.StartsWithSegments("/api") || context.Request.Path.StartsWithSegments("/static")) {
@@ -36,12 +37,15 @@ namespace Grc.ui.App.Middleware {
                 if (workspace == null) {
                     var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                    if (!string.IsNullOrEmpty(userId)) {
-                        //..rebuild workspace
+                     if (!string.IsNullOrEmpty(userId) && long.TryParse(userId, out long userIdLong)) {
+                        //..get user IP address
+                        var ipAddress = webHelper.GetCurrentIpAddress();
+
+                        //..build workspace
                         var workspaceService = context.RequestServices.GetRequiredService<IWorkspaceService>();
-                        workspace = await workspaceService.BuildWorkspaceAsync(userId);
+                        workspace = await workspaceService.BuildWorkspaceAsync(userIdLong, ipAddress);
                         sessionManager.SetWorkspace(workspace);
-                    }
+                     }
                 } else {
                     //.. we need to check for session timeout
                     var lastActivity = sessionManager.GetLastActivity();

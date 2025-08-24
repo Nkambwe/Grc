@@ -5,5 +5,6 @@
         public SystemAccessEndpoints Sam { get; set; } = new();
         public HealthEndpoint Health { get; set; } = new();
         public RegistrationEndpoints Registration { get; set; } = new();
+        public ErrorEndpoints Errors { get; set; } = new();
     }
 }

@@ -8,7 +8,7 @@ namespace Grc.ui.App.Services {
          /// <summary>
         /// Builds a workspace for the specified user.
         /// </summary>
-        Task<WorkspaceModel> BuildWorkspaceAsync(string userId);
+        Task<WorkspaceModel> BuildWorkspaceAsync(long userId, string ipAddress);
     
         /// <summary>
         /// Saves changes to the workspace.
