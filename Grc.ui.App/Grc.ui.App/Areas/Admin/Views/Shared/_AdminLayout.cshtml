@@ -18,17 +18,21 @@
         Html.AddCssFileParts("~/lib/toastr/toastr.css");
         Html.AddCssFileParts("~/css/color-pallete.css");
         Html.AddCssFileParts("~/lib/sweet-alert/sweetalert2.css");
+        Html.AddCssFileParts("~/lib/datatables/datatables.css");
+        Html.AddCssFileParts("~/lib/datatables/datatables.min.css");
+        Html.AddCssFileParts("~/css/admin-tables-styles.css", excludeFromBundle: false);
         Html.AddCssFileParts("~/css/admin-style.css", excludeFromBundle: false);
     }
 
     <script src="~/lib/toastr/toastr.min.js"></script>
     <script src="~/lib/sweet-alert/sweetalert2.all.min.js"></script>
+    <script src=""></script>
     @Html.GenerateCssFiles()
     @Html.GenerateHeadCustom()
 </head>
 <body class="@Html.GeneratePageCssClasses()">
 
-    <div class="layout-wrapper">
+    <div id="layoutWrapper" class="layout-wrapper">
 
         <header class="header-bar">
 
@@ -377,11 +381,10 @@
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/select-2/js/select2.full.min.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/bootstrap/dist/js/bootstrap.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-script.js");
-
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/datatables/datatables.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/datatables/datatables.min.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-tables.js");
     }
-    <script src="~/lib/signalr/signalr.js"></script>
-    <script src="~/lib/signalr/signalr.min.js"></script>
-    <script src="~/js/bug-signalr-script.js"></script>
 
     @Html.GenerateScripts(ResourceLocation.Footer)
     @await RenderSectionAsync("Scripts", required: false)

@@ -355,6 +355,21 @@ $(document).ready(function() {
             });
         });
     }
+
+    let isExpanded = false;
+
+    $('#expandBtn').click(function() {
+        isExpanded = !isExpanded;         
+        if (isExpanded) {
+            // Expand the main content
+            $('#layoutWrapper').addClass('expanded');
+            $('#toggleIcon').removeClass('mdi-arrow-expand').addClass('mdi-arrow-collapse');
+        } else {
+            // Collapse back to normal
+            $('#layoutWrapper').removeClass('expanded');
+            $('#toggleIcon').removeClass('mdi-arrow-collapse').addClass('mdi-arrow-expand');
+        }
+    });
     
     // Initialize everything
     initializeActiveStates();

@@ -80,7 +80,7 @@ namespace Grc.Middleware.Api.Extensions {
         public static void ConfigureCors(this IServiceCollection services) {
             services.AddCors(options => {
                 options.AddPolicy("AllowSpecificOrigin", builder => {
-                    builder.WithOrigins("10.30.039")
+                    builder.WithOrigins("10.129.2.39")
                            .AllowAnyHeader()
                            .AllowAnyMethod();
                 });

@@ -99,6 +99,77 @@ body {
     margin-left: 0;
 }
 
+.welcome-container {
+    display:flex;
+    flex-direction:row;
+    gap:1px;
+    width:100%;
+}
+
+.welcome-container-message {
+    flex-grow: 1;
+    font-size: 1.5em;
+    color: var(--grey-light-strong);
+}
+
+.welcome-container-message span{
+    font-size: 1.5em!important;
+}
+
+.welcome-container-expand {
+    margin: 0;
+    padding: 0;
+    z-index: 100;
+}
+
+.icon-btn {
+    border: none;
+    width: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--grey-light-strong);
+    background: var(--black-trans);
+}
+
+    .icon-btn span {
+        display: block;
+        width: 100%;
+        font-size:1em;
+        color: var(--grey-light-strong);
+    }
+
+    .icon-btn:hover {
+        color: var(--teal-dark-slightly);
+    }
+
+/* Expanded state */
+.layout-wrapper.expanded .header-bar {
+    display: none;
+}
+
+.layout-wrapper.expanded .sidebar-container {
+    display: none;
+}
+
+.layout-wrapper.expanded .content-wrapper {
+    flex-direction: column;
+}
+
+.layout-wrapper.expanded .main-content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+}
+
+.layout-wrapper.expanded .icon-btn span {
+    transform: rotate(180deg);
+}
+
 .title {
     font-size: 1.25rem;
     font-weight: 600;
@@ -467,9 +538,10 @@ body {
 .main-content {
     flex: 1;
     padding: 1.5rem;
+    position: relative;
     background-color: var(--background-color);
     overflow-y: auto;
-    transition: margin-left 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 /* Button styles */
@@ -791,5 +863,27 @@ body {
     .main-content {
         width: 100%;
         margin-left: 0;
+    }
+
+    .connection-status {
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-size: 0.9em;
+        margin-bottom: 10px;
+    }
+
+    .status-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .status-warning {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .status-error {
+        background-color: #f8d7da;
+        color: #721c24;
     }
 }

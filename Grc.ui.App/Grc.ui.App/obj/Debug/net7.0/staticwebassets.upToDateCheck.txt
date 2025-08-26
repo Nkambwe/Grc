@@ -1,4 +1,5 @@
 wwwroot\css\admin-style.css
+wwwroot\css\admin-tables-styles.css
 wwwroot\css\app.css
 wwwroot\css\color-pallete.css
 wwwroot\css\grc-style.css
@@ -11,6 +12,7 @@ wwwroot\images\logo.png
 wwwroot\images\logo-white.png
 wwwroot\images\no_service.png
 wwwroot\js\admin-script.js
+wwwroot\js\admin-tables.js
 wwwroot\js\bug-signalr-script.js
 wwwroot\js\grc-app.js
 wwwroot\js\grc-sidebar.js
@@ -71,6 +73,10 @@ wwwroot\lib\chartjs\Chart.css
 wwwroot\lib\chartjs\Chart.js
 wwwroot\lib\chartjs\Chart.min.css
 wwwroot\lib\chartjs\Chart.min.js
+wwwroot\lib\datatables\datatables.css
+wwwroot\lib\datatables\datatables.js
+wwwroot\lib\datatables\datatables.min.css
+wwwroot\lib\datatables\datatables.min.js
 wwwroot\lib\icons\coreui-icons\css\all.css
 wwwroot\lib\icons\coreui-icons\css\all.min.css
 wwwroot\lib\icons\coreui-icons\css\all.min.css.map
