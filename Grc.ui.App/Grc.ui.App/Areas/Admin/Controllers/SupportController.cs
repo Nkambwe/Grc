@@ -110,73 +110,81 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         public async Task<IActionResult> Roles() {
-            var ex = HttpContext.Features.Get<IExceptionHandlerFeature>();
-            string error_msg = ex.Error.Message;
-            string error_source = $"SUPPORT CONTROLLER - {ex.Error.Source}";
-            string error_stacktrace = $"{ex.Error.StackTrace}";
+            string error_msg = "Active users exception occurred";
+            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
+            string error_stacktrace = $"Error details";
             _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
             return View();
         }
 
         public async Task<IActionResult> PermissionSets() {
-            var ex = HttpContext.Features.Get<IExceptionHandlerFeature>();
-            string error_msg = ex.Error.Message;
-            string error_source = $"SUPPORT CONTROLLER - {ex.Error.Source}";
-            string error_stacktrace = $"{ex.Error.StackTrace}";
+            string error_msg = "Active users exception occurred";
+            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
+            string error_stacktrace = $"Error details";
             _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
             return View();
         }
         
         public async Task<IActionResult> AssignPermissions() {
-            var ex = HttpContext.Features.Get<IExceptionHandlerFeature>();
-            string error_msg = ex.Error.Message;
-            string error_source = $"SUPPORT CONTROLLER - {ex.Error.Source}";
-            string error_stacktrace = $"{ex.Error.StackTrace}";
+            string error_msg = "Active users exception occurred";
+            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
+            string error_stacktrace = $"Error details";
             _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
             return View();
         }
 
         public async Task<IActionResult> PermissionDelegation() {
-            var ex = HttpContext.Features.Get<IExceptionHandlerFeature>();
-            string error_msg = ex.Error.Message;
-            string error_source = $"SUPPORT CONTROLLER - {ex.Error.Source}";
-            string error_stacktrace = $"{ex.Error.StackTrace}";
+            string error_msg = "Active users exception occurred";
+            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
+            string error_stacktrace = $"Error details";
             _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
             return View();
         }
         
         public async Task<IActionResult> Bugs() {
-            var ex = HttpContext.Features.Get<IExceptionHandlerFeature>();
-            string error_msg = ex.Error.Message;
-            string error_source = $"SUPPORT CONTROLLER - {ex.Error.Source}";
-            string error_stacktrace = $"{ex.Error.StackTrace}";
+            string error_msg = "Active users exception occurred";
+            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
+            string error_stacktrace = $"Error details";
             _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
             return View();
         }
         
         public async Task<IActionResult> NewBugs() {
-            var ex = HttpContext.Features.Get<IExceptionHandlerFeature>();
-            string error_msg = ex.Error.Message;
-            string error_source = $"SUPPORT CONTROLLER - {ex.Error.Source}";
-            string error_stacktrace = $"{ex.Error.StackTrace}";
+            string error_msg = "Active users exception occurred";
+            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
+            string error_stacktrace = $"Error details";
             _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
             return View();
         }
 
         public async Task<IActionResult> BugFixes() {
-            var ex = HttpContext.Features.Get<IExceptionHandlerFeature>();
-            string error_msg = ex.Error.Message;
-            string error_source = $"SUPPORT CONTROLLER - {ex.Error.Source}";
-            string error_stacktrace = $"{ex.Error.StackTrace}";
+            string error_msg = "Active users exception occurred";
+            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
+            string error_stacktrace = $"Error details";
             _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
             return View();
         }
         
         public async Task<IActionResult> UserReportedBugs() {
-            var ex = HttpContext.Features.Get<IExceptionHandlerFeature>();
-            string error_msg = ex.Error.Message;
-            string error_source = $"SUPPORT CONTROLLER - {ex.Error.Source}";
-            string error_stacktrace = $"{ex.Error.StackTrace}";
+            string error_msg = "Active users exception occurred";
+            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
+            string error_stacktrace = $"Error details";
+            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
+            return View();
+        }
+
+        public async Task<IActionResult> ActivityRecord() {
+            string error_msg = "Active users exception occurred";
+            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
+            string error_stacktrace = $"Error details";
+            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
+            return View();
+        }
+
+        public async Task<IActionResult> SendEmail() {
+            string error_msg = "Active users exception occurred";
+            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
+            string error_stacktrace = $"Error details";
             _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
             return View();
         }

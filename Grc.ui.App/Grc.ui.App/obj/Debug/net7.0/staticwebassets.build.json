@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "mjsVxovZp0oEsawCjXmW2VmiLmC0fa6Z55aCW7Tq/JA=",
+  "Hash": "dFlyOLK9A28VnWALmP0CXnnXTmoNtBelKPI2yKcLIHs=",
   "Source": "Grc.ui.App",
   "BasePath": "_content/Grc.ui.App",
   "Mode": "Default",
@@ -94,8 +94,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "7tlaclsmox",
-      "Integrity": "68wVAhkNmk9++X1g+whP9H4H33ihdZvja6jOZr50Dsc=",
+      "Fingerprint": "36t8qnwamz",
+      "Integrity": "q9tXTNYdm9gAaYKrpDrLCeu/Tqrkxe5HNmCJZelWP2A=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\admin-tables-styles.css"
@@ -367,8 +367,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "w3893w9r5x",
-      "Integrity": "tLsmkaNefeSrdST2B+RIwg78Pw+cBIcTdlA3eHundlY=",
+      "Fingerprint": "mk2obhavby",
+      "Integrity": "+q1cRR1JJqOySCzkYyxP+IcFUSOswTeq2Xyc59Yvtyk=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\admin-tables.js"
@@ -3146,7 +3146,7 @@
       ]
     },
     {
-      "Route": "css/admin-tables-styles.7tlaclsmox.css",
+      "Route": "css/admin-tables-styles.36t8qnwamz.css",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-tables-styles.css",
       "Selectors": [],
       "ResponseHeaders": [
@@ -3156,7 +3156,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1315"
+          "Value": "2516"
         },
         {
           "Name": "Content-Type",
@@ -3164,11 +3164,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"68wVAhkNmk9++X1g+whP9H4H33ihdZvja6jOZr50Dsc=\""
+          "Value": "\"q9tXTNYdm9gAaYKrpDrLCeu/Tqrkxe5HNmCJZelWP2A=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 26 Aug 2025 03:39:29 GMT"
+          "Value": "Wed, 27 Aug 2025 02:38:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3178,7 +3178,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "7tlaclsmox"
+          "Value": "36t8qnwamz"
         },
         {
           "Name": "label",
@@ -3186,7 +3186,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-68wVAhkNmk9++X1g+whP9H4H33ihdZvja6jOZr50Dsc="
+          "Value": "sha256-q9tXTNYdm9gAaYKrpDrLCeu/Tqrkxe5HNmCJZelWP2A="
         }
       ]
     },
@@ -3201,7 +3201,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1315"
+          "Value": "2516"
         },
         {
           "Name": "Content-Type",
@@ -3209,11 +3209,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"68wVAhkNmk9++X1g+whP9H4H33ihdZvja6jOZr50Dsc=\""
+          "Value": "\"q9tXTNYdm9gAaYKrpDrLCeu/Tqrkxe5HNmCJZelWP2A=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 26 Aug 2025 03:39:29 GMT"
+          "Value": "Wed, 27 Aug 2025 02:38:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3223,7 +3223,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-68wVAhkNmk9++X1g+whP9H4H33ihdZvja6jOZr50Dsc="
+          "Value": "sha256-q9tXTNYdm9gAaYKrpDrLCeu/Tqrkxe5HNmCJZelWP2A="
         }
       ]
     },
@@ -3742,7 +3742,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 26 Aug 2025 03:29:04 GMT"
+          "Value": "Wed, 27 Aug 2025 02:22:26 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3779,7 +3779,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 26 Aug 2025 03:29:04 GMT"
+          "Value": "Wed, 27 Aug 2025 02:22:26 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3824,7 +3824,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 26 Aug 2025 03:29:04 GMT"
+          "Value": "Wed, 27 Aug 2025 02:22:26 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3869,7 +3869,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 26 Aug 2025 03:29:04 GMT"
+          "Value": "Wed, 27 Aug 2025 02:22:26 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -4386,7 +4386,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "669"
+          "Value": "2373"
         },
         {
           "Name": "Content-Type",
@@ -4394,11 +4394,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"tLsmkaNefeSrdST2B+RIwg78Pw+cBIcTdlA3eHundlY=\""
+          "Value": "\"+q1cRR1JJqOySCzkYyxP+IcFUSOswTeq2Xyc59Yvtyk=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 26 Aug 2025 03:36:50 GMT"
+          "Value": "Wed, 27 Aug 2025 02:55:50 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -4408,12 +4408,12 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-tLsmkaNefeSrdST2B+RIwg78Pw+cBIcTdlA3eHundlY="
+          "Value": "sha256-+q1cRR1JJqOySCzkYyxP+IcFUSOswTeq2Xyc59Yvtyk="
         }
       ]
     },
     {
-      "Route": "js/admin-tables.w3893w9r5x.js",
+      "Route": "js/admin-tables.mk2obhavby.js",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-tables.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -4423,7 +4423,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "669"
+          "Value": "2373"
         },
         {
           "Name": "Content-Type",
@@ -4431,11 +4431,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"tLsmkaNefeSrdST2B+RIwg78Pw+cBIcTdlA3eHundlY=\""
+          "Value": "\"+q1cRR1JJqOySCzkYyxP+IcFUSOswTeq2Xyc59Yvtyk=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 26 Aug 2025 03:36:50 GMT"
+          "Value": "Wed, 27 Aug 2025 02:55:50 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -4445,7 +4445,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "w3893w9r5x"
+          "Value": "mk2obhavby"
         },
         {
           "Name": "label",
@@ -4453,7 +4453,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-tLsmkaNefeSrdST2B+RIwg78Pw+cBIcTdlA3eHundlY="
+          "Value": "sha256-+q1cRR1JJqOySCzkYyxP+IcFUSOswTeq2Xyc59Yvtyk="
         }
       ]
     },

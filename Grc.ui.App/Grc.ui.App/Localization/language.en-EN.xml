@@ -13,7 +13,7 @@
 		<Value>For Example. </Value>
 	</LocaleResource>
     <LocaleResource Name="App.Label.Welcome">
-        <Value>Welcome back</Value>
+        <Value>Welcome</Value>
     </LocaleResource>
     <LocaleResource Name="App.Label.Signin">
         <Value>Sign in</Value>

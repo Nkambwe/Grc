@@ -1,32 +1,79 @@
-﻿.table-container {
+﻿/*---------------------------table styles*/
+.table-container {
     margin: 20px 0;
-    background: #fff;
+    background: var(--white-base);
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
 
-#tblActivity {
+table {
     margin-bottom: 0;
     border: none;
-    background-color: var(--white-base);
+    
 }
 
-    #tblActivity thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: 600;
-        color: #495057;
-        padding: 12px 15px;
+    table,
+    table thead th {
+        background-color: var(--white-base);
     }
 
-    #tblActivity tbody td {
-        padding: 12px 15px;
-        vertical-align: middle;
-        border-top: 1px solid #dee2e6;
-    }
+        table.dataTable th,
+        table.dataTable td {
+            box-sizing: border-box;
+            padding: 12px 15px !important;
+        }
 
-.tag {
+        table tbody td {
+            vertical-align: middle;
+            border-top: 0.5px solid var(--grey-light) !important;
+        }
+
+        
+
+/*---------------------------table row*/
+
+        table tbody tr.row-selected {
+            color: var(--teal-light-medium);
+            background-color: var(--teal-light-extra) !important;
+            border-left: 4px solid #2196f3;
+        }
+
+            table tbody tr.row-selected:hover,
+            table tbody tr:hover {
+                cursor: pointer;
+                background-color: var(--teal-light-slightly) !important;
+                transition: background-color 0.15s ease-in-out;
+            }
+
+table tbody tr a {
+    color: #6c757d;
+    text-decoration: none;
+    cursor: default;
+    pointer-events: none;
+    transition: all 0.2s ease-in-out;
+}
+
+        table tbody tr.row-selected a.active {
+            color: var(--teal-light-medium);
+            cursor: pointer;
+            text-decoration: underline;
+            pointer-events: auto;
+        }
+
+            table tbody tr.row-selected a.active:hover {
+                color: var(--teal-light-medium);
+                text-decoration: underline;
+            }
+table tbody tr {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/*---------------------------table tags*/
+.table-tag {
     display: inline-block;
     padding: 4px 8px;
     border-radius: 4px;
@@ -36,28 +83,47 @@
     letter-spacing: 0.5px;
 }
 
-    .tag.is-success {
-        background-color: #d4edda;
-        color: #155724;
+    .table-tag.is-success {
+        color: var(--green-dark-accent);
+        background-color: var(--green-light);
     }
 
-    .tag.is-info {
-        background-color: #cce7ff;
-        color: #004085;
+    .table-tag.is-info {
+        color: var(--blue-dark-extra);
+        background-color: var(--blue-light-slightly);
     }
 
-    .tag.is-warning {
-        background-color: #fff3cd;
-        color: #856404;
+    .table-tag.is-warning {
+        color: var(--orange-dark);
+        background-color: var(--yellow-light-slightly);
     }
 
-    .tag.is-danger {
-        background-color: #f8d7da;
-        color: #721c24;
+    .table-tag.is-danger {
+        color: var(--red-dark-accent-light);
+        background-color: var(--red-light);
     }
 
-#tblActivity tbody tr:hover {
-    background-color: #f8f9fa;
-    cursor:pointer;
-    transition: background-color 0.15s ease-in-out;
+/*---------------------------table pagenation*/
+.page-link {
+    position: relative;
+    display: block;
+    color: var(--teal-light-strong);
+    text-decoration: none;
+    background-color: var(--white-base);
+    border: 1px solid var(--teal-light-medium);
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+    .page-link:hover {
+        z-index: 2;
+        color: var(--teal-light-medium);
+        background-color: var(--grey-light-extra);
+        border-color: var(--teal-light-medium);
+    }
+
+.page-item.active .page-link {
+    z-index: 3;
+    color: var(--white-base);
+    background-color: var(--teal-light-strong);
+    border-color: var(--teal-light-strong);
 }

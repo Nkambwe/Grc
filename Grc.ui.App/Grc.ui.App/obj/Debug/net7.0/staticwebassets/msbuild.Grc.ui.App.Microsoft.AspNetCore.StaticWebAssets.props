@@ -30,8 +30,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>7tlaclsmox</Fingerprint>
-      <Integrity>68wVAhkNmk9++X1g+whP9H4H33ihdZvja6jOZr50Dsc=</Integrity>
+      <Fingerprint>36t8qnwamz</Fingerprint>
+      <Integrity>q9tXTNYdm9gAaYKrpDrLCeu/Tqrkxe5HNmCJZelWP2A=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\admin-tables-styles.css'))</OriginalItemSpec>
@@ -282,8 +282,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>w3893w9r5x</Fingerprint>
-      <Integrity>tLsmkaNefeSrdST2B+RIwg78Pw+cBIcTdlA3eHundlY=</Integrity>
+      <Fingerprint>mk2obhavby</Fingerprint>
+      <Integrity>+q1cRR1JJqOySCzkYyxP+IcFUSOswTeq2Xyc59Yvtyk=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\admin-tables.js'))</OriginalItemSpec>
