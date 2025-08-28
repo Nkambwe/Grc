@@ -19,6 +19,7 @@ namespace Grc.Middleware.Api.Data.Containers {
         public GrcContext Context { get;}
 
         #region Repositories
+
         public ICompanyRepository CompanyRepository { get; set; }
         public IBranchRepository BranchRepository { get; set; }
         public IUserRepository UserRepository { get; set; }
@@ -28,6 +29,10 @@ namespace Grc.Middleware.Api.Data.Containers {
         public IQuickActionRepository QuickActionRepository  { get; set; }
         public IPinnedItemRepository PinnedItemRepository { get; set; }
         public ISystemErrorRespository SystemErrorRespository {get;set;}
+        public IActivityTypeRepository ActivityTypeRepository { get; set; }
+        public IActivityLogRepository ActivityLogRepository { get; set; }
+        public IActivityLogSettingRepository ActivityLogSettingRepository { get; set; }
+
         #endregion
 
         public UnitOfWork(IServiceLoggerFactory loggerFactory,
@@ -53,6 +58,9 @@ namespace Grc.Middleware.Api.Data.Containers {
             QuickActionRepository = new QuickActionRepository(_loggerFactory, Context); 
             PinnedItemRepository = new PinnedItemRepository(_loggerFactory, Context);
             SystemErrorRespository = new SystemErrorRespository(_loggerFactory, Context);
+            ActivityLogRepository = new ActivityLogRepository(_loggerFactory, Context);
+            ActivityTypeRepository = new ActivityTypeRepository(_loggerFactory, Context);
+            ActivityLogSettingRepository = new ActivityLogSettingRepository(_loggerFactory, Context);
         }
 
         /// <summary>
@@ -175,6 +183,9 @@ namespace Grc.Middleware.Api.Data.Containers {
                     QuickActionRepository = null;
                     PinnedItemRepository = null;
                     SystemErrorRespository = null;
+                    ActivityLogRepository = null;
+                    ActivityTypeRepository = null;
+                    ActivityLogSettingRepository = null;
                     UserPreferenceRepository = null;
                     UserViewRepository = null;
                 }

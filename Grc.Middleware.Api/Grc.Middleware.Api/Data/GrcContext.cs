@@ -1,4 +1,5 @@
 ﻿using Grc.Middleware.Api.Data.Entities.Configurations;
+using Grc.Middleware.Api.Data.Entities.Logging;
 using Grc.Middleware.Api.Data.Entities.Org;
 using Grc.Middleware.Api.Data.Entities.System;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,9 @@ namespace Grc.Middleware.Api.Data {
         public DbSet<Company> Organizations { get; set; }
         public DbSet<Branch> Branches { get; set; }
         public DbSet<SystemError> SystemErrors { get; set; }
+        public DbSet<ActivityLog> ActivityLogs { get; set; }
+        public DbSet<ActivityType> ActivityTypes { get; set; }
+        public DbSet<ActivityLogSetting> ActivitySettings { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<DepartmentUnit> DepartmentUnits { get; set; }
         public DbSet<SystemRoleGroup> RoleGroups { get; set; }
@@ -28,6 +32,9 @@ namespace Grc.Middleware.Api.Data {
             CompanyEntityConfiguration.Configure(modelBuilder.Entity<Company>());
             BranchEntityConfiguration.Configure(modelBuilder.Entity<Branch>());
             SystemErrorEntityConfiguration.Configure(modelBuilder.Entity<SystemError>());
+            ActivityLogSettingEntityConfiguration.Configure(modelBuilder.Entity<ActivityLogSetting>());
+            ActivityTypeEntityConfiguration.Configure(modelBuilder.Entity<ActivityType>());
+            ActivityLogEntityConfiguration.Configure(modelBuilder.Entity<ActivityLog>());
             DepartmentEntityConfiguration.Configure(modelBuilder.Entity<Department>());
             DepartmentUnitEntityConfiguration.Configure(modelBuilder.Entity<DepartmentUnit>());
             SystemRoleGroupEntityConfiguration.Configure(modelBuilder.Entity<SystemRoleGroup>());

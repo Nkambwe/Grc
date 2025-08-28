@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "dFlyOLK9A28VnWALmP0CXnnXTmoNtBelKPI2yKcLIHs=",
+  "Hash": "ZTcKSVVp2UtXcVYwQoNWbhjchxJ7nP8WIjSJ9uW4sL8=",
   "Source": "Grc.ui.App",
   "BasePath": "_content/Grc.ui.App",
   "Mode": "Default",
@@ -94,8 +94,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "36t8qnwamz",
-      "Integrity": "q9tXTNYdm9gAaYKrpDrLCeu/Tqrkxe5HNmCJZelWP2A=",
+      "Fingerprint": "rsxdu44esi",
+      "Integrity": "Wxpt1cNRr4stEpkG5cX4QEqMmibAO39SGNvHgmsgkX8=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\admin-tables-styles.css"
@@ -3146,51 +3146,6 @@
       ]
     },
     {
-      "Route": "css/admin-tables-styles.36t8qnwamz.css",
-      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-tables-styles.css",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "2516"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"q9tXTNYdm9gAaYKrpDrLCeu/Tqrkxe5HNmCJZelWP2A=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Wed, 27 Aug 2025 02:38:34 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "36t8qnwamz"
-        },
-        {
-          "Name": "label",
-          "Value": "css/admin-tables-styles.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-q9tXTNYdm9gAaYKrpDrLCeu/Tqrkxe5HNmCJZelWP2A="
-        }
-      ]
-    },
-    {
       "Route": "css/admin-tables-styles.css",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-tables-styles.css",
       "Selectors": [],
@@ -3201,7 +3156,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "2516"
+          "Value": "3431"
         },
         {
           "Name": "Content-Type",
@@ -3209,11 +3164,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"q9tXTNYdm9gAaYKrpDrLCeu/Tqrkxe5HNmCJZelWP2A=\""
+          "Value": "\"Wxpt1cNRr4stEpkG5cX4QEqMmibAO39SGNvHgmsgkX8=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 27 Aug 2025 02:38:34 GMT"
+          "Value": "Thu, 28 Aug 2025 01:16:36 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3223,7 +3178,52 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-q9tXTNYdm9gAaYKrpDrLCeu/Tqrkxe5HNmCJZelWP2A="
+          "Value": "sha256-Wxpt1cNRr4stEpkG5cX4QEqMmibAO39SGNvHgmsgkX8="
+        }
+      ]
+    },
+    {
+      "Route": "css/admin-tables-styles.rsxdu44esi.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-tables-styles.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3431"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Wxpt1cNRr4stEpkG5cX4QEqMmibAO39SGNvHgmsgkX8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 28 Aug 2025 01:16:36 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "rsxdu44esi"
+        },
+        {
+          "Name": "label",
+          "Value": "css/admin-tables-styles.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Wxpt1cNRr4stEpkG5cX4QEqMmibAO39SGNvHgmsgkX8="
         }
       ]
     },

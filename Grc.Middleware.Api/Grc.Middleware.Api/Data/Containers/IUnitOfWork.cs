@@ -15,6 +15,9 @@ namespace Grc.Middleware.Api.Data.Containers {
         IQuickActionRepository QuickActionRepository { get; set; }
         IPinnedItemRepository PinnedItemRepository { get; set; }
         ISystemErrorRespository SystemErrorRespository { get; set; }
+        IActivityTypeRepository ActivityTypeRepository { get; set; }
+        IActivityLogRepository ActivityLogRepository { get; set; }
+        IActivityLogSettingRepository ActivityLogSettingRepository { get; set; }
 
         Task<int> SaveChangesAsync(); 
         int SaveChanges(); 

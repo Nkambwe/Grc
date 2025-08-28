@@ -27,9 +27,7 @@ table {
         table tbody td {
             vertical-align: middle;
             border-top: 0.5px solid var(--grey-light) !important;
-        }
-
-        
+        }     
 
 /*---------------------------table row*/
 

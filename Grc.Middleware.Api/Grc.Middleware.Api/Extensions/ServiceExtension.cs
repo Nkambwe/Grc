@@ -29,6 +29,9 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IQuickActionRepository, QuickActionRepository>();
             services.AddScoped<IPinnedItemRepository, PinnedItemRepository>();
             services.AddScoped<ISystemErrorRespository, SystemErrorRespository>();
+            services.AddScoped<IActivityLogRepository, ActivityLogRepository>();
+            services.AddScoped<IActivityTypeRepository, ActivityTypeRepository>();
+            services.AddScoped<IActivityLogSettingRepository, ActivityLogSettingRepository>();
         }
 
         /// <summary>
@@ -52,6 +55,9 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IBaseService, BaseService>();
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<ISystemAccessService, SystemAccessService>();
+            services.AddScoped<IActivityLogService, ActivityLogService>();
+            services.AddScoped<IActivityTypeService, ActivityTypeService>();
+            services.AddScoped<IActivityLogSettingService, ActivityLogSettingService>();
             services.AddScoped<IQuickActionService, QuickActionService>();
             services.AddScoped<IPinnedItemService, PinnedItemService>();
             

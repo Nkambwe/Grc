@@ -33,7 +33,8 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
             builder.Property(u => u.LastModifiedOn).HasColumnName("Modified_on").IsRequired(false);
             builder.Property(u => u.LastModifiedBy).HasColumnName("Modified_by").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.HasOne(u => u.Role).WithMany(r => r.Users).HasForeignKey(u => u.RoleId);
-            builder.HasOne(u => u.Department).WithMany(d => d.Users).HasForeignKey(u => u.DepartmentId);
+            builder.HasOne(u => u.Department).WithMany(d => d.Users).HasForeignKey(d => d.DepartmentId);
+            builder.HasMany(u => u.ActivityLogs).WithOne(a => a.User).HasForeignKey(a => a.UserId);
         }
     }
 }

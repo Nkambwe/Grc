@@ -17,7 +17,8 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
             builder.Property(c => c.CreatedBy).HasColumnName("Created_by").HasColumnType("NVARCHAR(MAX)").IsRequired();
             builder.Property(c => c.LastModifiedOn).HasColumnName("Modefied_on").IsRequired(false);
             builder.Property(c => c.LastModifiedBy).HasColumnName("Modified_by").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
-            
+            builder.HasMany(c => c.ActivitySettings).WithOne(a => a.Company).HasForeignKey(a => a.CompanyId);
+            builder.HasMany(c => c.Branches).WithOne(b => b.Company).HasForeignKey(b => b.CompanyId);
         }
     }
 }

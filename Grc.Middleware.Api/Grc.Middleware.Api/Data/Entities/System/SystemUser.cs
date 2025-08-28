@@ -1,4 +1,5 @@
-﻿using Grc.Middleware.Api.Data.Entities.Org;
+﻿using Grc.Middleware.Api.Data.Entities.Logging;
+using Grc.Middleware.Api.Data.Entities.Org;
 
 namespace Grc.Middleware.Api.Data.Entities.System {
 
@@ -28,6 +29,7 @@ namespace Grc.Middleware.Api.Data.Entities.System {
         public virtual ICollection<UserPinnedItem> PinnedItems { get; set; }
         public virtual ICollection<UserPrefference> Prefferences { get; set; }
         public virtual ICollection<UserView> Views { get; set; }
+        public virtual ICollection<ActivityLog> ActivityLogs { get; set; }
         public override bool Equals(object obj) {
 
             if (obj is not SystemUser)
