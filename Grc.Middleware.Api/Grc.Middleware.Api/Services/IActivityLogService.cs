@@ -3,32 +3,14 @@
 namespace Grc.Middleware.Api.Services {
 
     public interface IActivityLogService: IBaseService {
-        Task<bool> InsertActivityAsync(string systemKeyword, string comment, object entity = null);
-        Task<bool> InsertActivityAsync(string systemKeyword, string comment, int entityId, string entityName);
-        Task<bool> InsertActivityAsync(ActivityType activityType, string comment, object entity = null);
+        Task<ActivityLog> GetActivityByIdAsync(int activityId, bool includeMarkedAsDeleted=false);
+        Task<bool> InsertActivityAsync(string systemKeyword, string comment, long userId, string ipAddress,object entity = null);
+        Task<bool> InsertActivityAsync(string systemKeyword, string comment, long entityId, string entityName, long userId, string ipAddress);
+        Task<bool> InsertActivityAsync(ActivityType activityType, string comment, long userId, string ipAddress, object entity = null);
+        Task<IList<ActivityLog>> GetAllActivitiesAsync(int pageIndex, int pageSize, bool includeMarkedAsDeleted);
+        Task<bool> DeleteActivityAsync(ActivityLog activityLog, bool includeMarkedAsDeleted);
+        Task<bool> DeleteActivitiesAsync(IList<ActivityLog> activityLogs, bool includeMarkedAsDeleted);
+        Task ClearAllActivitiesAsync();       
         
-        Task<IList<ActivityLog>> GetAllActivitiesAsync(DateTime? createdFrom = null, DateTime? createdTo = null, int? 
-                            userId = null, int? activityTypeId = null, string ipAddress = null, string entityName = null, 
-                            int pageIndex = 0, int pageSize = int.MaxValue);
-            
-        Task<ActivityLog> GetActivityByIdAsync(int activityId);
-        
-        Task<bool> DeleteActivityAsync(ActivityLog activityLog);
-        
-        Task<bool> DeleteActivitiesAsync(IList<ActivityLog> activityLogs);
-        
-        Task<bool> ClearAllActivitiesAsync();
-        
-        Task<IList<ActivityType>> GetAllActivityTypesAsync();
-        
-        Task<ActivityType> GetActivityTypeByIdAsync(int activityTypeId);
-        
-        Task<ActivityType> GetActivityTypeBySystemKeywordAsync(string systemKeyword);
-        
-        Task<bool> InsertActivityTypeAsync(ActivityType activityType);
-        
-        Task<bool> UpdateActivityTypeAsync(ActivityType activityType);
-        
-        Task<bool> DeleteActivityTypeAsync(ActivityType activityType);
     }
 }

@@ -5,6 +5,7 @@ namespace Grc.Middleware.Api.Data.Entities.Logging {
 
     public class ActivityLog : BaseEntity {
         public long? EntityId { get; set; }
+        public long TypeId { get; set; }
         public string EntityName { get; set; }
         public string IpAddress { get; set; }
         public string Comment { get; set; }

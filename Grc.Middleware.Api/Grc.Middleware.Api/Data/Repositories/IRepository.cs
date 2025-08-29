@@ -149,6 +149,13 @@ namespace Grc.Middleware.Api.Data.Repositories {
         Task<bool> DeleteAsync(T entity, bool markAsDeleted = false);
 
         /// <summary>
+        /// Asynchronous deletion of a list of entities
+        /// </summary>
+        /// <param name="entities">List of entities to delete</param>
+        /// <returns>Task containg deletion status</returns>
+        Task<bool> DeleteAllAsync(IList<T> entities, bool markAsDeleted = false);
+
+        /// <summary>
         /// Check if an entity exists if it fits predicate
         /// </summary>
         /// <param name="where">Search predicate</param>

@@ -2,8 +2,8 @@
 
 namespace Grc.Middleware.Api.Data.Repositories {
 
-    public interface IActivityLogRepository: IRepository<ActivityLog> {
-
+    public interface IActivityLogRepository : IRepository<ActivityLog> {
+        Task ClearAllActivitiesAsync();
     }
 
 }

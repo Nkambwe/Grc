@@ -310,6 +310,32 @@ namespace Grc.Middleware.Api.Data.Repositories {
             }
         }
 
+        public async Task<bool> DeleteAllAsync(IList<T> entities, bool markAsDeleted = false) {
+            ArgumentNullException.ThrowIfNull(entities);
+            if (entities.Count == 0) return true;
+
+            var dbSet = context.Set<T>();
+            try {
+                if (markAsDeleted) {
+                    foreach (var entity in entities) {
+                        var entry = context.Entry(entity);
+                        entry.Property("IsDeleted").CurrentValue = true;
+                        entry.State = EntityState.Modified;
+                    }
+                } else {
+                    dbSet.RemoveRange(entities);
+                }
+
+                return await Task.FromResult(true);
+            } catch (Exception ex) {
+                Logger.LogActivity($"DeleteAll operation failed: {ex.Message}", "DBOPS");
+                Logger.LogActivity("STACKTRACE ::", "DBOPS");
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+                return false;
+            }
+        }
+
+
         public bool Exists(Expression<Func<T, bool>> where, bool excludeDeleted = false) {
             var dbSet = context.Set<T>();
             var record = dbSet.FirstOrDefault(where);

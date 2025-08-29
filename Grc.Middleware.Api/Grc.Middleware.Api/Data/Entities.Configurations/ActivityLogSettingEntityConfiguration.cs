@@ -10,20 +10,10 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
         public static void Configure(EntityTypeBuilder<ActivityLogSetting> builder) {
             builder.ToTable("TBL_GRC_ACTIVITY_SETTING");
             builder.HasKey(a => a.Id);
-            builder.Property(a => a.EnableLogging).HasColumnName("enable_logging").IsRequired();
-            builder.Property(a => a.LogSupportActivities).HasColumnName("log_support").IsRequired();
-            builder.Property(a => a.LogUserActivities).HasColumnName("log_user").IsRequired();
-            builder.Property(a => a.AutoDeleteActivities).HasColumnName("auto_delete").IsRequired();
-            builder.Property(a => a.AutoDeleteDays).HasColumnName("auto_delete_days").IsRequired();
+            builder.Property(a => a.ParameterName).HasColumnName("param_key").HasColumnType("NVARCHAR(50)").IsRequired();
+            builder.Property(a => a.ParameterValue).HasColumnName("param_value").HasColumnType("NVARCHAR(50)").IsRequired();
+            builder.Property(a => a.Description).HasColumnName("param_descr").HasColumnType("NVARCHAR(50)").IsRequired();
             builder.Property(a => a.CompanyId).HasColumnName("company_id").IsRequired();
-            builder.Property(a => a.DisabledActivityTypes)
-            .HasColumnName("disabled_activites")
-            .HasColumnType("NVARCHAR(MAX)")
-            .HasConversion(
-                l => JsonSerializer.Serialize(l, (JsonSerializerOptions)null),  
-                l => JsonSerializer.Deserialize<List<string>>(l, (JsonSerializerOptions)null)
-            );
-            builder.Property(a => a.LogIpAddress).HasColumnName("log_ip");
             builder.Property(a => a.IsDeleted).HasColumnName("is_deleted");
             builder.Property(a => a.CreatedOn).HasColumnName("created_on").IsRequired();
             builder.Property(a => a.CreatedBy).HasColumnName("created_by").HasColumnType("NVARCHAR(50)").IsRequired();
