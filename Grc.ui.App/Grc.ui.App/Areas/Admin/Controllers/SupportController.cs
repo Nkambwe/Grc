@@ -1,8 +1,12 @@
-﻿using Grc.ui.App.Dtos;
+﻿using Grc.ui.App.Defaults;
+using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
 using Grc.ui.App.Factories;
+using Grc.ui.App.Filters;
+using Grc.ui.App.Helpers;
 using Grc.ui.App.Http;
+using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
@@ -18,6 +22,8 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         private readonly ISystemAccessService _accessService;
         private readonly IAuthenticationService _authService;
         private readonly ISupportDashboardFactory _dDashboardFactory;
+        private readonly ISystemActivityService _activityService;
+       
         
         public SupportController(IApplicationLoggerFactory loggerFactory, 
                                  IEnvironmentProvider environment, 
@@ -27,19 +33,25 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                                  IAuthenticationService authService,
                                  ISupportDashboardFactory dDashboardFactory,
                                  IErrorService errorService,
+                                 ISystemActivityService activityService,
                                  IGrcErrorFactory errorFactory,
                                  SessionManager sessionManager) 
             : base(loggerFactory, environment, webHelper, localizationService, 
                   errorService, errorFactory, sessionManager) {
-           _accessService = accessService;
+            _accessService = accessService;
             _authService = authService;
             _dDashboardFactory = dDashboardFactory;
+            _activityService = activityService;
         }
 
+        [LogActivityResult("User Login", "User logged in to the system", ActivityTypeDefaults.USER_LOGIN, "SystemUser")]
         public async Task<IActionResult> Index(){
             var model = new AdminDashboardModel();
             try {
+                //..get user IP address
                 var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError) {
                     return HandleLoginErrors(grcResponse.Error.Message, model);
@@ -47,26 +59,52 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
                 var currentUser = grcResponse.Data;
                 currentUser.LastLoginIpAddress = ipAddress;
-                model = await _dDashboardFactory.PrepareAdminDashboardModelAsync(currentUser);
-                var stats = (await _accessService.StatisticAsync(currentUser.UserId, ipAddress));
-                model.TotalUsers = stats.TotalUsers;
-                model.ActiveUsers = stats.ActiveUsers;
-                model.DeactivatedUsers= stats.DeactivatedUsers;
-                model.UnApprovedUsers= stats.UnApprovedUsers;
-                model.UnverifiedUsers = stats.UnverifiedUsers;
-                model.DeletedUsers= stats.DeletedUsers;
-                model.TotalBugs = stats.TotalBugs;
-                model.NewBugs = stats.NewBugs;
-                model.BugFixes = stats.BugFixes;
-                model.BugProgress = stats.BugProgress;
-                model.UserReportedBugs = stats.UserReportedBugs;
 
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareAdminDashboardModelAsync(currentUser);
             } catch(Exception ex){ 
                 Logger.LogActivity($"Username validation error: {ex.Message}", "ERROR");
                 return HandleLoginErrors(LocalizationService.GetLocalizedLabel("Error.Service.Unavailable"), model);
             }
 
             return View(model);
+        }
+
+        [HttpPost("support/activities/allActivities")]
+        public async Task<IActionResult> AllActivities([FromBody] TableListRequest request) {
+
+            //..get user IP address
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+
+            //..get current authenticated user record
+            var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (grcResponse.HasError) {
+                    Logger.LogActivity($"ACTIVITY DATA ERROR: Failed to Current user record - {JsonSerializer.Serialize(grcResponse)}");
+            }
+
+            //..update with user data
+            var currentUser = grcResponse.Data;
+            request.UserId = currentUser.UserId;
+            request.IPAddress = ipAddress;
+            request.PageSize = 7;
+
+            //..get list of a activity logs
+            var activitydata = await _activityService.GetActivityLogsAsync(request);
+
+            PagedResponse<ActivityModel> activityList = new ();
+            if(activitydata.HasError){ 
+                Logger.LogActivity($"ACTIVITY DATA ERROR: Failed to retrieve activity log items - {JsonSerializer.Serialize(activitydata)}");
+            } else {
+                activityList = activitydata.Data;
+                Logger.LogActivity($"ACTIVITY DATA ERROR: Failed to retrieve activity log items - {JsonSerializer.Serialize(activityList)}");
+            }
+
+            activityList.Entities ??= new();
+            return Ok(new {
+                data = activityList.Entities,
+                recordsTotal = activityList.TotalCount ,
+                recordsFiltered = activityList.TotalCount 
+            });
         }
 
         public async Task<IActionResult> Departments() {;
@@ -189,6 +227,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
+        [LogActivityResult("User Logout", "User logged out of the system", ActivityTypeDefaults.USER_LOGOUT, "SystemUser")]
         public async Task<IActionResult> Logout() {
             try
             {

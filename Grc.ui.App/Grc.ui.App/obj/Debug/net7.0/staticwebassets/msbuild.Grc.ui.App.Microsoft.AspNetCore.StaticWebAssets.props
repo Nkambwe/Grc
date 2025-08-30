@@ -30,8 +30,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>rsxdu44esi</Fingerprint>
-      <Integrity>Wxpt1cNRr4stEpkG5cX4QEqMmibAO39SGNvHgmsgkX8=</Integrity>
+      <Fingerprint>7c3tmflvpw</Fingerprint>
+      <Integrity>JzjnS8yD4LZH3iViv0rmY+zlhOIASBGugfmJyYrX+co=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\admin-tables-styles.css'))</OriginalItemSpec>
@@ -282,8 +282,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>mk2obhavby</Fingerprint>
-      <Integrity>+q1cRR1JJqOySCzkYyxP+IcFUSOswTeq2Xyc59Yvtyk=</Integrity>
+      <Fingerprint>lix4cj0vtk</Fingerprint>
+      <Integrity>rfo3kqNLoXExl+LqZ9ucBn5R/l5AYLwUkaijHI6Wb5o=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\admin-tables.js'))</OriginalItemSpec>

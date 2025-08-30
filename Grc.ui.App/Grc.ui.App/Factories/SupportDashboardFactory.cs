@@ -2,6 +2,7 @@
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
 using Grc.ui.App.Extensions.Http;
+using Grc.ui.App.Http;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
@@ -10,24 +11,27 @@ namespace Grc.ui.App.Factories {
 
     public class SupportDashboardFactory : ISupportDashboardFactory {
 
-        private readonly ILocalizationService _localizationService;
+       
+        private readonly ISystemAccessService _accessService;
         private readonly IPinnedService _pinnedService;
         private readonly IQuickActionService _quickActionService;
         private readonly IMapper _mapper;
         private readonly SessionManager _sessionManager;
         private readonly IConfiguration _configuration;
-        public SupportDashboardFactory(ILocalizationService localizationService,
-                                       IPinnedService pinnedService, 
+        public SupportDashboardFactory(IPinnedService pinnedService, 
+                                       ISystemActivityService activityService,
+                                       ISystemAccessService accessService,
                                        IQuickActionService quickActionService,
                                        IMapper mapper,
                                        SessionManager session,
                                        IConfiguration configuration) {  
-            _localizationService = localizationService;
             _pinnedService = pinnedService;
             _quickActionService = quickActionService;
             _mapper = mapper;
             _sessionManager = session;
             _configuration = configuration;
+            _accessService = accessService;
+            
         }
 
         public async Task<AdminDashboardModel> PrepareAdminDashboardModelAsync(UserModel currentUser) {
@@ -63,20 +67,34 @@ namespace Grc.ui.App.Factories {
             var envOptions = _configuration.GetSection("EnvironmentOptions").Get<EnvironmentOptions>();
             string baseUrl = !(bool)envOptions?.IsLive ? (middlewareOptions?.BaseUrl?.TrimEnd('/')) :
                 (middlewareOptions?.ProdBaseUrl?.TrimEnd('/'));
+
+            //..get dashboard statistics
+            var stats = (await _accessService.StatisticAsync(currentUser.UserId, currentUser.LastLoginIpAddress));
             
-            var model = new AdminDashboardModel {
+            //..generate dashboard model
+            return new AdminDashboardModel {
                 MiddlwareUrl = baseUrl,
-                WelcomeMessage = $"{_localizationService.GetLocalizedLabel("App.Label.Welcome")}, {currentUser?.FirstName}!",
+                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}!",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
                 PinnedItems = pins,
                 Recents = recents,
                 LastLogin = DateTime.UtcNow,
                 //..set workspace into seession
-                Workspace = _sessionManager.GetWorkspace()
+                Workspace = _sessionManager.GetWorkspace(),
+                //..statistics
+                TotalUsers = stats.TotalUsers,
+                ActiveUsers = stats.ActiveUsers,
+                DeactivatedUsers = stats.DeactivatedUsers,
+                UnApprovedUsers = stats.UnApprovedUsers,
+                UnverifiedUsers = stats.UnverifiedUsers,
+                DeletedUsers = stats.DeletedUsers,
+                TotalBugs = stats.TotalBugs,
+                NewBugs = stats.NewBugs,
+                BugFixes = stats.BugFixes,
+                BugProgress = stats.BugProgress,
+                UserReportedBugs = stats.UserReportedBugs,
             };
-
-            return await Task.FromResult(model);
         }
     }
 }

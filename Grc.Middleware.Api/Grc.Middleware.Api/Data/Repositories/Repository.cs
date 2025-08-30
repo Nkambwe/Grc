@@ -146,6 +146,22 @@ namespace Grc.Middleware.Api.Data.Repositories {
             return await query.FirstOrDefaultAsync();
         }
 
+        public IQueryable<T> GetAll(bool includeDeleted = false, params Expression<Func<T, object>>[] filters) {
+            IQueryable<T> query = context.Set<T>();
+
+            if (filters != null && filters.Any()) {
+                foreach (var include in filters) {
+                    query = query.Include(include);
+                }
+            }
+
+            if (!includeDeleted) {
+                query = query.Where(e => EF.Property<bool>(e, "IsDeleted") == false);
+            }
+
+            return query;
+        }
+
         public IList<T> GetAll(bool includeDeleted = false) {
             IQueryable<T> query = context.Set<T>();
 
@@ -175,6 +191,37 @@ namespace Grc.Middleware.Api.Data.Repositories {
             IQueryable<T> query = context.Set<T>();
             return await query.Where(e => includeDeleted || EF.Property<bool>(e, "IsDeleted") == false)
                 .Where(where).ToListAsync();
+        }
+
+        public async Task<IList<T>> GetAllAsync(Expression<Func<T, bool>> where, bool includeDeleted = false, params Expression<Func<T, object>>[] filters) {
+            IQueryable<T> query = context.Set<T>();
+
+            //..includes if provided
+            if (filters != null && filters.Any()) {
+                foreach (var include in filters) {
+                    query = query.Include(include);
+                }
+            }
+
+            //..apply soft delete filter and where clause
+            query = query.Where(e => includeDeleted || EF.Property<bool>(e, "IsDeleted") == false).Where(where);
+            return await query.ToListAsync();
+        }
+
+        public async Task<IList<T>> GetAllAsync(bool includeDeleted = false, params Expression<Func<T, object>>[] filters) {
+            IQueryable<T> query = context.Set<T>();
+
+            if (filters != null && filters.Any()) {
+                foreach (var include in filters) {
+                    query = query.Include(include);
+                }
+            }
+            
+            if (!includeDeleted) {
+                query = query.Where(e => EF.Property<bool>(e, "IsDeleted") == false);
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<IList<T>> GetTopAsync(Expression<Func<T, bool>> where, int top = 10, bool includeDeleted = false) {
@@ -335,7 +382,6 @@ namespace Grc.Middleware.Api.Data.Repositories {
             }
         }
 
-
         public bool Exists(Expression<Func<T, bool>> where, bool excludeDeleted = false) {
             var dbSet = context.Set<T>();
             var record = dbSet.FirstOrDefault(where);
@@ -454,15 +500,24 @@ namespace Grc.Middleware.Api.Data.Repositories {
             }
         }
         
-        public virtual async Task<PagedResult<T>> PageAllAsync(int page, int size, bool includeDeleted) {
-            //..make sure page size is never negative
-            page = Math.Max(1, page);   
-            size = Math.Max(1, size);  
-            var dbSet = context.Set<T>();
+        public virtual async Task<PagedResult<T>> PageAllAsync(int page, int size, bool includeDeleted = false, params Expression<Func<T, object>>[] includes) {
+            page = Math.Max(1, page);
+            size = Math.Max(1, size);
 
-            var query = includeDeleted ? dbSet : dbSet.Where(m => !m.IsDeleted);
+            IQueryable<T> query = context.Set<T>();
+
+            //..apply includes
+            foreach (var include in includes)
+                query = query.Include(include);
+
+            if (!includeDeleted)
+                query = query.Where(m => !m.IsDeleted);
+
             var totalRecords = await query.CountAsync();
-            var entities = await query.Skip((page - 1) * size).Take(size).ToListAsync();
+            var entities = await query
+                .Skip((page - 1) * size)
+                .Take(size)
+                .ToListAsync();
 
             return new PagedResult<T> {
                 Entities = entities,
@@ -472,15 +527,24 @@ namespace Grc.Middleware.Api.Data.Repositories {
             };
         }
 
-        public virtual async Task<PagedResult<T>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted) {
+        public virtual async Task<PagedResult<T>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<T, object>>[] includes) {
             //make sure page size is never negative
             page = Math.Max(1, page);   
             size = Math.Max(1, size);  
-            var dbSet = context.Set<T>();
+             IQueryable<T> query = context.Set<T>();
 
-            var query = includeDeleted ? dbSet : dbSet.Where(m => !m.IsDeleted);
-            var totalRecords = await dbSet.CountAsync(token);
-            var entities = await query.Skip((page - 1) * size).Take(size).ToListAsync(token);
+            //..apply includes
+            foreach (var include in includes)
+                query = query.Include(include);
+
+            if (!includeDeleted)
+                query = query.Where(m => !m.IsDeleted);
+
+            var totalRecords = await query.CountAsync(token);
+            var entities = await query
+                .Skip((page - 1) * size)
+                .Take(size)
+                .ToListAsync(token);
 
             return new PagedResult<T> {
                 Entities = entities,
@@ -488,6 +552,7 @@ namespace Grc.Middleware.Api.Data.Repositories {
                 Page = page,
                 Size = size
             };
+
         }
 
         public virtual async Task<PagedResult<T>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<T, bool>> where = null) {

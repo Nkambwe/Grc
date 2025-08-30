@@ -41,7 +41,7 @@ namespace Grc.Middleware.Api.Data.Repositories {
         /// <param name="where">Search Predicate</param>
         /// <param name="includeDeleted">Flag to check whether to returned deleted entities</param>
          /// <returns>Entity that fits predicate</returns>
-        T Get(Expression<Func<T, bool>> where, bool includeDeleted = false, params Expression<Func<T, object>>[] filters);
+        T Get(Expression<Func<T, bool>> where, bool includeDeleted = false, params Expression<Func<T, object>>[] includes);
 
         /// <summary>
         /// Get entity the fits predicate. Check whether to returned deleted entities <see cref="ISoftDelete"/>
@@ -56,10 +56,18 @@ namespace Grc.Middleware.Api.Data.Repositories {
         /// </summary>
         /// <param name="where">Search Predicate</param>
         /// <param name="includeDeleted">Flag to check whether to returned deleted entities</param>
-        /// <param name="filters">Search filters</param>
+        /// <param name="includes">Search includes</param>
         /// <remarks>Usage var entity = await GetAsync(e => e.Id == 1, includeDeleted: false, x => x.RelatedEntity, x => x.AnotherEntity);</remarks>
         /// <returns>Task with entity that fits predicate</returns>
-        Task<T> GetAsync(Expression<Func<T, bool>> where, bool includeDeleted = false, params Expression<Func<T, object>>[] filters);
+        Task<T> GetAsync(Expression<Func<T, bool>> where, bool includeDeleted = false, params Expression<Func<T, object>>[] includes);
+
+        /// <summary>
+        /// Get queriable data set 
+        /// </summary>
+        /// <param name="includeDeleted"></param>
+        /// <param name="includes"></param>
+        /// <returns></returns>
+        IQueryable<T> GetAll(bool includeDeleted = false, params Expression<Func<T, object>>[] includes);
 
         /// <summary>
         /// Get a list of all entities. Option to check if entities can be marked as deleted
@@ -92,6 +100,24 @@ namespace Grc.Middleware.Api.Data.Repositories {
         /// <param name="includeDeleted">Flag whether to include deleted records in the search</param>
         /// <returns>Task containg a collection of all entities that fit predicate</returns>
         Task<IList<T>> GetAllAsync(Expression<Func<T, bool>> where, bool includeDeleted);
+        
+        /// <summary>
+        /// Asynchronous search for an entity that fits predicate with related entities. Option to check if it can be marked as deleted
+        /// </summary>
+        /// <param name="where">Search Predicate</param>
+        /// <param name="includeDeleted">Flag to check whether to returned deleted entities</param>
+        /// <param name="includes">Search includes</param>
+        /// <remarks>Usage var entity = await GetAsync(e => e.Id == 1, includeDeleted: false, x => x.RelatedEntity, x => x.AnotherEntity);</remarks>
+        /// <returns>Task with a list of entitities that fits predicate</returns>
+        Task<IList<T>> GetAllAsync(Expression<Func<T, bool>> where, bool includeDeleted = false, params Expression<Func<T, object>>[] includes);
+
+        /// <summary>
+        /// Asynchronous search for an entity that fits predicate with related entities. Option to check if it can be marked as deleted
+        /// </summary>
+        /// <param name="includes">Search includes</param>
+        /// <remarks>Usage var entity = await GetAsync(e => e.Id == 1, includeDeleted: false, x => x.RelatedEntity, x => x.AnotherEntity);</remarks>
+        /// <returns>Task with a list of entitities that fits predicate</returns>
+        Task<IList<T>> GetAllAsync(bool includeDeleted = false, params Expression<Func<T, object>>[] includes);
 
         /// <summary>
         /// Get selected top count of a list of objects
@@ -198,45 +224,47 @@ namespace Grc.Middleware.Api.Data.Repositories {
         Task<bool> BulkyUpdateAsync(T[] entities, params Expression<Func<T, object>>[] propertySelectors);
 
         
-    /// <summary>
-    /// Page all records seleceted
-    /// </summary>
-    /// <param name="page">Page number</param>
-    /// <param name="size">Number of entities to take</param>
-    /// <param name="includeDeleted">Flag to include deleted entities in the search</param>
-    /// <returns></returns>
-    Task<PagedResult<T>> PageAllAsync(int page, int size, bool includeDeleted);
+        /// <summary>
+        /// Page all records seleceted
+        /// </summary>
+        /// <param name="page">Page number</param>
+        /// <param name="size">Number of entities to take</param>
+        /// <param name="includeDeleted">Flag to include deleted entities in the search</param>
+        /// <param name="includes">Search includes</param>
+        /// <returns></returns>
+        Task<PagedResult<T>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<T, object>>[] includes);
 
-    /// <summary>
-    /// Page all entities selected in a query
-    /// </summary>
-    /// <param name="token">Cancellation token</param>
-    /// <param name="page">Page number</param>
-    /// <param name="size">Number of entities to take</param>
-    /// <param name="includeDeleted">Flag to include deleted entities in the search</param>
-    /// <returns></returns>
-    Task<PagedResult<T>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted);
+        /// <summary>
+        /// Page all entities selected in a query
+        /// </summary>
+        /// <param name="token">Cancellation token</param>
+        /// <param name="page">Page number</param>
+        /// <param name="size">Number of entities to take</param>
+        /// <param name="includeDeleted">Flag to include deleted entities in the search</param>
+        /// <param name="includes">Search includes</param>
+        /// <returns></returns>
+        Task<PagedResult<T>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<T, object>>[] includes);
 
-    /// <summary>
-    /// Pagenate records that fit predicate
-    /// </summary>
-    /// <param name="page">Page number</param>
-    /// <param name="size">Page size</param>
-    /// <param name="includeDeleted">Flag to include deleted entities in the search</param>
-    /// <param name="where">Filter predicate</param>
-    /// <returns></returns>
-    Task<PagedResult<T>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<T, bool>> where = null);
+        /// <summary>
+        /// Pagenate records that fit predicate
+        /// </summary>
+        /// <param name="page">Page number</param>
+        /// <param name="size">Page size</param>
+        /// <param name="includeDeleted">Flag to include deleted entities in the search</param>
+        /// <param name="where">Filter predicate</param>
+        /// <returns></returns>
+        Task<PagedResult<T>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<T, bool>> where = null);
 
-    /// <summary>
-    ///  Pagenate records that fit predicate
-    /// </summary>
-    /// <param name="token"></param>
-    /// <param name="page">Page number</param>
-    /// <param name="size">Page size</param>
-    /// <param name="includeDeleted">Flag to include deleted entities in the search</param>
-    /// <param name="where">Filter predicate</param>
-    /// <returns></returns>
-    Task<PagedResult<T>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<T, bool>> where = null, bool includeDeleted = false);
+        /// <summary>
+        ///  Pagenate records that fit predicate
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="page">Page number</param>
+        /// <param name="size">Page size</param>
+        /// <param name="includeDeleted">Flag to include deleted entities in the search</param>
+        /// <param name="where">Filter predicate</param>
+        /// <returns></returns>
+        Task<PagedResult<T>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<T, bool>> where = null, bool includeDeleted = false);
 
     }
 

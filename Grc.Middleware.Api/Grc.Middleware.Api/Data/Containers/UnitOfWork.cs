@@ -39,7 +39,7 @@ namespace Grc.Middleware.Api.Data.Containers {
                           IDbContextFactory<GrcContext> contextFactory,
                           IServiceProvider serviceProvider) {
             _loggerFactory = loggerFactory;
-            _logger = _loggerFactory.CreateLogger("data_log");
+            _logger = _loggerFactory.CreateLogger("middleware_log");
             _logger.Channel = $"UOW-{DateTime.Now:yyyyMMddHHmmss}";
             _contextFactory = contextFactory;
             _serviceProvider = serviceProvider;

@@ -4,6 +4,7 @@ using Grc.Middleware.Api.Data.Entities.Logging;
 using Grc.Middleware.Api.Utils;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Grc.Middleware.Api.Defaults;
 
 namespace Grc.Middleware.Api.Services {
 
@@ -14,8 +15,23 @@ namespace Grc.Middleware.Api.Services {
                                    IMapper mapper)
                                    : base(loggerFactory, uowFactory, mapper) {
         }
-        
-        public async Task<ActivityType> GetActivityTypeByIdAsync(int activityTypeId, bool includeMarkedAsDeleted) {
+
+        public async Task<IList<KeyValuePair<string, string>>> GetSystemKeyWordsAsync() {
+            var fields = typeof(ActivityTypeDefaults)
+                .GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+
+            var result = fields
+                .Where(f => f.IsLiteral && !f.IsInitOnly) 
+                .Select(f => new KeyValuePair<string, string>(
+                    f.Name,
+                    f.GetRawConstantValue()?.ToString() ?? string.Empty
+                ))
+                .ToList();
+
+            return await Task.FromResult(result);
+        }
+
+        public async Task<ActivityType> GetActivityTypeByIdAsync(long activityTypeId, bool includeMarkedAsDeleted) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve activity type record with '{activityTypeId}' ID", "INFO");
     
@@ -30,6 +46,37 @@ namespace Grc.Middleware.Api.Services {
                     Logger.LogActivity($"Activity type data: {typeJson}", "DEBUG");
                 } else {
                     Logger.LogActivity($"Activity type with ID '{activityTypeId}' not found", "DEBUG");
+                }
+
+                return type;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve activity type: {ex.Message}", "ERROR");
+        
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                throw; 
+            };
+        }
+
+        public async Task<ActivityType> GetActivityTypeByNameAsync(string typeName, bool includeMarkedAsDeleted = false) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve activity type record with '{typeName}' type name", "INFO");
+    
+            try {;
+                var type = await uow.ActivityTypeRepository.GetAsync(t => t.Name == typeName, includeMarkedAsDeleted);
+                if(type != null) {
+                    //..log the activity type data being saved
+                    var typeJson = JsonSerializer.Serialize(type, new JsonSerializerOptions { 
+                        WriteIndented = true,
+                        ReferenceHandler = ReferenceHandler.IgnoreCycles 
+                    });
+                    Logger.LogActivity($"Activity type data: {typeJson}", "DEBUG");
+                } else {
+                    Logger.LogActivity($"Activity type with name '{typeName}' not found", "DEBUG");
                 }
 
                 return type;
@@ -108,7 +155,6 @@ namespace Grc.Middleware.Api.Services {
                 throw; 
             };
         }
-
         
         public async Task<bool> InsertActivityTypeAsync(ActivityType activityType) {
             using var uow = UowFactory.Create();

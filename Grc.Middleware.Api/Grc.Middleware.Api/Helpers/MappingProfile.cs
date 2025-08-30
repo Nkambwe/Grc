@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Grc.Middleware.Api.Data.Entities.Logging;
 using Grc.Middleware.Api.Data.Entities.Org;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Http.Requests;
@@ -105,7 +106,20 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(e => e.CreatedBy, reg => reg.MapFrom(o => $"{o.UserId}"))
                 .ForMember(e => e.IsUserReported, reg => reg.MapFrom(o => false));
 
-
+             CreateMap<ActivityLog, ActivityLogResponse>()
+                .ForMember(r => r.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(r => r.UserId, reg => reg.MapFrom(o => o.UserId))
+                .ForMember(r => r.UserFirstName, reg => reg.MapFrom(o => (o.User.FirstName ?? string.Empty).Trim()))
+                .ForMember(r => r.UserLastName, reg => reg.MapFrom(o => (o.User.LastName ?? string.Empty).Trim()))
+                .ForMember(r => r.UserEmail, reg => reg.MapFrom(o => (o.User.EmailAddress ?? string.Empty).Trim()))
+                .ForMember(r => r.EntityId, reg => reg.MapFrom(o => o.EntityId))
+                .ForMember(r => r.EntityName, reg => reg.MapFrom(o => (o.EntityName ?? string.Empty).Trim()))
+                .ForMember(r => r.TypeId, reg => reg.MapFrom(o => o.TypeId))
+                .ForMember(r => r.TypeDescription, reg => reg.MapFrom(o => (o.ActivityType.Description ?? string.Empty).Trim()))
+                .ForMember(r => r.IpAddress, reg => reg.MapFrom(o => (o.IpAddress ?? string.Empty).Trim()))
+                .ForMember(r => r.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
+                .ForMember(r => r.CreatedOn, reg => reg.MapFrom(o => o.CreatedOn))
+                .ForMember(r => r.Comment, reg => reg.MapFrom(o => (o.Comment ?? string.Empty).Trim()));
         }
 
     }

@@ -27,5 +27,25 @@ namespace Grc.Middleware.Api.Controllers {
             SystemErrorService = systemErrorService;
         }
 
+        protected static string GetElapsedTime(DateTime date) {
+            var ts = DateTime.Now - date;
+
+            if (ts.TotalSeconds < 60)
+                return FormatPeriod((int)ts.TotalSeconds, "second");
+            if (ts.TotalMinutes < 60)
+                return FormatPeriod((int)ts.TotalMinutes, "minute");
+            if (ts.TotalHours < 24)
+                return FormatPeriod((int)ts.TotalHours, "hour");
+            if (ts.TotalDays < 30)
+                return FormatPeriod((int)ts.TotalDays, "day");
+            if (ts.TotalDays < 365)
+                return FormatPeriod((int)(ts.TotalDays / 30), "month");
+
+            return FormatPeriod((int)(ts.TotalDays / 365), "year");
+        }
+
+        private static string FormatPeriod(int coundt, string period)
+            => coundt == 1 ? $"1 {period} ago" : $"{coundt} {period}s ago";
+
     }
 }

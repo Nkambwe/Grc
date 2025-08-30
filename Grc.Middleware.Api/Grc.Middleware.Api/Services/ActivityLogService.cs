@@ -5,6 +5,9 @@ using Grc.Middleware.Api.Utils;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using Grc.Middleware.Api.Enums;
+using Microsoft.EntityFrameworkCore;
+using Grc.Middleware.Api.Helpers;
+using Azure.Core;
 
 namespace Grc.Middleware.Api.Services {
 
@@ -61,7 +64,7 @@ namespace Grc.Middleware.Api.Services {
                 int page = pageIndex > 0 ? pageIndex : 1;
                 int size = pageSize > 0 ? pageSize : 10;
 
-                var pagedResult = await uow.ActivityLogRepository.PageAllAsync(page, pageSize, includeMarkedAsDeleted);
+               var pagedResult = await uow.ActivityLogRepository.PageAllAsync(page, size, includeMarkedAsDeleted, x => x.User, x => x.ActivityType);
                 if(pagedResult != null) {
                     var result = pagedResult.Entities;
 
@@ -94,6 +97,97 @@ namespace Grc.Middleware.Api.Services {
             };
         }
         
+        public async Task<IList<ActivityLog>> GetAllActivitiesAsync(DateTime? createdFrom = null, DateTime? createdTo = null,
+            long? userId = null, long? activityTypeId = null,
+            string ipAddress = null, string entityName = null, int pageIndex = 0, 
+            int pageSize = 6, bool includeDeleted = false) {
+            
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve all log settings", "INFO");
+    
+            try {
+
+                int page = pageIndex > 0 ? pageIndex : 1;
+                var query = uow.ActivityLogRepository.GetAll(
+                    includeDeleted, 
+                    t => t.ActivityType, 
+                    t => t.User);
+
+                if (createdFrom.HasValue)
+                query = query.Where(x => x.CreatedOn >= createdFrom.Value);
+
+                if (createdTo.HasValue)
+                    query = query.Where(x => x.CreatedOn <= createdTo.Value);
+
+                if (userId.HasValue)
+                    query = query.Where(x => x.UserId == userId.Value);
+
+                if (activityTypeId.HasValue)
+                    query = query.Where(x => x.TypeId == activityTypeId.Value);
+
+                if (!string.IsNullOrEmpty(ipAddress))
+                    query = query.Where(x => x.IpAddress == ipAddress);
+
+                if (!string.IsNullOrEmpty(entityName))
+                    query = query.Where(x => x.EntityName == entityName);
+
+                query = query.OrderByDescending(x => x.CreatedOn);
+
+                return await query.Skip(pageIndex * pageSize).Take(pageSize).ToListAsync();
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve activity log: {ex.Message}", "ERROR");
+        
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                throw; 
+            };
+        }
+
+        public async Task<PagedResult<ActivityLog>> GetPagedActivitiesAsync(DateTime? createdFrom = null, DateTime? createdTo = null, long? userId = null, long? activityTypeId = null,
+            string ipAddress = null, string entityName = null, int pageIndex = 1, int pageSize = 7, bool includeDeleted = false) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve all log settings", "INFO");
+    
+            try {
+                //...build query first
+                var query = uow.ActivityLogRepository.GetAll(includeDeleted, a => a.ActivityType, a => a.User)
+                    .AsQueryable(); 
+        
+                //..apply filters
+                var filteredQuery = query.Where(a => 
+                    (!createdFrom.HasValue || a.CreatedOn >= createdFrom.Value) &&
+                    (!createdTo.HasValue || a.CreatedOn <= createdTo.Value) &&
+                    (!userId.HasValue || a.UserId == userId.Value) &&
+                    (!activityTypeId.HasValue || a.TypeId == activityTypeId.Value) &&
+                    (string.IsNullOrEmpty(ipAddress) || a.IpAddress == ipAddress) &&
+                    (string.IsNullOrEmpty(entityName) || a.EntityName == entityName)
+                );
+        
+                var orderedQuery = filteredQuery.OrderByDescending(x => x.CreatedOn);
+        
+                //..execute query
+                var totalRecords = await orderedQuery.CountAsync();
+                var entities = await orderedQuery
+                    .Skip((pageIndex - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+        
+                return new PagedResult<ActivityLog>  {
+                    Entities = entities,
+                    Count = totalRecords,
+                    Page = pageIndex,
+                    Size = pageSize
+                };
+            } catch (Exception ex)  {
+                Logger.LogActivity($"Failed to retrieve activity logs: {ex.Message}", "ERROR");
+                throw;
+            }
+        }
+
         public async Task<bool> InsertActivityAsync(string systemKeyword, string comment, long entityId, string entityName, long userId, string ipAddress) {
              using var uow = UowFactory.Create();
              Logger.LogActivity("Check if activity can be logged", "INFO");
@@ -233,9 +327,15 @@ namespace Grc.Middleware.Api.Services {
                     TypeId = activityType.Id,
                     UserId = userId,
                     Comment = comment,
-                    CreatedOn = DateTime.UtcNow,
-                    IpAddress = ipAddress
+                    IsDeleted = false,
+                    EntityName = entity?.ToString(),
+                    CreatedOn = DateTime.Now,
+                    CreatedBy = $"{userId}",
+                    IpAddress = ipAddress,
+                    LastModifiedOn = DateTime.Now,
+                    LastModifiedBy= $"{userId}"
                 };
+
                 //..log the activity data being saved
                 var activityJson = JsonSerializer.Serialize(activity, new JsonSerializerOptions { 
                     WriteIndented = true,
@@ -355,7 +455,6 @@ namespace Grc.Middleware.Api.Services {
                 throw;
             }
         }
-
 
         public async Task ClearAllActivitiesAsync() {
             using var uow = UowFactory.Create();

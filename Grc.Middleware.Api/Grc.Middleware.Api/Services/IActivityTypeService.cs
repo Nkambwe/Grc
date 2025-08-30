@@ -3,9 +3,13 @@
 namespace Grc.Middleware.Api.Services {
 
     public interface IActivityTypeService:IBaseService {
+        Task<IList<KeyValuePair<string, string>>> GetSystemKeyWordsAsync();
+
         Task<IList<ActivityType>> GetAllActivityTypesAsync(bool includeMarkedAsDeleted = false);
         
-        Task<ActivityType> GetActivityTypeByIdAsync(int activityTypeId, bool includeMarkedAsDeleted=false);
+        Task<ActivityType> GetActivityTypeByIdAsync(long activityTypeId, bool includeMarkedAsDeleted=false);
+
+        Task<ActivityType> GetActivityTypeByNameAsync(string typeName, bool includeMarkedAsDeleted=false);
         
         Task<ActivityType> GetActivityTypeBySystemKeywordAsync(string systemKeyword, bool includeMarkedAsDeleted = false);
         

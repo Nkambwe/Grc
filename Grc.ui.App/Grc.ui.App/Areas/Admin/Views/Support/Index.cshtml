@@ -220,107 +220,13 @@
                     <th>Email</th>
                     <th>Action</th>
                     <th>Time</th>
-                    <th>Status</th>
+                    <th>Description</th>
                 </tr>
             </thead>
-            <tbody id="activityTable">
-                <tr>
-                    <td>
-                        <a asp-controller="Support" asp-action="ActivityRecord" asp-area="Admin">
-                            Jim Smith
-                        </a>
-                    </td>
-                    <td>
-                        <a asp-controller="Support" asp-action="SendEmail" asp-area="Admin">
-                            jim.smith@postbank.co.ug
-                        </a>
-                    </td>
-                    <td>User Login</td>
-                    <td>2 minutes ago</td>
-                    <td><span class="table-tag is-success">Success</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <a asp-controller="Support" asp-action="ActivityRecord" asp-area="Admin">
-                            Jane Smith
-                        </a>
-                    </td>
-                    <td>
-                        <a asp-controller="Support" asp-action="SendEmail" asp-area="Admin">
-                            jane.smith@example.com
-                        </a>
-                    </td>
-                    <td>Password Reset</td>
-                    <td>5 minutes ago</td>
-                    <td><span class="table-tag is-info">Completed</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <a asp-controller="Support" asp-action="ActivityRecord" asp-area="Admin">
-                            Administrator
-                        </a>
-                    </td>
-                    <td>
-                        <a asp-controller="Support" asp-action="SendEmail" asp-area="Admin">
-                            admin@example.com
-                        </a>
-                    </td>
-                    <td>User Created</td>
-                    <td>12 minutes ago</td>
-                    <td><span class="table-tag is-success">Success</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <a asp-controller="Support" asp-action="ActivityRecord" asp-area="Admin">
-                            Mark Nkambwe
-                        </a>
-                    </td>
-                    <td>
-                        <a asp-controller="Support" asp-action="SendEmail" asp-area="Admin">
-                            mark.nkambwe@postbank.co.ug
-                        </a>
-                    </td>
-                    <td>Create policy document</td>
-                    <td>3 days ago</td>
-                    <td><span class="table-tag is-success">Success</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <a asp-controller="Support" asp-action="ActivityRecord" asp-area="Admin">
-                            Jim Smith
-                        </a>
-                    </td>
-                    <td>
-                        <a asp-controller="Support" asp-action="SendEmail" asp-area="Admin">
-                            jim.smith@postbank.co.ug
-                        </a>
-                    </td>
-                    <td>Submitted returns for FIA</td>
-                    <td>14 days ago</td>
-                    <td><span class="table-tag is-success">Success</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <a asp-controller="Support" asp-action="ActivityRecord" asp-area="Admin">
-                            Administrator
-                        </a>
-                    </td>
-                    <td>
-                        <a asp-controller="Support" asp-action="SendEmail" asp-area="Admin">
-                            admin@example.com
-                        </a>
-                    </td>
-                    <td>Changed permissions for Admin role</td>
-                    <td>36 days</td>
-                    <td><span class="table-tag is-success">Success</span></td>
-                </tr>
-            </tbody>
+            <tbody id="activityTable"></tbody>
         </table>
     </div>
 </div>
 
-<script>
-    const backendApiUrl = '@Model.MiddlwareUrl';
-</script>
 
 

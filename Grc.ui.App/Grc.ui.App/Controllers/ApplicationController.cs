@@ -1,4 +1,5 @@
-﻿using Grc.ui.App.Enums;
+﻿using Grc.ui.App.Defaults;
+using Grc.ui.App.Enums;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Filters;
 using Grc.ui.App.Helpers;
@@ -57,6 +58,7 @@ namespace Grc.ui.App.Controllers {
             return RedirectToAction("Login");
         }
 
+        [LogActivityResult("User Login", "User logged in to the system", ActivityTypeDefaults.USER_LOGIN, "SystemUser")]
         public async Task<IActionResult> Dashboard() {
 
             try{
@@ -174,6 +176,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [LogActivityResult("User Logout", "User logged out of the system", ActivityTypeDefaults.USER_LOGOUT, "SystemUser")]
         public async Task<IActionResult> Logout() {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();

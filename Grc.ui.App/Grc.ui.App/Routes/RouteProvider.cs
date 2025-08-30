@@ -64,8 +64,8 @@
                 pattern: "admin/settings",
                 defaults: new { area = "Admin", controller = "Settings", action = "Index" }
             );
-            
-            // Admin areas
+
+            //..admin areas
             routeBuilder.MapControllerRoute(
                 name: "areas",
                 pattern: "{area}/{controller=Support}/{action=Index}/{id?}"

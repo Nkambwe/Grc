@@ -18,6 +18,50 @@
         
         //..make it responsive
         responsive: true,
+
+        processing: true,
+
+        //..using server paging
+        serverSide: true,
+        ajax: {
+            url: '/support/activities/allActivities',
+            type: 'POST',
+            contentType: "application/json",
+            data: function (d) {
+                return JSON.stringify({
+                    pageIndex: (d.start / d.length) + 1,
+                    pageSize: d.length,
+                    includeDeleted: false,
+                    action: "LOAD_ACTIVITIES"
+                });
+            },
+            dataSrc: function (json) {
+                console.log('Ajax response:', json); 
+                return json.data || [];
+            },
+            error: function (xhr, status, error) {
+                console.error('Error during Ajax request:', error);
+            }
+        },
+
+        columns: [
+            { 
+                data: null, 
+                render: function (d, t, r) {
+                    return `<a href="/Admin/Support/ActivityRecord/${r.userId}">${r.userFirstName} ${r.userLastName}</a>`;
+                }
+            }, 
+            { 
+                data: "userEmail", 
+                render: function (d, t, r) {
+                    return `<a href="mailto:${r.userEmail}">${r.userEmail}</a>`;
+                }
+            },
+            { data: "entityName" },
+            { data: "period" },
+            { data: "comment" }
+        ],
+
         
         //..custom language settings
         language: {

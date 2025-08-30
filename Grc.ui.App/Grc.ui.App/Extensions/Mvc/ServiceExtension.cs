@@ -38,6 +38,7 @@ namespace Grc.ui.App.Extensions.Mvc {
             services.AddScoped<IQuickActionService, QuickActionService>();
             services.AddScoped<IBranchService, BranchService>();
             services.AddScoped<IErrorService, ErrorService>();
+            services.AddScoped<ISystemActivityService, SystemActivityService>();
 
             //..register factories 
             services.AddScoped<IRegistrationFactory, RegistrationFactory>();

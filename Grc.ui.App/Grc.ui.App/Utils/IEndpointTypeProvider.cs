@@ -5,6 +5,7 @@ namespace Grc.ui.App.Utils {
         SystemAccessEndpoints Sam { get;}
         HealthEndpoint Health { get; }
         RegistrationEndpoints Registration { get; }
+        ActivityLogEndpoints ActivityLog { get; }
         ErrorEndpoints Error { get; }
     }   
 }

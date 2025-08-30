@@ -10,6 +10,38 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "AllActivities",
+    "RelativePath": "grc/activities/allActivities",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "SaveActivity",
+    "RelativePath": "grc/activities/saveActivity",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.AcivityLogRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Grc.Middleware.Api.Controllers.GrcController",
     "Method": "SaveError",
     "RelativePath": "grc/errors/saveerror",
