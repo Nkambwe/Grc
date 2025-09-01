@@ -100,15 +100,23 @@
             $row.removeClass('row-selected');
             //..disable links in this row
             $row.find('a').removeClass('active').attr('tabindex', '-1');
+
+            //..remove arrow icon
+            $row.find('.row-selection-icon').remove();
         } else {
             //..remove selection from all other rows
             table.$('tr.row-selected').removeClass('row-selected');
             table.$('tr a').removeClass('active').attr('tabindex', '-1');
             
+            //..remove all arrow icons
+            table.$('tr .row-selection-icon').remove();
+
             //..select current row
             $row.addClass('row-selected');
             //..enable links in selected row
             $row.find('a').addClass('active').removeAttr('tabindex');
+             //..add arrow icon to first cell
+            $row.find('td:first').prepend('<i class="mdi mdi-arrow-right row-selection-icon"></i>');
         }
     });
 

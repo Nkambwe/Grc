@@ -1,4 +1,5 @@
-﻿using Grc.ui.App.Defaults;
+﻿using Elfie.Serialization;
+using Grc.ui.App.Defaults;
 using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -12,6 +13,7 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -23,7 +25,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         private readonly IAuthenticationService _authService;
         private readonly ISupportDashboardFactory _dDashboardFactory;
         private readonly ISystemActivityService _activityService;
-       
+        private readonly IDepartmentFactory _departmentfactory;
         
         public SupportController(IApplicationLoggerFactory loggerFactory, 
                                  IEnvironmentProvider environment, 
@@ -34,12 +36,14 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                                  ISupportDashboardFactory dDashboardFactory,
                                  IErrorService errorService,
                                  ISystemActivityService activityService,
+                                 IDepartmentFactory departmentfactory,
                                  IGrcErrorFactory errorFactory,
                                  SessionManager sessionManager) 
             : base(loggerFactory, environment, webHelper, localizationService, 
                   errorService, errorFactory, sessionManager) {
             _accessService = accessService;
             _authService = authService;
+            _departmentfactory = departmentfactory;
             _dDashboardFactory = dDashboardFactory;
             _activityService = activityService;
         }
@@ -54,7 +58,8 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 //..get current authenticated user record
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError) {
-                    return HandleLoginErrors(grcResponse.Error.Message, model);
+                    await ProcessErrorAsync(grcResponse.Error.Message,"SUPPORT-CONTROLLER" , string.Empty);
+                    return View(model);
                 }
 
                 var currentUser = grcResponse.Data;
@@ -63,8 +68,8 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareAdminDashboardModelAsync(currentUser);
             } catch(Exception ex){ 
-                Logger.LogActivity($"Username validation error: {ex.Message}", "ERROR");
-                return HandleLoginErrors(LocalizationService.GetLocalizedLabel("Error.Service.Unavailable"), model);
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return View(model);
             }
 
             return View(model);
@@ -73,157 +78,439 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         [HttpPost("support/activities/allActivities")]
         public async Task<IActionResult> AllActivities([FromBody] TableListRequest request) {
 
-            //..get user IP address
-            var ipAddress = WebHelper.GetCurrentIpAddress();
+            try{
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
 
-            //..get current authenticated user record
-            var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
-            if (grcResponse.HasError) {
-                    Logger.LogActivity($"ACTIVITY DATA ERROR: Failed to Current user record - {JsonSerializer.Serialize(grcResponse)}");
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                        Logger.LogActivity($"ACTIVITY DATA ERROR: Failed to Current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                //..update with user data
+                var currentUser = grcResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.PageSize = 7;
+
+                //..get list of a activity logs
+                var activitydata = await _activityService.GetActivityLogsAsync(request);
+
+                PagedResponse<ActivityModel> activityList = new ();
+                if(activitydata.HasError){ 
+                    Logger.LogActivity($"ACTIVITY DATA ERROR: Failed to retrieve activity log items - {JsonSerializer.Serialize(activitydata)}");
+                } else {
+                    activityList = activitydata.Data;
+                    Logger.LogActivity($"ACTIVITY DATA ERROR: Failed to retrieve activity log items - {JsonSerializer.Serialize(activityList)}");
+                }
+
+                activityList.Entities ??= new();
+                return Ok(new {
+                    data = activityList.Entities,
+                    recordsTotal = activityList.TotalCount ,
+                    recordsFiltered = activityList.TotalCount 
+                });
+            } catch(Exception ex){
+                Logger.LogActivity($"Error retrieving activity logs: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+
+                return Ok(new {
+                    data = new List<ActivityModel>(),
+                    recordsTotal = 0 ,
+                    recordsFiltered = 0
+                });
             }
-
-            //..update with user data
-            var currentUser = grcResponse.Data;
-            request.UserId = currentUser.UserId;
-            request.IPAddress = ipAddress;
-            request.PageSize = 7;
-
-            //..get list of a activity logs
-            var activitydata = await _activityService.GetActivityLogsAsync(request);
-
-            PagedResponse<ActivityModel> activityList = new ();
-            if(activitydata.HasError){ 
-                Logger.LogActivity($"ACTIVITY DATA ERROR: Failed to retrieve activity log items - {JsonSerializer.Serialize(activitydata)}");
-            } else {
-                activityList = activitydata.Data;
-                Logger.LogActivity($"ACTIVITY DATA ERROR: Failed to retrieve activity log items - {JsonSerializer.Serialize(activityList)}");
-            }
-
-            activityList.Entities ??= new();
-            return Ok(new {
-                data = activityList.Entities,
-                recordsTotal = activityList.TotalCount ,
-                recordsFiltered = activityList.TotalCount 
-            });
+            
         }
 
-        public async Task<IActionResult> Departments() {;
-            string error_msg = "Department exception occurred";
-            string error_source = $"SUPPORT CONTROLLER - Departments";
-            string error_stacktrace = $"Error details";
-            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
-            return View();
+        public async Task<IActionResult> Departments() {
+           var model = new AdminDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    await ProcessErrorAsync(grcResponse.Error.Message,"SUPPORT-CONTROLLER" , string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            } catch(Exception ex){ 
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
         }
 
         public async Task<IActionResult> Users() {
-            string error_msg = "Users exception occurred";
-            string error_source = $"SUPPORT CONTROLLER - Users";
-            string error_stacktrace = $"Error details";
-            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
-            return View();
+            var model = new AdminDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    await ProcessErrorAsync(grcResponse.Error.Message,"SUPPORT-CONTROLLER" , string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            } catch(Exception ex){ 
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
         }
         
         public async Task<IActionResult> ActiveUsers() {
-            string error_msg = "Active users exception occurred";
-            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
-            string error_stacktrace = $"Error details";
-            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
-            return View();
+            var model = new AdminDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    await ProcessErrorAsync(grcResponse.Error.Message,"SUPPORT-CONTROLLER" , string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            } catch(Exception ex){ 
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
         }
         public async Task<IActionResult> DisabledUsers() {
-            string error_msg = "DisabledUsers exception occurred";
-            string error_source = $"SUPPORT CONTROLLER - Users";
-            string error_stacktrace = $"Error details";
-            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
-            return View();
+            var model = new AdminDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    await ProcessErrorAsync(grcResponse.Error.Message,"SUPPORT-CONTROLLER" , string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            } catch(Exception ex){ 
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
         }
         
         public async Task<IActionResult> UnapprovedUsers() {
-            string error_msg = "Unapproved users exception occurred";
-            string error_source = $"SUPPORT CONTROLLER - UnapprovedUsers";
-            string error_stacktrace = $"Error details";
-            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
-            return View();
+            var model = new AdminDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    await ProcessErrorAsync(grcResponse.Error.Message,"SUPPORT-CONTROLLER" , string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            } catch(Exception ex){ 
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
         }
 
         public async Task<IActionResult> Roles() {
-            string error_msg = "Active users exception occurred";
-            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
-            string error_stacktrace = $"Error details";
-            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
-            return View();
+            var model = new AdminDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    await ProcessErrorAsync(grcResponse.Error.Message,"SUPPORT-CONTROLLER" , string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            } catch(Exception ex){ 
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
         }
 
         public async Task<IActionResult> PermissionSets() {
-            string error_msg = "Active users exception occurred";
-            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
-            string error_stacktrace = $"Error details";
-            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
-            return View();
+            var model = new AdminDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    await ProcessErrorAsync(grcResponse.Error.Message,"SUPPORT-CONTROLLER" , string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            } catch(Exception ex){ 
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
         }
         
         public async Task<IActionResult> AssignPermissions() {
-            string error_msg = "Active users exception occurred";
-            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
-            string error_stacktrace = $"Error details";
-            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
-            return View();
+            var model = new AdminDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    await ProcessErrorAsync(grcResponse.Error.Message,"SUPPORT-CONTROLLER" , string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            } catch(Exception ex){ 
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
         }
 
         public async Task<IActionResult> PermissionDelegation() {
-            string error_msg = "Active users exception occurred";
-            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
-            string error_stacktrace = $"Error details";
-            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
-            return View();
+            var model = new AdminDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    await ProcessErrorAsync(grcResponse.Error.Message,"SUPPORT-CONTROLLER" , string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            } catch(Exception ex){ 
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
         }
         
         public async Task<IActionResult> Bugs() {
-            string error_msg = "Active users exception occurred";
-            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
-            string error_stacktrace = $"Error details";
-            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
-            return View();
+            var model = new AdminDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    await ProcessErrorAsync(grcResponse.Error.Message,"SUPPORT-CONTROLLER" , string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            } catch(Exception ex){ 
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
         }
         
         public async Task<IActionResult> NewBugs() {
-            string error_msg = "Active users exception occurred";
-            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
-            string error_stacktrace = $"Error details";
-            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
-            return View();
+            var model = new AdminDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    await ProcessErrorAsync(grcResponse.Error.Message,"SUPPORT-CONTROLLER" , string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            } catch(Exception ex){ 
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
         }
 
         public async Task<IActionResult> BugFixes() {
-            string error_msg = "Active users exception occurred";
-            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
-            string error_stacktrace = $"Error details";
-            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
-            return View();
+            var model = new AdminDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    await ProcessErrorAsync(grcResponse.Error.Message,"SUPPORT-CONTROLLER" , string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            } catch(Exception ex){ 
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
         }
         
         public async Task<IActionResult> UserReportedBugs() {
-            string error_msg = "Active users exception occurred";
-            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
-            string error_stacktrace = $"Error details";
-            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
-            return View();
+            var model = new AdminDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    await ProcessErrorAsync(grcResponse.Error.Message,"SUPPORT-CONTROLLER" , string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            } catch(Exception ex){ 
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
         }
 
         public async Task<IActionResult> ActivityRecord() {
-            string error_msg = "Active users exception occurred";
-            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
-            string error_stacktrace = $"Error details";
-            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
-            return View();
+            var model = new AdminDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    await ProcessErrorAsync(grcResponse.Error.Message,"SUPPORT-CONTROLLER" , string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            } catch(Exception ex){ 
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
         }
 
         public async Task<IActionResult> SendEmail() {
-            string error_msg = "Active users exception occurred";
-            string error_source = $"SUPPORT CONTROLLER - ActiveUsers";
-            string error_stacktrace = $"Error details";
-            _= await ProcessErrorAsync(error_msg, error_source, error_stacktrace);
-            return View();
+            var model = new AdminDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    await ProcessErrorAsync(grcResponse.Error.Message,"SUPPORT-CONTROLLER" , string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            } catch(Exception ex){ 
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
         }
 
         [HttpPost]
@@ -265,11 +552,6 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                     error = new { message = "Logout failed. Please try again." }
                 });
             }
-        }
-
-        private IActionResult HandleLoginErrors(string error, AdminDashboardModel model) {
-            //..TODO redirect to login
-            return View(model);
         }
 
         public void Notify(string message, string title = "GRC NOTIFICATION", NotificationType type = NotificationType.Success) {

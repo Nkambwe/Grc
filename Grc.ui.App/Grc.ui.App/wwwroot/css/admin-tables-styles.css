@@ -42,9 +42,9 @@ table {
 /*---------------------------table row*/
 
         table tbody tr.row-selected {
-            color: var(--teal-light-medium);
+            color: var(--teal-dark-slightly);
             background-color: var(--teal-light-extra) !important;
-            border-left: 4px solid #2196f3;
+            border-left: 4px solid var(--teal-dark-slightly);
         }
 
             table tbody tr.row-selected:hover,
@@ -54,13 +54,15 @@ table {
                 transition: background-color 0.15s ease-in-out;
             }
 
-table tbody tr a {
-    color: #6c757d;
-    text-decoration: none;
-    cursor: default;
-    pointer-events: none;
-    transition: all 0.2s ease-in-out;
-}
+        table tbody tr a {
+            color: var(--teal-dark-slightly);
+            text-decoration: none;
+            cursor: default;
+            pointer-events: none;
+            transition: all 0.2s ease-in-out;
+            position: relative;
+            z-index: 10;
+        }
 
         table tbody tr.row-selected a.active {
             color: var(--teal-light-medium);
@@ -78,6 +80,14 @@ table tbody tr {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+.row-selection-icon {
+    margin-right: 8px;
+    color: var(--teal-dark-slightly);
+    font-size: 16px;
+    vertical-align: middle;
+    animation: slideInLeft 0.2s ease-out;
 }
 
 /*---------------------------table tags*/
@@ -118,7 +128,6 @@ table tbody tr {
     color: var(--teal-light-strong);
     text-decoration: none;
     background-color: var(--white-base);
-    border: 1px solid var(--teal-light-medium);
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
@@ -134,4 +143,16 @@ table tbody tr {
     color: var(--white-base);
     background-color: var(--teal-light-strong);
     border-color: var(--teal-light-strong);
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }

@@ -16,7 +16,7 @@ namespace Grc.ui.App.Services {
                               IEnvironmentProvider environment,
                               IEndpointTypeProvider endpointType,
                               IMapper mapper) {
-            Logger = loggerFactory.CreateLogger("app_services");
+            Logger = loggerFactory.CreateLogger();
             Environment = environment;
             EndpointProvider = endpointType;
             HttpHandler = httpHandler;

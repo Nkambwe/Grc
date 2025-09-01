@@ -27,7 +27,7 @@ namespace Grc.ui.App.Controllers {
                                  IErrorService errorService, 
                                  IGrcErrorFactory errorFactory,
                                  SessionManager sessionManager) {
-            Logger = loggerFactory.CreateLogger("app_controllers");
+            Logger = loggerFactory.CreateLogger();
             Environment = environment;
             WebHelper = webHelper;
             LocalizationService = localizationService;

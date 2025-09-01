@@ -3,6 +3,7 @@ using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
 using Grc.ui.App.Extensions.Http;
 using Grc.ui.App.Http;
+using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
@@ -95,6 +96,31 @@ namespace Grc.ui.App.Factories {
                 BugProgress = stats.BugProgress,
                 UserReportedBugs = stats.UserReportedBugs,
             };
+        }
+
+        public async Task<AdminDashboardModel> PrepareDefaultModelAsync(UserModel currentUser) {
+            // Get recents from session
+            var recents = _sessionManager.Get<List<RecentModel>>(SessionKeys.RecentItems.GetDescription()) ?? new List<RecentModel>();
+
+            //..get pinned items
+            var pinData = await _pinnedService.GetPinnedItemAsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var pins = new List<PinnedModel>();
+            if(!pinData.HasError){ 
+                var pinItems = pinData.Data;
+                if(pinItems.Count > 0){ 
+                    foreach(var pin in pinItems){ 
+                        pins.Add(_mapper.Map<PinnedModel>(pin));
+                    }
+                }
+            }
+            
+            return await Task.FromResult(new AdminDashboardModel {
+                PinnedItems = pins,
+                Recents = recents,
+                Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
+                //..set workspace into seession
+                Workspace = _sessionManager.GetWorkspace(),
+            });
         }
     }
 }

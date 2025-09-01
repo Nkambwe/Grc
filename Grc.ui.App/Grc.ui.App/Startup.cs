@@ -46,6 +46,7 @@ namespace Grc.ui.App {
             services.AddScoped<IPinnedModelFactory, PinnedModelFactory>();
             services.AddScoped<IQuickActionModelFactory, QuickActionModelFactory>();
             services.AddScoped<IDashboardFactory, DashboardFactory>();
+            services.AddScoped<IDepartmentFactory, DepartmentFactory>();
             services.AddScoped<ISupportDashboardFactory, SupportDashboardFactory>();
             services.AddScoped<IGrcErrorFactory, GrcErrorFactory>();
 

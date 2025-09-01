@@ -3,6 +3,18 @@
         public int Priority => 0;
 
         public void RegisterRoutes(IEndpointRouteBuilder routeBuilder) {
+            
+            routeBuilder.MapControllerRoute(
+                name: "admin-departments",
+                pattern: "admin/support/departments",
+                defaults: new { area = "Admin", controller = "Support", action = "Departments" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                name: "admin-settings",
+                pattern: "admin/settings",
+                defaults: new { area = "Admin", controller = "Settings", action = "Index" }
+            );
 
             // Dashboard
             routeBuilder.MapControllerRoute(
@@ -58,13 +70,7 @@
                 pattern: "/Error/Status404/",
                 defaults: new { controller = "Error", action = "Status404" }
             );
-
-            routeBuilder.MapControllerRoute(
-                name: "admin-settings",
-                pattern: "admin/settings",
-                defaults: new { area = "Admin", controller = "Settings", action = "Index" }
-            );
-
+            
             //..admin areas
             routeBuilder.MapControllerRoute(
                 name: "areas",
