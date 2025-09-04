@@ -6,3 +6,4 @@ namespace Grc.ui.App.Factories {
         Task<AdminDashboardModel>  PrepareAdminDashboardModelAsync(UserModel model);
     }
 }
+   

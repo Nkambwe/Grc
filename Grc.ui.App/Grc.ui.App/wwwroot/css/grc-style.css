@@ -59,6 +59,26 @@ body {
     flex-shrink: 0;
 }
 
+.app-seach-box {
+    margin: 0;
+    padding: 5px;
+}
+
+span.app-serach {
+    width: 25px;
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    transition: all .5s ease-in-out;
+}
+
+.app-seach-box:hover {
+    cursor: pointer;
+    color: var(--teal-dark-accent);
+    transition: all .5s ease-in-out;
+}
+
 .menu-box {
     height: 60px;
     width: 70px;
@@ -252,13 +272,13 @@ body {
 }
 
     .dropdown-item:hover {
-        background: var(--teal-light-extra);
-        color: var(--teal-light-medium);
+        color: var(--teal-light-strong);
+        background-color: var(--teal-light-extra);
     }
 
 .dropdown-divider {
     border: none;
-    border-top: 1px solid #e1e8ed;
+    border-top: 1px solid var(--grey-light-strong);
     margin: 8px 0;
 }
 

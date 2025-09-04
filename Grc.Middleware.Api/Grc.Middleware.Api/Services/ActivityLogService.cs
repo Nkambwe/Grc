@@ -7,7 +7,6 @@ using System.Text.Json;
 using Grc.Middleware.Api.Enums;
 using Microsoft.EntityFrameworkCore;
 using Grc.Middleware.Api.Helpers;
-using Azure.Core;
 
 namespace Grc.Middleware.Api.Services {
 
@@ -475,4 +474,5 @@ namespace Grc.Middleware.Api.Services {
             }
         }
     }
+
 }

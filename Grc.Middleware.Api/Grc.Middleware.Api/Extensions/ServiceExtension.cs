@@ -22,6 +22,8 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<IBranchRepository, BranchRepository>();
+            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            services.AddScoped<IDepartmentUnitRepository, DepartmentUnitRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserViewRepository, UserViewRepository>();
             services.AddScoped<IUserPreferenceRepository, UserPreferenceRepository>();
@@ -58,6 +60,7 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IActivityLogService, ActivityLogService>();
             services.AddScoped<IActivityTypeService, ActivityTypeService>();
             services.AddScoped<IActivityLogSettingService, ActivityLogSettingService>();
+            services.AddScoped<IDepartmentsService, DepartmentsService>();
             services.AddScoped<IQuickActionService, QuickActionService>();
             services.AddScoped<IPinnedItemService, PinnedItemService>();
             

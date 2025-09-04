@@ -18,6 +18,8 @@ namespace Grc.Middleware.Api.Data.Containers {
         IActivityTypeRepository ActivityTypeRepository { get; set; }
         IActivityLogRepository ActivityLogRepository { get; set; }
         IActivityLogSettingRepository ActivityLogSettingRepository { get; set; }
+        IDepartmentRepository DepartmentRepository { get; set; }
+        IDepartmentUnitRepository DepartmentUnitRepository { get; set; }
 
         Task<int> SaveChangesAsync(); 
         int SaveChanges(); 

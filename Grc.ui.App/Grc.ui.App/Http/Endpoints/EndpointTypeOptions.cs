@@ -7,5 +7,6 @@
         public RegistrationEndpoints Registration { get; set; } = new();
         public ErrorEndpoints Errors { get; set; } = new();
         public ActivityLogEndpoints ActivityLog { get; set; } = new();
+        public DepartmentEndpoints Departments { get; set; } = new();
     }
 }

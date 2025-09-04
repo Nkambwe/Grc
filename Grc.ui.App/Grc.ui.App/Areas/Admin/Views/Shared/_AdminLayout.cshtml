@@ -20,8 +20,8 @@
         Html.AddCssFileParts("~/lib/sweet-alert/sweetalert2.css");
         Html.AddCssFileParts("~/lib/datatables/datatables.css");
         Html.AddCssFileParts("~/lib/datatables/datatables.min.css");
-        Html.AddCssFileParts("~/css/admin-tables-styles.css", excludeFromBundle: false);
-        Html.AddCssFileParts("~/css/admin-style.css", excludeFromBundle: false);
+        Html.AddCssFileParts("~/css/admin-tables-styles.css");
+        Html.AddCssFileParts("~/css/admin-style.css");
     }
 
     <script src="~/lib/toastr/toastr.min.js"></script>
@@ -56,9 +56,9 @@
             </div>
 
             <div class="header-align-right">
-                <div class="user-avator">
+                <div class="app-seach-box">
                     <span class="app-serach">
-                        <i class="mdi mdi-feature-search-outline"></i>
+                        <i class="mdi mdi-magnify"></i>
                     </span>
                 </div>
                 
@@ -383,6 +383,7 @@
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-script.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/datatables/datatables.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/datatables/datatables.min.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-script-other.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-tables.js");
     }
 

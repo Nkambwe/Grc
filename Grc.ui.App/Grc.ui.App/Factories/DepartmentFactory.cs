@@ -38,10 +38,25 @@ namespace Grc.ui.App.Factories {
         }
 
         public async Task<DepartmentListModel> PrepareDepartmentListModelAsync(UserModel currentUser) {
-            var model = new DepartmentListModel(){ 
-                Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
-                //..set workspace into seession
-                Workspace = _sessionManager.GetWorkspace(),    
+            var model = new DepartmentListModel {
+                Departments = new List<DepartmentModel>() {
+                    new() {
+                        DepartmentCode = "DIT",
+                        DepartmentName = "Degitization and Innovation",
+                        DepartmentAlias = "Digitization",
+                        IsDeleted = false,
+                        CreatdOn = DateTime.Now.AddDays(-100)
+
+                    },
+                    new() {
+                        DepartmentCode = "BIT",
+                        DepartmentName = "Business Technology",
+                        DepartmentAlias = "BT",
+                        IsDeleted = false,
+                        CreatdOn = DateTime.Now.AddDays(-80)
+
+                    }
+                }
             };
             return await Task.FromResult(model);
         }

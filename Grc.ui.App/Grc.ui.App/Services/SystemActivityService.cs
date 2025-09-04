@@ -22,10 +22,10 @@ namespace Grc.ui.App.Services {
                var endpoint = $"{EndpointProvider.ActivityLog.AllActivities}";
                 return await HttpHandler.PostAsync<TableListRequest, PagedResponse<ActivityModel>>(endpoint, model);
             } catch (Exception ex) {
-                Logger.LogActivity($"Error retrieving user quick action items: {ex.Message}", "Error");
+                Logger.LogActivity($"Error retrieving all activities: {ex.Message}", "Error");
                 var error = new GrcResponseError(
                     GrcStatusCodes.SERVERERROR,
-                    "Error retrieving user quick action items",
+                    "Error retrieving list of activities",
                     ex.Message
                 );
 
@@ -79,4 +79,5 @@ namespace Grc.ui.App.Services {
         }
 
     }
+
 }

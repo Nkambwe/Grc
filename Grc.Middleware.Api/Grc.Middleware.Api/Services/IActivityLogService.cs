@@ -20,4 +20,5 @@ namespace Grc.Middleware.Api.Services {
         Task ClearAllActivitiesAsync();       
         
     }
+
 }

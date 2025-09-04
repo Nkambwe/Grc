@@ -1,0 +1,115 @@
+﻿.main-content {
+    padding: 0 20px!important;
+}
+.grc-page-component {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.grc-component-header {
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    border-bottom: solid 1px var(--grey-light-slightly);
+}
+
+.component-header-left {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 1px;
+    padding: 0 10px;
+}
+
+.component-header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.grc-component-content {
+    height:auto;
+    overflow:auto;
+}
+
+.component-label {
+    padding: 10px;
+    font-size: 1.2em;
+    font-weight: 600;
+    color: var(--teal-light-strong);
+    border-right: solid 1px var(--grey-light-strong);
+}
+
+.icon-btn,
+.action-btn {
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    color: var(--grey-dark-slightly);
+    background: transparent;
+    transition: all .3s ease-in-out;
+}
+
+    button.icon-btn:hover,
+    button.icon-btn:hover span {
+        color: var(--teal-dark-slightly);
+    }
+
+.action-btn:hover,
+.action-btn:hover span{
+    color: var(--teal-light-strong);
+    transition: all .3s ease-in-out;
+}
+
+.header-more-list {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.more-actions-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+    min-width: 200px;
+    z-index: 10;
+    flex-direction: column;
+}
+
+.header-more-list.open .more-actions-dropdown {
+    display: flex;
+}
+
+.dropdown-item span:first-child {
+    margin-right: 0.5rem;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    white-space: nowrap;
+}
+
+.grc-content-placeholder {
+
+}
+
+.component-label {
+
+}
+
+.action-btn {
+}
+

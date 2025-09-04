@@ -21,6 +21,10 @@
       "PackagePath": "staticwebassets\\css\\color-pallete.css"
     },
     {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\component-styles.css",
+      "PackagePath": "staticwebassets\\css\\component-styles.css"
+    },
+    {
       "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\grc-style.css",
       "PackagePath": "staticwebassets\\css\\grc-style.css"
     },
@@ -55,6 +59,14 @@
     {
       "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\images\\no_service.png",
       "PackagePath": "staticwebassets\\images\\no_service.png"
+    },
+    {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\Component-script.js",
+      "PackagePath": "staticwebassets\\js\\Component-script.js"
+    },
+    {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-script-other.js",
+      "PackagePath": "staticwebassets\\js\\admin-script-other.js"
     },
     {
       "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-script.js",

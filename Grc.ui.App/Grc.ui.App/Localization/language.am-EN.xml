@@ -18,7 +18,49 @@
     <LocaleResource Name="App.Label.Signin">
         <Value>Sign in</Value>
     </LocaleResource>
+    <LocaleResource Name="App.Label.New">
+        <Value>New</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Edit">
+        <Value>Edit</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Delete">
+        <Value>Delete</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Search">
+        <Value>Search</Value>
+    </LocaleResource>
 
+    <LocaleResource Name="Component.Key.Departments">
+        <Value>Departments</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Departments">
+        <Value>Departments</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Users">
+        <Value>Users</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Roles">
+        <Value>Roles</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Permissions">
+        <Value>Permission Sets</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Delegations">
+        <Value>Delegation</Value>
+    </LocaleResource>    
+    <LocaleResource Name="Component.Label.QuickAction">
+        <Value>Add to Quick Action</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Shortcut">
+        <Value>Create Shortcut</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Export">
+        <Value>Export Data</Value>
+    </LocaleResource>
+        <LocaleResource Name="Component.Label.Share">
+        <Value>Share View</Value>
+    </LocaleResource>
 
     <LocaleResource Name="App.User.Views">
         <Value>Views</Value>

@@ -9,6 +9,7 @@ namespace Grc.ui.App.Utils {
         public HealthEndpoint Health => _options.Health;
         public RegistrationEndpoints Registration => _options.Registration;
         public ActivityLogEndpoints ActivityLog => _options.ActivityLog;
+        public DepartmentEndpoints Departments => _options.Departments;
         public ErrorEndpoints Error => _options.Errors;
         public EndpointTypeProvider(IOptions<EndpointTypeOptions> options) {
             _options = options.Value;  

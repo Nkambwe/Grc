@@ -53,6 +53,26 @@ body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+.app-seach-box {
+    margin:0;
+    padding:5px;
+}
+
+span.app-serach {
+    width: 25px;
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    transition: all .5s ease-in-out;
+}
+
+.app-seach-box:hover {
+    cursor: pointer;
+    color: var(--teal-dark-accent);
+    transition: all .5s ease-in-out;
+}
+
 .header-align-left {
     display: flex;
     align-items: center;
@@ -131,17 +151,21 @@ body {
     justify-content: center;
     color: var(--grey-light-strong);
     background: var(--black-trans);
+    transition: all .3s ease-in-out;
 }
 
     .icon-btn span {
         display: block;
         width: 100%;
-        font-size:1em;
+        font-size: 1em;
         color: var(--grey-light-strong);
+        transition: all .3s ease-in-out;
     }
 
-    .icon-btn:hover {
+    .icon-btn:hover,
+    .icon-btn:hover span {
         color: var(--teal-dark-slightly);
+        transition: all .3s ease-in-out;
     }
 
 /* Expanded state */
@@ -541,7 +565,24 @@ body {
     position: relative;
     background-color: var(--background-color);
     overflow-y: auto;
+    width: 100%;
+    margin-left: 0;
     transition: all 0.3s ease;
+}
+
+.status-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-error {
+    background-color: #f8d7da;
+    color: #721c24;
 }
 
 /* Button styles */
@@ -803,9 +844,6 @@ body {
     margin-right: 5px
 }
 
-.stat-label {
-}
-
 @keyframes dropdownFadeIn {
     from {
         opacity: 0;
@@ -859,31 +897,4 @@ body {
                 left: 0;
                 width: var(--sidebar-collapsed-width);
             }
-
-    .main-content {
-        width: 100%;
-        margin-left: 0;
-    }
-
-    .connection-status {
-        padding: 5px 10px;
-        border-radius: 3px;
-        font-size: 0.9em;
-        margin-bottom: 10px;
-    }
-
-    .status-success {
-        background-color: #d4edda;
-        color: #155724;
-    }
-
-    .status-warning {
-        background-color: #fff3cd;
-        color: #856404;
-    }
-
-    .status-error {
-        background-color: #f8d7da;
-        color: #721c24;
-    }
 }

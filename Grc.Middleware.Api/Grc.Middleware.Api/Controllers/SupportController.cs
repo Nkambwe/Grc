@@ -19,10 +19,13 @@ namespace Grc.Middleware.Api.Controllers {
         private readonly IActivityTypeService _activityTypeService;
         private readonly IActivityLogSettingService _activitySettingService;
 
+        private readonly IDepartmentsService _departmentsService;
+
         public SupportController(
             IActivityLogService activityLogService,
             IActivityTypeService activityTypeService,
             IActivityLogSettingService activitySettingService,
+            IDepartmentsService departmentsService,
             IObjectCypher cypher, 
             IServiceLoggerFactory loggerFactory, 
             IMapper mapper, IEnvironmentProvider environment,
@@ -33,6 +36,7 @@ namespace Grc.Middleware.Api.Controllers {
             _activityLogService = activityLogService;
             _activityTypeService = activityTypeService;
             _activitySettingService = activitySettingService;
+            _departmentsService = departmentsService;
         }
 
         #region Activity logging
@@ -166,5 +170,131 @@ namespace Grc.Middleware.Api.Controllers {
             }    
         }
         #endregion
+
+        #region departments
+        [HttpPost("departments/allDepartments")]
+        public async Task<IActionResult> AllDepartments([FromBody] ListRequest request) {
+                try {
+                    Logger.LogActivity($"{request.Action}", "INFO");
+
+                    if (request == null) {
+                        var error = new ResponseError(
+                            ResponseCodes.BADREQUEST,
+                            "Request record cannot be empty",
+                            "Invalid request body"
+                        );
+                        Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<PagedResponse<DepartmentResponse>>(error));
+                    }
+
+                    Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+
+                    var pageResult = await _departmentsService.GetPagedDepartmentsAsync(
+                        pageIndex:request.PageIndex, 
+                        pageSize:request.PageSize,
+                        includeDeleted:request.IncludeDeleted);
+
+                    //..map response
+                    List<DepartmentResponse> data = new();
+                    if(pageResult.Entities != null && pageResult.Entities.Any()) { 
+                        data = pageResult.Entities.Select(Mapper.Map<DepartmentResponse>).ToList();
+                    }
+                    
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(data)}");
+                    return Ok(new GrcResponse<PagedResponse<DepartmentResponse>>(new PagedResponse<DepartmentResponse>(
+                                data,
+                                pageResult.Count,
+                                pageResult.Page,
+                                pageResult.Size
+                            )));
+                } catch (Exception ex) {
+                    Logger.LogActivity($"{ex.Message}", "ERROR");
+                    Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Oops! Something went wrong",
+                        $"System Error - {ex.Message}"
+                    );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<ActivityLogResponse>>(error));
+                }
+            }
+        
+        [HttpPost("departments/saveDepartment")]
+        public async Task<IActionResult> SaveDepartment([FromBody] DepartmentRequest request) {
+
+            //try {
+
+            //    Logger.LogActivity("Process activity log record for persistance", "INFO");
+            //    if (request == null) { 
+            //        var error = new ResponseError(
+            //            ResponseCodes.BADREQUEST,
+            //            "Request record cannot be empty",
+            //            "The company registration model cannot be null"
+            //        );
+        
+            //        Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+            //        return Ok(new GrcResponse<GeneralResponse>(error));
+            //    }
+
+            //    Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+            //    //..get activity type
+            //    ActivityType type = null;
+            //    if (!string.IsNullOrWhiteSpace(request.Activity)) {
+            //        type = await _activityTypeService.GetActivityTypeByNameAsync(request.Activity);
+            //    }
+
+            //    if(type == null && !string.IsNullOrWhiteSpace(request.SystemKeyword)) { 
+            //        type = await _activityTypeService.GetActivityTypeBySystemKeywordAsync(request.SystemKeyword);
+            //    }
+
+            //    //..create company
+            //    var result = await _activityLogService.InsertActivityAsync(type,request.Comment, request.UserId, request.IPAddress, request.EntityName);
+
+            //    var response = new GeneralResponse();
+            //    if(result){
+            //        response.Status = true;
+            //        response.StatusCode = (int)ResponseCodes.SUCCESS;
+            //        response.Message = "Registration completed successfully";    
+            //        Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+            //    } else { 
+            //        response.Status = true;
+            //        response.StatusCode = (int)ResponseCodes.FAILED;
+            //        response.Message = "Failed to complete regiatration. An error occurrred";  
+            //        Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+            //    }
+
+            //    return Ok(new GrcResponse<GeneralResponse>(response));
+            //} catch (Exception ex) { 
+            //    Logger.LogActivity($"{ex.Message}", "ERROR");
+            //    Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+            //    var error = new ResponseError(
+            //        ResponseCodes.BADREQUEST,
+            //        $"Oops! Something thing went wrong",
+            //        $"System Error - {ex.Message}"
+            //    );
+        
+            //    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+            //    return Ok(new GrcResponse<GeneralResponse>(error));
+            //}
+            //
+            return null;
+        }
+
+        [HttpPost("departments/updateDepartment")]
+        public async Task<IActionResult> UpdateDepartment([FromBody] DepartmentRequest request) {
+            return null;
+        }
+        
+        [HttpPost("departments/deleteDepartment")]
+        public async Task<IActionResult> DeleteDepartment([FromBody] DepartmentRequest request) {
+            return null;
+        }
+
+        #endregion
+
     }
 }

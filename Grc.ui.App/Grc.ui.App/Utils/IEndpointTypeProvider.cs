@@ -6,6 +6,7 @@ namespace Grc.ui.App.Utils {
         HealthEndpoint Health { get; }
         RegistrationEndpoints Registration { get; }
         ActivityLogEndpoints ActivityLog { get; }
+        DepartmentEndpoints Departments { get; }
         ErrorEndpoints Error { get; }
     }   
 }

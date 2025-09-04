@@ -8,4 +8,5 @@ namespace Grc.ui.App.Services {
         Task<GrcResponse<PagedResponse<ActivityModel>>> GetActivityLogsAsync(TableListRequest request);
         Task<GrcResponse<ServiceResponse>> InsertActivityAsync(long userId, string activity, string comment, string systemKeyword=null, string entityName=null, string ipAddress = null);
     }
+
 }

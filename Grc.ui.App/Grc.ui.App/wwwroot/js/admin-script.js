@@ -329,32 +329,32 @@ $(document).ready(function() {
     });
     
     // Search functionality (if you want to add search in sidebar)
-    function initializeSearch() {
-        const $searchInput = $('<input>', {
-            type: 'text',
-            class: 'sidebar-search',
-            placeholder: 'Search menu...',
-            style: 'display: none; width: calc(100% - 2rem); margin: 0.5rem 1rem; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;'
-        });
+    //function initializeSearch() {
+    //    const $searchInput = $('<input>', {
+    //        type: 'text',
+    //        class: 'sidebar-search',
+    //        placeholder: 'Search menu...',
+    //        style: 'display: none; width: calc(100% - 2rem); margin: 0.5rem 1rem; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;'
+    //    });
         
-        // Add search input to sidebar (uncomment if needed)
-        // $('.sidebar-geader').after($searchInput);
+    //    // Add search input to sidebar (uncomment if needed)
+    //    // $('.sidebar-geader').after($searchInput);
         
-        $searchInput.on('input', function() {
-            const searchTerm = $(this).val().toLowerCase();
+    //    $searchInput.on('input', function() {
+    //        const searchTerm = $(this).val().toLowerCase();
             
-            $('.sidebar-item').each(function() {
-                const $item = $(this);
-                const text = $item.find('.sidebar-text').text().toLowerCase();
+    //        $('.sidebar-item').each(function() {
+    //            const $item = $(this);
+    //            const text = $item.find('.sidebar-text').text().toLowerCase();
                 
-                if (text.includes(searchTerm) || searchTerm === '') {
-                    $item.show();
-                } else {
-                    $item.hide();
-                }
-            });
-        });
-    }
+    //            if (text.includes(searchTerm) || searchTerm === '') {
+    //                $item.show();
+    //            } else {
+    //                $item.hide();
+    //            }
+    //        });
+    //    });
+    //}
 
     let isExpanded = false;
 

@@ -2,6 +2,7 @@ wwwroot\css\admin-style.css
 wwwroot\css\admin-tables-styles.css
 wwwroot\css\app.css
 wwwroot\css\color-pallete.css
+wwwroot\css\component-styles.css
 wwwroot\css\grc-style.css
 wwwroot\css\login-style.css
 wwwroot\css\register-styles.css
@@ -12,8 +13,10 @@ wwwroot\images\logo.png
 wwwroot\images\logo-white.png
 wwwroot\images\no_service.png
 wwwroot\js\admin-script.js
+wwwroot\js\admin-script-other.js
 wwwroot\js\admin-tables.js
 wwwroot\js\bug-signalr-script.js
+wwwroot\js\Component-script.js
 wwwroot\js\grc-app.js
 wwwroot\js\grc-sidebar.js
 wwwroot\js\login-script.js

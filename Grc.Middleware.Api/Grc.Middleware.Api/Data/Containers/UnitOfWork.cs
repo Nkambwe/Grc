@@ -32,7 +32,8 @@ namespace Grc.Middleware.Api.Data.Containers {
         public IActivityTypeRepository ActivityTypeRepository { get; set; }
         public IActivityLogRepository ActivityLogRepository { get; set; }
         public IActivityLogSettingRepository ActivityLogSettingRepository { get; set; }
-
+        public IDepartmentRepository DepartmentRepository { get; set; }
+        public IDepartmentUnitRepository DepartmentUnitRepository { get; set; }
         #endregion
 
         public UnitOfWork(IServiceLoggerFactory loggerFactory,
@@ -61,6 +62,8 @@ namespace Grc.Middleware.Api.Data.Containers {
             ActivityLogRepository = new ActivityLogRepository(_loggerFactory, Context);
             ActivityTypeRepository = new ActivityTypeRepository(_loggerFactory, Context);
             ActivityLogSettingRepository = new ActivityLogSettingRepository(_loggerFactory, Context);
+            DepartmentRepository = new DepartmentRepository(_loggerFactory, Context);
+            DepartmentUnitRepository = new DepartmentUnitRepository(_loggerFactory, Context);
         }
 
         /// <summary>
@@ -188,6 +191,8 @@ namespace Grc.Middleware.Api.Data.Containers {
                     ActivityLogSettingRepository = null;
                     UserPreferenceRepository = null;
                     UserViewRepository = null;
+                    DepartmentRepository = null;
+                    DepartmentUnitRepository = null;
                 }
             }
             _disposed = true;

@@ -1,94 +1,141 @@
 ﻿$(document).ready(function () {
 
-    var table = $('#tblActivity').DataTable({
-        //..disable search functionality
-        searching: false,
-        
-        //..show pagination
-        paging: true,
-        
-        //..remove entries per page dropdown
-        lengthChange: false,
-        
-        //..remove display info showing x to y of z entries
-        info: false,
-        
-        //..allow ordering/sorting
-        ordering: true,
-        
-        //..make it responsive
-        responsive: true,
-
-        processing: true,
-
-        //..using server paging
-        serverSide: true,
-        ajax: {
-            url: '/support/activities/allActivities',
-            type: 'POST',
-            contentType: "application/json",
-            data: function (d) {
-                return JSON.stringify({
-                    pageIndex: (d.start / d.length) + 1,
-                    pageSize: d.length,
-                    includeDeleted: false,
-                    action: "LOAD_ACTIVITIES"
-                });
+    //..activity table
+    if ($("#tblActivity").length) {
+        var activityTable = $('#tblActivity').DataTable({
+            searching: false,
+            paging: true,
+            lengthChange: false,
+            info: false,
+            ordering: true,
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '/support/activities/allActivities',
+                type: 'POST',
+                contentType: "application/json",
+                data: function (d) {
+                    return JSON.stringify({
+                        pageIndex: (d.start / d.length) + 1,
+                        pageSize: d.length,
+                        includeDeleted: false,
+                        action: "LOADACTIVITIES"
+                    });
+                },
+                dataSrc: function (json) {
+                    console.log('Ajax response:', json); 
+                    return json.data || [];
+                },
+                error: function (xhr, status, error) {
+                    showToast("error", `Failed to load activity data: ${error}`);
+                    console.error('Error during Ajax request:', error);
+                }
             },
-            dataSrc: function (json) {
-                console.log('Ajax response:', json); 
-                return json.data || [];
-            },
-            error: function (xhr, status, error) {
-                console.error('Error during Ajax request:', error);
+            columns: [
+                { 
+                    data: null, 
+                    render: function (d, t, r) {
+                        return `<a href="/Admin/Support/ActivityRecord/${r.userId}">${r.userFirstName} ${r.userLastName}</a>`;
+                    }
+                }, 
+                { 
+                    data: "userEmail", 
+                    render: function (d, t, r) {
+                        return `<a href="mailto:${r.userEmail}">${r.userEmail}</a>`;
+                    }
+                },
+                { data: "entityName" },
+                { data: "period" },
+                { data: "comment" }
+            ],
+            language: {
+                emptyTable: "No activity data available"
             }
-        },
+        });
 
-        columns: [
-            { 
-                data: null, 
-                render: function (d, t, r) {
-                    return `<a href="/Admin/Support/ActivityRecord/${r.userId}">${r.userFirstName} ${r.userLastName}</a>`;
-                }
-            }, 
-            { 
-                data: "userEmail", 
-                render: function (d, t, r) {
-                    return `<a href="mailto:${r.userEmail}">${r.userEmail}</a>`;
+        //..set row selection
+        setupRowSelection('#tblActivity', activityTable);
+    }
+
+
+    //..departments table
+    if ($("#departmentsTable").length) {
+        var departmentsTable = $('#departmentsTable').DataTable({
+            searching: false,
+            paging: true,
+            lengthChange: false,
+            info: false,
+            ordering: true,
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '/support/departments/allDepartments',
+                type: 'POST',
+                contentType: "application/json",
+                data: function (d) {
+                    return JSON.stringify({
+                        pageIndex: (d.start / d.length) + 1,
+                        pageSize: d.length,
+                        includeDeleted: false,
+                        action: "LOADDEPARTMENTS"
+                    });
+                },
+                dataSrc: function (json) {
+                    console.log('Ajax response:', json); 
+                    return json.data || [];
+                },
+                error: function (xhr, status, error) {
+                     showToast("error", `Failed to load department data: ${error}`);
+                    console.error('Error during Ajax request:', error);
                 }
             },
-            { data: "entityName" },
-            { data: "period" },
-            { data: "comment" }
-        ],
+            columns: [
+                { data: "departmentCode" },
+                { data: "departmentName" },
+                { data: "departmentAlias" },
+                { data: "isDeleted" },
+                { data: "branch" },
+                { data: "creatdOn" }
+            ],
+            language: {
+                emptyTable: "No department data available"
+            }
+        });
 
-        
-        //..custom language settings
-        language: {
-            emptyTable: "No activity data available"
-        }
-    });
-    
+        //..set row selection
+        setupRowSelection('#departmentsTable', departmentsTable);
+    }
+   
     //..activate link clicks only when row is selected
-    $('#tblActivity tbody').on('click', 'a', function (e) {
-        var $link = $(this);
-        var $row = $link.closest('tr');
-        
-        //..prevent events from propergating to the row handler
+    $('#tblActivity tbody, #departmentsTable tbody').on('click', 'a', function (e) {
         e.stopPropagation();
 
-        //..row is not selected
+        const $link = $(this);
+        const $row = $link.closest('tr');
+
         if (!$row.hasClass('row-selected')) {
-            e.preventDefault();
+            e.preventDefault(); 
             return false;
         }
-        
-        //..log selected row
-        console.log('Link clicked:', $link.text(), 'Row selected:', $row.hasClass('row-selected'));
+
+        console.log('Link clicked:', $link.text(), 'Row selected');
     });
 
-    //..select table row
-    $('#tblActivity tbody').on('click', 'tr', function (e) {
+    //..prevent text selection on double click
+    $('#tblActivity, #departmentsTable').on('selectstart', function() {
+        return false;
+    });
+
+    //..override DataTables alerts
+    $.fn.dataTable.ext.errMode = function ( settings, helpPage, message ) {
+        showToast("error", message);
+    };
+});
+
+function setupRowSelection(tableSelector, dataTableInstance) {
+    $(`${tableSelector} tbody`).on('click', 'tr', function (e) {
         //..don't select row if clicking on a link in a selected row
         if ($(e.target).is('a') && $(this).hasClass('row-selected')) {
             return;
@@ -97,31 +144,43 @@
         var $row = $(this);
 
         if ($row.hasClass('row-selected')) {
+            //..unselect
             $row.removeClass('row-selected');
-            //..disable links in this row
             $row.find('a').removeClass('active').attr('tabindex', '-1');
-
-            //..remove arrow icon
             $row.find('.row-selection-icon').remove();
         } else {
-            //..remove selection from all other rows
-            table.$('tr.row-selected').removeClass('row-selected');
-            table.$('tr a').removeClass('active').attr('tabindex', '-1');
-            
-            //..remove all arrow icons
-            table.$('tr .row-selection-icon').remove();
+            //..clear other selections in this table
+            dataTableInstance.$('tr.row-selected').removeClass('row-selected');
+            dataTableInstance.$('tr a').removeClass('active').attr('tabindex', '-1');
+            dataTableInstance.$('tr .row-selection-icon').remove();
 
-            //..select current row
+            //..select this row
             $row.addClass('row-selected');
-            //..enable links in selected row
             $row.find('a').addClass('active').removeAttr('tabindex');
-             //..add arrow icon to first cell
             $row.find('td:first').prepend('<i class="mdi mdi-arrow-right row-selection-icon"></i>');
         }
     });
+}
 
-    //..prevent text selection on double click
-    $('#tblActivity').on('selectstart', function() {
-        return false;
-    });
-});
+function showToast(type, message) {
+    const toast = $(`
+        <div class="toast-notification toast-${type}">
+            <i class="mdi ${type === 'success' ? 'mdi-check-circle' : 'mdi-alert-circle'}"></i>
+            <span>${message}</span>
+        </div>
+    `);
+
+    $("body").append(toast);
+
+    // animate in
+    setTimeout(() => {
+        toast.addClass("show");
+    }, 50);
+
+    // animate out & remove
+    setTimeout(() => {
+        toast.removeClass("show");
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
+

@@ -13,7 +13,6 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -25,6 +24,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         private readonly IAuthenticationService _authService;
         private readonly ISupportDashboardFactory _dDashboardFactory;
         private readonly ISystemActivityService _activityService;
+        private readonly IDepartmentService _departmentService;
         private readonly IDepartmentFactory _departmentfactory;
         
         public SupportController(IApplicationLoggerFactory loggerFactory, 
@@ -36,6 +36,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                                  ISupportDashboardFactory dDashboardFactory,
                                  IErrorService errorService,
                                  ISystemActivityService activityService,
+                                 IDepartmentService departmentService,
                                  IDepartmentFactory departmentfactory,
                                  IGrcErrorFactory errorFactory,
                                  SessionManager sessionManager) 
@@ -44,6 +45,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             _accessService = accessService;
             _authService = authService;
             _departmentfactory = departmentfactory;
+            _departmentService = departmentService;
             _dDashboardFactory = dDashboardFactory;
             _activityService = activityService;
         }
@@ -75,55 +77,6 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             return View(model);
         }
 
-        [HttpPost("support/activities/allActivities")]
-        public async Task<IActionResult> AllActivities([FromBody] TableListRequest request) {
-
-            try{
-                //..get user IP address
-                var ipAddress = WebHelper.GetCurrentIpAddress();
-
-                //..get current authenticated user record
-                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (grcResponse.HasError) {
-                        Logger.LogActivity($"ACTIVITY DATA ERROR: Failed to Current user record - {JsonSerializer.Serialize(grcResponse)}");
-                }
-
-                //..update with user data
-                var currentUser = grcResponse.Data;
-                request.UserId = currentUser.UserId;
-                request.IPAddress = ipAddress;
-                request.PageSize = 7;
-
-                //..get list of a activity logs
-                var activitydata = await _activityService.GetActivityLogsAsync(request);
-
-                PagedResponse<ActivityModel> activityList = new ();
-                if(activitydata.HasError){ 
-                    Logger.LogActivity($"ACTIVITY DATA ERROR: Failed to retrieve activity log items - {JsonSerializer.Serialize(activitydata)}");
-                } else {
-                    activityList = activitydata.Data;
-                    Logger.LogActivity($"ACTIVITY DATA ERROR: Failed to retrieve activity log items - {JsonSerializer.Serialize(activityList)}");
-                }
-
-                activityList.Entities ??= new();
-                return Ok(new {
-                    data = activityList.Entities,
-                    recordsTotal = activityList.TotalCount ,
-                    recordsFiltered = activityList.TotalCount 
-                });
-            } catch(Exception ex){
-                Logger.LogActivity($"Error retrieving activity logs: {ex.Message}", "ERROR");
-                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
-
-                return Ok(new {
-                    data = new List<ActivityModel>(),
-                    recordsTotal = 0 ,
-                    recordsFiltered = 0
-                });
-            }
-            
-        }
-
         public async Task<IActionResult> Departments() {
            var model = new AdminDashboardModel();
             try {
@@ -142,6 +95,10 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+
+                //..prepare deparmenet list model
+                model.DepartmentListModel = await _departmentfactory.PrepareDepartmentListModelAsync(currentUser); 
+
             } catch(Exception ex){ 
                 await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
                 return View(model);
@@ -553,6 +510,108 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 });
             }
         }
+
+        #region Data actions
+        
+        [HttpPost("support/activities/allActivities")]
+        public async Task<IActionResult> AllActivities([FromBody] TableListRequest request) {
+
+            try{
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                        Logger.LogActivity($"ACTIVITY DATA ERROR: Failed to Current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                //..update with user data
+                var currentUser = grcResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.PageSize = 7;
+
+                //..get list of a activity logs
+                var activitydata = await _activityService.GetActivityLogsAsync(request);
+
+                PagedResponse<ActivityModel> activityList = new ();
+                if(activitydata.HasError){ 
+                    Logger.LogActivity($"ACTIVITY DATA ERROR: Failed to retrieve activity log items - {JsonSerializer.Serialize(activitydata)}");
+                } else {
+                    activityList = activitydata.Data;
+                    Logger.LogActivity($"ACTIVITY DATA - {JsonSerializer.Serialize(activityList)}");
+                }
+
+                activityList.Entities ??= new();
+                return Ok(new {
+                    data = activityList.Entities,
+                    recordsTotal = activityList.TotalCount ,
+                    recordsFiltered = activityList.TotalCount 
+                });
+            } catch(Exception ex){
+                Logger.LogActivity($"Error retrieving activity logs: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+
+                return Ok(new {
+                    data = new List<ActivityModel>(),
+                    recordsTotal = 0 ,
+                    recordsFiltered = 0
+                });
+            }
+            
+        }
+
+        [HttpPost("support/departments/allDepartments")]
+        public async Task<IActionResult> AllDepartments([FromBody] TableListRequest request) {
+
+            try{
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                        Logger.LogActivity($"DEPARTMENT DATA ERROR: Failed to Current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                //..update with user data
+                var currentUser = grcResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.PageSize = 7;
+
+                //..get list of a departments logs
+                var departmentdata = await _departmentService.GetDepartmentsAsync(request);
+
+                PagedResponse<DepartmentModel> deparmentList = new ();
+                if(departmentdata.HasError){ 
+                    Logger.LogActivity($"ACTIVITY DATA ERROR: Failed to retrieve department log items - {JsonSerializer.Serialize(departmentdata)}");
+                } else {
+                    deparmentList = departmentdata.Data;
+                    Logger.LogActivity($"DEPARTMENT DATA - {JsonSerializer.Serialize(deparmentList)}");
+                }
+
+                deparmentList.Entities ??= new();
+                return Ok(new {
+                    data = deparmentList.Entities,
+                    recordsTotal = deparmentList.TotalCount ,
+                    recordsFiltered = deparmentList.TotalCount 
+                });
+            } catch(Exception ex){
+                Logger.LogActivity($"Error retrieving departments logs: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+
+                return Ok(new {
+                    data = new List<DepartmentModel>(),
+                    recordsTotal = 0 ,
+                    recordsFiltered = 0
+                });
+            }
+            
+        }
+
+        #endregion
 
         public void Notify(string message, string title = "GRC NOTIFICATION", NotificationType type = NotificationType.Success) {
             var notificationMessage = new NotificationMessage() {

@@ -37,6 +37,7 @@ namespace Grc.ui.App.Extensions.Mvc {
             services.AddScoped<IPinnedService, PinnedService>();
             services.AddScoped<IQuickActionService, QuickActionService>();
             services.AddScoped<IBranchService, BranchService>();
+            services.AddScoped<IDepartmentService, DepartmentService>();
             services.AddScoped<IErrorService, ErrorService>();
             services.AddScoped<ISystemActivityService, SystemActivityService>();
 

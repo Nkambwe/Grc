@@ -1,0 +1,94 @@
+﻿@model PageComponentViewModel
+@{
+    Html.AddCssFileParts("~/css/component-styles.css");
+}
+
+<div class="grc-page-component" data-component="@Model.ComponentKey">
+
+    <!-- Header -->
+    <div class="grc-component-header">
+
+        <div class="component-label">
+             <span>
+                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Key.Departments"))
+            </span>
+        </div>
+
+        <div class="component-header-left">
+            @foreach (var action in Model.LeftActions)
+            {
+                <button class="action-btn" data-action="@action.ActionKey" title="@action.Tooltip">
+                    <span><i class="@action.Icon"></i></span>
+                    <span>@Html.Raw(@action.Tooltip)</span>
+                </button>
+            }
+        </div>
+
+        <div class="component-header-right">
+
+            <button class="icon-btn" data-action="filter" title="Filter">
+                <span> <i class="mdi mdi-filter-outline"></i></span>
+            </button>
+
+            <div class="header-more-list">
+                <button class="icon-btn status-indicator" id="moreActionsBtn" title="More Actions">
+                    <span> <i class="mdi mdi-format-align-justify"></i></span>
+                </button>
+
+                <div class="more-actions-dropdown" id="moreActionsDropdown">
+                    <a href="#" class="dropdown-item" data-action="add-to-dashboard">
+                        <span><i class="mdi mdi-pin-outline"></i></span>
+                        <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.QuickAction"))</span>
+                    </a>
+                    <a href="#" class="dropdown-item" data-action="create-shortcut">
+                        <span><i class="mdi mdi-shuffle-variant"></i></span>
+                        <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Shortcut"))</span>
+                        
+                    </a>
+                    <a href="#" class="dropdown-item" data-action="export-data">
+                        <span><i class="mdi mdi-file-excel-outline"></i></span>
+                        <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Export"))</span>
+                    </a>
+                    <a href="#" class="dropdown-item" data-action="share">
+                        <span><i class="mdi mdi-share-outline"></i></span>
+                        <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Share"))</span>
+                        
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <button class="icon-btn expand-btn" data-action="expand" title="Full Screen">
+            <span><i class="mdi mdi-arrow-expand"></i></span>
+        </button>
+
+    </div>
+
+    <!-- Content -->
+    <div class="grc-component-content">
+        <div class="table-container" id="tableContainer">
+            <table id="departmentsTable" class="table is-fullwidth is-striped">
+                <thead>
+                    <tr>
+                        <th width="120">Code</th>
+                        <th>Department Name</th>
+                        <th>Department Alias</th>
+                        <th>Branch</th>
+                        <th>Active</th>
+                        <th>Created On</th>
+                    </tr>
+                </thead>
+                <tbody id="departmentsTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+@{
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery-validation/dist/jquery.validate.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/select-2/js/select2.full.min.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/js/component-script.js");
+}

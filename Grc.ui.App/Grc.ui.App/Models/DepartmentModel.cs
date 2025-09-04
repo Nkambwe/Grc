@@ -1,7 +1,8 @@
 ﻿namespace Grc.ui.App.Models {
     public class DepartmentModel {
         public long Id { get; set; }
-        public long Branch { get; set; }
+        public long BranchId { get; set; }
+        public string Branch { get; set; }
         public string DepartmentCode { get; set; }
         public string DepartmentName { get; set; }
         public string DepartmentAlias { get; set; }

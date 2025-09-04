@@ -120,6 +120,18 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(r => r.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
                 .ForMember(r => r.CreatedOn, reg => reg.MapFrom(o => o.CreatedOn))
                 .ForMember(r => r.Comment, reg => reg.MapFrom(o => (o.Comment ?? string.Empty).Trim()));
+            
+            CreateMap<Department, DepartmentResponse>()
+                .ForMember(r => r.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(r => r.BranchId, reg => reg.MapFrom(o => o.BranchId))
+                .ForMember(r => r.Branch, reg => reg.MapFrom(o => (o.Branch.BranchName ?? string.Empty).Trim()))
+                .ForMember(r => r.DepartmentCode, reg => reg.MapFrom(o => (o.DepartmenCode ?? string.Empty).Trim()))
+                .ForMember(r => r.DepartmentName, reg => reg.MapFrom(o => (o.DepartmentName?? string.Empty).Trim()))
+                .ForMember(r => r.DepartmentAlias, reg => reg.MapFrom(o => o.Alias))
+                .ForMember(r => r.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
+                .ForMember(r => r.CreatdOn, reg => reg.MapFrom(o => o.CreatedOn));
+        
+            
         }
 
     }
