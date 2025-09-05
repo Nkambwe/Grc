@@ -22,6 +22,7 @@
         Html.AddCssFileParts("~/lib/datatables/datatables.min.css");
         Html.AddCssFileParts("~/css/admin-tables-styles.css");
         Html.AddCssFileParts("~/css/admin-style.css");
+        Html.AddCssFileParts("~/css/component-styles.css");
     }
 
     <script src="~/lib/toastr/toastr.min.js"></script>
@@ -385,6 +386,7 @@
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/datatables/datatables.min.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-script-other.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-tables.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/js/component-script.js");
     }
 
     @Html.GenerateScripts(ResourceLocation.Footer)

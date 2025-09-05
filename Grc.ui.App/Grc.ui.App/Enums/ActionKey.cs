@@ -14,5 +14,7 @@ namespace Grc.ui.App.Enums {
          Export,
          [Description("search")]
          Search,
+         [Description("units")]
+         Units,
     }
 }

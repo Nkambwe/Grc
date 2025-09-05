@@ -16,7 +16,7 @@ wwwroot\js\admin-script.js
 wwwroot\js\admin-script-other.js
 wwwroot\js\admin-tables.js
 wwwroot\js\bug-signalr-script.js
-wwwroot\js\Component-script.js
+wwwroot\js\component-script.js
 wwwroot\js\grc-app.js
 wwwroot\js\grc-sidebar.js
 wwwroot\js\login-script.js

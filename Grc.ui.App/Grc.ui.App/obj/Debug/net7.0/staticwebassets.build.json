@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "LKNaCbN/CVbAke1k1+5Y0f560Mlhn5+6AdlNWFDnfUY=",
+  "Hash": "XXzKN3tLESlb9YBkRrvo/Asu+8nVetTnjoqEHqsJ+do=",
   "Source": "Grc.ui.App",
   "BasePath": "_content/Grc.ui.App",
   "Mode": "Default",
@@ -94,8 +94,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "3z7k95k6lz",
-      "Integrity": "of3xhCynuWXx1zfXFOTOCXVrprvbva9MyKOjEqsI5K8=",
+      "Fingerprint": "6xenmx8clu",
+      "Integrity": "SiW0Cd+4Wpczkgcc+lpIdyrj6LqjT84bNmLAf+ApiDk=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\admin-tables-styles.css"
@@ -157,8 +157,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "sea753mu5c",
-      "Integrity": "jN6eoOgs3NC56Ra9vg7zSu6nw9YlyvtL0+zRqzHeGqE=",
+      "Fingerprint": "c6z46lymur",
+      "Integrity": "7JqPmzQ3f+6Me6HSC3lhIC9gWfRUSdFikj3FycvY8ZI=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\component-styles.css"
@@ -437,12 +437,12 @@
       "OriginalItemSpec": "wwwroot\\js\\bug-signalr-script.js"
     },
     {
-      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\Component-script.js",
+      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\component-script.js",
       "SourceId": "Grc.ui.App",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\",
       "BasePath": "_content/Grc.ui.App",
-      "RelativePath": "js/Component-script#[.{fingerprint}]?.js",
+      "RelativePath": "js/component-script#[.{fingerprint}]?.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -451,11 +451,11 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "7l012yjgmx",
-      "Integrity": "O/OJ6xwG6MsQZHWwc0gxNeCujcZx3a44VR5Td/jPFTw=",
+      "Fingerprint": "ijo7v4xjer",
+      "Integrity": "AqlbX4NNQxXIcmmonBAOipGuuYwuOEUrfVlMAdXiwX8=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\js\\Component-script.js"
+      "OriginalItemSpec": "wwwroot\\js\\component-script.js"
     },
     {
       "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\grc-app.js",
@@ -3209,7 +3209,7 @@
       ]
     },
     {
-      "Route": "css/admin-tables-styles.3z7k95k6lz.css",
+      "Route": "css/admin-tables-styles.6xenmx8clu.css",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-tables-styles.css",
       "Selectors": [],
       "ResponseHeaders": [
@@ -3219,7 +3219,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4969"
+          "Value": "4948"
         },
         {
           "Name": "Content-Type",
@@ -3227,11 +3227,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"of3xhCynuWXx1zfXFOTOCXVrprvbva9MyKOjEqsI5K8=\""
+          "Value": "\"SiW0Cd+4Wpczkgcc+lpIdyrj6LqjT84bNmLAf+ApiDk=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 04:09:17 GMT"
+          "Value": "Thu, 04 Sep 2025 04:18:46 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3241,7 +3241,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "3z7k95k6lz"
+          "Value": "6xenmx8clu"
         },
         {
           "Name": "label",
@@ -3249,7 +3249,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-of3xhCynuWXx1zfXFOTOCXVrprvbva9MyKOjEqsI5K8="
+          "Value": "sha256-SiW0Cd+4Wpczkgcc+lpIdyrj6LqjT84bNmLAf+ApiDk="
         }
       ]
     },
@@ -3264,7 +3264,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4969"
+          "Value": "4948"
         },
         {
           "Name": "Content-Type",
@@ -3272,11 +3272,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"of3xhCynuWXx1zfXFOTOCXVrprvbva9MyKOjEqsI5K8=\""
+          "Value": "\"SiW0Cd+4Wpczkgcc+lpIdyrj6LqjT84bNmLAf+ApiDk=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 04:09:17 GMT"
+          "Value": "Thu, 04 Sep 2025 04:18:46 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3286,7 +3286,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-of3xhCynuWXx1zfXFOTOCXVrprvbva9MyKOjEqsI5K8="
+          "Value": "sha256-SiW0Cd+4Wpczkgcc+lpIdyrj6LqjT84bNmLAf+ApiDk="
         }
       ]
     },
@@ -3455,6 +3455,51 @@
       ]
     },
     {
+      "Route": "css/component-styles.c6z46lymur.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\component-styles.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2056"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"7JqPmzQ3f+6Me6HSC3lhIC9gWfRUSdFikj3FycvY8ZI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 04 Sep 2025 04:17:56 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "c6z46lymur"
+        },
+        {
+          "Name": "label",
+          "Value": "css/component-styles.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-7JqPmzQ3f+6Me6HSC3lhIC9gWfRUSdFikj3FycvY8ZI="
+        }
+      ]
+    },
+    {
       "Route": "css/component-styles.css",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\component-styles.css",
       "Selectors": [],
@@ -3465,7 +3510,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "2078"
+          "Value": "2056"
         },
         {
           "Name": "Content-Type",
@@ -3473,11 +3518,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"jN6eoOgs3NC56Ra9vg7zSu6nw9YlyvtL0+zRqzHeGqE=\""
+          "Value": "\"7JqPmzQ3f+6Me6HSC3lhIC9gWfRUSdFikj3FycvY8ZI=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 01:33:29 GMT"
+          "Value": "Thu, 04 Sep 2025 04:17:56 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3487,52 +3532,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-jN6eoOgs3NC56Ra9vg7zSu6nw9YlyvtL0+zRqzHeGqE="
-        }
-      ]
-    },
-    {
-      "Route": "css/component-styles.sea753mu5c.css",
-      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\component-styles.css",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "2078"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"jN6eoOgs3NC56Ra9vg7zSu6nw9YlyvtL0+zRqzHeGqE=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 01:33:29 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "sea753mu5c"
-        },
-        {
-          "Name": "label",
-          "Value": "css/component-styles.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-jN6eoOgs3NC56Ra9vg7zSu6nw9YlyvtL0+zRqzHeGqE="
+          "Value": "sha256-7JqPmzQ3f+6Me6HSC3lhIC9gWfRUSdFikj3FycvY8ZI="
         }
       ]
     },
@@ -3887,7 +3887,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 03:54:42 GMT"
+          "Value": "Fri, 05 Sep 2025 04:06:03 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3924,7 +3924,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 03:54:42 GMT"
+          "Value": "Fri, 05 Sep 2025 04:06:03 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3969,7 +3969,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 03:54:42 GMT"
+          "Value": "Fri, 05 Sep 2025 04:06:03 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -4014,7 +4014,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 03:54:42 GMT"
+          "Value": "Fri, 05 Sep 2025 04:06:03 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -4767,8 +4767,8 @@
       ]
     },
     {
-      "Route": "js/Component-script.7l012yjgmx.js",
-      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\Component-script.js",
+      "Route": "js/component-script.ijo7v4xjer.js",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\component-script.js",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -4777,7 +4777,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "380"
+          "Value": "1226"
         },
         {
           "Name": "Content-Type",
@@ -4785,11 +4785,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"O/OJ6xwG6MsQZHWwc0gxNeCujcZx3a44VR5Td/jPFTw=\""
+          "Value": "\"AqlbX4NNQxXIcmmonBAOipGuuYwuOEUrfVlMAdXiwX8=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 01:48:30 GMT"
+          "Value": "Fri, 05 Sep 2025 04:13:48 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -4799,21 +4799,21 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "7l012yjgmx"
+          "Value": "ijo7v4xjer"
         },
         {
           "Name": "label",
-          "Value": "js/Component-script.js"
+          "Value": "js/component-script.js"
         },
         {
           "Name": "integrity",
-          "Value": "sha256-O/OJ6xwG6MsQZHWwc0gxNeCujcZx3a44VR5Td/jPFTw="
+          "Value": "sha256-AqlbX4NNQxXIcmmonBAOipGuuYwuOEUrfVlMAdXiwX8="
         }
       ]
     },
     {
-      "Route": "js/Component-script.js",
-      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\Component-script.js",
+      "Route": "js/component-script.js",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\component-script.js",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -4822,7 +4822,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "380"
+          "Value": "1226"
         },
         {
           "Name": "Content-Type",
@@ -4830,11 +4830,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"O/OJ6xwG6MsQZHWwc0gxNeCujcZx3a44VR5Td/jPFTw=\""
+          "Value": "\"AqlbX4NNQxXIcmmonBAOipGuuYwuOEUrfVlMAdXiwX8=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 01:48:30 GMT"
+          "Value": "Fri, 05 Sep 2025 04:13:48 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -4844,7 +4844,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-O/OJ6xwG6MsQZHWwc0gxNeCujcZx3a44VR5Td/jPFTw="
+          "Value": "sha256-AqlbX4NNQxXIcmmonBAOipGuuYwuOEUrfVlMAdXiwX8="
         }
       ]
     },

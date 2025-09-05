@@ -30,8 +30,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>3z7k95k6lz</Fingerprint>
-      <Integrity>of3xhCynuWXx1zfXFOTOCXVrprvbva9MyKOjEqsI5K8=</Integrity>
+      <Fingerprint>6xenmx8clu</Fingerprint>
+      <Integrity>SiW0Cd+4Wpczkgcc+lpIdyrj6LqjT84bNmLAf+ApiDk=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\admin-tables-styles.css'))</OriginalItemSpec>
@@ -84,8 +84,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>sea753mu5c</Fingerprint>
-      <Integrity>jN6eoOgs3NC56Ra9vg7zSu6nw9YlyvtL0+zRqzHeGqE=</Integrity>
+      <Fingerprint>c6z46lymur</Fingerprint>
+      <Integrity>7JqPmzQ3f+6Me6HSC3lhIC9gWfRUSdFikj3FycvY8ZI=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\component-styles.css'))</OriginalItemSpec>
@@ -342,23 +342,23 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\bug-signalr-script.js'))</OriginalItemSpec>
     </StaticWebAsset>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\Component-script.js'))">
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\component-script.js'))">
       <SourceType>Package</SourceType>
       <SourceId>Grc.ui.App</SourceId>
       <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
       <BasePath>_content/Grc.ui.App</BasePath>
-      <RelativePath>js/Component-script.js</RelativePath>
+      <RelativePath>js/component-script.js</RelativePath>
       <AssetKind>All</AssetKind>
       <AssetMode>All</AssetMode>
       <AssetRole>Primary</AssetRole>
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>7l012yjgmx</Fingerprint>
-      <Integrity>O/OJ6xwG6MsQZHWwc0gxNeCujcZx3a44VR5Td/jPFTw=</Integrity>
+      <Fingerprint>ijo7v4xjer</Fingerprint>
+      <Integrity>AqlbX4NNQxXIcmmonBAOipGuuYwuOEUrfVlMAdXiwX8=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\Component-script.js'))</OriginalItemSpec>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\component-script.js'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\grc-app.js'))">
       <SourceType>Package</SourceType>

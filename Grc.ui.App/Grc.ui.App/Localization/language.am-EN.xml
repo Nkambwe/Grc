@@ -30,6 +30,9 @@
     <LocaleResource Name="App.Label.Search">
         <Value>Search</Value>
     </LocaleResource>
+    <LocaleResource Name="App.Label.Units">
+        <Value>Units</Value>
+    </LocaleResource>
 
     <LocaleResource Name="Component.Key.Departments">
         <Value>Departments</Value>

@@ -1,6 +1,7 @@
-﻿@model PageComponentViewModel
+﻿@using Microsoft.AspNetCore.Html
+@model PageComponentViewModel
 @{
-    Html.AddCssFileParts("~/css/component-styles.css");
+    var content = (IHtmlContent)ViewData["Content"];
 }
 
 <div class="grc-page-component" data-component="@Model.ComponentKey">
@@ -9,7 +10,7 @@
     <div class="grc-component-header">
 
         <div class="component-label">
-             <span>
+            <span>
                 @Html.Raw(ILocalize.GetLocalizedLabel("Component.Key.Departments"))
             </span>
         </div>
@@ -43,7 +44,7 @@
                     <a href="#" class="dropdown-item" data-action="create-shortcut">
                         <span><i class="mdi mdi-shuffle-variant"></i></span>
                         <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Shortcut"))</span>
-                        
+
                     </a>
                     <a href="#" class="dropdown-item" data-action="export-data">
                         <span><i class="mdi mdi-file-excel-outline"></i></span>
@@ -52,43 +53,22 @@
                     <a href="#" class="dropdown-item" data-action="share">
                         <span><i class="mdi mdi-share-outline"></i></span>
                         <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Share"))</span>
-                        
+
                     </a>
                 </div>
             </div>
         </div>
 
-        <button class="icon-btn expand-btn" data-action="expand" title="Full Screen">
-            <span><i class="mdi mdi-arrow-expand"></i></span>
+        <button id="compExpandBtn" class="icon-btn expand-btn" data-action="expand" title="Full Screen">
+            <span><i id="compExpandIncon" class="mdi mdi-arrow-expand"></i></span>
         </button>
 
     </div>
 
     <!-- Content -->
     <div class="grc-component-content">
-        <div class="table-container" id="tableContainer">
-            <table id="departmentsTable" class="table is-fullwidth is-striped">
-                <thead>
-                    <tr>
-                        <th width="120">Code</th>
-                        <th>Department Name</th>
-                        <th>Department Alias</th>
-                        <th>Branch</th>
-                        <th>Active</th>
-                        <th>Created On</th>
-                    </tr>
-                </thead>
-                <tbody id="departmentsTableBody"></tbody>
-            </table>
-        </div>
+        @content
     </div>
 
 </div>
 
-@{
-        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
-        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery-validation/dist/jquery.validate.js");
-        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js");
-        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/select-2/js/select2.full.min.js");
-        Html.AddScriptParts(ResourceLocation.Footer, "~/js/component-script.js");
-}
