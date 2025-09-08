@@ -20,12 +20,14 @@ namespace Grc.Middleware.Api.Controllers {
         private readonly IActivityLogSettingService _activitySettingService;
 
         private readonly IDepartmentsService _departmentsService;
+        private readonly IDepartmentUnitService _departmentUnitService;
 
         public SupportController(
             IActivityLogService activityLogService,
             IActivityTypeService activityTypeService,
             IActivityLogSettingService activitySettingService,
             IDepartmentsService departmentsService,
+            IDepartmentUnitService departmentUnitService,
             IObjectCypher cypher, 
             IServiceLoggerFactory loggerFactory, 
             IMapper mapper, IEnvironmentProvider environment,
@@ -37,6 +39,7 @@ namespace Grc.Middleware.Api.Controllers {
             _activityTypeService = activityTypeService;
             _activitySettingService = activitySettingService;
             _departmentsService = departmentsService;
+            _departmentUnitService = departmentUnitService;
         }
 
         #region Activity logging
@@ -172,6 +175,7 @@ namespace Grc.Middleware.Api.Controllers {
         #endregion
 
         #region departments
+
         [HttpPost("departments/allDepartments")]
         public async Task<IActionResult> AllDepartments([FromBody] ListRequest request) {
                 try {
@@ -217,7 +221,7 @@ namespace Grc.Middleware.Api.Controllers {
                         $"System Error - {ex.Message}"
                     );
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<PagedResponse<ActivityLogResponse>>(error));
+                    return Ok(new GrcResponse<PagedResponse<DepartmentResponse>>(error));
                 }
             }
         
@@ -291,6 +295,72 @@ namespace Grc.Middleware.Api.Controllers {
         
         [HttpPost("departments/deleteDepartment")]
         public async Task<IActionResult> DeleteDepartment([FromBody] DepartmentRequest request) {
+            return null;
+        }
+
+        
+        [HttpPost("departments/allUnits")]
+        public async Task<IActionResult> AllUnits([FromBody] ListRequest request) {
+                try {
+                    Logger.LogActivity($"{request.Action}", "INFO");
+
+                    if (request == null) {
+                        var error = new ResponseError(
+                            ResponseCodes.BADREQUEST,
+                            "Request record cannot be empty",
+                            "Invalid request body"
+                        );
+                        Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<PagedResponse<DepartmentUnitResponse>>(error));
+                    }
+
+                    Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+
+                    var pageResult = await _departmentUnitService.GetPagedUnitsAsync(
+                        pageIndex:request.PageIndex, 
+                        pageSize:request.PageSize,
+                        includeDeleted:request.IncludeDeleted);
+
+                    //..map response
+                    List<DepartmentUnitResponse> data = new();
+                    if(pageResult.Entities != null && pageResult.Entities.Any()) { 
+                        data = pageResult.Entities.Select(Mapper.Map<DepartmentUnitResponse>).ToList();
+                    }
+                    
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(data)}");
+                    return Ok(new GrcResponse<PagedResponse<DepartmentUnitResponse>>(new PagedResponse<DepartmentUnitResponse>(
+                                data,
+                                pageResult.Count,
+                                pageResult.Page,
+                                pageResult.Size
+                            )));
+                } catch (Exception ex) {
+                    Logger.LogActivity($"{ex.Message}", "ERROR");
+                    Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Oops! Something went wrong",
+                        $"System Error - {ex.Message}"
+                    );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<DepartmentUnitResponse>>(error));
+                }
+            }
+        
+        [HttpPost("departments/saveUnit")]
+        public async Task<IActionResult> SaveUnit([FromBody] DepartmentRequest request) {
+
+            return null;
+        }
+
+        [HttpPost("departments/updateUnit")]
+        public async Task<IActionResult> UpdateUnit([FromBody] DepartmentRequest request) {
+            return null;
+        }
+        
+        [HttpPost("departments/deleteUnit")]
+        public async Task<IActionResult> DeleteUnit([FromBody] DepartmentRequest request) {
             return null;
         }
 

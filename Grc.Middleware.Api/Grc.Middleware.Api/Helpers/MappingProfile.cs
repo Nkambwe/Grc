@@ -132,6 +132,15 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(r => r.CreatdOn, reg => reg.MapFrom(o => o.CreatedOn));
         
             
+            CreateMap<DepartmentUnit, DepartmentUnitResponse>()
+                .ForMember(r => r.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(r => r.DepartmentId, reg => reg.MapFrom(o => o.DepartmentId))
+                .ForMember(r => r.Department, reg => reg.MapFrom(o => (o.Department.DepartmentName ?? string.Empty).Trim()))
+                .ForMember(r => r.UnitName, reg => reg.MapFrom(o => (o.UnitName  ?? string.Empty).Trim()))
+                .ForMember(r => r.UnitCode, reg => reg.MapFrom(o => (o.UnitCode?? string.Empty).Trim()))
+                .ForMember(r => r.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
+                .ForMember(r => r.CreatdOn, reg => reg.MapFrom(o => o.CreatedOn));
+
         }
 
     }

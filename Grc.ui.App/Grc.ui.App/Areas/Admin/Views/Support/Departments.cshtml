@@ -7,6 +7,7 @@
 @{
     var component = new PageComponentViewModel
     {
+        ComponentId = $"1",
         ComponentKey = ComponentKey.Departments.GetDescription(),
         LeftActions = new List<ComponentAction>
         {
@@ -23,3 +24,12 @@
         model = component, 
         content = Component.InvokeAsync("DepartmentList")
 })
+
+
+<!-- department units -->
+@await Component.InvokeAsync("PopupPage", new {
+        title = ComponentKey.DepartmentUnits.GetDescription(),
+        content = Component.InvokeAsync("DepartmentUnitPage"),
+        level = 0
+})
+

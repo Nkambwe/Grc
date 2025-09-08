@@ -168,8 +168,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcRGVwYXJ0bWVudExpc3RcRGVmYXVsdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/Grc_Project/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/DepartmentUnitList/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcRGVwYXJ0bWVudFVuaXRMaXN0XERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/Grc_Project/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/DepartmentUnitPage/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcRGVwYXJ0bWVudFVuaXRQYWdlXERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/Grc_Project/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/Pinned/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUGlubmVkXERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/Grc_Project/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/PopupPage/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUG9wdXBQYWdlXERlZmF1bHQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/Grc_Project/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/QuickActions/Default.cshtml]
@@ -182,6 +194,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Projects/Grc_Project/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/Grc_Project/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/_DepartmentUnitsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9EZXBhcnRtZW50VW5pdHNQYXJ0aWFsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/Grc_Project/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/_Layout_01.cshtml]

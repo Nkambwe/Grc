@@ -12,7 +12,7 @@
 .grc-component-header {
     display: flex;
     flex-direction: row;
-    padding: 10px;
+    padding: 0 10px;
     border-bottom: solid 1px var(--grey-light-slightly);
 }
 

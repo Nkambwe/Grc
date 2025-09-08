@@ -37,8 +37,9 @@
     <LocaleResource Name="Component.Key.Departments">
         <Value>Departments</Value>
     </LocaleResource>
-    <LocaleResource Name="Component.Key.Departments">
-        <Value>Departments</Value>
+    
+    <LocaleResource Name="Component.Key.DepartmentUnits">
+        <Value>All Units</Value>
     </LocaleResource>
     <LocaleResource Name="Component.Key.Users">
         <Value>Users</Value>
@@ -61,8 +62,17 @@
     <LocaleResource Name="Component.Label.Export">
         <Value>Export Data</Value>
     </LocaleResource>
-        <LocaleResource Name="Component.Label.Share">
+    <LocaleResource Name="Component.Label.Share">
         <Value>Share View</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Back">
+        <Value>Back</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Close">
+        <Value>Close</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.FullScreen">
+        <Value>Full Screen</Value>
     </LocaleResource>
 
     <LocaleResource Name="App.User.Views">

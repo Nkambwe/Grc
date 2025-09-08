@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNetCore.Html
-@model PageComponentViewModel
+﻿@model PageComponentViewModel
 @{
     var content = (IHtmlContent)ViewData["Content"];
 }
@@ -11,20 +10,24 @@
 
         <div class="component-label">
             <span>
-                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Key.Departments"))
+                @Html.Raw(ILocalize.GetLocalizedLabel($"Component.Key.{Model.ComponentKey}"))
             </span>
         </div>
 
         <div class="component-header-left">
             @foreach (var action in Model.LeftActions)
             {
-                <button class="action-btn" data-action="@action.ActionKey" title="@action.Tooltip">
+                string idBtn = $"btnAction{action.Tooltip}";
+                <button id="@idBtn" class="action-btn" data-action="@action.ActionKey" title="@action.Tooltip">
                     <span><i class="@action.Icon"></i></span>
-                    <span>@Html.Raw(@action.Tooltip)</span>
+                    <span>@Html.Raw(action.Tooltip)</span>
                 </button>
             }
         </div>
-
+        @{
+            string dropId = $"moreActionsDropdown{Model.ComponentId}";
+            string dropBtnId = $"moreActionsBtn{Model.ComponentId}";
+        }
         <div class="component-header-right">
 
             <button class="icon-btn" data-action="filter" title="Filter">
@@ -32,11 +35,11 @@
             </button>
 
             <div class="header-more-list">
-                <button class="icon-btn status-indicator" id="moreActionsBtn" title="More Actions">
+                <button id="@dropBtnId" class="icon-btn status-indicator" title="More Actions">
                     <span> <i class="mdi mdi-format-align-justify"></i></span>
                 </button>
 
-                <div class="more-actions-dropdown" id="moreActionsDropdown">
+                <div id="@dropId" class="more-actions-dropdown">
                     <a href="#" class="dropdown-item" data-action="add-to-dashboard">
                         <span><i class="mdi mdi-pin-outline"></i></span>
                         <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.QuickAction"))</span>
@@ -44,7 +47,6 @@
                     <a href="#" class="dropdown-item" data-action="create-shortcut">
                         <span><i class="mdi mdi-shuffle-variant"></i></span>
                         <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Shortcut"))</span>
-
                     </a>
                     <a href="#" class="dropdown-item" data-action="export-data">
                         <span><i class="mdi mdi-file-excel-outline"></i></span>
@@ -53,15 +55,10 @@
                     <a href="#" class="dropdown-item" data-action="share">
                         <span><i class="mdi mdi-share-outline"></i></span>
                         <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Share"))</span>
-
                     </a>
                 </div>
             </div>
         </div>
-
-        <button id="compExpandBtn" class="icon-btn expand-btn" data-action="expand" title="Full Screen">
-            <span><i id="compExpandIncon" class="mdi mdi-arrow-expand"></i></span>
-        </button>
 
     </div>
 

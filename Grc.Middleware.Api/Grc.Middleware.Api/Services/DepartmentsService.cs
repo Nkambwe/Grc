@@ -111,7 +111,7 @@ namespace Grc.Middleware.Api.Services {
 
         public async Task<PagedResult<Department>> GetPagedDepartmentsAsync(DateTime? createdFrom = null, DateTime? createdTo = null, long? userId = null, int pageIndex = 1, int pageSize = 20, bool includeDeleted=false) {
             using var uow = UowFactory.Create();
-            Logger.LogActivity($"Retrieve all log settings", "INFO");
+            Logger.LogActivity($"Retrieve all departments", "INFO");
     
             try {
                 //...build query first
@@ -155,5 +155,4 @@ namespace Grc.Middleware.Api.Services {
         }
 
     }
-
 }

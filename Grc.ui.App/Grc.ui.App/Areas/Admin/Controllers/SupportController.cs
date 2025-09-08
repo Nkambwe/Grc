@@ -1,5 +1,4 @@
-﻿using Elfie.Serialization;
-using Grc.ui.App.Defaults;
+﻿using Grc.ui.App.Defaults;
 using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -26,6 +25,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         private readonly ISystemActivityService _activityService;
         private readonly IDepartmentService _departmentService;
         private readonly IDepartmentFactory _departmentfactory;
+        private readonly IDepartmentUnitService _departmentUnitService;
         
         public SupportController(IApplicationLoggerFactory loggerFactory, 
                                  IEnvironmentProvider environment, 
@@ -39,6 +39,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                                  IDepartmentService departmentService,
                                  IDepartmentFactory departmentfactory,
                                  IGrcErrorFactory errorFactory,
+                                 IDepartmentUnitService departmentUnitService,
                                  SessionManager sessionManager) 
             : base(loggerFactory, environment, webHelper, localizationService, 
                   errorService, errorFactory, sessionManager) {
@@ -48,6 +49,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             _departmentService = departmentService;
             _dDashboardFactory = dDashboardFactory;
             _activityService = activityService;
+            _departmentUnitService = departmentUnitService;
         }
 
         [LogActivityResult("User Login", "User logged in to the system", ActivityTypeDefaults.USER_LOGIN, "SystemUser")]
@@ -158,6 +160,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
             return View(model);
         }
+
         public async Task<IActionResult> DisabledUsers() {
             var model = new AdminDashboardModel();
             try {
@@ -586,7 +589,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
                 PagedResponse<DepartmentModel> deparmentList = new ();
                 if(departmentdata.HasError){ 
-                    Logger.LogActivity($"ACTIVITY DATA ERROR: Failed to retrieve department log items - {JsonSerializer.Serialize(departmentdata)}");
+                    Logger.LogActivity($"DEPARTMENT DATA ERROR: Failed to retrieve department items - {JsonSerializer.Serialize(departmentdata)}");
                 } else {
                     deparmentList = departmentdata.Data;
                     Logger.LogActivity($"DEPARTMENT DATA - {JsonSerializer.Serialize(deparmentList)}");
@@ -599,11 +602,60 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                     recordsFiltered = deparmentList.TotalCount 
                 });
             } catch(Exception ex){
-                Logger.LogActivity($"Error retrieving departments logs: {ex.Message}", "ERROR");
+                Logger.LogActivity($"Error retrieving departments data: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
 
                 return Ok(new {
                     data = new List<DepartmentModel>(),
+                    recordsTotal = 0 ,
+                    recordsFiltered = 0
+                });
+            }
+            
+        }
+
+        [HttpPost("support/departments/allUnits")]
+        public async Task<IActionResult> AllUnits([FromBody] TableListRequest request) {
+
+            try{
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                        Logger.LogActivity($"DEPARTMENT UNITS ERROR: Failed to Current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                //..update with user data
+                var currentUser = grcResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.PageSize = 20;
+
+                //..get list of a departments logs
+                var departmentUnitsData = await _departmentUnitService.GetDepartmentUnitsAsync(request);
+
+                PagedResponse<DepartmentUnitModel> deparmentUnitsResult = new ();
+                if(departmentUnitsData.HasError){ 
+                    Logger.LogActivity($"DEPARTMENT UNITS ERROR: Failed to retrieve department units data - {JsonSerializer.Serialize(departmentUnitsData)}");
+                } else {
+                    deparmentUnitsResult = departmentUnitsData.Data;
+                    Logger.LogActivity($"DEPARTMENT UNITS DATA - {JsonSerializer.Serialize(deparmentUnitsResult)}");
+                }
+
+                deparmentUnitsResult.Entities ??= new();
+                return Ok(new {
+                    data = deparmentUnitsResult.Entities,
+                    recordsTotal = deparmentUnitsResult.TotalCount ,
+                    recordsFiltered = deparmentUnitsResult.TotalCount 
+                });
+            } catch(Exception ex){
+                Logger.LogActivity($"Error retrieving departments units data: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+
+                return Ok(new {
+                    data = new List<DepartmentUnitModel>(),
                     recordsTotal = 0 ,
                     recordsFiltered = 0
                 });

@@ -58,7 +58,6 @@
         setupRowSelection('#tblActivity', activityTable);
     }
 
-
     //..departments table
     if ($("#departmentsTable").length) {
         var departmentsTable = $('#departmentsTable').DataTable({
@@ -107,9 +106,58 @@
         //..set row selection
         setupRowSelection('#departmentsTable', departmentsTable);
     }
+
+    
+    //..department units table
+    if ($("#departmentUnitsTable").length) {
+        var departmentsTable = $('#departmentUnitsTable').DataTable({
+            searching: false,
+            paging: true,
+            lengthChange: false,
+            info: false,
+            ordering: true,
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '/support/departments/allUnits',
+                type: 'POST',
+                contentType: "application/json",
+                data: function (d) {
+                    return JSON.stringify({
+                        pageIndex: (d.start / d.length) + 1,
+                        pageSize: d.length,
+                        includeDeleted: false,
+                        action: "LOADUNITS"
+                    });
+                },
+                dataSrc: function (json) {
+                    console.log('Ajax response:', json); 
+                    return json.data || [];
+                },
+                error: function (xhr, status, error) {
+                     showToast("error", `Failed to load department units data: ${error}`);
+                    console.error('Error during Ajax request:', error);
+                }
+            },
+            columns: [
+                { data: "unitCode" },
+                { data: "unitName" },
+                { data: "department" },
+                { data: "isDeleted" },
+                { data: "creatdOn" }
+            ],
+            language: {
+                emptyTable: "No department units data available"
+            }
+        });
+
+        //..set row selection
+        setupRowSelection('#departmentUnitsTable', departmentsTable);
+    }
    
     //..activate link clicks only when row is selected
-    $('#tblActivity tbody, #departmentsTable tbody').on('click', 'a', function (e) {
+    $('#tblActivity tbody, #departmentsTable tbody, #departmentUnitsTable tbody').on('click', 'a', function (e) {
         e.stopPropagation();
 
         const $link = $(this);
@@ -124,7 +172,7 @@
     });
 
     //..prevent text selection on double click
-    $('#tblActivity, #departmentsTable').on('selectstart', function() {
+    $('#tblActivity, #departmentsTable, #departmentUnitsTable').on('selectstart', function() {
         return false;
     });
 

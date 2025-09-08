@@ -61,6 +61,7 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IActivityTypeService, ActivityTypeService>();
             services.AddScoped<IActivityLogSettingService, ActivityLogSettingService>();
             services.AddScoped<IDepartmentsService, DepartmentsService>();
+            services.AddScoped<IDepartmentUnitService, DepartmentUnitService>();
             services.AddScoped<IQuickActionService, QuickActionService>();
             services.AddScoped<IPinnedItemService, PinnedItemService>();
             

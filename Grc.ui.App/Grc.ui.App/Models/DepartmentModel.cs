@@ -1,4 +1,5 @@
 ﻿namespace Grc.ui.App.Models {
+
     public class DepartmentModel {
         public long Id { get; set; }
         public long BranchId { get; set; }
@@ -11,6 +12,7 @@
         public string CreatedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public string ModifiedBy { get; set; }
-        public List<DeparmentUnitModel> Units { get; set; } = new();
+        public List<DepartmentUnitModel> Units { get; set; } = new();
     }
+
 }
