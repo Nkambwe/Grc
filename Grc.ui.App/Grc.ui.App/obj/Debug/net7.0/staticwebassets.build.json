@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "EwoP4/fDfjkoFuzf3h5B322o3KUZdkuox9hXzqzgSOk=",
+  "Hash": "Nc5+O8pXzOsgGRtZrhpr0l8O1P0tuOza7leypxJQnSw=",
   "Source": "Grc.ui.App",
   "BasePath": "_content/Grc.ui.App",
   "Mode": "Default",
@@ -73,8 +73,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "h9zg7ddhyv",
-      "Integrity": "heFNy+aeM+Ancjz61R2w/l86m2WrGtD/On8sucetNf4=",
+      "Fingerprint": "dgjn69slbj",
+      "Integrity": "PUwSkcBreO5eyuZamXcOqLrv2qPFGOf8VWddpZiG8J0=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\admin-style.css"
@@ -94,8 +94,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "6xenmx8clu",
-      "Integrity": "SiW0Cd+4Wpczkgcc+lpIdyrj6LqjT84bNmLAf+ApiDk=",
+      "Fingerprint": "okokxf6jlu",
+      "Integrity": "aDbC1I6L17srsgTitimCWA9lcrjl7M+RbwuWl6l5PJo=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\admin-tables-styles.css"
@@ -157,8 +157,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "wpnihuga79",
-      "Integrity": "lLEa6GzMhywRKmsusDlniAvhAk1DNnTAhhWC4g/uucQ=",
+      "Fingerprint": "kiyiwzzd0p",
+      "Integrity": "PHuyiogjqMQz2vNmmBcdzGQN74mx8ftxNpXWOebVSwA=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\component-styles.css"
@@ -409,8 +409,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "hx4l3g992x",
-      "Integrity": "ywD8D6COOjzAvX718vszCcNKREPoiFhEUO1PaxO5Od8=",
+      "Fingerprint": "f8v1ya8b0j",
+      "Integrity": "X15kn96WfSp+iPnpPysSW2+8KzuhW0ircaUHpeZMBTc=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\admin-tables.js"
@@ -451,11 +451,32 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "g3xc9mkk06",
-      "Integrity": "dMzTUJO4M9b+WxccYYlbT3BocmjUFEOm63MHa5qniHI=",
+      "Fingerprint": "056v944q1p",
+      "Integrity": "LNZkWjTH2pOVuVpsZiyFPPhncbgcG83IORzxyu87vKw=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\component-script.js"
+    },
+    {
+      "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\department-units-script.js",
+      "SourceId": "Grc.ui.App",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\",
+      "BasePath": "_content/Grc.ui.App",
+      "RelativePath": "js/department-units-script#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "dufjxpv523",
+      "Integrity": "9cs9L6wUQpQa8vV57PvhsXCEAMqNdGpUQ00CMkYfotM=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\department-units-script.js"
     },
     {
       "Identity": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\grc-app.js",
@@ -3137,7 +3158,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "20605"
+          "Value": "19865"
         },
         {
           "Name": "Content-Type",
@@ -3145,11 +3166,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"heFNy+aeM+Ancjz61R2w/l86m2WrGtD/On8sucetNf4=\""
+          "Value": "\"PUwSkcBreO5eyuZamXcOqLrv2qPFGOf8VWddpZiG8J0=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 07 Sep 2025 09:15:47 GMT"
+          "Value": "Thu, 11 Sep 2025 01:16:51 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3159,12 +3180,12 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-heFNy+aeM+Ancjz61R2w/l86m2WrGtD/On8sucetNf4="
+          "Value": "sha256-PUwSkcBreO5eyuZamXcOqLrv2qPFGOf8VWddpZiG8J0="
         }
       ]
     },
     {
-      "Route": "css/admin-style.h9zg7ddhyv.css",
+      "Route": "css/admin-style.dgjn69slbj.css",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-style.css",
       "Selectors": [],
       "ResponseHeaders": [
@@ -3174,7 +3195,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "20605"
+          "Value": "19865"
         },
         {
           "Name": "Content-Type",
@@ -3182,11 +3203,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"heFNy+aeM+Ancjz61R2w/l86m2WrGtD/On8sucetNf4=\""
+          "Value": "\"PUwSkcBreO5eyuZamXcOqLrv2qPFGOf8VWddpZiG8J0=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 07 Sep 2025 09:15:47 GMT"
+          "Value": "Thu, 11 Sep 2025 01:16:51 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3196,7 +3217,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "h9zg7ddhyv"
+          "Value": "dgjn69slbj"
         },
         {
           "Name": "label",
@@ -3204,52 +3225,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-heFNy+aeM+Ancjz61R2w/l86m2WrGtD/On8sucetNf4="
-        }
-      ]
-    },
-    {
-      "Route": "css/admin-tables-styles.6xenmx8clu.css",
-      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-tables-styles.css",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "4948"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"SiW0Cd+4Wpczkgcc+lpIdyrj6LqjT84bNmLAf+ApiDk=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 04:18:46 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "6xenmx8clu"
-        },
-        {
-          "Name": "label",
-          "Value": "css/admin-tables-styles.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-SiW0Cd+4Wpczkgcc+lpIdyrj6LqjT84bNmLAf+ApiDk="
+          "Value": "sha256-PUwSkcBreO5eyuZamXcOqLrv2qPFGOf8VWddpZiG8J0="
         }
       ]
     },
@@ -3264,7 +3240,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4948"
+          "Value": "4967"
         },
         {
           "Name": "Content-Type",
@@ -3272,11 +3248,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"SiW0Cd+4Wpczkgcc+lpIdyrj6LqjT84bNmLAf+ApiDk=\""
+          "Value": "\"aDbC1I6L17srsgTitimCWA9lcrjl7M+RbwuWl6l5PJo=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 04:18:46 GMT"
+          "Value": "Thu, 11 Sep 2025 00:16:06 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3286,7 +3262,52 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-SiW0Cd+4Wpczkgcc+lpIdyrj6LqjT84bNmLAf+ApiDk="
+          "Value": "sha256-aDbC1I6L17srsgTitimCWA9lcrjl7M+RbwuWl6l5PJo="
+        }
+      ]
+    },
+    {
+      "Route": "css/admin-tables-styles.okokxf6jlu.css",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-tables-styles.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4967"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"aDbC1I6L17srsgTitimCWA9lcrjl7M+RbwuWl6l5PJo=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 11 Sep 2025 00:16:06 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "okokxf6jlu"
+        },
+        {
+          "Name": "label",
+          "Value": "css/admin-tables-styles.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-aDbC1I6L17srsgTitimCWA9lcrjl7M+RbwuWl6l5PJo="
         }
       ]
     },
@@ -3465,7 +3486,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "2058"
+          "Value": "7575"
         },
         {
           "Name": "Content-Type",
@@ -3473,11 +3494,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"lLEa6GzMhywRKmsusDlniAvhAk1DNnTAhhWC4g/uucQ=\""
+          "Value": "\"PHuyiogjqMQz2vNmmBcdzGQN74mx8ftxNpXWOebVSwA=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 07 Sep 2025 08:46:01 GMT"
+          "Value": "Thu, 11 Sep 2025 03:41:37 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3487,12 +3508,12 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-lLEa6GzMhywRKmsusDlniAvhAk1DNnTAhhWC4g/uucQ="
+          "Value": "sha256-PHuyiogjqMQz2vNmmBcdzGQN74mx8ftxNpXWOebVSwA="
         }
       ]
     },
     {
-      "Route": "css/component-styles.wpnihuga79.css",
+      "Route": "css/component-styles.kiyiwzzd0p.css",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\component-styles.css",
       "Selectors": [],
       "ResponseHeaders": [
@@ -3502,7 +3523,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "2058"
+          "Value": "7575"
         },
         {
           "Name": "Content-Type",
@@ -3510,11 +3531,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"lLEa6GzMhywRKmsusDlniAvhAk1DNnTAhhWC4g/uucQ=\""
+          "Value": "\"PHuyiogjqMQz2vNmmBcdzGQN74mx8ftxNpXWOebVSwA=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 07 Sep 2025 08:46:01 GMT"
+          "Value": "Thu, 11 Sep 2025 03:41:37 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3524,7 +3545,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "wpnihuga79"
+          "Value": "kiyiwzzd0p"
         },
         {
           "Name": "label",
@@ -3532,7 +3553,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-lLEa6GzMhywRKmsusDlniAvhAk1DNnTAhhWC4g/uucQ="
+          "Value": "sha256-PHuyiogjqMQz2vNmmBcdzGQN74mx8ftxNpXWOebVSwA="
         }
       ]
     },
@@ -3887,7 +3908,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 07 Sep 2025 08:27:59 GMT"
+          "Value": "Wed, 10 Sep 2025 02:25:05 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3924,7 +3945,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 07 Sep 2025 08:27:59 GMT"
+          "Value": "Wed, 10 Sep 2025 02:25:05 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3969,7 +3990,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 07 Sep 2025 08:27:59 GMT"
+          "Value": "Wed, 10 Sep 2025 02:25:05 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -4014,7 +4035,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 07 Sep 2025 08:27:59 GMT"
+          "Value": "Wed, 10 Sep 2025 02:25:05 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -4603,7 +4624,7 @@
       ]
     },
     {
-      "Route": "js/admin-tables.hx4l3g992x.js",
+      "Route": "js/admin-tables.f8v1ya8b0j.js",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-tables.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -4613,7 +4634,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "8324"
+          "Value": "6496"
         },
         {
           "Name": "Content-Type",
@@ -4621,11 +4642,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"ywD8D6COOjzAvX718vszCcNKREPoiFhEUO1PaxO5Od8=\""
+          "Value": "\"X15kn96WfSp+iPnpPysSW2+8KzuhW0ircaUHpeZMBTc=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 07 Sep 2025 08:03:38 GMT"
+          "Value": "Wed, 10 Sep 2025 01:51:50 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -4635,7 +4656,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "hx4l3g992x"
+          "Value": "f8v1ya8b0j"
         },
         {
           "Name": "label",
@@ -4643,7 +4664,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-ywD8D6COOjzAvX718vszCcNKREPoiFhEUO1PaxO5Od8="
+          "Value": "sha256-X15kn96WfSp+iPnpPysSW2+8KzuhW0ircaUHpeZMBTc="
         }
       ]
     },
@@ -4658,7 +4679,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "8324"
+          "Value": "6496"
         },
         {
           "Name": "Content-Type",
@@ -4666,11 +4687,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"ywD8D6COOjzAvX718vszCcNKREPoiFhEUO1PaxO5Od8=\""
+          "Value": "\"X15kn96WfSp+iPnpPysSW2+8KzuhW0ircaUHpeZMBTc=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 07 Sep 2025 08:03:38 GMT"
+          "Value": "Wed, 10 Sep 2025 01:51:50 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -4680,7 +4701,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-ywD8D6COOjzAvX718vszCcNKREPoiFhEUO1PaxO5Od8="
+          "Value": "sha256-X15kn96WfSp+iPnpPysSW2+8KzuhW0ircaUHpeZMBTc="
         }
       ]
     },
@@ -4767,7 +4788,7 @@
       ]
     },
     {
-      "Route": "js/component-script.g3xc9mkk06.js",
+      "Route": "js/component-script.056v944q1p.js",
       "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\component-script.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -4777,7 +4798,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "2187"
+          "Value": "7692"
         },
         {
           "Name": "Content-Type",
@@ -4785,11 +4806,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"dMzTUJO4M9b+WxccYYlbT3BocmjUFEOm63MHa5qniHI=\""
+          "Value": "\"LNZkWjTH2pOVuVpsZiyFPPhncbgcG83IORzxyu87vKw=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 07 Sep 2025 09:38:01 GMT"
+          "Value": "Thu, 11 Sep 2025 03:47:38 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -4799,7 +4820,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "g3xc9mkk06"
+          "Value": "056v944q1p"
         },
         {
           "Name": "label",
@@ -4807,7 +4828,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-dMzTUJO4M9b+WxccYYlbT3BocmjUFEOm63MHa5qniHI="
+          "Value": "sha256-LNZkWjTH2pOVuVpsZiyFPPhncbgcG83IORzxyu87vKw="
         }
       ]
     },
@@ -4822,7 +4843,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "2187"
+          "Value": "7692"
         },
         {
           "Name": "Content-Type",
@@ -4830,11 +4851,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"dMzTUJO4M9b+WxccYYlbT3BocmjUFEOm63MHa5qniHI=\""
+          "Value": "\"LNZkWjTH2pOVuVpsZiyFPPhncbgcG83IORzxyu87vKw=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 07 Sep 2025 09:38:01 GMT"
+          "Value": "Thu, 11 Sep 2025 03:47:38 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -4844,7 +4865,89 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-dMzTUJO4M9b+WxccYYlbT3BocmjUFEOm63MHa5qniHI="
+          "Value": "sha256-LNZkWjTH2pOVuVpsZiyFPPhncbgcG83IORzxyu87vKw="
+        }
+      ]
+    },
+    {
+      "Route": "js/department-units-script.dufjxpv523.js",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\department-units-script.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "733"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"9cs9L6wUQpQa8vV57PvhsXCEAMqNdGpUQ00CMkYfotM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 10 Sep 2025 03:13:32 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "dufjxpv523"
+        },
+        {
+          "Name": "label",
+          "Value": "js/department-units-script.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-9cs9L6wUQpQa8vV57PvhsXCEAMqNdGpUQ00CMkYfotM="
+        }
+      ]
+    },
+    {
+      "Route": "js/department-units-script.js",
+      "AssetFile": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\department-units-script.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "733"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"9cs9L6wUQpQa8vV57PvhsXCEAMqNdGpUQ00CMkYfotM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 10 Sep 2025 03:13:32 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-9cs9L6wUQpQa8vV57PvhsXCEAMqNdGpUQ00CMkYfotM="
         }
       ]
     },

@@ -4,11 +4,36 @@
     <div class="component-slideout">
 
         <div class="component-create-container">
-            <span>Create goes here</span>
+
+            <div class="component-slide-header">
+                <div class="component-slide-header-label">
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Header.New.Unit"))</span>
+                </div>
+                <button type="button" class="component-new-close" title='@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Close"))'>
+                    <span><i class="mdi mdi-close"></i></span>
+                </button>
+            </div>
+
+            <div class="component-slide-content">    
+                <span>Create goes here</span>
+            </div>
+
         </div>
 
         <div class="component-edit-container">
-            <span>Edit goes here</span>
+
+            <div class="component-slide-header">
+                <div class="component-slide-header-label">
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Header.Edit.Unit"))</span>
+                </div>
+                <button type="button" class="component-edit-close" title='@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Close"))'>
+                    <span><i class="mdi mdi-close"></i></span>
+                </button>
+            </div>
+
+            <div class="component-slide-content">
+                <span>Edit goes here</span>
+            </div>
         </div>
 
     </div>
@@ -18,15 +43,31 @@
             <table id="departmentUnitsTable" class="table is-fullwidth is-striped">
                 <thead>
                     <tr>
-                        <th width="120">Code</th>
-                        <th>Unit Name</th>
-                        <th>Department</th>
-                        <th>Active</th>
-                        <th>Created On</th>
+                        <th width="120">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Code"))</th>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Unit.Name"))</th>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Department"))</th>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Active"))</th>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Created"))</th>
                     </tr>
                 </thead>
                 <tbody id="departmentUnitssTableBody"></tbody>
             </table>
         </div>
+
+        <div class="component-tabletools-container">
+            <div class="component-slide-header">
+                <div class="component-slide-header-label">
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Header.Filter"))</span>
+                </div>
+                <button type="button" class="component-filter-close" title='@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Close"))'>
+                    <span><i class="mdi mdi-close"></i></span>
+                </button>
+            </div>
+
+            <div class="component-slide-content">
+                <span>Filters goes here</span>
+            </div>
+        </div>
+
     </div>
 </div>

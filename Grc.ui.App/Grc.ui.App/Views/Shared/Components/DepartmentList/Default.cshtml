@@ -1,15 +1,78 @@
-﻿<div class="table-container">
-    <table id="departmentsTable" class="table is-fullwidth is-striped">
-        <thead>
-            <tr>
-                <th width="120">Code</th>
-                <th>Department Name</th>
-                <th>Department Alias</th>
-                <th>Branch</th>
-                <th>Active</th>
-                <th>Created On</th>
-            </tr>
-        </thead>
-        <tbody id="departmentsTableBody"></tbody>
-    </table>
+﻿
+<div class="component-split-container">
+
+    <div class="component-slideout">
+
+        <div class="component-create-container">
+
+            <div class="component-slide-header">
+                <div class="component-slide-header-label">
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Header.New.Department"))</span>
+                </div>
+                <button type="button" class="component-new-close" title='@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Close"))'>
+                    <span><i class="mdi mdi-close"></i></span>
+                </button>
+            </div>
+
+            <div class="component-slide-content">    
+                <span>Create goes here</span>
+            </div>
+
+        </div>
+
+        <div class="component-edit-container">
+
+            <div class="component-slide-header">
+                <div class="component-slide-header-label">
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Header.Edit.Department"))</span>
+                </div>
+                <button type="button" class="component-edit-close" title='@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Close"))'>
+                    <span><i class="mdi mdi-close"></i></span>
+                </button>
+            </div>
+
+            <div class="component-slide-content">
+                <span>Edit goes here</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="component-split-table-container">
+
+        <div class="table-container">
+            <table id="departmentsTable" class="table is-fullwidth is-striped">
+                <thead>
+                    <tr>
+                        <th width="120">Code</th>
+                        <th>Department Name</th>
+                        <th>Department Alias</th>
+                        <th>Branch</th>
+                        <th>Active</th>
+                        <th>Created On</th>
+                    </tr>
+                </thead>
+                <tbody id="departmentsTableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="component-tabletools-container">
+            <div class="component-slide-header">
+                <div class="component-slide-header-label">
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Header.Filter"))</span>
+                </div>
+                <button type="button" class="component-filter-close" title='@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Close"))'>
+                    <span><i class="mdi mdi-close"></i></span>
+                </button>
+            </div>
+
+            <div class="component-slide-content">
+                <span>Filters goes here</span>
+            </div>
+        </div>
+
+    </div>
+
 </div>
+
+

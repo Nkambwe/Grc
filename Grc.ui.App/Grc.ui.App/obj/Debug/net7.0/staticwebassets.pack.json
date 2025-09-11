@@ -81,6 +81,10 @@
       "PackagePath": "staticwebassets\\js\\component-script.js"
     },
     {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\department-units-script.js",
+      "PackagePath": "staticwebassets\\js\\department-units-script.js"
+    },
+    {
       "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\grc-app.js",
       "PackagePath": "staticwebassets\\js\\grc-app.js"
     },

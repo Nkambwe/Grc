@@ -12,8 +12,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>h9zg7ddhyv</Fingerprint>
-      <Integrity>heFNy+aeM+Ancjz61R2w/l86m2WrGtD/On8sucetNf4=</Integrity>
+      <Fingerprint>dgjn69slbj</Fingerprint>
+      <Integrity>PUwSkcBreO5eyuZamXcOqLrv2qPFGOf8VWddpZiG8J0=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\admin-style.css'))</OriginalItemSpec>
@@ -30,8 +30,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>6xenmx8clu</Fingerprint>
-      <Integrity>SiW0Cd+4Wpczkgcc+lpIdyrj6LqjT84bNmLAf+ApiDk=</Integrity>
+      <Fingerprint>okokxf6jlu</Fingerprint>
+      <Integrity>aDbC1I6L17srsgTitimCWA9lcrjl7M+RbwuWl6l5PJo=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\admin-tables-styles.css'))</OriginalItemSpec>
@@ -84,8 +84,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>wpnihuga79</Fingerprint>
-      <Integrity>lLEa6GzMhywRKmsusDlniAvhAk1DNnTAhhWC4g/uucQ=</Integrity>
+      <Fingerprint>kiyiwzzd0p</Fingerprint>
+      <Integrity>PHuyiogjqMQz2vNmmBcdzGQN74mx8ftxNpXWOebVSwA=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\component-styles.css'))</OriginalItemSpec>
@@ -318,8 +318,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>hx4l3g992x</Fingerprint>
-      <Integrity>ywD8D6COOjzAvX718vszCcNKREPoiFhEUO1PaxO5Od8=</Integrity>
+      <Fingerprint>f8v1ya8b0j</Fingerprint>
+      <Integrity>X15kn96WfSp+iPnpPysSW2+8KzuhW0ircaUHpeZMBTc=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\admin-tables.js'))</OriginalItemSpec>
@@ -354,11 +354,29 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>g3xc9mkk06</Fingerprint>
-      <Integrity>dMzTUJO4M9b+WxccYYlbT3BocmjUFEOm63MHa5qniHI=</Integrity>
+      <Fingerprint>056v944q1p</Fingerprint>
+      <Integrity>LNZkWjTH2pOVuVpsZiyFPPhncbgcG83IORzxyu87vKw=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\component-script.js'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\department-units-script.js'))">
+      <SourceType>Package</SourceType>
+      <SourceId>Grc.ui.App</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Grc.ui.App</BasePath>
+      <RelativePath>js/department-units-script.js</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>dufjxpv523</Fingerprint>
+      <Integrity>9cs9L6wUQpQa8vV57PvhsXCEAMqNdGpUQ00CMkYfotM=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\department-units-script.js'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\grc-app.js'))">
       <SourceType>Package</SourceType>

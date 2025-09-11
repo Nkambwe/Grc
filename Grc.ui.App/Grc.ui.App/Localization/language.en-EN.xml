@@ -74,6 +74,49 @@
     <LocaleResource Name="Component.Label.FullScreen">
         <Value>Full Screen</Value>
     </LocaleResource>
+
+    <LocaleResource Name="Component.Label.Header.New.Unit">
+        <Value>New Unit</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Header.Edit.Unit">
+        <Value>Edit Unit</Value>
+    </LocaleResource>
+
+    <LocaleResource Name="Component.Label.Header.New.Department">
+        <Value>New Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Header.Edit.Department">
+        <Value>Edit Department</Value>
+    </LocaleResource>
+
+    <LocaleResource Name="Component.Label.Header.Filter">
+        <Value>Filter List By</Value>
+    </LocaleResource>
+
+    <LocaleResource Name="Component.Table.Label.Code">
+        <Value>Code</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Unit">
+        <Value>Unit</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Unit.Name">
+        <Value>Unit Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Department">
+        <Value>Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Department.Name">
+        <Value>Department Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Active">
+        <Value>Active</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Status">
+        <Value>Status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Created">
+        <Value>Created On</Value>
+    </LocaleResource>
     
     <LocaleResource Name="App.User.Views">
         <Value>Views</Value>

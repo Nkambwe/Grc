@@ -299,12 +299,12 @@ span.app-serach {
 .dropdown.is-right .dropdown-menu {
     position: absolute;
     top: 100%;
-    right: 0;
+    right: 25px;
     margin-top: 5px;
-    background: var(--sidebar-bg);
-    border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    border: 1px solid #e1e8ed;
+    background: var(--background-color);
+    border: 1px solid var(--grey-light-medium);
+    border-radius: 0px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
     min-width: 200px;
     opacity: 0;
     visibility: hidden;
@@ -710,131 +710,6 @@ span.app-serach {
             margin-right:5px;
         }
 
-/* Overlay styles */
-.pop-container {
-    margin:0;
-    padding:0;
-}
-
-.component-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: none;
-    z-index: 9999;
-}
-
-.component-modal-container {
-    position: absolute;
-    top: 60px;
-    left: 50%;
-    transform: translate(-50%);
-    background: white;
-    border-radius: 0;
-    width: 100%;
-    height: calc(100vh - 60px);
-    max-width: 90%;
-    overflow-y: hidden;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
-    transition: all .3s ease-in-out;
-}
-
-    .component-modal-container.expanded {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        min-width: 100%;
-        transform: none;
-        height:100%;
-        transition: all .3s ease-in-out;
-    }
-
-.component-modal-header {
-    padding: 1rem 1.5rem;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid #eee;
-    background-color: #f8f9fa;
-}
-
-button.componet-modal-back {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    z-index: 1;
-    font-size: 1.5rem;
-    flex-shrink: 0;
-    color: var(--accent-grey-medium);
-    border: solid 1px var(--grey-light-medium);
-}
-
-    button.componet-modal-back:hover {
-        color: var(--teal-dark-slightly);
-        background-color: var(--teal-light);
-        border: solid 1px var(--teal-dark-slightly);
-        transition: all .3s ease-in-out;
-    }
-
-.component-modal-title {
-    margin: 0;
-    flex-grow: 1;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--teal-light-strong);
-    text-align: left;
-    padding-left: 20px;
-}
-
-.button-box {
-    flex-shrink: 0; 
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-}
-
-button.component-modal-close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 0.25rem;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    color: #666;
-    transition: all 0.2s;
-}
-
-    button.component-modal-close:hover {
-        color: var(--teal-dark-slightly);
-        background-color: transparent;
-        transition: all .3s ease-in-out;
-    }
-
-.component-modal-content {
-    padding: 0 3rem;
-    min-height: 100%;
-    overflow: auto;
-    background: #f4f5f7;
-}
-
-.component-modal-footer {
-    padding: 1rem 1.5rem;
-    border-top: 1px solid #eee;
-    text-align: right;
-    background-color: #f8f9fa;
-    border-radius: 0 0 8px 8px;
-}
-
 .stats-grid {
     display:flex;
     flex-direction:column;
@@ -966,6 +841,69 @@ button.component-modal-close {
 .stat-link span:first-child,
 .stat-link-color:first-child {
     margin-right: 5px
+}
+
+input.form-control:focus,
+textarea.form-control:focus,
+select.form-control:focus {
+    border-color: #8803A3 !important;
+    box-shadow: 0 0 0 0.25rem rgba(136, 3, 163, 0.25) !important;
+    outline: 0; /* removes the browser’s default blue outline */
+}
+
+input.form-control:focus,
+textarea.form-control:focus,
+select.form-control:focus {
+    border-color: #8803A3 !important;
+    box-shadow: none !important;
+    outline: 0;
+}
+
+/* Main box when focused */
+.select2-container--default .select2-selection--single:focus,
+.select2-container--default .select2-selection--multiple:focus {
+    border-color: #8803A3 !important;
+    box-shadow: 0 0 0 0.25rem rgba(136, 3, 163, 0.25) !important;
+    outline: 0;
+}
+
+/* When dropdown is open */
+.select2-container--open .select2-selection--single,
+.select2-container--open .select2-selection--multiple {
+    border-color: #8803A3 !important;
+}
+
+/* Hovered option */
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #d966e2 !important; /* lighter purple on hover */
+    color: #fff !important;
+}
+
+/* Selected option */
+.select2-container--default .select2-results__option[aria-selected="true"] {
+    background-color: #8803A3 !important;
+    color: #fff !important;
+}
+
+/* Tag style for multi-select */
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #8803A3 !important;
+    border-color: #8803A3 !important;
+    color: #fff !important;
+}
+
+/* Active/selected day */
+.datepicker table tr td.active,
+.datepicker table tr td.active:hover {
+    background-color: #8803A3 !important;
+    border-color: #8803A3 !important;
+    color: #fff !important;
+}
+
+/* Hovered day */
+.datepicker table tr td.day:hover {
+    background-color: #d966e2 !important;
+    color: #fff !important;
 }
 
 @keyframes dropdownFadeIn {
