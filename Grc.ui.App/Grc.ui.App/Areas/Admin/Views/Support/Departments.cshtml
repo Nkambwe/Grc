@@ -20,16 +20,9 @@
     };
 }
 
-@await Component.InvokeAsync("BaseComponent", new {
-        model = component, 
-        content = Component.InvokeAsync("DepartmentList")
-})
-
+<!-- departments -->
+@await Component.InvokeAsync("BaseComponent", new {model = component, content = Component.InvokeAsync("DepartmentList")})
 
 <!-- department units -->
-@await Component.InvokeAsync("PopupPage", new {
-        title = ComponentKey.DepartmentUnits.GetDescription(),
-        content = Component.InvokeAsync("DepartmentUnitPage"),
-        level = 0
-})
+@await Component.InvokeAsync("PopupPage", new { title = ComponentKey.DepartmentUnits.GetDescription(), name = "DepartmentUnits", content = Component.InvokeAsync("DepartmentUnitPage"), level = 0})
 

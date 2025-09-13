@@ -1,14 +1,20 @@
-﻿using Microsoft.AspNetCore.Html;
+﻿using Grc.ui.App.Factories;
+using Grc.ui.App.Models;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Grc.ui.App.Components {
 
     public class PopupPageViewComponent : ViewComponent {
-        public async Task<IViewComponentResult> InvokeAsync(string title, Task<IHtmlContent> content, int level = 0) {
-            ViewData["Content"] = await content;
-            ViewData["Level"] = level; 
-            ViewData["Title"] = title;
-            return View("Default");
+
+        private readonly IPageModelFactory _modelFactory;
+        public PopupPageViewComponent(IPageModelFactory modelFactory) {
+            _modelFactory = modelFactory;
+        }
+
+        public async Task<IViewComponentResult> InvokeAsync(string title, string name, Task<IHtmlContent> content, int level = 0) {
+            PopupModel model = await _modelFactory.PreparePoupModelAsync(title, name, level, await content);
+            return View("Default",model);
         }
 
     }

@@ -17,8 +17,8 @@
         <div class="component-header-left">
             @foreach (var action in Model.LeftActions)
             {
-                string idBtn = $"btnAction{action.Tooltip}{Model.ComponentId}";
-                <button id="@idBtn" class="action-btn" data-action="@action.ActionKey" title="@action.Tooltip">
+                string btnClass = $"action-btn-{action.Tooltip}";
+                <button class="action-btn @btnClass" data-action="@action.ActionKey" title="@action.Tooltip">
                     <span><i class="@action.Icon"></i></span>
                     <span>@Html.Raw(action.Tooltip)</span>
                 </button>
@@ -26,17 +26,16 @@
         </div>
         @{
             string dropId = $"dropdownAction{Model.ComponentId}";
-            string dropBtnId = $"moreActionsBtn{Model.ComponentId}";
-            string btnFilterId = $"filterBtn{Model.ComponentId}";
+            string filterClass = "filter-btn";
         }
         <div class="component-header-right">
 
-            <button id="@btnFilterId" class="icon-btn" data-action="filter" title="Filter">
+            <button class="icon-btn @filterClass" data-action="filter" title="Filter">
                 <span> <i class="mdi mdi-filter-outline"></i></span>
             </button>
 
             <div class="header-more-list">
-                <button id="@dropBtnId" class="icon-btn status-indicator" title="More Actions">
+                <button class="icon-btn status-indicator" title="More Actions">
                     <span> <i class="mdi mdi-format-align-justify"></i></span>
                 </button>
 

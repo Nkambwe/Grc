@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Grc.ui.App.Factories;
 using Grc.ui.App.Helpers;
 using Grc.ui.App.Http;
 using Grc.ui.App.Infrastructure;
@@ -29,7 +28,6 @@ namespace Grc.ui.App.Extensions.Mvc {
             services.AddScoped<IGrcBaseService, GrcBaseService>();
             services.AddScoped<IGRCFileProvider, GRCFileProvider>();
             services.AddScoped<IWorkspaceService, WorkspaceService>();
-           
             services.AddScoped<ILocalizationService, LocalizationService>();
             services.AddScoped<ISystemAccessService, SystemAccessService>();
             services.AddScoped<IInstallService, InstallService>();
@@ -42,9 +40,6 @@ namespace Grc.ui.App.Extensions.Mvc {
             services.AddScoped<IErrorService, ErrorService>();
             services.AddScoped<ISystemActivityService, SystemActivityService>();
 
-            //..register factories 
-            services.AddScoped<IRegistrationFactory, RegistrationFactory>();
-            
             //..sessionExtensions manager
             services.AddScoped<SessionManager>();
 

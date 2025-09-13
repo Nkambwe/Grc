@@ -1,9 +1,10 @@
 ﻿ $(document).ready(function () {
     let isCompExpanded = false;
 
-    $("#moreActionsBtn1, #moreActionsBtn2").on("click", function (e) {
+    $(".status-indicator").on("click", function (e) {
         e.stopPropagation(); 
-        $(".header-more-list").toggleClass("open");
+        const $component = $(this).closest('.grc-page-component'); 
+        $component.find('.header-more-list').toggleClass("open");
     });
 
     $(document).on("click", function (e) {
@@ -33,7 +34,7 @@
     });
     
     //..handle action button clicks to open modal
-    $('#btnActionUnits1').on('click', function(e) {
+    $('.action-btn-Units').on('click', function(e) {
         e.preventDefault();
          openModal('DepartmentUnits');
 
@@ -41,21 +42,25 @@
     });
 
     //..close component modal when clicking the X button
-    $('.component-modal-close,.componet-modal-back').on('click', function() {
-        closeModal();
+   $(document).on('click', '.component-modal-close, .componet-modal-back', function() {
+        const $modal = $(this).closest('.component-modal-overlay');
+        closeModal($modal.data('popup-id'));
     });
     
     //..close component modal when clicking outside the modal container
-    $('#componentModal').on('click', function(e) {
+    $(document).on('click', '.component-modal-overlay', function(e) {
         if (e.target === this) {
-            closeModal();
+            closeModal($(this).data('popup-id'));
         }
     });
     
     //..close modal with Escape key
     $(document).on('keydown', function(e) {
         if (e.key === 'Escape') {
-            closeModal();
+            const $topModal = $('.component-modal-overlay:visible').last();
+            if ($topModal.length) {
+                closeModal($topModal.data('popup-id'));
+            }
         }
     });
 
@@ -80,68 +85,72 @@
     });
 
     /*--------------------department button events*/
-     $('#btnActionNew1').on("click", function (e) {
-          resetButtons();
+
+    // filter buttons
+     $('.action-btn-New').on("click", function (e) {
+          e.preventDefault();
+
+          // reset only inside this component
+          const $component = $(this).closest('.grc-page-component'); 
+
+          resetButtons($component);
           $(this).addClass('active');
 
-          $('.component-slideout').addClass('active');
-          $('.component-create-container').show();
-          $('.component-edit-container').hide();
+          $component.find('.component-slideout').addClass('active');
+          $component.find('.component-create-container').show();
+          $component.find('.component-edit-container').hide();
      });
 
-     $('#btnActionEdit1').on("click", function (e) {
-          resetButtons();
+     $('.action-btn-Edit').on("click", function (e) {
+          e.preventDefault();
+
+          // reset only inside this component
+          const $component = $(this).closest('.grc-page-component'); 
+
+          resetButtons($component);
           $(this).addClass('active');
 
-          $('.component-slideout').addClass('active');
-          $('.component-edit-container').show();
-          $('.component-create-container').hide();
+          $component.find('.component-slideout').addClass('active');
+          $component.find('.component-create-container').hide();
+          $component.find('.component-edit-container').show();
      });
      
-     $('#btnActionDelete1').on("click", function (e) {
-     closeSlideout()
-     });
-     
-     $('#filterBtn1').on("click", function (e) {
-     
-     });
-     /*--------------------department unit button events*/
-     $('#btnActionNew2').on("click", function (e) {
-          resetButtons();
-          $(this).addClass('active');
+     $('.action-btn-Delete').on("click", function (e) {
 
-          $('.component-slideout').addClass('active');
-          $('.component-create-container').show();
-          $('.component-edit-container').hide();
      });
-     
-     $('#btnActionEdit2').on("click", function (e) {
-          resetButtons();
-          $(this).addClass('active');
 
-          $('.component-slideout').addClass('active');
-          $('.component-edit-container').show();
-          $('.component-create-container').hide();
-     });
-     
-     $('#btnActionDelete2').on("click", function (e) {
-     
-     });
-     
-     $('#filterBtn2').on("click", function (e) {
-          resetButtons();
-          $(this).addClass('active');
-          $('.component-tabletools-container').addClass('active');
+     // filter buttons
+    $('.filter-btn').on("click", function (e) {
+        e.preventDefault();
+
+        // reset only inside this component
+        const $component = $(this).closest('.grc-page-component'); 
+
+        resetButtons($component);
+
+        $(this).addClass('active');
+        $component.find('.component-tabletools-container').addClass('active');
     });
     
      $('.component-new-close, .component-edit-close').on("click", function (e) {
-          $('.component-slideout').removeClass('active');
-          resetButtons();
+         e.preventDefault();
+
+        // reset only inside this component
+        const $component = $(this).closest('.grc-page-component'); 
+
+        resetButtons($component);
+        $component.find('.component-slideout').removeClass('active');
+
      });
 
      $('.component-filter-close').on("click", function (e) {
-         $('.component-tabletools-container').removeClass('active');
-         resetButtons();
+          e.preventDefault();
+
+          // reset only inside this component
+          const $component = $(this).closest('.grc-page-component'); 
+
+          resetButtons($component);
+          $component.find('.component-tabletools-container').removeClass('active');
      });
 
     //..override DataTables alerts
@@ -164,8 +173,10 @@
         }
     });
 
-    function resetButtons() {
-        $('.action-btn, .icon-btn').removeClass('active');
+    function resetButtons($component) {
+        $component.find('.filterBtn').removeClass('active');
+        $component.find('.action-btn-New').removeClass('active');
+        $component.find('.action-btn-Edit').removeClass('active');
     }
 
     function initDepartmentUnitsTable() {
@@ -220,13 +231,20 @@
         setupRowSelection('#departmentUnitsTable', departmentsTable);
     }
 
-    function openModal(popupId) {
-          $('#componentModal').show();
-        $(document).trigger('popup.opened', [popupId]);
+    function openModal(popupIdOrName) {
+        let $popup = $(`#${popupIdOrName}`);
+        if ($popup.length === 0) {
+            $popup = $(`.component-modal-overlay[data-popup-name="${popupIdOrName}"]`);
+        }
+
+        if ($popup.length) {
+            $popup.show();
+            $(document).trigger('popup.opened', [$popup.attr('id')]);
+        }
     }
 
-    function closeModal() {
-        $('#componentModal').hide();
+    function closeModal(popupId) {
+        $(`#${popupId}`).hide();
         $(document).trigger('popup.closed', [popupId]);
     }
 

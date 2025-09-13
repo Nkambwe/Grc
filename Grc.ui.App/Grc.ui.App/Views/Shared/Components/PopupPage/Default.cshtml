@@ -1,21 +1,24 @@
-﻿@{
-    var content = (IHtmlContent)ViewData["Content"];
-    var level = (int)ViewData["Level"];
-    var title = (string)ViewData["Title"];
+﻿@model PopupModel
+@{
+    var content = Model.PageContent;
+    var popupId = $"popup-level-{Model.PageLavel}";
 
     // shrink nested modals slightly
-    var offset = level * 20; 
+    var offset = Model.PageLavel * 20;
 }
 
-<!-- add the modal overlay -->
-<div id="componentModal" class="component-modal-overlay" style="padding:@offset;">
+<div id="@popupId" class="component-modal-overlay" 
+    data-popup-id="@popupId" 
+    data-level="@Model.PageLavel"
+    data-popup-name="@Model.ComponentName"
+     style="padding:@offset; z-index:@(1000 + Model.PageLavel * 10)">
     <div class="component-modal-container" style="margin:@offset;">
         <div class="component-modal-header">
             <button type="button" class="componet-modal-back" title='@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Back"))'>
                 <span><i class="mdi mdi-arrow-left"></i></span>
             </button>
             <div id="componentModalTitle" class="component-modal-title">
-                <span>@title</span>
+                <span>@Model.PageTitle</span>
             </div>
             <div class="button-box">
                 <button id="componetExpandBtn" data-action="expand" class="icon-btn comp-expand-btn" title='@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.FullScreen"))'>
@@ -31,3 +34,4 @@
         </div>
     </div>
 </div>
+

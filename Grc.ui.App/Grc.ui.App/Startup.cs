@@ -38,14 +38,16 @@ namespace Grc.ui.App {
             services.AddScoped<IEnvironmentProvider, EnvironmentProvider>();
             services.AddScoped<IEndpointTypeProvider, EndpointTypeProvider>();
 
-            //..register logger factory
+            //..register factories 
             services.AddScoped<IApplicationLoggerFactory, ApplicationLoggerFactory>();
             services.AddScoped<IErrorFactory, ErrorFactory>();
             services.AddScoped<ILoginFactory, LoginFactory>();
+            services.AddScoped<IRegistrationFactory, RegistrationFactory>();
             services.AddScoped<IReceientModelFactory, ReceientModelFactory>();
             services.AddScoped<IPinnedModelFactory, PinnedModelFactory>();
             services.AddScoped<IQuickActionModelFactory, QuickActionModelFactory>();
             services.AddScoped<IDashboardFactory, DashboardFactory>();
+            services.AddScoped<IPageModelFactory, PageModelFactory>();
             services.AddScoped<IDepartmentFactory, DepartmentFactory>();
             services.AddScoped<ISupportDashboardFactory, SupportDashboardFactory>();
             services.AddScoped<IGrcErrorFactory, GrcErrorFactory>();
