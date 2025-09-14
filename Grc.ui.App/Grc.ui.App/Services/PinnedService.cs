@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Grc.ui.App.Enums;
+using Grc.ui.App.Factories;
 using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
+using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Utils;
 
 namespace Grc.ui.App.Services {
@@ -14,8 +16,12 @@ namespace Grc.ui.App.Services {
                     IHttpHandler httpHandler, 
                     IEnvironmentProvider environment, 
                     IEndpointTypeProvider endpointType, 
-                    IMapper mapper) 
-                    : base(loggerFactory, httpHandler, environment, endpointType, mapper) {
+                    IMapper mapper,
+                    IWebHelper webHelper,
+                    SessionManager sessionManager,
+                    IGrcErrorFactory errorFactory,
+                    IErrorService errorService) 
+        : base(loggerFactory, httpHandler, environment, endpointType, mapper,webHelper,sessionManager,errorFactory,errorService) {
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -36,6 +42,7 @@ namespace Grc.ui.App.Services {
                     return await HttpHandler.PostAsync<UserByIdRequest, IList<PinnedItem>>(endpoint,model);
             } catch (Exception ex) {
                 Logger.LogActivity($"Error retrieving user pinned menu items: {ex.Message}", "Error");
+                 await ProcessErrorAsync(ex.Message,"PINNED-SERVICE" , ex.StackTrace);
                 var error = new GrcResponseError(
                     GrcStatusCodes.SERVERERROR,
                     "Error retrieving user pinned menu items",

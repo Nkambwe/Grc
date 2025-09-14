@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Grc.ui.App.Enums;
+using Grc.ui.App.Factories;
 using Grc.ui.App.Helpers;
 using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
+using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
 using System.Text.Json;
@@ -16,8 +18,12 @@ namespace Grc.ui.App.Services {
                               IHttpClientFactory httpClientFactory,
                               IEnvironmentProvider environment, 
                               IEndpointTypeProvider endpointType,
-                              IMapper mapper)
-            : base(loggerFactory, httpHandler, environment,endpointType, mapper) {
+                              IMapper mapper,
+                              IWebHelper webHelper,
+                              SessionManager sessionManager,
+                              IGrcErrorFactory errorFactory,
+                              IErrorService errorService) 
+        : base(loggerFactory, httpHandler, environment, endpointType, mapper,webHelper,sessionManager,errorFactory,errorService) {
             Logger.Channel = $"COMPANY-{DateTime.Now:yyyyMMddHHmmss}";
         }
 
@@ -48,7 +54,7 @@ namespace Grc.ui.App.Services {
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
                 Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
-        
+                await ProcessErrorAsync(httpEx.Message,"INSTALL-SERVICE" , httpEx.StackTrace);
                 var error = new GrcResponseError(
                     GrcStatusCodes.BADGATEWAY,
                     "Network error occurred",
@@ -59,7 +65,7 @@ namespace Grc.ui.App.Services {
             } catch (GRCException ex)  {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");    
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
-        
+                await ProcessErrorAsync(ex.Message,"INSTALL-SERVICE" , ex.StackTrace);
                 var error = new GrcResponseError(
                     GrcStatusCodes.SERVERERROR,
                     "An unexpected error occurred",

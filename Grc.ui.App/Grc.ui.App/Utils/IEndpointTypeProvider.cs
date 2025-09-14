@@ -7,6 +7,7 @@ namespace Grc.ui.App.Utils {
         RegistrationEndpoints Registration { get; }
         ActivityLogEndpoints ActivityLog { get; }
         DepartmentEndpoints Departments { get; }
+        OrganizationEndpoints Organization { get; }
         ErrorEndpoints Error { get; }
     }   
 }

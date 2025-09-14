@@ -8,5 +8,6 @@
         public ErrorEndpoints Errors { get; set; } = new();
         public ActivityLogEndpoints ActivityLog { get; set; } = new();
         public DepartmentEndpoints Departments { get; set; } = new();
+        public OrganizationEndpoints Organization { get; set; } = new();
     }
 }

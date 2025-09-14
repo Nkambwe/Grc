@@ -130,8 +130,7 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(r => r.DepartmentAlias, reg => reg.MapFrom(o => o.Alias))
                 .ForMember(r => r.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
                 .ForMember(r => r.CreatdOn, reg => reg.MapFrom(o => o.CreatedOn));
-        
-            
+
             CreateMap<DepartmentUnit, DepartmentUnitResponse>()
                 .ForMember(r => r.Id, reg => reg.MapFrom(o => o.Id))
                 .ForMember(r => r.DepartmentId, reg => reg.MapFrom(o => o.DepartmentId))
@@ -140,7 +139,18 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(r => r.UnitCode, reg => reg.MapFrom(o => (o.UnitCode?? string.Empty).Trim()))
                 .ForMember(r => r.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
                 .ForMember(r => r.CreatdOn, reg => reg.MapFrom(o => o.CreatedOn));
-
+            
+            CreateMap<Branch, BranchResponse>()
+                .ForMember(r => r.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(r => r.CompanyId, reg => reg.MapFrom(o => o.CompanyId))
+                .ForMember(r => r.CompanyName, reg => reg.MapFrom(o => (o.Company.CompanyName ?? string.Empty).Trim()))
+                .ForMember(r => r.BranchName, reg => reg.MapFrom(o => (o.BranchName ?? string.Empty).Trim()))
+                .ForMember(r => r.SolId, reg => reg.MapFrom(o => (o.SolId  ?? string.Empty).Trim()))
+                .ForMember(r => r.CreatedBy, reg => reg.MapFrom(o => (o.CreatedBy?? string.Empty).Trim()))
+                .ForMember(r => r.CreatedOn, reg => reg.MapFrom(o => o.CreatedOn))
+                .ForMember(r => r.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
+                .ForMember(r => r.LastModifiedBy, reg => reg.MapFrom(o => (o.LastModifiedBy  ?? string.Empty).Trim()))
+                .ForMember(r => r.LastModifiedOn, reg => reg.MapFrom(o => o.LastModifiedOn));
         }
 
     }

@@ -12,8 +12,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>dgjn69slbj</Fingerprint>
-      <Integrity>PUwSkcBreO5eyuZamXcOqLrv2qPFGOf8VWddpZiG8J0=</Integrity>
+      <Fingerprint>hh4by4c58l</Fingerprint>
+      <Integrity>dd0xcUTs6MN/yZFGug+A7B4XTMSuOxR5FMOohnPTKnw=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\admin-style.css'))</OriginalItemSpec>
@@ -66,8 +66,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>q5qml9re6m</Fingerprint>
-      <Integrity>7laGb+zPj5BWnHYmI8QFMUegCIt0/WfvpiMMRnQhl4g=</Integrity>
+      <Fingerprint>7bj130qqca</Fingerprint>
+      <Integrity>/eQzyQ4Wfi2AA+u8AuIoEcgZVRtICRQwllimNNGXsus=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\color-pallete.css'))</OriginalItemSpec>
@@ -84,8 +84,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>bd8bgokqwu</Fingerprint>
-      <Integrity>4dCWZ5bJcx2Ea3A04pvXrjN8RAxiJFAdcVSNHojLLaQ=</Integrity>
+      <Fingerprint>0hkwb0s82j</Fingerprint>
+      <Integrity>pNp2X/uRySM5IqhQ7SP94+O9fSrG1ESCxKpP0uBs9XY=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\component-styles.css'))</OriginalItemSpec>
@@ -318,8 +318,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>f8v1ya8b0j</Fingerprint>
-      <Integrity>X15kn96WfSp+iPnpPysSW2+8KzuhW0ircaUHpeZMBTc=</Integrity>
+      <Fingerprint>afyrist6r5</Fingerprint>
+      <Integrity>+oa70uHsXPDWxniPbY3YsF7eGeg2ODlaVRx98P2u6Q4=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\admin-tables.js'))</OriginalItemSpec>
@@ -354,11 +354,29 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>y1x1yonyyq</Fingerprint>
-      <Integrity>avAOc3zt5SKGsoEneXPBOKBo2OP2iE350gFPeTZ8zho=</Integrity>
+      <Fingerprint>qvt9qcrt4l</Fingerprint>
+      <Integrity>hvl8Ic6FQiUi7lupPE37AYu+ms4g3sVEGIzV3IPcc2A=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\component-script.js'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\department-script.js'))">
+      <SourceType>Package</SourceType>
+      <SourceId>Grc.ui.App</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Grc.ui.App</BasePath>
+      <RelativePath>js/department-script.js</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>3r8b2a0bt1</Fingerprint>
+      <Integrity>8ZRc1sGeVrPBx4lD717BgRaQekyh78QKV9SKsdt638U=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\department-script.js'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\department-units-script.js'))">
       <SourceType>Package</SourceType>
@@ -1440,6 +1458,42 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\lib\chartjs\Chart.min.js'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\lib\ckeditor5\ckeditor5.css'))">
+      <SourceType>Package</SourceType>
+      <SourceId>Grc.ui.App</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Grc.ui.App</BasePath>
+      <RelativePath>lib/ckeditor5/ckeditor5.css</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>c5ixqxm9sm</Fingerprint>
+      <Integrity>4AffNAuql22GnYmu2c0TsA65zv45C1Hs1LrBWYgsjzs=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\lib\ckeditor5\ckeditor5.css'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\lib\ckeditor5\ckeditor5.umd.js'))">
+      <SourceType>Package</SourceType>
+      <SourceId>Grc.ui.App</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Grc.ui.App</BasePath>
+      <RelativePath>lib/ckeditor5/ckeditor5.umd.js</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>e9npsxm27q</Fingerprint>
+      <Integrity>AuIlVGOvC9Yn8KUZaw7pCs9DGUfbHcY4TBP5aFXL1sI=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\lib\ckeditor5\ckeditor5.umd.js'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\lib\datatables\datatables.css'))">
       <SourceType>Package</SourceType>
       <SourceId>Grc.ui.App</SourceId>
@@ -1902,8 +1956,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>cya2dp4h3p</Fingerprint>
-      <Integrity>9FSeh7ApB7Zi6gfN4jlTDS/Ydm8MnyG2zYf21i1169s=</Integrity>
+      <Fingerprint>mx02rcyt9r</Fingerprint>
+      <Integrity>OnxnCOM+LucbbUYiNgHG1CXvN12qJkrKf8GQM/FSZaY=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\lib\icons\metro\icons.css'))</OriginalItemSpec>

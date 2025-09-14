@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Grc.ui.App.Extensions.Http;
-using Grc.ui.App.Http;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;

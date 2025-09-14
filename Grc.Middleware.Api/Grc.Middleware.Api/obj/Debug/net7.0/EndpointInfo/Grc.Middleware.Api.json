@@ -525,6 +525,161 @@
         }
       }
     },
+    "/grc/organization/getBranches": {
+      "post": {
+        "tags": [
+          "Support"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/organization/allBranches": {
+      "post": {
+        "tags": [
+          "Support"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/organization/saveBranch": {
+      "post": {
+        "tags": [
+          "Support"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.BranchRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.BranchRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.BranchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/organization/updateBranch": {
+      "post": {
+        "tags": [
+          "Support"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.BranchRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.BranchRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.BranchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/organization/deleteBranch": {
+      "post": {
+        "tags": [
+          "Support"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DeleteRequst"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DeleteRequst"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DeleteRequst"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/grc/departments/allDepartments": {
       "post": {
         "tags": [
@@ -627,17 +782,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DepartmentRequest"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DeleteRequst"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DepartmentRequest"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DeleteRequst"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DepartmentRequest"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DeleteRequst"
               }
             }
           }
@@ -689,17 +844,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DepartmentRequest"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DepartmentUnitRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DepartmentRequest"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DepartmentUnitRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DepartmentRequest"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DepartmentUnitRequest"
               }
             }
           }
@@ -720,17 +875,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DepartmentRequest"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DepartmentUnitRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DepartmentRequest"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DepartmentUnitRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DepartmentRequest"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DepartmentUnitRequest"
               }
             }
           }
@@ -751,17 +906,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DepartmentRequest"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DeleteRequst"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DepartmentRequest"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DeleteRequst"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DepartmentRequest"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DeleteRequst"
               }
             }
           }
@@ -806,23 +961,12 @@
         },
         "additionalProperties": false
       },
-      "Grc.Middleware.Api.Http.Requests.DepartmentRequest": {
+      "Grc.Middleware.Api.Http.Requests.BranchRequest": {
         "type": "object",
         "properties": {
-          "departmentId": {
+          "id": {
             "type": "integer",
             "format": "int64"
-          },
-          "departmentName": {
-            "type": "string",
-            "nullable": true
-          },
-          "departmentAlias": {
-            "type": "string",
-            "nullable": true
-          },
-          "isDeleted": {
-            "type": "boolean"
           },
           "userId": {
             "type": "integer",
@@ -831,6 +975,128 @@
           "ipAddress": {
             "type": "string",
             "nullable": true
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          },
+          "solId": {
+            "type": "string",
+            "nullable": true
+          },
+          "branchName": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Grc.Middleware.Api.Http.Requests.DeleteRequst": {
+        "type": "object",
+        "properties": {
+          "recordId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Grc.Middleware.Api.Http.Requests.DepartmentRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          },
+          "departmentCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "departmentName": {
+            "type": "string",
+            "nullable": true
+          },
+          "alias": {
+            "type": "string",
+            "nullable": true
+          },
+          "branchId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Grc.Middleware.Api.Http.Requests.DepartmentUnitRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          },
+          "unitCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "unitName": {
+            "type": "string",
+            "nullable": true
+          },
+          "departmentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "isDeleted": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false

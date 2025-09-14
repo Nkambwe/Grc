@@ -1,4 +1,13 @@
 ﻿$(document).ready(function () {
+    console.log('Department script loaded');
+    console.log('jQuery version:', $.fn.jquery);
+    console.log('Select2 available:', typeof $.fn.select2);
+    
+    // Check if Select2 is available before using it
+    if (typeof $.fn.select2 === 'undefined') {
+        console.error('Select2 is not loaded!');
+        return;
+    }
 
     //..activity table
     if ($("#tblActivity").length) {

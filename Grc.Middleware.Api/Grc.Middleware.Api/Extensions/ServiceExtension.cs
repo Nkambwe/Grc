@@ -56,6 +56,7 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<ISystemErrorService, SystemErrorService>();
             services.AddScoped<IBaseService, BaseService>();
             services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<IBranchService, BranchService>();
             services.AddScoped<ISystemAccessService, SystemAccessService>();
             services.AddScoped<IActivityLogService, ActivityLogService>();
             services.AddScoped<IActivityTypeService, ActivityTypeService>();

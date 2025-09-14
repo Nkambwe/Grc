@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Grc.ui.App.Enums;
+using Grc.ui.App.Factories;
 using Grc.ui.App.Helpers;
 using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
+using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Authentication;
@@ -22,8 +24,12 @@ namespace Grc.ui.App.Services {
                     IHttpHandler httpHandler, 
                     IEnvironmentProvider environment, 
                     IEndpointTypeProvider endpointType, 
-                    IMapper mapper) 
-                    : base(loggerFactory, httpHandler, environment, endpointType, mapper) {
+                    IMapper mapper,
+                    IWebHelper webHelper,
+                    SessionManager sessionManager,
+                    IGrcErrorFactory errorFactory,
+                    IErrorService errorService) 
+        : base(loggerFactory, httpHandler, environment, endpointType, mapper,webHelper,sessionManager,errorFactory,errorService) {
             _httpContextAccessor = httpContextAccessor;
         }
   
@@ -54,6 +60,7 @@ namespace Grc.ui.App.Services {
                 return await HttpHandler.PostAsync<UserByNameRequest, UserModel>(endpoint, request);
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve user record for {username}: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message,"AUTHENTICATION-SERVICE" , ex.StackTrace);
                 throw new GRCException("Uanble to retrieve user.", ex);
             }
         }
@@ -80,6 +87,7 @@ namespace Grc.ui.App.Services {
                 return await HttpHandler.PostAsync<UserSignInRequest, UserModel>(endpoint, request);
             } catch (Exception ex) {
                 Logger.LogActivity($"Authentication failed: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message,"AUTHENTICATION-SERVICE" , ex.StackTrace);
                 throw new GRCException("Uanble to authenticate user.", ex);
             }
         }
@@ -150,6 +158,7 @@ namespace Grc.ui.App.Services {
                 return new GrcResponse<UserModel>(fallbackError);
             } catch (Exception ex) {
                 Logger.LogActivity($"Error retrieving current user Info: {ex.Message}", "Error");
+                await ProcessErrorAsync(ex.Message,"AUTHENTICATION-SERVICE" , ex.StackTrace);
                 var error = new GrcResponseError(
                     GrcStatusCodes.SERVERERROR,
                     "Error retrieving user information",
@@ -173,9 +182,11 @@ namespace Grc.ui.App.Services {
                 return response.Data?.IsSignedIn ?? false;
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"IsSignedIn failed (network): {httpEx.Message}", "ERROR");
+                await ProcessErrorAsync(httpEx.Message,"AUTHENTICATION-SERVICE" , httpEx.StackTrace);
                 return false;
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected IsSignedIn error: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message,"AUTHENTICATION-SERVICE" , ex.StackTrace);
                 return false;
             }
         }
@@ -214,9 +225,12 @@ namespace Grc.ui.App.Services {
 
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"SignIn failed (network): {httpEx.Message}", "ERROR");
+                await ProcessErrorAsync(httpEx.Message,"AUTHENTICATION-SERVICE" , httpEx.StackTrace);
                 throw new GRCException("Unable to sign in. Please check your connection.", httpEx);
+               
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected SignIn error: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message,"AUTHENTICATION-SERVICE" , ex.StackTrace);
                 throw new GRCException("An unexpected error occurred during sign in.", ex);
             }
         }
@@ -237,9 +251,11 @@ namespace Grc.ui.App.Services {
                 await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"SignOut failed (network): {httpEx.Message}", "ERROR");
+                await ProcessErrorAsync(httpEx.Message,"AUTHENTICATION-SERVICE" , httpEx.StackTrace);
                 throw new GRCException("Failed to sign out. Network issue.", httpEx);
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected SignOut error: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message,"AUTHENTICATION-SERVICE" , ex.StackTrace);
                 throw new GRCException("An unexpected error occurred during sign out.", ex);
             }
         }

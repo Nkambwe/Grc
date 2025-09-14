@@ -22,6 +22,11 @@ namespace Grc.ui.App.Enums {
         [Description("Retrieve record count for users")]
         COUNTUSERS = 8,
         [Description("Retrieve user statistics")]
-        STATISTICS = 9
+        STATISTICS = 9,
+        [Description("Get a list of branches available")]
+        RETRIEVEBRANCHES = 10,
+        [Description("Get a list of all available branches")]
+        RETRIEVEALLBRANCHES = 11,
+
     }
 }

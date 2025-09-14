@@ -81,6 +81,10 @@
       "PackagePath": "staticwebassets\\js\\component-script.js"
     },
     {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\department-script.js",
+      "PackagePath": "staticwebassets\\js\\department-script.js"
+    },
+    {
       "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\department-units-script.js",
       "PackagePath": "staticwebassets\\js\\department-units-script.js"
     },
@@ -319,6 +323,14 @@
     {
       "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\chartjs\\Chart.min.js",
       "PackagePath": "staticwebassets\\lib\\chartjs\\Chart.min.js"
+    },
+    {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\ckeditor5\\ckeditor5.css",
+      "PackagePath": "staticwebassets\\lib\\ckeditor5\\ckeditor5.css"
+    },
+    {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\ckeditor5\\ckeditor5.umd.js",
+      "PackagePath": "staticwebassets\\lib\\ckeditor5\\ckeditor5.umd.js"
     },
     {
       "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\datatables\\datatables.css",

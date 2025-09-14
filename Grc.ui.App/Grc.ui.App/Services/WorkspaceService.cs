@@ -2,9 +2,8 @@
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
-using System.Reflection;
 using System.Text.Json;
-using System.Linq;
+using Grc.ui.App.Factories;
 
 namespace Grc.ui.App.Services {
 
@@ -14,47 +13,72 @@ namespace Grc.ui.App.Services {
                                 IHttpClientFactory httpClientFactory,
                                 IEnvironmentProvider environment, 
                                 IEndpointTypeProvider endpointType,
-                                IHttpHandler handler,
+                                IHttpHandler httpHandler,
                                 IMapper mapper,
-                                IBranchService branchService)
-            : base(loggerFactory, handler, environment,endpointType, mapper) {
+                                IBranchService branchService,
+                                IWebHelper webHelper,
+                                SessionManager sessionManager,
+                                IGrcErrorFactory errorFactory,
+                                IErrorService errorService) 
+        : base(loggerFactory, httpHandler, environment, endpointType, mapper,webHelper,sessionManager,errorFactory,errorService) {
             Logger.Channel = $"WORKSPACE-{DateTime.Now:yyyyMMddHHmmss}";
             _branchService = branchService;
         }
 
         public async Task<WorkspaceModel> BuildWorkspaceAsync(long userId, string ipAddress) {
-            //..get work model
-            var grcResponse = await _branchService.GetWorkspaceAsync(userId, userId, ipAddress);
-            Logger.LogActivity($"WORKSPACE RESPONSE: {JsonSerializer.Serialize(grcResponse)}");
-            if (grcResponse.HasError) {
-                return new();
+
+            try{
+                //..get work model
+                var grcResponse = await _branchService.GetWorkspaceAsync(userId, userId, ipAddress);
+                Logger.LogActivity($"WORKSPACE RESPONSE: {JsonSerializer.Serialize(grcResponse)}");
+                if (grcResponse.HasError) {
+                    return new();
+                }
+
+                //..success response
+                var workspace = new WorkspaceModel {
+                    IsLiveEnvironment = Environment.IsLive,
+                    CurrentUser = Mapper.Map<CurrentUserModel>(grcResponse.Data.CurrentUser),
+                    Permissions = grcResponse.Data.Permissions,
+                    Role = grcResponse.Data.Role,
+                    RoleId = grcResponse.Data.RoleId,
+                    AssignedBranch = Mapper.Map<BranchModel>(grcResponse.Data.AssignedBranch)
+                };
+
+                if(grcResponse.Data.UserViews != null && grcResponse.Data.UserViews.Count > 0){ 
+                    workspace.UserViews = (from view in grcResponse.Data.UserViews select Mapper.Map<UserViewModel>(view)).ToList();
+                }
+                
+                return workspace;
+            }catch(Exception ex){
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+                await ProcessErrorAsync(ex.Message,"WORKSPACE-SERVICE" , ex.StackTrace);
+                return null;
             }
-
-            //..success response
-            var workspace = new WorkspaceModel {
-                IsLiveEnvironment = Environment.IsLive,
-                CurrentUser = Mapper.Map<CurrentUserModel>(grcResponse.Data.CurrentUser),
-                Permissions = grcResponse.Data.Permissions,
-                Role = grcResponse.Data.Role,
-                RoleId = grcResponse.Data.RoleId,
-                AssignedBranch = Mapper.Map<BranchModel>(grcResponse.Data.AssignedBranch)
-            };
-
-            if(grcResponse.Data.UserViews != null && grcResponse.Data.UserViews.Count > 0){ 
-                workspace.UserViews = (from view in grcResponse.Data.UserViews select Mapper.Map<UserViewModel>(view)).ToList();
-            }
-
-            return workspace;
         }
 
-        public Task CleanupWorkspaceAsync(string userId) {
-           return Task.CompletedTask;
+        public async Task CleanupWorkspaceAsync(string userId) {
+            try {
+                return;
+            }catch(Exception ex){
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+                await ProcessErrorAsync(ex.Message,"WORKSPACE-SERVICE" , ex.StackTrace);
+                return;
+            }
+           
         }
 
-        public Task SaveWorkspaceChangesAsync(WorkspaceModel workspace) {
-            //TODO --save preferences
-            //TODO --save favourites
-             return Task.CompletedTask;
+        public async Task SaveWorkspaceChangesAsync(WorkspaceModel workspace) {
+            try {
+                return;
+            }catch(Exception ex){
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+                await ProcessErrorAsync(ex.Message,"WORKSPACE-SERVICE" , ex.StackTrace);
+                return;
+            }
         }
 
     }

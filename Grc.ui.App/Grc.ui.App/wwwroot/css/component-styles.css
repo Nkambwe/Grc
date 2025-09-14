@@ -220,7 +220,7 @@ button.component-filter-close {
 
     .component-slideout.active {
         position: relative;
-        width: 300px;
+        width: 500px;
         background: var(--background-color);
         transform: translateX(0);
         transition: all .5s ease-in-out;

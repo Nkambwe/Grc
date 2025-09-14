@@ -5,11 +5,6 @@ using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewEngines;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using System.Text.Encodings.Web;
 using System.Text.Json;
 
 namespace Grc.ui.App.Areas.Admin.Controllers {

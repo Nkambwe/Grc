@@ -52,7 +52,14 @@
     </LocaleResource>
     <LocaleResource Name="Component.Key.Delegations">
         <Value>Delegation</Value>
-    </LocaleResource>    
+    </LocaleResource>
+    
+    <LocaleResource Name="Component.Label.Branch">
+        <Value>Add Branch</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Branch.Select">
+        <Value>Select Branch...</Value>
+    </LocaleResource>
     <LocaleResource Name="Component.Label.QuickAction">
         <Value>Add to Quick Action</Value>
     </LocaleResource>

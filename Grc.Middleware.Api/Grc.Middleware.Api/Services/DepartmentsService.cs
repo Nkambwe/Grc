@@ -6,6 +6,8 @@ using Grc.Middleware.Api.Utils;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Grc.Middleware.Api.Http.Requests;
+using Grc.Middleware.Api.Data.Entities.System;
 
 namespace Grc.Middleware.Api.Services {
 
@@ -43,6 +45,18 @@ namespace Grc.Middleware.Api.Services {
                     Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
                     innerEx = innerEx.InnerException;
                 }
+                
+                var conpany = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new(){ 
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "DEPARTMENT-SERVICE-MIDDLEWARE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+                
                 throw; 
             };
         }
@@ -74,6 +88,18 @@ namespace Grc.Middleware.Api.Services {
                     Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
                     innerEx = innerEx.InnerException;
                 }
+                
+                var conpany = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new(){ 
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "DEPARTMENT-SERVICE-MIDDLEWARE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+                
                 throw; 
             };
         }
@@ -105,6 +131,18 @@ namespace Grc.Middleware.Api.Services {
                     Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
                     innerEx = innerEx.InnerException;
                 }
+
+                var conpany = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new(){ 
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "DEPARTMENT-SERVICE-MIDDLEWARE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+                
                 throw; 
             };
         }
@@ -142,16 +180,236 @@ namespace Grc.Middleware.Api.Services {
                 };
             } catch (Exception ex)  {
                 Logger.LogActivity($"Failed to retrieve departments: {ex.Message}", "ERROR");
+                
+                var conpany = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new(){ 
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "DEPARTMENT-SERVICE-MIDDLEWARE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+                
                 throw;
             }
         }
 
-        public Task<bool> InsertDepartmentAsync(Department department) {
-            throw new NotImplementedException();
+        public async Task<bool> InsertDepartmentAsync(DepartmentRequest request) {
+            using var uow = UowFactory.Create();
+             try {
+
+                //..create department record
+                var department = new Department(){ 
+                    DepartmenCode = request.DepartmentCode,
+                    DepartmentName = request.DepartmentName,
+                    Alias = request.Alias,
+                    BranchId = request.BranchId,
+                    CreatedBy = $"{request.UserId}",
+                    CreatedOn = DateTime.Now,
+                    LastModifiedBy = $"{request.UserId}",
+                    LastModifiedOn = DateTime.Now,
+                };
+
+                //..log the department data being saved
+                var departmentJson = JsonSerializer.Serialize(department, new JsonSerializerOptions { 
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles 
+                });
+                Logger.LogActivity($"Department data: {departmentJson}", "DEBUG");
+        
+                await uow.DepartmentRepository.InsertAsync(department);
+
+                //..check branch state
+                var entityState = ((UnitOfWork)uow).Context.Entry(department).State;
+                Logger.LogActivity($"Entity state after insert: {entityState}", "DEBUG");
+        
+                var result = await uow.SaveChangesAsync();
+                Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+
+                return result > 0;
+             } catch (Exception ex) {
+                Logger.LogActivity($"Failed to save department: {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+                
+                var conpany = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new(){ 
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "BRANCHSERVICE-MIDDLEWARE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw; 
+             }
         }
         
-        public Task<bool> DeleteDepartmentAsync(Department department, bool includeDeleted) {
-            throw new NotImplementedException();
+        public async Task<bool> UpdateDepartmentAsync(DepartmentRequest request) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Update department with ID {request.UserId}", "INFO");
+    
+            try {
+
+                var department = await uow.DepartmentRepository.GetAsync(u => u.Id == request.Id);
+                if(department != null){ 
+                    department.DepartmenCode = request.DepartmentCode;
+                    department.DepartmentName = request.DepartmentName;
+                    department.Alias = request.Alias;
+                    department.IsDeleted = request.IsDeleted;
+                    department.IsDeleted = request.IsDeleted;
+                    department.BranchId = request.BranchId;
+                    department.LastModifiedOn = DateTime.Now;
+                    department.LastModifiedBy = $"{request.UserId}";
+
+                    //..check entity state
+                    _= await uow.DepartmentRepository.UpdateAsync(department);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(department).State;
+                    Logger.LogActivity($"Entity state after Update: {entityState}", "DEBUG");
+                   
+                    var result = await uow.SaveChangesAsync();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to update department record: {ex.Message}", "ERROR");
+        
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+                
+                var conpany = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new(){ 
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "DEPARTMENT-SERVICE-MIDDLEWARE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw; 
+            }
+        }
+
+        public async Task<bool> DeleteDepartmentAsync(DeleteRequst request) {
+            using var uow = UowFactory.Create();
+
+            try {
+
+                var branchJson = JsonSerializer.Serialize(request, new JsonSerializerOptions { 
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles 
+                });
+                Logger.LogActivity($"Department data: {branchJson}", "DEBUG");
+
+                var department = await uow.DepartmentRepository.GetAsync(t => t.Id == request.RecordId);
+                if(department != null){ 
+                    //..mark as delete this department
+                    _= await uow.DepartmentRepository.DeleteAsync(department, request.IsDeleted);
+
+                    //..check entity state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(department).State;
+                    Logger.LogActivity($"Entity state after deletion: {entityState}", "DEBUG");
+                   
+                    var result = await uow.SaveChangesAsync();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to delete department: {ex.Message}", "ERROR");
+        
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var conpany = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new(){ 
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "DEPARTMENT-SERVICE-MIDDLEWARE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+                
+                throw; 
+            }
+        }
+        
+        public async Task<bool> ExistsByIdAsync(long id) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Check if department with ID '{id}' exists", "INFO");
+    
+            try {
+                return await uow.DepartmentRepository.ExistsAsync(b => b.Id == id); 
+            } catch (Exception ex)  {
+                Logger.LogActivity($"Failed to retrieve department record: {ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+                
+                var conpany = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new(){ 
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "DEPARTMENT-SERVICE-MIDDLEWARE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+                throw;
+            }
+        }
+
+        public async Task<bool> ExistsAsync(DepartmentRequest request) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Check if unit with name or code exists", "INFO");
+    
+            try {
+                //...build query first
+                return await uow.DepartmentRepository.ExistsAsync(d => d.DepartmenCode == request.DepartmentCode || d.DepartmenCode == request.DepartmentCode); 
+            } catch (Exception ex)  {
+                Logger.LogActivity($"Failed to retrieve department info: {ex.Message}", "ERROR");
+                
+                var conpany = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new(){ 
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "DEPARTMENT-SERVICE-MIDDLEWARE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+                
+                throw;
+            }
         }
 
     }

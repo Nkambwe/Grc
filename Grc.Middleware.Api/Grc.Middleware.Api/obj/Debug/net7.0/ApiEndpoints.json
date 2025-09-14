@@ -83,7 +83,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Grc.Middleware.Api.Http.Requests.DepartmentRequest",
+        "Type": "Grc.Middleware.Api.Http.Requests.DeleteRequst",
         "IsRequired": true
       }
     ],
@@ -99,7 +99,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Grc.Middleware.Api.Http.Requests.DepartmentRequest",
+        "Type": "Grc.Middleware.Api.Http.Requests.DeleteRequst",
         "IsRequired": true
       }
     ],
@@ -131,7 +131,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Grc.Middleware.Api.Http.Requests.DepartmentRequest",
+        "Type": "Grc.Middleware.Api.Http.Requests.DepartmentUnitRequest",
         "IsRequired": true
       }
     ],
@@ -163,7 +163,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Grc.Middleware.Api.Http.Requests.DepartmentRequest",
+        "Type": "Grc.Middleware.Api.Http.Requests.DepartmentUnitRequest",
         "IsRequired": true
       }
     ],
@@ -193,6 +193,86 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "AllBranches",
+    "RelativePath": "grc/organization/allBranches",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "DeleteBranch",
+    "RelativePath": "grc/organization/deleteBranch",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.DeleteRequst",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "GetBranches",
+    "RelativePath": "grc/organization/getBranches",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "SaveBranch",
+    "RelativePath": "grc/organization/saveBranch",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.BranchRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "UpdateBranch",
+    "RelativePath": "grc/organization/updateBranch",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.BranchRequest",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

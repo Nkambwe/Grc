@@ -9,12 +9,18 @@ using System.Text.Json;
 
 namespace Grc.ui.App.Services {
 
-    public class ErrorService : GrcBaseService, IErrorService {
+    public class ErrorService : IErrorService {
+        private readonly IApplicationLogger _logger;
+        private readonly IMapper _mapper;
+        private readonly IHttpHandler _httpHandler;
+        private readonly IEndpointTypeProvider _endpointProvider;
 
         public ErrorService(IApplicationLoggerFactory loggerFactory,
-            IHttpHandler httpHandler, IEnvironmentProvider environment, 
-            IEndpointTypeProvider endpointType, IMapper mapper) 
-            : base(loggerFactory, httpHandler, environment, endpointType, mapper) {
+            IHttpHandler httpHandler, IEndpointTypeProvider endpointProvider, IMapper mapper) {
+            _mapper = mapper;
+            _httpHandler = httpHandler;
+            _endpointProvider = endpointProvider;
+            _logger = loggerFactory.CreateLogger();
         }
 
         public async Task<GrcResponse<ServiceResponse>> SaveSystemErrorAsync(GrcErrorModel model, string ipAddress) {
@@ -26,24 +32,24 @@ namespace Grc.ui.App.Services {
                     "Error object is null and cannot be saved"
                 );
         
-                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                _logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                 return new GrcResponse<ServiceResponse>(error);
             }
 
             try {
                 //..map request
-                Logger.LogActivity($"REQUEST MODEL: {JsonSerializer.Serialize(model)}");
-                var request = Mapper.Map<ErrorRequest>(model);
+                _logger.LogActivity($"REQUEST MODEL: {JsonSerializer.Serialize(model)}");
+                var request = _mapper.Map<ErrorRequest>(model);
                 request.IPAddress = ipAddress;
                 
                 //..build endpoint
-                var endpoint = $"{EndpointProvider.Error.CaptureError}";
-                Logger.LogActivity($"Endpoint: {endpoint}");
+                var endpoint = $"{_endpointProvider.Error.CaptureError}";
+                _logger.LogActivity($"Endpoint: {endpoint}");
         
-                return await HttpHandler.PostAsync<ErrorRequest, ServiceResponse>(endpoint, request);
+                return await _httpHandler.PostAsync<ErrorRequest, ServiceResponse>(endpoint, request);
             } catch (HttpRequestException httpEx) {
-                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
-                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                _logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                _logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
         
                 var error = new GrcResponseError(
                     GrcStatusCodes.BADGATEWAY,
@@ -53,8 +59,8 @@ namespace Grc.ui.App.Services {
                 return new GrcResponse<ServiceResponse>(error);
         
             } catch (GRCException ex)  {
-                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");    
-                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                _logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");    
+                _logger.LogActivity(ex.StackTrace, "STACKTRACE");
         
                 var error = new GrcResponseError(
                     GrcStatusCodes.SERVERERROR,

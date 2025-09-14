@@ -15,6 +15,7 @@
         Html.AddCssFileParts("~/lib/icons/material-design/css/materialdesignicons.css");
         Html.AddCssFileParts("~/lib/icons/coreui-icons/css/all.css");
         Html.AddCssFileParts("~/lib/select-2/css/select2.min.css");
+        Html.AddCssFileParts("~/lib/ckeditor5/ckeditor5.css");
         Html.AddCssFileParts("~/lib/toastr/toastr.css");
         Html.AddCssFileParts("~/css/color-pallete.css");
         Html.AddCssFileParts("~/lib/sweet-alert/sweetalert2.css");
@@ -25,8 +26,11 @@
         Html.AddCssFileParts("~/css/component-styles.css");
     }
 
+    <!-- Keep these in head because they need to be available early -->
     <script src="~/lib/toastr/toastr.min.js"></script>
     <script src="~/lib/sweet-alert/sweetalert2.all.min.js"></script>
+    <script src="~/lib/ckeditor5/ckeditor5.umd.js"></script>
+
     <script src=""></script>
     @Html.GenerateCssFiles()
     @Html.GenerateHeadCustom()
@@ -378,15 +382,18 @@
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery-validation/dist/jquery.validate.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js");
-        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/select-2/js/select2.full.min.js");
-        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/bootstrap/dist/js/bootstrap.js");
-        Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-script.js");
-        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/datatables/datatables.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/datatables/datatables.min.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/select-2/js/select2.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/bootstrap/dist/js/bootstrap.js");
+
+        Html.AddScriptParts(ResourceLocation.Footer, "~/js/component-script.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-script.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/js/department-units-script.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/js/department-script.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-script-other.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-tables.js");
-        Html.AddScriptParts(ResourceLocation.Footer, "~/js/component-script.js");
-        Html.AddScriptParts(ResourceLocation.Footer, "~/js/department-units-script.js");
+        
+        
     }
 
     @Html.GenerateScripts(ResourceLocation.Footer)

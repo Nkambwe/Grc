@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Grc.ui.App.Helpers;
-using Grc.ui.App.Http;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Infrastructure.MvcHelpers;
 using Grc.ui.App.Routes;

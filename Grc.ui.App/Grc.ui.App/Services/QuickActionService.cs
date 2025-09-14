@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Grc.ui.App.Enums;
+using Grc.ui.App.Factories;
 using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
+using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Utils;
 
 namespace Grc.ui.App.Services {
@@ -12,8 +14,12 @@ namespace Grc.ui.App.Services {
                     IHttpHandler httpHandler, 
                     IEnvironmentProvider environment, 
                     IEndpointTypeProvider endpointType, 
-                    IMapper mapper) 
-                    : base(loggerFactory, httpHandler, environment, endpointType, mapper) {
+                    IMapper mapper,
+                    IWebHelper webHelper,
+                    SessionManager sessionManager,
+                    IGrcErrorFactory errorFactory,
+                    IErrorService errorService) 
+        : base(loggerFactory, httpHandler, environment, endpointType, mapper,webHelper,sessionManager,errorFactory,errorService) {
         }
 
         public async Task<GrcResponse<IList<QuickAction>>> GetQuickActionsync(long userId, string ipAddress) {
@@ -33,6 +39,7 @@ namespace Grc.ui.App.Services {
                     return await HttpHandler.PostAsync<UserByIdRequest, IList<QuickAction>>(endpoint,model);
             } catch (Exception ex) {
                 Logger.LogActivity($"Error retrieving user quick action items: {ex.Message}", "Error");
+                await ProcessErrorAsync(ex.Message,"QUICKACTIONS-SERVICE" , ex.StackTrace);
                 var error = new GrcResponseError(
                     GrcStatusCodes.SERVERERROR,
                     "Error retrieving user quick action items",

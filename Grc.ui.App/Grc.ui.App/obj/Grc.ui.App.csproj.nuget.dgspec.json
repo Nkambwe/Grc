@@ -55,6 +55,10 @@
               "target": "Package",
               "version": "[13.0.1, )"
             },
+            "DocumentFormat.OpenXml": {
+              "target": "Package",
+              "version": "[3.3.0, )"
+            },
             "Microsoft.Extensions.FileProviders.Abstractions": {
               "target": "Package",
               "version": "[7.0.0, )"
@@ -71,9 +75,29 @@
               "target": "Package",
               "version": "[13.0.3, )"
             },
+            "Open-XML-SDK": {
+              "target": "Package",
+              "version": "[2.9.1, )"
+            },
+            "OpenXmlPowerTools-NetStandard": {
+              "target": "Package",
+              "version": "[4.6.23-alpha4, )"
+            },
             "Polly": {
               "target": "Package",
               "version": "[7.2.4, )"
+            },
+            "QuestPDF": {
+              "target": "Package",
+              "version": "[2025.12.0-alpha0, )"
+            },
+            "Scryber.Core": {
+              "target": "Package",
+              "version": "[6.0.4-beta, )"
+            },
+            "Scryber.Core.Mvc": {
+              "target": "Package",
+              "version": "[6.0.1-beta, )"
             }
           },
           "imports": [

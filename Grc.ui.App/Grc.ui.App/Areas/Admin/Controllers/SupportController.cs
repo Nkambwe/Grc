@@ -5,7 +5,7 @@ using Grc.ui.App.Extensions;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Filters;
 using Grc.ui.App.Helpers;
-using Grc.ui.App.Http;
+using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
@@ -25,6 +25,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         private readonly ISystemActivityService _activityService;
         private readonly IDepartmentService _departmentService;
         private readonly IDepartmentFactory _departmentfactory;
+        private readonly IBranchService _branchService;
         private readonly IDepartmentUnitService _departmentUnitService;
         
         public SupportController(IApplicationLoggerFactory loggerFactory, 
@@ -40,6 +41,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                                  IDepartmentFactory departmentfactory,
                                  IGrcErrorFactory errorFactory,
                                  IDepartmentUnitService departmentUnitService,
+                                 IBranchService branchService,
                                  SessionManager sessionManager) 
             : base(loggerFactory, environment, webHelper, localizationService, 
                   errorService, errorFactory, sessionManager) {
@@ -50,6 +52,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             _dDashboardFactory = dDashboardFactory;
             _activityService = activityService;
             _departmentUnitService = departmentUnitService;
+            _branchService = branchService;
         }
 
         [LogActivityResult("User Login", "User logged in to the system", ActivityTypeDefaults.USER_LOGIN, "SystemUser")]
@@ -515,7 +518,106 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         #region Data actions
+
+        [HttpGet("support/organization/getBranches")]
+        public async Task<IActionResult> GetBranches() { 
+            try {
+
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                        Logger.LogActivity($"BRANCH LIST ERROR: Failed to Current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                var currentUser = grcResponse.Data;
+                GrcRequest request = new() {
+                    UserId = currentUser.UserId,
+                    Action = Activity.RETRIEVEBRANCHES.GetDescription(),
+                    IPAddress = ipAddress,
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>()
+                };
+
+                //..get list of all branches
+                var  branchData = await _branchService.GetBranchesAsync(request);
+
+                List<BranchResponse> branches;
+                if(branchData.HasError){ 
+                    branches = new ();
+                    Logger.LogActivity($"BRANCH DATA ERROR: Failed to retrieve branch items - {JsonSerializer.Serialize(branchData)}");
+                } else {
+                    branches = branchData.Data;
+                    Logger.LogActivity($"BRANCH DATA - {JsonSerializer.Serialize(branches)}");
+                }
+
+                //..get ajax data
+                List<object> select2Data = new();
+                if(branches.Any()){ 
+                    select2Data = branches.Select(branch => new {                        
+                        id = branch.Id,
+                        text = branch.BranchName 
+                    }).Cast<object>().ToList();
+                }
+
+                return Json(new { results = select2Data });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving branches: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
         
+        [HttpPost("support/organization/allBranches")]
+        public async Task<IActionResult> AllBranches([FromBody] TableListRequest request) { 
+            
+            try{
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                        Logger.LogActivity($"BRANCH DATA ERROR: Failed to Current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                //..update with user data
+                var currentUser = grcResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.PageSize = 7;
+
+                //..get branch data
+                var branchdata = await _branchService.GetAllBranchesAsync(request);
+
+                PagedResponse<BranchResponse> branchList = new ();
+                if(branchdata.HasError){ 
+                    Logger.LogActivity($"BRANCH DATA ERROR: Failed to retrieve branch items - {JsonSerializer.Serialize(branchdata)}");
+                } else {
+                    branchList = branchdata.Data;
+                    Logger.LogActivity($"BRANCH DATA - {JsonSerializer.Serialize(branchList)}");
+                }
+
+                branchList.Entities ??= new();
+                return Ok(new {
+                    data = branchList.Entities,
+                    recordsTotal = branchList.TotalCount ,
+                    recordsFiltered = branchList.TotalCount 
+                });
+            } catch(Exception ex){
+                Logger.LogActivity($"Error retrieving branch items: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+
+                return Ok(new {
+                    data = new List<ActivityModel>(),
+                    recordsTotal = 0 ,
+                    recordsFiltered = 0
+                });
+            }
+        }
+
         [HttpPost("support/activities/allActivities")]
         public async Task<IActionResult> AllActivities([FromBody] TableListRequest request) {
 

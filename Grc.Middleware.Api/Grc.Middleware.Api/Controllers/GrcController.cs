@@ -16,8 +16,7 @@ namespace Grc.Middleware.Api.Controllers {
     [ApiController]
     [Route("grc")]
     public class GrcController : GrcControllerBase {
-        private readonly ICompanyService _companyService;
-
+        
         public GrcController(IObjectCypher cypher,
             IServiceLoggerFactory loggerFactory, 
                              IEnvironmentProvider environment,
@@ -25,9 +24,8 @@ namespace Grc.Middleware.Api.Controllers {
                              IMapper mapper,
                              IErrorNotificationService errorService,
                              ISystemErrorService systemErrorService) 
-            : base(cypher, loggerFactory, mapper, environment, 
+            : base(cypher, loggerFactory, mapper, companyService, environment, 
                   errorService, systemErrorService) {
-            _companyService = companyService;
         }
 
         [HttpGet]
@@ -85,6 +83,32 @@ namespace Grc.Middleware.Api.Controllers {
             } catch (Exception ex) { 
                 Logger.LogActivity($"{ex.Message}", "ERROR");
                 Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+                
+                var conpany = await CompanyService.GetDefaultCompanyAsync();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new(){ 
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "MIDDLEWARE-GRC-COTROLLER",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                var result = await SystemErrorService.SaveErrorAsync(errorObj);
+                var response = new GeneralResponse();
+                if(result){
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Error captured and saved successfully";  
+                    Logger.LogActivity($"GRC-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else { 
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to capture error to database. An error occurrred";  
+                    Logger.LogActivity($"GRC-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
 
                 var error = new ResponseError(
                     ResponseCodes.BADREQUEST,
@@ -127,7 +151,7 @@ namespace Grc.Middleware.Api.Controllers {
                 List<Branch> branches = new() { new BranchFactory().CreateMainBranch(admin) };
                 company.Branches = branches;
                 //..create company
-                var result = await _companyService.CreateCompanyAsync(company);
+                var result = await CompanyService.CreateCompanyAsync(company);
 
                 var response = new GeneralResponse();
                 if(result){
@@ -146,6 +170,32 @@ namespace Grc.Middleware.Api.Controllers {
             } catch (Exception ex) { 
                 Logger.LogActivity($"{ex.Message}", "ERROR");
                 Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var conpany = await CompanyService.GetDefaultCompanyAsync();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new(){ 
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "MIDDLEWARE-GRC-COTROLLER",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                var result = await SystemErrorService.SaveErrorAsync(errorObj);
+                var response = new GeneralResponse();
+                if(result){
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Error captured and saved successfully";  
+                    Logger.LogActivity($"GRC-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else { 
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to capture error to database. An error occurrred";  
+                    Logger.LogActivity($"GRC-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
 
                 var error = new ResponseError(
                     ResponseCodes.BADREQUEST,
