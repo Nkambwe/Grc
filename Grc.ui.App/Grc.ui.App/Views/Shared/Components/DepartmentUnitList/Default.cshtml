@@ -14,8 +14,45 @@
                 </button>
             </div>
 
-            <div class="component-slide-content">    
-                <span>Create goes here</span>
+            <div class="component-slide-content">
+
+                <form id="form-unit-new" method="post">
+                    <div class="field-group">
+                        <label for="tfNewUnitCode" class="form-label text-right">UNIT CODE</label>
+                        <input type="text" class="form-control" id="tfNewUnitCode" name="tfNewUnitCode" placeholder="ENTER CODE">
+                    </div>
+
+                    <div class="field-group">
+                        <label for="tfNewUnitName" class="form-label text-right">UNIT NAME</label>
+                        <input type="text" class="form-control" id="tfNewUnitName" name="tfNewUnitName" placeholder="ENTER NAME">
+                    </div>
+
+                    <div class="field-group-box">
+                        <div class="field-group">
+                            <label for="dpNewDepartments" class="form-label text-right select2-field select2-column">
+                                DEPARTMENT
+                                <select class="js-departments form-control"
+                                        id="dpNewDepartments"
+                                        name="dpNewDepartments"
+                                        aria-labelledby="dpNewDepartments-label"
+                                        aria-describedby="dpNewDepartments-description">
+                                    <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Departments.Select"))</option>
+                                </select>
+                                <span id="dpNewDepartments-description" class="sr-only">
+                                    Use arrow keys to navigate options. Press Enter to select.
+                                </span>
+                            </label>
+
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <button id="btnUnitNew" type="submit" class="btn btn-primary" style="width:200px">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))
+                        </button>
+                    </div>
+                </form>
+
             </div>
 
         </div>
@@ -32,7 +69,50 @@
             </div>
 
             <div class="component-slide-content">
-                <span>Edit goes here</span>
+                <form id="form-unit-new" method="post">
+                    <div class="field-group">
+                        <label for="tfEditUnitCode" class="form-label text-right">UNIT CODE</label>
+                        <input type="text" class="form-control" id="tfEditUnitCode" name="tfEditUnitCode" placeholder="ENTER CODE">
+                    </div>
+
+                    <div class="field-group">
+                        <label for="tfEditUnitName" class="form-label text-right">UNIT NAME</label>
+                        <input type="text" class="form-control" id="tfEditUnitName" name="tfEditUnitName" placeholder="ENTER NAME">
+                    </div>
+
+                    <div class="field-group-box">
+                        <div class="field-group">
+                            <label for="dpEditDepartments" class="form-label text-right select2-field select2-column">
+                                DEPARTMENT
+                                <select class="js-departments form-control"
+                                        id="dpEditDepartments"
+                                        name="dpEditDepartments"
+                                        aria-labelledby="dpEditDepartments-label"
+                                        aria-describedby="dpEditDepartments-description">
+                                    <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Departments.Select"))</option>
+                                </select>
+                                <span id="dpEditDepartments-description" class="sr-only">
+                                    Use arrow keys to navigate options. Press Enter to select.
+                                </span>
+                            </label>
+
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="isDeleted" name="isDeleted">
+                            <label class="form-check-label" for="exampleCheck1">DEACTIVATE UNIT</label>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <button id="btnUnitEdit" type="submit" class="btn btn-primary" style="width:200px">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))
+                        </button>
+                    </div>
+                </form>
+
             </div>
         </div>
 
@@ -50,7 +130,7 @@
                         <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Created"))</th>
                     </tr>
                 </thead>
-                <tbody id="departmentUnitssTableBody"></tbody>
+                <tbody id="departmentUnitsTableBody"></tbody>
             </table>
         </div>
 

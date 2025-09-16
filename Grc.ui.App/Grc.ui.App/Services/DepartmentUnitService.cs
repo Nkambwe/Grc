@@ -8,7 +8,6 @@ using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
 using System.Text.Json;
-using static System.Net.WebRequestMethods;
 
 namespace Grc.ui.App.Services {
 
@@ -24,6 +23,25 @@ namespace Grc.ui.App.Services {
                                     IGrcErrorFactory errorFactory,
                                     IErrorService errorService) 
         : base(loggerFactory, httpHandler, environment, endpointType, mapper,webHelper,sessionManager,errorFactory,errorService) {
+        }
+
+        public async Task<GrcResponse<List<DepartmentUnitModel>>> GetUnitsAsync(GrcRequest request){ 
+            Logger.LogActivity($"Get a list of units available", "INFO");
+
+            try{
+               var endpoint = $"{EndpointProvider.Departments.GetUnits}";
+                return await HttpHandler.PostAsync<GrcRequest, List<DepartmentUnitModel>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving a list of units available: {ex.Message}", "Error");
+                await ProcessErrorAsync(ex.Message,"DEPARTMENT-UNIT-SERVICE" , ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "Error retrieving a list of available units",
+                    ex.Message
+                );
+
+                return new GrcResponse<List<DepartmentUnitModel>>(error);
+            }
         }
 
         public async Task<GrcResponse<PagedResponse<DepartmentUnitModel>>> GetDepartmentUnitsAsync(TableListRequest request) {

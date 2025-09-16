@@ -156,6 +156,48 @@ namespace Grc.Middleware.Api.Services {
                 throw; 
             };
         }
+        
+        public async Task<IList<DepartmentUnit>> GetAllAsync(bool includeDeleted = false) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve all units records", "INFO");
+    
+            try {;
+                var department = await uow.DepartmentUnitRepository.GetAllAsync(includeDeleted);
+                if(department != null) {
+                    //..log the units records being retrieved
+                    var typeJson = JsonSerializer.Serialize(department, new JsonSerializerOptions { 
+                        WriteIndented = true,
+                        ReferenceHandler = ReferenceHandler.IgnoreCycles 
+                    });
+                    Logger.LogActivity($"Units data: {typeJson}", "DEBUG");
+                } else {
+                    Logger.LogActivity($"No Units data found", "DEBUG");
+                }
+
+                return department;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve units: {ex.Message}", "ERROR");
+        
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var conpany = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new(){ 
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "DEPARTMENT-UNITS-SERVICE-MIDDLEWARE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+                throw; 
+            };
+        }
 
         public async Task<PagedResult<DepartmentUnit>> GetPagedUnitsAsync(DateTime? createdFrom = null, DateTime? createdTo = null, long? userId = null, int pageIndex = 1, int pageSize = 20, bool includeDeleted = false) {
             using var uow = UowFactory.Create();

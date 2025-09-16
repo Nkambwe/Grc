@@ -1,12 +1,6 @@
 ﻿ $(document).ready(function () {
     let isCompExpanded = false;
 
-    
-    $(".js-branches").select2({
-        width: 'resolve' 
-    });
-
-
     $(".status-indicator").on("click", function (e) {
         e.stopPropagation(); 
         const $component = $(this).closest('.grc-page-component'); 
@@ -90,10 +84,11 @@
         return false;
     });
 
-    /*--------------------department button events*/
+    /*--------------------slideout button events*/
 
-     // filter buttons
-    initializeBasicSelect2();
+     // initalize select elements
+    initializeBranches();
+    initializeDepartments();
     
     // Your existing event handlers with Select2 initialization
     $('.action-btn-New').on("click", function (e) {
@@ -105,9 +100,10 @@
         $component.find('.component-create-container').show();
         $component.find('.component-edit-container').hide();
         
-        // Load branches for the create container
+        // Load select items for the create container
         const $createContainer = $component.find('.component-create-container');
         loadBranchesForContainer($createContainer);
+        loadDepartmentsForContainer($createContainer);
     });
 
     $('.action-btn-Edit').on("click", function (e) {
@@ -119,9 +115,10 @@
         $component.find('.component-create-container').hide();
         $component.find('.component-edit-container').show();
         
-        // Load branches for the edit container
+        // Load select items for the edit container
         const $editContainer = $component.find('.component-edit-container');
         loadBranchesForContainer($editContainer);
+        loadDepartmentsForContainer($editContainer);
     });
 
      $('.action-btn-Delete').on("click", function (e) {
@@ -182,80 +179,25 @@
         }
     });
 
-    // Function to fix Select2 accessibility issues
-    function fixSelect2Accessibility($originalSelect, labelText) {
-        const selectId = $originalSelect.attr('id');
-        if (!selectId) return;
-    
-        const $select2Container = $originalSelect.next('.select2-container');
-        const $select2Selection = $select2Container.find('.select2-selection');
-        const $select2Arrow = $select2Container.find('.select2-selection__arrow');
-    
-        // Remove problematic aria-hidden from the original select
-        $originalSelect.removeAttr('aria-hidden');
-    
-        // Add proper ARIA attributes to Select2 elements
-        $select2Selection.attr({
-            'role': 'combobox',
-            'aria-expanded': 'false',
-            'aria-haspopup': 'listbox',
-            'aria-labelledby': selectId + '-label',
-            'aria-describedby': selectId + '-description'
-        });
-    
-        // Create or update label
-        let $label = $(`label[for="${selectId}"]`);
-        if ($label.length === 0) {
-            $label = $originalSelect.closest('.form-group').find('label').first();
-            $label.attr('for', selectId);
-        }
-        $label.attr('id', selectId + '-label');
-    
-        // Add description for screen readers
-        if ($(`#${selectId}-description`).length === 0) {
-            $('<span>', {
-                id: selectId + '-description',
-                class: 'sr-only',
-                text: 'Use arrow keys to navigate options'
-            }).insertAfter($select2Container);
-        }
-    
-        // Handle Select2 events for accessibility
-        $originalSelect.on('select2:open', function() {
-            $select2Selection.attr('aria-expanded', 'true');
-        
-            // Focus the search input when dropdown opens
-            setTimeout(() => {
-                const $searchInput = $('.select2-search__field');
-                if ($searchInput.length) {
-                    $searchInput.attr('aria-label', `Search ${labelText}`);
-                }
-            }, 50);
-        });
-    
-        $originalSelect.on('select2:close', function() {
-            $select2Selection.attr('aria-expanded', 'false');
-        });
-    
-        // Remove aria-hidden when element gains focus
-        $select2Selection.on('focus', function() {
-            $originalSelect.removeAttr('aria-hidden');
-            $(this).removeAttr('aria-hidden');
-        });
-    }
-
-   
     // Function to initialize basic Select2 with accessibility fixes
-    function initializeBasicSelect2() {
+    function initializeBranches() {
         $(".js-branches").each(function() {
             if (!$(this).hasClass('select2-hidden-accessible')) {
-                initializeSelect2Element($(this));
+                initializeBranchElement($(this));
             }
         });
     }
 
-    // Function to initialize a single Select2 element with proper accessibility
-    function initializeSelect2Element($element) {
+    function initializeDepartments() {
+        $(".js-departments").each(function() {
+            if (!$(this).hasClass('select2-hidden-accessible')) {
+                initializeDepartmentElement($(this));
+            }
+        });
+     }
+
+     // Function to initialize a single Select2 element with proper accessibility
+    function initializeBranchElement($element) {
         const elementId = $element.attr('id');
         const labelText = $element.closest('.form-group').find('label').text().trim() || 'Select branch';
     
@@ -279,72 +221,33 @@
         }, 100);
     }
 
-    // Function to fix Select2 accessibility issues
-    function fixSelect2Accessibility($originalSelect, labelText) {
-        const selectId = $originalSelect.attr('id');
-        if (!selectId) return;
+    function initializeDepartmentElement($element) {
+        const elementId = $element.attr('id');
+        const labelText = $element.closest('.form-group').find('label').text().trim() || 'Select Department';
     
-        const $select2Container = $originalSelect.next('.select2-container');
-        const $select2Selection = $select2Container.find('.select2-selection');
-        const $select2Arrow = $select2Container.find('.select2-selection__arrow');
-    
-        // Remove problematic aria-hidden from the original select
-        $originalSelect.removeAttr('aria-hidden');
-    
-        // Add proper ARIA attributes to Select2 elements
-        $select2Selection.attr({
-            'role': 'combobox',
-            'aria-expanded': 'false',
-            'aria-haspopup': 'listbox',
-            'aria-labelledby': selectId + '-label',
-            'aria-describedby': selectId + '-description'
-        });
-    
-        // Create or update label
-        let $label = $(`label[for="${selectId}"]`);
-        if ($label.length === 0) {
-            $label = $originalSelect.closest('.form-group').find('label').first();
-            $label.attr('for', selectId);
-        }
-        $label.attr('id', selectId + '-label');
-    
-        // Add description for screen readers
-        if ($(`#${selectId}-description`).length === 0) {
-            $('<span>', {
-                id: selectId + '-description',
-                class: 'sr-only',
-                text: 'Use arrow keys to navigate options'
-            }).insertAfter($select2Container);
-        }
-    
-        // Handle Select2 events for accessibility
-        $originalSelect.on('select2:open', function() {
-            $select2Selection.attr('aria-expanded', 'true');
-        
-            // Focus the search input when dropdown opens
-            setTimeout(() => {
-                const $searchInput = $('.select2-search__field');
-                if ($searchInput.length) {
-                    $searchInput.attr('aria-label', `Search ${labelText}`);
+        $element.select2({
+            width: 'resolve',
+            placeholder: 'Select a department...',
+            allowClear: true,
+            escapeMarkup: function (markup) {
+                return markup;
+            },
+            language: {
+                noResults: function() {
+                    return "No departments found";
                 }
-            }, 50);
+            }
         });
     
-        $originalSelect.on('select2:close', function() {
-            $select2Selection.attr('aria-expanded', 'false');
-        });
-    
-        // Remove aria-hidden when element gains focus
-        $select2Selection.on('focus', function() {
-            $originalSelect.removeAttr('aria-hidden');
-            $(this).removeAttr('aria-hidden');
-        });
+        // Fix accessibility issues after Select2 initialization
+        setTimeout(() => {
+            fixSelect2Accessibility($element, labelText);
+        }, 100);
     }
 
     // Function to load branches for a specific container
     function loadBranchesForContainer($container) {
         const $branchSelects = $container.find('.js-branches');
-    
         if ($branchSelects.length > 0) {
             $.ajax({
                 url: '/support/organization/getBranches',
@@ -379,7 +282,7 @@
                         }
                     
                         // Initialize Select2 with accessibility fixes
-                        initializeSelect2Element($select);
+                        initializeBranchElement($select);
                     });
                 },
                 error: function(xhr, status, error) {
@@ -389,13 +292,67 @@
                     $branchSelects.each(function() {
                         const $select = $(this);
                         if (!$select.hasClass('select2-hidden-accessible')) {
-                            initializeSelect2Element($select);
+                            initializeBranchElement($select);
                         }
                     });
                 }
             });
         }
     }
+
+    function loadDepartmentsForContainer($container) { 
+        const $branchSelects = $container.find('.js-departments');
+        if ($branchSelects.length > 0) {
+            $.ajax({
+                url: '/support/departments/getDepartments',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $branchSelects.each(function() {
+                        const $select = $(this);
+                        const currentValue = $select.val();
+                    
+                        // Destroy existing Select2 if it exists
+                        if ($select.hasClass('select2-hidden-accessible')) {
+                            $select.select2('destroy');
+                        }
+                    
+                        // Clear existing options
+                        $select.empty();
+                    
+                        // Add placeholder option
+                        $select.append('<option value="">Select a department...</option>');
+                    
+                        // Add department options
+                        if (data.results && data.results.length > 0) {
+                            $.each(data.results, function(index, department) {
+                                $select.append(`<option value="${department.id}">${department.text}</option>`);
+                            });
+                        }
+                    
+                        // Restore previous value if it exists
+                        if (currentValue) {
+                            $select.val(currentValue);
+                        }
+                    
+                        // Initialize Select2 with accessibility fixes
+                        initializeDepartmentElement($select);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading departments:', error);
+                
+                    // Initialize empty Select2 even on error
+                    $branchSelects.each(function() {
+                        const $select = $(this);
+                        if (!$select.hasClass('select2-hidden-accessible')) {
+                            initializeDepartmentElement($select);
+                        }
+                    });
+                }
+            });
+		}
+	}
 
     function resetButtons($component) {
         $component.find('.filterBtn').removeClass('active');
@@ -435,7 +392,7 @@
                     return json.data || [];
                 },
                 error: function (xhr, status, error) {
-                     showToast("error", `Failed to load department units data: ${error}`);
+                        showToast("error", `Failed to load department units data: ${error}`);
                     console.error('Error during Ajax request:', error);
                 }
             },
@@ -471,5 +428,68 @@
         $(`#${popupId}`).hide();
         $(document).trigger('popup.closed', [popupId]);
     }
+    
+    // Function to fix Select2 accessibility issues
+    function fixSelect2Accessibility($originalSelect, labelText) {
+        const selectId = $originalSelect.attr('id');
+        if (!selectId) return;
+    
+        const $select2Container = $originalSelect.next('.select2-container');
+        const $select2Selection = $select2Container.find('.select2-selection');
+        const $select2Arrow = $select2Container.find('.select2-selection__arrow');
+    
+        // Remove problematic aria-hidden from the original select
+        $originalSelect.removeAttr('aria-hidden');
+    
+        // Add proper ARIA attributes to Select2 elements
+        $select2Selection.attr({
+            'role': 'combobox',
+            'aria-expanded': 'false',
+            'aria-haspopup': 'listbox',
+            'aria-labelledby': selectId + '-label',
+            'aria-describedby': selectId + '-description'
+        });
+    
+        // Create or update label
+        let $label = $(`label[for="${selectId}"]`);
+        if ($label.length === 0) {
+            $label = $originalSelect.closest('.form-group').find('label').first();
+            $label.attr('for', selectId);
+        }
+        $label.attr('id', selectId + '-label');
+    
+        // Add description for screen readers
+        if ($(`#${selectId}-description`).length === 0) {
+            $('<span>', {
+                id: selectId + '-description',
+                class: 'sr-only',
+                text: 'Use arrow keys to navigate options'
+            }).insertAfter($select2Container);
+        }
+    
+        // Handle Select2 events for accessibility
+        $originalSelect.on('select2:open', function() {
+            $select2Selection.attr('aria-expanded', 'true');
+        
+            // Focus the search input when dropdown opens
+            setTimeout(() => {
+                const $searchInput = $('.select2-search__field');
+                if ($searchInput.length) {
+                    $searchInput.attr('aria-label', `Search ${labelText}`);
+                }
+            }, 50);
+        });
+    
+        $originalSelect.on('select2:close', function() {
+            $select2Selection.attr('aria-expanded', 'false');
+        });
+    
+        // Remove aria-hidden when element gains focus
+        $select2Selection.on('focus', function() {
+            $originalSelect.removeAttr('aria-hidden');
+            $(this).removeAttr('aria-hidden');
+        });
+    }
 
 });
+   

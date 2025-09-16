@@ -27,7 +27,26 @@ namespace Grc.ui.App.Services {
                                   sessionManager,errorFactory,errorService) {
         }
 
-        public async Task<GrcResponse<PagedResponse<DepartmentModel>>> GetDepartmentsAsync(TableListRequest request) {
+        public async Task<GrcResponse<List<DepartmentModel>>> GetDepartmentsAsync(GrcRequest request){ 
+            Logger.LogActivity($"Get a list of department data", "INFO");
+
+            try{
+               var endpoint = $"{EndpointProvider.Departments.GetDepartments}";
+                return await HttpHandler.PostAsync<GrcRequest, List<DepartmentModel>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving a list of departments: {ex.Message}", "Error");
+                await ProcessErrorAsync(ex.Message,"DEPARTMENT-SERVICE" , ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "Error retrieving a list of departments",
+                    ex.Message
+                );
+
+                return new GrcResponse<List<DepartmentModel>>(error);
+            }
+        }
+
+        public async Task<GrcResponse<PagedResponse<DepartmentModel>>> GetAllDepartmentsAsync(TableListRequest request) {
             Logger.LogActivity($"Get a list of all departments", "INFO");
 
             try{

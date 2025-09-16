@@ -27,6 +27,10 @@ namespace Grc.ui.App.Enums {
         RETRIEVEBRANCHES = 10,
         [Description("Get a list of all available branches")]
         RETRIEVEALLBRANCHES = 11,
+        [Description("Get a list of departments available")]
+        RETRIEVEDEPARTMENTS = 12,
+        [Description("Get a list of units available")]
+        RETRIEVEUNITS = 13,
 
     }
 }

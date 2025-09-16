@@ -32,18 +32,6 @@ body {
     --separator-color: #ddd;
 }
 
-.sr-only {
-    position: absolute !important;
-    width: 1px !important;
-    height: 1px !important;
-    padding: 0 !important;
-    margin: -1px !important;
-    overflow: hidden !important;
-    clip: rect(0, 0, 0, 0) !important;
-    white-space: nowrap !important;
-    border: 0 !important;
-}
-
 /* Layout wrapper */
 .layout-wrapper {
     display: flex;
@@ -855,12 +843,93 @@ span.app-serach {
     margin-right: 5px
 }
 
+/*--------------------- data input controls*/
+
+label.select2-field-row {
+    display: flex !important;
+    flex-direction: row;
+}
+
+label.select2-column {
+    display: flex!important;
+    flex-direction: column;
+}
+
+.field-group {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.select2-container--default .select2-selection--single {
+    background-color: var(--white-base);
+    border-radius: 0;
+    border: 0;
+    width: 100%;
+    height: 32px;
+}
+
+.select2-container {
+    box-sizing: border-box;
+    display: flex;
+    margin: 10px 0 0 0;
+    position: relative;
+    vertical-align: middle;
+    flex-grow: 1;
+    width: 100%;
+    min-width: 100% !important;
+    border: 1px solid #aaa;
+}
+
+span.selection {
+    width: 100%;
+    border:0;
+}
+
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+.btn-primary {
+    color: var(--white-base);
+    background-color: var(--pearl-purple-dark-20);
+    border-color: var(--pearl-purple-dark-20);
+}
+
+    .btn-primary:hover {
+        color: var(--white-base);
+        background-color: var(--pearl-purple-dark-50);
+        border-color: var(--pearl-purple-dark-60);
+        transition: all .3s ease-in-out;
+    }
+
+    .btn-primary:focus {
+        border-color: #8803A3 !important;
+        box-shadow: 0 0 0 0.25rem rgba(136, 3, 163, 0.25) !important;
+        transition: all .3s ease-in-out;
+    }
+
+
+
 input.form-control:focus,
 textarea.form-control:focus,
 select.form-control:focus {
     border-color: #8803A3 !important;
     box-shadow: 0 0 0 0.25rem rgba(136, 3, 163, 0.25) !important;
     outline: 0; /* removes the browser’s default blue outline */
+}
+
+.form-check-input:checked {
+    background-color: #8803A3;
+    border-color: #8803A3 !important;
 }
 
 input.form-control:focus,
@@ -887,21 +956,21 @@ select.form-control:focus {
 
 /* Hovered option */
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
-    background-color: #d966e2 !important; /* lighter purple on hover */
-    color: #fff !important;
+    background-color: #d966e2 !important;
+    color: var(--white-base) !important;
 }
 
 /* Selected option */
 .select2-container--default .select2-results__option[aria-selected="true"] {
     background-color: #8803A3 !important;
-    color: #fff !important;
+    color: var(--white-base) !important;
 }
 
 /* Tag style for multi-select */
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
     background-color: #8803A3 !important;
     border-color: #8803A3 !important;
-    color: #fff !important;
+    color: var(--white-base) !important;
 }
 
 /* Active/selected day */
@@ -909,13 +978,13 @@ select.form-control:focus {
 .datepicker table tr td.active:hover {
     background-color: #8803A3 !important;
     border-color: #8803A3 !important;
-    color: #fff !important;
+    color: var(--white-base) !important;
 }
 
 /* Hovered day */
 .datepicker table tr td.day:hover {
     background-color: #d966e2 !important;
-    color: #fff !important;
+    color: var(--white-base) !important;
 }
 
 @keyframes dropdownFadeIn {

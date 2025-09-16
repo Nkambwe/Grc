@@ -687,7 +687,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 request.PageSize = 7;
 
                 //..get list of a departments logs
-                var departmentdata = await _departmentService.GetDepartmentsAsync(request);
+                var departmentdata = await _departmentService.GetAllDepartmentsAsync(request);
 
                 PagedResponse<DepartmentModel> deparmentList = new ();
                 if(departmentdata.HasError){ 
@@ -716,6 +716,57 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             
         }
 
+        [HttpGet("support/departments/getDepartments")]
+        public async Task<IActionResult> GetDepartments() { 
+            try {
+
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                        Logger.LogActivity($"DEPARTMENT LIST ERROR: Failed to Current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                var currentUser = grcResponse.Data;
+                GrcRequest request = new() {
+                    UserId = currentUser.UserId,
+                    Action = Activity.RETRIEVEDEPARTMENTS.GetDescription(),
+                    IPAddress = ipAddress,
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>()
+                };
+
+                //..get list of all departments
+                var  departmentData = await _departmentService.GetDepartmentsAsync(request);
+
+                List<DepartmentModel> departments;
+                if(departmentData.HasError){ 
+                    departments = new ();
+                    Logger.LogActivity($"DEPARTMENT DATA ERROR: Failed to retrieve department items - {JsonSerializer.Serialize(departmentData)}");
+                } else {
+                    departments = departmentData.Data;
+                    Logger.LogActivity($"DEPARTMENT DATA - {JsonSerializer.Serialize(departments)}");
+                }
+
+                //..get ajax data
+                List<object> select2Data = new();
+                if(departments.Any()){ 
+                    select2Data = departments.Select(department => new {                        
+                        id = department.Id,
+                        text = department.DepartmentName 
+                    }).Cast<object>().ToList();
+                }
+
+                return Json(new { results = select2Data });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving departments: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+        
         [HttpPost("support/departments/allUnits")]
         public async Task<IActionResult> AllUnits([FromBody] TableListRequest request) {
 
@@ -765,6 +816,57 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             
         }
 
+        [HttpGet("support/departments/getUnits")]
+        public async Task<IActionResult> GetUnits() { 
+            try {
+
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                        Logger.LogActivity($"UNITS LIST ERROR: Failed to Current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                var currentUser = grcResponse.Data;
+                GrcRequest request = new() {
+                    UserId = currentUser.UserId,
+                    Action = Activity.RETRIEVEUNITS.GetDescription(),
+                    IPAddress = ipAddress,
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>()
+                };
+
+                //..get list of all units
+                var  unitsData = await _departmentUnitService.GetUnitsAsync(request);
+
+                List<DepartmentUnitModel> units;
+                if(unitsData.HasError){ 
+                    units = new ();
+                    Logger.LogActivity($"UNITS DATA ERROR: Failed to retrieve unit items - {JsonSerializer.Serialize(unitsData)}");
+                } else {
+                    units = unitsData.Data;
+                    Logger.LogActivity($"UNITS DATA - {JsonSerializer.Serialize(units)}");
+                }
+
+                //..get ajax data
+                List<object> select2Data = new();
+                if(units.Any()){ 
+                    select2Data = units.Select(unit => new {                        
+                        id = unit.Id,
+                        text = unit.UnitName 
+                    }).Cast<object>().ToList();
+                }
+
+                return Json(new { results = select2Data });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving units: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+        
         #endregion
 
         public void Notify(string message, string title = "GRC NOTIFICATION", NotificationType type = NotificationType.Success) {

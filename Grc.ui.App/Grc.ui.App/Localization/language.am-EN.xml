@@ -94,7 +94,9 @@
     <LocaleResource Name="Component.Label.Header.Edit.Department">
         <Value>Edit Department</Value>
     </LocaleResource>
-
+    <LocaleResource Name="Component.Label.Departments.Select">
+        <Value>Select Department..</Value>
+    </LocaleResource>
     <LocaleResource Name="Component.Label.Header.Filter">
         <Value>Filter List By</Value>
     </LocaleResource>
@@ -360,6 +362,9 @@
     </LocaleResource>
     <LocaleResource Name="Button.Submit">
         <Value>Save</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Update">
+        <Value>Update</Value>
     </LocaleResource>
 
     <LocaleResource Name="Button.Signin">

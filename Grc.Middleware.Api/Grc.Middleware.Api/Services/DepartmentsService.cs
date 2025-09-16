@@ -146,6 +146,48 @@ namespace Grc.Middleware.Api.Services {
                 throw; 
             };
         }
+        
+        public async Task<IList<Department>> GetAllAsync(bool includeDeleted = false) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve all departments records", "INFO");
+    
+            try {;
+                var department = await uow.DepartmentRepository.GetAllAsync(includeDeleted);
+                if(department != null) {
+                    //..log the department records being retrieved
+                    var typeJson = JsonSerializer.Serialize(department, new JsonSerializerOptions { 
+                        WriteIndented = true,
+                        ReferenceHandler = ReferenceHandler.IgnoreCycles 
+                    });
+                    Logger.LogActivity($"Department data: {typeJson}", "DEBUG");
+                } else {
+                    Logger.LogActivity($"No Department data found", "DEBUG");
+                }
+
+                return department;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve departments: {ex.Message}", "ERROR");
+        
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var conpany = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new(){ 
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "DEPARTMENT-SERVICE-MIDDLEWARE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+                throw; 
+            };
+        }
 
         public async Task<PagedResult<Department>> GetPagedDepartmentsAsync(DateTime? createdFrom = null, DateTime? createdTo = null, long? userId = null, int pageIndex = 1, int pageSize = 20, bool includeDeleted=false) {
             using var uow = UowFactory.Create();
