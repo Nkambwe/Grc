@@ -33,11 +33,39 @@
     <LocaleResource Name="App.Label.Units">
         <Value>Units</Value>
     </LocaleResource>
-
+    <LocaleResource Name="App.Label.Department">
+        <Value>Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Department.Code">
+        <Value>Department Code</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Department.Name">
+        <Value>Department Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Department.Deactivate">
+        <Value>Deactivate Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Department.Branch">
+        <Value>Attached Branch</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Department.Tag">
+        <Value>Department Tag</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Unit.Code">
+        <Value>Unit Code</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Unit.Name">
+        <Value>Unit Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Unit.Deactivate">
+        <Value>Deactivate Unit</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.srOnly.ArrowKeys">
+        <Value>Use arrow keys to navigate options. Press Enter to select</Value>
+    </LocaleResource>
     <LocaleResource Name="Component.Key.Departments">
         <Value>Departments</Value>
     </LocaleResource>
-    
     <LocaleResource Name="Component.Key.DepartmentUnits">
         <Value>All Units</Value>
     </LocaleResource>
@@ -52,8 +80,7 @@
     </LocaleResource>
     <LocaleResource Name="Component.Key.Delegations">
         <Value>Delegation</Value>
-    </LocaleResource>
-    
+    </LocaleResource>   
     <LocaleResource Name="Component.Label.Branch">
         <Value>Add Branch</Value>
     </LocaleResource>
@@ -112,6 +139,9 @@
     </LocaleResource>
     <LocaleResource Name="Component.Table.Label.Department">
         <Value>Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Department.Alias">
+        <Value>Short Name</Value>
     </LocaleResource>
     <LocaleResource Name="Component.Table.Label.Department.Name">
         <Value>Department Name</Value>

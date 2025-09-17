@@ -18,19 +18,23 @@
 
                 <form id="form-unit-new" method="post">
                     <div class="field-group">
-                        <label for="tfNewUnitCode" class="form-label text-right">UNIT CODE</label>
+                        <label for="tfNewUnitCode" class="form-label text-right">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Unit.Code"))
+                         </label>
                         <input type="text" class="form-control" id="tfNewUnitCode" name="tfNewUnitCode" placeholder="ENTER CODE">
                     </div>
 
                     <div class="field-group">
-                        <label for="tfNewUnitName" class="form-label text-right">UNIT NAME</label>
+                        <label for="tfNewUnitName" class="form-label text-right">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Unit.Name"))
+                        </label>
                         <input type="text" class="form-control" id="tfNewUnitName" name="tfNewUnitName" placeholder="ENTER NAME">
                     </div>
 
                     <div class="field-group-box">
                         <div class="field-group">
                             <label for="dpNewDepartments" class="form-label text-right select2-field select2-column">
-                                DEPARTMENT
+                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Department"))
                                 <select class="js-departments form-control"
                                         id="dpNewDepartments"
                                         name="dpNewDepartments"
@@ -39,7 +43,7 @@
                                     <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Departments.Select"))</option>
                                 </select>
                                 <span id="dpNewDepartments-description" class="sr-only">
-                                    Use arrow keys to navigate options. Press Enter to select.
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
                                 </span>
                             </label>
 
@@ -70,20 +74,26 @@
 
             <div class="component-slide-content">
                 <form id="form-unit-new" method="post">
+                    <input type="hidden" id="unitEditId" name="unitEditId">
+
                     <div class="field-group">
-                        <label for="tfEditUnitCode" class="form-label text-right">UNIT CODE</label>
+                        <label for="tfEditUnitCode" class="form-label text-right">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Unit.Code"))
+                        </label>
                         <input type="text" class="form-control" id="tfEditUnitCode" name="tfEditUnitCode" placeholder="ENTER CODE">
                     </div>
 
                     <div class="field-group">
-                        <label for="tfEditUnitName" class="form-label text-right">UNIT NAME</label>
+                        <label for="tfEditUnitName" class="form-label text-right">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Unit.Name"))
+                        </label>
                         <input type="text" class="form-control" id="tfEditUnitName" name="tfEditUnitName" placeholder="ENTER NAME">
                     </div>
 
                     <div class="field-group-box">
                         <div class="field-group">
                             <label for="dpEditDepartments" class="form-label text-right select2-field select2-column">
-                                DEPARTMENT
+                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Department"))
                                 <select class="js-departments form-control"
                                         id="dpEditDepartments"
                                         name="dpEditDepartments"
@@ -92,7 +102,7 @@
                                     <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Departments.Select"))</option>
                                 </select>
                                 <span id="dpEditDepartments-description" class="sr-only">
-                                    Use arrow keys to navigate options. Press Enter to select.
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
                                 </span>
                             </label>
 
@@ -102,7 +112,9 @@
                     <div class="field-group">
                         <div class="form-check">
                             <input type="checkbox" class="form-check-input" id="isDeleted" name="isDeleted">
-                            <label class="form-check-label" for="exampleCheck1">DEACTIVATE UNIT</label>
+                            <label class="form-check-label" for="exampleCheck1">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Unit.Deactivate"))
+                            </label>
                         </div>
                     </div>
 

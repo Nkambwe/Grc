@@ -767,55 +767,48 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             }
         }
         
-        [HttpPost("support/departments/allUnits")]
-        public async Task<IActionResult> AllUnits([FromBody] TableListRequest request) {
+        [HttpGet("support/departments/getUnit/{id:long}")]
+        public async Task<IActionResult> GetUnitById(long id) {
+            try {
+                if (id <= 0) {
+                    return Json(new { 
+                        success = false, 
+                        message = "Invalid unit ID provided" 
+                    });
+                }
 
-            try{
                 //..get user IP address
                 var ipAddress = WebHelper.GetCurrentIpAddress();
 
                 //..get current authenticated user record
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError) {
-                        Logger.LogActivity($"DEPARTMENT UNITS ERROR: Failed to Current user record - {JsonSerializer.Serialize(grcResponse)}");
+                        Logger.LogActivity($"UNIT ERROR: Failed to Current user record - {JsonSerializer.Serialize(grcResponse)}");
                 }
 
-                //..update with user data
                 var currentUser = grcResponse.Data;
-                request.UserId = currentUser.UserId;
-                request.IPAddress = ipAddress;
-                request.PageSize = 20;
+                GrcIdRequst request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.RETRIEVEUNITS.GetDescription(),
+                    IPAddress = ipAddress,
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>()
+                };
 
-                //..get list of a departments logs
-                var departmentUnitsData = await _departmentUnitService.GetDepartmentUnitsAsync(request);
-
-                PagedResponse<DepartmentUnitModel> deparmentUnitsResult = new ();
-                if(departmentUnitsData.HasError){ 
-                    Logger.LogActivity($"DEPARTMENT UNITS ERROR: Failed to retrieve department units data - {JsonSerializer.Serialize(departmentUnitsData)}");
-                } else {
-                    deparmentUnitsResult = departmentUnitsData.Data;
-                    Logger.LogActivity($"DEPARTMENT UNITS DATA - {JsonSerializer.Serialize(deparmentUnitsResult)}");
+                var unitRecord = await GetUnitByIdAsync(request);
+                if (unitRecord == null) {
+                    return Json(new { success = false, message = "Unit not found" });
                 }
 
-                deparmentUnitsResult.Entities ??= new();
-                return Ok(new {
-                    data = deparmentUnitsResult.Entities,
-                    recordsTotal = deparmentUnitsResult.TotalCount ,
-                    recordsFiltered = deparmentUnitsResult.TotalCount 
-                });
-            } catch(Exception ex){
-                Logger.LogActivity($"Error retrieving departments units data: {ex.Message}", "ERROR");
+                return Json(new { success = true, data = unitRecord, message = "Unit loaded successfully" });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving units: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
-
-                return Ok(new {
-                    data = new List<DepartmentUnitModel>(),
-                    recordsTotal = 0 ,
-                    recordsFiltered = 0
-                });
+                return Json(new { success = false, message = "An error occurred while loading the unit" });
             }
-            
         }
-
+        
         [HttpGet("support/departments/getUnits")]
         public async Task<IActionResult> GetUnits() { 
             try {
@@ -866,10 +859,79 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 return Json(new { results = new List<object>() });
             }
         }
-        
+
+        [HttpPost("support/departments/allUnits")]
+        public async Task<IActionResult> AllUnits([FromBody] TableListRequest request) {
+
+            try{
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                        Logger.LogActivity($"DEPARTMENT UNITS ERROR: Failed to Current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                //..update with user data
+                var currentUser = grcResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.PageSize = 20;
+
+                //..get list of a departments logs
+                var departmentUnitsData = await _departmentUnitService.GetDepartmentUnitsAsync(request);
+
+                PagedResponse<DepartmentUnitModel> deparmentUnitsResult = new ();
+                if(departmentUnitsData.HasError){ 
+                    Logger.LogActivity($"DEPARTMENT UNITS ERROR: Failed to retrieve department units data - {JsonSerializer.Serialize(departmentUnitsData)}");
+                } else {
+                    deparmentUnitsResult = departmentUnitsData.Data;
+                    Logger.LogActivity($"DEPARTMENT UNITS DATA - {JsonSerializer.Serialize(deparmentUnitsResult)}");
+                }
+
+                deparmentUnitsResult.Entities ??= new();
+                return Ok(new {
+                    data = deparmentUnitsResult.Entities,
+                    recordsTotal = deparmentUnitsResult.TotalCount ,
+                    recordsFiltered = deparmentUnitsResult.TotalCount 
+                });
+            } catch(Exception ex){
+                Logger.LogActivity($"Error retrieving departments units data: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+
+                return Ok(new {
+                    data = new List<DepartmentUnitModel>(),
+                    recordsTotal = 0 ,
+                    recordsFiltered = 0
+                });
+            }
+            
+        }
+
         #endregion
 
-        public void Notify(string message, string title = "GRC NOTIFICATION", NotificationType type = NotificationType.Success) {
+        #region Save and modify actions
+        
+        [HttpPost("support/departments/saveUnit")]
+        public async Task<IActionResult> SaveUnit([FromBody] DepartmentUnitRequest request) { 
+            var unitName = request.UnitName;
+            Notify($"Unit {unitName} updated successfully", "Update Department Unit", NotificationType.Success);
+            return Json(new { success = true, message = "Unit saved successfully" });
+        }
+
+        [HttpPost("support/departments/updateUnit")]
+        public async Task<IActionResult> UpdateUnit([FromBody] DepartmentUnitRequest request) { 
+            var unitName = request.UnitName;
+            Notify($"Unit {unitName} updated successfully", "Update Department Unit", NotificationType.Success);
+            return Json(new { success = true, message = "Unit updated successfully" });
+        }
+
+        #endregion
+
+        #region Protected methods
+
+        protected void Notify(string message, string title = "GRC NOTIFICATION", NotificationType type = NotificationType.Success) {
             var notificationMessage = new NotificationMessage() {
                 Title = title,
                 Message = message,
@@ -879,6 +941,20 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
             TempData["Message"] = JsonSerializer.Serialize(notificationMessage); 
         }
+        
+        protected async Task<DepartmentUnitModel> GetUnitByIdAsync(GrcIdRequst request) {
+            return await Task.FromResult(new DepartmentUnitModel {
+                Id = request.RecordId,
+                UnitCode = "DIG",
+                UnitName = "Digitization",
+                Department = "Digitization and Innovation",
+                DepartmentId = 2,
+                IsDeleted = false,
+                CreatedOn = DateTime.Now.AddDays(-40),
+                CreatedBy = "Macjohnan"
+            });
+        }
 
+        #endregion
     }
 }

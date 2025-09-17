@@ -96,6 +96,7 @@
         const $component = $(this).closest('.grc-page-component'); 
         resetButtons($component);
         $(this).addClass('active');
+
         $component.find('.component-slideout').addClass('active');
         $component.find('.component-create-container').show();
         $component.find('.component-edit-container').hide();
@@ -104,6 +105,9 @@
         const $createContainer = $component.find('.component-create-container');
         loadBranchesForContainer($createContainer);
         loadDepartmentsForContainer($createContainer);
+    
+        // Clear the form
+        clearNewUnitForm();
     });
 
     $('.action-btn-Edit').on("click", function (e) {
@@ -118,7 +122,24 @@
         // Load select items for the edit container
         const $editContainer = $component.find('.component-edit-container');
         loadBranchesForContainer($editContainer);
-        loadDepartmentsForContainer($editContainer);
+        loadDepartmentsForContainer($editContainer, function() {
+            populateEditForm(response.data);
+        });
+
+        
+        // Check if a row is selected
+        const $selectedRow = $('#departmentUnitsTable tbody tr.row-selected');
+        if ($selectedRow.length === 0) {
+            showToast("warning", "Please select a unit to edit");
+            return;
+        }
+    
+        // Get unit ID from selected row
+        const unitId = $selectedRow.data('unit-id');
+        if (unitId) {
+            loadUnitForEdit(unitId);
+        }
+
     });
 
      $('.action-btn-Delete').on("click", function (e) {
@@ -146,6 +167,11 @@
 
         resetButtons($component);
         $component.find('.component-slideout').removeClass('active');
+
+        // Clear forms when closing
+        clearNewUnitForm();
+        $('#form-unit-edit')[0].reset();
+        $('#unitEditId').val('');
 
      });
 
@@ -177,6 +203,55 @@
                 $('#departmentUnitsTable').empty();
             }
         }
+    });
+
+    //..form submission handler for unit update
+    $(document).on('submit', '#form-unit-edit', function(e) {
+        e.preventDefault();
+    
+        const formData = {
+            id: $('#unitEditId').val(),
+            unitCode: $('#tfEditUnitCode').val(),
+            unitName: $('#tfEditUnitName').val(),
+            departmentId: $('#dpEditDepartments').val(),
+            isDeleted: $('#isDeleted').is(':checked')
+        };
+    
+        //..validate required fields
+        if (!formData.unitCode || !formData.unitName || !formData.departmentId) {
+            showToast("warning", "Please fill in all required fields");
+            return;
+        }
+    
+        $.ajax({
+            url: '/support/departments/updateUnit',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function(response) {
+                if (response.success) {
+                    showToast("success", "Unit updated successfully");
+                
+                    // Close slideout
+                    const $component = $('.grc-page-component');
+                    $component.find('.component-slideout').removeClass('active');
+                    resetButtons($component);
+                
+                    // Refresh the table
+                    $('#departmentUnitsTable').DataTable().ajax.reload();
+                
+                    // Clear form
+                    $('#form-unit-edit')[0].reset();
+                    $('#unitEditId').val('');
+                } else {
+                    showToast("error", response.message || "Failed to update unit");
+                }
+            },
+            error: function(xhr, status, error) {
+                showToast("error", `Failed to update unit: ${error}`);
+                console.error('Error updating unit:', error);
+            }
+        });
     });
 
     // Function to initialize basic Select2 with accessibility fixes
@@ -352,6 +427,7 @@
                 }
             });
 		}
+
 	}
 
     function resetButtons($component) {
@@ -400,16 +476,48 @@
                 { data: "unitCode" },
                 { data: "unitName" },
                 { data: "department" },
-                { data: "isDeleted" },
-                { data: "creatdOn" }
+                { 
+                    data: "isDeleted",
+                    render: function(data, type, row) {
+                        const checked = !data ? 'checked' : ''; 
+                        return `<input type="checkbox" class="form-check-input unit-active-checkbox" ${checked} disabled>`;
+                    }
+                },
+                { data: "createdOn" }
             ],
+            createdRow: function(row, data, dataIndex) {
+                $(row).attr('data-unit-id', data.id);
+                $(row).on('click', function(e) {
+                    if ($(e.target).hasClass('unit-active-checkbox')) {
+                        return;
+                    }
+                
+                    var $row = $(this);
+                    var unitId = $row.data('unit-id');
+                    if ($row.hasClass('row-selected')) {
+                        //..seselect row
+                        $row.removeClass('row-selected');
+                        $row.find('.row-selection-icon').remove();
+                    } else {
+                        //..remove selection from all other rows
+                        $('#departmentUnitsTable tbody tr').removeClass('row-selected');
+                        $('#departmentUnitsTable tbody tr .row-selection-icon').remove();
+                    
+                        //..select current row
+                        $row.addClass('row-selected');
+                        $row.find('td:first').prepend('<i class="mdi mdi-arrow-right row-selection-icon"></i>');
+                    
+                        //..load unit data for editing
+                        loadUnitForEdit(unitId);
+                    }
+                });
+            },
             language: {
                 emptyTable: "No department units data available"
             }
         });
 
-        //..set row selection
-        setupRowSelection('#departmentUnitsTable', departmentsTable);
+        return departmentsTable;
     }
 
     function openModal(popupIdOrName) {
@@ -489,6 +597,72 @@
             $originalSelect.removeAttr('aria-hidden');
             $(this).removeAttr('aria-hidden');
         });
+    }
+
+    // Function to load unit data for editing
+    function loadUnitForEdit(unitId) {
+        if (!unitId) {
+            console.error('No unit ID provided');
+            return;
+        }
+
+        $.ajax({
+        url: `/support/departments/getUnit/${unitId}`,
+        type: 'GET',
+        success: function(response) {
+            console.log('Server response:', response);
+            
+            if (response && response.success && response.data) {
+                populateEditForm(response.data);
+                const $component = $('#departmentUnitsTable').closest('.grc-page-component');
+                triggerEditSlideout($component);
+            } else {
+                showToast("error", response?.message || "Failed to load unit data");
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Full error details:', { 
+                status: xhr.status, 
+                statusText: xhr.statusText, 
+                responseText: xhr.responseText,
+                error: error 
+            });
+            
+            let errorMessage = "Failed to load unit data";
+            
+            if (xhr.status === 404) {
+                errorMessage = "Unit not found";
+            } else if (xhr.status === 500) {
+                errorMessage = "Server error occurred";
+            }
+            
+            showToast("error", errorMessage);
+        }
+    });
+    }
+
+    // Function to populate the edit form
+    function populateEditForm(unitData) {
+        $('#tfEditUnitCode').val(unitData.unitCode || '');
+        $('#tfEditUnitName').val(unitData.unitName || '');
+        $('#dpEditDepartments').val(unitData.departmentId || '').trigger('change');
+        $('#isDeleted').prop('checked', unitData.isDeleted || false);
+        let hiddenIdField = $('#unitEditId');
+        hiddenIdField.val(unitData.id);
+    }
+
+    // Function to trigger edit slideout
+    function triggerEditSlideout($component) {
+        resetButtons($component);
+        $component.find('.action-btn-Edit').addClass('active');
+        $component.find('.component-slideout').addClass('active');
+        $component.find('.component-create-container').hide();
+        $component.find('.component-edit-container').show();
+    
+        // Load select items for the edit container
+        const $editContainer = $component.find('.component-edit-container');
+        loadBranchesForContainer($editContainer);
+        loadDepartmentsForContainer($editContainer);
     }
 
 });

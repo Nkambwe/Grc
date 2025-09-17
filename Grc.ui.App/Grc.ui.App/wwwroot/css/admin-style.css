@@ -904,6 +904,13 @@ span.selection {
     border-color: var(--pearl-purple-dark-20);
 }
 
+    .btn-primary:disabled,
+    .btn-primary.disabled {
+        color: #fff;
+        background-color: var(--purple-deep-light-medium);
+        border-color: var(--purple-deep-light-medium);
+    }
+
     .btn-primary:hover {
         color: var(--white-base);
         background-color: var(--pearl-purple-dark-50);

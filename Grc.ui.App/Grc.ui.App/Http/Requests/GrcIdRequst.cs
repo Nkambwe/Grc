@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace Grc.ui.App.Http.Requests {
-    public class GrcDeleteRequst {
+    public class GrcIdRequst {
         /// <summary>
         /// Get or Set ID for the record to delete
         /// </summary>
@@ -27,5 +27,15 @@ namespace Grc.ui.App.Http.Requests {
         /// </summary>
         [JsonPropertyName("ipAddress")]
         public string IPAddress { get; set; }
+        /// <summary>
+        /// Get Or Send Fields intended to be encrypted
+        /// </summary>
+        [JsonPropertyName("encrypts")]
+        public string[] EncryptFields { get; set; }
+        /// <summary>
+        /// Get Or Set Fields intended to be decrypted
+        /// </summary>
+        [JsonPropertyName("decrypts")]
+        public string[] DecryptFields { get; set; }
     }
 }

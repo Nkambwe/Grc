@@ -147,21 +147,21 @@ namespace Grc.ui.App.Services {
         
         public async Task<GrcResponse<ServiceResponse>> DeleteDepartmentUnitAsync(long id, long userId, string ipAddress = null) {
             try {
-                var request = new GrcDeleteRequst(){ 
+                var request = new GrcIdRequst(){ 
                     RecordId = id,
                     UserId = userId,
                     IPAddress = ipAddress,
                     Action = "Delete Department unit"
                 };
                 var endpoint = EndpointProvider.Departments.DeleteUnit;
-                var response = await HttpHandler.PostAsync<GrcDeleteRequst, StatusResponse>(endpoint, request);
+                var response = await HttpHandler.PostAsync<GrcIdRequst, StatusResponse>(endpoint, request);
                 if(response.HasError) { 
                     Logger.LogActivity($"Failed to delete department unit on server. {response.Error.Message}");
                 } else {
                     Logger.LogActivity("Department unit deleted successfully.");
                 }
                 
-                return await HttpHandler.PostAsync<GrcDeleteRequst, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcIdRequst, ServiceResponse>(endpoint, request);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"Http Exception: {httpEx.Message}", "ERROR");
                 await ProcessErrorAsync(httpEx.Message,"DEPARTMENTUNIT-SERVICE" , httpEx.StackTrace);

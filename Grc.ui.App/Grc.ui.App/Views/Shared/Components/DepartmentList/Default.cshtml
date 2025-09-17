@@ -18,24 +18,30 @@
                 
                 <form id="form-department-new" method="post">
                     <div class="field-group">
-                        <label for="tfNewDepartmentCode" class="form-label text-right">DEPARTMENT CODE</label>
+                        <label for="tfNewDepartmentCode" class="form-label text-right">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Department.Code"))
+                        </label>
                         <input type="text" class="form-control" id="tfNewDepartmentCode" name="tfNewDepartmentCode" placeholder="ENTER CODE">
                     </div>
 
                     <div class="field-group">
-                        <label for="tfNewDepartmentName" class="form-label text-right">DEPARTMENT NAME</label>
+                        <label for="tfNewDepartmentName" class="form-label text-right">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Department.Name"))
+                        </label>
                         <input type="text" class="form-control" id="tfNewDepartmentName" name="tfNewDepartmentName" placeholder="ENTER NAME">
                     </div>
 
                     <div class="field-group">
-                        <label for="tfNewDepartmentTag" class="form-label text-right">TAG</label>
+                        <label for="tfNewDepartmentTag" class="form-label text-right">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Department.Tag"))
+                        </label>
                         <input type="text" class="form-control" id="tfNewDepartmentTag" name="tfNewDepartmentTag" placeholder="ENTER TAG">
                     </div>
 
                     <div class="field-group-box">
                         <div class="field-group">
                             <label for="dpNewBranches" class="form-label text-right select2-field select2-column">
-                                ATTACHED BRANCH
+                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Department.Branch"))
                                 <select class="js-branches form-control"
                                         id="dpNewBranches"
                                         name="dpNewBranches"
@@ -44,7 +50,7 @@
                                     <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Branch.Select"))</option>
                                 </select>
                                 <span id="dpNewBranches-description" class="sr-only">
-                                    Use arrow keys to navigate options. Press Enter to select.
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
                                 </span>
                             </label>
 
@@ -76,25 +82,33 @@
             <div class="component-slide-content">
 
                 <form id="form-department-edit" method="post">
+                    <input type="hidden" id="departmentEditId" name="departmentEditId">
+
                     <div class="field-group">
-                        <label for="tfEditDepartmentCode" class="form-label text-right">DEPARTMENT CODE</label>
+                        <label for="tfEditDepartmentCode" class="form-label text-right">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Department.Code"))
+                        </label>
                         <input type="text" class="form-control" id="tfEditDepartmentCode" name="tfEditDepartmentCode" placeholder="ENTER CODE">
                     </div>
 
                     <div class="field-group">
-                        <label for="tfEditDepartmentName" class="form-label text-right">DEPARTMENT NAME</label>
+                        <label for="tfEditDepartmentName" class="form-label text-right">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Department.Name"))
+                        </label>
                         <input type="text" class="form-control" id="tfEditDepartmentName" name="tfEditDepartmentName" placeholder="ENTER NAME">
                     </div>
 
                     <div class="field-group">
-                        <label for="tfEditDepartmentTag" class="form-label text-right">TAG</label>
+                        <label for="tfEditDepartmentTag" class="form-label text-right">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Department.Tag"))
+                        </label>
                         <input type="text" class="form-control" id="tfEditDepartmentTag" name="tfEditDepartmentTag" placeholder="ENTER TAG">
                     </div>
-
+                    
                     <div class="field-group-box">
                         <div class="field-group">
                             <label for="dpEditDepartmentBranches" class="form-label text-right select2-field select2-column">
-                                ATTACHED BRANCH
+                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Department.Branch"))
                                 <select class="js-branches form-control"
                                         id="dpEditDepartmentBranches"
                                         name="dpEditDepartmentBranches"
@@ -103,7 +117,7 @@
                                     <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Branch.Select"))</option>
                                 </select>
                                 <span id="dpNewBranches-description" class="sr-only">
-                                    Use arrow keys to navigate options. Press Enter to select.
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
                                 </span>
                             </label>
 
@@ -113,7 +127,9 @@
                     <div class="field-group">
                         <div class="form-check">
                             <input type="checkbox" class="form-check-input" id="isDeleted" name="isDeleted">
-                            <label class="form-check-label" for="exampleCheck1">DEACTIVATE BRANCH</label>
+                            <label class="form-check-label" for="exampleCheck1">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Department.Deactivate"))
+                            </label>
                         </div>
                     </div>
 
@@ -135,12 +151,11 @@
             <table id="departmentsTable" class="table is-fullwidth is-striped">
                 <thead>
                     <tr>
-                        <th width="120">Code</th>
-                        <th>Department Name</th>
-                        <th>Department Alias</th>
-                        <th>Branch</th>
-                        <th>Active</th>
-                        <th>Created On</th>
+                        <th width="120">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Code"))</th>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Department.Name"))</th>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Department.Alias"))</th>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Active"))</th>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Created"))</th>
                     </tr>
                 </thead>
                 <tbody id="departmentsTableBody"></tbody>
