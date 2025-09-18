@@ -13,7 +13,7 @@ namespace Grc.Middleware.Api.Services {
         Task<bool> UpdateDepartmentAsync(DepartmentRequest request);
         Task<bool> ExistsByIdAsync(long id);
         Task<bool> ExistsAsync(DepartmentRequest request); 
-        Task<bool> DeleteDepartmentAsync(DeleteRequst request);
+        Task<bool> DeleteDepartmentAsync(IdRequst request);
         
     }
 

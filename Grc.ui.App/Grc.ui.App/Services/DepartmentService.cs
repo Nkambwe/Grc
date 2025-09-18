@@ -27,6 +27,25 @@ namespace Grc.ui.App.Services {
                                   sessionManager,errorFactory,errorService) {
         }
 
+        public async Task<GrcResponse<DepartmentModel>> GetDepartmentById(GrcIdRequst request) {
+            Logger.LogActivity($"Get department record", "INFO");
+
+            try{
+               var endpoint = $"{EndpointProvider.Departments.DepartmentById}";
+                return await HttpHandler.PostAsync<GrcIdRequst, DepartmentModel>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving department record: {ex.Message}", "Error");
+                await ProcessErrorAsync(ex.Message,"DEPARTMENT-SERVICE" , ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "Error retrieving department record",
+                    ex.Message
+                );
+
+                return new GrcResponse<DepartmentModel>(error);
+            }
+        }
+
         public async Task<GrcResponse<List<DepartmentModel>>> GetDepartmentsAsync(GrcRequest request){ 
             Logger.LogActivity($"Get a list of department data", "INFO");
 

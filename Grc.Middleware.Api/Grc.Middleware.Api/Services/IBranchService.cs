@@ -10,7 +10,7 @@ namespace Grc.Middleware.Api.Services {
         Task<IList<Branch>> GetAllAsync(bool includeDeleted=false);
         Task<bool> InsertBranchAsync(BranchRequest request);
         Task<bool> UpdateBranchAsync(BranchRequest request);
-        Task<bool> DeleteBranchAsync(DeleteRequst request);
+        Task<bool> DeleteBranchAsync(IdRequst request);
         Task<bool> ExistsByIdAsync(long id);
         Task<bool> ExistsAsync(BranchRequest request);
 

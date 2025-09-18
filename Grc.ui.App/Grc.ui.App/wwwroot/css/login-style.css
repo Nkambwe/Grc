@@ -129,7 +129,7 @@ label {
 
 input:focus {
     outline: none !important;
-    border-color: var(--teal-light-medium) !important;
+    border-color: var(--purple) !important;
     box-shadow: none !important;
     transition: all .3s ease-in-out;
 }
@@ -139,7 +139,7 @@ input:focus {
         font-size: 17px !important;
         top: -15px !important;
         left: 8px;
-        color: var(--teal-light-medium) !important;
+        color: var(--purple) !important;
         transition: all .3s ease-in-out;
     }
 
@@ -163,35 +163,66 @@ input:valid ~ label {
 }
 
     .password-toggle:hover {
-        color: var(--teal-light-medium);
+        color: var(--purple);
         transition: all .3s ease-in-out;
     }
 
 .login-footer span {
     display: flex;
     width: 100%;
-    color: var(--grey);
+    font-weight: 600;
+    color: var(--pearl-orange);
 }
+
+.btn-primary {
+    color: var(--white-base);
+    background-color: var(--pearl-purple-dark-50);
+    border-color: var(--pearl-purple-dark-50);
+}
+
+    .btn-primary:disabled,
+    .btn-primary.disabled {
+        color: var(--white-base);
+        background-color: var(--pearl-purple-dark-60);
+        border-color: var(--pearl-purple-dark-60);
+    }
+
+    .btn-primary:hover {
+        color: var(--white-base);
+        background-color: var(--pearl-purple-dark-10);
+        border-color: var(--pearl-purple-dark-10);
+        transition: all .3s ease-in-out;
+    }
+
+    .btn-primary:focus {
+        border-color: #8803A3 !important;
+        box-shadow: 0 0 0 0.25rem rgba(136, 3, 163, 0.25) !important;
+        transition: all .3s ease-in-out;
+    }
 
 .btn-login {
     width: 100%;
     padding: 12px 24px;
-    background: var(--teal-light-medium) !important;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 50px;
     font-size: 18px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
+    background-color: var(--pearl-purple-dark-50);
+    border-color: var(--pearl-purple-dark-50);
     position: relative;
     overflow: hidden;
 }
 
     .btn-login:hover {
         transform: translateY(-1px);
-        background: var(--teal-light-strong);
-        box-shadow: var(--light-teal-trans-70) 0px 2px 8px 0px;
+        color: var(--white-base);
+        background-color: var(--pearl-purple-dark-10);
+        border-color: var(--pearl-purple-dark-10);
+        box-shadow: 0 0 0 0.25rem rgba(136, 3, 163, 0.25) !important;
+        transition: all .3s ease-in-out;
     }
 
     .btn-login:disabled {
@@ -227,8 +258,9 @@ input:valid ~ label {
 }
 
 .error-message {
-    color: #e74c3c;
-    font-size: 14px;
+    color: var(--red-light-medium);
+    padding: 10px;
+    font-size: 1.2rem;
     margin-top: 8px;
     min-height: 20px;
     opacity: 0;
@@ -256,7 +288,9 @@ input:valid ~ label {
     font-size: 30px;
     align-items: center;
     justify-content: center;
-    color: var(--teal-dark-accent);
+    color: var(--pearl-orange-light-strong);
+    border: solid 2px var(--pearl-orange-light-strong);
+    background-color: var(--orange-deep-light-extra);
     margin-right: 16px;
 }
 
@@ -267,8 +301,7 @@ input:valid ~ label {
     border-radius: 0;
     margin-bottom: 24px;
     position: relative;
-    color: var(--teal-dark-accent);
-    background-color: var(--teal-light);
+    color: var(--pearl-orange-light-strong);
 }
 
 .user-details {
@@ -278,7 +311,7 @@ input:valid ~ label {
 .username-display {
     display: block;
     font-weight: 600;
-    color: var(--teal-dark-accent);
+    color: var(--pearl-orange-light-strong);
     font-size: 18px;
 }
 

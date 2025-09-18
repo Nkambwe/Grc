@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace Grc.Middleware.Api.Http.Requests {
-    public class DeleteRequst {
+    public class IdRequst {
         /// <summary>
         /// Get or Set ID for the record to delete
         /// </summary>

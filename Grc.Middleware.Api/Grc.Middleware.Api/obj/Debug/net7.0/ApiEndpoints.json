@@ -83,7 +83,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Grc.Middleware.Api.Http.Requests.DeleteRequst",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequst",
         "IsRequired": true
       }
     ],
@@ -99,7 +99,23 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Grc.Middleware.Api.Http.Requests.DeleteRequst",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequst",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "GetDepartmentById",
+    "RelativePath": "grc/departments/getDepartmentById",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequst",
         "IsRequired": true
       }
     ],
@@ -116,6 +132,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "GetUnitById",
+    "RelativePath": "grc/departments/getUnitById",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequst",
         "IsRequired": true
       }
     ],
@@ -253,7 +285,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Grc.Middleware.Api.Http.Requests.DeleteRequst",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequst",
         "IsRequired": true
       }
     ],

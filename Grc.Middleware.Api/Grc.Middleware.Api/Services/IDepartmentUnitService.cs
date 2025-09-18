@@ -11,7 +11,7 @@ namespace Grc.Middleware.Api.Services {
         Task<PagedResult<DepartmentUnit>> GetPagedUnitsAsync(DateTime? createdFrom = null, DateTime? createdTo = null, long? userId = null, int pageIndex = 1, int pageSize = 20, bool includeDeleted=false);
         Task<bool> InsertUnitAsync(DepartmentUnitRequest request);
         Task<bool> UpdateUnitAsync(DepartmentUnitRequest request);
-        Task<bool> DeleteUnitAsync(DeleteRequst request);
+        Task<bool> DeleteUnitAsync(IdRequst request);
         Task<bool> ExistsByIdAsync(long id);
         Task<bool> ExistsAsync(DepartmentUnitRequest request);
         

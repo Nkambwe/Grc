@@ -25,6 +25,26 @@ namespace Grc.ui.App.Services {
         : base(loggerFactory, httpHandler, environment, endpointType, mapper,webHelper,sessionManager,errorFactory,errorService) {
         }
 
+        
+        public async Task<GrcResponse<DepartmentUnitModel>> GetUnitById(GrcIdRequst request) {
+            Logger.LogActivity($"Get unit record", "INFO");
+
+            try{
+               var endpoint = $"{EndpointProvider.Departments.UnitById}";
+                return await HttpHandler.PostAsync<GrcIdRequst, DepartmentUnitModel>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving unit record: {ex.Message}", "Error");
+                await ProcessErrorAsync(ex.Message,"DEPARTMENT-UNIT-SERVICE" , ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "Error retrieving unit record",
+                    ex.Message
+                );
+
+                return new GrcResponse<DepartmentUnitModel>(error);
+            }
+        }
+
         public async Task<GrcResponse<List<DepartmentUnitModel>>> GetUnitsAsync(GrcRequest request){ 
             Logger.LogActivity($"Get a list of units available", "INFO");
 
@@ -65,17 +85,17 @@ namespace Grc.ui.App.Services {
 
         }
 
-        public async Task<GrcResponse<ServiceResponse>> InsertDepartmentUnitAsync(DepartmentUnitModel model, long userId, string ipAddress = null) {
+        public async Task<GrcResponse<ServiceResponse>> InsertDepartmentUnitAsync(GrcInsertRequest<DepartmentUnitRequest> data) {
             try {
                 //..build request model
                 var request = new DepartmentUnitRequest() {
-                    UserId = userId,
-                    IPAddress = ipAddress,
-                    Action = "Insert new department unit",
-                    UnitCode = model.UnitCode,
-                    UnitName = model.UnitName,
-                    DepartmentId = model.DepartmentId,
-                    IsDeleted = model.IsDeleted
+                    UserId = data.UserId,
+                    IPAddress = data.IPAddress,
+                    Action = data.Action,
+                    UnitCode = data.Record.UnitCode ?? string.Empty,
+                    UnitName = data.Record.UnitName,
+                    DepartmentId = data.Record.DepartmentId,
+                    IsDeleted = data.Record.IsDeleted
                 };
 
                 //..map request
@@ -110,19 +130,17 @@ namespace Grc.ui.App.Services {
             }
         }
 
-        public async Task<GrcResponse<ServiceResponse>> UpdateDepartmentUnitAsync(DepartmentUnitModel model, long userId, string ipAddress = null) {
+        public async Task<GrcResponse<ServiceResponse>> UpdateDepartmentUnitAsync(GrcInsertRequest<DepartmentUnitRequest> data) {
             try {
-
-                //..build request model
                 var request = new DepartmentUnitRequest() {
-                    Id = model.Id,
-                    UserId = userId,
-                    IPAddress = ipAddress,
-                    Action = "Update department unit",
-                    UnitCode = model.UnitCode,
-                    UnitName = model.UnitName,
-                    DepartmentId = model.DepartmentId,
-                    IsDeleted = model.IsDeleted
+                    UserId = data.UserId,
+                    IPAddress = data.IPAddress,
+                    Action = data.Action,
+                    Id=data.Record.Id,
+                    UnitCode = data.Record.UnitCode ?? string.Empty,
+                    UnitName = data.Record.UnitName ?? string.Empty,
+                    DepartmentId = data.Record.DepartmentId,
+                    IsDeleted = data.Record.IsDeleted
                 };
 
                 var endpoint = EndpointProvider.Departments.UpdateUnit;

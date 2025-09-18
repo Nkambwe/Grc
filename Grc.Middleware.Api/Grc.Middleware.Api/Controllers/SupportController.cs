@@ -9,6 +9,7 @@ using Grc.Middleware.Api.Services;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Grc.Middleware.Api.Controllers {
 
@@ -498,7 +499,7 @@ namespace Grc.Middleware.Api.Controllers {
         }
 
         [HttpPost("organization/deleteBranch")]
-        public async Task<IActionResult> DeleteBranch([FromBody] DeleteRequst request) {
+        public async Task<IActionResult> DeleteBranch([FromBody] IdRequst request) {
             try {
                 Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
 
@@ -826,7 +827,7 @@ namespace Grc.Middleware.Api.Controllers {
         }
         
         [HttpPost("departments/deleteDepartment")]
-        public async Task<IActionResult> DeleteDepartment([FromBody] DeleteRequst request) {
+        public async Task<IActionResult> DeleteDepartment([FromBody] IdRequst request) {
             try {
                 Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
                 
@@ -885,6 +886,40 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
         
+        [HttpPost("departments/getDepartmentById")]
+        public async Task<IActionResult> GetDepartmentById([FromBody] IdRequst request) { 
+            var data = await Task.FromResult(new DepartmentUnitResponse() {
+                Id = request.RecordId,
+                DepartmentId = 1,
+                UnitCode = "EBK",
+                UnitName = "E-Banking",
+                Department= "Operations Department",
+                IsDeleted = false,
+                CreatdOn= DateTime.Now.AddDays(-59),
+                CreatedBy= "Mark",
+                ModifiedOn= DateTime.Now.AddDays(-12),
+                ModifiedBy= "Mark",
+            });
+            return Ok(new GrcResponse<DepartmentUnitResponse>(data));
+        }
+        
+        [HttpPost("departments/getUnitById")]
+        public async Task<IActionResult> GetUnitById([FromBody] IdRequst request) { 
+            var data = await Task.FromResult(new DepartmentUnitResponse() {
+                Id = request.RecordId,
+                DepartmentId = 1,
+                UnitCode = "EBK",
+                UnitName = "E-Banking",
+                Department= "Operations Department",
+                IsDeleted = false,
+                CreatdOn= DateTime.Now.AddDays(-59),
+                CreatedBy= "Mark",
+                ModifiedOn= DateTime.Now.AddDays(-12),
+                ModifiedBy= "Mark",
+            });
+            return Ok(new GrcResponse<DepartmentUnitResponse>(data));
+        }
+
         [HttpPost("departments/getUnits")]
         public async Task<IActionResult> GetUnits([FromBody] GeneralRequest request) {
             try {
@@ -1175,7 +1210,7 @@ namespace Grc.Middleware.Api.Controllers {
         }
         
         [HttpPost("departments/deleteUnit")]
-        public async Task<IActionResult> DeleteUnit([FromBody] DeleteRequst request) {
+        public async Task<IActionResult> DeleteUnit([FromBody] IdRequst request) {
             try {
                 Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
                 

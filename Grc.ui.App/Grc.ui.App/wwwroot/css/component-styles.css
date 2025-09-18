@@ -97,7 +97,7 @@ button.componet-modal-back {
     flex-grow: 1;
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--teal-light-strong);
+    color: var(--pearl-orange-light-medium);
     text-align: left;
     padding-left: 20px;
 }
@@ -180,7 +180,7 @@ button.component-modal-close {
     flex: 1;
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--teal-light-strong);
+    color: var(--pearl-orange-light-medium);
     text-align: left;
 }
 
@@ -255,7 +255,7 @@ button.component-filter-close {
 .action-btn.active,
 .icon-btn.active {
     font-weight: 600;
-    color: var(--teal-light-strong) !important;
+    color: var(--pearl-orange-light-medium) !important;
 }
 
 .component-slide-content {
@@ -293,7 +293,7 @@ button.component-filter-close {
     padding: 10px;
     font-size: 1.2em;
     font-weight: 600;
-    color: var(--teal-light-strong);
+    color: var(--pearl-orange-light-medium);
     border-right: solid 1px var(--grey-light-strong);
 }
 
@@ -315,7 +315,7 @@ button.component-filter-close {
 
 .action-btn:hover,
 .action-btn:hover span{
-    color: var(--teal-light-strong);
+    color: var(--pearl-orange-light-medium);
     transition: all .3s ease-in-out;
 }
 

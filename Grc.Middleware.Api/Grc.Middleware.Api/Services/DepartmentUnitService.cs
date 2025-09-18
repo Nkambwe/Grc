@@ -420,7 +420,7 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<bool> DeleteUnitAsync(DeleteRequst request) {
+        public async Task<bool> DeleteUnitAsync(IdRequst request) {
             using var uow = UowFactory.Create();
 
             try {

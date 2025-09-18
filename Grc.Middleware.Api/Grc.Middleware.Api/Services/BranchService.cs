@@ -300,7 +300,7 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<bool> DeleteBranchAsync(DeleteRequst request) {
+        public async Task<bool> DeleteBranchAsync(IdRequst request) {
             using var uow = UowFactory.Create();
 
             try {

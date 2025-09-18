@@ -48,15 +48,15 @@ table {
 /*---------------------------table row*/
 
         table tbody tr.row-selected {
-            color: var(--teal-dark-slightly);
-            background-color: var(--teal-light-extra) !important;
-            border-left: 4px solid var(--teal-dark-slightly);
+            color: var(--pearl-purple-dark-20);
+            background-color: #d1c4e980 !important;
+            border: 4px solid var(--pearl-purple-dark-20);
         }
 
             table tbody tr.row-selected:hover,
             table tbody tr:hover {
                 cursor: pointer;
-                background-color: var(--teal-light-slightly) !important;
+                background-color: var(--purple-light-extra) !important;
                 transition: background-color 0.15s ease-in-out;
             }
 
@@ -71,14 +71,14 @@ table {
         }
 
         table tbody tr.row-selected a.active {
-            color: var(--teal-light-medium);
+            color: var(--pearl-purple-dark-20);
             cursor: pointer;
             text-decoration: underline;
             pointer-events: auto;
         }
 
             table tbody tr.row-selected a.active:hover {
-                color: var(--teal-light-medium);
+                color: var(--pearl-purple-dark-20);
                 text-decoration: underline;
             }
 table tbody tr {
@@ -90,7 +90,7 @@ table tbody tr {
 
 .row-selection-icon {
     margin-right: 8px;
-    color: var(--teal-dark-slightly);
+    color: var(--pearl-purple-dark-20);
     font-size: 16px;
     vertical-align: middle;
     animation: slideInLeft 0.2s ease-out;
@@ -131,7 +131,7 @@ table tbody tr {
 .page-link {
     position: relative;
     display: block;
-    color: var(--teal-light-strong);
+    color: var(--pearl-purple-dark-20);
     text-decoration: none;
     background-color: var(--white-base);
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -139,16 +139,25 @@ table tbody tr {
 
     .page-link:hover {
         z-index: 2;
-        color: var(--teal-light-medium);
-        background-color: var(--grey-light-extra);
-        border-color: var(--teal-light-medium);
+        color: var(--white-base);
+        background-color: var(--pearl-purple-dark-50);
+        border-color: var(--pearl-purple-dark-50);
+        transition: all .3s ease-in-out;
     }
 
 .page-item.active .page-link {
     z-index: 3;
     color: var(--white-base);
-    background-color: var(--teal-light-strong);
-    border-color: var(--teal-light-strong);
+    background-color: var(--pearl-purple-dark-20);
+    border-color: var(--pearl-purple-dark-20);
+}
+
+.page-link:focus {
+    z-index: 3;
+    color: var(--pearl-purple-dark-60);
+    background-color: var(--white-base);
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem var(--purple-light-slightly);
 }
 
 @keyframes slideInLeft {

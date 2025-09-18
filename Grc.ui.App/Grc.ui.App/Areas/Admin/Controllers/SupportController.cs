@@ -796,12 +796,21 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                     DecryptFields = Array.Empty<string>()
                 };
 
-                var unitRecord = await GetUnitByIdAsync(request);
-                if (unitRecord == null) {
-                    return Json(new { success = false, message = "Unit not found" });
-                }
+                var result = await GetUnitByIdAsync(request);
+                bool success;
+                string message;
 
-                return Json(new { success = true, data = unitRecord, message = "Unit loaded successfully" });
+                DepartmentUnitModel unitRecord = null;
+                if(result.HasError){ 
+                    success = false;
+                    message = $"{result.Error.Message}-{result.Error.Description}";
+                } else {
+                    unitRecord = result.Data;
+                    success = true;
+                    message = "";
+                }
+                
+                return Json(new { success, data = unitRecord, message});
             } catch (Exception ex) {
                 Logger.LogActivity($"Error retrieving units: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
@@ -914,17 +923,106 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         #region Save and modify actions
         
         [HttpPost("support/departments/saveUnit")]
-        public async Task<IActionResult> SaveUnit([FromBody] DepartmentUnitRequest request) { 
-            var unitName = request.UnitName;
-            Notify($"Unit {unitName} updated successfully", "Update Department Unit", NotificationType.Success);
-            return Json(new { success = true, message = "Unit saved successfully" });
+        public async Task<IActionResult> SaveUnit([FromBody] DepartmentUnitRequest unit) {
+
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                        Logger.LogActivity($"Error retriving current user- {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                var currentUser = grcResponse.Data;
+                GrcInsertRequest<DepartmentUnitRequest> data = new() {
+                    UserId = currentUser.UserId,
+                    Action = Activity.RETRIEVEBRANCHES.GetDescription(),
+                    IPAddress = ipAddress,
+                    Record = unit, 
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>()
+                };
+
+                //..save unit
+                var  result = await _departmentUnitService.InsertDepartmentUnitAsync(data);
+                Logger.LogActivity($"RESPONSE - {JsonSerializer.Serialize(result)}");
+                bool success;
+                string message;
+                if(result.HasError){ 
+                    success = false;
+                    message = $"{result.Error.Message}-{result.Error.Description}";
+                } else {
+                    var response = result.Data;
+                    if (response.Status) {
+                        success = response.Status;
+                        message = response.Message;
+                    } else {
+                        success = false;
+                        message = "Unknown error occurred while saving unit";
+                    }
+                    
+                }
+
+                return Json(new { success, message });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error saving department unit: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return Json(new { success = false, message = $"System Error - {ex.Message}" });
+            }
+                
         }
 
         [HttpPost("support/departments/updateUnit")]
-        public async Task<IActionResult> UpdateUnit([FromBody] DepartmentUnitRequest request) { 
-            var unitName = request.UnitName;
-            Notify($"Unit {unitName} updated successfully", "Update Department Unit", NotificationType.Success);
-            return Json(new { success = true, message = "Unit updated successfully" });
+        public async Task<IActionResult> UpdateUnit([FromBody] DepartmentUnitRequest unit) { 
+            try{
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                        Logger.LogActivity($"Error retriving current user- {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                var currentUser = grcResponse.Data;
+                GrcInsertRequest<DepartmentUnitRequest> data = new() {
+                    UserId = currentUser.UserId,
+                    Action = Activity.RETRIEVEBRANCHES.GetDescription(),
+                    IPAddress = ipAddress,
+                    Record = unit, 
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>()
+                };
+
+                //..save unit
+                var  result = await _departmentUnitService.InsertDepartmentUnitAsync(data);
+                Logger.LogActivity($"RESPONSE - {JsonSerializer.Serialize(result)}");
+                bool success;
+                string message;
+
+                if(result.HasError){ 
+                    success = false;
+                    message = $"{result.Error.Message}-{result.Error.Description}";
+                } else {
+                    var response = result.Data;
+                    if (response.Status) {
+                        success = response.Status;
+                        message = response.Message;
+                    } else {
+                        success = false;
+                        message = "Unknown error occurred while updating record";
+                    }
+                    
+                }
+                return Json(new { success, message });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error updating department unit: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return Json(new { success = false, message = $"System Error - {ex.Message}" });
+            }
+            
         }
 
         #endregion
@@ -942,17 +1040,15 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             TempData["Message"] = JsonSerializer.Serialize(notificationMessage); 
         }
         
-        protected async Task<DepartmentUnitModel> GetUnitByIdAsync(GrcIdRequst request) {
-            return await Task.FromResult(new DepartmentUnitModel {
-                Id = request.RecordId,
-                UnitCode = "DIG",
-                UnitName = "Digitization",
-                Department = "Digitization and Innovation",
-                DepartmentId = 2,
-                IsDeleted = false,
-                CreatedOn = DateTime.Now.AddDays(-40),
-                CreatedBy = "Macjohnan"
-            });
+        protected async Task<GrcResponse<DepartmentUnitModel>> GetUnitByIdAsync(GrcIdRequst request) {
+            try {
+                return await _departmentUnitService.GetUnitById(request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving units: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return null;
+            }
+            
         }
 
         #endregion

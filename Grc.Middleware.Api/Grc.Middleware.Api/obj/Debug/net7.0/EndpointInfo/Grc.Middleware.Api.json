@@ -658,17 +658,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DeleteRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DeleteRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DeleteRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
               }
             }
           }
@@ -813,17 +813,79 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DeleteRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DeleteRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DeleteRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/departments/getDepartmentById": {
+      "post": {
+        "tags": [
+          "Support"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/departments/getUnitById": {
+      "post": {
+        "tags": [
+          "Support"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
               }
             }
           }
@@ -968,17 +1030,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DeleteRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DeleteRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.DeleteRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
               }
             }
           }
@@ -1056,31 +1118,6 @@
           },
           "isDeleted": {
             "type": "boolean"
-          }
-        },
-        "additionalProperties": false
-      },
-      "Grc.Middleware.Api.Http.Requests.DeleteRequst": {
-        "type": "object",
-        "properties": {
-          "recordId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "userId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "isDeleted": {
-            "type": "boolean"
-          },
-          "action": {
-            "type": "string",
-            "nullable": true
-          },
-          "ipAddress": {
-            "type": "string",
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -1224,6 +1261,31 @@
             "items": {
               "type": "string"
             },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Grc.Middleware.Api.Http.Requests.IdRequst": {
+        "type": "object",
+        "properties": {
+          "recordId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          },
+          "ipAddress": {
+            "type": "string",
             "nullable": true
           }
         },
