@@ -45,7 +45,7 @@ body {
     left: 0;
     right: 0;
     color: var(--grey-light-strong);
-    background: var(--black-accent-green);
+    background: var(--background-color);
     border-bottom: 1px solid #e1e8ed;
     display: flex;
     align-items: center;
@@ -110,13 +110,21 @@ span.app-serach {
         align-items: center;
         justify-content: center;
         text-decoration: none;
-        color: var(--black-accent-green);
-        background-color: var(--teal-dark-accent);
+        color: var(--white-base);
+        background-color: var(--pearl-purple-dark-50);
         font-size: 24px;
     }
 
 .app-banner {
     margin-left: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.app-banner img {
+    height: 60px;
 }
 
 .welcome-container {
@@ -197,7 +205,7 @@ span.app-serach {
 .title {
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--teal-dark-accent);
+    color: var(--pearl-orange);
     margin: 0;
 }
 
@@ -218,7 +226,7 @@ span.app-serach {
     border-radius: 50%;
     cursor: pointer;
     color: var(--grey-light-strong);
-    background: var(--black-accent-green);
+    background: var(--pearl-purple-dark-50);
     transition: all 0.2s ease;
 }
 
@@ -278,8 +286,9 @@ span.app-serach {
     height: 36px;
     flex-shrink: 0;
     border-radius: 50%;
-    background: var(--teal-dark-extra);
-    color: var(--white-base);
+    background: var(--pearl-purple-light-light-trans-50);
+    border: solid 1px var(--pearl-purple-dark-strong-70);
+    color: var(--pearl-purple-dark-strong-70);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -409,7 +418,7 @@ span.app-serach {
 /* Sidebar menu */
 .sidebar-menu {
     list-style: none;
-    padding: 0.5rem 0;
+    padding: 0;
     margin: 0;
 }
 
@@ -428,16 +437,17 @@ span.app-serach {
     }
 
     .sidebar-item:hover a {
-        color: var(--teal-dark-slightly);
+        color: var(--pearl-purple-dark-light-light);
         background-color: transparent;
         transition: all .3s ease-in-out;
     }
 
     .sidebar-item.active a {
-        font-weight:600;
-        color: var(--teal-light-strong);
-        background-color: var(--teal-light-extra);
+        font-weight: 600;
+        color: var(--pearl-purple-dark-light-light);
+        background-color: var(--pearl-purple-dark-shade-light-plus-20);
         transition: all .3s ease-in-out;
+        border-left: solid 5px var(--pearl-purple-dark-50);
     }
 
     .sidebar-item .menu-icon {
@@ -669,12 +679,12 @@ span.app-serach {
 .title-line {
     flex: 1;
     height: 1px;
-    background-color: var(--teal-dark-slightly);
+    background-color: var(--pearl-purple-dark-50);
 }
 
 .stats-grid-title,
 .action-box-title {
-    color: var(--teal-dark-slightly);
+    color: var(--pearl-purple-dark-50);
     font-size: 1.3em;
     font-weight: 600;
     margin: 0;
@@ -691,13 +701,13 @@ span.app-serach {
         display: flex;
         padding: 10px;
         cursor: pointer;
-        color: var(--teal-dark-slightly);
+        color: var(--pearl-purple-dark-50);
         text-decoration: none;
         transition: all .3s ease-in-out;
     }
 
         .quick-actions a:hover {
-            color: var(--teal-medium-accent);
+            color: var(--pearl-purple-dark-light-light);
             transition: all .3s ease-in-out;
         }
 
@@ -735,7 +745,7 @@ span.app-serach {
 }
 
 .stat-card-colored {
-    background-color: var(--teal-dark-slightly);
+    background-color: var(--pearl-purple-dark-50);
     box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
 
@@ -793,21 +803,21 @@ span.app-serach {
 }
 
 .stat-separator-colored {
-    background: var(--teal-light);
+    background: var(--pink-faint-light);
 }
 
     .stat-separator-colored .stat-number span,
     .stat-card-colored .stat-number span,
-.stat-card-colored .stat-title {
-    color: var(--teal-light);
-}
+    .stat-card-colored .stat-title {
+        color: var(--pink-faint-light);
+    }
 
 .stat-link {
     display: flex;
-    color: var(--teal-dark-accent);
+    color: var(--pearl-purple-dark-50);
     padding: 10px;
     font-weight: 600;
-    cursor:pointer;
+    cursor: pointer;
     text-decoration: none;
     background: transparent;
     transition: all .3s ease-in-out;
@@ -815,7 +825,7 @@ span.app-serach {
 
 .stat-link-color {
     display: flex;
-    color: var(--teal-light);
+    color: var(--pink-faint-light);
     padding: 10px;
     font-weight: 600;
     cursor: pointer;

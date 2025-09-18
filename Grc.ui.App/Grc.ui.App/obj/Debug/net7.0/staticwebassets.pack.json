@@ -61,6 +61,26 @@
       "PackagePath": "staticwebassets\\images\\no_service.png"
     },
     {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\images\\pearl_dark.png",
+      "PackagePath": "staticwebassets\\images\\pearl_dark.png"
+    },
+    {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\images\\pearl_min_dark.png",
+      "PackagePath": "staticwebassets\\images\\pearl_min_dark.png"
+    },
+    {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\images\\pearl_min_transp.png",
+      "PackagePath": "staticwebassets\\images\\pearl_min_transp.png"
+    },
+    {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\images\\pearl_transp.png",
+      "PackagePath": "staticwebassets\\images\\pearl_transp.png"
+    },
+    {
+      "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\images\\pearl_white.png",
+      "PackagePath": "staticwebassets\\images\\pearl_white.png"
+    },
+    {
       "Id": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-script-other.js",
       "PackagePath": "staticwebassets\\js\\admin-script-other.js"
     },

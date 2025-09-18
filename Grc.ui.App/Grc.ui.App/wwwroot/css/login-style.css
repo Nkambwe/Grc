@@ -42,7 +42,8 @@
 
     .logo-box img {
         display: flex;
-        height:30px;
+        height: 80px;
+        margin-left: -30px;
     }
 
     .logo-box span {
@@ -60,7 +61,8 @@
     font-size: 1.5em;
     text-align: left;
     padding: 20px 0 0 0;
-    color: var(--grey-dark-extra);
+    font-weight: 600;
+    color: var(--pearl-orange);
 }
 
 .login-subtitle {
@@ -288,9 +290,9 @@ input:valid ~ label {
     font-size: 30px;
     align-items: center;
     justify-content: center;
-    color: var(--pearl-orange-light-strong);
-    border: solid 2px var(--pearl-orange-light-strong);
-    background-color: var(--orange-deep-light-extra);
+    color: var(--pearl-purple-dark-50);
+    border: solid 2px var(--pearl-purple-dark-50);
+    background-color: var(--purple-light-extra);
     margin-right: 16px;
 }
 
@@ -301,7 +303,7 @@ input:valid ~ label {
     border-radius: 0;
     margin-bottom: 24px;
     position: relative;
-    color: var(--pearl-orange-light-strong);
+    color: var(--pearl-purple-dark-50);
 }
 
 .user-details {
@@ -311,7 +313,7 @@ input:valid ~ label {
 .username-display {
     display: block;
     font-weight: 600;
-    color: var(--pearl-orange-light-strong);
+    color: var(--pearl-purple-dark-50);
     font-size: 18px;
 }
 

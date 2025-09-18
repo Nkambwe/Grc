@@ -12,6 +12,11 @@ wwwroot\images\503.png
 wwwroot\images\logo.png
 wwwroot\images\logo-white.png
 wwwroot\images\no_service.png
+wwwroot\images\pearl_dark.png
+wwwroot\images\pearl_min_dark.png
+wwwroot\images\pearl_min_transp.png
+wwwroot\images\pearl_transp.png
+wwwroot\images\pearl_white.png
 wwwroot\js\admin-script.js
 wwwroot\js\admin-script-other.js
 wwwroot\js\admin-tables.js

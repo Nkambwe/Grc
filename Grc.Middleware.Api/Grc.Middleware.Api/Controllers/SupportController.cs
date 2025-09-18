@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Grc.Middleware.Api.Data.Entities.Logging;
+using Grc.Middleware.Api.Data.Entities.Org;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Http.Requests;
@@ -888,19 +889,71 @@ namespace Grc.Middleware.Api.Controllers {
         
         [HttpPost("departments/getDepartmentById")]
         public async Task<IActionResult> GetDepartmentById([FromBody] IdRequst request) { 
-            var data = await Task.FromResult(new DepartmentUnitResponse() {
-                Id = request.RecordId,
-                DepartmentId = 1,
-                UnitCode = "EBK",
-                UnitName = "E-Banking",
-                Department= "Operations Department",
-                IsDeleted = false,
-                CreatdOn= DateTime.Now.AddDays(-59),
-                CreatedBy= "Mark",
-                ModifiedOn= DateTime.Now.AddDays(-12),
-                ModifiedBy= "Mark",
-            });
-            return Ok(new GrcResponse<DepartmentUnitResponse>(data));
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+
+                ResponseError error = null;
+                if (request == null) {
+                    error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<DepartmentResponse>>(error));
+                }
+
+                Logger.LogActivity($"REQUEST >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var dataRecord = await _departmentUnitService.GetUnitByIdAsync(request.RecordId, true);
+
+                //..map response
+                DepartmentUnitResponse result;
+                if(dataRecord != null) { 
+                    result = Mapper.Map<DepartmentUnitResponse>(dataRecord);
+                    Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(result)}");
+                    return Ok(new GrcResponse<DepartmentUnitResponse>(result));
+                }
+                    
+                error = new ResponseError(ResponseCodes.FAILED, "An error occurred while retriving unit", "Get help from your administrtor");
+                return Ok(new GrcResponse<DepartmentUnitResponse>(error));
+            } catch (Exception ex) {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+                   
+                var conpany = await CompanyService.GetDefaultCompanyAsync();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new(){ 
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "SUPPORT-MIDDLEWARE-COTROLLER",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                var result = await SystemErrorService.SaveErrorAsync(errorObj);
+                var response = new GeneralResponse();
+                if(result){
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Error captured and saved successfully";  
+                    Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else { 
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to capture error to database. An error occurrred";  
+                    Logger.LogActivity($"SUPPORT-MIDDLEWARE-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                var error = new ResponseError(
+                    ResponseCodes.BADREQUEST,
+                    "Oops! Something went wrong",
+                    $"System Error - {ex.Message}"
+                );
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<List<DepartmentResponse>>(error));
+            }
         }
         
         [HttpPost("departments/getUnitById")]

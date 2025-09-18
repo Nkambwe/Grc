@@ -61,7 +61,7 @@ table {
             }
 
         table tbody tr a {
-            color: var(--teal-dark-slightly);
+            color: var(--pearl-purple-dark-30);
             text-decoration: none;
             cursor: default;
             pointer-events: none;

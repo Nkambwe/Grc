@@ -86,9 +86,9 @@ button.componet-modal-back {
 }
 
     button.componet-modal-back:hover {
-        color: var(--teal-dark-slightly);
-        background-color: var(--teal-light);
-        border: solid 1px var(--teal-dark-slightly);
+        color: var(--pearl-purple-dark-40);
+        background-color: var(--purple-light-extra);
+        border: solid 1px var(--pearl-purple-dark-40);
         transition: all .3s ease-in-out;
     }
 
@@ -97,7 +97,7 @@ button.componet-modal-back {
     flex-grow: 1;
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--pearl-orange-light-medium);
+    color: var(--pearl-orange);
     text-align: left;
     padding-left: 20px;
 }
@@ -180,7 +180,7 @@ button.component-modal-close {
     flex: 1;
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--pearl-orange-light-medium);
+    color: var(--pearl-purple-dark-light-light);
     text-align: left;
 }
 
@@ -255,7 +255,7 @@ button.component-filter-close {
 .action-btn.active,
 .icon-btn.active {
     font-weight: 600;
-    color: var(--pearl-orange-light-medium) !important;
+    color: var(--pearl-purple-dark-light-light) !important;
 }
 
 .component-slide-content {
@@ -293,7 +293,7 @@ button.component-filter-close {
     padding: 10px;
     font-size: 1.2em;
     font-weight: 600;
-    color: var(--pearl-orange-light-medium);
+    color: var(--pearl-purple-dark-light-light);
     border-right: solid 1px var(--grey-light-strong);
 }
 
@@ -308,14 +308,14 @@ button.component-filter-close {
     transition: all .3s ease-in-out;
 }
 
-    button.icon-btn:hover,
-    button.icon-btn:hover span {
-        color: var(--teal-dark-slightly);
-    }
+button.icon-btn:hover,
+button.icon-btn:hover span {
+    color: var(--pearl-purple-dark-20);
+}
 
 .action-btn:hover,
-.action-btn:hover span{
-    color: var(--pearl-orange-light-medium);
+.action-btn:hover span {
+    color: var(--pearl-purple-dark-light-light);
     transition: all .3s ease-in-out;
 }
 
