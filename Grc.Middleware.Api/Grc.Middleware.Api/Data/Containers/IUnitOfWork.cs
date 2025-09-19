@@ -9,6 +9,8 @@ namespace Grc.Middleware.Api.Data.Containers {
         ICompanyRepository CompanyRepository { get; set;}
         IBranchRepository BranchRepository { get; set;}
         IUserRepository UserRepository { get; set;}
+        IRoleRepository RoleRepository { get; set; }
+        IRoleGroupRepository RoleGroupRepository { get; set; }
         IUserViewRepository UserViewRepository{get; set;}
         IUserPreferenceRepository UserPreferenceRepository { get; set;}
         IAttemptRepository AttemptRepository { get; set; }

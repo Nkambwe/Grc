@@ -16,6 +16,12 @@
                 defaults: new { area = "Admin", controller = "Settings", action = "Index" }
             );
 
+            routeBuilder.MapControllerRoute(
+                name: "operations-home",
+                pattern: "operations/workflow",
+                defaults: new { area = "Operations", controller = "OperationDashboard", action = "Index" }
+            );
+
             // Dashboard
             routeBuilder.MapControllerRoute(
                 name: "dashboard",

@@ -23,6 +23,8 @@ namespace Grc.Middleware.Api.Data.Containers {
         public ICompanyRepository CompanyRepository { get; set; }
         public IBranchRepository BranchRepository { get; set; }
         public IUserRepository UserRepository { get; set; }
+        public IRoleRepository RoleRepository { get; set; }
+        public IRoleGroupRepository RoleGroupRepository { get; set; }
         public IUserViewRepository UserViewRepository{get; set;}
         public IUserPreferenceRepository UserPreferenceRepository { get; set;}
         public IAttemptRepository AttemptRepository { get; set; }
@@ -53,6 +55,8 @@ namespace Grc.Middleware.Api.Data.Containers {
             CompanyRepository =  new CompanyRepository(_loggerFactory, Context);
             BranchRepository =  new BranchRepository(_loggerFactory, Context);
             UserRepository =  new UserRepository(_loggerFactory, Context);
+            RoleRepository = new RoleRepository(_loggerFactory, Context);
+            RoleGroupRepository = new RoleGroupRepository(_loggerFactory, Context);
             UserViewRepository = new UserViewRepository(_loggerFactory, Context);
             UserPreferenceRepository = new UserPreferenceRepository(_loggerFactory, Context);
             AttemptRepository =  new AttemptRepository(_loggerFactory, Context);
@@ -182,6 +186,8 @@ namespace Grc.Middleware.Api.Data.Containers {
                     CompanyRepository = null;
                     BranchRepository = null;
                     UserRepository = null;
+                    RoleRepository = null;
+                    RoleGroupRepository = null;
                     AttemptRepository = null;
                     QuickActionRepository = null;
                     PinnedItemRepository = null;

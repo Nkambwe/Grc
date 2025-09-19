@@ -37,6 +37,9 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("roleName")]
         public string RoleName { get; set; }
 
+        [JsonPropertyName("roleGroup")]
+        public string RoleGroup { get; set; }
+
         [JsonPropertyName("departmentId")]
         public long DepartmentId { get; set; }
         

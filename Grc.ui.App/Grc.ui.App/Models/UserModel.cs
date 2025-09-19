@@ -1,4 +1,6 @@
-﻿namespace Grc.ui.App.Models {
+﻿using System.Text.Json.Serialization;
+
+namespace Grc.ui.App.Models {
     public class UserModel {
         public long UserId { get; set; }
         public string FirstName { get; set; }
@@ -14,6 +16,7 @@
         public string SolId { get; set; }
         public long RoleId { get; set; }
         public string RoleName { get; set; }
+        public string RoleGroup { get; set; }
         public long DepartmentId { get; set; }
         public string UnitCode { get; set; }
         public bool IsActive { get; set; }

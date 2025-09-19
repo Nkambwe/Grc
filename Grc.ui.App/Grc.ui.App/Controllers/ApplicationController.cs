@@ -49,8 +49,9 @@ namespace Grc.ui.App.Controllers {
 
         public IActionResult Index() {
             if (User.Identity.IsAuthenticated) {
-                var role = User.FindFirst(ClaimTypes.Role)?.Value;
-                var redirectUrl = DetermineRedirectUrl(role);
+                //var role = User.FindFirst(ClaimTypes.Role)?.Value;
+                var roleGroup = User.FindFirst("RoleGroup")?.Value;
+                var redirectUrl = DetermineRedirectUrl(roleGroup);
                 return Redirect(redirectUrl);
             } 
 
@@ -107,7 +108,7 @@ namespace Grc.ui.App.Controllers {
                  Logger.LogActivity($"User successfully authenticated: {model.Username}");
 
                 //..determine redirect URL based on user roles
-                string redirectUrl = DetermineRedirectUrl(response.Data.RoleName);
+                string redirectUrl = DetermineRedirectUrl(response.Data.RoleGroup);
                 if (WebHelper.IsAjaxRequest(Request)) {
                     return Json(new {
                         success = true,
@@ -387,11 +388,17 @@ namespace Grc.ui.App.Controllers {
             return View(model);
         }
 
-        private string DetermineRedirectUrl(string roleName) {
-            if(!string.IsNullOrWhiteSpace(roleName)){
+        private string DetermineRedirectUrl(string roleGroup) {
+            if(!string.IsNullOrWhiteSpace(roleGroup)){
                 //..route to admin
-                if (roleName.Equals("Administrator") || roleName.Equals("Support")) {
+                if (roleGroup.Equals("System Administrators") || roleGroup.Equals("Application Support")) {
                     return Url.Action("Index", "Support", new { area = "Admin" });
+                }
+
+                //..route to admin
+                if (roleGroup.Equals("Operations"))
+                {
+                    return Url.Action("Index", "OperationDashboard", new { area = "Operations" });
                 }
 
             }

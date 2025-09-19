@@ -104,5 +104,23 @@ namespace Grc.Middleware.Api.Services {
         /// <param name="ipAddress">IP Address</param>
         /// <returns>Task containing user workspace</returns>
         Task<WorkspaceResponse> GetWorkspaceAsync(long userId, string ipAddress);
+
+        /// <summary>
+        /// Get role record by ID
+        /// </summary>
+        /// <param name="id">Role ID to look for</param>
+        /// <returns>
+        /// Task containg System role record
+        /// </returns>
+        Task<SystemRole> GetRoleByIdAsync(long id);
+
+        /// <summary>
+        /// Get role Group record by ID
+        /// </summary>
+        /// <param name="id">Group ID to look for</param>
+        /// <returns>
+        /// Task containg System role group record
+        /// </returns>
+        Task<SystemRoleGroup> GetRoleGroupByIdAsync(long id);
     }
 }

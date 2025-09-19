@@ -38,7 +38,7 @@
 
 .component-modal-container {
     position: absolute;
-    top: 60px;
+    top: 0;
     left: 50%;
     display: flex;
     flex-direction: column;
@@ -46,7 +46,7 @@
     background: white;
     border-radius: 0;
     width: 100%;
-    height: calc(100vh - 60px);
+    height: 100vh;
     max-width: 90%;
     overflow-y: hidden;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);

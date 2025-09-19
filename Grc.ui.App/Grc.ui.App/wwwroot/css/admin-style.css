@@ -344,10 +344,10 @@ span.app-serach {
     transition: background 0.2s ease;
 }
 
-.dropdown-item:hover {
-    color: var(--teal-light-strong);
-    background-color: var(--teal-light-extra);
-}
+    .dropdown-item:hover {
+        color: var(--pearl-purple-dark-40);
+        background-color: var(--purple-light-extra);
+    }
 
 .dropdown-divider {
     border: none;

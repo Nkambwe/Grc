@@ -33,7 +33,6 @@
     <LocaleResource Name="App.Label.Units">
         <Value>Units</Value>
     </LocaleResource>
-
     <LocaleResource Name="App.Label.Department">
         <Value>Department</Value>
     </LocaleResource>
@@ -64,13 +63,9 @@
     <LocaleResource Name="App.Label.srOnly.ArrowKeys">
         <Value>Use arrow keys to navigate options. Press Enter to select</Value>
     </LocaleResource>
-    
-    
-    
     <LocaleResource Name="Component.Key.Departments">
         <Value>Departments</Value>
     </LocaleResource>
-
     <LocaleResource Name="Component.Key.DepartmentUnits">
         <Value>All Units</Value>
     </LocaleResource>
@@ -113,14 +108,12 @@
     <LocaleResource Name="Component.Label.FullScreen">
         <Value>Full Screen</Value>
     </LocaleResource>
-
     <LocaleResource Name="Component.Label.Header.New.Unit">
         <Value>New Unit</Value>
     </LocaleResource>
     <LocaleResource Name="Component.Label.Header.Edit.Unit">
         <Value>Edit Unit</Value>
     </LocaleResource>
-
     <LocaleResource Name="Component.Label.Header.New.Department">
         <Value>New Department</Value>
     </LocaleResource>
@@ -130,11 +123,9 @@
     <LocaleResource Name="Component.Label.Departments.Select">
         <Value>Select Department..</Value>
     </LocaleResource>
-    
     <LocaleResource Name="Component.Label.Header.Filter">
         <Value>Filter List By</Value>
     </LocaleResource>
-
     <LocaleResource Name="Component.Table.Label.Code">
         <Value>Code</Value>
     </LocaleResource>
@@ -162,7 +153,6 @@
     <LocaleResource Name="Component.Table.Label.Created">
         <Value>Created On</Value>
     </LocaleResource>
-    
     <LocaleResource Name="App.User.Views">
         <Value>Views</Value>
     </LocaleResource>
@@ -238,7 +228,54 @@
     <LocaleResource Name="App.Menu.Configurations.Activities">
 		<Value>System Activities</Value>
 	</LocaleResource>
-    
+	<LocaleResource Name="Operations.Menu.Home">
+		<Value>Home</Value>
+	</LocaleResource>
+	<LocaleResource Name="Operations.Menu.Processes">
+		<Value>Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Operations.Menu.Processes.Register">
+		<Value>Register</Value>
+	</LocaleResource>
+	<LocaleResource Name="Operations.Menu.Processes.Groups">
+		<Value>Groups</Value>
+	</LocaleResource>
+	<LocaleResource Name="Operations.Menu.Processes.Tags">
+		<Value>Tags</Value>
+	</LocaleResource>
+	<LocaleResource Name="Operations.Menu.Tasks">
+		<Value>Process Tasks</Value>
+	</LocaleResource>
+	<LocaleResource Name="Operations.Menu.Tasks.Approvals">
+		<Value>Approvals</Value>
+	</LocaleResource>
+	<LocaleResource Name="Operations.Menu.Tasks.Pending">
+		<Value>Pending</Value>
+	</LocaleResource>
+	<LocaleResource Name="Operations.Menu.Tasks.Revisions">
+		<Value>Revisions</Value>
+	</LocaleResource>
+	<LocaleResource Name="Operations.Menu.Configurations.Access">
+		<Value>System Access</Value>
+	</LocaleResource>
+	<LocaleResource Name="Operations.Menu.Configurations.Teams">
+		<Value>Teams</Value>
+	</LocaleResource>
+	<LocaleResource Name="Operations.Menu.Configurations.Guests">
+		<Value>Guests</Value>
+	</LocaleResource>
+	<LocaleResource Name="Operations.Menu.Configurations.Delegation">
+		<Value>Delegation</Value>
+	</LocaleResource>
+	<LocaleResource Name="Operations.Menu.Configurations.Settings">
+		<Value>Settings</Value>
+	</LocaleResource>
+	<LocaleResource Name="Operations.Menu.Configurations.General">
+		<Value>General Settings</Value>
+	</LocaleResource>
+	<LocaleResource Name="Operations.Menu.Configurations.Additional">
+		<Value>Other Settings</Value>
+	</LocaleResource>
     <LocaleResource Name="Registration.Title">
         <Value>Company Registration</Value>
     </LocaleResource>

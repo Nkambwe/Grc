@@ -20,7 +20,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
             builder.Property(u => u.RoleId).HasColumnName("Role_id").IsRequired();
             builder.Property(u => u.DepartmentId).HasColumnName("Department_id").IsRequired();
             builder.Property(u => u.BranchSolId).HasColumnName("Sol_id").HasColumnType("NVARCHAR(MAX)").IsRequired();
-            builder.Property(u => u.DepartmentUnit).HasColumnName("Unit_Code").HasColumnType("NVARCHAR(MAX)").IsRequired();
+            builder.Property(u => u.DepartmentUnit).HasColumnName("Unit_Code").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(u => u.IsActive).HasColumnName("Is_active");
             builder.Property(u => u.IsApproved).HasColumnName("Is_approved").IsRequired(false);
             builder.Property(u => u.IsVerified).HasColumnName("Is_verified").IsRequired(false);

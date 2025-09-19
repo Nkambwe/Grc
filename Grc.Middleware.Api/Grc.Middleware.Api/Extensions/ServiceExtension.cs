@@ -25,6 +25,8 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             services.AddScoped<IDepartmentUnitRepository, DepartmentUnitRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IRoleGroupRepository, RoleGroupRepository>();
             services.AddScoped<IUserViewRepository, UserViewRepository>();
             services.AddScoped<IUserPreferenceRepository, UserPreferenceRepository>();
             services.AddScoped<IAttemptRepository, AttemptRepository>();

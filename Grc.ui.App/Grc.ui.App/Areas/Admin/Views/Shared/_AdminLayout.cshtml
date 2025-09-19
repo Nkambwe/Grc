@@ -150,7 +150,7 @@
                                 </span>
                             </a>
                         </li>
-                        <li class="sidebar-item with-submenu">
+                       @*  <li class="sidebar-item with-submenu">
                             <a href="" class="toggle-submenu" data-id="recent-menu">
                                 <span class="menu-icon">
                                     <i class="mdi mdi-clock-time-seven-outline"></i></>
@@ -178,7 +178,7 @@
                                 </span>
                             </a>
                             @await Component.InvokeAsync("Pinned", new { model = Model.PinnedItems })
-                        </li>
+                        </li> *@
                         <li class="sidebar-separator">
                             <span class="separator-label">
                                 @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Workbench"))

@@ -292,6 +292,11 @@ namespace Grc.Middleware.Api.Services {
                 //..map response
                 var response = Mapper.Map<AuthenticationResponse>(user);
 
+                var role = await GetRoleByIdAsync(user.RoleId);
+                if (role != null) {
+                    response.RoleGroup = role.Group?.GroupName ?? string.Empty;
+                }
+
                 // Check if user is active
                 if (!user.IsActive) {
                     Logger.LogActivity($"Inactive user attempted login: {username}", "WARN");
@@ -574,6 +579,76 @@ namespace Grc.Middleware.Api.Services {
             }
 
             return workspace;
+        }
+
+        public async Task<SystemRole> GetRoleByIdAsync(long id) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieve role by ID", "INFO");
+
+            try
+            {
+
+                Logger.LogActivity($"Role ID: {id}", "DEBUG");
+                //..get role with role group
+                var role = await uow.RoleRepository.GetAsync(r => r.Id == id, true, r=> r.Group);
+
+                //..log role record
+                var roleJson = JsonSerializer.Serialize(role, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Role record: {roleJson}", "DEBUG");
+
+                return role;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve role: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                throw;
+            }
+        }
+
+        public async Task<SystemRoleGroup> GetRoleGroupByIdAsync(long id) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieve role group by ID", "INFO");
+
+            try
+            {
+
+                Logger.LogActivity($"Role Group ID: {id}", "DEBUG");
+                var group = await uow.RoleGroupRepository.GetAsync(id);
+
+                //..log role group record
+                var groupJson = JsonSerializer.Serialize(group, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Role Group record: {groupJson}", "DEBUG");
+
+                return group;
+            }
+            catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve role group: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                throw;
+            }
         }
     }
 }

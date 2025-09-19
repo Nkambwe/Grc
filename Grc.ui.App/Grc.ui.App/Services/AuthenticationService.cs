@@ -114,6 +114,7 @@ namespace Grc.ui.App.Services {
                 var lastName = httpContext.User.FindFirst("LastName")?.Value;
                 var roleName = httpContext.User.FindFirst(ClaimTypes.Role)?.Value;
                 var roleId = httpContext.User.FindFirst("RoleId")?.Value;
+                var roleGroup = httpContext.User.FindFirst("RoleGroup")?.Value;
 
                 // If basic claims are available, use them
                 if (!string.IsNullOrEmpty(userId) && !string.IsNullOrEmpty(username)) {
@@ -126,6 +127,7 @@ namespace Grc.ui.App.Services {
                         FirstName = firstName,
                         LastName = lastName,
                         RoleName = roleName,
+                        RoleGroup = roleGroup,
                         IsLogged = true
                     };
 
@@ -203,6 +205,7 @@ namespace Grc.ui.App.Services {
                     new("FirstName", $"{user.FirstName}" ?? ""),
                     new("LastName", $"{user.LastName}" ?? ""),
                     new(ClaimTypes.Role, $"{user.RoleName}" ?? "User"),
+                    new("RoleGroup", $"{user.RoleGroup}" ?? ""),
                     new("RoleId", $"{user.RoleId}" ?? ""),
                     new("PhoneNumber", $"{user.PhoneNumber}" ?? ""),
                     new("PFNumber", $"{user.PFNumber}" ?? ""),

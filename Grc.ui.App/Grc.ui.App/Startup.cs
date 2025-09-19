@@ -51,10 +51,12 @@ namespace Grc.ui.App {
             services.AddScoped<IDepartmentFactory, DepartmentFactory>();
             services.AddScoped<ISupportDashboardFactory, SupportDashboardFactory>();
             services.AddScoped<IGrcErrorFactory, GrcErrorFactory>();
+            services.AddScoped<IOperationsDashboardFactory, OperationsDashboardFactory>();
 
             //..register session manager
             services.AddScoped<SessionManager>();
             services.AddSingleton<ISupportMenuRegistry, SupportMenuRegistry>();
+            services.AddSingleton<IOperationsMenuRegistry, OperationsMenuRegistry>();
 
             //..register auto mapper
             services.ObjectMapper();
