@@ -39,106 +39,23 @@
 
     <div id="layoutWrapper" class="layout-wrapper">
 
-        <header class="header-bar">
-
-            <div class="menu-box">
-                <a href="/Operations/AppSettings">
-                    <span>
-                        <i class="mdi mdi-view-grid"></i>
-                    </span>
-                </a>
-            </div>
-
-            <div class="header-align-left">
-                
-                <div class="app-banner">
-                    <img src="~/images/pearl_transp.png" />
-                </div>
-                
-            </div>
-
-            <div class="header-align-right">
-                <div class="app-seach-box">
-                    <span class="app-serach">
-                        <i class="mdi mdi-magnify"></i>
-                    </span>
-                </div>
-                
-                <div class="user-avator">
-                    <span class="avator-bell">
-                        <i class="mdi mdi-bell-ring-outline"></i>
-                    </span>
-                    <span class="notification-count">5</span>
-                </div>
-                <div class="dropdown is-right" id="userDropdown">
-                    <div class="dropdown-trigger">
-                        <button class="button avator-button" onclick="toggleDropdown()">
-                            <div class="user-avator">
-                                <span class="avator-initials">@Model.Initials</span>
-                            </div>
-                            <span class="drop-avator-icon">
-                                <i class="mdi mdi-chevron-down"></i>
-                            </span>
-                        </button>
-                    </div>
-                    <div class="dropdown-menu">
-                        <div class="dropdown-content">
-                            <ul>
-                                <li>
-                                    <a href="#" class="dropdown-item">
-                                        <span>
-                                            <i class="mdi mdi-account-cog"></i>
-                                        </span>
-                                        <span>
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.User.Views"))
-                                        </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="dropdown-item">
-                                        <span>
-                                            <i class="mdi mdi-account-cog"></i>
-                                        </span>
-                                        <span>
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.User.Settings"))
-                                        </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li>
-                                    <a href="" class="dropdown-item" onclick="performLogout(event)">
-                                        <span>
-                                            <i class="mdi mdi-logout"></i>
-                                        </span>
-                                        <span>
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.User.Logout"))
-                                        </span>
-                                    </a>
-                                </li>
-                            </ul>
-                            
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </header>
-
         <div class="layout-wrapper">
 
             <aside class="sidebar-container">
 
                 <nav class="sidebar bg-light">
+
                     <div class="sidebar-geader">
                         <button>
                             <span class="menu-icon">
                                 <i class="mdi mdi-menu"></i></>
                             </span>
                         </button>
-                        <span>GRC SUITE</span>
+                        <div class="logo-container">
+                            <img src="~/images/pearl_transp.png" />
+                        </div>
                     </div>
+
                     <ul class="sidebar-menu">
 
                         <li class="sidebar-item">
@@ -171,7 +88,7 @@
                                     <i class="mdi mdi-chevron-down"></i>
                                 </span>
                             </a>
-                            <ul id="permissions-menu" class="sidebar-submenu">
+                            <ul id="processes-menu" class="sidebar-submenu">
 
                                 <li class="sidebar-item with-submenu">
                                     <a asp-controller="OperationWorkflow" asp-action="RegisterProcess" asp-area="Operations">
@@ -355,12 +272,103 @@
                         </li>
 
                     </ul>
+
                 </nav>
 
+                <div class="sidebar-footer">
+                    <div class="logo-box">
+                        <img src="~/images/logo.png" />
+                    </div>
+                    <h1 class="footer-text is-5 mb-0 ml-3">@Model.Banner</h1>
+                </div>
+
             </aside>
+
             <main class="main-content" id="mainContent">
+
+                <header class="header-bar">
+
+                    <div class="header-align-left">
+
+                        <div class="app-banner">
+                            <h1 class="title is-5 mb-0 ml-3">Operations Workflow</h1>
+                        </div>
+
+                    </div>
+
+                    <div class="header-align-right">
+                        <div class="app-seach-box">
+                            <span class="app-serach">
+                                <i class="mdi mdi-magnify"></i>
+                            </span>
+                        </div>
+
+                        <div class="user-avator">
+                            <span class="avator-bell">
+                                <i class="mdi mdi-bell-ring-outline"></i>
+                            </span>
+                            <span class="notification-count">5</span>
+                        </div>
+                        <div class="dropdown is-right" id="userDropdown">
+                            <div class="dropdown-trigger">
+                                <button class="button avator-button" onclick="toggleDropdown()">
+                                    <div class="user-avator">
+                                        <span class="avator-initials">@Model.Initials</span>
+                                    </div>
+                                    <span class="drop-avator-icon">
+                                        <i class="mdi mdi-chevron-down"></i>
+                                    </span>
+                                </button>
+                            </div>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-content">
+                                    <ul>
+                                        <li>
+                                            <a href="#" class="dropdown-item">
+                                                <span>
+                                                    <i class="mdi mdi-account-cog"></i>
+                                                </span>
+                                                <span>
+                                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.User.Views"))
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="dropdown-item">
+                                                <span>
+                                                    <i class="mdi mdi-account-cog"></i>
+                                                </span>
+                                                <span>
+                                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.User.Settings"))
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li>
+                                            <a href="" class="dropdown-item" onclick="performLogout(event)">
+                                                <span>
+                                                    <i class="mdi mdi-logout"></i>
+                                                </span>
+                                                <span>
+                                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.User.Logout"))
+                                                </span>
+                                            </a>
+                                        </li>
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </header>
+
                 @RenderBody()
+
             </main>
+
         </div>
 
     </div>

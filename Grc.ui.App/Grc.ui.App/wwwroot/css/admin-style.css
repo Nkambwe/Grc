@@ -14,10 +14,6 @@ body {
     overflow: hidden;
 }
 
-body {
-    padding-top: 65px;
-}
-
 :root {
     --header-height: 60px;
     --sidebar-width: 250px;
@@ -42,15 +38,21 @@ body {
 .header-bar {
     position: fixed;
     top: 0;
-    left: 0;
+    left: 250px;
     right: 0;
+    height: 75px;
     color: var(--grey-light-strong);
     background: var(--background-color);
     border-bottom: 1px solid #e1e8ed;
     display: flex;
     align-items: center;
     z-index: 1000;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all .5s ease-in-out;
+}
+
+header.header-bar.collapsed {
+    left: 59px !important;
+    transition: all .5s ease-in-out;
 }
 
 .app-seach-box {
@@ -87,14 +89,24 @@ span.app-serach {
     flex-shrink: 0;
 }
 
-.logo-box{
+.logo-container {
+    display:flex;
+}
+
+    .logo-container img {
+        height: 65px;
+        width: auto;
+    }
+
+.logo-box {
     display: flex;
     align-items: center;
+    width: 50px;
 }
 
     .logo-box img {
-        height: 32px;
-        width: auto;
+        height: 40px;
+        width: 40px;
     }
 
 .menu-box {
@@ -128,10 +140,11 @@ span.app-serach {
 }
 
 .welcome-container {
-    display:flex;
-    flex-direction:row;
-    gap:1px;
-    width:100%;
+    display: flex;
+    flex-direction: row;
+    gap: 1px;
+    padding-top: 75px;
+    width: 100%;
 }
 
 .welcome-container-message {
@@ -202,11 +215,24 @@ span.app-serach {
     transform: rotate(180deg);
 }
 
-.title {
+.footer-text {
     font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--pearl-orange);
+    color: var(--teal-light-medium);
     margin: 0;
+    font-weight: 800;
+    padding-top: 5px;
+    text-align: center;
+}
+
+.sidebar-footer {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 60px;
+    padding: 10px;
+    border-top: solid 2px var(--pearl-orange);
 }
 
 .user-avator {
@@ -357,10 +383,11 @@ span.app-serach {
 
 
 /* Main layout container */
-    .layout-wrapper:last-child {
+.layout-wrapper:last-child {
     display: flex;
     flex-direction: row;
     flex: 1;
+    position: relative;
     overflow: hidden;
 }
 
@@ -368,7 +395,6 @@ span.app-serach {
 .sidebar-container {
     width: var(--sidebar-width);
     background-color: var(--sidebar-bg);
-    border-right: 1px solid var(--border-color);
     transition: width 0.3s ease;
     overflow: hidden;
     flex-shrink: 0;
@@ -376,42 +402,44 @@ span.app-serach {
 
     .sidebar-container.collapsed {
         width: var(--sidebar-collapsed-width);
+        border-right: solid 1px var(--grey-light-slightly);
+        box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
     }
 
 /* Sidebar styles */
 .sidebar {
     height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
+    position: relative;
+    border-right: solid 1px var(--grey-light-slightly);
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
 }
 
 .sidebar-geader {
     display: flex;
     align-items: center;
-    padding: 1rem;
     border-bottom: 1px solid var(--border-color);
     font-weight: 600;
-    font-size: 1.1rem;
-    margin-left: 3px;
+    font-size: 1.5em;
     color: var(--primary-color);
+    background-color: var(--bs-light-rgb);
     transition: all .5s ease-in-out;
 }
 
     .sidebar-geader button {
-        background: none;
         border: none;
-        color: var(--primary-color);
-        font-size: 1.25rem;
+        color: var(--purple-light-extra);
+        font-size: 1.5rem;
         cursor: pointer;
-        margin-right: 0.75rem;
-        padding: 0.25rem;
-        border-radius: 4px;
+        padding: 1.1rem;
+        border-radius: 0;
+        background-color: var(--pearl-purple-dark-50);
         transition: background-color 0.2s;
     }
 
         .sidebar-geader button:hover {
-            color: var(--teal-light-strong);
-            background-color: transparent;
+            color: var(--white-base);
+            background-color: var(--pearl-purple-dark-50);
             transition: all .3s ease-in-out;
         }
 
@@ -423,6 +451,7 @@ span.app-serach {
 }
 
 .sidebar-item {
+    font-size: 1rem;
     transition: all 0.2s ease;
 }
 
@@ -442,18 +471,25 @@ span.app-serach {
         transition: all .3s ease-in-out;
     }
 
-    .sidebar-item.active a {
+    .sidebar-item.active > a {
         font-weight: 600;
         color: var(--pearl-purple-dark-light-light);
         background-color: var(--pearl-purple-dark-shade-light-plus-20);
-        transition: all .3s ease-in-out;
         border-left: solid 5px var(--pearl-purple-dark-50);
+    }
+
+    .sidebar-item.with-submenu.parent-active > a {
+        font-weight: 600;
+        color: var(--pearl-purple-dark-light-light);
+        background-color: var(--pearl-purple-dark-shade-light-plus-10); 
+        border-left: solid 3px var(--pearl-purple-dark-30);
     }
 
     .sidebar-item .menu-icon {
         width: 24px;
         height: 24px;
         display: flex;
+        font-size: 1.5rem;
         align-items: center;
         justify-content: center;
         margin-right: 2rem;
@@ -462,7 +498,7 @@ span.app-serach {
 
 .sidebar-text {
     flex: 1;
-    font-size: 14px;
+    font-size: 1.1rem;
     font-weight: 500;
     white-space: nowrap;
     opacity: 1;
@@ -475,6 +511,7 @@ span.app-serach {
 
 .drop-icon {
     margin-left: auto;
+    font-size: 1.5em;
     transition: transform 0.3s ease;
 }
 
@@ -496,7 +533,7 @@ span.app-serach {
 }
 
 .separator-label {
-    font-size: 12px;
+    font-size: .95em;
     font-weight: 600;
     color: var(--grey-dark-slightly);
     text-transform: uppercase;
@@ -603,6 +640,12 @@ span.app-serach {
     padding: 0.5rem;
     border-radius: 4px;
     transition: background-color 0.2s;
+}
+
+h1.title {
+    font-weight:600;
+    color: var(--orange);
+    font-size: 1.5rem;
 }
 
 /* Utility classes */
@@ -1057,4 +1100,5 @@ select.form-control:focus {
                 left: 0;
                 width: var(--sidebar-collapsed-width);
             }
+
 }

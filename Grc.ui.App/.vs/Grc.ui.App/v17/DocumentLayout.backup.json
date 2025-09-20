@@ -1,34 +1,18 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\",
+  "WorkspaceRootPath": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github\\grc\\grc.ui.app\\grc.ui.app\\areas\\operations\\views\\operationdashboard\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\users\\macjohnan\\source\\repos\\nkambwe\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\css\\admin-style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\css\\admin-style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\users\\macjohnan\\source\\repos\\nkambwe\\grc\\grc.ui.app\\grc.ui.app\\areas\\operations\\views\\operationdashboard\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\operations\\views\\operationdashboard\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github\\grc\\grc.ui.app\\grc.ui.app\\areas\\operations\\views\\operationdashboard\\due.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\operations\\views\\operationdashboard\\due.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github\\grc\\grc.ui.app\\grc.ui.app\\areas\\operations\\controllers\\operationdashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\operations\\controllers\\operationdashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github\\grc\\grc.ui.app\\grc.ui.app\\areas\\admin\\controllers\\supportcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\admin\\controllers\\supportcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github\\grc\\grc.ui.app\\grc.ui.app\\routes\\routeprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\routes\\routeprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github\\grc\\grc.ui.app\\grc.ui.app\\areas\\operations\\views\\shared\\_operationlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\operations\\views\\shared\\_operationlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github\\grc\\grc.ui.app\\grc.ui.app\\areas\\admin\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\admin\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\users\\macjohnan\\source\\repos\\nkambwe\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\css\\admin-tables-styles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\css\\admin-tables-styles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     }
   ],
   "DocumentGroupContainers": [
@@ -38,15 +22,15 @@
       "DocumentGroups": [
         {
           "DockedWidth": 362,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             },
             {
               "$type": "Bookmark",
@@ -54,7 +38,7 @@
             },
             {
               "$type": "Bookmark",
-              "Name": "ST:1:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
             },
             {
               "$type": "Bookmark",
@@ -62,93 +46,62 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Due.cshtml",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Operations\\Views\\OperationDashboard\\Due.cshtml",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Operations\\Views\\OperationDashboard\\Due.cshtml",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Operations\\Views\\OperationDashboard\\Due.cshtml",
-              "RelativeToolTip": "Grc.ui.App\\Areas\\Operations\\Views\\OperationDashboard\\Due.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-19T18:12:00.989Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "admin-style.css",
+              "DocumentMoniker": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-style.css",
+              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\css\\admin-style.css",
+              "ToolTip": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-style.css",
+              "RelativeToolTip": "Grc.ui.App\\wwwroot\\css\\admin-style.css",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAACoAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-09-20T10:27:27.078Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "FloatingWindowState": {
+        "Id": "19734a20-da66-464a-96c3-32ea04922aad",
+        "Display": 1,
+        "X": 48,
+        "Y": 287,
+        "Width": 914,
+        "Height": 927,
+        "WindowState": 2
+      },
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Operations\\Views\\OperationDashboard\\Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Operations\\Views\\OperationDashboard\\Index.cshtml",
               "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Operations\\Views\\OperationDashboard\\Index.cshtml",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Operations\\Views\\OperationDashboard\\Index.cshtml",
+              "ToolTip": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Operations\\Views\\OperationDashboard\\Index.cshtml",
               "RelativeToolTip": "Grc.ui.App\\Areas\\Operations\\Views\\OperationDashboard\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAGAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-19T18:11:56.221Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "_ViewImports.cshtml",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Views\\_ViewImports.cshtml",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Admin\\Views\\_ViewImports.cshtml",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Views\\_ViewImports.cshtml",
-              "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Views\\_ViewImports.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAmAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-19T18:08:28.475Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "_OperationLayout.cshtml",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Operations\\Views\\Shared\\_OperationLayout.cshtml",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Operations\\Views\\Shared\\_OperationLayout.cshtml",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Operations\\Views\\Shared\\_OperationLayout.cshtml",
-              "RelativeToolTip": "Grc.ui.App\\Areas\\Operations\\Views\\Shared\\_OperationLayout.cshtml",
-              "ViewState": "AgIAAFcAAAAAAAAAAAAAACMAAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-19T18:07:00.191Z",
+              "WhenOpened": "2025-09-20T07:47:09.608Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "OperationDashboardController.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Operations\\Controllers\\OperationDashboardController.cs",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Operations\\Controllers\\OperationDashboardController.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Operations\\Controllers\\OperationDashboardController.cs",
-              "RelativeToolTip": "Grc.ui.App\\Areas\\Operations\\Controllers\\OperationDashboardController.cs",
-              "ViewState": "AgIAADgAAAAAAAAAAADwv04AAAAUAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-19T18:04:43.532Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "SupportController.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Controllers\\SupportController.cs",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Admin\\Controllers\\SupportController.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Controllers\\SupportController.cs",
-              "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Controllers\\SupportController.cs",
-              "ViewState": "AgIAALIBAAAAAAAAAAAmwDwCAAA2AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-19T18:03:13.171Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "RouteProvider.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Routes\\RouteProvider.cs",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Routes\\RouteProvider.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Routes\\RouteProvider.cs",
-              "RelativeToolTip": "Grc.ui.App\\Routes\\RouteProvider.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-19T18:01:03.797Z",
+              "Title": "admin-tables-styles.css",
+              "DocumentMoniker": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-tables-styles.css",
+              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\css\\admin-tables-styles.css",
+              "ToolTip": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-tables-styles.css",
+              "RelativeToolTip": "Grc.ui.App\\wwwroot\\css\\admin-tables-styles.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-09-20T04:26:16.573Z",
               "EditorCaption": ""
             }
           ]

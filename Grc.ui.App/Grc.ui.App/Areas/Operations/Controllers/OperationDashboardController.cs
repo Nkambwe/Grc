@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Grc.ui.App.Areas.Operations.Controllers {
 
     [Area("Operations")]
+    [Route("operations/dashboard")]
     public class OperationDashboardController : OperationsBaseController {
 
         private readonly ISystemAccessService _accessService;
@@ -62,7 +63,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 //..get current authenticated user record
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError) {
-                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATIONS-CONTROLLER", string.Empty);
+                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATIONS-DASHBOARD-CONTROLLER", string.Empty);
                     return View(model);
                 }
 
@@ -72,35 +73,173 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 //..prepare operations dashboard
                 model = await _operationsDashboardFactory.PrepareOperationsDashboardModelAsync(currentUser);
             } catch (Exception ex) {
-                await ProcessErrorAsync(ex.Message, "OPERATIONS-CONTROLLER", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "OPERATIONS-DASHBOARD-CONTROLLER", ex.StackTrace);
                 return View(model);
             }
 
             return View(model);
         }
 
+        [HttpPost("completed")]
         public async Task<IActionResult> Completed() {
-            return View();
+            var model = new OperationsDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    await ProcessErrorAsync(grcResponse.Error.Message,"OPERATION-DASHBOARD-CONTROLLER" , string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _operationsDashboardFactory.PrepareDefaultOperationsModelAsync(currentUser);
+            } catch(Exception ex){ 
+                await ProcessErrorAsync(ex.Message,"OPERATION-DASHBOARD-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
         }
 
+        [HttpPost("proposed")]
         public async Task<IActionResult> Proposed() {
-            return View();
+            var model = new OperationsDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    await ProcessErrorAsync(grcResponse.Error.Message,"OPERATION-DASHBOARD-CONTROLLER" , string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _operationsDashboardFactory.PrepareDefaultOperationsModelAsync(currentUser);
+            } catch(Exception ex){ 
+                await ProcessErrorAsync(ex.Message,"OPERATION-DASHBOARD-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
         }
 
+        [HttpPost("dormant")]
         public async Task<IActionResult> Dormant() {
-            return View();
+            var model = new OperationsDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    await ProcessErrorAsync(grcResponse.Error.Message,"OPERATION-DASHBOARD-CONTROLLER" , string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _operationsDashboardFactory.PrepareDefaultOperationsModelAsync(currentUser);
+            } catch(Exception ex){ 
+                await ProcessErrorAsync(ex.Message,"OPERATION-DASHBOARD-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
         }
 
+        [HttpPost("cancelled")]
         public async Task<IActionResult> Cancelled() {
-            return View();
+            var model = new OperationsDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    await ProcessErrorAsync(grcResponse.Error.Message,"OPERATION-DASHBOARD-CONTROLLER" , string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _operationsDashboardFactory.PrepareDefaultOperationsModelAsync(currentUser);
+            } catch(Exception ex){ 
+                await ProcessErrorAsync(ex.Message,"OPERATION-DASHBOARD-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
         }
 
+        [HttpPost("unchanged")]
         public async Task<IActionResult> Unchanged() {
-            return View();
+            var model = new OperationsDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    await ProcessErrorAsync(grcResponse.Error.Message,"OPERATION-DASHBOARD-CONTROLLER" , string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _operationsDashboardFactory.PrepareDefaultOperationsModelAsync(currentUser);
+            } catch(Exception ex){ 
+                await ProcessErrorAsync(ex.Message,"OPERATION-DASHBOARD-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
         }
 
+        [HttpPost("due")]
         public async Task<IActionResult> Due() {
-            return View();
+            var model = new OperationsDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    await ProcessErrorAsync(grcResponse.Error.Message,"OPERATION-DASHBOARD-CONTROLLER" , string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _operationsDashboardFactory.PrepareDefaultOperationsModelAsync(currentUser);
+            } catch(Exception ex){ 
+                await ProcessErrorAsync(ex.Message,"OPERATION-DASHBOARD-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
         }
 
     }

@@ -132,6 +132,7 @@ $(document).ready(function() {
     //..sidebar toggle functionality
     function toggleSidebar() {
         const $sidebarContainer = $('.sidebar-container');
+        const $headerContainer = $('.header-bar');
         const isMobile = $(window).width() <= 768;
         if (isMobile) {
             //..on mobile, toggle the 'open' class
@@ -139,9 +140,10 @@ $(document).ready(function() {
         } else {
             //..on desktop, toggle the 'collapsed' class
             $sidebarContainer.toggleClass('collapsed');
+            $headerContainer.toggleClass('collapsed');
         }
     }
-    
+   
     // Submenu toggle functionality
     function toggleSubmenu($element) {
         const menuId = $element.data('id');
@@ -200,31 +202,42 @@ $(document).ready(function() {
         toggleDropdown();
     });
     
-    // Initialize active states
+    //..initialize active states
     function initializeActiveStates() {
-        const currentPath = window.location.pathname;
+        const currentPath = window.location.pathname.toLowerCase();
         const $sidebarLinks = $('.sidebar-item a[href]');
-        
+
         $sidebarLinks.each(function() {
             const $link = $(this);
             const href = $link.attr('href');
-            
-            if (href && currentPath.includes(href) && href !== '#') {
-                $link.closest('.sidebar-item').addClass('active');
-                
-                // If it's in a submenu, open the parent
+
+            //..skip empty/placeholder links
+            if (!href || href === '#' || href.startsWith("javascript:")) return;
+
+            const linkPath = href.toLowerCase();
+
+            //..only mark exact path match as active
+            if (currentPath === linkPath) {
+                const $sidebarItem = $link.closest('.sidebar-item');
+                $sidebarItem.addClass('active'); 
+
+                //..it's inside a submenu, expand it and highlight parent
                 const $submenu = $link.closest('.sidebar-submenu');
                 if ($submenu.length) {
                     $submenu.addClass('open');
                     const submenuId = $submenu.attr('id');
                     const $parentToggle = $('[data-id="' + submenuId + '"]');
                     if ($parentToggle.length) {
-                        $parentToggle.closest('.sidebar-item').addClass('open');
+                        const $parentItem = $parentToggle.closest('.sidebar-item');
+                        $parentItem.addClass('open parent-active'); 
                     }
                 }
             }
         });
     }
+
+
+
 
     //..smooth transitions
     function enableSmoothTransitions() {
@@ -328,34 +341,6 @@ $(document).ready(function() {
         }, 500);
     });
     
-    // Search functionality (if you want to add search in sidebar)
-    //function initializeSearch() {
-    //    const $searchInput = $('<input>', {
-    //        type: 'text',
-    //        class: 'sidebar-search',
-    //        placeholder: 'Search menu...',
-    //        style: 'display: none; width: calc(100% - 2rem); margin: 0.5rem 1rem; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;'
-    //    });
-        
-    //    // Add search input to sidebar (uncomment if needed)
-    //    // $('.sidebar-geader').after($searchInput);
-        
-    //    $searchInput.on('input', function() {
-    //        const searchTerm = $(this).val().toLowerCase();
-            
-    //        $('.sidebar-item').each(function() {
-    //            const $item = $(this);
-    //            const text = $item.find('.sidebar-text').text().toLowerCase();
-                
-    //            if (text.includes(searchTerm) || searchTerm === '') {
-    //                $item.show();
-    //            } else {
-    //                $item.hide();
-    //            }
-    //        });
-    //    });
-    //}
-
     let isExpanded = false;
 
     $('#expandBtn, #componetExpandBtn').click(function() {
@@ -376,7 +361,6 @@ $(document).ready(function() {
     enableSmoothTransitions();
     initializeTooltips();
     animateCounters();
-    // initializeSearch(); // Uncomment if you want search functionality
     
     // Make functions available globally for onclick handlers (if still needed)
     window.toggleSidebar = toggleSidebar;

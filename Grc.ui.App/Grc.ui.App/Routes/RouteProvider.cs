@@ -16,19 +16,6 @@
                 defaults: new { area = "Admin", controller = "Settings", action = "Index" }
             );
 
-            routeBuilder.MapControllerRoute(
-                name: "operations-home",
-                pattern: "operations/workflow",
-                defaults: new { area = "Operations", controller = "OperationDashboard", action = "Index" }
-            );
-
-            // Dashboard
-            routeBuilder.MapControllerRoute(
-                name: "dashboard",
-                pattern: "/dashboard/",
-                defaults: new { controller = "Application", action = "Dashboard" } 
-            );
-
             // validate username
             routeBuilder.MapControllerRoute(
                 name: "login",
@@ -80,7 +67,7 @@
             //..admin areas
             routeBuilder.MapControllerRoute(
                 name: "areas",
-                pattern: "{area}/{controller=Support}/{action=Index}/{id?}"
+                pattern: "{area:exists}/{controller}/{action=Index}/{id?}"
             );
 
             // User login (default)
