@@ -178,8 +178,8 @@ input:valid ~ label {
 
 .btn-primary {
     color: var(--white-base);
-    background-color: var(--pearl-purple-dark-50);
-    border-color: var(--pearl-purple-dark-50);
+    background-color: var(--pearl-purple-dark-50) !important;
+    border-color: var(--pearl-purple-dark-50) !important;
 }
 
     .btn-primary:disabled,
@@ -212,8 +212,8 @@ input:valid ~ label {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
-    background-color: var(--pearl-purple-dark-50);
-    border-color: var(--pearl-purple-dark-50);
+    background-color: var(--pearl-purple-dark-50)!important;
+    border-color: var(--pearl-purple-dark-50)!important;
     position: relative;
     overflow: hidden;
 }

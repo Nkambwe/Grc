@@ -11,6 +11,7 @@ body {
     font-family: Helvetica, Arial, 'Noto Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: var(--background-color);
     overflow: hidden;
 }
 
@@ -33,6 +34,7 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    background-color: var(--background-color);
 }
 
 .header-bar {
@@ -143,7 +145,7 @@ span.app-serach {
     display: flex;
     flex-direction: row;
     gap: 1px;
-    padding-top: 75px;
+    padding-top: 10px;
     width: 100%;
 }
 

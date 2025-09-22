@@ -1,463 +1,568 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Language Name="English-UK" IsDefault="false" IsRightToLeft="false">
-	<LocaleResource Name="App.Version">
-		<Value>GRC SUITE 1.2</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Registration.Header">
-		<Value>System Setup</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.System.Language">
-		<Value>System Language</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Example">
-		<Value>For Example. </Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Welcome">
-		<Value>Welcome</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Signin">
-		<Value>Sign in</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.New">
-		<Value>New</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Edit">
-		<Value>Edit</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Delete">
-		<Value>Delete</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Search">
-		<Value>Search</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Units">
-		<Value>Units</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Department">
-		<Value>Department</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Department.Code">
-		<Value>Department Code</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Department.Name">
-		<Value>Department Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Department.Deactivate">
-		<Value>Deactivate Department</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Department.Branch">
-		<Value>Attached Branch</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Department.Tag">
-		<Value>Department Tag</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Unit.Code">
-		<Value>Unit Code</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Unit.Name">
-		<Value>Unit Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Unit.Deactivate">
-		<Value>Deactivate Unit</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.srOnly.ArrowKeys">
-		<Value>Use arrow keys to navigate options. Press Enter to select</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Departments">
-		<Value>Departments</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.DepartmentUnits">
-		<Value>All Units</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Users">
-		<Value>Users</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Roles">
-		<Value>Roles</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Permissions">
-		<Value>Permission Sets</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Delegations">
-		<Value>Delegation</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Branch">
-		<Value>Add Branch</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Branch.Select">
-		<Value>Select Branch...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.QuickAction">
-		<Value>Add to Quick Action</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Shortcut">
-		<Value>Create Shortcut</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Export">
-		<Value>Export Data</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Share">
-		<Value>Share View</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Back">
-		<Value>Back</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Close">
-		<Value>Close</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.FullScreen">
-		<Value>Full Screen</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Header.New.Unit">
-		<Value>New Unit</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Header.Edit.Unit">
-		<Value>Edit Unit</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Header.New.Department">
-		<Value>New Department</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Header.Edit.Department">
-		<Value>Edit Department</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Departments.Select">
-		<Value>Select Department..</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Header.Filter">
-		<Value>Filter List By</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Code">
-		<Value>Code</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Unit">
-		<Value>Unit</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Unit.Name">
-		<Value>Unit Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Department">
-		<Value>Department</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Department.Name">
-		<Value>Department Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Department.Alias">
-		<Value>Short Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Active">
-		<Value>Active</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Status">
-		<Value>Status</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Created">
-		<Value>Created On</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.User.Views">
-		<Value>Views</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.User.Settings">
-		<Value>Settings</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.User.Logout">
-		<Value>Logout</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Home">
-		<Value>Home</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Recent">
-		<Value>Recent</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Pinned">
-		<Value>Pinned</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Workbench">
-		<Value>Workbench</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Departments">
-		<Value>Departments</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Users">
-		<Value>System Users</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Permissions">
-		<Value>Permissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Permissions.Assign">
-		<Value>Assign Permissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Permissions.Role">
-		<Value>Role Permissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Permissions.Sets">
-		<Value>Permission Sets</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Permissions.Delegation">
-		<Value>Role Delegation</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Permissions.Role">
-		<Value>Role Permissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations">
-		<Value>Configurations</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.Settings">
-		<Value>User settings</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.IP">
-		<Value>IP Addresses</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.Data">
-		<Value>User data</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.Groups">
-		<Value>User Groups</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.Roles">
-		<Value>User Roles</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.Authentication">
-		<Value>Authentication</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.Encryption">
-		<Value>Entity Encryption</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.Errors">
-		<Value>System Errors</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.Activities">
-		<Value>System Activities</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Home">
-		<Value>Home</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Processes">
-		<Value>Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Processes.Register">
-		<Value>Register</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Processes.Groups">
-		<Value>Groups</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Processes.Tags">
-		<Value>Tags</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Tasks">
-		<Value>Process Tasks</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Tasks.Approvals">
-		<Value>Approvals</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Tasks.Pending">
-		<Value>Pending</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Tasks.Revisions">
-		<Value>Revisions</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Configurations.Access">
-		<Value>System Access</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Configurations.Teams">
-		<Value>Teams</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Configurations.Guests">
-		<Value>Guests</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Configurations.Delegation">
-		<Value>Delegation</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Configurations.Settings">
-		<Value>Settings</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Configurations.General">
-		<Value>General Settings</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Configurations.Additional">
-		<Value>Other Settings</Value>
-	</LocaleResource>
-	<LocaleResource Name="Registration.Title">
-		<Value>Company Registration</Value>
-	</LocaleResource>
-	<LocaleResource Name="Registration.Admin.Info">
-		<Value>System Administrator Details</Value>
-	</LocaleResource>
-	<LocaleResource Name="Registration.Admin.Access">
-		<Value>System Login Details</Value>
-	</LocaleResource>
-	<LocaleResource Name="Register.Company.Fields.CompanyName">
-		<Value>Company Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Register.Company.Fields.Alias">
-		<Value>Alias</Value>
-	</LocaleResource>
-	<LocaleResource Name="Register.Company.Fields.RegistrationNumber">
-		<Value>Registration Number</Value>
-	</LocaleResource>
-	<LocaleResource Name="Registration.Error.General">
-		<Value>Please correct the errors in the current step before proceeding.</Value>
-	</LocaleResource>
-	<LocaleResource Name="Registration.Error.Failed">
-		<Value>Registration failed. Please try again.</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.FirstName">
-		<Value>First Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.MidlleName">
-		<Value>Middle Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.Surname">
-		<Value>Surname</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.UserName">
-		<Value>Username</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.Email">
-		<Value>Email</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.PhoneNumber">
-		<Value>Phone Number</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.Password">
-		<Value>Password</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.ConfirmPassword">
-		<Value>Confirm Password</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.PFNumber">
-		<Value>PF Number</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.SolId">
-		<Value>Branch SolID</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.Department">
-		<Value>Department</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.DepartmentUnit">
-		<Value>Department Unit</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.Role">
-		<Value>System Role</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.IsActive">
-		<Value>Is Active</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.IsDeleted">
-		<Value>Mark As Deleted</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.IsVerified">
-		<Value>Is Verified</Value>
-	</LocaleResource>
-	<LocaleResource Name="Company.Error.CompanyNameRequired">
-		<Value>Company name Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="Company.Error.AliasRequired">
-		<Value>Provide an Alias (Short name) for the company</Value>
-	</LocaleResource>
-	<LocaleResource Name="Company.Error.RegNumberRequired">
-		<Value>Provide company Registration Number</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.EmailRequired">
-		<Value>Email Address Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.FirstNameRequired">
-		<Value>FirstName Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.SurnameRequired">
-		<Value>Surname Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.UserameRequired">
-		<Value>Username Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.PasswordRequired">
-		<Value>Password Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.ConfirmPasswordRequired">
-		<Value>Confirm Password Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.PFNumberRequired">
-		<Value>PF Number Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.SolIdRequired">
-		<Value>Sol ID Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.DepartmentRequired">
-		<Value>Department Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.SystemRoleRequired">
-		<Value>User Role Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Previous">
-		<Value>Previous</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Next">
-		<Value>Next</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Delete">
-		<Value>Delete</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Cancel">
-		<Value>Cancel</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Confirm">
-		<Value>Confirm</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Push">
-		<Value>Push</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.On">
-		<Value>On</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Off">
-		<Value>Off</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Okay">
-		<Value>OK</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Yes">
-		<Value>Yes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.No">
-		<Value>No</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Submit">
-		<Value>Save</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Update">
-		<Value>Update</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Signin">
-		<Value>Sign In</Value>
-	</LocaleResource>
-	<LocaleResource Name="Login.Enter.Username">
-		<Value>Enter Username</Value>
-	</LocaleResource>
-	<LocaleResource Name="Login.Enter.Password">
-		<Value>Enter Password</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Message.EnterPassword">
-		<Value>Password required for login</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Message.EnterUsername">
-		<Value>Username required for login</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Message.InvalidPassword">
-		<Value>Password provided is not correct</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Authentication.Failed">
-		<Value>Authentication failed. Please try again.</Value>
-	</LocaleResource>
-	<LocaleResource Name="Error.Occurance">
-		<Value>Error Ocuurred! System error has occurred</Value>
-	</LocaleResource>
-	<LocaleResource Name="Error.Clear">
-		<Value>Please clear the errors and Try again</Value>
-	</LocaleResource>
-	<LocaleResource Name="Error.Unknown">
-		<Value>Unknown error has occurred</Value>
-	</LocaleResource>
-	<LocaleResource Name="Error.Service.Unavailable">
-		<Value>Service unavailable. Please try again later.</Value>
-	</LocaleResource>
+    <LocaleResource Name="App.Version">
+        <Value>GRC SUITE 1.2</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Registration.Header">
+        <Value>System Setup</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.System.Language">
+        <Value>System Language</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Example">
+        <Value>For Example. </Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Welcome">
+        <Value>Welcome</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Signin">
+        <Value>Sign in</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.New">
+        <Value>New</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Edit">
+        <Value>Edit</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Delete">
+        <Value>Delete</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Search">
+        <Value>Search</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Units">
+        <Value>Units</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Department">
+        <Value>Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Department.Code">
+        <Value>Department Code</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Department.Name">
+        <Value>Department Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Department.Deactivate">
+        <Value>Deactivate Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Department.Branch">
+        <Value>Attached Branch</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Department.Tag">
+        <Value>Department Tag</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Unit.Code">
+        <Value>Unit Code</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Unit.Name">
+        <Value>Unit Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Unit.Deactivate">
+        <Value>Deactivate Unit</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.srOnly.ArrowKeys">
+        <Value>Use arrow keys to navigate options. Press Enter to select</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Departments">
+        <Value>Departments</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.DepartmentUnits">
+        <Value>All Units</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Users">
+        <Value>Users</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Roles">
+        <Value>Roles</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Permissions">
+        <Value>Permission Sets</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Delegations">
+        <Value>Delegation</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Branch">
+        <Value>Add Branch</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Branch.Select">
+        <Value>Select Branch...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.QuickAction">
+        <Value>Add to Quick Action</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Shortcut">
+        <Value>Create Shortcut</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Export">
+        <Value>Export Data</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Share">
+        <Value>Share View</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Back">
+        <Value>Back</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Close">
+        <Value>Close</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.FullScreen">
+        <Value>Full Screen</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Header.New.Unit">
+        <Value>New Unit</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Header.Edit.Unit">
+        <Value>Edit Unit</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Header.New.Department">
+        <Value>New Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Header.Edit.Department">
+        <Value>Edit Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Departments.Select">
+        <Value>Select Department..</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Header.Filter">
+        <Value>Filter List By</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Code">
+        <Value>Code</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Unit">
+        <Value>Unit</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Unit.Name">
+        <Value>Unit Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Department">
+        <Value>Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Department.Name">
+        <Value>Department Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Department.Alias">
+        <Value>Short Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Active">
+        <Value>Active</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Status">
+        <Value>Status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Created">
+        <Value>Created On</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.User.Views">
+        <Value>Views</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.User.Settings">
+        <Value>Settings</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.User.Logout">
+        <Value>Logout</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Home">
+        <Value>Home</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Recent">
+        <Value>Recent</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Pinned">
+        <Value>Pinned</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Workbench">
+        <Value>Workbench</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Departments">
+        <Value>Departments</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Users">
+        <Value>System Users</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions">
+        <Value>Permissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions.Assign">
+        <Value>Assign Permissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions.Role">
+        <Value>Role Permissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions.Sets">
+        <Value>Permission Sets</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions.Delegation">
+        <Value>Role Delegation</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions.Role">
+        <Value>Role Permissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations">
+        <Value>Configurations</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Settings">
+        <Value>User settings</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.IP">
+        <Value>IP Addresses</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Data">
+        <Value>User data</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Groups">
+        <Value>User Groups</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Roles">
+        <Value>User Roles</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Authentication">
+        <Value>Authentication</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Encryption">
+        <Value>Entity Encryption</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Errors">
+        <Value>System Errors</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Activities">
+        <Value>System Activities</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Home">
+        <Value>Home</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Processes">
+        <Value>Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Processes.Register">
+        <Value>Register</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Processes.Groups">
+        <Value>Groups</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Processes.Tags">
+        <Value>Tags</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Tasks">
+        <Value>Process Tasks</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Tasks.Approvals">
+        <Value>Approvals</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Tasks.Pending">
+        <Value>Pending</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Tasks.Revisions">
+        <Value>Revisions</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Configurations.Access">
+        <Value>System Access</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Configurations.Teams">
+        <Value>Teams</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Configurations.Guests">
+        <Value>Guests</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Configurations.Delegation">
+        <Value>Delegation</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Configurations.Settings">
+        <Value>Settings</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Configurations.General">
+        <Value>General Settings</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Configurations.Additional">
+        <Value>Other Settings</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Registers">
+        <Value>Registers</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Registers.Policy">
+        <Value>Policies</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Registers.Regulations">
+        <Value>Regulations</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Registers.Obligations">
+        <Value>Obligations</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Policies">
+        <Value>Policy</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Policies.Changes">
+        <Value>Policy Changes</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Policies.ShortTerm">
+        <Value>Short-Term Policies</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Policies.PolicyEscalation">
+        <Value>Policy Escalations</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Policies.Notification">
+        <Value>Policy Notifications</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Obligations">
+        <Value>Obligations</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Obligations.Audits">
+        <Value>Audits</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Obligations.AuditRegister">
+        <Value>Audit Register</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Obligations.AuditIssues">
+        <Value>Audits Issues</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Obligations.AssignTask">
+        <Value>Tasks</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Obligations.CircularTracking">
+        <Value>Circular Tracking</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Obligations.Notification">
+        <Value>Notification</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Obligations.Escalation">
+        <Value>Escalations</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Returns">
+        <Value>Returns</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Returns.List">
+        <Value>All Returns</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Returns.FiledReturns">
+        <Value>Filed Returns</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Returns.UnfiledReturns">
+        <Value>Unfiled Returns</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.obligations.Returns.Notification">
+        <Value>Notification</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Returns.Escalation">
+        <Value>Escalations</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Reports">
+        <Value>Reports</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Reports.Unfiled">
+        <Value>Unfiled Returns</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Reports.TAT">
+        <Value>TAT Report</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Reports.Penalities">
+        <Value>Penalities</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Reports.PeriodicIssueReport">
+        <Value>Periodic Issues</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Reports.Audit.AnnualAuditReport">
+        <Value>Audit Report</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configuration">
+        <Value>Settings</Value>
+    </LocaleResource>
+    <LocaleResource Name=" App.Menu.Compliance.Configuration">
+        <Value>General Settings</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Configuration.General">
+        <Value>General Settings</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Settings.Users">
+        <Value>Users</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Settings.Delegation">
+        <Value>Delegation</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Settings.Departments">
+        <Value>Delegation</Value>
+    </LocaleResource>
+    <LocaleResource Name="Registration.Title">
+        <Value>Company Registration</Value>
+    </LocaleResource>
+    <LocaleResource Name="Registration.Admin.Info">
+        <Value>System Administrator Details</Value>
+    </LocaleResource>
+    <LocaleResource Name="Registration.Admin.Access">
+        <Value>System Login Details</Value>
+    </LocaleResource>
+    <LocaleResource Name="Register.Company.Fields.CompanyName">
+        <Value>Company Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Register.Company.Fields.Alias">
+        <Value>Alias</Value>
+    </LocaleResource>
+    <LocaleResource Name="Register.Company.Fields.RegistrationNumber">
+        <Value>Registration Number</Value>
+    </LocaleResource>
+    <LocaleResource Name="Registration.Error.General">
+        <Value>Please correct the errors in the current step before proceeding.</Value>
+    </LocaleResource>
+    <LocaleResource Name="Registration.Error.Failed">
+        <Value>Registration failed. Please try again.</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.FirstName">
+        <Value>First Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.MidlleName">
+        <Value>Middle Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.Surname">
+        <Value>Surname</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.UserName">
+        <Value>Username</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.Email">
+        <Value>Email</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.PhoneNumber">
+        <Value>Phone Number</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.Password">
+        <Value>Password</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.ConfirmPassword">
+        <Value>Confirm Password</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.PFNumber">
+        <Value>PF Number</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.SolId">
+        <Value>Branch SolID</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.Department">
+        <Value>Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.DepartmentUnit">
+        <Value>Department Unit</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.Role">
+        <Value>System Role</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.IsActive">
+        <Value>Is Active</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.IsDeleted">
+        <Value>Mark As Deleted</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.IsVerified">
+        <Value>Is Verified</Value>
+    </LocaleResource>
+    <LocaleResource Name="Company.Error.CompanyNameRequired">
+        <Value>Company name Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="Company.Error.AliasRequired">
+        <Value>Provide an Alias (Short name) for the company</Value>
+    </LocaleResource>
+    <LocaleResource Name="Company.Error.RegNumberRequired">
+        <Value>Provide company Registration Number</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.EmailRequired">
+        <Value>Email Address Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.FirstNameRequired">
+        <Value>FirstName Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.SurnameRequired">
+        <Value>Surname Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.UserameRequired">
+        <Value>Username Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.PasswordRequired">
+        <Value>Password Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.ConfirmPasswordRequired">
+        <Value>Confirm Password Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.PFNumberRequired">
+        <Value>PF Number Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.SolIdRequired">
+        <Value>Sol ID Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.DepartmentRequired">
+        <Value>Department Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.SystemRoleRequired">
+        <Value>User Role Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Previous">
+        <Value>Previous</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Next">
+        <Value>Next</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Delete">
+        <Value>Delete</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Cancel">
+        <Value>Cancel</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Confirm">
+        <Value>Confirm</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Push">
+        <Value>Push</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.On">
+        <Value>On</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Off">
+        <Value>Off</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Okay">
+        <Value>OK</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Yes">
+        <Value>Yes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.No">
+        <Value>No</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Submit">
+        <Value>Save</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Update">
+        <Value>Update</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Signin">
+        <Value>Sign In</Value>
+    </LocaleResource>
+    <LocaleResource Name="Login.Enter.Username">
+        <Value>Enter Username</Value>
+    </LocaleResource>
+    <LocaleResource Name="Login.Enter.Password">
+        <Value>Enter Password</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Message.EnterPassword">
+        <Value>Password required for login</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Message.EnterUsername">
+        <Value>Username required for login</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Message.InvalidPassword">
+        <Value>Password provided is not correct</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Authentication.Failed">
+        <Value>Authentication failed. Please try again.</Value>
+    </LocaleResource>
+    <LocaleResource Name="Error.Occurance">
+        <Value>Error Ocuurred! System error has occurred</Value>
+    </LocaleResource>
+    <LocaleResource Name="Error.Clear">
+        <Value>Please clear the errors and Try again</Value>
+    </LocaleResource>
+    <LocaleResource Name="Error.Unknown">
+        <Value>Unknown error has occurred</Value>
+    </LocaleResource>
+    <LocaleResource Name="Error.Service.Unavailable">
+        <Value>Service unavailable. Please try again later.</Value>
+    </LocaleResource>
 
 </Language>

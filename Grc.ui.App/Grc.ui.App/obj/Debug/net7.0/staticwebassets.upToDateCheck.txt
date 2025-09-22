@@ -1,6 +1,7 @@
 wwwroot\css\admin-style.css
 wwwroot\css\admin-tables-styles.css
-wwwroot\css\app.css
+wwwroot\css\app-styles.css
+wwwroot\css\app-tables-styles.css
 wwwroot\css\color-pallete.css
 wwwroot\css\component-styles.css
 wwwroot\css\grc-style.css
@@ -20,11 +21,13 @@ wwwroot\images\pearl_white.png
 wwwroot\js\admin-script.js
 wwwroot\js\admin-script-other.js
 wwwroot\js\admin-tables.js
+wwwroot\js\app-other-script.js
+wwwroot\js\app-script.js
+wwwroot\js\app-table-script.js
 wwwroot\js\bug-signalr-script.js
 wwwroot\js\Component-script.js
 wwwroot\js\department-script.js
 wwwroot\js\department-units-script.js
-wwwroot\js\grc-app.js
 wwwroot\js\grc-sidebar.js
 wwwroot\js\login-script.js
 wwwroot\js\register-script.js

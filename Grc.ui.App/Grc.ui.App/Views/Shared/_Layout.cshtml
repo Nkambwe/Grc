@@ -6,7 +6,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <grc-antiforgery-token as-meta="true"></grc-antiforgery-token>
+        <grc-antiforgery-token as-meta="true"></grc-antiforgery-token>
         <title>@await Html.GenerateTitleAsync()</title>
 
         @{
@@ -16,124 +16,51 @@
             Html.AddCssFileParts("~/lib/icons/material-design/css/materialdesignicons.css");
             Html.AddCssFileParts("~/lib/icons/coreui-icons/css/all.css");
             Html.AddCssFileParts("~/lib/select-2/css/select2.min.css");
+            Html.AddCssFileParts("~/lib/ckeditor5/ckeditor5.css");
             Html.AddCssFileParts("~/lib/toastr/toastr.css");
             Html.AddCssFileParts("~/css/color-pallete.css");
             Html.AddCssFileParts("~/lib/sweet-alert/sweetalert2.css");
-            Html.AddCssFileParts("~/css/grc-style.css", excludeFromBundle: false);
+            Html.AddCssFileParts("~/lib/datatables/datatables.css");
+            Html.AddCssFileParts("~/lib/datatables/datatables.min.css");
+            Html.AddCssFileParts("~/css/app-tables-styles.css");
+            Html.AddCssFileParts("~/css/app-styles.css");
         }
 
+        <!-- Keep these in head because they need to be available early -->
         <script src="~/lib/toastr/toastr.min.js"></script>
         <script src="~/lib/sweet-alert/sweetalert2.all.min.js"></script>
+        <script src="~/lib/ckeditor5/ckeditor5.umd.js"></script>
+
+        <script src=""></script>
         @Html.GenerateCssFiles()
         @Html.GenerateHeadCustom()
+
     </head>
     <body class="@Html.GeneratePageCssClasses()">
 
-        <div class="grc-wrapper">
+         <div id="layoutWrapper" class="layout-wrapper">
 
-            <header class="grc-header-bar">
-
-                <div class="menu-box">
-                    <a href="/grc/extensions">
-                        <span>
-                        <i class="mdi mdi-menu"></i>
-                        </span>
-                    </a>
-                </div>
-
-                <div class="header-align-left">
-
-                    <div class="logo-box">
-                        <img src="~/images/logo.png" />
-                    </div>
-
-                    <div class="app-banner">
-                        <h1 class="title is-5 mb-0 ml-3">@Model.Banner</h1>
-                    </div>
-
-                </div>
-
-                <div class="header-align-right">
-                <div class="app-seach-box">
-                        <span class="app-serach">
-                        <i class="mdi mdi-magnify"></i>
-                        </span>
-                    </div>
-
-                    <div class="user-avator">
-                        <span class="avator-bell">
-                            <i class="mdi mdi-bell-ring-outline"></i>
-                        </span>
-                        <span class="notification-count">5</span>
-                    </div>
-                    <div class="dropdown is-right" id="userDropdown">
-                        <div class="dropdown-trigger">
-                            <button class="button avator-button" onclick="toggleDropdown()">
-                                <div class="user-avator">
-                                    <span class="avator-initials">@Model.Initials</span>
-                                </div>
-                                <span class="drop-avator-icon">
-                                    <i class="mdi mdi-chevron-down"></i>
-                                </span>
-                            </button>
-                        </div>
-                        <div class="dropdown-menu">
-                            <div class="dropdown-content">
-                                <ul>
-                                    <li>
-                                        <a href="#" class="dropdown-item">
-                                            <span>
-                                                <i class="mdi mdi-account-cog"></i>
-                                            </span>
-                                            <span>
-                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.User.Views"))
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="dropdown-item">
-                                            <span>
-                                                <i class="mdi mdi-account-cog"></i>
-                                            </span>
-                                            <span>
-                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.User.Settings"))
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li>
-                                        <a href="" class="dropdown-item" onclick="performLogout(event)">
-                                            <span>
-                                                <i class="mdi mdi-logout"></i>
-                                            </span>
-                                            <span>
-                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.User.Logout"))
-                                            </span>
-                                        </a>
-                                    </li>
-                                </ul>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </header>
-
-            <div class="gr-content-wrapper">
+            <div class="layout-wrapper">
 
                 <aside class="sidebar-container">
 
                     <nav class="sidebar bg-light">
-                        <div class="sidebar-brand">
-                            <span>Pearl Bank</span>
+
+                        <div class="sidebar-geader">
+                            <button>
+                                <span class="menu-icon">
+                                    <i class="mdi mdi-menu"></i></>
+                                </span>
+                            </button>
+                            <div class="logo-container">
+                                <img src="~/images/pearl_transp.png" />
+                            </div>
                         </div>
 
                         <ul class="sidebar-menu">
+
                             <li class="sidebar-item">
-                                <a asp-controller="Support" asp-action="Index" asp-area="Admin">
+                                <a asp-controller="Application" asp-action="Index">
                                     <span class="menu-icon">
                                         <i class="mdi mdi-home-outline"></i></>
                                     </span>
@@ -141,37 +68,6 @@
                                         @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Home"))
                                     </span>
                                 </a>
-                            </li>
-
-                            <li class="sidebar-item with-submenu">
-                                <a href="" class="toggle-submenu" data-id="recent-menu">
-                                    <span class="menu-icon">
-                                        <i class="mdi mdi-clock-time-seven-outline"></i></>
-                                    </span>
-                                    <span>
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Recent"))
-                                    </span>
-                                    <span class="drop-icon">
-                                        <i class="mdi mdi-chevron-down"></i>
-                                    </span>
-                                </a>
-                                @await Component.InvokeAsync("Recent", new { model = Model.Recents })
-
-                            </li>
-
-                            <li class="sidebar-item with-submenu">
-                                <a href="" class="toggle-submenu" data-id="pinned-menu">
-                                    <span class="menu-icon">
-                                        <i class="mdi mdi-pin-off-outline"></i></>
-                                    </span>
-                                    <span>
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Pinned"))
-                                    </span>
-                                    <span class="drop-icon">
-                                        <i class="mdi mdi-chevron-down"></i>
-                                    </span>
-                                </a>
-                                @await Component.InvokeAsync("Pinned", new { model = Model.PinnedItems })
                             </li>
 
                             <li class="sidebar-separator">
@@ -185,7 +81,7 @@
 
                                 <a href="" class="toggle-submenu" data-id="regiters-menu">
                                     <span class="menu-icon">
-                                        <i class="mdi mdi-folder-open-outline"></i>
+                                    <i class="mdi mdi-script-text-outline"></i>
                                     </span>
                                     <span>
                                         @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers"))
@@ -196,30 +92,11 @@
                                 </a>
 
                                 <ul id="regiters-menu" class="sidebar-submenu">
+
                                     <li class="sidebar-item">
-                                        <a asp-controller="Registers" asp-action="StandardsRegister">
+                                        <a asp-controller="Registers" asp-action="PolicyRegister">
                                             <span class="menu-icon">
-                                                <i class="mdi mdi-decagram-outline"></i>
-                                            </span>
-                                            <span class="sidebar-text">
-                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Standards"))
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-item">
-                                        <a asp-controller="Registers" asp-action="StrategicRegister" asp-area="Admin">
-                                            <span class="menu-icon">
-                                                <i class="mdi mdi-image-filter-center-focus-strong-outline"></i>
-                                            </span>
-                                            <span class="sidebar-text">
-                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Strategy"))
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-item">
-                                        <a asp-controller="Registers" asp-action="PolicyRegister" asp-area="Admin">
-                                            <span class="menu-icon">
-                                                <i class="mdi mdi-directions"></i>
+                                                <i class="mif-format-document"></i>
                                             </span>
                                             <span class="sidebar-text">
                                                 @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Policy"))
@@ -227,12 +104,22 @@
                                         </a>
                                     </li>
                                     <li class="sidebar-item">
-                                        <a asp-controller="Registers" asp-action="ProcessMaps" asp-area="Admin">
+                                        <a asp-controller="Registers" asp-action="RegulationRegisters">
                                             <span class="menu-icon">
-                                                <i class="mdi mdi-hubspot"></i>
+                                                <i class="mif-format-table"></i>
                                             </span>
                                             <span class="sidebar-text">
-                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Process"))
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Regulations"))
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="sidebar-item">
+                                        <a asp-controller="Registers" asp-action="Obligations">
+                                            <span class="menu-icon">
+                                                <i class="mif-format-image"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Obligations"))
                                             </span>
                                         </a>
                                     </li>
@@ -240,73 +127,462 @@
 
                             </li>
 
+                            <li class="sidebar-item with-submenu">
 
-                        <li class="sidebar-item with-submenu">
+                                <a href="" class="toggle-submenu" data-id="policies-menu">
+                                    <span class="menu-icon">
+                                        <i class="mif-justice"></i>
+                                    </span>
+                                    <span>
+                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Policies"))
+                                    </span>
+                                    <span class="drop-icon">
+                                        <i class="mdi mdi-chevron-down"></i>
+                                    </span>
+                                </a>
 
-                            <a href="" class="toggle-submenu" data-id="workflow-menu">
-                                <span class="menu-icon">
-                                    <i class="mdi mdi-folder-open-outline"></i>
+                                <ul id="policies-menu" class="sidebar-submenu">
+
+                                    <li class="sidebar-item">
+                                        <a asp-controller="CompliancePolicy" asp-action="PolicyChanges">
+                                            <span class="menu-icon">
+                                                <i class="mif-mediation"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Policies.Changes"))
+                                            </span>
+                                        </a>
+                                    </li>
+
+                                    <li class="sidebar-item">
+                                        <a asp-controller="CompliancePolicy" asp-action="ShortTermPolicies">
+                                            <span class="menu-icon">
+                                            <i class="mdi mdi-alarm-bell"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Policies.ShortTerm"))
+                                            </span>
+                                        </a>
+                                    </li>
+
+                                    <li class="sidebar-item">
+                                        <a asp-controller="CompliancePolicy" asp-action="PolicyEscalation">
+                                            <span class="menu-icon">
+                                                <i class="mif-move-up"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Policies.PolicyEscalation"))
+                                            </span>
+                                        </a>
+                                    </li>
+
+                                    <li class="sidebar-item">
+                                        <a asp-controller="CompliancePolicy" asp-action="PolicyNotification">
+                                            <span class="menu-icon">
+                                                <i class="mdi mdi-alarm-check"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Policies.Notification"))
+                                            </span>
+                                        </a>
+                                    </li>
+
+                                </ul>
+
+                            </li>
+
+                            <li class="sidebar-item with-submenu">
+
+                                <a href="" class="toggle-submenu" data-id="obligations-menu">
+                                    <span class="menu-icon">
+                                        <i class="mif-handshake"></i>
+                                    </span>
+                                    <span>
+                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Obligations"))
+                                    </span>
+                                    <span class="drop-icon">
+                                        <i class="mdi mdi-chevron-down"></i>
+                                    </span>
+                                </a>
+
+                                <ul id="obligations-menu" class="sidebar-submenu">
+
+                                    <li class="sidebar-item">
+                                        <a asp-controller="CompliancePolicy" asp-action="Audits">
+                                            <span class="menu-icon">
+                                                <i class="mif-codescan"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Obligations.Audits"))
+                                            </span>
+                                        </a>
+                                    </li>
+
+                                    <li class="sidebar-item">
+                                        <a asp-controller="CompliancePolicy" asp-action="AuditRegister">
+                                            <span class="menu-icon">
+                                            <i class="mdi mdi-focus-field"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Obligations.AuditRegister"))
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="sidebar-item">
+                                        <a asp-controller="CompliancePolicy" asp-action="AuditIssues">
+                                            <span class="menu-icon">
+                                                <i class="mdi mdi-focus-auto"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Obligations.AuditIssues"))
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="sidebar-item">
+                                        <a asp-controller="CompliancePolicy" asp-action="AssignTask">
+                                            <span class="menu-icon">
+                                            <i class="mdi mdi-clipboard-list-outline"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Obligations.AssignTask"))
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="sidebar-item">
+                                        <a asp-controller="CompliancePolicy" asp-action="CircularTracking">
+                                            <span class="menu-icon">
+                                            <i class="mdi mdi-chart-donut-variant"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Obligations.CircularTracking"))
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="sidebar-item">
+                                        <a asp-controller="CompliancePolicy" asp-action="ObligationNotification">
+                                            <span class="menu-icon">
+                                                <i class="mdi mdi-alarm-check"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Obligations.Notification"))
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="sidebar-item">
+                                        <a asp-controller="CompliancePolicy" asp-action="ObligationEscalations">
+                                            <span class="menu-icon">
+                                                <i class="mif-move-up"></i> 
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Obligations.Escalation"))
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </li>
+
+                            <li class="sidebar-item with-submenu">
+
+                                <a href="" class="toggle-submenu" data-id="returns-menu">
+                                    <span class="menu-icon">
+                                        <i class="mif-folder-open"></i>
+                                    </span>
+                                    <span>
+                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Returns"))
+                                    </span>
+                                    <span class="drop-icon">
+                                        <i class="mdi mdi-chevron-down"></i>
+                                    </span>
+                                </a>
+
+                                <ul id="returns-menu" class="sidebar-submenu">
+                                        <li class="sidebar-item">
+                                            <a asp-controller="CompliancePolicy" asp-action="AllReturns">
+                                                <span class="menu-icon">
+                                            <i class="mdi mdi-file-cabinet"></i>
+                                                </span>
+                                                <span class="sidebar-text">
+                                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Returns.List"))
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li class="sidebar-item">
+                                            <a asp-controller="CompliancePolicy" asp-action="FiledReturns">
+                                                <span class="menu-icon">
+                                            <i class="mif-file-zip"></i>
+                                                </span>
+                                                <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Returns.FiledReturns"))
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li class="sidebar-item">
+                                            <a asp-controller="CompliancePolicy" asp-action="UnFiledReturns">
+                                                <span class="menu-icon">
+                                            <i class="mdi mdi-file-multiple-outline"></i>
+                                                </span>
+                                                <span class="sidebar-text">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Returns.UnfiledReturns"))
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li class="sidebar-item">
+                                            <a asp-controller="CompliancePolicy" asp-action="ReturnsNotification">
+                                                <span class="menu-icon">
+                                                    <i class="mdi mdi-alarm-check"></i>
+                                                </span>
+                                                <span class="sidebar-text">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Returns.Notification"))
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li class="sidebar-item">
+                                            <a asp-controller="CompliancePolicy" asp-action="ObligationEscalations">
+                                                <span class="menu-icon">
+                                                    <i class="mif-move-up"></i>
+                                                </span>
+                                                <span class="sidebar-text">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Returns.Escalation"))
+                                                </span>
+                                            </a>
+                                        </li>
+                                    </ul>
+
+                             </li>
+
+                            <li class="sidebar-item with-submenu">
+
+                                <a href="" class="toggle-submenu" data-id="reports-menu">
+                                    <span class="menu-icon">
+                                    <i class="mdi mdi mdi-file-tree-outline"></i>
+                                    </span>
+                                    <span>
+                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Reports"))
+                                    </span>
+                                    <span class="drop-icon">
+                                        <i class="mdi mdi-chevron-down"></i>
+                                    </span>
+                                </a>
+
+                                <ul id="reports-menu" class="sidebar-submenu">
+                                    <li class="sidebar-item">
+                                        <a asp-controller="CompliancePolicy" asp-action="UnFiledReturns">
+                                            <span class="menu-icon">
+                                            <i class="mdi mdi-file-replace-outline"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Reports.Unfiled"))
+                                            </span>
+                                        </a>
+                                    </li>
+
+                                    <li class="sidebar-item">
+                                        <a asp-controller="CompliancePolicy" asp-action="AllReturns">
+                                            <span class="menu-icon">
+                                            <i class="mdi mdi-file-table-outline"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Reports.TAT"))
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="sidebar-item">
+                                        <a asp-controller="CompliancePolicy" asp-action="FiledReturns">
+                                            <span class="menu-icon">
+                                            <i class="mdi mdi-file-send-outline"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Reports.Penalities"))
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="sidebar-item">
+                                        <a asp-controller="CompliancePolicy" asp-action="PeriodicIssueReport">
+                                            <span class="menu-icon">
+                                            <i class="mdi mdi-file-table-outline"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Reports.PeriodicIssueReport"))
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="sidebar-item">
+                                        <a asp-controller="CompliancePolicy" asp-action="AnnualAuditReport">
+                                            <span class="menu-icon">
+                                            <i class="mdi mdi-file-search-outline"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Reports.Audit.AnnualAuditReport"))
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </li>
+
+                            <li class="sidebar-separator">
+                                <span class="separator-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Configuration"))
                                 </span>
-                                <span>
-                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers"))
-                                </span>
-                                <span class="drop-icon">
-                                    <i class="mdi mdi-chevron-down"></i>
-                                </span>
-                            </a>
+                                <span class="separator-line"></span>
+                            </li>
 
-                            <ul id="workflow-menu" class="sidebar-submenu">
-                                <li class="sidebar-item">
-                                    <a asp-controller="Registers" asp-action="StandardsRegister">
-                                        <span class="menu-icon">
-                                            <i class="mdi mdi-decagram-outline"></i>
-                                        </span>
-                                        <span class="sidebar-text">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Standards"))
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a asp-controller="Registers" asp-action="StrategicRegister" asp-area="Admin">
-                                        <span class="menu-icon">
-                                            <i class="mdi mdi-image-filter-center-focus-strong-outline"></i>
-                                        </span>
-                                        <span class="sidebar-text">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Strategy"))
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a asp-controller="Registers" asp-action="PolicyRegister" asp-area="Admin">
-                                        <span class="menu-icon">
-                                            <i class="mdi mdi-directions"></i>
-                                        </span>
-                                        <span class="sidebar-text">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Policy"))
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a asp-controller="Registers" asp-action="ProcessMaps" asp-area="Admin">
-                                        <span class="menu-icon">
-                                            <i class="mdi mdi-hubspot"></i>
-                                        </span>
-                                        <span class="sidebar-text">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Process"))
-                                        </span>
-                                    </a>
-                                </li>
-                            </ul>
+                            <li class="sidebar-item">
+                                <a asp-controller="CompliancePolicy" asp-action="General">
+                                    <span class="menu-icon">
+                                    <i class="mif-equalizer-v"></i>
+                                    </span>
+                                    <span class="sidebar-text">
+                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Configuration.General"))
+                                    </span>
+                                </a>
+                            </li>
 
-                        </li>
+                            <li class="sidebar-item with-submenu">
+
+                                <a href="" class="toggle-submenu" data-id="settings-menu">
+                                    <span class="menu-icon">
+                                    <i class="mif-equalizer"></i>
+                                    </span>
+                                    <span>
+                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Configuration"))
+                                    </span>
+                                    <span class="drop-icon">
+                                        <i class="mdi mdi-chevron-down"></i>
+                                    </span>
+                                </a>
+
+                                <ul id="settings-menu" class="sidebar-submenu">
+                                    <li class="sidebar-item">
+                                        <a asp-controller="ComplianceSettings" asp-action="Users">
+                                            <span class="menu-icon">
+                                            <i class="mif-groups"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Settings.Users"))
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="sidebar-item">
+                                        <a asp-controller="ComplianceSettings" asp-action="Delegation">
+                                            <span class="menu-icon">
+                                                <i class="mdi mdi-account-switch-outline"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Settings.Delegation"))
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="sidebar-item">
+                                        <a asp-controller="ComplianceSettings" asp-action="Departments">
+                                            <span class="menu-icon">
+                                            <i class="mif-tab"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Settings.Departments"))
+                                            </span>
+                                        </a>
+                                    </li>
+                                    
+                                </ul>
+
+                            </li>
+                            
                         </ul>
+
+                        <div class="sidebar-footer">
+                            <div class="logo-box">
+                                <img src="~/images/logo.png" />
+                            </div>
+                            <h1 class="footer-text is-5 mb-0 ml-3">@Model.Banner</h1>
+                        </div>
 
                     </nav>
 
                 </aside>
 
-                <main id="mainContainer" role="main" class="grc-content-container">
+            <main class="main-content" id="mainContent">
+
+                    <header class="header-bar">
+
+                        <div class="header-align-left">
+                            <div class="app-banner">
+                                <h1 class="title is-5 mb-0 ml-3">Compliance</h1>
+                            </div>
+                        </div>
+
+                        <div class="header-align-right">
+                            <div class="app-seach-box">
+                                <span class="app-serach">
+                                    <i class="mdi mdi-magnify"></i>
+                                </span>
+                            </div>
+
+                            <div class="user-avator">
+                                <span class="avator-bell">
+                                    <i class="mdi mdi-bell-ring-outline"></i>
+                                </span>
+                                <span class="notification-count">5</span>
+                            </div>
+                            <div class="dropdown is-right" id="userDropdown">
+                                <div class="dropdown-trigger">
+                                    <button class="button avator-button" onclick="toggleDropdown()">
+                                        <div class="user-avator">
+                                            <span class="avator-initials">@Model.Initials</span>
+                                        </div>
+                                        <span class="drop-avator-icon">
+                                            <i class="mdi mdi-chevron-down"></i>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu">
+                                    <div class="dropdown-content">
+                                        <ul>
+                                            <li>
+                                                <a href="#" class="dropdown-item">
+                                                    <span>
+                                                        <i class="mdi mdi-account-cog"></i>
+                                                    </span>
+                                                    <span>
+                                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.User.Views"))
+                                                    </span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#" class="dropdown-item">
+                                                    <span>
+                                                        <i class="mdi mdi-account-cog"></i>
+                                                    </span>
+                                                    <span>
+                                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.User.Settings"))
+                                                    </span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li>
+                                                <a href="" class="dropdown-item" onclick="performLogout(event)">
+                                                    <span>
+                                                        <i class="mdi mdi-logout"></i>
+                                                    </span>
+                                                    <span>
+                                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.User.Logout"))
+                                                    </span>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </header>
+
                     @RenderBody()
+
                 </main>
 
             </div>
@@ -314,21 +590,21 @@
         </div>
 
         @{
-            // Add all your script files
             Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery-validation/dist/jquery.validate.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js");
-            Html.AddScriptParts(ResourceLocation.Footer, "~/lib/select-2/js/select2.full.min.js");
+            Html.AddScriptParts(ResourceLocation.Footer, "~/lib/datatables/datatables.min.js");
+            Html.AddScriptParts(ResourceLocation.Footer, "~/lib/select-2/js/select2.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/lib/bootstrap/dist/js/bootstrap.js");
-            Html.AddScriptParts(ResourceLocation.Footer, "~/lib/metro/js/highlight.min.js");
-            Html.AddScriptParts(ResourceLocation.Footer, "~/lib/metro/js/apexcharts.js");
-        Html.AddScriptParts(ResourceLocation.Footer, "~/js/grc-sidebar.js");
-            Html.AddScriptParts(ResourceLocation.Footer, "~/js/grc-app.js");
+
+            Html.AddScriptParts(ResourceLocation.Footer, "~/js/component-script.js");
+            Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-script.js");
+            Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-table-script.js");
+            Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-other-script.js");
         }
 
         @Html.GenerateScripts(ResourceLocation.Footer)
         @await RenderSectionAsync("Scripts", required: false)
-
 
         <script>
             window.ADMIN_LOGOUT_URL = '@Url.Action("Logout", "Application")';

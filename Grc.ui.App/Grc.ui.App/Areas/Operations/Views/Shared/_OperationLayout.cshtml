@@ -77,9 +77,10 @@
                         </li>
 
                         <li class="sidebar-item with-submenu">
+
                             <a href="" class="toggle-submenu" data-id="processes-menu">
                                 <span class="menu-icon">
-                                    <i class="mdi mdi-server-security"></i>
+                                    <i class="mdi mdi-cogs"></i>
                                 </span>
                                 <span>
                                     @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Processes"))
@@ -88,12 +89,13 @@
                                     <i class="mdi mdi-chevron-down"></i>
                                 </span>
                             </a>
+
                             <ul id="processes-menu" class="sidebar-submenu">
 
                                 <li class="sidebar-item with-submenu">
                                     <a asp-controller="OperationWorkflow" asp-action="RegisterProcess" asp-area="Operations">
                                         <span class="menu-icon">
-                                            <i class="mdi mdi-shield-check-outline"></i>
+                                            <i class="mdi mdi-file-cog-outline"></i>
                                         </span>
                                         <span class="sidebar-text">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Processes.Register"))
@@ -104,7 +106,7 @@
                                 <li class="sidebar-item with-submenu">
                                     <a asp-controller="OperationWorkflow" asp-action="GroupProcesses" asp-area="Operations">
                                         <span class="menu-icon">
-                                            <i class="mdi mdi-shield-account-outline"></i>
+                                            <i class="mdi mdi-cog-sync-outline"></i>
                                         </span>
                                         <span class="sidebar-text">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Processes.Groups"))
@@ -115,7 +117,7 @@
                                 <li class="sidebar-item with-submenu">
                                     <a asp-controller="OperationWorkflow" asp-action="TagProcesses" asp-area="Operations">
                                         <span class="menu-icon">
-                                            <i class="mdi mdi-account-convert-outline"></i>
+                                            <i class="mdi mdi-cog-transfer-outline"></i>
                                         </span>
                                         <span class="sidebar-text">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Processes.Tags"))
@@ -124,12 +126,13 @@
                                 </li>
                                 
                             </ul>
+
                         </li>
 
                         <li class="sidebar-item with-submenu">
                             <a href="" class="toggle-submenu" data-id="approvals-menu">
                                 <span class="menu-icon">
-                                    <i class="mdi mdi-server-security"></i>
+                                    <i class="mdi mdi-clipboard-list-outline"></i>
                                 </span>
                                 <span>
                                     @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Tasks"))
@@ -143,7 +146,7 @@
                                 <li class="sidebar-item with-submenu">
                                     <a asp-controller="OperationWorkflow" asp-action="Approvals" asp-area="Operations">
                                         <span class="menu-icon">
-                                            <i class="mdi mdi-shield-check-outline"></i>
+                                            <i class="mdi mdi-clipboard-check-outline"></i>
                                         </span>
                                         <span class="sidebar-text">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Tasks.Approvals"))
@@ -154,7 +157,7 @@
                                 <li class="sidebar-item with-submenu">
                                     <a asp-controller="OperationWorkflow" asp-action="Pending" asp-area="Operations">
                                         <span class="menu-icon">
-                                            <i class="mdi mdi-shield-account-outline"></i>
+                                            <i class="mdi mdi-clipboard-flow-outline"></i>
                                         </span>
                                         <span class="sidebar-text">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Tasks.Pending"))
@@ -165,7 +168,7 @@
                                 <li class="sidebar-item with-submenu">
                                     <a asp-controller="OperationWorkflow" asp-action="Revisions" asp-area="Operations">
                                         <span class="menu-icon">
-                                            <i class="mdi mdi-account-convert-outline"></i>
+                                            <i class="mdi mdi-clipboard-alert-outline"></i>
                                         </span>
                                         <span class="sidebar-text">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Tasks.Revisions"))
@@ -186,7 +189,7 @@
                         <li class="sidebar-item with-submenu">
                             <a href="" class="toggle-submenu" data-id="access-menu">
                                 <span class="menu-icon">
-                                    <i class="mdi mdi-server-security"></i>
+                                    <i class="mdi mdi-account-key-outline"></i>
                                 </span>
                                 <span>
                                     @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Configurations.Access"))
@@ -200,7 +203,7 @@
                                 <li class="sidebar-item with-submenu">
                                     <a asp-controller="OperationsConfiguration" asp-action="Teams" asp-area="Operations">
                                         <span class="menu-icon">
-                                            <i class="mdi mdi-shield-check-outline"></i>
+                                            <i class="mif-group-by-ref"></i>
                                         </span>
                                         <span class="sidebar-text">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Configurations.Teams"))
@@ -211,7 +214,7 @@
                                 <li class="sidebar-item with-submenu">
                                     <a asp-controller="OperationsConfiguration" asp-action="Guests" asp-area="Operations">
                                         <span class="menu-icon">
-                                            <i class="mdi mdi-shield-account-outline"></i>
+                                            <i class="mdi mdi-account-tie-outline"></i>
                                         </span>
                                         <span class="sidebar-text">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Configurations.Guests"))
@@ -222,7 +225,7 @@
                                 <li class="sidebar-item with-submenu">
                                     <a asp-controller="OperationsConfiguration" asp-action="Delegation" asp-area="Operations">
                                         <span class="menu-icon">
-                                            <i class="mdi mdi-account-convert-outline"></i>
+                                            <i class="mdi mdi-account-switch-outline"></i>
                                         </span>
                                         <span class="sidebar-text">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Configurations.Delegation"))
@@ -236,7 +239,7 @@
                         <li class="sidebar-item with-submenu">
                             <a href="" class="toggle-submenu" data-id="settings-menu">
                                 <span class="menu-icon">
-                                    <i class="mdi mdi-server-security"></i>
+                                    <i class="mdi mdi-settings-helper"></i>
                                 </span>
                                 <span>
                                     @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Configurations.Settings"))
@@ -250,7 +253,7 @@
                                 <li class="sidebar-item with-submenu">
                                     <a asp-controller="OperationsConfiguration" asp-action="General" asp-area="Operations">
                                         <span class="menu-icon">
-                                            <i class="mdi mdi-shield-check-outline"></i>
+                                            <i class="mdi mdi-shuffle-disabled"></i>
                                         </span>
                                         <span class="sidebar-text">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Configurations.General"))
@@ -261,7 +264,7 @@
                                 <li class="sidebar-item with-submenu">
                                     <a asp-controller="OperationsConfiguration" asp-action="Additional" asp-area="Operations">
                                         <span class="menu-icon">
-                                            <i class="mdi mdi-shield-check-outline"></i>
+                                            <i class="mdi mdi-shuffle-variant"></i>
                                         </span>
                                         <span class="sidebar-text">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Configurations.Additional"))
@@ -326,7 +329,7 @@
                                         <li>
                                             <a href="#" class="dropdown-item">
                                                 <span>
-                                                    <i class="mdi mdi-account-cog"></i>
+                                                    <i class="mif-cogs"></i>
                                                 </span>
                                                 <span>
                                                     @Html.Raw(ILocalize.GetLocalizedLabel("App.User.Views"))

@@ -236,9 +236,6 @@ $(document).ready(function() {
         });
     }
 
-
-
-
     //..smooth transitions
     function enableSmoothTransitions() {
         $('.sidebar-container').css({

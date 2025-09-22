@@ -58,6 +58,7 @@
             </div>
 
             <div class="header-align-right">
+
                 <div class="app-seach-box">
                     <span class="app-serach">
                         <i class="mdi mdi-magnify"></i>
@@ -70,7 +71,9 @@
                     </span>
                     <span class="notification-count">5</span>
                 </div>
+
                 <div class="dropdown is-right" id="userDropdown">
+
                     <div class="dropdown-trigger">
                         <button class="button avator-button" onclick="toggleDropdown()">
                             <div class="user-avator">
@@ -81,6 +84,7 @@
                             </span>
                         </button>
                     </div>
+
                     <div class="dropdown-menu">
                         <div class="dropdown-content">
                             <ul>
@@ -121,7 +125,9 @@
 
                         </div>
                     </div>
+
                 </div>
+
             </div>
 
         </header>
@@ -131,14 +137,18 @@
             <aside class="sidebar-container">
 
                 <nav class="sidebar bg-light">
+
                     <div class="sidebar-geader">
                         <button>
                             <span class="menu-icon">
                                 <i class="mdi mdi-menu"></i></>
                             </span>
                         </button>
-                        <span>GRC SUITE</span>
+                        <div class="logo-container">
+                            <img src="~/images/pearl_transp.png" />
+                        </div>
                     </div>
+
                     <ul class="sidebar-menu">
 
                         <li class="sidebar-item">
@@ -162,7 +172,7 @@
                         <li class="sidebar-item with-submenu">
                             <a asp-controller="OperationsGuest" asp-action="ApprovalRequests" asp-area="Operations">
                                 <span class="menu-icon">
-                                    <i class="mdi mdi-shield-check-outline"></i>
+                                    <i class="mdi mdi-clipboard-check-outline"></i>
                                 </span>
                                 <span class="sidebar-text">
                                     @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Processes.Requests"))
@@ -173,10 +183,19 @@
                     </ul>
                 </nav>
 
+                <div class="sidebar-footer">
+                    <div class="logo-box">
+                        <img src="~/images/logo.png" />
+                    </div>
+                    <h1 class="footer-text is-5 mb-0 ml-3">@Model.Banner</h1>
+                </div>
+
             </aside>
+
             <main class="main-content" id="mainContent">
                 @RenderBody()
             </main>
+
         </div>
 
     </div>

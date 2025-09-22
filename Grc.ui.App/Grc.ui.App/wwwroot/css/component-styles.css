@@ -1,12 +1,13 @@
 ﻿.main-content {
-    padding: 0 20px!important;
+    margin-top: 75px;
+    padding: 0 20px !important;
 }
 .grc-page-component {
     display: flex;
     flex-direction: column;
     flex: 1;
-    min-height: 100%;
-    height: 100%;
+    min-height: calc(100% - 75px);
+    height: calc(100% - 75px);
     position: relative;
     overflow: hidden;
 }
@@ -38,7 +39,7 @@
 
 .component-modal-container {
     position: absolute;
-    top: 0;
+    top: 75px;
     left: 50%;
     display: flex;
     flex-direction: column;
@@ -286,7 +287,8 @@ button.component-filter-close {
 
 .grc-component-content {
     height: 100%;
-    overflow: auto;
+    height: calc(100% - 75px);
+    overflow: hidden;
 }
 
 .component-label {

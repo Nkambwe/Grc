@@ -74,7 +74,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 model = await _operationsDashboardFactory.PrepareOperationsDashboardModelAsync(currentUser);
             } catch (Exception ex) {
                 await ProcessErrorAsync(ex.Message, "OPERATIONS-DASHBOARD-CONTROLLER", ex.StackTrace);
-                return View(model);
+                return RedirectToAction("Login");
             }
 
             return View(model);
