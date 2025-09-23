@@ -11,6 +11,36 @@
             );
 
             routeBuilder.MapControllerRoute(
+                name: "admin-users",
+                pattern: "admin/support/system-users",
+                defaults: new { area = "Admin", controller = "Support", action = "Users" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                name: "admin-roles",
+                pattern: "admin/support/system-roles",
+                defaults: new { area = "Admin", controller = "Support", action = "Roles" }
+            );
+
+            routeBuilder.MapControllerRoute(
+               name: "admin-rolesGroups",
+               pattern: "admin/support/system-roles-groups",
+               defaults: new { area = "Admin", controller = "Support", action = "RoleGroups" }
+            );
+
+            routeBuilder.MapControllerRoute(
+               name: "admin-rolesDelegations",
+               pattern: "admin/support/system-roles-delegations",
+               defaults: new { area = "Admin", controller = "Support", action = "RoleDelegation" }
+            );
+
+            routeBuilder.MapControllerRoute(
+               name: "admin-passwords",
+               pattern: "admin/support/security-password",
+               defaults: new { area = "Admin", controller = "Support", action = "PasswordPolicy" }
+            );
+
+            routeBuilder.MapControllerRoute(
                 name: "admin-settings",
                 pattern: "admin/settings",
                 defaults: new { area = "Admin", controller = "Settings", action = "Index" }

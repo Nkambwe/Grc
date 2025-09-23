@@ -17,7 +17,7 @@
         <div class="component-header-left">
             @foreach (var action in Model.LeftActions)
             {
-                string btnClass = $"action-btn-{action.Tooltip}";
+                string btnClass = $"action-btn-{action.ActionKey}";
                 <button class="action-btn @btnClass" data-action="@action.ActionKey" title="@action.Tooltip">
                     <span><i class="@action.Icon"></i></span>
                     <span>@Html.Raw(action.Tooltip)</span>
@@ -68,4 +68,3 @@
     </div>
 
 </div>
-

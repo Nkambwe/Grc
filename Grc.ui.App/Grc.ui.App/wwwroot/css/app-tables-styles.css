@@ -1,1 +1,10 @@
-﻿
+﻿div.dt-processing > div:last-child > div {
+    position: absolute;
+    top: 0;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: var(--yellow-dark-extra) !important;
+    background: rgb(var(--dt-row-selected));
+    animation-timing-function: cubic-bezier(0, 1, 1, 0)
+}

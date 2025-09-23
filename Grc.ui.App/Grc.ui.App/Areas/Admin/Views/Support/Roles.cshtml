@@ -1,8 +1,29 @@
 ﻿@{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "System Roles";
+    ViewData["Title"] = "SYSTEM ROLES";
+}
+@model AdminDashboardModel
+@{
+    var component = new PageComponentViewModel
+    {
+        ComponentId = "1",
+        ComponentKey = "Roles",
+        LeftActions = new List<ComponentAction>
+        {
+            new ComponentAction { ActionKey = ActionKey.Search.GetDescription(), Icon = "mdi mdi-magnify", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Search") },
+            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
+            new ComponentAction { ActionKey = ActionKey.New.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") },
+            new ComponentAction { ActionKey = ActionKey.Edit.GetDescription(), Icon = "mdi mdi-pencil", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Edit") },
+            new ComponentAction { ActionKey = ActionKey.Delete.GetDescription(), Icon = "mdi mdi-delete", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Delete") },
+            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
+            new ComponentAction { ActionKey = ActionKey.UserRoles.GetDescription(), Icon = "mdi mdi-account-group-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Menu.Configurations.RoleGroups") },
+            new ComponentAction { ActionKey = ActionKey.Permissions.GetDescription(), Icon = "mdi mdi-key", Tooltip = ILocalize.GetLocalizedLabel("App.Menu.Permissions") },
+            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
+            new ComponentAction { ActionKey = ActionKey.Departments.GetDescription(), Icon = "mdi mdi-share-all-outlin", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Departments") },
+            
+        }
+    };
 }
 
-<div>
-    <span class="text-success display-1">System Roles</span>
-</div>
+<!-- role list -->
+@await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("RoleList") })

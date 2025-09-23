@@ -883,10 +883,10 @@ h1.title {
     display:inline-block;
 }
 
-    .stat-link:hover {
-        color: var(--teal-medium-accent);
-        transition: all .3s ease-in-out;
-    }
+.stat-link:hover {
+    color: var(--purple-dark-accent);
+    transition: all .3s ease-in-out;
+}
 
 .stat-link-color:hover {
     color: var(--white-base);

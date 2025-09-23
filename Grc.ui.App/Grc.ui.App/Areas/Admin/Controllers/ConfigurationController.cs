@@ -56,7 +56,6 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             return View(model);
         }
 
-
         public async Task<IActionResult> IPManagement() {
             var model = new AdminDashboardModel();
             try {

@@ -2,7 +2,24 @@
     Layout = "_AdminLayout";
     ViewData["Title"] = "BUG TRACKER";
 }
+@model AdminDashboardModel
+@{
+    var component = new PageComponentViewModel
+    {
+        ComponentId = "1",
+        ComponentKey = "BugTracker",
+        LeftActions = new List<ComponentAction>
+        {
+            new ComponentAction { ActionKey = ActionKey.Search.GetDescription(), Icon = "mdi mdi-magnify", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Search") },
+            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
+            new ComponentAction { ActionKey = ActionKey.New.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") },
+            new ComponentAction { ActionKey = ActionKey.Close.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Reset") },
+            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
+            new ComponentAction { ActionKey = ActionKey.Email.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Email") }
 
-<div>
-    <span class="text-success display-1">Data Encryption</span>
-</div>
+        }
+    };
+}
+
+<!-- role list -->
+@await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("BugTracker") })

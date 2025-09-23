@@ -16,7 +16,7 @@ body {
 }
 
 :root {
-    --header-height: 60px;
+    --header-height: 57px;
     --sidebar-width: 250px;
     --sidebar-collapsed-width: 60px;
     --primary-color: #006d77;
@@ -53,7 +53,7 @@ body {
 }
 
 header.header-bar.collapsed {
-    left: 59px !important;
+    left: 58px !important;
     transition: all .3s ease-in-out;
 }
 
@@ -850,6 +850,10 @@ h1.title {
     background-color: var(--green-dark-light-accent);
 }
 
+.stat-separator-colored-pearl {
+   background-color: var(--pearl-purple-dark-40);
+}
+
 .stat-separator-colored {
     background: var(--pink-faint-light);
 }
@@ -887,7 +891,7 @@ h1.title {
 }
 
 .stat-link:hover {
-    color: var(--teal-medium-accent);
+    color: var(--purple-light-strong);
     transition: all .3s ease-in-out;
 }
 
@@ -1049,6 +1053,19 @@ select.form-control:focus {
 .datepicker table tr td.day:hover {
     background-color: #d966e2 !important;
     color: var(--white-base) !important;
+}
+
+.stat-title {
+    color: var(--white-base);
+}
+
+.stat-number span {
+    color: var(--white-base);
+}
+
+.stat-card-light {
+    color: var(--white-base);
+    background: var(--orange);
 }
 
 @keyframes dropdownFadeIn {

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Grc.ui.App.Extensions.Http;
+using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
@@ -37,42 +38,27 @@ namespace Grc.ui.App.Factories {
             //..get quick items
             var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.LastLoginIpAddress);
             var quickActions = new List<QuickActionModel>();
-            if (!quicksData.HasError)
-            {
+            if (!quicksData.HasError) {
                 var quickies = quicksData.Data;
-                if (quickies.Count > 0)
-                {
-                    foreach (var action in quickies)
-                    {
+                if (quickies.Count > 0) {
+                    foreach (var action in quickies) {
                         quickActions.Add(_mapper.Map<QuickActionModel>(action));
                     }
                 }
             }
 
-            //..get base url
-            var middlewareOptions = _configuration.GetSection("MiddlewareOptions").Get<MiddlewareOptions>();
-            var envOptions = _configuration.GetSection("EnvironmentOptions").Get<EnvironmentOptions>();
-            string baseUrl = !(bool)envOptions?.IsLive ? (middlewareOptions?.BaseUrl?.TrimEnd('/')) :
-                (middlewareOptions?.ProdBaseUrl?.TrimEnd('/'));
-
             //..get dashboard statistics
-            var stats = (await _processesService.StatisticAsync(currentUser.UserId, currentUser.LastLoginIpAddress));
+            var stats = await _processesService.StatisticAsync(currentUser.UserId, currentUser.LastLoginIpAddress);
 
             //..generate dashboard model
             return new OperationsDashboardModel {
-                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}!",
+                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
                 //..set workspace into session
                 Workspace = _sessionManager.GetWorkspace(),
                 //..statistics
-                ProposedProcesses = stats.ProposedProcesses,
-                CompletedProcesses = stats.CompletedProcesses,
-                UnchangedProcesses = stats.UnchangedProcesses,
-                ProcessesDueForReview = stats.ProcessesDueForReview,
-                DormantProcesses = stats.DormantProcesses,
-                CancelledProcesses = stats.CancelledProcesses,
-                UnitTotalProcesses = stats.UnitTotalProcesses
+                DashboardStatistics = stats
             };
         }
 
@@ -84,5 +70,14 @@ namespace Grc.ui.App.Factories {
                 Workspace = _sessionManager.GetWorkspace(),
             });
         }
+
+        public async Task<OperationsDashboardModel> PrepareUnitStatisticsModelAsync(UserModel currentUser, string unit) {
+            var unitStatistics = await _processesService.UnitCountAsync(currentUser.UserId, currentUser.LastLoginIpAddress, unit);
+            return new OperationsDashboardModel {
+                Workspace = _sessionManager.GetWorkspace(),
+                UnitStatistics = unitStatistics
+            };
+        }
+
     }
 }

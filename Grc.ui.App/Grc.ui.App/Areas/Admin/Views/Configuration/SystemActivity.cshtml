@@ -1,8 +1,24 @@
 ﻿@{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "SYSTEM ACTIVITY";
+    ViewData["Title"] = "ACTIVITIES";
+}
+@model AdminDashboardModel
+@{
+    var component = new PageComponentViewModel
+    {
+        ComponentId = "1",
+        ComponentKey = "Activities",
+        LeftActions = new List<ComponentAction>
+        {
+            new ComponentAction { ActionKey = ActionKey.Search.GetDescription(), Icon = "mdi mdi-magnify", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Search") },
+            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
+            new ComponentAction { ActionKey = ActionKey.New.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") },
+            new ComponentAction { ActionKey = ActionKey.Edit.GetDescription(), Icon = "mdi mdi-pencil", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Edit") },
+            new ComponentAction { ActionKey = ActionKey.Delete.GetDescription(), Icon = "mdi mdi-delete", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Delete") }
+
+        }
+    };
 }
 
-<div>
-    <span class="text-success display-1">System Activity</span>
-</div>
+<!-- role list -->
+@await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("ActivitiesList") })
