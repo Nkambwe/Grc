@@ -78,9 +78,29 @@
 	<LocaleResource Name="App.Label.Units">
 		<Value>Units</Value>
 	</LocaleResource>
-	<LocaleResource Name="App.Label.Departments">
+	<LocaleResource Name="App.Label.Organization.Departments">
 		<Value>Departments</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Label.Organization">
+		<Value>Organization</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Organization.Info">
+		<Value>Company</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Organization.Branches">
+		<Value>Branches</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Organization.Departments">
+		<Value>Departments</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Organization.Department.Unit">
+		<Value>Department Units</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Organization.Department.Heads">
+		<Value>Department Heads</Value>
+	</LocaleResource>
+	
+	
 	<LocaleResource Name="App.Label.UserRoles">
 		<Value>Roles</Value>
 	</LocaleResource>
@@ -105,6 +125,11 @@
 	<LocaleResource Name="Component.Key.Permissions">
 		<Value>Permission Sets</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Key.RoleGroup">
+		<Value>Groups</Value>
+	</LocaleResource>
+	
+	
 	<LocaleResource Name="Component.Key.PermissionSet">
 		<Value>Permission Sets</Value>
 	</LocaleResource>
@@ -229,6 +254,9 @@
 	<LocaleResource Name="App.Menu.Users">
 		<Value>System Users</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Menu.Users.Accounts">
+		<Value>User Accounts</Value>
+	</LocaleResource>
 	<LocaleResource Name="App.Menu.Permissions">
 		<Value>Permissions</Value>
 	</LocaleResource>
@@ -298,6 +326,14 @@
 	<LocaleResource Name="App.Menu.Configurations.Activities">
 		<Value>System Activities</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Menu.Configurations.AddUser">
+		<Value>User</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Configurations.PermissionSet">
+		<Value>Permission Set</Value>
+	</LocaleResource>
+	
+	
 	<LocaleResource Name="Operations.Menu.Home">
 		<Value>Home</Value>
 	</LocaleResource>

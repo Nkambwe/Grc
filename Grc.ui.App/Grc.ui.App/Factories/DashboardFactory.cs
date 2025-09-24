@@ -4,13 +4,10 @@ using Grc.ui.App.Services;
 namespace Grc.ui.App.Factories {
     public class DashboardFactory : IDashboardFactory {
         private readonly ILocalizationService _localizationService;
-        private readonly IPinnedService _pinnedService;
         private readonly IQuickActionService _quickActionService;
         public DashboardFactory(ILocalizationService localizationService,
-                                IPinnedService pinnedService, 
                                 IQuickActionService quickActionService) {  
             _localizationService = localizationService;
-            _pinnedService = pinnedService;
             _quickActionService = quickActionService;
         }
 

@@ -347,6 +347,16 @@
                                                 </span>
                                             </a>
                                         </li>
+                                        <li class="sidebar-item">
+                                            <a asp-controller="CompliancePolicy" asp-action="AllReturns">
+                                                <span class="menu-icon">
+                                                    <i class="mdi mdi-file-cabinet"></i>
+                                                </span>
+                                                <span class="sidebar-text">
+                                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Returns.Authorities"))
+                                                </span>
+                                            </a>
+                                        </li>
                                     </ul>
 
                              </li>

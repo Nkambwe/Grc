@@ -1,25 +1,11 @@
-﻿@model OperationsDashboardModel
+﻿@using System.Text.Json
+@model OperationsDashboardModel
 @{
     Layout = "_OperationLayout";
     ViewData["Title"] = "Dashboard";
 
-    var procTotal = Model.DashboardStatistics.UnitProcesses.TotalUnitProcess.TotalProcesses;
-    var cancelTotal = Model.DashboardStatistics.UnitProcesses.CancelledProcesses.TotalProcesses;
-    var completeTotal = Model.DashboardStatistics.UnitProcesses.CompletedProcesses.TotalProcesses;
-    var unchangedTotal = Model.DashboardStatistics.UnitProcesses.UnchangedProcesses.TotalProcesses;
-    var dormantTotal = Model.DashboardStatistics.UnitProcesses.DormantProcesses.TotalProcesses;
-    var propsTotal = Model.DashboardStatistics.UnitProcesses.ProposedProcesses.TotalProcesses;
-    var dueTotal = Model.DashboardStatistics.UnitProcesses.ProcessesDueForReview.TotalProcesses;
-
-    var catTotals = Model.DashboardStatistics.ProcessCategories.TotalCategoryProcesses.Total;
-    var catTotalAcc = Model.DashboardStatistics.ProcessCategories.AccountServiceProcesses.Total;
-    var catTotalCash = Model.DashboardStatistics.ProcessCategories.CashProcesses.Total;
-    var catTotalRecon = Model.DashboardStatistics.ProcessCategories.ReconciliationProcesses.Total;
-    var catTotalRecord = Model.DashboardStatistics.ProcessCategories.RecordsMgtProcesses.Total;
-    var catTotalWallet = Model.DashboardStatistics.ProcessCategories.WalletProcesses.Total;
-    var catTotalPay = Model.DashboardStatistics.ProcessCategories.PaymentProcesses.Total;
-    var catTotalChannel = Model.DashboardStatistics.ProcessCategories.ChannelProcesses.Total;
-    var catTotalCx = Model.DashboardStatistics.ProcessCategories.CustomerExperienceProcesses.Total;
+    var categoriesJson = JsonSerializer.Serialize(Model.ChartViewModel.CategoryTotals);
+    var statusesJson = JsonSerializer.Serialize(Model.ChartViewModel.StatusSummaries);
 }
 
 <div class="welcome-container">
@@ -53,104 +39,18 @@
     </div>
 
     <div class="stats-content">
-        <div class="stat-card stat-card-light">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.TotalProcesses"))</span>
+        @foreach (var card in Model.ChartViewModel.ProcessCards)
+        {
+            <div class="stat-card stat-card-light">
+                <div class="stat-title"><span>@card.Title</span></div>
+                <div class="stat-number"><span>@card.Value</span></div>
+                <span class="stat-separator @card.CssClass"></span>
+                <a class="stat-link" asp-controller="@card.Controller" asp-action="@card.Action" asp-area="Operations">
+                    <span><i class="mdi mdi-chevron-right"></i></span>
+                    <span>See More</span>
+                </a>
             </div>
-            <div class="stat-number" id="totalProcesses">
-                <span>@procTotal</span>
-            </div>
-            <span class="stat-separator stat-separator-default"></span>
-            <a class="stat-link" asp-controller="OperationDashboard" asp-action="Completed" asp-area="Operations">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
-        </div>
-
-        <div class="stat-card stat-card-light">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Proposed"))</span>
-            </div>
-            <div class="stat-number" id="propsTotal">
-                <span>@propsTotal</span>
-            </div>
-            <span class="stat-separator stat-separator-primary"></span>
-            <a class="stat-link" asp-controller="OperationDashboard" asp-action="Proposed" asp-area="Operations">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
-        </div>
-
-        <div class="stat-card stat-card-light">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Unchanged"))</span>
-            </div>
-            <div class="stat-number" id="unchangedTotal">
-                <span>@unchangedTotal</span>
-            </div>
-            <span class="stat-separator stat-separator-danger"></span>
-            <a class="stat-link" asp-controller="OperationDashboard" asp-action="Unchanged" asp-area="Operations">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
-        </div>
-
-        <div class="stat-card stat-card-light">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.DueForReview"))</span>
-            </div>
-            <div class="stat-number" id="dueProcesses">
-                <span>@dueTotal</span>
-            </div>
-            <span class="stat-separator stat-separator-colored-pearl"></span>
-            <a class="stat-link" asp-controller="OperationDashboard" asp-action="Due" asp-area="Operations">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
-        </div>
-
-        <div class="stat-card stat-card-light">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Dormant"))</span>
-            </div>
-            <div class="stat-number" id="dormantProcesses">
-                <span>@dormantTotal</span>
-            </div>
-            <span class="stat-separator stat-separator-colored-pearl"></span>
-            <a class="stat-link" asp-controller="OperationDashboard" asp-action="Dormant" asp-area="Operations">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
-        </div>
-
-        <div class="stat-card stat-card-light">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Cancelled"))</span>
-            </div>
-            <div class="stat-number" id="cancelledProcesses">
-                <span>@cancelTotal</span>
-            </div>
-            <span class="stat-separator stat-separator-colored-pearl"></span>
-            <a class="stat-link" asp-controller="OperationDashboard" asp-action="Cancelled" asp-area="Operations">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
-        </div>
-        
-        <div class="stat-card stat-card-light">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Completed"))</span>
-            </div>
-            <div class="stat-number" id="completedProcesses">
-                <span>@completeTotal</span>
-            </div>
-            <span class="stat-separator stat-separator-danger"></span>
-            <a class="stat-link" asp-controller="OperationWorkflow" asp-action="Completed" asp-area="Operations">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
-        </div>
-
+        }
     </div>
 
 </div>
@@ -163,131 +63,63 @@
     </div>
 
     <div class="stats-content">
-        <div class="stat-card stat-card-colored">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Units.Totals"))</span>
+        @foreach (var card in Model.ChartViewModel.UnitCards)
+        {
+            <div class="stat-card stat-card-colored">
+                <div class="stat-title"><span>@card.Title</span></div>
+                <div class="stat-number"><span>@card.Value</span></div>
+                <span class="stat-separator @card.CssClass"></span>
+                <a class="stat-link-color" asp-controller="@card.Controller" asp-action="@card.Action" asp-area="Operations">
+                    <span><i class="mdi mdi-chevron-right"></i></span>
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
+                </a>
             </div>
-            <div class="stat-number" id="totalProcesses">
-                <span>@catTotals</span>
-            </div>
-            <span class="stat-separator stat-separator-colored"></span>
-            <a class="stat-link-color" asp-controller="OperationDashboard" asp-action="AccountServices" asp-area="Operations">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
-        </div>
-        <div class="stat-card stat-card-colored">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Units.AccountServices"))</span>
-            </div>
-            <div class="stat-number" id="totalAcc">
-                <span>@catTotalAcc</span>
-            </div>
-            <span class="stat-separator stat-separator-colored"></span>
-            <a class="stat-link-color" asp-controller="OperationDashboard" asp-action="AccountServices" asp-area="Operations">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
-        </div>
-
-        <div class="stat-card stat-card-colored">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Units.Reconciliation"))</span>
-            </div>
-            <div class="stat-number" id="totalRecon">
-                <span>@catTotalRecon</span>
-            </div>
-            <span class="stat-separator stat-separator-danger"></span>
-            <a class="stat-link-color" asp-controller="OperationDashboard" asp-action="Reconciliation" asp-area="Operations">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
-        </div>
-
-        <div class="stat-card stat-card-colored">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Units.Records"))</span>
-            </div>
-            <div class="stat-number" id="totalRecords">
-                <span>@catTotalRecord</span>
-            </div>
-            <span class="stat-separator stat-separator-warning"></span>
-            <a class="stat-link-color" asp-controller="OperationDashboard" asp-action="RecordsManagement" asp-area="Operations">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
-        </div>
-
-        <div class="stat-card stat-card-colored">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Units.Wallets"))</span>
-            </div>
-            <div class="stat-number" id="totalWallet">
-                <span>@catTotalWallet</span>
-            </div>
-            <span class="stat-separator stat-separator-colored-primary"></span>
-            <a class="stat-link-color" asp-controller="OperationDashboard" asp-action="Wallets" asp-area="Operations">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
-        </div>
-
-        <div class="stat-card stat-card-colored">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Units.Cash"))</span>
-            </div>
-            <div class="stat-number" id="userReportedBugs">
-                <span>@catTotalCash</span>
-            </div>
-            <span class="stat-separator stat-separator-warning"></span>
-            <a class="stat-link-color" asp-controller="OperationDashboard" asp-action="Cash" asp-area="Operations">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
-        </div>
-
-        <div class="stat-card stat-card-colored">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Units.CustomerExperience"))</span>
-            </div>
-            <div class="stat-number" id="totalCx">
-                <span>@catTotalCx</span>
-            </div>
-            <span class="stat-separator stat-separator-warning"></span>
-            <a class="stat-link-color" asp-controller="OperationDashboard" asp-action="CustomerExperience" asp-area="Operations">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
-        </div>
-
-        <div class="stat-card stat-card-colored">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Units.Payments"))</span>
-            </div>
-            <div class="stat-number" id="totalPay">
-                <span>@catTotalPay</span>
-            </div>
-            <span class="stat-separator stat-separator-warning"></span>
-            <a class="stat-link-color" asp-controller="OperationDashboard" asp-action="Payments" asp-area="Operations">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
-        </div>
-
-        <div class="stat-card stat-card-colored">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Units.Channels"))</span>
-            </div>
-            <div class="stat-number" id="totalChannel">
-                <span>@catTotalChannel</span>
-            </div>
-            <span class="stat-separator stat-separator-warning"></span>
-            <a class="stat-link-color" asp-controller="OperationDashboard" asp-action="Channels" asp-area="Operations">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
-        </div>
+        }
     </div>
 
 </div>
+
+<div class="charts-grid">
+
+    <div class="chart-container">
+        <canvas id="categoryChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="statusChart"></canvas>
+    </div>
+
+</div>
+
+<script>
+    const categories = @Html.Raw(categoriesJson);
+    const statuses = @Html.Raw(statusesJson);
+
+    //..doughnut Chart for categories
+    new Chart(document.getElementById("categoryChart"), {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(categories),
+            datasets: [{
+                data: Object.values(categories),
+                backgroundColor: Object.keys(categories).map((_, i) => `hsl(${i*45},70%,60%)`)
+            }]
+        }
+    });
+
+    //..stacked Bar Chart for status vs categories
+    const cats = Object.keys(statuses[0].Categories);
+    const datasets = cats.map(cat => ({
+        label: cat,
+        data: statuses.map(s => s.Categories[cat] || 0),
+        backgroundColor: `hsl(${Math.random()*360},70%,60%)`
+    }));
+
+    new Chart(document.getElementById("statusChart"), {
+        type: 'bar',
+        data: { labels: statuses.map(s => s.Status), datasets },
+        options: { scales: { x: { stacked: true }, y: { stacked: true } } }
+    });
+
+</script>
 

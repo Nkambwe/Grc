@@ -20,6 +20,10 @@ build_property._RazorSourceGeneratorDebug =
 build_property.EffectiveAnalysisLevelStyle = 7.0
 build_property.EnableCodeStyleSeverity = 
 
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Admin/Views/Configuration/Branches.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ29uZmlndXJhdGlvblxCcmFuY2hlcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Admin/Views/Configuration/BugReporter.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ29uZmlndXJhdGlvblxCdWdSZXBvcnRlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -32,16 +36,12 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ29uZmlndXJhdGlvblxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Admin/Views/Configuration/IPManagement.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ29uZmlndXJhdGlvblxJUE1hbmFnZW1lbnQuY3NodG1s
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Admin/Views/Configuration/Organization.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ29uZmlndXJhdGlvblxPcmdhbml6YXRpb24uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Admin/Views/Configuration/SystemActivity.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ29uZmlndXJhdGlvblxTeXN0ZW1BY3Rpdml0eS5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Admin/Views/Configuration/UserAuthentication.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ29uZmlndXJhdGlvblxVc2VyQXV0aGVudGljYXRpb24uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Admin/Views/Shared/_AdminLayout.cshtml]
@@ -274,6 +274,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/BaseComponent/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQmFzZUNvbXBvbmVudFxEZWZhdWx0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/BranchList/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQnJhbmNoTGlzdFxEZWZhdWx0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/BugTracker/Default.cshtml]

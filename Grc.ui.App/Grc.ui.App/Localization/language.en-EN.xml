@@ -51,6 +51,9 @@
 	<LocaleResource Name="App.Label.Department.Tag">
 		<Value>Department Tag</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Label.Update">
+		<Value>Update</Value>
+	</LocaleResource>
 	<LocaleResource Name="App.Label.Unit.Code">
 		<Value>Unit Code</Value>
 	</LocaleResource>
@@ -59,18 +62,6 @@
 	</LocaleResource>
 	<LocaleResource Name="App.Label.Unit.Deactivate">
 		<Value>Deactivate Unit</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.AllUsers">
-		<Value>All</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Units">
-		<Value>Units</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Departments">
-		<Value>Departments</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Update">
-		<Value>Update</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Label.Close">
 		<Value>Close</Value>
@@ -81,6 +72,35 @@
 	<LocaleResource Name="App.Label.Export">
 		<Value>Export</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Label.AllUsers">
+		<Value>All</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Units">
+		<Value>Units</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Organization.Departments">
+		<Value>App.Menu.Departments</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Organization">
+		<Value>Organization</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Organization.Info">
+		<Value>Company</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Organization.Branches">
+		<Value>Branches</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Organization.Departments">
+		<Value>Departments</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Organization.Department.Unit">
+		<Value>Department Units</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Organization.Department.Heads">
+		<Value>Department Heads</Value>
+	</LocaleResource>
+	
+	
 	<LocaleResource Name="App.Label.UserRoles">
 		<Value>Roles</Value>
 	</LocaleResource>
@@ -105,6 +125,14 @@
 	<LocaleResource Name="Component.Key.Permissions">
 		<Value>Permission Sets</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Key.RoleGroup">
+		<Value>Groups</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Branches">
+		<Value>Branches</Value>
+	</LocaleResource>
+	
+	
 	<LocaleResource Name="Component.Key.PermissionSet">
 		<Value>Permission Sets</Value>
 	</LocaleResource>
@@ -123,6 +151,13 @@
 	<LocaleResource Name="Component.Key.Activities">
 		<Value>System Activities</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Key.Configuration">
+		<Value>Configuration</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.BugTracker">
+		<Value>Bug Tracker</Value>
+	</LocaleResource>
+	
 	<LocaleResource Name="Component.Label.Branch">
 		<Value>Add Branch</Value>
 	</LocaleResource>
@@ -222,6 +257,9 @@
 	<LocaleResource Name="App.Menu.Users">
 		<Value>System Users</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Menu.Users.Accounts">
+		<Value>User Accounts</Value>
+	</LocaleResource>
 	<LocaleResource Name="App.Menu.Permissions">
 		<Value>Permissions</Value>
 	</LocaleResource>
@@ -242,6 +280,12 @@
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Permissions.Role">
 		<Value>Role Permissions</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Permissions.AddRole">
+		<Value>Role</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Permissions.AddSet">
+		<Value>New Set</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Configurations">
 		<Value>Configurations</Value>
@@ -273,9 +317,6 @@
 	<LocaleResource Name="App.Menu.Configurations.Units">
 		<Value>Units</Value>
 	</LocaleResource>
-
-
-
 	<LocaleResource Name="App.Menu.Configurations.Authentication">
 		<Value>Authentication</Value>
 	</LocaleResource>
@@ -288,6 +329,14 @@
 	<LocaleResource Name="App.Menu.Configurations.Activities">
 		<Value>System Activities</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Menu.Configurations.AddUser">
+		<Value>User</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Configurations.PermissionSet">
+		<Value>Permission Set</Value>
+	</LocaleResource>
+	
+	
 	<LocaleResource Name="Operations.Menu.Home">
 		<Value>Home</Value>
 	</LocaleResource>

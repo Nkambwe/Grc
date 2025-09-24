@@ -1,6 +1,5 @@
 wwwroot\css\admin-style.css
 wwwroot\css\admin-tables-styles.css
-wwwroot\css\app-styles.css
 wwwroot\css\app-tables-styles.css
 wwwroot\css\color-pallete.css
 wwwroot\css\component-styles.css
@@ -156,3 +155,4 @@ wwwroot\lib\toastr\toastr.css
 wwwroot\lib\toastr\toastr.js.map
 wwwroot\lib\toastr\toastr.min.css
 wwwroot\lib\toastr\toastr.min.js
+wwwroot\css\app-styles.css

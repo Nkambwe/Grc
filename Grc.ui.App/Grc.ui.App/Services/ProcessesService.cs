@@ -113,107 +113,97 @@ namespace Grc.ui.App.Services {
 
                 },
 
-                ProcessCategories = new ProcessCategoryStatisticsResponse()
-                {
+                ProcessCategories = new ProcessCategoryStatisticsResponse() {
 
-                    CashProcesses = new CategoriesCountResponse()
-                    {
-                        Unclassified = 10,
-                        UpToDate = 13,
-                        Unchanged = 16,
-                        Proposed = 39,
-                        Due = 17,
-                        Dormant = 8,
-                        Cancelled = 4,
-                        Total = 114
+                    CashProcesses = new CategoriesCountResponse() {
+                        Unclassified = 0,
+                        UpToDate = 9,
+                        Unchanged = 6,
+                        Proposed = 3,
+                        Due = 0,
+                        Dormant = 1,
+                        Cancelled = 2,
+                        Total = 21
                     },
-                    AccountServiceProcesses = new CategoriesCountResponse()
-                    {
-                        Unclassified = 10,
-                        UpToDate = 13,
-                        Unchanged = 16,
-                        Proposed = 39,
-                        Due = 17,
-                        Dormant = 8,
-                        Cancelled = 4,
-                        Total = 114
+                    AccountServiceProcesses = new CategoriesCountResponse() {
+                        Unclassified = 0,
+                        UpToDate = 9,
+                        Unchanged = 0,
+                        Proposed = 0,
+                        Due = 0,
+                        Dormant = 1,
+                        Cancelled = 3,
+                        Total = 13
                     },
-                    RecordsMgtProcesses = new CategoriesCountResponse()
-                    {
-                        Unclassified = 10,
-                        UpToDate = 13,
-                        Unchanged = 16,
-                        Proposed = 39,
-                        Due = 17,
-                        Dormant = 8,
-                        Cancelled = 4,
-                        Total = 114
+                    RecordsMgtProcesses = new CategoriesCountResponse() {
+                        Unclassified = 5,
+                        UpToDate = 3,
+                        Unchanged = 0,
+                        Proposed = 0,
+                        Due = 0,
+                        Dormant = 1,
+                        Cancelled = 0,
+                        Total = 9
                     },
-                    ChannelProcesses = new CategoriesCountResponse()
-                    {
-                        Unclassified = 10,
-                        UpToDate = 13,
-                        Unchanged = 16,
-                        Proposed = 39,
-                        Due = 17,
-                        Dormant = 8,
-                        Cancelled = 4,
-                        Total = 114
+                    ChannelProcesses = new CategoriesCountResponse() {
+                        Unclassified = 0,
+                        UpToDate = 9,
+                        Unchanged = 14,
+                        Proposed = 7,
+                        Due = 2,
+                        Dormant = 5,
+                        Cancelled = 12,
+                        Total = 49
                     },
-                    PaymentProcesses = new CategoriesCountResponse()
-                    {
-                        Unclassified = 10,
-                        UpToDate = 13,
-                        Unchanged = 16,
+                    PaymentProcesses = new CategoriesCountResponse() {
+                        Unclassified = 2,
+                        UpToDate = 9,
+                        Unchanged = 5,
                         Proposed = 39,
                         Due = 17,
                         Dormant = 8,
                         Cancelled = 4,
-                        Total = 114
+                        Total = 84
                     },
-                    WalletProcesses = new CategoriesCountResponse()
-                    {
-                        Unclassified = 10,
-                        UpToDate = 13,
-                        Unchanged = 16,
-                        Proposed = 39,
-                        Due = 17,
-                        Dormant = 8,
-                        Cancelled = 4,
-                        Total = 114
+                    WalletProcesses = new CategoriesCountResponse() {
+                        Unclassified = 3,
+                        UpToDate = 15,
+                        Unchanged = 2,
+                        Proposed = 0,
+                        Due = 1,
+                        Dormant = 6,
+                        Cancelled = 7,
+                        Total = 35
                     },
-                    CustomerExperienceProcesses = new CategoriesCountResponse()
-                    {
-                        Unclassified = 10,
-                        UpToDate = 13,
-                        Unchanged = 16,
-                        Proposed = 39,
-                        Due = 17,
-                        Dormant = 8,
-                        Cancelled = 4,
-                        Total = 114
+                    CustomerExperienceProcesses = new CategoriesCountResponse() {
+                        Unclassified = 2,
+                        UpToDate = 12,
+                        Unchanged = 2,
+                        Proposed = 3,
+                        Due = 3,
+                        Dormant = 6,
+                        Cancelled = 0,
+                        Total = 28
                     },
-                    ReconciliationProcesses = new CategoriesCountResponse()
-                    {
-                        Unclassified = 10,
-                        UpToDate = 13,
-                        Unchanged = 16,
-                        Proposed = 39,
-                        Due = 17,
+                    ReconciliationProcesses = new CategoriesCountResponse() {
+                        Unclassified = 5,
+                        UpToDate = 4,
+                        Unchanged = 0,
+                        Proposed = 0,
+                        Due = 0,
                         Dormant = 8,
-                        Cancelled = 4,
-                        Total = 114
+                        Cancelled = 0,
+                        Total = 12
                     },
-                    TotalCategoryProcesses = new CategoriesCountResponse()
-                    {
-                        Unclassified = 10,
-                        UpToDate = 13,
-                        Unchanged = 16,
-                        Proposed = 39,
+                    TotalCategoryProcesses = new CategoriesCountResponse() {
+                        Unclassified = 40,
+                        UpToDate = 64,
+                        Unchanged = 39,
+                        Proposed = 10,
                         Due = 17,
-                        Dormant = 8,
+                        Dormant = 2,
                         Cancelled = 4,
-                        Total = 114
+                        Total = 172
                     },
                 }
             };

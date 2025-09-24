@@ -18,7 +18,7 @@ body {
 :root {
     --header-height: 57px;
     --sidebar-width: 250px;
-    --sidebar-collapsed-width: 60px;
+    --sidebar-collapsed-width: 55.5px;
     --primary-color: #006d77;
     --secondary-color: #1a73e8;
     --background-color: #f4f5f7;
@@ -647,7 +647,7 @@ span.app-serach {
 
 h1.title {
     font-weight: 600;
-    color: var(--orange);
+    color: var(--pearl-orange);
     font-size: 1.5rem;
 }
 
@@ -784,7 +784,7 @@ h1.title {
     padding: 10px;
     width: 230px;
     border-radius: 5px;
-    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
 
 .stat-card-light {
@@ -792,13 +792,13 @@ h1.title {
 }
 
 .stat-card-colored {
-    background-color: var(--pearl-purple-dark-50);
+    background-color: var(--white-base);
     box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
 
 .stat-title {
     padding: 5px;
-    color: var(--grey-light-strong);
+    color: var(--pearl-purple-dark-70);
     font-weight: 600;
     text-align: center;
 }
@@ -821,7 +821,7 @@ h1.title {
         height: 100%;
         text-align: center;
         font-size: 2em;
-        color: var(--grey-dark-slightly);
+        color: var(--pearl-orange);
     }
 
 .stat-separator {
@@ -855,13 +855,13 @@ h1.title {
 }
 
 .stat-separator-colored {
-    background: var(--pink-faint-light);
+    background: var(--pearl-purple-dark-70);
 }
 
     .stat-separator-colored .stat-number span,
     .stat-card-colored .stat-number span,
     .stat-card-colored .stat-title {
-        color: var(--pink-faint-light);
+        color: var(--pearl-purple-dark-70);
     }
 
 .stat-link {
@@ -877,7 +877,7 @@ h1.title {
 
 .stat-link-color {
     display: flex;
-    color: var(--pink-faint-light);
+    color: var(--pearl-orange);
     padding: 10px;
     font-weight: 600;
     cursor: pointer;
@@ -891,12 +891,12 @@ h1.title {
 }
 
 .stat-link:hover {
-    color: var(--purple-light-strong);
+    color: var(--pearl-purple-dark-light-light);
     transition: all .3s ease-in-out;
 }
 
 .stat-link-color:hover {
-    color: var(--white-base);
+    color: var(--orange-light-strong);
     transition: all .3s ease-in-out;
 }
 
@@ -1056,17 +1056,47 @@ select.form-control:focus {
 }
 
 .stat-title {
-    color: var(--white-base);
+    color: var(--pearl-orange);
 }
 
 .stat-number span {
-    color: var(--white-base);
+    color: var(--pearl-orange);
 }
 
 .stat-card-light {
-    color: var(--white-base);
-    background: var(--orange);
+    color: var(--pearl-orange);
+    background: var(--background-color);
 }
+
+.charts-grid {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 2rem;
+    height: 400px;
+    max-height: 400px;
+}
+
+.chart-container {
+    flex: 1 1 45%;
+    min-width: 300px;
+    max-height: 400px;
+    height: 400px;
+    background: var(--background-color);
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .chart-container canvas {
+        width: 60% !important;
+        height: 90% !important;
+    }
+
 
 @keyframes dropdownFadeIn {
     from {
