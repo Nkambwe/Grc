@@ -78,6 +78,75 @@
 	<LocaleResource Name="App.Label.Units">
 		<Value>Units</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Processes.TotalProcesses.Proposed">
+		<Value>Proposed</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.TotalProcesses.Unchanged">
+		<Value>Unchanged</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.TotalProcesses.DueReview">
+		<Value>Due Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.TotalProcesses.Dormant">
+		<Value>Dormant</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.TotalProcesses.Cancelled">
+		<Value>Cancelled</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.TotalProcesses.Completed">
+		<Value>Completed</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.TotalProcesses">
+		<Value>Total Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.Cancelled">
+		<Value>Cancelled Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.Completed">
+		<Value>Completed Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.Completed">
+		<Value>Completed Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.proposed">
+		<Value>Proposed Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.Dormant">
+		<Value>Dormant Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.Unchanged">
+		<Value>Unchanged Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.Due">
+		<Value>Due Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.AccountServices">
+		<Value>AccountService Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.Reconciliation">
+		<Value>Reconciliation Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.RecordsManagement">
+		<Value>Records Management Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.Wallets">
+		<Value>Wallets Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.Cash">
+		<Value>Cash Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.Payment">
+		<Value>Payment Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.Channels">
+		<Value>Channel Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.CustomerExperience">
+		<Value>Customer Experience Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Home">
+		<Value>Home</Value>
+	</LocaleResource>
 	<LocaleResource Name="App.Label.Organization.Departments">
 		<Value>Departments</Value>
 	</LocaleResource>
@@ -99,8 +168,6 @@
 	<LocaleResource Name="App.Label.Organization.Department.Heads">
 		<Value>Department Heads</Value>
 	</LocaleResource>
-	
-	
 	<LocaleResource Name="App.Label.UserRoles">
 		<Value>Roles</Value>
 	</LocaleResource>
@@ -116,6 +183,28 @@
 	<LocaleResource Name="Component.Key.DepartmentUnits">
 		<Value>All Units</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Key.TotalProcesses">
+		<Value>Total Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.CompletedProcesses">
+		<Value>Completed Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.CancelledProcesses">
+		<Value>Cancelled Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.DormantProcesses">
+		<Value>Dormant Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.DueProcesses">
+		<Value>Due Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.UnchangedProcesses">
+		<Value>Unchanged Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.ProposedProcesses">
+		<Value>Proposed Processes</Value>
+	</LocaleResource>
+
 	<LocaleResource Name="Component.Key.Users">
 		<Value>Users</Value>
 	</LocaleResource>
@@ -128,8 +217,9 @@
 	<LocaleResource Name="Component.Key.RoleGroup">
 		<Value>Groups</Value>
 	</LocaleResource>
-	
-	
+	<LocaleResource Name="Component.Key.Branches">
+		<Value>Branches</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Key.PermissionSet">
 		<Value>Permission Sets</Value>
 	</LocaleResource>
@@ -154,7 +244,65 @@
 	<LocaleResource Name="Component.Key.BugTracker">
 		<Value>Bug Tracker</Value>
 	</LocaleResource>
-	
+	<LocaleResource Name="Component.Key.CompletedProcesses">
+		<Value>Completed Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.CompletedProcesses">
+		<Value>Completed Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.CancelledProcesses">
+		<Value>Cancelled Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.DormantProcesses">
+		<Value>Dormant Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.DueProcesses">
+		<Value>Due Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.UnchangedProcesses">
+		<Value>Unchanged Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.ProposedProcesses">
+		<Value>Proposed Processes</Value>
+	</LocaleResource>
+
+	<LocaleResource Name="Component.Key.WalletProcesses">
+		<Value>Wallet Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.CashProcesses">
+		<Value>Cash Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.ReconProcesses">
+		<Value>Reconciliation Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.CustomerExProcesses">
+		<Value>Customer Experience Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.RecordMgtProcesses">
+		<Value>Records Management Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.ChannelProcesses">
+		<Value>Channel Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.AccountSvcProcesses">
+		<Value>Account Services Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.PaymentProcesses">
+		<Value>Payment Processes</Value>
+	</LocaleResource>
+
+
+
+
+
+
+
+
+
+
+
+
+
 	<LocaleResource Name="Component.Label.Branch">
 		<Value>Add Branch</Value>
 	</LocaleResource>
@@ -332,8 +480,8 @@
 	<LocaleResource Name="App.Menu.Configurations.PermissionSet">
 		<Value>Permission Set</Value>
 	</LocaleResource>
-	
-	
+
+
 	<LocaleResource Name="Operations.Menu.Home">
 		<Value>Home</Value>
 	</LocaleResource>

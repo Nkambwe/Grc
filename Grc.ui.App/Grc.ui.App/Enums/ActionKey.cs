@@ -36,5 +36,35 @@ namespace Grc.ui.App.Enums {
         Email,
         [Description("excel")]
         Excel,
+        [Description("opsHome")]
+        OpsHome,
+        [Description("totalProposed")]
+        TotalProposed,
+        [Description("totalUnchanged")]
+        TotalUnchanged,
+        [Description("totalDueReview")]
+        TotalDueReview,
+        [Description("totalDormant")]
+        TotalDormant,
+        [Description("totalCancelled")]
+        TotalCancelled,
+        [Description("totalCompleted")]
+        TotalCompleted,
+        [Description("cashProcesses")]
+        CashProcesses,
+        [Description("walletProcesses")]
+        WalletProcesses,
+        [Description("paymentProcesses")]
+        PaymentProcesses,
+        [Description("reconProcesses")]
+        ReconProcesses,
+        [Description("customerExProcesses")]
+        CustomerExProcesses,
+        [Description("recordsProcesses")]
+        RecordsProcesses,
+        [Description("channelProcesses")]
+        ChannelProcesses,
+        [Description("accountSvcProcesses")]
+        AccountSvcProcesses
     }
 }

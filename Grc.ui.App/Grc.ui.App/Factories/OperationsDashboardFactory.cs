@@ -62,20 +62,23 @@ namespace Grc.ui.App.Factories {
                 Title = _localizationService.GetLocalizedLabel("App.Menu.Dashboard.Labels.TotalProcesses"),
                 Value = stats.UnitProcesses.TotalUnitProcess.TotalProcesses,
                 CssClass = "stat-separator-default",
-                Action = "Completed"
+                Controller = "OperationDashboard",
+                Action = "TotalProcesses"
             });
 
             chart.ProcessCards.Add(new StatCardViewModel {
                 Title = _localizationService.GetLocalizedLabel("App.Menu.Dashboard.Labels.Proposed"),
                 Value = stats.UnitProcesses.ProposedProcesses.TotalProcesses,
-                CssClass = "stat-separator-colored",
+                CssClass = "stat-separator-primary",
+                Controller = "OperationDashboard",
                 Action = "Proposed"
             });
             chart.ProcessCards.Add(new StatCardViewModel
             {
                 Title = _localizationService.GetLocalizedLabel("App.Menu.Dashboard.Labels.Unchanged"),
                 Value = stats.UnitProcesses.UnchangedProcesses.TotalProcesses,
-                CssClass = "stat-separator-colored",
+                CssClass = "stat-separator-nuetral",
+                Controller = "OperationDashboard",
                 Action = "Unchanged"
             });
             chart.ProcessCards.Add(new StatCardViewModel
@@ -83,6 +86,7 @@ namespace Grc.ui.App.Factories {
                 Title = _localizationService.GetLocalizedLabel("App.Menu.Dashboard.Labels.DueForReview"),
                 Value = stats.UnitProcesses.ProcessesDueForReview.TotalProcesses,
                 CssClass = "stat-separator-danger",
+                Controller = "OperationDashboard",
                 Action = "Due"
             });
             chart.ProcessCards.Add(new StatCardViewModel
@@ -90,13 +94,15 @@ namespace Grc.ui.App.Factories {
                 Title = _localizationService.GetLocalizedLabel("App.Menu.Dashboard.Labels.Dormant"),
                 Value = stats.UnitProcesses.DormantProcesses.TotalProcesses,
                 CssClass = "stat-separator-warning",
+                Controller = "OperationDashboard",
                 Action = "Dormant"
             });
             chart.ProcessCards.Add(new StatCardViewModel
             {
                 Title = _localizationService.GetLocalizedLabel("App.Menu.Dashboard.Labels.Cancelled"),
                 Value = stats.UnitProcesses.CancelledProcesses.TotalProcesses,
-                CssClass = "stat-separator-warning",
+                CssClass = "stat-separator-cancelled",
+                Controller = "OperationDashboard",
                 Action = "Cancelled"
             });
 
@@ -104,7 +110,8 @@ namespace Grc.ui.App.Factories {
             {
                 Title = _localizationService.GetLocalizedLabel("App.Menu.Dashboard.Labels.Completed"),
                 Value = stats.UnitProcesses.CompletedProcesses.TotalProcesses,
-                CssClass = "stat-separator-primary",
+                CssClass = "stat-separator-cancelled",
+                Controller = "OperationDashboard",
                 Action = "Completed"
             });
 
@@ -114,28 +121,32 @@ namespace Grc.ui.App.Factories {
             {
                 Title = _localizationService.GetLocalizedLabel("App.Menu.Dashboard.Labels.Units.AccountServices"),
                 Value = stats.ProcessCategories.AccountServiceProcesses.Total,
-                CssClass = "stat-separator-default",
+                CssClass = "stat-separator-colored-pearl",
+                Controller = "OperationDashboard",
                 Action = "AccountServices"
             });
             chart.UnitCards.Add(new StatCardViewModel
             {
                 Title = _localizationService.GetLocalizedLabel("App.Menu.Dashboard.Labels.Units.Cash"),
                 Value = stats.ProcessCategories.CashProcesses.Total,
-                CssClass = "stat-separator-default",
+                CssClass = "stat-separator-colored-pearl",
+                Controller = "OperationDashboard",
                 Action = "Cash"
             });
             chart.UnitCards.Add(new StatCardViewModel
             {
                 Title = _localizationService.GetLocalizedLabel("App.Menu.Dashboard.Labels.Units.Channels"),
                 Value = stats.ProcessCategories.ChannelProcesses.Total,
-                CssClass = "stat-separator-primary",
+                CssClass = "stat-separator-colored-pearl",
+                Controller = "OperationDashboard",
                 Action = "Channels"
             });
             chart.UnitCards.Add(new StatCardViewModel
             {
                 Title = _localizationService.GetLocalizedLabel("App.Menu.Dashboard.Labels.Units.Payments"),
                 Value = stats.ProcessCategories.PaymentProcesses.Total,
-                CssClass = "stat-separator-danger",
+                CssClass = "stat-separator-colored-pearl",
+                Controller = "OperationDashboard",
                 Action = "Payments"
             });
             chart.UnitCards.Add(new StatCardViewModel
@@ -143,6 +154,7 @@ namespace Grc.ui.App.Factories {
                 Title = _localizationService.GetLocalizedLabel("App.Menu.Dashboard.Labels.Units.Wallets"),
                 Value = stats.ProcessCategories.WalletProcesses.Total,
                 CssClass = "stat-separator-colored-pearl",
+                Controller = "OperationDashboard",
                 Action = "Wallets"
             });
             chart.UnitCards.Add(new StatCardViewModel
@@ -150,6 +162,7 @@ namespace Grc.ui.App.Factories {
                 Title = _localizationService.GetLocalizedLabel("App.Menu.Dashboard.Labels.Units.Records"),
                 Value = stats.ProcessCategories.RecordsMgtProcesses.Total,
                 CssClass = "stat-separator-colored-pearl",
+                Controller = "OperationDashboard",
                 Action = "RecordsManagement"
             });
             chart.UnitCards.Add(new StatCardViewModel
@@ -157,13 +170,15 @@ namespace Grc.ui.App.Factories {
                 Title = _localizationService.GetLocalizedLabel("App.Menu.Dashboard.Labels.Units.CustomerExperience"),
                 Value = stats.ProcessCategories.CustomerExperienceProcesses.Total,
                 CssClass = "stat-separator-colored-pearl",
+                Controller = "OperationDashboard",
                 Action = "CustomerExperience"
             });
             chart.UnitCards.Add(new StatCardViewModel
             {
                 Title = _localizationService.GetLocalizedLabel("App.Menu.Dashboard.Labels.Units.Reconciliation"),
                 Value = stats.ProcessCategories.ReconciliationProcesses.Total,
-                CssClass = "stat-separator-danger",
+                CssClass = "stat-separator-colored-pearl",
+                Controller = "OperationDashboard",
                 Action = "Reconciliation"
             });
 

@@ -1,5 +1,4 @@
-﻿using Grc.ui.App.Areas.Admin.Controllers;
-using Grc.ui.App.Defaults;
+﻿using Grc.ui.App.Defaults;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
 using Grc.ui.App.Factories;
@@ -13,7 +12,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace Grc.ui.App.Areas.Operations.Controllers {
 
     [Area("Operations")]
-    [Route("operations/dashboard")]
     public class OperationDashboardController : OperationsBaseController {
 
         private readonly ISystemAccessService _accessService;
@@ -57,7 +55,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
 
         [LogActivityResult("User Login", "User logged in to the Operations Workflow Portal", ActivityTypeDefaults.USER_LOGIN, "SystemUser")]
         public async Task<IActionResult> Index() {
-            var model = new OperationsDashboardModel();
+            OperationsDashboardModel model;
             try {
                 //..get user IP address
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -66,7 +64,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError) {
                     await ProcessErrorAsync(grcResponse.Error.Message, "OPERATIONS-DASHBOARD-CONTROLLER", string.Empty);
-                    return View(model);
+                    return RedirectToAction("Login");
                 }
 
                 var currentUser = grcResponse.Data;
@@ -82,7 +80,6 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             return View(model);
         }
 
-        [HttpPost("totalProcesses")]
         public async Task<IActionResult> TotalProcesses() {
             var model = new OperationsDashboardModel();
             try {
@@ -94,7 +91,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 if (grcResponse.HasError)
                 {
                     await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-CONTROLLER", string.Empty);
-                    return View(model);
+                    return RedirectToAction("Index");
                 }
 
                 var currentUser = grcResponse.Data;
@@ -104,15 +101,14 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 model = await _operationsDashboardFactory.PrepareDefaultOperationsModelAsync(currentUser);
             } catch (Exception ex) {
                 await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-CONTROLLER", ex.StackTrace);
-                return View(model);
+                return RedirectToAction("Index");
             }
 
             return View(model);
         }
 
-        [HttpPost("completed")]
         public async Task<IActionResult> Completed() {
-            var model = new OperationsDashboardModel();
+            OperationsDashboardModel model;
             try {
                 //..get user IP address
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -121,7 +117,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError) {
                     await ProcessErrorAsync(grcResponse.Error.Message,"OPERATION-DASHBOARD-CONTROLLER" , string.Empty);
-                    return View(model);
+                    return RedirectToAction("Index");
                 }
 
                 var currentUser = grcResponse.Data;
@@ -131,15 +127,14 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 model = await _operationsDashboardFactory.PrepareDefaultOperationsModelAsync(currentUser);
             } catch(Exception ex){ 
                 await ProcessErrorAsync(ex.Message,"OPERATION-DASHBOARD-CONTROLLER" , ex.StackTrace);
-                return View(model);
+                return RedirectToAction("Index");
             }
 
             return View(model);
         }
 
-        [HttpPost("proposed")]
         public async Task<IActionResult> Proposed() {
-            var model = new OperationsDashboardModel();
+            OperationsDashboardModel model;
             try {
                 //..get user IP address
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -148,7 +143,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError) {
                     await ProcessErrorAsync(grcResponse.Error.Message,"OPERATION-DASHBOARD-CONTROLLER" , string.Empty);
-                    return View(model);
+                    return RedirectToAction("Index");
                 }
 
                 var currentUser = grcResponse.Data;
@@ -158,15 +153,14 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 model = await _operationsDashboardFactory.PrepareDefaultOperationsModelAsync(currentUser);
             } catch(Exception ex){ 
                 await ProcessErrorAsync(ex.Message,"OPERATION-DASHBOARD-CONTROLLER" , ex.StackTrace);
-                return View(model);
+                return RedirectToAction("Index");
             }
 
             return View(model);
         }
 
-        [HttpPost("dormant")]
         public async Task<IActionResult> Dormant() {
-            var model = new OperationsDashboardModel();
+            OperationsDashboardModel model;
             try {
                 //..get user IP address
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -175,7 +169,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError) {
                     await ProcessErrorAsync(grcResponse.Error.Message,"OPERATION-DASHBOARD-CONTROLLER" , string.Empty);
-                    return View(model);
+                    return RedirectToAction("Index");
                 }
 
                 var currentUser = grcResponse.Data;
@@ -185,15 +179,14 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 model = await _operationsDashboardFactory.PrepareDefaultOperationsModelAsync(currentUser);
             } catch(Exception ex){ 
                 await ProcessErrorAsync(ex.Message,"OPERATION-DASHBOARD-CONTROLLER" , ex.StackTrace);
-                return View(model);
+                return RedirectToAction("Index");
             }
 
             return View(model);
         }
 
-        [HttpPost("cancelled")]
         public async Task<IActionResult> Cancelled() {
-            var model = new OperationsDashboardModel();
+            OperationsDashboardModel model;
             try {
                 //..get user IP address
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -202,7 +195,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError) {
                     await ProcessErrorAsync(grcResponse.Error.Message,"OPERATION-DASHBOARD-CONTROLLER" , string.Empty);
-                    return View(model);
+                    return RedirectToAction("Index");
                 }
 
                 var currentUser = grcResponse.Data;
@@ -212,15 +205,14 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 model = await _operationsDashboardFactory.PrepareDefaultOperationsModelAsync(currentUser);
             } catch(Exception ex){ 
                 await ProcessErrorAsync(ex.Message,"OPERATION-DASHBOARD-CONTROLLER" , ex.StackTrace);
-                return View(model);
+                return RedirectToAction("Index");
             }
 
             return View(model);
         }
 
-        [HttpPost("unchanged")]
         public async Task<IActionResult> Unchanged() {
-            var model = new OperationsDashboardModel();
+            OperationsDashboardModel model;
             try {
                 //..get user IP address
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -229,7 +221,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError) {
                     await ProcessErrorAsync(grcResponse.Error.Message,"OPERATION-DASHBOARD-CONTROLLER" , string.Empty);
-                    return View(model);
+                    return RedirectToAction("Index");
                 }
 
                 var currentUser = grcResponse.Data;
@@ -239,15 +231,14 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 model = await _operationsDashboardFactory.PrepareDefaultOperationsModelAsync(currentUser);
             } catch(Exception ex){ 
                 await ProcessErrorAsync(ex.Message,"OPERATION-DASHBOARD-CONTROLLER" , ex.StackTrace);
-                return View(model);
+                return RedirectToAction("Index");
             }
 
             return View(model);
         }
 
-        [HttpPost("due")]
         public async Task<IActionResult> Due() {
-            var model = new OperationsDashboardModel();
+            OperationsDashboardModel model;
             try {
                 //..get user IP address
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -256,7 +247,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError) {
                     await ProcessErrorAsync(grcResponse.Error.Message,"OPERATION-DASHBOARD-CONTROLLER" , string.Empty);
-                    return View(model);
+                    return RedirectToAction("Index");
                 }
 
                 var currentUser = grcResponse.Data;
@@ -266,15 +257,14 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 model = await _operationsDashboardFactory.PrepareDefaultOperationsModelAsync(currentUser);
             } catch(Exception ex){ 
                 await ProcessErrorAsync(ex.Message,"OPERATION-DASHBOARD-CONTROLLER" , ex.StackTrace);
-                return View(model);
+                return RedirectToAction("Index");
             }
 
             return View(model);
         }
 
-        [HttpPost("accountServices")]
         public async Task<IActionResult> AccountServices() {
-            var model = new OperationsDashboardModel();
+            OperationsDashboardModel model;
             try
             {
                 //..get user IP address
@@ -285,7 +275,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 if (grcResponse.HasError)
                 {
                     await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-ACCOUNTSERVICES", string.Empty);
-                    return View(model);
+                    return RedirectToAction("Index");
                 }
 
                 var currentUser = grcResponse.Data;
@@ -297,15 +287,15 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             catch (Exception ex)
             {
                 await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-ACCOUNTSERVICES", ex.StackTrace);
-                return View(model);
+                return RedirectToAction("Index");
+                
             }
 
-            return RedirectToAction("Index");
+            return View(model);
         }
 
-        [HttpPost("reconciliation")]
         public async Task<IActionResult> Reconciliation() {
-            var model = new OperationsDashboardModel();
+            OperationsDashboardModel model;
             try
             {
                 //..get user IP address
@@ -316,7 +306,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 if (grcResponse.HasError)
                 {
                     await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-RECONCILIATION", string.Empty);
-                    return View(model);
+                    return RedirectToAction("Index");  
                 }
 
                 var currentUser = grcResponse.Data;
@@ -328,26 +318,23 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             catch (Exception ex)
             {
                 await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-RECONCILIATION", ex.StackTrace);
-                return View(model);
+                return RedirectToAction("Index");
             }
 
-            return RedirectToAction("Index");
+            return View(model);
         }
 
-        [HttpPost("recordsManagement")]
         public async Task<IActionResult> RecordsManagement() {
-            var model = new OperationsDashboardModel();
-            try
-            {
+            OperationsDashboardModel model;
+            try {
                 //..get user IP address
                 var ipAddress = WebHelper.GetCurrentIpAddress();
 
                 //..get current authenticated user record
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (grcResponse.HasError)
-                {
+                if (grcResponse.HasError) {
                     await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-RECORDSMANAGEMENT", string.Empty);
-                    return View(model);
+                    return RedirectToAction("Index");  
                 }
 
                 var currentUser = grcResponse.Data;
@@ -359,15 +346,14 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             catch (Exception ex)
             {
                 await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-RECORDSMANAGEMENT", ex.StackTrace);
-                return View(model);
+                return RedirectToAction("Index");
             }
 
-            return RedirectToAction("Index");
+            return View(model);
         }
 
-        [HttpPost("wallets")]
         public async Task<IActionResult> Wallets() {
-            var model = new OperationsDashboardModel();
+            OperationsDashboardModel model;
             try
             {
                 //..get user IP address
@@ -378,7 +364,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 if (grcResponse.HasError)
                 {
                     await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-WALLETS", string.Empty);
-                    return View(model);
+                    return RedirectToAction("Index");  
                 }
 
                 var currentUser = grcResponse.Data;
@@ -390,15 +376,15 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             catch (Exception ex)
             {
                 await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-WALLETS", ex.StackTrace);
-                return View(model);
+                return RedirectToAction("Index");
             }
 
-            return RedirectToAction("Index");
+            return View(model);
+            
         }
 
-        [HttpPost("cash")]
         public async Task<IActionResult> Cash() {
-            var model = new OperationsDashboardModel();
+            OperationsDashboardModel model;
             try
             {
                 //..get user IP address
@@ -409,7 +395,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 if (grcResponse.HasError)
                 {
                     await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-CASH", string.Empty);
-                    return View(model);
+                    return RedirectToAction("Index"); 
                 }
 
                 var currentUser = grcResponse.Data;
@@ -421,15 +407,14 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             catch (Exception ex)
             {
                 await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-CASH", ex.StackTrace);
-                return View(model);
+                return RedirectToAction("Index");
             }
 
-            return RedirectToAction("Index");
+            return View(model);
         }
 
-        [HttpPost("payments")]
         public async Task<IActionResult> Payments() {
-            var model = new OperationsDashboardModel();
+            OperationsDashboardModel model;
             try
             {
                 //..get user IP address
@@ -440,7 +425,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 if (grcResponse.HasError)
                 {
                     await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-PAYMENTS", string.Empty);
-                    return View(model);
+                    return RedirectToAction("Index");  
                 }
 
                 var currentUser = grcResponse.Data;
@@ -450,16 +435,15 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 model = await _operationsDashboardFactory.PrepareUnitStatisticsModelAsync(currentUser, OperationUnit.Payments.GetDescription());
             } catch (Exception ex) {
                 await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-PAYMENTS", ex.StackTrace);
-                return View(model);
+                return RedirectToAction("Index");
             }
 
-            return RedirectToAction("Index");
+            return View(model);
         }
 
-        [HttpPost("channels")]
         public async Task<IActionResult> Channels()
         {
-            var model = new OperationsDashboardModel();
+            OperationsDashboardModel model;
             try
             {
                 //..get user IP address
@@ -470,7 +454,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 if (grcResponse.HasError)
                 {
                     await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-PAYMENTS", string.Empty);
-                    return View(model);
+                    return RedirectToAction("Index");
                 }
 
                 var currentUser = grcResponse.Data;
@@ -482,26 +466,23 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             catch (Exception ex)
             {
                 await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-PAYMENTS", ex.StackTrace);
-                return View(model);
+                return RedirectToAction("Index");
             }
 
-            return RedirectToAction("Index");
+            return View(model);
         }
 
-        [HttpPost("customerExperience")]
         public async Task<IActionResult> CustomerExperience() {
-            var model = new OperationsDashboardModel();
-            try
-            {
+            OperationsDashboardModel model;
+            try {
                 //..get user IP address
                 var ipAddress = WebHelper.GetCurrentIpAddress();
 
                 //..get current authenticated user record
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (grcResponse.HasError)
-                {
+                if (grcResponse.HasError) {
                     await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-CUSTOMEREXPERIENCE", string.Empty);
-                    return View(model);
+                    return RedirectToAction("Index");
                 }
 
                 var currentUser = grcResponse.Data;
@@ -510,13 +491,12 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 //..prepare user dashboard
                 model = await _operationsDashboardFactory.PrepareUnitStatisticsModelAsync(currentUser, OperationUnit.CustomerExp.GetDescription());
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-CUSTOMEREXPERIENCE", ex.StackTrace);
-                return View(model);
+                return RedirectToAction("Index");
             }
 
-            return RedirectToAction("Index");
+            return View(model);
         }
     }
 }

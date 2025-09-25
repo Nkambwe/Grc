@@ -2,6 +2,9 @@
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "GRC ADMIN";
+
+    var userCards = Model.Statistics.Users;
+    var bugCards = Model.Statistics.Bugs;
 }
 
 <div class="welcome-container">
@@ -27,206 +30,79 @@
     @await Component.InvokeAsync("QuickActions", new { model = Model.QuickActions })
 </div>
 
-<div class="stats-grid">
+<div class="dashboard-grid">
 
-    <div class="title-box">
-        <h3 class="display-1 stats-grid-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Admin.Dashboard.Labels.SystemUsers"))</h3>
-        <span class="title-line"></span>
-    </div>
+    <div class="stats-grid">
 
-    <div class="stats-content">
-        <div class="stat-card stat-card-light">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Admin.Dashboard.Labels.SystemUsers"))</span>
-            </div>
-            <div class="stat-number" id="totalUsers">
-                <span>@Model.TotalUsers</span>
-            </div>
-            <span class="stat-separator stat-separator-default"></span>
-            <a class="stat-link" asp-controller="Support" asp-action="Users" asp-area="Admin">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
+        <div class="title-box">
+            <h3 class="display-1 stats-grid-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Admin.Dashboard.Labels.SystemUsers"))</h3>
+            <span class="title-line"></span>
         </div>
 
-        <div class="stat-card stat-card-light">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Admin.Dashboard.Labels.ActiveUsers"))</span>
-            </div>
-            <div class="stat-number" id="activeUsers">
-                <span>@Model.ActiveUsers</span>
-            </div>
-            <span class="stat-separator stat-separator-primary"></span>
-            <a class="stat-link" asp-controller="Support" asp-action="ActiveUsers" asp-area="Admin">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
+        <div class="stats-content">
+            @foreach (var card in userCards)
+            {
+                <div class="stat-card stat-card-light">
+                    <div class="stat-title"><span>@card.Title</span></div>
+                    <div class="stat-number"><span>@card.Value</span></div>
+                    <span class="stat-separator @card.CssClass"></span>
+                    <a class="stat-link" asp-controller="@card.Controller" asp-action="@card.Action" asp-area="Admin">
+                        <span><i class="mdi mdi-chevron-right"></i></span>
+                        <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
+                    </a>
+                </div>
+            }
         </div>
-
-        <div class="stat-card stat-card-light">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Admin.Dashboard.Labels.DisabledUsers"))</span>
-            </div>
-            <div class="stat-number" id="disabledUsers">
-                <span>@Model.DeactivatedUsers</span>
-            </div>
-            <span class="stat-separator stat-separator-danger"></span>
-            <a class="stat-link" asp-controller="Support" asp-action="DisabledUsers" asp-area="Admin">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore")).</span>
-            </a>
-        </div>
-
-        <div class="stat-card stat-card-light">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Admin.Dashboard.Labels.PendingApproval"))</span>
-            </div>
-            <div class="stat-number" id="unapprovedUsers">
-                <span>@Model.UnApprovedUsers</span>
-            </div>
-            <span class="stat-separator stat-separator-warning"></span>
-            <a class="stat-link" asp-controller="Support" asp-action="UnapprovedUsers" asp-area="Admin">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
-        </div>
-
-        <div class="stat-card stat-card-light">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Admin.Dashboard.Labels.PendingVerification"))</span>
-            </div>
-            <div class="stat-number" id="unverifiedUsers">
-                <span>@Model.UnverifiedUsers</span>
-            </div>
-            <span class="stat-separator stat-separator-warning"></span>
-            <a class="stat-link" asp-controller="Support" asp-action="UnapprovedUsers" asp-area="Admin">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
-        </div>
-
-        <div class="stat-card stat-card-light">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Admin.Dashboard.Labels.DeletedAccounts"))</span>
-            </div>
-            <div class="stat-number" id="deletedUsers">
-                <span>@Model.DeletedUsers</span>
-            </div>
-            <span class="stat-separator stat-separator-danger"></span>
-            <a class="stat-link" asp-controller="Support" asp-action="UnapprovedUsers" asp-area="Admin">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
-        </div>
-
-    </div>
     
-</div>
-
-<div class="stats-grid">
-
-    <div class="title-box">
-        <h3 class="display-1 stats-grid-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Admin.Dashboard.Labels.BugTracking"))</h3>
-        <span class="title-line"></span>
     </div>
 
-    <div class="stats-content">
-        <div class="stat-card stat-card-colored">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Admin.Dashboard.Labels.TotalBugs"))</span>
-            </div>
-            <div class="stat-number" id="totalBugs">
-                <span>@Model.TotalBugs</span>
-            </div>
-            <span class="stat-separator stat-separator-colored"></span>
-            <a class="stat-link-color" asp-controller="Support" asp-action="Bugs" asp-area="Admin">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
+    <div class="stats-grid">
+
+        <div class="title-box">
+            <h3 class="display-1 stats-grid-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Admin.Dashboard.Labels.BugTracking"))</h3>
+            <span class="title-line"></span>
         </div>
 
-        <div class="stat-card stat-card-colored">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Admin.Dashboard.Labels.NewBugs"))</span>
-            </div>
-            <div class="stat-number" id="newBugs">
-                <span>@Model.NewBugs</span>
-            </div>
-            <span class="stat-separator stat-separator-danger"></span>
-            <a class="stat-link-color" asp-controller="Support" asp-action="NewBugs" asp-area="Admin">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
+        <div class="stats-content">
+            @foreach (var card in bugCards)
+            {
+                <div class="stat-card stat-card-colored">
+                    <div class="stat-title"><span>@card.Title</span></div>
+                    <div class="stat-number"><span>@card.Value</span></div>
+                    <span class="stat-separator @card.CssClass"></span>
+                    <a class="stat-link-color" asp-controller="@card.Controller" asp-action="@card.Action" asp-area="Admin">
+                        <span><i class="mdi mdi-chevron-right"></i></span>
+                        <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
+                    </a>
+                </div>
+            }
         </div>
-
-        <div class="stat-card stat-card-colored">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Admin.Dashboard.Labels.FixingBugs"))</span>
-            </div>
-            <div class="stat-number" id="bugFixing">
-                <span>@Model.BugProgress</span>
-            </div>
-            <span class="stat-separator stat-separator-warning"></span>
-            <a class="stat-link-color" asp-controller="Support" asp-action="BugProgress" asp-area="Admin">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore")).</span>
-            </a>
-        </div>
-
-        <div class="stat-card stat-card-colored">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Admin.Dashboard.Labels.Fixed"))</span>
-            </div>
-            <div class="stat-number" id="bugFixing">
-                <span>@Model.BugFixes</span>
-            </div>
-            <span class="stat-separator stat-separator-colored-primary"></span>
-            <a class="stat-link-color" asp-controller="Support" asp-action="BugFixes" asp-area="Admin">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore")).</span>
-            </a>
-        </div>
-
-        <div class="stat-card stat-card-colored">
-            <div class="stat-title">
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Admin.Dashboard.Labels.UserReported"))</span>
-            </div>
-            <div class="stat-number" id="userReportedBugs">
-                <span>@Model.UserReportedBugs</span>
-            </div>
-            <span class="stat-separator stat-separator-warning"></span>
-            <a class="stat-link-color" asp-controller="Support" asp-action="UserReportedBugs" asp-area="Admin">
-                <span><i class="mdi mdi-chevron-right"></i></span>
-                <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-            </a>
-        </div>
-
-    </div>
     
-</div>
-
-<div class="bugs-box">
-
-    <div class="title-box">
-        <h3 class="display-1 stats-grid-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Admin.Dashboard.Labels.RecentActivities"))</h3>
-        <span class="title-line"></span>
     </div>
 
-    <div class="table-container">
-        <table id="tblActivity" class="table is-fullwidth is-striped">
-            <thead>
-                <tr>
-                    <th>@Html.Raw(ILocalize.GetLocalizedLabel("App.Tables.Headers.User"))</th>
-                    <th>@Html.Raw(ILocalize.GetLocalizedLabel("App.Tables.Headers.Email"))</th>
-                    <th>@Html.Raw(ILocalize.GetLocalizedLabel("App.Tables.Headers.Action"))</th>
-                    <th>@Html.Raw(ILocalize.GetLocalizedLabel("App.Tables.Headers.Time"))</th>
-                    <th>@Html.Raw(ILocalize.GetLocalizedLabel("App.Tables.Headers.Description"))</th>
-                </tr>
-            </thead>
-            <tbody id="activityTable"></tbody>
-        </table>
-    </div>
-</div>
+    <div class="bugs-box">
 
+        <div class="title-box">
+            <h3 class="display-1 stats-grid-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Admin.Dashboard.Labels.RecentActivities"))</h3>
+            <span class="title-line"></span>
+        </div>
+
+        <div class="table-container">
+            <table id="tblActivity" class="table is-fullwidth is-striped">
+                <thead>
+                    <tr>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("App.Tables.Headers.User"))</th>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("App.Tables.Headers.Email"))</th>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("App.Tables.Headers.Action"))</th>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("App.Tables.Headers.Time"))</th>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("App.Tables.Headers.Description"))</th>
+                    </tr>
+                </thead>
+                <tbody id="activityTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
 
 

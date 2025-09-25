@@ -31,95 +31,78 @@
     @await Component.InvokeAsync("QuickActions", new { model = Model.QuickActions })
 </div>
 
-<div class="stats-grid">
+<div class="dashboard-grid">
 
-    <div class="title-box">
-        <h3 class="display-1 stats-grid-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Processes"))</h3>
-        <span class="title-line"></span>
+    <div class="stats-grid">
+
+        <div class="title-box">
+            <h3 class="display-1 stats-grid-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Processes"))</h3>
+            <span class="title-line"></span>
+        </div>
+
+        <div class="stats-content">
+            @foreach (var card in Model.ChartViewModel.ProcessCards)
+            {
+                <div class="stat-card stat-card-light">
+                    <div class="stat-title"><span>@card.Title</span></div>
+                    <div class="stat-number"><span>@card.Value</span></div>
+                    <span class="stat-separator @card.CssClass"></span>
+                    <a class="stat-link" asp-controller="@card.Controller" asp-action="@card.Action" asp-area="Operations">
+                        <span><i class="mdi mdi-chevron-right"></i></span>
+                        <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
+                    </a>
+                </div>
+            }
+        </div>
+
     </div>
 
-    <div class="stats-content">
-        @foreach (var card in Model.ChartViewModel.ProcessCards)
-        {
-            <div class="stat-card stat-card-light">
-                <div class="stat-title"><span>@card.Title</span></div>
-                <div class="stat-number"><span>@card.Value</span></div>
-                <span class="stat-separator @card.CssClass"></span>
-                <a class="stat-link" asp-controller="@card.Controller" asp-action="@card.Action" asp-area="Operations">
-                    <span><i class="mdi mdi-chevron-right"></i></span>
-                    <span>See More</span>
-                </a>
-            </div>
-        }
+    <div class="stats-grid">
+
+        <div class="title-box">
+            <h3 class="display-1 stats-grid-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Units"))</h3>
+            <span class="title-line"></span>
+        </div>
+
+        <div class="stats-content">
+            @foreach (var card in Model.ChartViewModel.UnitCards)
+            {
+                <div class="stat-card stat-card-colored">
+                    <div class="stat-title"><span>@card.Title</span></div>
+                    <div class="stat-number"><span>@card.Value</span></div>
+                    <span class="stat-separator @card.CssClass"></span>
+                    <a class="stat-link-color" asp-controller="@card.Controller" asp-action="@card.Action" asp-area="Operations">
+                        <span><i class="mdi mdi-chevron-right"></i></span>
+                        <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
+                    </a>
+                </div>
+            }
+        </div>
+
+    </div>
+
+    <div class="charts-grid">
+
+        <div class="chart-container">
+            <canvas id="categoryChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="statusChart"></canvas>
+        </div>
+
     </div>
 
 </div>
 
-<div class="stats-grid">
-
-    <div class="title-box">
-        <h3 class="display-1 stats-grid-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Units"))</h3>
-        <span class="title-line"></span>
-    </div>
-
-    <div class="stats-content">
-        @foreach (var card in Model.ChartViewModel.UnitCards)
-        {
-            <div class="stat-card stat-card-colored">
-                <div class="stat-title"><span>@card.Title</span></div>
-                <div class="stat-number"><span>@card.Value</span></div>
-                <span class="stat-separator @card.CssClass"></span>
-                <a class="stat-link-color" asp-controller="@card.Controller" asp-action="@card.Action" asp-area="Operations">
-                    <span><i class="mdi mdi-chevron-right"></i></span>
-                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-                </a>
-            </div>
-        }
-    </div>
-
-</div>
-
-<div class="charts-grid">
-
-    <div class="chart-container">
-        <canvas id="categoryChart"></canvas>
-    </div>
-
-    <div class="chart-container">
-        <canvas id="statusChart"></canvas>
-    </div>
-
-</div>
+@{
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/operations-dashboard-script.js");
+}
 
 <script>
     const categories = @Html.Raw(categoriesJson);
     const statuses = @Html.Raw(statusesJson);
-
-    //..doughnut Chart for categories
-    new Chart(document.getElementById("categoryChart"), {
-        type: 'doughnut',
-        data: {
-            labels: Object.keys(categories),
-            datasets: [{
-                data: Object.values(categories),
-                backgroundColor: Object.keys(categories).map((_, i) => `hsl(${i*45},70%,60%)`)
-            }]
-        }
-    });
-
-    //..stacked Bar Chart for status vs categories
-    const cats = Object.keys(statuses[0].Categories);
-    const datasets = cats.map(cat => ({
-        label: cat,
-        data: statuses.map(s => s.Categories[cat] || 0),
-        backgroundColor: `hsl(${Math.random()*360},70%,60%)`
-    }));
-
-    new Chart(document.getElementById("statusChart"), {
-        type: 'bar',
-        data: { labels: statuses.map(s => s.Status), datasets },
-        options: { scales: { x: { stacked: true }, y: { stacked: true } } }
-    });
-
 </script>
+
+
 

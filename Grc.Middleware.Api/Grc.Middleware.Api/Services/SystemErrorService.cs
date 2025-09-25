@@ -19,8 +19,8 @@ namespace Grc.Middleware.Api.Services {
             try {
                 
                 // Get all bug counts sequentially
-                var totalBugs = await uow.SystemErrorRespository.CountAsync();
-                var newBugs = await uow.SystemErrorRespository.CountAsync(b => b.FixStatus == "OPEN"); 
+                var totalBugs = await uow.SystemErrorRespository.CountAsync(false);
+                var newBugs = await uow.SystemErrorRespository.CountAsync(b => b.FixStatus == "OPEN", false); 
                 
                 return new BugCountResponse {
                     TotalBugs = totalBugs,

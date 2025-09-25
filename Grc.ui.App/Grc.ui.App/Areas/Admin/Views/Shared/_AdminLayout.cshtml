@@ -12,7 +12,9 @@
         // Add all your CSS files
         Html.AddCssFileParts("~/lib/bootstrap/dist/css/bootstrap.css");
         Html.AddCssFileParts("~/lib/icons/metro/icons.css");
+        Html.AddCssFileParts("~/lib/icons/material-design/css/materialdesignicons.min.css");
         Html.AddCssFileParts("~/lib/icons/coreui-icons/css/all.css");
+        Html.AddCssFileParts("~/lib/select-2/css/select2.min.css");
         Html.AddCssFileParts("~/lib/select-2/css/select2.min.css");
         Html.AddCssFileParts("~/lib/ckeditor5/ckeditor5.css");
         Html.AddCssFileParts("~/lib/toastr/toastr.css");
@@ -71,7 +73,7 @@
 
                         <li class="sidebar-item with-submenu">
 
-                            <a href="" class="toggle-submenu" data-id="users-menu">
+                            <a href="" class="toggle-submenu" data-id="company-menu">
                                 <span class="menu-icon">
                                     <i class="mdi mdi-vector-arrange-above"></i>
                                 </span>
@@ -83,7 +85,7 @@
                                 </span>
                             </a>
 
-                            <ul id="users-menu" class="sidebar-submenu">
+                            <ul id="company-menu" class="sidebar-submenu">
                                 <li class="sidebar-item with-submenu">
                                     <a asp-controller="Configuration" asp-action="Organization" asp-area="Admin">
                                         <span class="menu-icon">
@@ -430,8 +432,6 @@
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/department-script.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-script-other.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-tables.js");
-        
-        
     }
 
     @Html.GenerateScripts(ResourceLocation.Footer)

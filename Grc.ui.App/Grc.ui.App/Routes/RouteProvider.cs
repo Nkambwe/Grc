@@ -35,15 +35,87 @@
             );
 
             routeBuilder.MapControllerRoute(
-               name: "admin-passwords",
-               pattern: "admin/support/security-password",
-               defaults: new { area = "Admin", controller = "Support", action = "PasswordPolicy" }
-            );
-
-            routeBuilder.MapControllerRoute(
                 name: "admin-settings",
                 pattern: "admin/settings",
                 defaults: new { area = "Admin", controller = "Settings", action = "Index" }
+            );
+
+            /*----------------------- OPerations dashboard routes*/
+            routeBuilder.MapControllerRoute(
+                name: "ops-dashboard",
+                pattern: "/operations/dashboard",
+                defaults: new { area = "Operations", controller = "OperationDashboard", action = "Index" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                name: "ops-dashboard-totalprocs",
+                pattern: "/operations/dashboard/totalprocs",
+                defaults: new { area = "Operations", controller = "OperationDashboard", action = "TotalProcesses" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "ops-dashboard-proposed",
+                pattern: "/operations/dashboard/proposed",
+                defaults: new { area = "Operations", controller = "OperationDashboard", action = "Proposed" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "ops-dashboard-completed",
+                pattern: "/operations/dashboard/completed",
+                defaults: new { area = "Operations", controller = "OperationDashboard", action = "Completed" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "ops-dashboard-dormant",
+                pattern: "/operations/dashboard/dormant",
+                defaults: new { area = "Operations", controller = "OperationDashboard", action = "Dormant" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "ops-dashboard-cancelled",
+                pattern: "/operations/dashboard/cancelled",
+                defaults: new { area = "Operations", controller = "OperationDashboard", action = "Cancelled" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "ops-dashboard-unchanged",
+                pattern: "/operations/dashboard/unchanged",
+                defaults: new { area = "Operations", controller = "OperationDashboard", action = "Unchanged" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "ops-dashboard-due",
+                pattern: "/operations/dashboard/due",
+                defaults: new { area = "Operations", controller = "OperationDashboard", action = "Due" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "ops-dashboard-account-services",
+                pattern: "/operations/dashboard/account-services",
+                defaults: new { area = "Operations", controller = "OperationDashboard", action = "AccountServices" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "ops-dashboard-reconciliation",
+                pattern: "/operations/dashboard/reconciliation",
+                defaults: new { area = "Operations", controller = "OperationDashboard", action = "RecordsManagement" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "ops-dashboard-wallets",
+                pattern: "/operations/dashboard/wallets",
+                defaults: new { area = "Operations", controller = "OperationDashboard", action = "Wallets" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "ops-dashboard-cash",
+                pattern: "/operations/dashboard/cash",
+                defaults: new { area = "Operations", controller = "OperationDashboard", action = "Cash" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "ops-dashboard-payments",
+                pattern: "/operations/dashboard/payments",
+                defaults: new { area = "Operations", controller = "OperationDashboard", action = "Payments" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "ops-dashboard-channels",
+                pattern: "/operations/dashboard/channels",
+                defaults: new { area = "Operations", controller = "OperationDashboard", action = "Channels" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "ops-dashboard-customerExperience",
+                pattern: "/operations/dashboard/customer-experience",
+                defaults: new { area = "Operations", controller = "OperationDashboard", action = "CustomerExperience" }
             );
 
             // validate username

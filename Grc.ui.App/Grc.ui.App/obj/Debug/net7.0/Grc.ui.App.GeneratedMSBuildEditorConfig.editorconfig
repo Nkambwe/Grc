@@ -128,12 +128,28 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Operations/Views/OperationDashboard/AccountServices.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcT3BlcmF0aW9uc1xWaWV3c1xPcGVyYXRpb25EYXNoYm9hcmRcQWNjb3VudFNlcnZpY2VzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Operations/Views/OperationDashboard/Cancelled.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcT3BlcmF0aW9uc1xWaWV3c1xPcGVyYXRpb25EYXNoYm9hcmRcQ2FuY2VsbGVkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Operations/Views/OperationDashboard/Cash.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcT3BlcmF0aW9uc1xWaWV3c1xPcGVyYXRpb25EYXNoYm9hcmRcQ2FzaC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Operations/Views/OperationDashboard/Channels.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcT3BlcmF0aW9uc1xWaWV3c1xPcGVyYXRpb25EYXNoYm9hcmRcQ2hhbm5lbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Operations/Views/OperationDashboard/Completed.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcT3BlcmF0aW9uc1xWaWV3c1xPcGVyYXRpb25EYXNoYm9hcmRcQ29tcGxldGVkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Operations/Views/OperationDashboard/CustomerExperience.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcT3BlcmF0aW9uc1xWaWV3c1xPcGVyYXRpb25EYXNoYm9hcmRcQ3VzdG9tZXJFeHBlcmllbmNlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Operations/Views/OperationDashboard/Dormant.cshtml]
@@ -148,12 +164,32 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcT3BlcmF0aW9uc1xWaWV3c1xPcGVyYXRpb25EYXNoYm9hcmRcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Operations/Views/OperationDashboard/Payments.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcT3BlcmF0aW9uc1xWaWV3c1xPcGVyYXRpb25EYXNoYm9hcmRcUGF5bWVudHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Operations/Views/OperationDashboard/Proposed.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcT3BlcmF0aW9uc1xWaWV3c1xPcGVyYXRpb25EYXNoYm9hcmRcUHJvcG9zZWQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Operations/Views/OperationDashboard/Reconciliation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcT3BlcmF0aW9uc1xWaWV3c1xPcGVyYXRpb25EYXNoYm9hcmRcUmVjb25jaWxpYXRpb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Operations/Views/OperationDashboard/RecordsManagement.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcT3BlcmF0aW9uc1xWaWV3c1xPcGVyYXRpb25EYXNoYm9hcmRcUmVjb3Jkc01hbmFnZW1lbnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Operations/Views/OperationDashboard/TotalProcesses.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcT3BlcmF0aW9uc1xWaWV3c1xPcGVyYXRpb25EYXNoYm9hcmRcVG90YWxQcm9jZXNzZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Operations/Views/OperationDashboard/Unchanged.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcT3BlcmF0aW9uc1xWaWV3c1xPcGVyYXRpb25EYXNoYm9hcmRcVW5jaGFuZ2VkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Operations/Views/OperationDashboard/Wallets.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcT3BlcmF0aW9uc1xWaWV3c1xPcGVyYXRpb25EYXNoYm9hcmRcV2FsbGV0cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Areas/Operations/Views/OperationsConfiguration/Additional.cshtml]
@@ -268,6 +304,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXJyb3JcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/AccountSvcDashboard/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQWNjb3VudFN2Y0Rhc2hib2FyZFxEZWZhdWx0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/ActivitiesList/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQWN0aXZpdGllc0xpc3RcRGVmYXVsdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -284,6 +324,26 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQnVnVHJhY2tlclxEZWZhdWx0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/CancelledProcessesDashboard/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQ2FuY2VsbGVkUHJvY2Vzc2VzRGFzaGJvYXJkXERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/CashDashboard/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQ2FzaERhc2hib2FyZFxEZWZhdWx0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/ChannelDashboard/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQ2hhbm5lbERhc2hib2FyZFxEZWZhdWx0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/CompletedProcessesDashboard/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQ29tcGxldGVkUHJvY2Vzc2VzRGFzaGJvYXJkXERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/CustomerExDashboard/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQ3VzdG9tZXJFeERhc2hib2FyZFxEZWZhdWx0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/DepartmentList/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcRGVwYXJ0bWVudExpc3RcRGVmYXVsdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -296,12 +356,24 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcRGVwYXJ0bWVudFVuaXRQYWdlXERlZmF1bHQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/DormantProcessesDashboard/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcRG9ybWFudFByb2Nlc3Nlc0Rhc2hib2FyZFxEZWZhdWx0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/DueProcessesDashboard/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcRHVlUHJvY2Vzc2VzRGFzaGJvYXJkXERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/EncryptionList/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcRW5jcnlwdGlvbkxpc3RcRGVmYXVsdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/PasswordConfig/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUGFzc3dvcmRDb25maWdcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/PaymentDashboard/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUGF5bWVudERhc2hib2FyZFxEZWZhdWx0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/PermissionSetList/Default.cshtml]
@@ -316,12 +388,24 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUG9wdXBQYWdlXERlZmF1bHQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/ProposedProcessesDashboard/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUHJvcG9zZWRQcm9jZXNzZXNEYXNoYm9hcmRcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/QuickActions/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUXVpY2tBY3Rpb25zXERlZmF1bHQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/Recent/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUmVjZW50XERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/ReconciliationDashboard/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUmVjb25jaWxpYXRpb25EYXNoYm9hcmRcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/RecordsDashboard/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUmVjb3Jkc0Rhc2hib2FyZFxEZWZhdWx0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/RoleDelegationList/Default.cshtml]
@@ -340,12 +424,24 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUm9sZVBlcm1pc3Npb25zTGlzdFxEZWZhdWx0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/TotalProcessesDashboard/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcVG90YWxQcm9jZXNzZXNEYXNoYm9hcmRcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/UnchangedProcessesDashboard/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcVW5jaGFuZ2VkUHJvY2Vzc2VzRGFzaGJvYXJkXERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/UserDataForm/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcVXNlckRhdGFGb3JtXERlZmF1bHQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/UserList/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcVXNlckxpc3RcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/WalletDashboard/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcV2FsbGV0RGFzaGJvYXJkXERlZmF1bHQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Error.cshtml]

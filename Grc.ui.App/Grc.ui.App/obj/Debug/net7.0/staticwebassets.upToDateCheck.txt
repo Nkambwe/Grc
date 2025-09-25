@@ -29,6 +29,7 @@ wwwroot\js\department-script.js
 wwwroot\js\department-units-script.js
 wwwroot\js\grc-sidebar.js
 wwwroot\js\login-script.js
+wwwroot\js\operations-dashboard-script.js
 wwwroot\js\register-script.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map

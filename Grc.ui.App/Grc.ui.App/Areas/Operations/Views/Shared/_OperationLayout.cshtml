@@ -383,17 +383,14 @@
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/datatables/datatables.min.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/select-2/js/select2.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/bootstrap/dist/js/bootstrap.js");
-
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/component-script.js");
-        Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-script.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/department-units-script.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/department-script.js");
-        Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-script-other.js");
-        Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-tables.js");
-        
+        Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-script.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-other-script.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-table-script.js");
         
     }
-
     @Html.GenerateScripts(ResourceLocation.Footer)
     @await RenderSectionAsync("Scripts", required: false)
 

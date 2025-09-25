@@ -140,7 +140,7 @@ namespace Grc.Middleware.Api.Services {
             Logger.LogActivity($"Total User Count", "INFO");
     
             try {
-                return await uow.UserRepository.CountAsync();
+                return await uow.UserRepository.CountAsync(false);
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve total user count: {ex.Message}", "ERROR");
         
@@ -159,7 +159,7 @@ namespace Grc.Middleware.Api.Services {
             Logger.LogActivity($"Active User Count", "INFO");
     
             try {
-                return await uow.UserRepository.CountAsync(u => u.IsActive);
+                return await uow.UserRepository.CountAsync(u => u.IsActive, false);
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve active user count: {ex.Message}", "ERROR");
         
@@ -179,19 +179,19 @@ namespace Grc.Middleware.Api.Services {
     
             try {
                 // Get all user counts sequentially
-                var totalUsers = await uow.UserRepository.CountAsync();
-                var activeUsers = await uow.UserRepository.CountAsync(u => u.IsActive);
-                var deactivatedUsers = await uow.UserRepository.CountAsync(u => !u.IsActive);
-                var unApprovedUsers = await uow.UserRepository.CountAsync(u => !(bool)u.IsApproved); 
-                var unverifiedUsers = await uow.UserRepository.CountAsync(u => !(bool)u.IsVerified); 
-                var deletedUsers = await uow.UserRepository.CountAsync(u => u.IsDeleted); 
+                var totalUsers = await uow.UserRepository.CountAsync(false);
+                var activeUsers = await uow.UserRepository.CountAsync(u => u.IsActive, true);
+                var deactivatedUsers = await uow.UserRepository.CountAsync(u => !u.IsActive, true);
+                var unApprovedUsers = await uow.UserRepository.CountAsync(u => !(bool)u.IsApproved, true); 
+                var unverifiedUsers = await uow.UserRepository.CountAsync(u => !(bool)u.IsVerified, true); 
+                var deletedUsers = await uow.UserRepository.CountAsync(u => u.IsDeleted, true); 
         
                 // Get all bug counts sequentially
-                var totalBugs = await uow.SystemErrorRespository.CountAsync();
-                var newBugs = await uow.SystemErrorRespository.CountAsync(b => b.FixStatus == "OPEN"); 
-                var bugFixes = await uow.SystemErrorRespository.CountAsync(b => b.FixStatus == "CLOSED"); 
-                var bugProgressTask = await uow.SystemErrorRespository.CountAsync(b => b.FixStatus == "PROGRESS");
-                var userReportedBugsTask = await uow.SystemErrorRespository.CountAsync(b => b.IsUserReported); 
+                var totalBugs = await uow.SystemErrorRespository.CountAsync(false);
+                var newBugs = await uow.SystemErrorRespository.CountAsync(b => b.FixStatus == "OPEN",false); 
+                var bugFixes = await uow.SystemErrorRespository.CountAsync(b => b.FixStatus == "CLOSED", false); 
+                var bugProgressTask = await uow.SystemErrorRespository.CountAsync(b => b.FixStatus == "PROGRESS", false);
+                var userReportedBugsTask = await uow.SystemErrorRespository.CountAsync(b => b.IsUserReported, false); 
         
                 return new AdminCountResponse {
                     TotalUsers = totalUsers,
@@ -472,7 +472,7 @@ namespace Grc.Middleware.Api.Services {
                 var cutoffTime = DateTime.UtcNow.AddMinutes(-15);
 
                 //..get attempts
-                var failedAttempts  = await uow.AttemptRepository.CountAsync(u => u.UserId == userId && u.AttemptTime >= cutoffTime && !u.IsSuccessful);
+                var failedAttempts  = await uow.AttemptRepository.CountAsync(u => u.UserId == userId && u.AttemptTime >= cutoffTime && !u.IsSuccessful,true);
                  if (failedAttempts >= 5){ 
 
                     var user = await uow.UserRepository.GetAsync(userId);

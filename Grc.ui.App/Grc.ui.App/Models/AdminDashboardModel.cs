@@ -1,4 +1,5 @@
 ﻿using Grc.ui.App.Defaults;
+using Grc.ui.App.Dtos;
 
 namespace Grc.ui.App.Models {
     public class AdminDashboardModel {
@@ -6,17 +7,7 @@ namespace Grc.ui.App.Models {
         public string WelcomeMessage { get; set; } = string.Empty;
         public string Initials { get; set; }
         public string MiddlwareUrl { get; set; }
-        public int TotalUsers { get; set; }
-        public int ActiveUsers { get; set; }
-        public int DeactivatedUsers { get; set; }
-        public int UnApprovedUsers { get; set; }
-        public int UnverifiedUsers { get; set; }
-        public int DeletedUsers { get; set; }
-        public int TotalBugs { get; set; }
-        public int NewBugs { get; set; }
-        public int BugFixes { get; set; }
-        public int BugProgress { get; set; }
-        public int UserReportedBugs { get; set; }
+        public AdminDashboardChartViewModel Statistics { get; set; }
         public DateTime LastLogin { get; set; }
         public WorkspaceModel Workspace { get; set; }
         public DepartmentListModel DepartmentListModel {get;set;}
