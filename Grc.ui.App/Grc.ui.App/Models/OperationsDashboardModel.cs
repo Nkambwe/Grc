@@ -1,6 +1,5 @@
 ﻿using Grc.ui.App.Defaults;
 using Grc.ui.App.Dtos;
-using Grc.ui.App.Enums;
 using Grc.ui.App.Http.Responses;
 
 namespace Grc.ui.App.Models {

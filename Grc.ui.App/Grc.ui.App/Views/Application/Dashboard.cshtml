@@ -2,8 +2,145 @@
 @{
     Layout = "_Layout";
     ViewData["Title"] = "GRC SUITE";
+
+    var circulars = Model.DashboardStatistics.CircularTotals;
+    var regulations = Model.DashboardStatistics.RegulationsTotals;
 }
 
-<div>
-    <span class="display-1">@Model.WelcomeMessage</span>
+<div class="welcome-container">
+    <div class="welcome-container-message">
+        <span class="display-1">@Model.WelcomeMessage</span>
+    </div>
+    <div class="incon-container-expand">
+        <button id="expandBtn" type="button" class="icon-btn">
+            <span>
+                <i id="toggleIcon" class="mdi mdi-arrow-expand"></i>
+            </span>
+        </button>
+    </div>
+
+</div>
+
+<div class="action-box">
+    <div class="title-box">
+        <h3 class="display-1 action-box-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Quick"))</h3>
+        <span class="title-line"></span>
+    </div>
+
+    @await Component.InvokeAsync("QuickActions", new { model = Model.QuickActions })
+</div>
+
+<div class="dashboard-grid">
+
+    <div class="stats-grid">
+
+        <div class="title-box">
+            <h3 class="display-1 stats-grid-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.Circular"))</h3>
+            <span class="title-line"></span>
+        </div>
+
+        <div class="stats-content">
+            <div class="stat-card stat-card-light">
+                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.Received"))</span></div>
+                <div class="stat-number"><span>@circulars.Received</span></div>
+                <span class="stat-separator stat-separator-primary"></span>
+                <a class="stat-link" asp-controller="Regulations" asp-action="ReceivedRegulations">
+                    <span><i class="mdi mdi-chevron-right"></i></span>
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
+                </a>
+            </div>
+            <div class="stat-card stat-card-light">
+                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.Open"))</span></div>
+                <div class="stat-number"><span>@circulars.Open</span></div>
+                <span class="stat-separator stat-separator-danger"></span>
+                <a class="stat-link" asp-controller="Regulations" asp-action="OpenRegulations">
+                    <span><i class="mdi mdi-chevron-right"></i></span>
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
+                </a>
+            </div>
+            <div class="stat-card stat-card-light">
+                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.Closed"))</span></div>
+                <div class="stat-number"><span>@circulars.Closed</span></div>
+                <span class="stat-separator stat-separator-cancelled"></span>
+                <a class="stat-link" asp-controller="Regulations" asp-action="ClosedRegulations">
+                    <span><i class="mdi mdi-chevron-right"></i></span>
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
+                </a>
+            </div>
+            <div class="stat-card stat-card-light">
+                <div class="stat-title"><span></span></div>
+                <div class="stat-number"><span></span></div>
+                <span class="stat-separator"></span>
+            </div>
+            <div class="stat-card stat-card-light">
+                <div class="stat-title"><span></span></div>
+                <div class="stat-number"><span></span></div>
+                <span class="stat-separator"></span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="stats-grid">
+
+        <div class="title-box">
+            <h3 class="display-1 stats-grid-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.RegulationStandards"))</h3>
+            <span class="title-line"></span>
+        </div>
+
+        <div class="stats-content">
+
+            <div class="stat-card stat-card-colored">
+                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.Applicable"))</span></div>
+                <div class="stat-number"><span>@regulations.Applicable</span></div>
+                <span class="stat-separator stat-separator-colored-pearl"></span>
+                <a class="stat-link" asp-controller="Regulations" asp-action="RegulatoryApplicable">
+                    <span><i class="mdi mdi-chevron-right"></i></span>
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
+                </a>
+            </div>
+
+            <div class="stat-card stat-card-colored">
+                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.Gaps"))</span></div>
+                <div class="stat-number"><span>@regulations.Gaps</span></div>
+                <span class="stat-separator stat-separator-colored-pearl"></span>
+                <a class="stat-link" asp-controller="Regulations" asp-action="RegulatoryGaps">
+                    <span><i class="mdi mdi-chevron-right"></i></span>
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
+                </a>
+            </div>
+
+            <div class="stat-card stat-card-colored">
+                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.Covered"))</span></div>
+                <div class="stat-number"><span>@regulations.Covered</span></div>
+                <span class="stat-separator stat-separator-colored-pearl"></span>
+                <a class="stat-link" asp-controller="Regulations" asp-action="RegulatoryCovered">
+                    <span><i class="mdi mdi-chevron-right"></i></span>
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
+                </a>
+            </div>
+            
+            <div class="stat-card stat-card-colored">
+                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.NotApplicable"))</span></div>
+                <div class="stat-number"><span>@regulations.NotApplicable</span></div>
+                <span class="stat-separator stat-separator-colored-pearl"></span>
+                <a class="stat-link" asp-controller="Regulations" asp-action="RegulatoryNotApplicable">
+                    <span><i class="mdi mdi-chevron-right"></i></span>
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
+                </a>
+            </div>
+
+            <div class="stat-card stat-card-colored">
+                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.Issues"))</span></div>
+                <div class="stat-number"><span>@regulations.Issues</span></div>
+                <span class="stat-separator stat-separator-colored-pearl"></span>
+                <a class="stat-link" asp-controller="Regulations" asp-action="RegulatoryIssues">
+                    <span><i class="mdi mdi-chevron-right"></i></span>
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
+                </a>
+            </div>
+
+        </div>
+
+    </div>
 </div>

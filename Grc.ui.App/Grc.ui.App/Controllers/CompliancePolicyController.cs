@@ -20,8 +20,12 @@ namespace Grc.ui.App.Controllers {
                   localizationService, errorService,
                   errorFactory, sessionManager) {
 
-            Logger.Channel = $"APPLICATION-{DateTime.Now:yyyyMMddHHmmss}";
+            Logger.Channel = $"POLICY-{DateTime.Now:yyyyMMddHHmmss}";
              _authService = authService;
         }
+
+        //Index
+        //ManagePolicy
+        //PoliciesDocuments
     }
 }

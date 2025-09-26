@@ -3,6 +3,6 @@
         public OperationsUnitStatisticsResponse UnitProcesses { get; set; }
         public ProcessCategoryStatisticsResponse ProcessCategories { get; set; }
 
-    }
 
+    }
 }

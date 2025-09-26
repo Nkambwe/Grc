@@ -111,8 +111,9 @@ function showToast(message, type = 'info') {
     }, 3000);
 }
     
-$(document).ready(function() {
-     // User dropdown toggle
+$(document).ready(function () {
+
+    // User dropdown toggle
     window.toggleDropdown = function() {
         $('#userDropdown').toggleClass('is-active');
     };

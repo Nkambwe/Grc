@@ -157,6 +157,8 @@ span.app-serach {
 
     .welcome-container-message span {
         font-size: 1.5em !important;
+        color: var(--pearl-purple-dark-strong-50);
+        text-shadow: 2px 4px 3px rgba(0, 0, 0, 0.3);
     }
 
 .welcome-container-expand {
@@ -650,6 +652,10 @@ h1.title {
     font-weight: 600;
     color: var(--pearl-orange);
     font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--pearl-orange);
+    font-size: 1.5rem;
+    text-shadow: 2px 4px 3px rgba(0, 0, 0, 0.3);
 }
 
 /* Utility classes */
@@ -736,6 +742,7 @@ h1.title {
     font-weight: 600;
     margin: 0;
     flex-shrink: 0;
+    text-shadow: 2px 4px 3px rgba(0, 0, 0, 0.3);
 }
 
 .quick-actions {
@@ -762,6 +769,7 @@ h1.title {
             display: inline-block;
             font-size: 1.2em;
             padding: 5px;
+            text-shadow: 2px 4px 3px rgba(0, 0, 0, 0.3);
         }
 
             .quick-actions a span:first-child {

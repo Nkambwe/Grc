@@ -304,6 +304,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXJyb3JcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Regulations/ReceivedRegulations.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVndWxhdGlvbnNcUmVjZWl2ZWRSZWd1bGF0aW9ucy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/AccountSvcDashboard/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQWNjb3VudFN2Y0Rhc2hib2FyZFxEZWZhdWx0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 

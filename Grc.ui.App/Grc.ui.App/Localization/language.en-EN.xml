@@ -204,7 +204,7 @@
 	<LocaleResource Name="Component.Key.ProposedProcesses">
 		<Value>Proposed Processes</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Component.Key.Users">
 		<Value>Users</Value>
 	</LocaleResource>
@@ -290,19 +290,19 @@
 	<LocaleResource Name="Component.Key.PaymentProcesses">
 		<Value>Payment Processes</Value>
 	</LocaleResource>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
 	<LocaleResource Name="Component.Label.Branch">
 		<Value>Add Branch</Value>
 	</LocaleResource>
@@ -480,8 +480,6 @@
 	<LocaleResource Name="App.Menu.Configurations.PermissionSet">
 		<Value>Permission Set</Value>
 	</LocaleResource>
-	
-	
 	<LocaleResource Name="Operations.Menu.Home">
 		<Value>Home</Value>
 	</LocaleResource>
@@ -533,15 +531,88 @@
 	<LocaleResource Name="App.Menu.Registers">
 		<Value>Registers</Value>
 	</LocaleResource>
-	<LocaleResource Name="App.Menu.Registers.Policy">
-		<Value>Policies</Value>
-	</LocaleResource>
 	<LocaleResource Name="App.Menu.Registers.Regulations">
 		<Value>Regulations</Value>
 	</LocaleResource>
-	<LocaleResource Name="App.Menu.Registers.Obligations">
-		<Value>Obligations</Value>
+	<LocaleResource Name="App.Menu.Registers.Policies">
+		<Value>Policies</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Menu.Registers.Circular">
+		<Value>Circular</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Regulations">
+		<Value>Regulations</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Regulation.Standards">
+		<Value>Manage Regulations</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Regulation.Maps">
+		<Value>Compliance Maps</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Regulation.Circulars">
+		<Value>Manage Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Regulation.Authorites">
+		<Value>Authorities</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Policies.Compliance.Procedures">
+		<Value>Policies</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Policies.Compliance.Manage">
+		<Value>Manage Policies</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Policies.Compliance.Documents">
+		<Value>Documents</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Policies.Compliance.DocumentType">
+		<Value>Document Types</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Audits">
+		<Value>Audit</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Audits.Manage">
+		<Value>Manage Audits</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Audits.Types">
+		<Value>Audit Types</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Audits.AuditExceptions">
+		<Value>Audit Exceptions</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Responsibilites">
+		<Value>Responsibilities</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Dashboard.Circular">
+		<Value>Circular Regulations</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Dashboard.Received">
+		<Value>Received</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Dashboard.Open">
+		<Value>Open</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Dashboard.Closed">
+		<Value>Closed</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Dashboard.RegulationStandards">
+		<Value>Standards and Regulations</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Dashboard.Applicable">
+		<Value>Applicable</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Dashboard.Gaps">
+		<Value>Gaps</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Dashboard.Covered">
+		<Value>Covered</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Dashboard.NotApplicable">
+		<Value>Not Applicable</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Dashboard.Issues">
+		<Value>Issues</Value>
+	</LocaleResource>
+	
 	<LocaleResource Name="App.Menu.Policies">
 		<Value>Policy</Value>
 	</LocaleResource>

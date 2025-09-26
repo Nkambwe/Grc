@@ -20,8 +20,17 @@ namespace Grc.ui.App.Controllers {
                   localizationService, errorService,
                   errorFactory, sessionManager) {
 
-            Logger.Channel = $"APPLICATION-{DateTime.Now:yyyyMMddHHmmss}";
+            Logger.Channel = $"COMP-SETTINGS-{DateTime.Now:yyyyMMddHHmmss}";
              _authService = authService;
         }
+
+        //Index
+        //Authorities
+        //DocumentType
+        //Users
+        //Delegation
+        //Departments
+        //Responsibilities
+
     }
 }
