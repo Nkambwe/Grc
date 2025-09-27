@@ -183,6 +183,14 @@
 	<LocaleResource Name="Component.Key.DepartmentUnits">
 		<Value>All Units</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Key.PolicyRegister">
+		<Value>Policies</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.StandardsRegulationRegister">
+		<Value>Standards and Regulations</Value>
+	</LocaleResource>
+	
+	
 	<LocaleResource Name="Component.Key.TotalProcesses">
 		<Value>Total Processes</Value>
 	</LocaleResource>

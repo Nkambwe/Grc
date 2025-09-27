@@ -304,8 +304,56 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXJyb3JcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Register/ManageRegulations.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJcTWFuYWdlUmVndWxhdGlvbnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Register/PoliciesRegisters.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJcUG9saWNpZXNSZWdpc3RlcnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Register/RegulationCirculars.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJcUmVndWxhdGlvbkNpcmN1bGFycy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Register/RegulationMaps.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJcUmVndWxhdGlvbk1hcHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Register/RegulationRegisters.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJcUmVndWxhdGlvblJlZ2lzdGVycy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Regulations/ClosedRegulations.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVndWxhdGlvbnNcQ2xvc2VkUmVndWxhdGlvbnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Regulations/OpenRegulations.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVndWxhdGlvbnNcT3BlblJlZ3VsYXRpb25zLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Regulations/ReceivedRegulations.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVndWxhdGlvbnNcUmVjZWl2ZWRSZWd1bGF0aW9ucy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Regulations/RegulatoryApplicable.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVndWxhdGlvbnNcUmVndWxhdG9yeUFwcGxpY2FibGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Regulations/RegulatoryCovered.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVndWxhdGlvbnNcUmVndWxhdG9yeUNvdmVyZWQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Regulations/RegulatoryGaps.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVndWxhdGlvbnNcUmVndWxhdG9yeUdhcHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Regulations/RegulatoryIssues.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVndWxhdGlvbnNcUmVndWxhdG9yeUlzc3Vlcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Regulations/RegulatoryNotApplicable.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVndWxhdGlvbnNcUmVndWxhdG9yeU5vdEFwcGxpY2FibGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/AccountSvcDashboard/Default.cshtml]
@@ -342,6 +390,14 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/CompletedProcessesDashboard/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQ29tcGxldGVkUHJvY2Vzc2VzRGFzaGJvYXJkXERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/CompliancePolicyRegister/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQ29tcGxpYW5jZVBvbGljeVJlZ2lzdGVyXERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/ComplianceRegulationRegister/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQ29tcGxpYW5jZVJlZ3VsYXRpb25SZWdpc3RlclxEZWZhdWx0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/CustomerExDashboard/Default.cshtml]

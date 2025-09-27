@@ -1,0 +1,160 @@
+﻿
+.grc-tabulator-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.tabulator {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    background-color: var(--background-color);
+    border: none;
+}
+
+/****************************************** slide panel styles */
+
+.overlay {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.3);
+    display: none;
+    z-index: 999;
+}
+
+    .overlay.active {
+        display: block;
+    }
+
+.slide-panel {
+    position: fixed;
+    top: 70px;
+    right: -500px;
+    width: 500px;
+    height: 100vh;
+    background: white;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+    transition: right 0.3s ease;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+    .slide-panel.active {
+        right: 0;
+    }
+
+.panel-header {
+    background: var(--pearl-purple-dark-70);
+    color: var(--pearl-orange);
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.panel-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.panel-body {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #555;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+.panel-footer {
+    padding: 20px;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/************************************************************* Custom Tabulator Styles */
+
+/*.tabulator .tabulator-tableholder .tabulator-table {
+    width: 100% !important;
+}*/
+
+/*.tabulator-tree-control {
+    display: inline-block !important;
+    visibility: visible !important;
+    width: 16px !important;
+    height: 16px !important;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.tabulator-tree-control-expand:before {
+    content: "►" !important;
+    font-size: 12px;
+    color: #666;
+}
+
+.tabulator-tree-control-collapse:before {
+    content: "▼" !important;
+    font-size: 12px;
+    color: #666;
+}
+*/
+.tabulator-row,
+.tabulator-row.tabulator-tree-level-1 {
+    background-color: var(--grey-light-extra);
+}
+
+.tabulator-row.tabulator-tree-level-2 {
+    background: var(--white-base) !important;
+}
+
+    .tabulator-row:hover {
+        background-color: var(--pearl-purple-light-light-trans-50) !important;
+        transition: all .5s ease-in-out;
+    }
+
+.clickable-title {
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+    .clickable-title:hover {
+        color: #0056b3;
+    }
+
+.record-code {
+    font-weight: 600;
+    color: #495057;
+}

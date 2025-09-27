@@ -1,0 +1,95 @@
+﻿@* @model DormantProcessesModel *@
+<div class="grc-tabulator-container">
+    <div id="policies-table"></div>
+   
+</div>
+
+<!-- Overlay -->
+<div class="overlay" onclick="closePanel()">
+
+    <!-- Slide Panel -->
+    <div id="slidePanel" class="slide-panel" onclick="event.stopPropagation()">
+        <div class="panel-header">
+            <h3 id="panelTitle">Record Details</h3>
+            <button class="panel-close" onclick="closePanel()">&times;</button>
+        </div>
+        <div class="panel-body">
+            <form id="recordForm">
+                <input type="hidden" id="recordId">
+                <input type="hidden" id="parentId">
+                <input type="hidden" id="isEdit">
+
+                <div class="field-group">
+                    <label class="form-label text-right">>Record Code *</label>
+                    <input class="form-control" type="text" id="recordCode" required>
+                </div>
+
+                <div class="field-group">
+                    <label class="form-label text-right">>Title *</label>
+                    <input type="text" id="recordTitle" class="form-control" required>
+                </div>
+
+                <div class="field-group">
+                    <label for="recordCategory" class="form-label text-right select2-field select2-column">
+                        Category
+                        <select class="js-record-category form-control"
+                                id="dpRecordCategory"
+                                name="dpRecordCategory"
+                                aria-labelledby="dpRecordCategory-label"
+                                aria-describedby="dpRecordCategory-description">
+                            <option value="">Select Category</option>
+                            <option value="General">General</option>
+                            <option value="Technical">Technical</option>
+                            <option value="Administrative">Administrative</option>
+                            <option value="Financial">Financial</option>
+                        </select>
+                        <span id="dpNewBranches-description" class="sr-only">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                        </span>
+                    </label>
+
+                </div>
+
+                <div class="field-group">
+                    <label for="recordStatus" class="form-label text-right select2-field select2-column">
+                        Status
+                        <select class="js-record-status form-control"
+                                id="dpRecordStatus"
+                                name="dpRecordStatus"
+                                aria-labelledby="dpRecordStatus-label"
+                                aria-describedby="dpRecordStatus-description">
+                            <option value="Active">Active</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Archived">Archived</option>
+                        </select>
+                        <span id="dpRecordStatus-description" class="sr-only">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                        </span>
+                    </label>
+                </div>
+                
+                <div class="field-group">
+                    <label class="form-label text-right">>Owner</label>
+                    <input type="text" id="recordOwner" class="form-control">
+                </div>
+
+                <div class="field-group">
+                    <label class="form-label text-right">>Description</label>
+                    <textarea id="recordDescription" class="form-control"></textarea>
+                </div>
+
+               <div class="field-group"> id="parentInfo" style="display:none;">
+                    <label class="form-label text-right">>Parent Record</label>
+                    <input type="text" id="parentDisplay" readonly style="background:#f8f9fa;">
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer">
+            <button class="btn btn-secondary" onclick="closePanel()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveRecord()">Save</button>
+        </div>
+    </div>
+</div>
+
+

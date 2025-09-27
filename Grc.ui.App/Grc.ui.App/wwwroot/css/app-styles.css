@@ -57,6 +57,10 @@ header.header-bar.collapsed {
     transition: all .3s ease-in-out;
 }
 
+.main-content{
+    padding: 0!important;
+}
+
 .app-seach-box {
     margin: 0;
     padding: 5px;

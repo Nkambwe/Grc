@@ -65,6 +65,8 @@ namespace Grc.ui.App.Enums {
         [Description("channelProcesses")]
         ChannelProcesses,
         [Description("accountSvcProcesses")]
-        AccountSvcProcesses
+        AccountSvcProcesses,
+        [Description("complianceHome")]
+        ComplianceHome
     }
 }

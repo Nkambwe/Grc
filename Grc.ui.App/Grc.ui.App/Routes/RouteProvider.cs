@@ -40,7 +40,7 @@
                 defaults: new { area = "Admin", controller = "Settings", action = "Index" }
             );
 
-            /*----------------------- OPerations dashboard routes*/
+            /*----------------------- Operations dashboard routes*/
             routeBuilder.MapControllerRoute(
                 name: "ops-dashboard",
                 pattern: "/operations/dashboard",
@@ -118,7 +118,70 @@
                 defaults: new { area = "Operations", controller = "OperationDashboard", action = "CustomerExperience" }
             );
 
-            // validate username
+            /*----------------------- Compliance dashboard routes*/
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-dashboard",
+                pattern: "/grc/compliance",
+                defaults: new { controller = "Application", action = "Dashboard" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-regulations-received",
+                pattern: "/grc/regulations/received",
+                defaults: new { controller = "Regulations", action = "ReceivedRegulations" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-regulations-open",
+                pattern: "/grc/regulations/open",
+                defaults: new { controller = "Regulations", action = "OpenRegulations" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-regulations-closed",
+                pattern: "/grc/regulations/closed",
+                defaults: new { controller = "Regulations", action = "ClosedRegulations" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-regulations-applicable",
+                pattern: "/grc/regulations/applicable",
+                defaults: new { controller = "Regulations", action = "RegulatoryApplicable" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-regulations-gaps",
+                pattern: "/grc/regulations/gaps",
+                defaults: new { controller = "Regulations", action = "RegulatoryGaps" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-regulations-covered",
+                pattern: "/grc/regulations/covered",
+                defaults: new { controller = "Regulations", action = "RegulatoryCovered" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-regulations-issues",
+                pattern: "/grc/regulations/issues",
+                defaults: new { controller = "Regulations", action = "RegulatoryIssues" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-regulations-na",
+                pattern: "/grc/regulations/not-applicable",
+                defaults: new { controller = "Regulations", action = "RegulatoryNotApplicable" }
+            );
+
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-manage-register",
+               pattern: "/grc/register/manage-register",
+               defaults: new { controller = "Register", action = "RegulationRegisters" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-policies",
+               pattern: "/grc/register/policies",
+               defaults: new { controller = "Register", action = "PoliciesRegisters" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-circulars",
+               pattern: "/grc/register/circulars",
+               defaults: new { controller = "Register", action = "RegulationMaps" }
+            );
+
+            /*----------------------- Application login routes*/
             routeBuilder.MapControllerRoute(
                 name: "login",
                 pattern: "/login/validate-username",

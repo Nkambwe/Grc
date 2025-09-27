@@ -1,7 +1,9 @@
 ﻿using Grc.ui.App.Factories;
 using Grc.ui.App.Infrastructure;
+using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Grc.ui.App.Controllers {
     public class RegisterController : GrcBaseController
@@ -10,25 +12,86 @@ namespace Grc.ui.App.Controllers {
         private readonly ISystemAccessService _accessService;
 
         public RegisterController(IApplicationLoggerFactory loggerFactory,
-            IEnvironmentProvider environment,
-            IWebHelper webHelper,
-            ILocalizationService localizationService,
-            IErrorService errorService,
-            IAuthenticationService authService,
-            IGrcErrorFactory errorFactory,
-            SessionManager sessionManager)
-            : base(loggerFactory, environment, webHelper,
-                  localizationService, errorService,
-                  errorFactory, sessionManager) {
-
+                                  IEnvironmentProvider environment,
+                                  IWebHelper webHelper,
+                                  ILocalizationService localizationService,
+                                  IErrorService errorService,
+                                  IAuthenticationService authService,
+                                  IGrcErrorFactory errorFactory,
+                                  SessionManager sessionManager)
+                                : base(loggerFactory, environment, webHelper,
+                                      localizationService, errorService,
+                                      errorFactory, sessionManager) {
             Logger.Channel = $"REGISTER-{DateTime.Now:yyyyMMddHHmmss}";
             _authService = authService;
         }
 
-        //Index
-        //PoliciesRegisters
-        //RegulationRegisters
-        //CircularRegisters
+        public async Task<IActionResult> RegulationRegisters() {
+            if (User.Identity?.IsAuthenticated == true) {
+                var userDashboard = new UserDashboardModel()
+                {
+                    Initials = "JS",
+                };
+
+                return View(userDashboard);
+            }
+
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+        
+        public async Task<IActionResult> ManageRegulations()
+        {
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                var userDashboard = new UserDashboardModel()
+                {
+                    Initials = "JS",
+                };
+
+                return View(userDashboard);
+            }
+
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> PoliciesRegisters() {
+            if (User.Identity?.IsAuthenticated == true) {
+                var userDashboard = new UserDashboardModel()
+                {
+                    Initials = "JS",
+                };
+
+                return View(userDashboard);
+            }
+
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> RegulationCirculars() {
+            if (User.Identity?.IsAuthenticated == true) {
+                var userDashboard = new UserDashboardModel()
+                {
+                    Initials = "JS",
+                };
+
+                return View(userDashboard);
+            }
+
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> RegulationMaps() {
+            if (User.Identity?.IsAuthenticated == true) {
+                var userDashboard = new UserDashboardModel()
+                {
+                    Initials = "JS",
+                };
+
+                return View(userDashboard);
+            }
+
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
 
     }
 }
