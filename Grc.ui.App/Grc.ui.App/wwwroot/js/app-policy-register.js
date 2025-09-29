@@ -71,7 +71,7 @@ let nextId = 1000;
 function initTable() {
     table = new Tabulator("#policies-table", {
         data: sampleData,
-        dataTree: true,
+        dataTree: false,
         dataTreeStartExpanded: false,
         layout: "fitColumns", 
         responsiveLayout: "hide",
@@ -223,8 +223,8 @@ function saveRecord() {
         recordData.parentId = parseInt(parentId);
     }
 
-    // Simulate AJAX call to ASP.NET Core controller
-    simulateAjaxSave(recordData, isEdit, function (success) {
+    //..save via controller
+    saveViaController(recordData, isEdit, function (success) {
         if (success) {
             if (isEdit) {
                 updateRecordInData(sampleData, recordData);
@@ -239,8 +239,8 @@ function saveRecord() {
     });
 }
 
-// Simulate AJAX Save (replace with actual AJAX call)
-function simulateAjaxSave(data, isEdit, callback) {
+//..save register
+function saveRegister(data, isEdit, callback) {
     // This simulates an AJAX call to your ASP.NET Core controller
     // Replace with actual $.ajax call:
     /*

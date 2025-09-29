@@ -1,7 +1,7 @@
 ﻿@* @model DormantProcessesModel *@
 <div class="grc-tabulator-container">
     <div id="policies-table"></div>
-   
+
 </div>
 
 <!-- Overlay -->
@@ -20,23 +20,19 @@
                 <input type="hidden" id="isEdit">
 
                 <div class="field-group">
-                    <label class="form-label text-right">>Record Code *</label>
+                    <label class="form-label text-right">Record Code</label>
                     <input class="form-control" type="text" id="recordCode" required>
                 </div>
 
                 <div class="field-group">
-                    <label class="form-label text-right">>Title *</label>
+                    <label class="form-label text-right">Title</label>
                     <input type="text" id="recordTitle" class="form-control" required>
                 </div>
 
                 <div class="field-group">
                     <label for="recordCategory" class="form-label text-right select2-field select2-column">
                         Category
-                        <select class="js-record-category form-control"
-                                id="dpRecordCategory"
-                                name="dpRecordCategory"
-                                aria-labelledby="dpRecordCategory-label"
-                                aria-describedby="dpRecordCategory-description">
+                        <select class="js-record-category form-control" id="dpRecordCategory" name="dpRecordCategory" aria-labelledby="dpRecordCategory-label" aria-describedby="dpRecordCategory-description">
                             <option value="">Select Category</option>
                             <option value="General">General</option>
                             <option value="Technical">Technical</option>
@@ -53,11 +49,7 @@
                 <div class="field-group">
                     <label for="recordStatus" class="form-label text-right select2-field select2-column">
                         Status
-                        <select class="js-record-status form-control"
-                                id="dpRecordStatus"
-                                name="dpRecordStatus"
-                                aria-labelledby="dpRecordStatus-label"
-                                aria-describedby="dpRecordStatus-description">
+                        <select class="js-record-status form-control" id="dpRecordStatus" name="dpRecordStatus" aria-labelledby="dpRecordStatus-label" aria-describedby="dpRecordStatus-description">
                             <option value="Active">Active</option>
                             <option value="Pending">Pending</option>
                             <option value="Completed">Completed</option>
@@ -68,20 +60,20 @@
                         </span>
                     </label>
                 </div>
-                
+
                 <div class="field-group">
-                    <label class="form-label text-right">>Owner</label>
-                    <input type="text" id="recordOwner" class="form-control">
+                    <label class="form-label text-right">Owner</label>
+                    <input class="form-control" type="text" id="recordOwner">
                 </div>
 
                 <div class="field-group">
-                    <label class="form-label text-right">>Description</label>
-                    <textarea id="recordDescription" class="form-control"></textarea>
+                    <label class="form-label text-right">Description</label>
+                    <textarea class="form-control" id="recordDescription"></textarea>
                 </div>
 
-               <div class="field-group"> id="parentInfo" style="display:none;">
-                    <label class="form-label text-right">>Parent Record</label>
-                    <input type="text" id="parentDisplay" readonly style="background:#f8f9fa;">
+                <div class="field-group">
+                    <label class="form-label text-right">Parent Record</label>
+                    <input class="form-control" type="text" id="parentDisplay" readonly style="background:#f8f9fa;">
                 </div>
             </form>
         </div>

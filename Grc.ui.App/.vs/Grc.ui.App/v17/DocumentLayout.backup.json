@@ -3,36 +3,12 @@
   "WorkspaceRootPath": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\js\\department-units-script.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\js\\department-units-script.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github\\grc\\grc.ui.app\\grc.ui.app\\views\\shared\\components\\complianceregulatoryregister\\default.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\views\\shared\\components\\complianceregulatoryregister\\default.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\css\\component-styles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\css\\component-styles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github\\grc\\grc.ui.app\\grc.ui.app\\views\\shared\\components\\departmentlist\\default.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\views\\shared\\components\\departmentlist\\default.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github\\grc\\grc.ui.app\\grc.ui.app\\views\\shared\\components\\compliancepolicyregister\\default.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\views\\shared\\components\\compliancepolicyregister\\default.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\js\\app-policy-register.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\js\\app-policy-register.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\css\\app-tabular-styles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\css\\app-tabular-styles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\css\\admin-style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\css\\admin-style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\css\\app-styles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\css\\app-styles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\js\\app-regulations-register.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\js\\app-regulations-register.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github\\grc\\grc.ui.app\\grc.ui.app\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -46,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 2,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -71,105 +47,27 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "department-units-script.js",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\department-units-script.js",
-              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\js\\department-units-script.js",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\department-units-script.js",
-              "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\department-units-script.js",
-              "ViewState": "AgIAAKkAAAAAAAAAAAAQwKoAAAAcAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-09-27T16:04:15.24Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "component-styles.css",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\component-styles.css",
-              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\css\\component-styles.css",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\component-styles.css",
-              "RelativeToolTip": "Grc.ui.App\\wwwroot\\css\\component-styles.css",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-09-27T16:04:09.809Z",
+              "Title": "Default.cshtml",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\Shared\\Components\\ComplianceRegulatoryRegister\\Default.cshtml",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Views\\Shared\\Components\\ComplianceRegulatoryRegister\\Default.cshtml",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\Shared\\Components\\ComplianceRegulatoryRegister\\Default.cshtml",
+              "RelativeToolTip": "Grc.ui.App\\Views\\Shared\\Components\\ComplianceRegulatoryRegister\\Default.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-29T15:33:19.14Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "Default.cshtml",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\Shared\\Components\\DepartmentList\\Default.cshtml",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Views\\Shared\\Components\\DepartmentList\\Default.cshtml",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\Shared\\Components\\DepartmentList\\Default.cshtml",
-              "RelativeToolTip": "Grc.ui.App\\Views\\Shared\\Components\\DepartmentList\\Default.cshtml",
-              "ViewState": "AgIAAIcAAAAAAAAAAAAAADcAAAAAAAAAAAAAAA==",
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "Grc.ui.App\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAJ8BAAAAAAAAAAAAAD4CAABVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-27T15:57:18.275Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "admin-style.css",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-style.css",
-              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\css\\admin-style.css",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\admin-style.css",
-              "RelativeToolTip": "Grc.ui.App\\wwwroot\\css\\admin-style.css",
-              "ViewState": "AgIAAGMAAAAAAAAAAAAAAAsAAAAoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-09-27T15:21:37.694Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "app-tabular-styles.css",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\app-tabular-styles.css",
-              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\css\\app-tabular-styles.css",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\app-tabular-styles.css",
-              "RelativeToolTip": "Grc.ui.App\\wwwroot\\css\\app-tabular-styles.css",
-              "ViewState": "AgIAAEgAAAAAAAAAAAAAAGYAAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-09-27T14:27:45.57Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "app-styles.css",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\app-styles.css",
-              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\css\\app-styles.css",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\app-styles.css",
-              "RelativeToolTip": "Grc.ui.App\\wwwroot\\css\\app-styles.css",
-              "ViewState": "AgIAAGQDAAAAAAAAAAAtwG4DAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-09-27T14:25:45.806Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "app-policy-register.js",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-policy-register.js",
-              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\js\\app-policy-register.js",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-policy-register.js",
-              "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\app-policy-register.js",
-              "ViewState": "AgIAADYAAAAAAAAAAAAAAEEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-09-27T14:11:09.064Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Default.cshtml",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\Shared\\Components\\CompliancePolicyRegister\\Default.cshtml",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Views\\Shared\\Components\\CompliancePolicyRegister\\Default.cshtml",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\Shared\\Components\\CompliancePolicyRegister\\Default.cshtml",
-              "RelativeToolTip": "Grc.ui.App\\Views\\Shared\\Components\\CompliancePolicyRegister\\Default.cshtml",
-              "ViewState": "AgIAADkAAAAAAAAAAAAAAEkAAABNAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-27T13:09:10.044Z",
+              "WhenOpened": "2025-09-29T15:35:27.255Z",
               "EditorCaption": ""
             }
           ]
@@ -180,12 +78,12 @@
       "Orientation": 0,
       "VerticalTabListWidth": 256,
       "FloatingWindowState": {
-        "Id": "785777ba-4683-4c66-a90e-211190d25a30",
+        "Id": "3fea7524-18ba-470e-a8d4-3562f03ee5f1",
         "Display": 0,
-        "X": 17,
-        "Y": 74,
-        "Width": 1044,
-        "Height": 548,
+        "X": 79,
+        "Y": 61,
+        "Width": 883,
+        "Height": 616,
         "WindowState": 2
       },
       "DocumentGroups": [
@@ -195,15 +93,15 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "_Layout.cshtml",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\Shared\\_Layout.cshtml",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\Shared\\_Layout.cshtml",
-              "RelativeToolTip": "Grc.ui.App\\Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAABIAAAAAAAAAAAAAACAAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-27T12:51:34.882Z",
+              "DocumentIndex": 1,
+              "Title": "app-regulations-register.js",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-regulations-register.js",
+              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\js\\app-regulations-register.js",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-regulations-register.js",
+              "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\app-regulations-register.js",
+              "ViewState": "AgIAAMwAAAAAAAAAAAAowNAAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-09-29T15:34:34.621Z",
               "EditorCaption": ""
             }
           ]

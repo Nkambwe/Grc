@@ -183,14 +183,33 @@
 	<LocaleResource Name="Component.Key.DepartmentUnits">
 		<Value>All Units</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Key.ObligationRegister">
+		<Value>Compliance Obligations</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Key.PolicyRegister">
 		<Value>Policies</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.StandardsRegulationRegister">
-		<Value>Standards and Regulations</Value>
+		<Value>Regulatory Returns</Value>
 	</LocaleResource>
-	
-	
+	<LocaleResource Name="Component.Key.SettingAuthorities">
+		<Value>Regulatory Authorities</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.SettingResponsibilities">
+		<Value>Responsilities</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.SettingUsers">
+		<Value>Users</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.SettingDelegation">
+		<Value>User Delegation</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.SettingDepartments">
+		<Value>Departments</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.SettingDocumentType">
+		<Value>Document Types</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Key.TotalProcesses">
 		<Value>Total Processes</Value>
 	</LocaleResource>
@@ -273,7 +292,6 @@
 	<LocaleResource Name="Component.Key.ProposedProcesses">
 		<Value>Proposed Processes</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="Component.Key.WalletProcesses">
 		<Value>Wallet Processes</Value>
 	</LocaleResource>
@@ -298,18 +316,18 @@
 	<LocaleResource Name="Component.Key.PaymentProcesses">
 		<Value>Payment Processes</Value>
 	</LocaleResource>
-
-
-
-
-
-
-
-
-
-
-
-
+	<LocaleResource Name="Component.Key.SupportRegulatoryTypes">
+		<Value>Regulatory Types</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.SupportRegulatoryCategories">
+		<Value>Regulatory Caregories</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.RegulatoryRegister">
+		<Value>Regulations,Guidelines and Laws</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.RegulatoryMaps">
+		<Value>Compliance Maps</Value>
+	</LocaleResource>
 
 	<LocaleResource Name="Component.Label.Branch">
 		<Value>Add Branch</Value>
@@ -537,28 +555,34 @@
 		<Value>Other Settings</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Registers">
-		<Value>Registers</Value>
+		<Value>Regulations/Guidelines</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Registers.List">
+		<Value>Regulations</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Registers.Regulations">
-		<Value>Regulations</Value>
+		<Value>Regulatory Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Registers.Obligations">
+		<Value>Regulatory Obligations</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Registers.Policies">
-		<Value>Policies</Value>
+		<Value>Policies and Procedures</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Registers.Circular">
-		<Value>Circular</Value>
+		<Value>Circular Returns</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Regulations">
-		<Value>Regulations</Value>
+		<Value>Regulatory Returns</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Regulation.Standards">
-		<Value>Manage Regulations</Value>
+		<Value>General Returns</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Regulation.Maps">
 		<Value>Compliance Maps</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Regulation.Circulars">
-		<Value>Manage Circulars</Value>
+		<Value>Circular Returns</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Regulation.Authorites">
 		<Value>Authorities</Value>
@@ -591,7 +615,7 @@
 		<Value>Responsibilities</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Compliance.Dashboard.Circular">
-		<Value>Circular Regulations</Value>
+		<Value>Circular Returns</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Compliance.Dashboard.Received">
 		<Value>Received</Value>
@@ -603,7 +627,7 @@
 		<Value>Closed</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Compliance.Dashboard.RegulationStandards">
-		<Value>Standards and Regulations</Value>
+		<Value>Compliance Obligations</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Compliance.Dashboard.Applicable">
 		<Value>Applicable</Value>
@@ -620,7 +644,35 @@
 	<LocaleResource Name="App.Menu.Compliance.Dashboard.Issues">
 		<Value>Issues</Value>
 	</LocaleResource>
-	
+
+	<LocaleResource Name="App.Menu.Support">
+		<Value>Support</Value>
+	</LocaleResource>
+
+	<LocaleResource Name="App.Menu.Compliance.Regulatory.Support">
+		<Value>Regulatory Support</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Regulatory.Support.Categories">
+		<Value>Regulatory Categories</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Support.Regulatory.Types">
+		<Value>Regulatory Types</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Regulation.Authorites">
+		<Value>Regulatory Authorities</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Support">
+		<Value>Support Items</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Policies.Support.DocumentType">
+		<Value>Document Types</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Support.Departments">
+		<Value>Departments</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Support.Responsibilites">
+		<Value>Responsibility</Value>
+	</LocaleResource>
 	<LocaleResource Name="App.Menu.Policies">
 		<Value>Policy</Value>
 	</LocaleResource>

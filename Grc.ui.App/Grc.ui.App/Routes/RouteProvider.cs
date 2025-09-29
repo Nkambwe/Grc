@@ -166,9 +166,9 @@
             );
 
             routeBuilder.MapControllerRoute(
-               name: "app-compliance-register-manage-register",
-               pattern: "/grc/register/manage-register",
-               defaults: new { controller = "Register", action = "RegulationRegisters" }
+               name: "app-compliance-register-returns",
+               pattern: "/grc/register/register-returns",
+               defaults: new { controller = "Register", action = "RegulationReturns" }
             );
             routeBuilder.MapControllerRoute(
                name: "app-compliance-register-policies",
@@ -179,6 +179,58 @@
                name: "app-compliance-register-circulars",
                pattern: "/grc/register/circulars",
                defaults: new { controller = "Register", action = "RegulationMaps" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-obligations",
+               pattern: "/grc/register/obligations",
+               defaults: new { controller = "Register", action = "RegulationObligations" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-list",
+               pattern: "/grc/register/register-list",
+               defaults: new { controller = "Register", action = "RegulationList" }
+            );
+
+            /*----------------------- Compliance settings routes*/
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-regulatory-types",
+                pattern: "/grc/compliance/settings/regulatory-types",
+                defaults: new { controller = "ComplianceSettings", action = "ComplianceRegulatoryTypes" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-regulatory-categories",
+                pattern: "/grc/compliance/settings/regulatory-categories",
+                defaults: new { controller = "ComplianceSettings", action = "ComplianceRegulatoryCategories" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-regulatory-authorities",
+                pattern: "/grc/compliance/settings/regulatory-authorities",
+                defaults: new { controller = "ComplianceSettings", action = "ComplianceAuthorities" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-support-document-types",
+                pattern: "/grc/compliance/support/document-types",
+                defaults: new { controller = "ComplianceSettings", action = "ComplianceDocumentType" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-support-users",
+                pattern: "/grc/compliance/support/users",
+                defaults: new { controller = "ComplianceSettings", action = "ComplianceUsers" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-support-delegation",
+                pattern: "/grc/compliance/support/delegation",
+                defaults: new { controller = "ComplianceSettings", action = "ComplianceDelegation" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-support-departments",
+                pattern: "/grc/compliance/support/departments",
+                defaults: new { controller = "ComplianceSettings", action = "ComplianceDepartments" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-support-responsibilities",
+                pattern: "/grc/compliance/support/responsibilities",
+                defaults: new { controller = "ComplianceSettings", action = "ComplianceResponsibilities" }
             );
 
             /*----------------------- Application login routes*/

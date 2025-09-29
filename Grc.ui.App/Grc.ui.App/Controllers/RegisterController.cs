@@ -26,7 +26,38 @@ namespace Grc.ui.App.Controllers {
             _authService = authService;
         }
 
-        public async Task<IActionResult> RegulationRegisters() {
+        public async Task<IActionResult> RegulationList()
+        {
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                var userDashboard = new UserDashboardModel()
+                {
+                    Initials = "JS",
+                };
+
+                return View(userDashboard);
+            }
+
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> RegulationObligations()
+        {
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                var userDashboard = new UserDashboardModel()
+                {
+                    Initials = "JS",
+                };
+
+                return View(userDashboard);
+            }
+
+            return Redirect(Url.Action("Dashboard", "Application"));
+
+        }
+        
+        public async Task<IActionResult> RegulationReturns() {
             if (User.Identity?.IsAuthenticated == true) {
                 var userDashboard = new UserDashboardModel()
                 {

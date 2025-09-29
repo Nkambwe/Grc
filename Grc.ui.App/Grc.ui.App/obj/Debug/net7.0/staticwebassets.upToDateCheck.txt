@@ -34,9 +34,10 @@ wwwroot\images\pearl_white.png
 wwwroot\js\admin-script-other.js
 wwwroot\js\admin-script.js
 wwwroot\js\admin-tables.js
+wwwroot\js\app-obligation-register.js
 wwwroot\js\app-other-script.js
 wwwroot\js\app-policy-register.js
-wwwroot\js\app-regulations-register.js
+wwwroot\js\app-returns-register.js
 wwwroot\js\app-script.js
 wwwroot\js\app-table-script.js
 wwwroot\js\bug-signalr-script.js
@@ -179,3 +180,4 @@ wwwroot\lib\toastr\toastr.js.map
 wwwroot\lib\toastr\toastr.min.css
 wwwroot\lib\toastr\toastr.min.js
 wwwroot\lib\xlsx\xlsx.full.min.js
+wwwroot\js\app-regulations-register.js

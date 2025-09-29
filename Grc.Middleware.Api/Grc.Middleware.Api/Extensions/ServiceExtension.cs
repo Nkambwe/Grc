@@ -36,6 +36,15 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IActivityLogRepository, ActivityLogRepository>();
             services.AddScoped<IActivityTypeRepository, ActivityTypeRepository>();
             services.AddScoped<IActivityLogSettingRepository, ActivityLogSettingRepository>();
+            services.AddScoped<IAuthoritiesRepository, AuthoritiesRepository>();
+            services.AddScoped<IFrequencyRepository, FrequencyRepository>();
+            services.AddScoped<IRegulatoryCategoryRepository, RegulatoryCategoryRepository>();
+            services.AddScoped<IRegulatoryReturnRepository, RegulatoryReturnRepository>();
+            services.AddScoped<IRegulatoryTypeRepository, RegulatoryTypeRepository>();
+            services.AddScoped<IReturnTypeRepository, ReturnTypeRepository>();
+            services.AddScoped<IResponsibilityRepository, ResponsibilityRepository>();
+            services.AddScoped<IStatutoryArticleRepository, StatutoryArticleRepository>();
+            services.AddScoped<IStatutoryRegulationRepository, StatutoryRegulationRepository>();
         }
 
         /// <summary>
@@ -67,7 +76,16 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IDepartmentUnitService, DepartmentUnitService>();
             services.AddScoped<IQuickActionService, QuickActionService>();
             services.AddScoped<IPinnedItemService, PinnedItemService>();
-            
+            services.AddScoped<IAuthorityService, AuthorityService>();
+            services.AddScoped<IFrequencyService, FrequencyService>();
+            services.AddScoped<IRegulatoryCategoryService, RegulatoryCategoryService>();
+            services.AddScoped<IRegulatoryReturnService, RegulatoryReturnService>();
+            services.AddScoped<IRegulatoryTypeService, RegulatoryTypeService>();
+            services.AddScoped<IResponsibilityService, ResponsibilityService>();
+            services.AddScoped<IReturnTypeService, ReturnTypeService>();
+            services.AddScoped<IStatutoryArticleService, StatutoryArticleService>();
+            services.AddScoped<IStatutoryRegulationService, StatutoryRegulationService>();
+
             //allow html helpers to acces current action context
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         }

@@ -1,4 +1,5 @@
-﻿using Grc.Middleware.Api.Data.Entities.Configurations;
+﻿using Grc.Middleware.Api.Data.Entities.Compliance;
+using Grc.Middleware.Api.Data.Entities.Configurations;
 using Grc.Middleware.Api.Data.Entities.Logging;
 using Grc.Middleware.Api.Data.Entities.Org;
 using Grc.Middleware.Api.Data.Entities.System;
@@ -24,6 +25,16 @@ namespace Grc.Middleware.Api.Data {
         public DbSet<UserQuickAction> QuickActions { get; set; }
         public DbSet<UserPinnedItem> PinnedItems { get; set; }
 
+        public DbSet<Authority> Authorities { get; set; }
+        public DbSet<Frequency> Frequencies { get; set; }
+        public DbSet<RegulatoryCategory> RegulatoryCategories { get; set; }
+        public DbSet<RegulatoryReturn> RegulatoryReturns { get; set; }
+        public DbSet<RegulatoryType> RegulatoryTypes { get; set; }
+        public DbSet<Responsibility> Responsibilities { get; set; }
+        public DbSet<ReturnType> ReturnTypes { get; set; }
+        public DbSet<StatutoryArticle> StatutoryArticles { get; set; }
+        public DbSet<StatutoryRegulation> StatutoryRegulations { get; set; }
+
         public GrcContext(DbContextOptions<GrcContext> options)  
             : base(options){
         }
@@ -45,7 +56,16 @@ namespace Grc.Middleware.Api.Data {
             LoginAttemptEntityConfiguration.Configure(modelBuilder.Entity<LoginAttempt>());
             QuickActionEntityConfiguration.Configure(modelBuilder.Entity<UserQuickAction>());
             PinnedItemEntityConfiguration.Configure(modelBuilder.Entity<UserPinnedItem>());
-            
+            AuthorityEntityConfiguration.Configure(modelBuilder.Entity<Authority>());
+            FrequencyEntityConfiguration.Configure(modelBuilder.Entity<Frequency>());
+            RegulatoryCategoryEntityConfiguration.Configure(modelBuilder.Entity<RegulatoryCategory>());
+            RegulatoryReturnEntityConfiguration.Configure(modelBuilder.Entity<RegulatoryReturn>());
+            RegulatoryTypeEntityConfiguration.Configure(modelBuilder.Entity<RegulatoryType>());
+            ResponsibilityEntityConfiguration.Configure(modelBuilder.Entity<Responsibility>());
+            ReturnTypeEntityConfiguration.Configure(modelBuilder.Entity<ReturnType>());
+            StatutoryArticleEntityConfiguration.Configure(modelBuilder.Entity<StatutoryArticle>());
+            StatutoryRegulationEntityConfiguration.Configure(modelBuilder.Entity<StatutoryRegulation>());
+
             base.OnModelCreating(modelBuilder);
         }
     }

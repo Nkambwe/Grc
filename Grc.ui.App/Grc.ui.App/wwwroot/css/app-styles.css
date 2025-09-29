@@ -16,8 +16,8 @@ body {
 }
 
 :root {
-    --header-height: 57px;
-    --sidebar-width: 250px;
+    --header-height: 56.8px;
+    --sidebar-width: 300px;
     --sidebar-collapsed-width: 55.5px;
     --primary-color: #006d77;
     --secondary-color: #1a73e8;
@@ -40,9 +40,9 @@ body {
 .header-bar {
     position: fixed;
     top: 0;
-    left: 250px;
+    left: var(--sidebar-width);
     right: 0;
-    height: 75px;
+    height: 70px;
     color: var(--grey-light-strong);
     background: var(--background-color);
     border-bottom: 1px solid #e1e8ed;

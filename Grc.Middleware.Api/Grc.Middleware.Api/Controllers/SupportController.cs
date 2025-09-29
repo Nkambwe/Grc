@@ -10,7 +10,6 @@ using Grc.Middleware.Api.Services;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Grc.Middleware.Api.Controllers {
 
