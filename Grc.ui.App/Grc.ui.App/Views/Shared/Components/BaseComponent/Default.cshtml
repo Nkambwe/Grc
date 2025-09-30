@@ -35,29 +35,29 @@
         }
         <div class="component-header-right">
 
-            <button class="icon-btn @filterClass" data-action="filter" title="Filter">
+            <button class="icon-btn @filterClass" data-action="filter" title="@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Filter"))">
                 <span> <i class="mdi mdi-filter-outline"></i></span>
             </button>
 
             <div class="header-more-list">
-                <button class="icon-btn status-indicator" title="More Actions">
+                <button class="icon-btn status-indicator" title="@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.MoreAction"))">
                     <span> <i class="mdi mdi-format-align-justify"></i></span>
                 </button>
 
                 <div id="@dropId" class="more-actions-dropdown">
-                    <button class="dropdown-item" data-action="add-to-dashboard">
+                    <button class="dropdown-item" data-action="add-to-dashboard" title="@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Share"))">
                         <span><i class="mdi mdi-pin-outline"></i></span>
                         <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.QuickAction"))</span>
                     </button>
-                    <button class="dropdown-item" data-action="create-shortcut">
+                    <button class="dropdown-item" data-action="create-shortcut" title="@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Share"))">
                         <span><i class="mdi mdi-shuffle-variant"></i></span>
                         <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Shortcut"))</span>
                     </button>
-                    <button class="dropdown-item" data-action="export-data">
+                    <button class="dropdown-item" data-action="export-data" title="@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Share"))">
                         <span><i class="mdi mdi-file-excel-outline"></i></span>
                         <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Export"))</span>
                     </button>
-                    <button class="dropdown-item" data-action="share">
+                    <button class="dropdown-item" data-action="share" title="@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Share"))">
                         <span><i class="mdi mdi-share-outline"></i></span>
                         <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Share"))</span>
                     </button>

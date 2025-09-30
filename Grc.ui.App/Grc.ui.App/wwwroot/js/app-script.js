@@ -112,7 +112,7 @@ function showToast(message, type = 'info') {
 }
     
 $(document).ready(function () {
-
+   
     // User dropdown toggle
     window.toggleDropdown = function() {
         $('#userDropdown').toggleClass('is-active');
@@ -432,3 +432,5 @@ $(document).ready(function () {
         `)
         .appendTo('head');
 });
+
+

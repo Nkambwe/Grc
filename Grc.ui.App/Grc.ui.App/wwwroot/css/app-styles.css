@@ -29,6 +29,30 @@ body {
     --separator-color: #ddd;
 }
 
+.tooltip {
+    position: relative;
+}
+
+    .tooltip:hover::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #333;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        white-space: nowrap;
+        z-index: 1000;
+    }
+
+div:where(.swal2-container) h2:where(.swal2-title) {
+    color: inherit;
+    font-size: 1.375em;
+    color: var(--pearl-orange)!important;
+}
+
 /* Layout wrapper */
 .layout-wrapper {
     display: flex;
@@ -858,7 +882,9 @@ span.selection {
     }
 
     .btn-primary:focus {
-        border-color: #8803A3 !important;
+        color: var(--white-base);
+        border-color: var(--pearl-purple-dark-light-light) !important;
+        background-color: var(--pearl-purple-dark-10) !important;
         box-shadow: 0 0 0 0.25rem rgba(136, 3, 163, 0.25) !important;
         transition: all .3s ease-in-out;
     }
@@ -866,20 +892,27 @@ span.selection {
 input.form-control:focus,
 textarea.form-control:focus,
 select.form-control:focus {
-    border-color: #8803A3 !important;
+    border-color: var(--pearl-purple-dark-light-light) !important;
     box-shadow: 0 0 0 0.25rem rgba(136, 3, 163, 0.25) !important;
-    outline: 0; 
+    outline: 0;
 }
 
 .form-check-input:checked {
-    background-color: #8803A3;
-    border-color: #8803A3 !important;
+    background-color: var(--pearl-purple-dark-light-light) !important;
+    border-color: var(--pearl-purple-dark-light-light) !important;
+}
+
+.btn-check:focus + .btn-primary,
+.btn-primary:focus {
+    color: var(--white-base);
+    border-color: var(--pearl-purple-dark-light-light) !important;
+    background-color: var(--pearl-purple-dark-10) !important;
 }
 
 input.form-control:focus,
 textarea.form-control:focus,
 select.form-control:focus {
-    border-color: #8803A3 !important;
+    border-color: var(--pearl-purple-dark-light-light) !important;
     box-shadow: none !important;
     outline: 0;
 }
@@ -887,7 +920,7 @@ select.form-control:focus {
 /* Main box when focused */
 .select2-container--default .select2-selection--single:focus,
 .select2-container--default .select2-selection--multiple:focus {
-    border-color: #8803A3 !important;
+    border-color: var(--pearl-purple-dark-light-light) !important;
     box-shadow: 0 0 0 0.25rem rgba(136, 3, 163, 0.25) !important;
     outline: 0;
 }
@@ -895,7 +928,7 @@ select.form-control:focus {
 /* When dropdown is open */
 .select2-container--open .select2-selection--single,
 .select2-container--open .select2-selection--multiple {
-    border-color: #8803A3 !important;
+    border-color: var(--pearl-purple-dark-light-light) !important;
 }
 
 /* Hovered option */
@@ -906,22 +939,66 @@ select.form-control:focus {
 
 /* Selected option */
 .select2-container--default .select2-results__option[aria-selected="true"] {
-    background-color: #8803A3 !important;
+    background-color: var(--pearl-purple-dark-light-light) !important;
     color: var(--white-base) !important;
 }
 
 /* Tag style for multi-select */
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
-    background-color: #8803A3 !important;
-    border-color: #8803A3 !important;
+    background-color: var(--pearl-purple-dark-light-light) !important;
+    border-color: var(--pearl-purple-dark-light-light) !important;
     color: var(--white-base) !important;
 }
+
+.select2-container .select2-selection--single {
+    height: 35px !important;
+    border-radius: 0 !important;
+    line-height: 35px !important;
+}
+
+.select2-container .select2-selection__rendered {
+    line-height: 25px !important;
+}
+
+.select2-container .select2-selection__arrow {
+    height: 35px !important;
+}
+
+.select2-container--default .select2-selection--single {
+    border: 1px solid var(--pearl-purple-dark-light-light) !important;
+    border-radius: 0.25rem;
+    height: calc(1.5em + 0.75rem + 2px);
+}
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        padding-left: 0.75rem;
+        padding-right: 2rem;
+        line-height: calc(1.5em + 0.75rem);
+    }
+
+/*..focus styles for better visibility */
+.select2-container--default.select2-container--focus .select2-selection--single {
+    border-color: var(--pearl-purple-dark-light-light) !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Remove black border from search box when focused */
+.select2-container--default .select2-search--dropdown .select2-search__field {
+    border: 1px solid #ced4da;
+    outline: none;
+}
+
+    .select2-container--default .select2-search--dropdown .select2-search__field:focus {
+        border: 1px solid var(--pearl-purple-dark-light-light) !important;
+        outline: none;
+        box-shadow: none;
+    }
 
 /* Active/selected day */
 .datepicker table tr td.active,
 .datepicker table tr td.active:hover {
-    background-color: #8803A3 !important;
-    border-color: #8803A3 !important;
+    background-color: var(--pearl-purple-dark-light-light) !important;
+    border-color: var(--pearl-purple-dark-light-light) !important;
     color: var(--white-base) !important;
 }
 

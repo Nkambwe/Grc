@@ -38,8 +38,9 @@ namespace Grc.ui.App.Extensions.Mvc {
             services.AddScoped<IDepartmentUnitService, DepartmentUnitService>();
             services.AddScoped<IErrorService, ErrorService>();
             services.AddScoped<ISystemActivityService, SystemActivityService>();
-            services.AddScoped<IProcessesService, ProcessesService>();
+            services.AddScoped<IProcessesService, ProcessesService>(); 
             services.AddScoped<IRegistersService, RegistersService>();
+            services.AddScoped<IRegulatonServiceService, RegulatonServiceService>();
 
             //..sessionExtensions manager
             services.AddScoped<SessionManager>();

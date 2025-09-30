@@ -1,5 +1,64 @@
-﻿@* @model CompletedProcessesModel *@
-<div class="grc-user-component">
-    <span class="display-1">Document Types</span>
+﻿@* @model DormantProcessesModel *@
+
+<div class="grc-tabulator-container">
+
+    <div class="grc-tabulator-search">
+        <div class="field-search-group">
+            <label class="form-searchbox-label text-right">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.Categories"))</label>
+            <input id="categorySearchbox" type="text" class="form-control searchbox-field">
+        </div>
+    </div>
+    <div id="category-table"></div>
 </div>
+
+<!-- Overlay -->
+<div class="overlay" onclick="closeRegulatoryCategoryPanel()">
+
+    <!-- Slide Panel -->
+    <div id="slidePanel" class="slide-panel" onclick="event.stopPropagation()">
+        <div class="panel-header">
+            <h3 id="panelTitle">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Category.Header"))</h3>
+            <button class="panel-close" onclick="closeRegulatoryCategoryPanel()">
+                <i class="mdi mdi-close"></i>
+            </button>
+        </div>
+        <div class="panel-body">
+            <form id="recordForm">
+                <input type="hidden" id="recordId">
+                <input type="hidden" id="isEdit">
+
+                <div class="field-group">
+                    <label for="categoryName" class="form-label text-right">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Category.Header"))</label>
+                    <input type="text" id="categoryName" name="categoryName" class="form-control" required>
+                </div>
+
+                <div class="field-group">
+                    <label for="dpCategoryStatus" class="form-label text-right select2-field select2-column">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Category.Status"))
+                        <select class="js-record-category form-control" id="dpCategoryStatus" name="dpCategoryStatus" aria-labelledby="dpCategoryStatus-label" aria-describedby="dpCategoryStatus-description">
+                            <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Category.Select"))</option>
+                            <option value="Active">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Category.Active"))</option>
+                            <option value="Inactive">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Category.InActive"))</option>
+                        </select>
+                        <span id="dpCategoryStatus-description" class="sr-only">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                        </span>
+                    </label>
+
+                </div>
+
+            </form>
+        </div>
+        <div class="panel-footer">
+            <button class="btn btn-secondary" onclick="closeRegulatoryCategoryPanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+            <button class="btn btn-primary" onclick="saveRegulatoryCategoryRecord()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+        </div>
+    </div>
+</div>
+
+@{
+    Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-regulation-categories.js");
+
+}
 

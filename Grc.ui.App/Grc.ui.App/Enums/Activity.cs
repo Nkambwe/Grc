@@ -31,6 +31,8 @@ namespace Grc.ui.App.Enums {
         RETRIEVEDEPARTMENTS = 12,
         [Description("Get a list of units available")]
         RETRIEVEUNITS = 13,
+        [Description("Get a list of `regulatory categories available")]
+        RETRIEVEREGULATORYCATEGORIES = 14
 
     }
 }

@@ -14,8 +14,49 @@
     border: none;
 }
 
-/****************************************** slide panel styles */
+    .tabulator .tabulator-footer .tabulator-page-size {
+        display: inline-block;
+        margin: 0 5px;
+        padding: 10px 5px;
+        border: 1px solid #dee2e6;
+        border-radius: 3px;
+    }
 
+    .tabulator .tabulator-footer .tabulator-page.active {
+        border-color: var(--pearl-purple-dark-light-light) !important;
+        background-color: var(--pearl-purple-dark-light-light) !important;
+        color: var(--white-base);
+    }
+
+    .tabulator .tabulator-footer .tabulator-page:hover {
+        color: var(--pearl-purple-dark-40) !important;
+    }
+
+    .tabulator .tabulator-footer .tabulator-page.active:hover {
+        color: var(--white-base) !important;
+        background-color: var(--pearl-purple-dark-40) !important;
+    }
+
+    /*..custom Page Size Selector Styles */
+    .tabulator .tabulator-footer .tabulator-page-size {
+        display: inline-block;
+        margin: 0 5px;
+        padding: 10px 5px;
+        border: none;
+        border-radius: 3px;
+    }
+
+        .tabulator .tabulator-footer .tabulator-page-size:focus {
+            outline: 2px solid var(--pearl-purple-dark-light-light) !important;
+            outline-offset: 2px;
+        }
+
+        .tabulator .tabulator-footer .tabulator-page-size option:hover {
+            color: var(--white-base);
+            background-color: var(--pearl-purple-dark-40) !important;
+        }
+
+/****************************************** slide panel styles */
 .overlay {
     position: fixed;
     top: 70px;

@@ -568,10 +568,13 @@
             Html.AddScriptParts(ResourceLocation.Footer, "~/lib/bootstrap/dist/js/bootstrap.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/js/component-script.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-script.js");
-            Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-policy-register.js");
-            Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-obligation-register.js");
-            Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-returns-register.js");
-            Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-regulations-register.js");
+            //Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-policy-register.js");
+            //Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-obligation-register.js");
+            //Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-returns-register.js");
+            //Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-regulations-register.js");
+           // Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-regulation-authorities.js");
+            //Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-regulation-types.js");
+            
             Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-table-script.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-other-script.js");
         }
@@ -582,6 +585,5 @@
         <script>
             window.ADMIN_LOGOUT_URL = '@Url.Action("Logout", "Application")';
         </script>
-
     </body>
 </html>

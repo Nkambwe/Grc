@@ -233,6 +233,17 @@
                 defaults: new { controller = "ComplianceSettings", action = "ComplianceResponsibilities" }
             );
 
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-settings-support-categories",
+               pattern: "/grc/compliance/support/categories",
+               defaults: new { controller = "ComplianceSettings", action = "GetRegulatoryCategories" }
+           );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-settings-support-categories-all",
+               pattern: "/grc/compliance/support/categories-all",
+               defaults: new { controller = "ComplianceSettings", action = "AllRegulatoryCategories" }
+           );
+
             /*----------------------- Application login routes*/
             routeBuilder.MapControllerRoute(
                 name: "login",
