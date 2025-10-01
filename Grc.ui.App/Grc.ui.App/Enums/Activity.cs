@@ -31,8 +31,29 @@ namespace Grc.ui.App.Enums {
         RETRIEVEDEPARTMENTS = 12,
         [Description("Get a list of units available")]
         RETRIEVEUNITS = 13,
-        [Description("Get a list of `regulatory categories available")]
-        RETRIEVEREGULATORYCATEGORIES = 14
-
+        [Description("Get a list of regulatory categories available")]
+        RETRIEVEREGULATORYCATEGORIES = 14,
+        [Description("Add regulatory category")]
+        CREATEREGULATORYCATEGORY = 15,
+        [Description("Update regulatory category")]
+        COMPLIANCE_EDITED_CATEGORY = 16,
+        [Description("Delete regulatory category")]
+        COMPLIANCE_DELETED_CATEGORY = 17,
+        [Description("Get regulatory category details")]
+        COMPLIANCE_GET_CATEGORY = 18,
+        [Description("Export regulatory categories")]
+        COMPLIANCE_EXPORT_CATEGORY = 19,
+        [Description("Get a list of regulatory types available")]
+        RETRIEVEREGULATORYTYPES = 20,
+        [Description("Export regulatory types")]
+        COMPLIANCE_EXPORT_TYPES = 21,
+        [Description("Delete regulatory type")]
+        COMPLIANCE_DELETED_TYPE = 22,
+        [Description("Update regulatory type")]
+        COMPLIANCE_EDITED_TYPE = 23,
+        [Description("Add regulatory type")]
+        CREATEREGULATORYTYPE = 24,
+        [Description("Get regulatory category details")]
+        COMPLIANCE_GET_TYPE = 25,
     }
 }

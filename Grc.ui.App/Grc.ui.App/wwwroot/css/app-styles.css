@@ -889,6 +889,35 @@ span.selection {
         transition: all .3s ease-in-out;
     }
 
+
+.btn-secondary {
+    color: var(--white-base);
+    background-color: var(--pearl-orange);
+    border-color: var(--pearl-orange);
+}
+
+    .btn-secondary:disabled,
+    .btn-secondary.disabled {
+        color: var(--white-base);
+        background-color: var(--pearl-orange-light-medium-accent);
+        border-color: var(--pearl-orange-light-medium-accent);
+    }
+
+    .btn-secondary:hover {
+        color: var(--white-base);
+        background-color: var(--orange);
+        border-color: var(--orange);
+        transition: all .3s ease-in-out;
+    }
+
+    .btn-secondary:focus {
+        color: var(--white-base);
+        border-color: var(--amber-dark-strong) !important;
+        background-color: var(--amber-dark) !important;
+        box-shadow: 0 0 0 0.25rem rgba(var(--amber-light), 0.25) !important;
+        transition: all .3s ease-in-out;
+    }
+
 input.form-control:focus,
 textarea.form-control:focus,
 select.form-control:focus {

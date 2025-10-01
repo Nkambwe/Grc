@@ -38,5 +38,31 @@
         public const string DATA_ENCRYPTION_POLICY_CHANGED = "Data.Encryption.Policy.Changed";
         #endregion
 
+        #region Compliance Activities
+        public const string COMPLIACE_RETRIVE_CATEGORY = "Regulatory.Category.Retrieve";
+        public const string COMPLIACE_CREATE_CATEGORY = "Regulatory.Category.Added";
+        public const string COMPLIANCE_EDITED_CATEGORY = "Regulatory.Category.Edited";
+        public const string COMPLIANCE_DELETED_CATEGORY = "Regulatory.Category.Deleted";
+        public const string COMPLIANCE_EXPORT_CATEGORY = "Regulatory.Category.Export";
+        public const string COMPLIACE_CREATE_DEPARTMENT = "Regulatory.Department.Added";
+        public const string COMPLIANCE_EDITED_DEPARTMENT = "Regulatory.Department.Edited";
+        public const string COMPLIANCE_DELETED_DEPARTMENT = "Regulatory.Department.Deleted";
+        public const string COMPLIACE_CREATE_DEPARTMENT_TYPE = "Regulatory.Department.Type.Added";
+        public const string COMPLIANCE_EDITED_DEPARTMENT_TYPE = "Regulatory.Department.Type.Edited";
+        public const string COMPLIANCE_DELETED_DEPARTMENT_TYPE = "Regulatory.Department.Type.Deleted";
+        public const string COMPLIACE_CREATE_REGULATORY_TYPE = "Regulatory.Type.Added";
+        public const string COMPLIANCE_EDITED_REGULATORY_TYPE = "Regulatory.Type.Edited";
+        public const string COMPLIANCE_DELETED_REGULATORY_TYPE = "Regulatory.Type.Deleted";
+        public const string COMPLIACE_CREATE_AUTHORITIES = "Regulatory.Authorities.Added";
+        public const string COMPLIANCE_EDITED_AUTHORITIES = "Regulatory.Authorities.Edited";
+        public const string COMPLIANCE_DELETED_AUTHORITIES = "Regulatory.Authorities.Deleted";
+
+        public const string COMPLIANCE_EXPORT_TYPE = "Regulatory.Type.Export";
+        public const string COMPLIANCE_DELETED_TYPE = "Regulatory.Type.Deleted";
+        public const string COMPLIANCE_EDITED_TYPE = "Regulatory.Type.Edited";
+        public const string COMPLIACE_CREATE_TYPE = "Regulatory.Type.Create";
+        public const string COMPLIACE_RETRIVE_TYPE = "Regulatory.Type.Retrieve";
+        #endregion
+
     }
 }

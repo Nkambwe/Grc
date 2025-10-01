@@ -17,6 +17,11 @@
     width: 100%;
 }
 
+.field-search-buttons {
+    min-width: 200px;
+    padding: 15px 10px;
+}
+
 .form-searchbox-label {
     min-width: 250px;
     text-align: right;

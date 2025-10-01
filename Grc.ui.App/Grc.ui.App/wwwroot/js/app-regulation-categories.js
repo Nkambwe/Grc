@@ -7,7 +7,6 @@ $(document).ready(function () {
 });
 
 let regulatoryCategoryTable;
-let nextRegulatoryCategoryId = 1000;
 function initRegulatoryCategoryTable() {
     regulatoryCategoryTable = new Tabulator("#category-table", {
         ajaxURL: "/grc/compliance/support/categories-all",
@@ -167,7 +166,6 @@ function initRegulatoryCategoryTable() {
     initRegulatoryCategorySearch();
 }
 
-
 //..route to home
 $('.action-btn-complianceHome').on('click', function () {
     console.log("Home Button clicked");
@@ -181,6 +179,45 @@ $('.action-btn-complianceHome').on('click', function () {
 
 $('.action-btn-newCategory').on('click', function () {
     addRegulatoryCategoryRootRecord();
+});
+
+/*------------------------------------------------ export to excel*/
+$('#btnCategoryExportFiltered').on('click', function () {
+    $.ajax({
+        url: '/grc/compliance/support/category-export',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(regulatoryCategoryTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Regulatory_Categories.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+    });
+});
+
+$('.action-btn-category-export').on('click', function () {
+    $.ajax({
+        url: '/grc/compliance/support/category-export-full',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(regulatoryCategoryTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "RegulatoryCategories.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+    });
 });
 
 /*------------------------------------------------ add new record to pane*/
@@ -217,10 +254,10 @@ function initializeCatSelect2($element) {
     });
 }
 
-//..add regiter
+//..add category
 function addRegulatoryCategoryRootRecord() {
     openRegulatoryCategoryPanel('New regulatory category', {
-        id: ++nextRegulatoryCategoryId,
+        id:0,
         startTab: '',
         category: '',
         status: 'Active',
@@ -234,50 +271,24 @@ function openRegulatoryCategoryPanel(title, record, isEdit) {
     $('#recordId').val(record.id);
     $('#categoryName').val(record.category || '');
     $('#isEdit').val(isEdit);
-    $('#dpCategoryStatus').val(record.status || 'Active');
+    $('#dpCategoryStatus').val(record.status || 'Active').trigger('change');
 
     $('.overlay').addClass('active');
     $('#slidePanel').addClass('active');
 }
 
-/*------------------------------------------------ export to excel*/
-function exportToExcel() {
-    //TODo --export to excel
-}
-
 /*------------------------------------------------ save/edit new record*/
 function saveRegulatoryCategoryRecord() {
-    let isEdit = $('#isEdit').val() === 'true';
+    let isEdit = $('#isEdit').val();
+    //..build record payload from form
     let recordData = {
-        id: parseInt($('#recordId').val()),
-        startTab: '',
+        id: parseInt($('#recordId').val()) || 0, 
         category: $('#categoryName').val(),
-        status: "Active",
-        addedon: "01-02-2024",
-        endTab: '',
-
+        status: $('#dpCategoryStatus').val() || "Active"
     };
 
-    //..save via controller
-    saveRegulatoryCategoryRegister(recordData, isEdit, function (success) {
-        if (success) {
-            if (isEdit) {
-                updateRegulatoryCategoryRecordInData(sampleRegulatoryCatoryData, recordData);
-            } else {
-                addRegulatoryCategoryRecordToData(sampleRegulatoryCatoryData, recordData);
-            }
-
-            regulatoryCategoryTable.replaceData(sampleRegulatoryCatoryData);
-            closeRegulatoryCategoryPanel();
-
-            Swal.fire({
-                title: "Save Regulatory category",
-                text: 'category saved successfully!',
-                confirmButtonColor: "#450354",
-                confirmButtonText: "OK"
-            });
-        }
-    });
+    //..call backend
+    saveRegulatoryCategory(isEdit, recordData);
 }
 
 //...edit record in data
@@ -313,32 +324,52 @@ function initRegulatoryCategorySearch() {
 }
 
 /*------------------------------------------------ save via controller*/
-function saveRegulatoryCategoryRegister(data, isEdit, callback) {
-    // This simulates an AJAX call to your ASP.NET Core controller
-    // Replace with actual $.ajax call:
-    /*
+function saveRegulatoryCategory(isEdit, payload) {
+    let url = isEdit
+        ? "/grc/compliance/support/category-update"
+        : "/grc/compliance/support/category-create";
+
     $.ajax({
-        url: isEdit ? '/Records/Update' : '/Records/Create',
-        type: 'POST',
-        data: JSON.stringify(data),
-        contentType: 'application/json',
-        success: function(response) {
-            callback(true);
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(payload),
+        success: function (res) {
+            if (res && res.data) {
+                if (isEdit) {
+                    //..update existing category
+                    regulatoryCategoryTable.updateData([res.data]);
+                } else {
+                    //..add new category
+                    regulatoryCategoryTable.addData([res.data], true);
+                }
+            }
+
+            Swal.fire("Success", res.message || "Saved successfully.");
+            closeRegulatoryCategoryPanel();
         },
-        error: function(xhr, status, error) {
-            alert('Error saving record: ' + error);
-            callback(false);
+        error: function (xhr, status, error) {
+            var errorMessage = error; 
+
+            try {
+                var response = JSON.parse(xhr.responseText);
+                if (response.message) {
+                    errorMessage = response.message;
+                }
+            } catch (e) {
+                // If parsing fails, use the default error
+                errorMessage = "Unexpected error occurred";
+                console.error("Failed to parse error response:", e);
+            }
+
+            Swal.fire(isEdit ? "Update Category" : "Save Category", errorMessage);
+            console.error("Save error:", error, xhr.responseText);
         }
     });
-    */
-
-    // Simulated success
-    setTimeout(() => callback(true), 100);
 }
 
 /*------------------------------------------------ delete Record*/
 function deleteRegulatoryCategoryRecord(id) {
-    // Confirmation dialog
     Swal.fire({
         title: "Delete Category",
         text: "Are you sure you want to delete this category?",
@@ -349,50 +380,18 @@ function deleteRegulatoryCategoryRecord(id) {
         cancelButtonText: "Cancel"
     }).then((result) => {
         if (result.isConfirmed) {
-            Swal.fire({
-                title: 'Deleting...',
-                text: 'Please wait while the category is being deleted.',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
+            $.ajax({
+                url: '/grc/compliance/support/category-delete/' + id,
+                type: 'DELETE',
+                success: function (res) {
+                    Swal.fire("Deleted!", res.message || "Category deleted successfully.");
+                    regulatoryCategoryTable.setPage(1, true); 
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire("Error", error);
+                    console.error("Delete error:", error, xhr.responseText);
                 }
             });
-            // Simulate AJAX delete
-            /*
-            $.ajax({
-                url: '/Records/Delete/' + id,
-                type: 'DELETE',
-                success: function (resList) {
-                        const res = resList[0] || {};
-                        const icon = res.status === "false" ? "error" : "success";
-                        const title = res.message || (res.status === "false" ? "Error Deleting Voucher" : "Success");
-                        const text = res.details || (res.status === "false" ? "Could not delete category." : "Category deleted successfully.");
-
-                        Swal.fire({
-                            title: title,
-                            text: text,
-                            confirmButtonColor: res.status === "false" ? "#f42f3f" : "#450354",
-                            confirmButtonText: "OK"
-                        });
-
-                        if (res.status !== "false") {
-                            $(`button[data-id='${voucher_id}']`).closest('tr').remove();
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("AJAX error:", error);
-                        console.log("Server response:", xhr.responseText);
-                        Swal.fire({
-                            title: "Request Failed",
-                            text: "Could not connect to the server. Please try again later.",
-                            confirmButtonColor: "#f41369",
-                            confirmButtonText: "OK"
-                        });
-                    }
-            });
-            */
-            removeRegulationCategoryRecordFromData(sampleRegulatoryCatoryData, id);
-            regulatoryCategoryTable.replaceData(sampleRegulatoryCatoryData);
         }
     });
 }
@@ -407,25 +406,67 @@ function removeRegulationCategoryRecordFromData(data, id) {
     return false;
 }
 
-/*------------------------------------------------- Helper Functions*/ 
-function findRegulatoryCategoryRecord(data, id) {
-    for (let item of data) {
-        if (item.id === id) return item;
-        if (item._children) {
-            let found = findRegulatoryCategoryRecord(item._children, id);
-            if (found) return found;
+//..view regulatory category record
+function viewRegulatoryCategoryRecord(id) {
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving category...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
         }
-    }
-    return null;
+    });
+
+    findRegulatoryCategoryRecord(id)
+        .then(record => {
+            Swal.close(); 
+            if (record) {
+                openRegulatoryCategoryPanel('Edit Regulatory category', record, true);
+            } else {
+                Swal.fire({
+                    title: 'NOT FOUND',
+                    text: 'Category not found',
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error loading category:', error);
+            Swal.close(); 
+
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to load category details. Please try again.',
+                confirmButtonText: 'OK'
+            });
+        });
 }
 
-//..view/edit Record
-function viewRegulatoryCategoryRecord(id) {
-    let record = findRegulatoryCategoryRecord(sampleRegulatoryCatoryData, id);
-    if (record) {
-        openRegulatoryCategoryPanel('Edit Regulatory category', record, true);
-    }
+//..find regulatory category record from server
+function findRegulatoryCategoryRecord(id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/grc/compliance/support/retrieve-category/${id}`, 
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success && response.data) {
+                    resolve(response.data);
+                    resolve(null);
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire("Error", error);
+                console.error('AJAX Error:', error);
+                console.error('Status:', status);
+                console.error('Response:', xhr.responseText);
+            }
+        });
+    });
 }
+
+/*------------------------------------------------- Helper Functions*/
 
 //..close panel
 function closeRegulatoryCategoryPanel() {
@@ -440,7 +481,7 @@ function addRegulatoryCategoryRecordToData(data, newRecord) {
 
 //..search functionality
 function initRegulatoryCategorySearch() {
-    $("#category-search-input").on("keyup", function () {
+    $("#categorySearchbox").on("keyup", function () {
         let searchValue = $(this).val();
         regulatoryCategoryTable.setFilter("category", "like", searchValue);
     });
@@ -463,7 +504,3 @@ function initRegulatoryCategorySearch() {
         }, 300);
     });
 }
-
-
-
-

@@ -90,7 +90,7 @@
     }
 
 .panel-header {
-    background: var(--pearl-purple-dark-70);
+    background: var(--grey-light-extra);
     color: var(--pearl-orange);
     padding: 20px;
     display: flex;
@@ -101,9 +101,15 @@
 .panel-close {
     background: none;
     border: none;
-    color: white;
+    color: var(--grey-dark);
     font-size: 24px;
     cursor: pointer;
+    transition: all .5s ease-in-out;
+}
+
+.panel-close:hover {
+    color: var(--pearl-purple-dark-30);
+    transition:all .5s ease-in-out;
 }
 
 .panel-body {

@@ -1,6 +1,7 @@
 ﻿@using Grc.ui.App.Enums
 @using Grc.ui.App.Defaults
 
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -32,7 +33,7 @@
         }
 
         <!-- Keep these in head because they need to be available early -->
-        <script src="~/lib/toastr/toastr.min.js"></script>
+        
         <script src="~/lib/sweet-alert/sweetalert2.all.min.js"></script>
         <script src="~/lib/ckeditor5/ckeditor5.umd.js"></script>
         <script src="~/lib/chartjs/chart.bundle.min.js"></script>
@@ -43,6 +44,7 @@
         @Html.GenerateHeadCustom()
 
     </head>
+
     <body class="@Html.GeneratePageCssClasses()">
 
          <div id="layoutWrapper" class="layout-wrapper">
@@ -564,7 +566,8 @@
             Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery-validation/dist/jquery.validate.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/lib/datatables/datatables.min.js");
-            Html.AddScriptParts(ResourceLocation.Footer, "~/lib/select-2/js/select2.js");
+            Html.AddScriptParts(ResourceLocation.Footer, "~/lib/toastr/toastr.min.js");
+            Html.AddScriptParts(ResourceLocation.Footer, "~/js/component-script.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/lib/bootstrap/dist/js/bootstrap.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/js/component-script.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-script.js");
@@ -572,9 +575,7 @@
             //Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-obligation-register.js");
             //Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-returns-register.js");
             //Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-regulations-register.js");
-           // Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-regulation-authorities.js");
-            //Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-regulation-types.js");
-            
+            //Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-regulation-authorities.js");          
             Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-table-script.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-other-script.js");
         }
@@ -584,6 +585,18 @@
 
         <script>
             window.ADMIN_LOGOUT_URL = '@Url.Action("Logout", "Application")';
+            @if (TempData["UiResponse"] != null)
+            {
+                var response = System.Text.Json.JsonSerializer.Deserialize<UiResponse>((string)TempData["UiResponse"]);
+                <text>
+                    if (@(response.Success.ToString().ToLower())) {
+                        toastr.success("@response.Message");
+                    } else {
+                        toastr.error("@response.Message");
+                    }
+                </text>
+            }
         </script>
     </body>
+
 </html>

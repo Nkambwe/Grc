@@ -72,6 +72,9 @@
 	<LocaleResource Name="App.Label.Export">
 		<Value>Export</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Label.ExportFiltered">
+		<Value>Filtered</Value>
+	</LocaleResource>
 	<LocaleResource Name="App.Label.AllUsers">
 		<Value>All</Value>
 	</LocaleResource>
@@ -409,7 +412,6 @@
 	<LocaleResource Name="Component.Table.Label.Created">
 		<Value>Created On</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="Component.Table.Label.Filter">
 		<Value>Filter</Value>
 	</LocaleResource>
@@ -419,11 +421,23 @@
 	<LocaleResource Name="Component.Table.Search.Categories">
 		<Value>Search categories... </Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.Types">
+		<Value>Search types... </Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Category.Header">
 		<Value>Regulatory Category</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Type.Header">
+		<Value>Regulatory Types</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Category.Status">
 		<Value>Category Status</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Type.Status">
+		<Value>Type Status</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Type.Select">
+		<Value>Select type</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Category.Select">
 		<Value>Select Status</Value>
@@ -431,7 +445,13 @@
 	<LocaleResource Name="Component.Table.Category.Active">
 		<Value>Active</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Type.Active">
+		<Value>Active</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Category.InActive">
+		<Value>Inactive</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Type.InActive">
 		<Value>Inactive</Value>
 	</LocaleResource>
 	

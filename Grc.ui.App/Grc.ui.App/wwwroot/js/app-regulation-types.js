@@ -1,111 +1,125 @@
-﻿//..initialize on load
+﻿
+/*------------------------------------------ initialize table*/
+
 $(document).ready(function () {
-    initTable();
+    initRegulatoryTypeTable();
+    initializeTypeStatusSelect2();
 });
 
-let sampleData = [
-    {
-        id: 1,
-        code: "PRJ-001",
-        title: "Main Project Alpha",
-        category: "Technical",
-        status: "Active",
-        owner: "John Smith",
-        children: [
-            {
-                id: 11,
-                parentId: 1,
-                code: "TSK-001",
-                title: "Database Design",
-                category: "Technical",
-                status: "Completed",
-                owner: "Jane Doe"
+let regulatoryTypeTable;
+function initRegulatoryTypeTable() {
+    regulatoryTypeTable = new Tabulator("#regulatory-types-table", {
+        ajaxURL: "/grc/compliance/settings/types-all",
+        paginationMode: "remote",
+        filterMode: "remote",
+        sortMode: "remote",
+        pagination: true,
+        paginationSize: 10,
+        paginationSizeSelector: [10, 20, 35, 40, 50],
+        paginationCounter: "rows",
+        ajaxConfig: {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
             },
-            {
-                id: 12,
-                parentId: 1,
-                code: "TSK-002",
-                title: "API Development",
-                category: "Technical",
-                status: "Active",
-                owner: "Bob Wilson",
-                children: [
-                    {
-                        id: 121,
-                        parentId: 12,
-                        code: "SUB-001",
-                        title: "Authentication Module",
-                        category: "Technical",
-                        status: "Active",
-                        owner: "Alice Brown"
+        },
+        ajaxContentType: "json",
+        paginationDataSent: {
+            "page": "page",
+            "size": "size",
+            "sorters": "sort",
+            "filters": "filter"
+        },
+        paginationDataReceived: {
+            "last_page": "last_page",
+            "data": "data",
+            "total_records": "total_records"
+        },
+        ajaxRequestFunc: function (url, config, params) {
+            return new Promise((resolve, reject) => {
+                let requestBody = {
+                    pageIndex: params.page || 1,
+                    pageSize: params.size || 10,
+                    searchTerm: "",
+                    sortBy: "",
+                    sortDirection: "Ascending"
+                };
+
+                //..handle sorting
+                if (params.sort && params.sort.length > 0) {
+                    requestBody.sortBy = params.sort[0].field;
+                    requestBody.sortDirection = params.sort[0].dir === "asc" ? "Ascending" : "Descending";
+                }
+
+                //..handle filtering/search
+                if (params.filter && params.filter.length > 0) {
+                    let typeFilter = params.filter.find(f => f.field === "typeName");
+                    if (typeFilter) {
+                        requestBody.searchTerm = typeFilter.value;
                     }
-                ]
-            }
-        ]
-    },
-    {
-        id: 2,
-        code: "PRJ-002",
-        title: "Project Beta",
-        category: "Administrative",
-        status: "Pending",
-        owner: "Sarah Johnson",
-        children: [
-            {
-                id: 21,
-                parentId: 2,
-                code: "TSK-003",
-                title: "Requirements Gathering",
-                category: "Administrative",
-                status: "Active",
-                owner: "Mike Davis"
-            }
-        ]
-    }
-];
+                }
 
-let table;
-let nextId = 1000;
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(requestBody),
+                    success: function (response) {
+                        console.log("=== AJAX RESPONSE ===", response);
+                        resolve(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error:", error);
+                        reject(error);
+                    }
+                });
+            });
+        },
+        ajaxResponse: function (url, params, response) {
+            console.log("=== PROCESSING RESPONSE ===");
+            console.log("Params received:", params);
+            console.log("Response last_page:", response.last_page);
+            console.log("Response data length:", response.data ? response.data.length : 0);
 
-//..table initialization function
-function initTable() {
-    table = new Tabulator("#policies-table", {
-        data: sampleData,
-        dataTree: false,
-        dataTreeStartExpanded: false,
-        layout: "fitColumns", 
+            return {
+                data: response.data || [],
+                last_page: response.last_page || 1,
+                total_records: response.total_records || 0
+            };
+        },
+        ajaxError: function (error) {
+            console.error("Tabulator AJAX Error:", error);
+            alert("Failed to load regulatory types. Please try again.");
+        },
+        layout: "fitColumns",
         responsiveLayout: "hide",
-        dataTreeChildField: "children",
         columns: [
             {
-                title: "Record Code",
-                field: "code",
-                minWidth: 120, 
-                widthGrow: 1,
+                title: "",
+                field: "startTab",
+                maxWidth: 50,
+                headerSort: false,
                 formatter: function (cell) {
-                    return `<span class="record-code">${cell.getValue()}</span>`;
+                    return `<span class="record-tab"></span>`;
                 }
             },
             {
-                title: "Title",
-                field: "title",
-                minWidth: 200, 
+                title: "TYPE NAME",
+                field: "typeName",
+                minWidth: 200,
                 widthGrow: 4,
+                headerSort: true,
                 formatter: function (cell) {
-                    return `<span class="clickable-title" onclick="viewRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
+                    return `<span class="clickable-title" onclick="viewRegulatoryTypeRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
                 }
             },
             {
-                title: "Category",
-                field: "category",
-                minWidth: 120,
-                widthGrow: 1
-            },
-            {
-                title: "Status",
+                title: "STATUS",
                 field: "status",
-                minWidth: 100,
-                widthGrow: 1,
+                hozAlign: "center",
+                headerHozAlign: "center",
+                maxWidth: 200,
+                headerSort: true,
                 formatter: function (cell) {
                     let value = cell.getValue();
                     let color = {
@@ -118,223 +132,386 @@ function initTable() {
                 }
             },
             {
-                title: "Owner",
-                field: "owner",
-                minWidth: 120,
-                widthGrow: 2
+                title: "DATE ADDED",
+                field: "addedon",
+                headerSort: true
             },
             {
-                title: "Actions",
+                title: "ACTION",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
                     return `
-                        <button class="btn" style="padding: 5px 10px; font-size: 12px; margin-right: 5px;" onclick="addChildRecord(${rowData.id})">Add Child</button>
-                        <button class="btn" style="padding: 5px 10px; font-size: 12px; background: #dc3545;" onclick="deleteRecord(${rowData.id})">Delete</button>
+                        <button class="grc-delete-action" onclick="deleteRegulatoryTypeRecord(${rowData.id})">Delete</button>
                     `;
                 },
-                width: 200, 
+                width: 200,
                 hozAlign: "center",
-                headerSort: false
-            }
+                headerHozAlign: "center",
+                headerSort: false,
+                cssClass: "action-column"
+            },
+            {
+                title: "",
+                field: "endTab",
+                maxWidth: 50,
+                headerSort: false,
+                formatter: function (cell) {
+                    return `<span class="record-tab"></span>`;
+                }
+            },
         ]
+    });
+
+    // Initialize search
+    initRegulatoryTypeSearch();
+}
+
+//..route to home
+$('.action-btn-complianceHome').on('click', function () {
+    console.log("Home Button clicked");
+    try {
+        window.location.href = '/grc/compliance';
+    } catch (error) {
+        console.error('Navigation failed:', error);
+        showToast(error, type = 'error');
+    }
+});
+
+$('.action-btn-newType').on('click', function () {
+    addRegulatoryTypeRootRecord();
+});
+
+/*------------------------------------------------ export to excel*/
+$('#btnTypeExportFiltered').on('click', function () {
+    $.ajax({
+        url: '/grc/compliance/support/category-export',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(regulatoryTypeTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Regulatory_Categories.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+    });
+});
+
+$('.action-btn-type-export').on('click', function () {
+    $.ajax({
+        url: '/grc/compliance/support/category-export-full',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(regulatoryTypeTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "RegulatoryCategories.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+    });
+});
+
+/*------------------------------------------------ add new record to pane*/
+$('.action-btn-newType').on('click', function () {
+    exportToExcel();
+});
+
+// Function to initialize basic Select2 with accessibility fixes
+function initializeTypeStatusSelect2() {
+    $(".js-record-type").each(function () {
+        if (!$(this).hasClass('select2-hidden-accessible')) {
+            initializeTypeSelect2($(this));
+        }
     });
 }
 
-//..view/edit Record
-function viewRecord(id) {
-    let record = findRecord(sampleData, id);
-    if (record) {
-        openPanel('Edit Record', record, true);
-    }
+// Function to initialize a single Select2 element with proper accessibility
+function initializeTypeSelect2($element) {
+    const elementId = $element.attr('id');
+    const labelText = $element.closest('.form-group').find('label').text().trim() || 'Select Select status';
+
+    $element.select2({
+        width: 'resolve',
+        placeholder: 'Select a status...',
+        allowClear: true,
+        escapeMarkup: function (markup) {
+            return markup;
+        },
+        language: {
+            noResults: function () {
+                return "No status found";
+            }
+        }
+    });
 }
 
-//..add regiter
-function addRootRecord() {
-    openPanel('Add New Record', {
-        id: ++nextId,
-        code: '',
-        title: '',
-        category: 'General',
+//..add type
+function addRegulatoryTypeRootRecord() {
+    openRegulatoryTypePanel('New regulatory type', {
+        id: 0,
+        startTab: '',
+        category: '',
         status: 'Active',
-        owner: ''
-    }, false);
-}
-
-//..add Child Record
-function addChildRecord(parentId) {
-    let parent = findRecord(sampleData, parentId);
-    openPanel('Add Child Record', {
-        id: ++nextId,
-        parentId: parentId,
-        code: '',
-        title: '',
-        category: 'General',
-        status: 'Active',
-        owner: '',
-        _parent: parent
+        addedon: "01-02-2025",
+        endTab: '',
     }, false);
 }
 
 //..open slide panel
-function openPanel(title, record, isEdit) {
-    $('#panelTitle').text(title);
+function openRegulatoryTypePanel(title, record, isEdit) {
     $('#recordId').val(record.id);
-    $('#parentId').val(record.parentId || '');
+    $('#typeName').val(record.typeName || '');
     $('#isEdit').val(isEdit);
-    $('#recordCode').val(record.code || '');
-    $('#recordTitle').val(record.title || '');
-    $('#recordCategory').val(record.category || 'General');
-    $('#recordStatus').val(record.status || 'Active');
-    $('#recordOwner').val(record.owner || '');
-    $('#recordDescription').val(record.description || '');
-
-    if (record.parentId && record._parent) {
-        $('#parentInfo').show();
-        $('#parentDisplay').val(`${record._parent.code} - ${record._parent.title}`);
-    } else {
-        $('#parentInfo').hide();
-    }
+    $('#dpTypeStatus').val(record.status || 'Active').trigger('change');
 
     $('.overlay').addClass('active');
     $('#slidePanel').addClass('active');
 }
 
-//..close panel
-function closePanel() {
-    $('.overlay').removeClass('active');
-    $('#slidePanel').removeClass('active');
-}
-
-//..save record (AJAX simulation)
-function saveRecord() {
-    let isEdit = $('#isEdit').val() === 'true';
+/*------------------------------------------------ save/edit new record*/
+function saveRegulatoryTypeRecord() {
+    let isEdit = $('#isEdit').val();
+    //..build record payload from form
     let recordData = {
-        id: parseInt($('#recordId').val()),
-        code: $('#recordCode').val(),
-        title: $('#recordTitle').val(),
-        category: $('#recordCategory').val(),
-        status: $('#recordStatus').val(),
-        owner: $('#recordOwner').val(),
-        description: $('#recordDescription').val()
+        id: parseInt($('#recordId').val()) || 0,
+        category: $('#typeName').val(),
+        status: $('#dpTypeStatus').val() || "Active"
     };
 
-    let parentId = $('#parentId').val();
-    if (parentId) {
-        recordData.parentId = parseInt(parentId);
-    }
-
-    //..save via controller
-    saveViaController(recordData, isEdit, function (success) {
-        if (success) {
-            if (isEdit) {
-                updateRecordInData(sampleData, recordData);
-            } else {
-                addRecordToData(sampleData, recordData);
-            }
-
-            table.replaceData(sampleData);
-            closePanel();
-            alert('Record saved successfully!');
-        }
-    });
+    //..call backend
+    saveRegulatoryType(isEdit, recordData);
 }
 
-//..save register
-function saveRegister(data, isEdit, callback) {
-    // This simulates an AJAX call to your ASP.NET Core controller
-    // Replace with actual $.ajax call:
-    /*
-    $.ajax({
-        url: isEdit ? '/Records/Update' : '/Records/Create',
-        type: 'POST',
-        data: JSON.stringify(data),
-        contentType: 'application/json',
-        success: function(response) {
-            callback(true);
-        },
-        error: function(xhr, status, error) {
-            alert('Error saving record: ' + error);
-            callback(false);
-        }
-    });
-    */
-
-    // Simulated success
-    setTimeout(() => callback(true), 100);
-}
-
-//..delete Record
-function deleteRecord(id) {
-    if (confirm('Are you sure you want to delete this record and all its children?')) {
-        // Simulate AJAX delete
-        /*
-        $.ajax({
-            url: '/Records/Delete/' + id,
-            type: 'DELETE',
-            success: function(response) {
-                removeRecordFromData(sampleData, id);
-                table.replaceData(sampleData);
-                alert('Record deleted successfully!');
-            }
-        });
-        */
-
-        removeRecordFromData(sampleData, id);
-        table.replaceData(sampleData);
-        alert('Record deleted successfully!');
-    }
-}
-
-// Helper Functions
-function findRecord(data, id) {
-    for (let item of data) {
-        if (item.id === id) return item;
-        if (item._children) {
-            let found = findRecord(item._children, id);
-            if (found) return found;
-        }
-    }
-    return null;
-}
-
-function addRecordToData(data, newRecord) {
-    if (newRecord.parentId) {
-        let parent = findRecord(data, newRecord.parentId);
-        if (parent) {
-            if (!parent._children) parent._children = [];
-            parent._children.push(newRecord);
-        }
-    } else {
-        data.push(newRecord);
-    }
-}
-
-function updateRecordInData(data, updatedRecord) {
+//...edit record in data
+function updateRegulatoryTypeRecordInData(data, updatedRecord) {
     for (let i = 0; i < data.length; i++) {
         if (data[i].id === updatedRecord.id) {
             Object.assign(data[i], updatedRecord);
             return true;
         }
-        if (data[i]._children) {
-            if (updateRecordInData(data[i]._children, updatedRecord)) {
-                return true;
-            }
-        }
     }
     return false;
 }
 
-function removeRecordFromData(data, id) {
+/*----------------------------------------------- search functionality*/
+function initRegulatoryTypeSearch() {
+    const searchInput = $('#typeSearchbox');
+
+    searchInput.on('input', function (e) {
+        const searchTerm = $(this).val().toLowerCase();
+        regulatoryTypeTable.setFilter([
+            [
+                { field: "typeName", type: "like", value: searchTerm },
+                { field: "status", type: "like", value: searchTerm },
+                { field: "addedon", type: "like", value: searchTerm }
+            ]
+        ]);
+    });
+}
+
+/*------------------------------------------------ save via controller*/
+function saveRegulatoryType(isEdit, payload) {
+    let url = isEdit
+        ? "/grc/compliance/settings/types-update"
+        : "/grc/compliance/settings/types-create";
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(payload),
+        success: function (res) {
+            if (res && res.data) {
+                if (isEdit) {
+                    //..update existing type
+                    regulatoryTypeTable.updateData([res.data]);
+                } else {
+                    //..add new type
+                    regulatoryTypeTable.addData([res.data], true);
+                }
+            }
+
+            Swal.fire("Success", res.message || "Saved successfully.");
+            closeRegulatoryTypePanel();
+        },
+        error: function (xhr, status, error) {
+            var errorMessage = error;
+            try {
+                var response = JSON.parse(xhr.responseText);
+                if (response.message) {
+                    errorMessage = response.message;
+                }
+            } catch (e) {
+                // If parsing fails, use the default error
+                errorMessage = "Unexpected error occurred";
+                console.error("Failed to parse error response:", e);
+            }
+
+            Swal.fire(isEdit ? "Update Type" : "Save Type", errorMessage);
+            console.error("Save error:", error, xhr.responseText);
+        }
+    });
+}
+
+/*------------------------------------------------ delete Record*/
+function deleteRegulatoryTypeRecord(id) {
+    if (!id && id !== 0) {
+        toastr.error("Invalid id for delete.");
+        return;
+    }
+
+    Swal.fire({
+        title: "Delete Type",
+        text: "Are you sure you want to delete this type?",
+        showCancelButton: true,
+        confirmButtonColor: "#450354",
+        confirmButtonText: "Delete",
+        cancelButtonColor: "#f41369",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        const url = `/grc/compliance/settings/types-delete/${encodeURIComponent(id)}`;
+
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            success: function (res) {
+                if (res && res.success) {
+                    toastr.success(res.message || "Type deleted successfully.");
+                    regulatoryTypeTable.setPage(1, true);
+                } else {
+                    toastr.error(res?.message || "Delete failed.");
+                }
+            },
+            error: function (xhr, status, error) {
+                let msg = "Request failed.";
+                try {
+                    const json = xhr.responseJSON || JSON.parse(xhr.responseText || "{}");
+                    if (json && json.message) msg = json.message;
+                } catch (e) { }
+                toastr.error(msg);
+                console.error("Delete error:", error, xhr.responseText);
+            }
+        });
+    });
+}
+
+
+function removeRegulationTypeRecordFromData(data, id) {
     for (let i = 0; i < data.length; i++) {
         if (data[i].id === id) {
             data.splice(i, 1);
             return true;
         }
-        if (data[i]._children) {
-            if (removeRecordFromData(data[i]._children, id)) {
-                return true;
-            }
-        }
     }
     return false;
+}
+
+//..view regulatory type record
+function viewRegulatoryTypeRecord(id) {
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving type...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    findRegulatoryTypeRecord(id)
+        .then(record => {
+            Swal.close();
+            if (record) {
+                openRegulatoryTypePanel('Edit Regulatory type', record, true);
+            } else {
+                Swal.fire({
+                    title: 'NOT FOUND',
+                    text: 'Type not found',
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error loading type:', error);
+            Swal.close();
+
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to load type details. Please try again.',
+                confirmButtonText: 'OK'
+            });
+        });
+}
+
+//..find regulatory category record from server
+function findRegulatoryTypeRecord(id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/grc/compliance/settings/types-retrieve/${id}`,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success && response.data) {
+                    resolve(response.data);
+                    resolve(null);
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire("Error", error);
+                console.error('AJAX Error:', error);
+                console.error('Status:', status);
+                console.error('Response:', xhr.responseText);
+            }
+        });
+    });
+}
+
+/*------------------------------------------------- Helper Functions*/
+
+//..close panel
+function closeRegulatoryTypePanel() {
+    $('.overlay').removeClass('active');
+    $('#slidePanel').removeClass('active');
+}
+
+//...save new record
+function addRegulatoryTypeRecordToData(data, newRecord) {
+    data.push(newRecord);
+}
+
+//..search functionality
+function initRegulatoryTypeSearch() {
+    $("#typeSearchbox").on("keyup", function () {
+        let searchValue = $(this).val();
+        regulatoryTypeTable.setFilter("typeName", "like", searchValue);
+    });
+}
+
+//..function to manually reload table data
+function initRegulatoryTypeSearch() {
+    let typingTimer;
+    $("#typeSearchbox").on("keyup", function () {
+        clearTimeout(typingTimer);
+        let searchValue = $(this).val();
+
+        typingTimer = setTimeout(function () {
+            if (searchValue.length >= 2) {
+                regulatoryTypeTable.setFilter("typeName", "like", searchValue);
+                regulatoryTypeTable.setPage(1, true);
+            } else {
+                regulatoryTypeTable.clearFilter();
+            }
+        }, 300);
+    });
 }
