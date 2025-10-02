@@ -171,11 +171,6 @@
                defaults: new { controller = "Register", action = "RegulationReturns" }
             );
             routeBuilder.MapControllerRoute(
-               name: "app-compliance-register-policies",
-               pattern: "/grc/register/policies",
-               defaults: new { controller = "Register", action = "PoliciesRegisters" }
-            );
-            routeBuilder.MapControllerRoute(
                name: "app-compliance-register-circulars",
                pattern: "/grc/register/circulars",
                defaults: new { controller = "Register", action = "RegulationMaps" }
@@ -229,16 +224,51 @@
             );
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-settings-types-export-full",
-                pattern: "/grc/compliance/settings/category-export-full",
+                pattern: "/grc/compliance/settings/types-export-full",
                 defaults: new { controller = "ComplianceSettings", action = "ExcelExportAllTypes" }
             );
 
-            /*----------------------------------------------regulatory type routes*/
+            /*----------------------------------------------regulatory authorities routes*/
            
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-settings-regulatory-authorities",
                 pattern: "/grc/compliance/settings/regulatory-authorities",
                 defaults: new { controller = "ComplianceSettings", action = "ComplianceAuthorities" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-authorities-retrieve",
+                pattern: "/grc/compliance/settings/authorities-retrieve/{id:long}",
+                defaults: new { controller = "ComplianceSettings", action = "GetRegulatoryAuthority" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-authorities-all",
+                pattern: "/grc/compliance/settings/authorities-all",
+                defaults: new { controller = "ComplianceSettings", action = "AllRegulatoryAuthorities" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-authorities-create",
+                pattern: "/grc/compliance/settings/authorities-create",
+                defaults: new { controller = "ComplianceSettings", action = "CreateRegulatoryAuthority" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-authorities-update",
+                pattern: "/grc/compliance/settings/authorities-update",
+                defaults: new { controller = "ComplianceSettings", action = "UpdateRegulatoryAuthority" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-authorities-delete",
+                pattern: "/grc/compliance/settings/authorities-delete/{id:long}",
+                defaults: new { controller = "ComplianceSettings", action = "DeleteRegulatoryAuthority" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-authorities-export",
+                pattern: "/grc/compliance/settings/authorities-export",
+                defaults: new { controller = "ComplianceSettings", action = "ExcelExportAuthorities" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-authorities-export-full",
+                pattern: "/grc/compliance/settings/authorities-export-full",
+                defaults: new { controller = "ComplianceSettings", action = "ExcelExportAllAuthorities" }
             );
 
 
@@ -247,6 +277,18 @@
                 name: "app-compliance-settings-support-document-types",
                 pattern: "/grc/compliance/support/document-types",
                 defaults: new { controller = "ComplianceSettings", action = "ComplianceDocumentType" }
+            );
+
+            /*--------------------------------------------- compliance Policies/Procedures routes*/
+            routeBuilder.MapControllerRoute(
+              name: "app-compliance-policies-register",
+              pattern: "/grc/register/policies",
+              defaults: new { controller = "CompliancePolicy", action = "PoliciesRegisters" }
+            );
+            routeBuilder.MapControllerRoute(
+              name: "app-compliance-policies-documents",
+              pattern: "/grc/register/policies-documents",
+              defaults: new { controller = "CompliancePolicy", action = "PoliciesDocuments" }
             );
 
             /*----------------------------------------------compliance user routes*/

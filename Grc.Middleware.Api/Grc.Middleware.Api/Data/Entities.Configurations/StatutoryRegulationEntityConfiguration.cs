@@ -6,7 +6,7 @@ public class StatutoryRegulationEntityConfiguration
 {
     public static void Configure(EntityTypeBuilder<StatutoryRegulation> builder)
     {
-        builder.ToTable("TBL_GRC_Statutory_Regulation");
+        builder.ToTable("TBL_GRC_STATUTORY_REGULATION");
         builder.HasKey(s => s.Id);
         builder.Property(s => s.Code).HasColumnName("regulatory_code").HasColumnType("NVARCHAR(20)").IsRequired(true);
         builder.Property(s => s.RegulatoryName).HasColumnName("regulatory_name").HasColumnType("NVARCHAR(MAX)").IsRequired(true);

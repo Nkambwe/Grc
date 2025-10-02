@@ -8,8 +8,10 @@ namespace Grc.Middleware.Api.Data.Entities.Compliance {
         public string ContactPosition { get; set; }
         public string Description { get; set; }
         public long DepartmentId { get; set; } // IT, HR, Finance, Legal, Operations, BOD
-        public virtual ICollection<RegulatoryReturn> Returns { get; set; }
+        
         public virtual Department Department { get; set; }
+        public virtual ICollection<RegulatoryReturn> Returns { get; set; }
+        public virtual ICollection<GuideDocument> Documents { get; set; }
     }
 
 }

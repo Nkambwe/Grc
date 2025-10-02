@@ -85,19 +85,6 @@ namespace Grc.ui.App.Controllers {
             return Redirect(Url.Action("Dashboard", "Application"));
         }
 
-        public async Task<IActionResult> PoliciesRegisters() {
-            if (User.Identity?.IsAuthenticated == true) {
-                var userDashboard = new UserDashboardModel()
-                {
-                    Initials = "JS",
-                };
-
-                return View(userDashboard);
-            }
-
-            return Redirect(Url.Action("Dashboard", "Application"));
-        }
-
         public async Task<IActionResult> RegulationCirculars() {
             if (User.Identity?.IsAuthenticated == true) {
                 var userDashboard = new UserDashboardModel()

@@ -43,8 +43,10 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IRegulatoryTypeRepository, RegulatoryTypeRepository>();
             services.AddScoped<IReturnTypeRepository, ReturnTypeRepository>();
             services.AddScoped<IResponsibilityRepository, ResponsibilityRepository>();
-            services.AddScoped<IStatutoryArticleRepository, StatutoryArticleRepository>();
+            services.AddScoped<IStatutoryArticleRepository, StatutoryArticleRepository>(); 
             services.AddScoped<IStatutoryRegulationRepository, StatutoryRegulationRepository>();
+            services.AddScoped<IGuideDocumentRepository, GuideDocumentRepository>();
+            services.AddScoped<IGuideDocumentTypeRepository, GuideDocumentTypeRepository>();
         }
 
         /// <summary>
@@ -83,8 +85,10 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IRegulatoryTypeService, RegulatoryTypeService>();
             services.AddScoped<IResponsibilityService, ResponsibilityService>();
             services.AddScoped<IReturnTypeService, ReturnTypeService>();
-            services.AddScoped<IStatutoryArticleService, StatutoryArticleService>();
+            services.AddScoped<IStatutoryArticleService, StatutoryArticleService>(); 
             services.AddScoped<IStatutoryRegulationService, StatutoryRegulationService>();
+            services.AddScoped<IGuideDocumentService, GuideDocumentService>();
+            services.AddScoped<IGuideDocumentTypeService, GuideDocumentTypeService>();
 
             //allow html helpers to acces current action context
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();

@@ -76,11 +76,6 @@ function initRegulatoryTypeTable() {
             });
         },
         ajaxResponse: function (url, params, response) {
-            console.log("=== PROCESSING RESPONSE ===");
-            console.log("Params received:", params);
-            console.log("Response last_page:", response.last_page);
-            console.log("Response data length:", response.data ? response.data.length : 0);
-
             return {
                 data: response.data || [],
                 last_page: response.last_page || 1,
@@ -88,7 +83,6 @@ function initRegulatoryTypeTable() {
             };
         },
         ajaxError: function (error) {
-            console.error("Tabulator AJAX Error:", error);
             alert("Failed to load regulatory types. Please try again.");
         },
         layout: "fitColumns",
@@ -177,14 +171,14 @@ $('.action-btn-complianceHome').on('click', function () {
     }
 });
 
-$('.action-btn-newType').on('click', function () {
+$('.action-btn-new-type').on('click', function () {
     addRegulatoryTypeRootRecord();
 });
 
 /*------------------------------------------------ export to excel*/
 $('#btnTypeExportFiltered').on('click', function () {
     $.ajax({
-        url: '/grc/compliance/support/category-export',
+        url: '/grc/compliance/settings/types-export',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(regulatoryTypeTable.getData()),
@@ -203,7 +197,7 @@ $('#btnTypeExportFiltered').on('click', function () {
 
 $('.action-btn-type-export').on('click', function () {
     $.ajax({
-        url: '/grc/compliance/support/category-export-full',
+        url: '/grc/compliance/settings/types-export-full',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(regulatoryTypeTable.getData()),
@@ -273,6 +267,8 @@ function openRegulatoryTypePanel(title, record, isEdit) {
     $('#isEdit').val(isEdit);
     $('#dpTypeStatus').val(record.status || 'Active').trigger('change');
 
+    $('#panelTitle').text(title);
+
     $('.overlay').addClass('active');
     $('#slidePanel').addClass('active');
 }
@@ -302,25 +298,9 @@ function updateRegulatoryTypeRecordInData(data, updatedRecord) {
     return false;
 }
 
-/*----------------------------------------------- search functionality*/
-function initRegulatoryTypeSearch() {
-    const searchInput = $('#typeSearchbox');
-
-    searchInput.on('input', function (e) {
-        const searchTerm = $(this).val().toLowerCase();
-        regulatoryTypeTable.setFilter([
-            [
-                { field: "typeName", type: "like", value: searchTerm },
-                { field: "status", type: "like", value: searchTerm },
-                { field: "addedon", type: "like", value: searchTerm }
-            ]
-        ]);
-    });
-}
-
 /*------------------------------------------------ save via controller*/
 function saveRegulatoryType(isEdit, payload) {
-    let url = isEdit
+    let url = isEdit === true || isEdit === "true"
         ? "/grc/compliance/settings/types-update"
         : "/grc/compliance/settings/types-create";
 
@@ -400,12 +380,10 @@ function deleteRegulatoryTypeRecord(id) {
                     if (json && json.message) msg = json.message;
                 } catch (e) { }
                 toastr.error(msg);
-                console.error("Delete error:", error, xhr.responseText);
             }
         });
     });
 }
-
 
 function removeRegulationTypeRecordFromData(data, id) {
     for (let i = 0; i < data.length; i++) {
@@ -443,9 +421,7 @@ function viewRegulatoryTypeRecord(id) {
             }
         })
         .catch(error => {
-            console.error('Error loading type:', error);
             Swal.close();
-
             Swal.fire({
                 title: 'Error',
                 text: 'Failed to load type details. Please try again.',
@@ -469,9 +445,6 @@ function findRegulatoryTypeRecord(id) {
             },
             error: function (xhr, status, error) {
                 Swal.fire("Error", error);
-                console.error('AJAX Error:', error);
-                console.error('Status:', status);
-                console.error('Response:', xhr.responseText);
             }
         });
     });
@@ -490,24 +463,18 @@ function addRegulatoryTypeRecordToData(data, newRecord) {
     data.push(newRecord);
 }
 
-//..search functionality
-function initRegulatoryTypeSearch() {
-    $("#typeSearchbox").on("keyup", function () {
-        let searchValue = $(this).val();
-        regulatoryTypeTable.setFilter("typeName", "like", searchValue);
-    });
-}
-
 //..function to manually reload table data
 function initRegulatoryTypeSearch() {
+    const searchInput = $('#typeSearchbox');
     let typingTimer;
-    $("#typeSearchbox").on("keyup", function () {
+
+    searchInput.on('input', function () {
         clearTimeout(typingTimer);
-        let searchValue = $(this).val();
+        const searchTerm = $(this).val();
 
         typingTimer = setTimeout(function () {
-            if (searchValue.length >= 2) {
-                regulatoryTypeTable.setFilter("typeName", "like", searchValue);
+            if (searchTerm && searchTerm.length >= 2) {
+                regulatoryTypeTable.setFilter("globalSearch", "like", searchTerm);
                 regulatoryTypeTable.setPage(1, true);
             } else {
                 regulatoryTypeTable.clearFilter();
@@ -515,3 +482,4 @@ function initRegulatoryTypeSearch() {
         }, 300);
     });
 }
+

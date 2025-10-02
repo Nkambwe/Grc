@@ -177,7 +177,7 @@ $('.action-btn-complianceHome').on('click', function () {
     }
 });
 
-$('.action-btn-newCategory').on('click', function () {
+$('.action-btn-new-category').on('click', function () {
     addRegulatoryCategoryRootRecord();
 });
 
@@ -221,8 +221,8 @@ $('.action-btn-category-export').on('click', function () {
 });
 
 /*------------------------------------------------ add new record to pane*/
-$('.action-btn-newCategory').on('click', function () {
-    exportToExcel();
+$('.action-btn-new-category').on('click', function () {
+    addRegulatoryCategoryRootRecord();
 });
 
 // Function to initialize basic Select2 with accessibility fixes
@@ -273,6 +273,8 @@ function openRegulatoryCategoryPanel(title, record, isEdit) {
     $('#isEdit').val(isEdit);
     $('#dpCategoryStatus').val(record.status || 'Active').trigger('change');
 
+    $('#panelTitle').text(title);
+
     $('.overlay').addClass('active');
     $('#slidePanel').addClass('active');
 }
@@ -307,25 +309,9 @@ function updateRegulatoryCategoryRecordInData(data, updatedRecord) {
     return false;
 }
 
-/*----------------------------------------------- search functionality*/
-function initRegulatoryCategorySearch() {
-    const searchInput = $('#categorySearchbox');
-
-    searchInput.on('input', function (e) {
-        const searchTerm = $(this).val().toLowerCase();
-        regulatoryCategoryTable.setFilter([
-            [
-                { field: "category", type: "like", value: searchTerm },
-                { field: "status", type: "like", value: searchTerm },
-                { field: "addedon", type: "like", value: searchTerm }
-            ]
-        ]);
-    });
-}
-
 /*------------------------------------------------ save via controller*/
 function saveRegulatoryCategory(isEdit, payload) {
-    let url = isEdit
+    let url = isEdit === true || isEdit === "true"
         ? "/grc/compliance/support/category-update"
         : "/grc/compliance/support/category-create";
 
@@ -479,15 +465,7 @@ function addRegulatoryCategoryRecordToData(data, newRecord) {
     data.push(newRecord);
 }
 
-//..search functionality
-function initRegulatoryCategorySearch() {
-    $("#categorySearchbox").on("keyup", function () {
-        let searchValue = $(this).val();
-        regulatoryCategoryTable.setFilter("category", "like", searchValue);
-    });
-}
-
-//..function to manually reload table data
+/*----------------------------------------------- search functionality*/
 function initRegulatoryCategorySearch() {
     let typingTimer;
     $("#categorySearchbox").on("keyup", function () {
@@ -496,7 +474,7 @@ function initRegulatoryCategorySearch() {
 
         typingTimer = setTimeout(function () {
             if (searchValue.length >= 2) {  
-                regulatoryCategoryTable.setFilter("category", "like", searchValue);
+                regulatoryCategoryTable.setFilter("globalSearch", "like", searchTerm);
                 regulatoryCategoryTable.setPage(1, true);
             } else {
                 regulatoryCategoryTable.clearFilter();

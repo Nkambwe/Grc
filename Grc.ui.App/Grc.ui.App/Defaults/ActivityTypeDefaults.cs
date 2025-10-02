@@ -56,12 +56,24 @@
         public const string COMPLIACE_CREATE_AUTHORITIES = "Regulatory.Authorities.Added";
         public const string COMPLIANCE_EDITED_AUTHORITIES = "Regulatory.Authorities.Edited";
         public const string COMPLIANCE_DELETED_AUTHORITIES = "Regulatory.Authorities.Deleted";
-
         public const string COMPLIANCE_EXPORT_TYPE = "Regulatory.Type.Export";
         public const string COMPLIANCE_DELETED_TYPE = "Regulatory.Type.Deleted";
         public const string COMPLIANCE_EDITED_TYPE = "Regulatory.Type.Edited";
         public const string COMPLIACE_CREATE_TYPE = "Regulatory.Type.Create";
         public const string COMPLIACE_RETRIVE_TYPE = "Regulatory.Type.Retrieve";
+
+        public const string COMPLIACE_CREATE_AUTHORITY = "Regulatory.Authority.Create";
+        public const string COMPLIANCE_EDITED_AUTHORITY = "Regulatory.Authority.Edited";
+        public const string COMPLIANCE_DELETED_AUTHORITY = "Regulatory.Authority.Deleted";
+        public const string COMPLIACE_RETRIVE_AUTHORITY = "Regulatory.Type.Retrieve";
+        public const string COMPLIANCE_EXPORT_AUTHORITY = "Regulatory.Authority.Export";
+
+        public const string COMPLIANCE_RETRIEVE_POLICY = "Regulatory.Policy.Retrieve";
+        public const string COMPLIANCE_CREATE_POLICY = "Regulatory.Policy.Create";
+        public const string COMPLIANCE_EDITED_POLICY = "Regulatory.Policy.Edited";
+        public const string COMPLIANCE_DELETED_POLICY = "Regulatory.Policy.Deleted";
+        public const string COMPLIANCE_EXPORT_POLICY = "Regulatory.Policy.Export";
+
         #endregion
 
     }

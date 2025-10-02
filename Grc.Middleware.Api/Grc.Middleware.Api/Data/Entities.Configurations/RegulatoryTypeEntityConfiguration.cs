@@ -8,7 +8,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
     {
         public static void Configure(EntityTypeBuilder<RegulatoryType> builder)
         {
-            builder.ToTable("TBL_GRC_Statutoty_Type");
+            builder.ToTable("TBL_GRC_STATUTORY_TYPE");
             builder.HasKey(t => t.Id);
             builder.Property(t => t.TypeName).HasColumnName("type_name").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
             builder.Property(t => t.IsDeleted).HasColumnName("is_deleted");

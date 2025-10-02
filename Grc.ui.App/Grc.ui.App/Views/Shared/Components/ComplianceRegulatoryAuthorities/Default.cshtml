@@ -1,64 +1,71 @@
-﻿@* @model DormantProcessesModel *@
-
-<div class="grc-tabulator-container">
+﻿<div class="grc-tabulator-container">
 
     <div class="grc-tabulator-search">
         <div class="field-search-group">
-            <label class="form-searchbox-label text-right">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.Categories"))</label>
-            <input id="categorySearchbox" type="text" class="form-control searchbox-field">
+            <label class="form-searchbox-label text-right">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.Authority"))</label>
+            <input id="authoritySearchbox" type="text" class="form-control searchbox-field">
         </div>
     </div>
-    <div id="category-table"></div>
+    <div id="regulatory-authorities-table"></div>
 </div>
 
 <!-- Overlay -->
-<div class="overlay" onclick="closeRegulatoryCategoryPanel()">
+<div class="overlay" onclick="closeRegulatoryAuthorityPanel()">
 
     <!-- Slide Panel -->
     <div id="slidePanel" class="slide-panel" onclick="event.stopPropagation()">
         <div class="panel-header">
-            <h3 id="panelTitle">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Category.Header"))</h3>
-            <button class="panel-close" onclick="closeRegulatoryCategoryPanel()">
+            <h3 id="panelTitle">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Authority.Header"))</h3>
+            <button class="panel-close" onclick="closeRegulatoryAuthorityPanel()">
                 <i class="mdi mdi-close"></i>
             </button>
         </div>
         <div class="panel-body">
-            <form id="recordForm">
+            <form id="recordForm" class="row">
                 <input type="hidden" id="recordId">
                 <input type="hidden" id="isEdit">
 
-                <div class="field-group">
-                    <label for="categoryName" class="form-label text-right">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Category.Header"))</label>
-                    <input type="text" id="categoryName" name="categoryName" class="form-control" required>
+                <div class="col-sm-6">
+                    <div class="row field-group">
+                        <label for="authorityName" class="form-label text-right col-12">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Authority.Name"))</label>
+                        <input type="text" id="authorityName" name="authorityName" class="col-12 form-control" required>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="row field-group">
+                        <label for="authorityAlias" class="form-label text-right col-12">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Authority.Alias"))</label>
+                        <input type="text" id="authorityAlias" name="authorityAlias" class="col-12 form-control" required>
+                    </div>
                 </div>
 
-                <div class="field-group">
-                    <label for="dpCategoryStatus" class="form-label text-right select2-field select2-column">
-                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Category.Status"))
-                        <select class="js-record-category form-control" id="dpCategoryStatus" name="dpCategoryStatus" aria-labelledby="dpCategoryStatus-label" aria-describedby="dpCategoryStatus-description">
-                            <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Category.Select"))</option>
-                            <option value="Active">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Category.Active"))</option>
-                            <option value="Inactive">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Category.InActive"))</option>
-                        </select>
-                        <span id="dpCategoryStatus-description" class="sr-only">
-                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
-                        </span>
-                    </label>
+                <div class="col-sm-6">
+                    <div class="row field-group">
+                        <label for="dpAuthorityStatus" class="col-sm-12 form-label text-right select2-field select2-column">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Item.Status"))
+                            <select class="js-record-authority form-control" id="dpAuthorityStatus" name="dpAuthorityStatus" aria-labelledby="dpAuthorityStatus-label" aria-describedby="dpAuthorityStatus-description">
+                                <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Staus.Select"))</option>
+                                <option value="Active">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Status.Active"))</option>
+                                <option value="Inactive">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Status.InActive"))</option>
+                            </select>
+                            <span id="dpAuthorityStatus-description" class="sr-only">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                            </span>
+                        </label>
 
+                    </div>
                 </div>
 
             </form>
         </div>
         <div class="panel-footer">
-            <button class="btn btn-secondary" onclick="closeRegulatoryCategoryPanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
-            <button class="btn btn-primary" onclick="saveRegulatoryCategoryRecord()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+            <button class="btn btn-secondary" onclick="closeRegulatoryAuthorityPanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+            <button class="btn btn-primary" onclick="saveRegulatoryAuthorityRecord()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
         </div>
     </div>
 </div>
 
 @{
     Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
-    Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-regulation-categories.js");
-
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-regulation-authorities.js");
 }
 

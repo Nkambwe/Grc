@@ -7,7 +7,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
     {
         public static void Configure(EntityTypeBuilder<StatutoryArticle> builder)
         {
-            builder.ToTable("TBL_GRC_Statutory_Act");
+            builder.ToTable("TBL_GRC_STATUTORY_ACT");
             builder.HasKey(a => a.Id);
             builder.Property(a => a.Article).HasColumnName("article_descr").HasColumnType("NVARCHAR(10)").IsRequired(true);
             builder.Property(a => a.Summery).HasColumnName("act_summery").HasColumnType("NVARCHAR(MAX)").IsRequired(true);

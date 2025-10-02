@@ -8,7 +8,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
     {
         public static void Configure(EntityTypeBuilder<RegulatoryCategory> builder)
         {
-            builder.ToTable("TBL_GRC_Statutory_Cat");
+            builder.ToTable("TBL_GRC_STATUTORY_CAT");
             builder.HasKey(f => f.Id);
             builder.Property(f => f.CategoryName).HasColumnName("category_name").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
             builder.Property(f => f.IsDeleted).HasColumnName("is_deleted");

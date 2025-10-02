@@ -68,13 +68,17 @@ namespace Grc.ui.App.Enums {
         AccountSvcProcesses,
         [Description("complianceHome")]
         ComplianceHome,
-        [Description("newType")]
+        [Description("new-type")]
         NewType,
-        [Description("newCategory")]
+        [Description("type-export")]
+        TypeExport,
+        [Description("new-category")]
         NewCategory,
         [Description("category-export")]
         CategoryExport,
-        [Description("type-export")]
-        TypeExport,
+        [Description("new-authority")]
+        NewAuthority,
+        [Description("authority-export")]
+        AuthorityExport,
     }
 }

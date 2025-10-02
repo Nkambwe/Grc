@@ -1,4 +1,7 @@
-﻿namespace Grc.Middleware.Api.Data.Entities.Compliance {
+﻿using Grc.Middleware.Api.Data.Entities.Org;
+
+namespace Grc.Middleware.Api.Data.Entities.Compliance {
+
     public class RegulatoryType : BaseEntity
     {
         public string TypeName { get; set; } // Law, Statute, Regulation, Standard

@@ -39,6 +39,8 @@ wwwroot\js\app-other-script.js
 wwwroot\js\app-policy-register.js
 wwwroot\js\app-regulation-authorities.js
 wwwroot\js\app-regulation-categories.js
+wwwroot\js\app-regulation-doctypes.js
+wwwroot\js\app-regulation-PolRegister.js
 wwwroot\js\app-regulation-types.js
 wwwroot\js\app-regulations-register.js
 wwwroot\js\app-returns-register.js

@@ -72,6 +72,9 @@
 	<LocaleResource Name="App.Label.Export">
 		<Value>Export</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Label.ExportFiltered">
+		<Value>Filtered</Value>
+	</LocaleResource>
 	<LocaleResource Name="App.Label.AllUsers">
 		<Value>All</Value>
 	</LocaleResource>
@@ -154,7 +157,7 @@
 	<LocaleResource Name="App.Label.CategoryNew">
 		<Value>New Category</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="App.Label.Organization.Departments">
 		<Value>Departments</Value>
 	</LocaleResource>
@@ -195,7 +198,10 @@
 		<Value>Compliance Obligations</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.PolicyRegister">
-		<Value>Policies</Value>
+		<Value>Policies and Procedures</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.DocumentManagement">
+		<Value>Document Management</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.StandardsRegulationRegister">
 		<Value>Regulatory Returns</Value>
@@ -409,7 +415,6 @@
 	<LocaleResource Name="Component.Table.Label.Created">
 		<Value>Created On</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="Component.Table.Label.Filter">
 		<Value>Filter</Value>
 	</LocaleResource>
@@ -419,22 +424,108 @@
 	<LocaleResource Name="Component.Table.Search.Categories">
 		<Value>Search categories... </Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.Types">
+		<Value>Search types... </Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.Authority">
+		<Value>Search authorities... </Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.DocTypes">
+		<Value>Search types... </Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.Policy-register">
+		<Value>Search register... </Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Category.Header">
 		<Value>Regulatory Category</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Type.Header">
+		<Value>Regulatory Types</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Authority.Header">
+		<Value>Regulatory Authorities</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Doctypes.Header">
+		<Value>Document Types</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.PolRegister.Header">
+		<Value>Policy/Procedure Register</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.PolRegister.Owner">
+		<Value>Person Responsible</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.PolRegister.Select.Responsible">
+		<Value>Select owner...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Department.Name">
+		<Value>Attached Department</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Aligned">
+		<Value>Aligned with Policy</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Revision.LastDate">
+		<Value>Last Revision Date</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Revision.NextDate">
+		<Value>Next Revision Date</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Aligned">
+		<Value>Aligned with Policy</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Comments">
+		<Value>Policy Comments</Value>
+	</LocaleResource>
+
+	<LocaleResource Name="Component.Table.Policy.Name">
+		<Value>Document Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Authority.Name">
+		<Value>Authority Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Doctype.Name">
+		<Value>Document Type</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Authority.Alias">
+		<Value>Short Name</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Category.Status">
 		<Value>Category Status</Value>
 	</LocaleResource>
+
+
+
+
+	<LocaleResource Name="Component.Table.Policy.Type">
+		<Value>Document Type</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Select">
+		<Value>Select type</Value>
+	</LocaleResource>
+
+
+
+	<LocaleResource Name="Component.Table.Type.Status">
+		<Value>Type Status</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Item.Status">
+		<Value>Active Status</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Staus.Select">
+		<Value>Select status</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Type.Select">
+		<Value>Select type</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Category.Select">
 		<Value>Select Status</Value>
 	</LocaleResource>
-	<LocaleResource Name="Component.Table.Category.Active">
+	<LocaleResource Name="Component.Table.Status.Active">
 		<Value>Active</Value>
 	</LocaleResource>
-	<LocaleResource Name="Component.Table.Category.InActive">
+	<LocaleResource Name="Component.Table.Status.InActive">
 		<Value>Inactive</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="App.User.Views">
 		<Value>Views</Value>
 	</LocaleResource>
@@ -622,13 +713,13 @@
 		<Value>Authorities</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Policies.Compliance.Procedures">
-		<Value>Policies</Value>
+		<Value>Policies and Procedures</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Policies.Compliance.Manage">
-		<Value>Manage Policies</Value>
+		<Value>Guide Register</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Policies.Compliance.Documents">
-		<Value>Documents</Value>
+		<Value>Document Management</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Policies.Compliance.DocumentType">
 		<Value>Document Types</Value>

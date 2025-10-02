@@ -26,22 +26,25 @@
             </button>
         </div>
         <div class="panel-body">
-            <form id="recordForm">
+            <form id="recordForm" class="row">
                 <input type="hidden" id="recordId">
                 <input type="hidden" id="isEdit">
 
-                <div class="field-group">
-                    <label for="categoryName" class="form-label text-right">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Category.Header"))</label>
-                    <input type="text" id="categoryName" name="categoryName" class="form-control" required>
+                <div class="col-sm-6">
+                    <div class="row field-group">
+                        <label for="categoryName" class="form-label text-right  col-12">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Category.Header"))</label>
+                        <input type="text" id="categoryName" name="categoryName" class="form-control col-12" required>
+                    </div>
                 </div>
 
-                <div class="field-group">
-                    <label for="dpCategoryStatus" class="form-label text-right select2-field select2-column">
-                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Category.Status"))
+                <div class="col-sm-6">
+                    <div class="row field-group">
+                        <label for="dpCategoryStatus" class="col-sm-12 form-label text-right select2-field select2-column">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Item.Status"))
                         <select class="js-record-category form-control" id="dpCategoryStatus" name="dpCategoryStatus" aria-labelledby="dpCategoryStatus-label" aria-describedby="dpCategoryStatus-description">
-                            <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Category.Select"))</option>
-                            <option value="Active">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Category.Active"))</option>
-                            <option value="Inactive">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Category.InActive"))</option>
+                                <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Staus.Select"))</option>
+                                <option value="Active">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Status.Active"))</option>
+                                <option value="Inactive">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Status.InActive"))</option>
                         </select>
                         <span id="dpCategoryStatus-description" class="sr-only">
                             @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
@@ -49,7 +52,7 @@
                     </label>
 
                 </div>
-
+                </div>
             </form>
         </div>
         <div class="panel-footer">

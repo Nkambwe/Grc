@@ -21,28 +21,32 @@
             </button>
         </div>
         <div class="panel-body">
-            <form id="recordForm">
+            <form id="recordForm" class="row">
                 <input type="hidden" id="recordId">
                 <input type="hidden" id="isEdit">
 
-                <div class="field-group">
-                    <label for="typeName" class="form-label text-right">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Type.Header"))</label>
-                    <input type="text" id="typeName" name="typeName" class="form-control" required>
+                <div class="col-sm-6">
+                    <div class="row field-group">
+                        <label for="typeName" class="form-label text-right col-12">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Type.Header"))</label>
+                        <input type="text" id="typeName" name="typeName" class="col-12 form-control" required>
+                    </div>
                 </div>
+                
+                <div class="col-sm-6">
+                    <div class="row field-group">
+                        <label for="dpTypeStatus" class="col-sm-12 form-label text-right select2-field select2-column">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Item.Status"))
+                            <select class="js-record-type form-control" id="dpTypeStatus" name="dpTypeStatus" aria-labelledby="dpTypeStatus-label" aria-describedby="dpTypeStatus-description">
+                                <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Staus.Select"))</option>
+                                <option value="Active">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Status.Active"))</option>
+                                <option value="Inactive">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Status.InActive"))</option>
+                            </select>
+                            <span id="dpTypeStatus-description" class="sr-only">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                            </span>
+                        </label>
 
-                <div class="field-group">
-                    <label for="dpTypeStatus" class="form-label text-right select2-field select2-column">
-                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Type.Status"))
-                        <select class="js-record-type form-control" id="dpTypeStatus" name="dpTypeStatus" aria-labelledby="dpTypeStatus-label" aria-describedby="dpTypeStatus-description">
-                            <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Type.Select"))</option>
-                            <option value="Active">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Type.Active"))</option>
-                            <option value="Inactive">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Type.InActive"))</option>
-                        </select>
-                        <span id="dpTypeStatus-description" class="sr-only">
-                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
-                        </span>
-                    </label>
-
+                    </div>
                 </div>
 
             </form>
@@ -57,6 +61,5 @@
 @{
     Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
     Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-regulation-types.js");
-
 }
 

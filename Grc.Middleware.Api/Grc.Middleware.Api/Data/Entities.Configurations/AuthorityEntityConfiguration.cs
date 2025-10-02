@@ -6,7 +6,7 @@ public class AuthorityEntityConfiguration
 {
     public static void Configure(EntityTypeBuilder<Authority> builder)
     {
-        builder.ToTable("TBL_GRC_Authority");
+        builder.ToTable("TBL_GRC_AUTHORITY");
         builder.HasKey(t => t.Id);
         builder.Property(a => a.AuthorityName).HasColumnName("auth_name").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
         builder.Property(a => a.AuthorityAlias).HasColumnName("auth_alias").HasColumnType("NVARCHAR(160)").IsRequired(true);

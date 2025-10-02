@@ -765,6 +765,7 @@ C:\Projects\cs\GRC\github\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\System.Comp
 C:\Projects\cs\GRC\github\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\System.Configuration.ConfigurationManager.dll
 C:\Projects\cs\GRC\github\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\System.Drawing.Common.dll
 C:\Projects\cs\GRC\github\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\System.IO.Packaging.dll
+C:\Projects\cs\GRC\github\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\System.Linq.Dynamic.Core.dll
 C:\Projects\cs\GRC\github\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\System.Reflection.MetadataLoadContext.dll
 C:\Projects\cs\GRC\github\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\System.Resources.Extensions.dll
 C:\Projects\cs\GRC\github\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\System.Security.Cryptography.ProtectedData.dll

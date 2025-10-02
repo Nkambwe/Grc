@@ -22,7 +22,17 @@ namespace Grc.Middleware.Api.Data.Containers {
         IActivityLogSettingRepository ActivityLogSettingRepository { get; set; }
         IDepartmentRepository DepartmentRepository { get; set; }
         IDepartmentUnitRepository DepartmentUnitRepository { get; set; }
-
+        IAuthoritiesRepository AuthoritiesRepository { get; set; }
+        IFrequencyRepository FrequencyRepository { get; set; }
+        IRegulatoryCategoryRepository RegulatoryCategoryRepository { get; set; }
+        IStatutoryRegulationRepository StatutoryRegulationRepository { get; set; }
+        IStatutoryArticleRepository StatutoryArticleRepository { get; set; }
+        IResponsibilityRepository ResponsibilityRepository { get; set; }
+        IRegulatoryReturnRepository RegulatoryReturnRepository { get; set; }
+        IReturnTypeRepository ReturnTypeRepository { get; set; }
+        IRegulatoryTypeRepository RegulatoryTypeRepository { get; set; }
+        IGuideDocumentRepository GuideDocumentRepository { get; set; }
+        IGuideDocumentTypeRepository GuideDocumentTypeRepository { get; set; }
         Task<int> SaveChangesAsync(); 
         int SaveChanges(); 
     }

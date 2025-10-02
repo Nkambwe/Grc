@@ -25,6 +25,7 @@ namespace Grc.ui.App.Controllers {
         private readonly ISystemAccessService _accessService;
         private readonly IRegulatonCategoryService _regulatoryCategoryService;
         private readonly IRegulatonTypeService _regulatoryTypeService;
+        private readonly IRegulatonAuthorityService _regulatoryAuthorityService;
 
         public ComplianceSettingsController(IApplicationLoggerFactory loggerFactory, 
             IEnvironmentProvider environment, 
@@ -35,6 +36,7 @@ namespace Grc.ui.App.Controllers {
             IGrcErrorFactory errorFactory,
             IRegulatonCategoryService regulatoryService,
             IRegulatonTypeService regulatoryTypeService,
+            IRegulatonAuthorityService regulatoryAuthorityService,
             SessionManager sessionManager) 
             : base(loggerFactory, environment, webHelper, 
                   localizationService, errorService,
@@ -44,6 +46,7 @@ namespace Grc.ui.App.Controllers {
              _authService = authService;
             _regulatoryCategoryService = regulatoryService;
             _regulatoryTypeService = regulatoryTypeService;
+            _regulatoryAuthorityService = regulatoryAuthorityService;
         }
 
         #region Regulatory Categories
@@ -270,7 +273,7 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 var updated = result.Data;
-                var cateoryRecord = new {
+                var categoryRecord = new {
                     id = updated.Id,
                     category = updated.CategoryName,
                     status = updated.IsDeleted ? "Inactive" : "Active",
@@ -280,7 +283,7 @@ namespace Grc.ui.App.Controllers {
                 return Ok(new {
                     success = true,
                     message = "Category updated successfully",
-                    data = cateoryRecord
+                    data = categoryRecord
                 });
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected error updating category: {ex.Message}", "ERROR");
@@ -324,7 +327,7 @@ namespace Grc.ui.App.Controllers {
                     DecryptFields = Array.Empty<string>()
                 };
 
-                GrcResponse<ServiceResponse>  result = await _regulatoryCategoryService.DeleteCategoryAsync(deleteRequest);
+                var  result = await _regulatoryCategoryService.DeleteCategoryAsync(deleteRequest);
                 if (result.HasError || result.Data == null) {
                     var errMsg = result.Error?.Message ?? "Unerror occurred while deleting category";
                     Logger.LogActivity(errMsg);
@@ -533,27 +536,6 @@ namespace Grc.ui.App.Controllers {
                     Logger.LogActivity($"REGULATORY CATEGORY DATA - {JsonSerializer.Serialize(categoryList)}");
                 }
                 categoryList.Entities ??= new();
-                //..use this for final code from DB
-                //var tabulatorData = categoryList.Entities.Select(cat => new
-                //{
-                //    id = cat.Id,
-                //    startTab = "",
-                //    category = cat.CategoryName,
-                //    status = cat.IsDeleted ? "Inactive" : "Active",  
-                //    addedon = cat.CreatedAt.ToString("dd-MM-yyyy"),
-                //    endTab = ""
-                //}).ToList();
-
-                ////..response
-                //return Ok(new
-                //{
-                //    last_page = categoryList.TotalPages,
-                //    data = tabulatorData,
-                //    total_records = categoryList.TotalCount  
-                //});
-
-
-
                 var pagedEntities = categoryList.Entities
                     .Skip((request.PageIndex - 1) * request.PageSize)
                     .Take(request.PageSize)
@@ -566,22 +548,11 @@ namespace Grc.ui.App.Controllers {
                         endTab = ""
                     }).ToList();
 
-                if (!string.IsNullOrEmpty(request.SearchTerm))
-                {
+                if (!string.IsNullOrEmpty(request.SearchTerm)) {
                     pagedEntities = pagedEntities.Where(c => c.category.ToLower().Contains(request.SearchTerm.ToLower())).ToList();
                 }
 
-                //..apply sorting
-                //if (!string.IsNullOrEmpty(request.SortBy))
-                //{
-                //    if (request.SortDirection == "Ascending")
-                //        pagedEntities = pagedEntities.OrderBy(a => a.category == request.SortBy).ToList();
-                //    else
-                //        pagedEntities = pagedEntities.OrderByDescending(a => a.category == request.SortBy).ToList();
-                //}
-
                 var totalPages = (int)Math.Ceiling((double)categoryList.TotalCount / categoryList.Size);
-
                 return Ok(new
                 {
                     last_page = totalPages,
@@ -685,7 +656,7 @@ namespace Grc.ui.App.Controllers {
 
                 var result = await _regulatoryTypeService.GetTypeAsync(getRequest);
                 if (result.HasError || result.Data == null) {
-                    var errMsg = result.Error?.Message ?? "Unerror occurred while deleting type";
+                    var errMsg = result.Error?.Message ?? "Unerror occurred while retrieving type";
                     Logger.LogActivity(errMsg);
                     return Ok(new {
                         succuss=false,
@@ -712,7 +683,7 @@ namespace Grc.ui.App.Controllers {
             }
             catch (Exception ex)
             {
-                Logger.LogActivity($"Unexpected error deleting type: {ex.Message}", "ERROR");
+                Logger.LogActivity($"Unexpected error retrieving type: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "COMPLIANCE-SETTINGS", ex.StackTrace);
                 return Redirect(Url.Action("ComplianceRegulatoryTypes", "ComplianceSettings"));
             }
@@ -830,7 +801,7 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 var updated = result.Data;
-                var cateoryRecord = new {
+                var typeRecord = new {
                     id = updated.Id,
                     typeName = updated.TypeName,
                     status = updated.IsDeleted ? "Inactive" : "Active",
@@ -841,7 +812,7 @@ namespace Grc.ui.App.Controllers {
                 {
                     success = true,
                     message = "Type updated successfully",
-                    data = cateoryRecord
+                    data = typeRecord
                 });
             }
             catch (Exception ex)
@@ -888,9 +859,9 @@ namespace Grc.ui.App.Controllers {
                     DecryptFields = Array.Empty<string>()
                 };
 
-                GrcResponse<ServiceResponse> result = await _regulatoryTypeService.DeleteTypeAsync(deleteRequest);
+                var result = await _regulatoryTypeService.DeleteTypeAsync(deleteRequest);
                 if (result.HasError || result.Data == null) {
-                    var errMsg = result.Error?.Message ?? "Unerror occurred while deleting category";
+                    var errMsg = result.Error?.Message ?? "Unerror occurred while deleting type";
                     Logger.LogActivity(errMsg);
                     return Ok(new {
                         success=false,
@@ -920,14 +891,12 @@ namespace Grc.ui.App.Controllers {
             var worksheet = workbook.Worksheets.Add("Regulation Types");
 
             //..headers
-            worksheet.Cell(1, 1).Value = "Id";
             worksheet.Cell(1, 2).Value = "Type";
             worksheet.Cell(1, 3).Value = "Status";
             worksheet.Cell(1, 4).Value = "Added On";
 
             int row = 2;
             foreach (var item in data) {
-                worksheet.Cell(row, 1).Value = item.Id;
                 worksheet.Cell(row, 2).Value = item.TypeName;
                 worksheet.Cell(row, 3).Value = item.IsDeleted ? "Inactive" : "Active";
                 worksheet.Cell(row, 4).Value = item.CreatedAt.ToString("dd-MM-yyyy");
@@ -988,7 +957,6 @@ namespace Grc.ui.App.Controllers {
             var ws = workbook.Worksheets.Add("Types");
 
             //..headers
-            ws.Cell(1, 1).Value = "ID";
             ws.Cell(1, 2).Value = "Type";
             ws.Cell(1, 3).Value = "Status";
             ws.Cell(1, 4).Value = "Added On";
@@ -996,7 +964,6 @@ namespace Grc.ui.App.Controllers {
             int row = 2;
             foreach (var cat in typeData.Data.Entities)
             {
-                ws.Cell(row, 1).Value = cat.Id;
                 ws.Cell(row, 2).Value = cat.TypeName;
                 ws.Cell(row, 3).Value = cat.IsDeleted ? "Inactive" : "Active";
                 ws.Cell(row, 4).Value = cat.CreatedAt.ToString("dd-MM-yyyy");
@@ -1047,27 +1014,6 @@ namespace Grc.ui.App.Controllers {
                     Logger.LogActivity($"REGULATORY TYPE DATA - {JsonSerializer.Serialize(typeList)}");
                 }
                 typeList.Entities ??= new();
-                //..use this for final code from DB
-                //var tabulatorData = typeList.Entities.Select(cat => new
-                //{
-                //    id = cat.Id,
-                //    startTab = "",
-                //    typeName = cat.TypeName,
-                //    status = cat.IsDeleted ? "Inactive" : "Active",  
-                //    addedon = cat.CreatedAt.ToString("dd-MM-yyyy"),
-                //    endTab = ""
-                //}).ToList();
-
-                ////..response
-                //return Ok(new
-                //{
-                //    last_page = typeList.TotalPages,
-                //    data = tabulatorData,
-                //    total_records = typeList.TotalCount  
-                //});
-
-
-
                 var pagedEntities = typeList.Entities
                     .Skip((request.PageIndex - 1) * request.PageSize)
                     .Take(request.PageSize)
@@ -1080,24 +1026,8 @@ namespace Grc.ui.App.Controllers {
                         endTab = ""
                     }).ToList();
 
-                if (!string.IsNullOrEmpty(request.SearchTerm))
-                {
-                    pagedEntities = pagedEntities.Where(c => c.typeName.ToLower().Contains(request.SearchTerm.ToLower())).ToList();
-                }
-
-                //..apply sorting
-                //if (!string.IsNullOrEmpty(request.SortBy))
-                //{
-                //    if (request.SortDirection == "Ascending")
-                //        pagedEntities = pagedEntities.OrderBy(a => a.typeName == request.SortBy).ToList();
-                //    else
-                //        pagedEntities = pagedEntities.OrderByDescending(a => a.typeName == request.SortBy).ToList();
-                //}
-
                 var totalPages = (int)Math.Ceiling((double)typeList.TotalCount / typeList.Size);
-
-                return Ok(new
-                {
+                return Ok(new {
                     last_page = totalPages,
                     total_records = typeList.TotalCount,
                     data = pagedEntities
@@ -1117,7 +1047,8 @@ namespace Grc.ui.App.Controllers {
 
         #endregion
 
-        #region Authorities
+        #region Regulatory Authorities
+
         public async Task<IActionResult> ComplianceAuthorities()
         {
             try
@@ -1159,9 +1090,469 @@ namespace Grc.ui.App.Controllers {
             
         }
 
+        [LogActivityResult("Retrieve Authority", "User retrieved regulatory authority", ActivityTypeDefaults.COMPLIACE_RETRIVE_AUTHORITY, "Compliance")]
+        public async Task<IActionResult> GetRegulatoryAuthority(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new
+                    {
+                        success = false,
+                        message = msg,
+                        data = new { }
+                    });
+                }
+
+                if (id == 0) {
+                    var msg = "Authority Id is required";
+                    Logger.LogActivity(msg);
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = msg,
+                        data = new { }
+                    });
+                }
+                var currentUser = userResponse.Data;
+                GrcIdRequst getRequest = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.COMPLIANCE_GET_AUTHORITY.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = true,
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>()
+                };
+
+                var result = await _regulatoryAuthorityService.GetAuthorityAsync(getRequest);
+                if (result.HasError || result.Data == null) {
+                    var errMsg = result.Error?.Message ?? "Unerror occurred while retrieving authority";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new {
+                        succuss = false,
+                        message = errMsg,
+                        data = new { }
+                    });
+                }
+
+                RegulatoryAuthorityResponse response = result.Data;
+                var categoryRecord = new {
+                    id = response.Id,
+                    startTab = "",
+                    authorityName = response.AuthorityName,
+                    authorityAlias = response.AuthorityAlias,
+                    status = response.IsDeleted ? "Inactive" : "Active",
+                    addedon = response.CreatedAt.ToString("dd-MM-yyyy"),
+                    endTab = ""
+                };
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "",
+                    data = categoryRecord
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Unexpected error deleting type: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "COMPLIANCE-SETTINGS", ex.StackTrace);
+                return Redirect(Url.Action("ComplianceAuthorities", "ComplianceSettings"));
+            }
+        }
+
+        public async Task<IActionResult> AllRegulatoryAuthorities([FromBody] TableListRequest request) {
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    Logger.LogActivity($"REGULATORY AUTHORITIES DATA ERROR: Failed to get current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                //..update with user data
+                var currentUser = grcResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.COMPLIANCE_RETRIEVE_AUTHORITY.GetDescription();
+
+                //..get regulatory authorities data
+                var authoritiesData = await _regulatoryAuthorityService.GetAllRegulatoryAuthorities(request);
+                PagedResponse<RegulatoryAuthorityResponse> authoritiesList = new();
+
+                if (authoritiesData.HasError) {
+                    Logger.LogActivity($"REGULATORY AUTHORITY DATA ERROR: Failed to retrieve authority items - {JsonSerializer.Serialize(authoritiesData)}");
+                }
+                else
+                {
+                    authoritiesList = authoritiesData.Data;
+                    Logger.LogActivity($"REGULATORY AUTHORITY DATA - {JsonSerializer.Serialize(authoritiesList)}");
+                }
+                authoritiesList.Entities ??= new();
+
+                var pagedEntities = authoritiesList.Entities
+                    .Skip((request.PageIndex - 1) * request.PageSize)
+                    .Take(request.PageSize)
+                    .Select(t => new {
+                        id = t.Id,
+                        startTab = "",
+                        authorityName = t.AuthorityName,
+                        authorityAlias = t.AuthorityAlias,
+                        status = t.IsDeleted ? "Inactive" : "Active",
+                        addedon = t.CreatedAt.ToString("dd-MM-yyyy"),
+                        endTab = ""
+                    }).ToList();
+
+                var totalPages = (int)Math.Ceiling((double)authoritiesList.TotalCount / authoritiesList.Size);
+                return Ok(new
+                {
+                    last_page = totalPages,
+                    total_records = authoritiesList.TotalCount,
+                    data = pagedEntities
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving regulatory authority items: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "REGULATORY-AUTHGORITY-CONTROLLER", ex.StackTrace);
+                return Ok(new
+                {
+                    last_page = 0,
+                    data = new List<object>()
+                });
+            }
+        }
+
+        [HttpPost]
+        [LogActivityResult("Add Authority", "User added regulatory authority", ActivityTypeDefaults.COMPLIACE_CREATE_AUTHORITY, "Compliance")]
+        public async Task<IActionResult> CreateRegulatoryAuthority([FromBody] RegulatoryAuthorityRequest request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new
+                    {
+                        success = false,
+                        message = msg,
+                        data = new { }
+                    });
+                }
+
+                if (request == null)
+                {
+                    var msg = "Invalid request data";
+                    Logger.LogActivity(msg);
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = msg,
+                        data = new { }
+                    });
+                }
+
+                //..set system fields
+                var currentUser = userResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.COMPLIANCE_CREATE_AUTHORITY.GetDescription();
+
+                var result = await _regulatoryAuthorityService.CreateAuthorityAsync(request);
+                if (result.HasError || result.Data == null)
+                {
+                    var errMsg = result.Error?.Message ?? "Failed to create authority";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new
+                    {
+                        success = false,
+                        message = errMsg,
+                        data = new { }
+                    });
+                }
+
+                var created = result.Data;
+                var categoryRecord = new
+                {
+                    id = created.Id,
+                    startTab = "",
+                    authorityName = created.AuthorityName,
+                    authorityAlias = created.AuthorityAlias,
+                    status = created.IsDeleted ? "Inactive" : "Active",
+                    addedon = created.CreatedAt.ToString("dd-MM-yyyy"),
+                    endTab = ""
+                };
+
+                return Ok(new {
+                    success = true,
+                    message = "Authority created successfully",
+                    data = categoryRecord
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Unexpected error creating authority: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "COMPLIANCE-SETTINGS", ex.StackTrace);
+                return Redirect(Url.Action("ComplianceAuthorities", "ComplianceSettings"));
+            }
+        }
+
+        [HttpPost]
+        [LogActivityResult("Update Authority", "User modified regulatory authority", ActivityTypeDefaults.COMPLIANCE_EDITED_AUTHORITY, "Compliance")]
+        public async Task<IActionResult> UpdateRegulatoryAuthority([FromBody] RegulatoryAuthorityRequest request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new
+                    {
+                        success = false,
+                        message = msg,
+                        data = new { }
+                    });
+                }
+
+                if (request == null)
+                {
+                    var msg = "Invalid request data";
+                    Logger.LogActivity(msg);
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = msg,
+                        data = new { }
+                    });
+                }
+
+                //..set system fields
+                var currentUser = userResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.COMPLIANCE_EDITED_AUTHORITY.GetDescription();
+
+                var result = await _regulatoryAuthorityService.UpdateAuthorityAsync(request);
+                if (result.HasError || result.Data == null)
+                {
+                    var errMsg = result.Error?.Message ?? "Failed to update authority";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new
+                    {
+                        success = false,
+                        message = errMsg,
+                        data = new { }
+                    });
+                }
+
+                var updated = result.Data;
+                var authRecord = new
+                {
+                    id = updated.Id,
+                    authorityName = updated.AuthorityName,
+                    authorityAlias = updated.AuthorityAlias,
+                    status = updated.IsDeleted ? "Inactive" : "Active",
+                    addedon = updated.CreatedAt.ToString("dd-MM-yyyy")
+                };
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Authority updated successfully",
+                    data = authRecord
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Unexpected error updating authority: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "COMPLIANCE-SETTINGS", ex.StackTrace);
+                return Redirect(Url.Action("ComplianceAuthorities", "ComplianceSettings"));
+            }
+        }
+
+        [HttpPost]
+        [LogActivityResult("Delete Authority", "User deleted regulatory authority", ActivityTypeDefaults.COMPLIANCE_DELETED_AUTHORITY, "Compliance")]
+        public async Task<IActionResult> DeleteRegulatoryAuthority(long id)
+        {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new
+                    {
+                        success = false,
+                        message = msg,
+                        data = new { }
+                    });
+                }
+
+                if (id == 0)
+                {
+                    var msg = "Authority Id is required";
+                    Logger.LogActivity(msg);
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = msg,
+                        data = new { }
+                    });
+                }
+                var currentUser = userResponse.Data;
+                GrcIdRequst deleteRequest = new()
+                {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.COMPLIANCE_DELETED_AUTHORITY.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = true,
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>()
+                };
+
+                var result = await _regulatoryAuthorityService.DeleteAuthorityAsync(deleteRequest);
+                if (result.HasError || result.Data == null)
+                {
+                    var errMsg = result.Error?.Message ?? "Unerror occurred while deleting authority";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new
+                    {
+                        success = false,
+                        message = errMsg,
+                        data = new { }
+                    });
+                }
+
+                var response = result.Data;
+                return Ok(new
+                {
+                    message = response.Message,
+                    success = response.Status,
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Unexpected error deleting authority: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "COMPLIANCE-SETTINGS", ex.StackTrace);
+                return Redirect(Url.Action("ComplianceAuthorities", "ComplianceSettings"));
+            }
+        }
+
+        [HttpPost]
+        [LogActivityResult("Export authorities", "User exported regulatory authorities to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_AUTHORITY, "Compliance")]
+        public IActionResult ExcelExportAuthorities([FromBody] List<RegulatoryAuthorityResponse> data)
+        {
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Regulation Authorities");
+
+            //..headers
+            worksheet.Cell(1, 2).Value = "Authority";
+            worksheet.Cell(1, 2).Value = "Alias";
+            worksheet.Cell(1, 3).Value = "Status";
+            worksheet.Cell(1, 4).Value = "Added On";
+
+            int row = 2;
+            foreach (var item in data)
+            {
+                worksheet.Cell(row, 2).Value = item.AuthorityName;
+                worksheet.Cell(row, 2).Value = item.AuthorityAlias;
+                worksheet.Cell(row, 3).Value = item.IsDeleted ? "Inactive" : "Active";
+                worksheet.Cell(row, 4).Value = item.CreatedAt.ToString("dd-MM-yyyy");
+                row++;
+            }
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "RegulatoryAuthorities.xlsx"
+            );
+        }
+
+        [HttpPost]
+        [LogActivityResult("Export authorities", "User exported regulatory authorities to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_AUTHORITY, "Compliance")]
+        public async Task<IActionResult> ExcelExportAllAuthorities() {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+            {
+                var msg = "Unable to resolve current user";
+                Logger.LogActivity(msg);
+                return Ok(new
+                {
+                    success = false,
+                    message = msg,
+                    data = new { }
+                });
+            }
+
+            var request = new TableListRequest
+            {
+                UserId = userResponse.Data.UserId,
+                IPAddress = ipAddress,
+                PageIndex = 1,
+                PageSize = int.MaxValue,
+                Action = Activity.COMPLIANCE_EXPORT_AUTHORITIES.GetDescription()
+            };
+
+            var typeData = await _regulatoryAuthorityService.GetAllRegulatoryAuthorities(request);
+            if (typeData.HasError || typeData.Data == null)
+            {
+                var errMsg = typeData.Error?.Message ?? "Failed to retrieve authorities";
+                Logger.LogActivity(errMsg);
+                return Ok(new
+                {
+                    success = false,
+                    message = errMsg,
+                    data = new { }
+                });
+            }
+
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("Authorities");
+
+            //..headers
+            ws.Cell(1, 2).Value = "Authority";
+            ws.Cell(1, 2).Value = "Alias";
+            ws.Cell(1, 3).Value = "Status";
+            ws.Cell(1, 4).Value = "Added On";
+
+            int row = 2;
+            foreach (var cat in typeData.Data.Entities)
+            {
+                ws.Cell(row, 2).Value = cat.AuthorityName;
+                ws.Cell(row, 2).Value = cat.AuthorityAlias;
+                ws.Cell(row, 3).Value = cat.IsDeleted ? "Inactive" : "Active";
+                ws.Cell(row, 4).Value = cat.CreatedAt.ToString("dd-MM-yyyy");
+                row++;
+            }
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "RegulatoryAuthorities.xlsx"
+            );
+        }
+
         #endregion
 
         #region Document Type
+
         public async Task<IActionResult> ComplianceDocumentType() {
             try
             {

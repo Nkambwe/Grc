@@ -4,6 +4,7 @@ using Grc.Middleware.Api.Data.Entities.Logging;
 using Grc.Middleware.Api.Data.Entities.Org;
 using Grc.Middleware.Api.Data.Entities.System;
 using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
 
 namespace Grc.Middleware.Api.Data {
 
@@ -30,6 +31,8 @@ namespace Grc.Middleware.Api.Data {
         public DbSet<RegulatoryCategory> RegulatoryCategories { get; set; }
         public DbSet<RegulatoryReturn> RegulatoryReturns { get; set; }
         public DbSet<RegulatoryType> RegulatoryTypes { get; set; }
+        public DbSet<GuideDocument> GuideDocuments { get; set; }
+        public DbSet<GuideDocumentType> DocumentTypes { get; set; }
         public DbSet<Responsibility> Responsibilities { get; set; }
         public DbSet<ReturnType> ReturnTypes { get; set; }
         public DbSet<StatutoryArticle> StatutoryArticles { get; set; }
@@ -61,6 +64,8 @@ namespace Grc.Middleware.Api.Data {
             RegulatoryCategoryEntityConfiguration.Configure(modelBuilder.Entity<RegulatoryCategory>());
             RegulatoryReturnEntityConfiguration.Configure(modelBuilder.Entity<RegulatoryReturn>());
             RegulatoryTypeEntityConfiguration.Configure(modelBuilder.Entity<RegulatoryType>());
+            GuideDocumentEntityConfiguration.Configure(modelBuilder.Entity<GuideDocument>());
+            GuideDocumentTypeEntityConfiguration.Configure(modelBuilder.Entity<GuideDocumentType>());
             ResponsibilityEntityConfiguration.Configure(modelBuilder.Entity<Responsibility>());
             ReturnTypeEntityConfiguration.Configure(modelBuilder.Entity<ReturnType>());
             StatutoryArticleEntityConfiguration.Configure(modelBuilder.Entity<StatutoryArticle>());

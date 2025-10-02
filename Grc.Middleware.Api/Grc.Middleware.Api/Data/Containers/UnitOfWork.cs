@@ -36,6 +36,17 @@ namespace Grc.Middleware.Api.Data.Containers {
         public IActivityLogSettingRepository ActivityLogSettingRepository { get; set; }
         public IDepartmentRepository DepartmentRepository { get; set; }
         public IDepartmentUnitRepository DepartmentUnitRepository { get; set; }
+        public IAuthoritiesRepository AuthoritiesRepository { get; set; }
+        public IFrequencyRepository FrequencyRepository { get; set; }
+        public IRegulatoryCategoryRepository RegulatoryCategoryRepository { get; set; }
+        public IStatutoryRegulationRepository StatutoryRegulationRepository { get; set; }
+        public IStatutoryArticleRepository StatutoryArticleRepository { get; set; }
+        public IResponsibilityRepository ResponsibilityRepository { get; set; }
+        public IRegulatoryReturnRepository RegulatoryReturnRepository { get; set; }
+        public IReturnTypeRepository ReturnTypeRepository { get; set; }
+        public IRegulatoryTypeRepository RegulatoryTypeRepository { get; set; }
+        public IGuideDocumentRepository GuideDocumentRepository { get; set; }
+        public IGuideDocumentTypeRepository GuideDocumentTypeRepository { get; set; }
         #endregion
 
         public UnitOfWork(IServiceLoggerFactory loggerFactory,
@@ -68,6 +79,17 @@ namespace Grc.Middleware.Api.Data.Containers {
             ActivityLogSettingRepository = new ActivityLogSettingRepository(_loggerFactory, Context);
             DepartmentRepository = new DepartmentRepository(_loggerFactory, Context);
             DepartmentUnitRepository = new DepartmentUnitRepository(_loggerFactory, Context);
+            AuthoritiesRepository = new AuthoritiesRepository(_loggerFactory, Context);
+            FrequencyRepository = new FrequencyRepository(_loggerFactory, Context);
+            RegulatoryCategoryRepository = new RegulatoryCategoryRepository(_loggerFactory, Context);
+            StatutoryRegulationRepository = new StatutoryRegulationRepository(_loggerFactory, Context);
+            StatutoryArticleRepository = new StatutoryArticleRepository(_loggerFactory, Context);
+            ResponsibilityRepository = new ResponsibilityRepository(_loggerFactory, Context);
+            RegulatoryReturnRepository = new RegulatoryReturnRepository(_loggerFactory, Context);
+            ReturnTypeRepository = new ReturnTypeRepository(_loggerFactory, Context);
+            RegulatoryTypeRepository = new RegulatoryTypeRepository(_loggerFactory, Context);
+            GuideDocumentRepository = new GuideDocumentRepository(_loggerFactory, Context);
+            GuideDocumentTypeRepository = new GuideDocumentTypeRepository(_loggerFactory, Context);
         }
 
         /// <summary>
@@ -199,6 +221,17 @@ namespace Grc.Middleware.Api.Data.Containers {
                     UserViewRepository = null;
                     DepartmentRepository = null;
                     DepartmentUnitRepository = null;
+                    AuthoritiesRepository = null;
+                    FrequencyRepository = null;
+                    RegulatoryCategoryRepository = null;
+                    StatutoryRegulationRepository = null;
+                    StatutoryArticleRepository = null;
+                    ResponsibilityRepository = null;
+                    RegulatoryReturnRepository = null;
+                    ReturnTypeRepository = null;
+                    RegulatoryTypeRepository = null;
+                    GuideDocumentRepository = null;
+                    GuideDocumentTypeRepository = null;
                 }
             }
             _disposed = true;
