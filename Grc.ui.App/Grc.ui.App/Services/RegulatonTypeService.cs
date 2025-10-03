@@ -4,6 +4,7 @@ using Grc.ui.App.Helpers;
 using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
+using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
 using System.Linq.Dynamic.Core;
 
@@ -83,7 +84,7 @@ namespace Grc.ui.App.Services {
             return await Task.FromResult(new GrcResponse<PagedResponse<RegulatoryTypeResponse>>(page));
         }
 
-        public async Task<GrcResponse<RegulatoryTypeResponse>> CreateTypeAsync(RegulatoryTypeRequest request) {
+        public async Task<GrcResponse<RegulatoryTypeResponse>> CreateTypeAsync(RegulatoryViewModel request) {
             return await Task.FromResult(new GrcResponse<RegulatoryTypeResponse>(new RegulatoryTypeResponse {
                 Id = 1,
                 TypeName = request.TypeName,
@@ -100,7 +101,7 @@ namespace Grc.ui.App.Services {
             }));
         }
 
-        public async Task<GrcResponse<RegulatoryTypeResponse>> UpdateTypeAsync(RegulatoryTypeRequest request) {
+        public async Task<GrcResponse<RegulatoryTypeResponse>> UpdateTypeAsync(RegulatoryViewModel request) {
             return await Task.FromResult(new GrcResponse<RegulatoryTypeResponse>(new RegulatoryTypeResponse {
                 Id = request.Id,
                 TypeName = request.TypeName,

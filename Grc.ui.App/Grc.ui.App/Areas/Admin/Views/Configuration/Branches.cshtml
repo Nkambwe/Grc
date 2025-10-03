@@ -16,10 +16,14 @@
             new ComponentAction { ActionKey = ActionKey.Delete.GetDescription(), Icon = "mdi mdi-delete", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Delete") },
             new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
             new ComponentAction { ActionKey = ActionKey.Departments.GetDescription(), Icon = "mdi mdi-gamepad-circle-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Departments") },
-            new ComponentAction { ActionKey = ActionKey.Units.GetDescription(), Icon = "mdi mdi-gamepad-circle-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Units") }
         }
     };
 }
 
 <!-- branch -->
 @await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("BranchList") })
+
+
+<!-- departments -->
+@await Component.InvokeAsync("PopupPage", new { title = "Departments", name = ComponentKey.Departments.GetDescription(), content = Component.InvokeAsync("DepartmentList"), level = 0 })
+

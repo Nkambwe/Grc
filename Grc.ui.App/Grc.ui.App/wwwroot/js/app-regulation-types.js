@@ -113,17 +113,7 @@ function initRegulatoryTypeTable() {
                 hozAlign: "center",
                 headerHozAlign: "center",
                 maxWidth: 200,
-                headerSort: true,
-                formatter: function (cell) {
-                    let value = cell.getValue();
-                    let color = {
-                        "Active": "#28a745",
-                        "Pending": "#ffc107",
-                        "Completed": "#6c757d",
-                        "Archived": "#dc3545"
-                    }[value] || "#6c757d";
-                    return `<span style="color: ${color}; font-weight: 600;">${value}</span>`;
-                }
+                headerSort: true
             },
             {
                 title: "DATE ADDED",
@@ -309,6 +299,10 @@ function saveRegulatoryType(isEdit, payload) {
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify(payload),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getRegulationTypeAntiForgeryToken()
+        },
         success: function (res) {
             if (res && res.data) {
                 if (isEdit) {
@@ -361,10 +355,13 @@ function deleteRegulatoryTypeRecord(id) {
         if (!result.isConfirmed) return;
 
         const url = `/grc/compliance/settings/types-delete/${encodeURIComponent(id)}`;
-
         $.ajax({
             url: url,
             type: 'DELETE',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getRegulationTypeAntiForgeryToken()
+            },
             success: function (res) {
                 if (res && res.success) {
                     toastr.success(res.message || "Type deleted successfully.");
@@ -482,4 +479,10 @@ function initRegulatoryTypeSearch() {
         }, 300);
     });
 }
+
+//..get antiforegery token from meta tag
+function getRegulationTypeAntiForgeryToken() {
+    return $('meta[name="csrf-token"]').attr('content');
+}
+
 

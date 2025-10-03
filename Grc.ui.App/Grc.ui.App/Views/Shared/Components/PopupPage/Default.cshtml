@@ -1,7 +1,7 @@
 ﻿@model PopupModel
 @{
     var content = Model.PageContent;
-    var popupId = $"popup-level-{Model.PageLavel}";
+    var popupId = $"{Model.ComponentName}";
 
     // shrink nested modals slightly
     var offset = Model.PageLavel * 20;

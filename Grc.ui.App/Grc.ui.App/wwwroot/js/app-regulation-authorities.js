@@ -316,6 +316,10 @@ function saveRegulatoryAuthority(isEdit, payload) {
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify(payload),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getAuthAntiForgeryToken()
+        },
         success: function (res) {
             if (res && res.data) {
                 if (isEdit) {
@@ -367,11 +371,14 @@ function deleteRegulatoryAuthorityRecord(id) {
     }).then((result) => {
         if (!result.isConfirmed) return;
 
-        const url = `app-compliance-settings-authorities-delete/${encodeURIComponent(id)}`;
-
+        const url = `/grc/compliance/settings/authorities-delete/${encodeURIComponent(id)}`;
         $.ajax({
             url: url,
             type: 'DELETE',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getAuthAntiForgeryToken()
+            },
             success: function (res) {
                 if (res && res.success) {
                     toastr.success(res.message || "Authorities deleted successfully.");
@@ -501,5 +508,10 @@ function initRegulatoryAuthoritySearch() {
             }
         }, 300);
     });
+}
+
+//..get antiforegery token from meta tag
+function getAuthAntiForgeryToken() {
+    return $('meta[name="csrf-token"]').attr('content');
 }
 

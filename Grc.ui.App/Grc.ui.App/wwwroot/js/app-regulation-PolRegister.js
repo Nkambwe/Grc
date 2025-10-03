@@ -11,11 +11,11 @@ $(document).ready(function () {
 /*------------------------------------------
     Tabulator Table
 -------------------------------------------*/
-let regulatoryAuthorityTable;
+let policyRegisterTable;
 
 function initPolicyGuidTable() {
-    regulatoryAuthorityTable = new Tabulator("#regulatory-policy-register-table", {
-        ajaxURL: "/grc/compliance/settings/policies-all",
+    policyRegisterTable = new Tabulator("#regulatory-policy-register-table", {
+        ajaxURL: "/grc/compliance/register/policies-all",
         paginationMode: "remote",
         filterMode: "remote",
         sortMode: "remote",
@@ -92,27 +92,110 @@ function initPolicyGuidTable() {
         layout: "fitColumns",
         responsiveLayout: "hide",
         columns: [
-            { title: "", field: "startTab", maxWidth: 50, headerSort: false, formatter: () => `<span class="record-tab"></span>` },
+            {
+                title: "", field: "startTab",
+                maxWidth: 50,
+                headerSort: false,
+                frozen: true,
+                frozen: true, formatter: () => `<span class="record-tab"></span>` },
             {
                 title: "POLICY/PROCEDURE NAME",
                 field: "documentName",
                 minWidth: 200,
                 widthGrow: 4,
                 headerSort: true,
+                frozen: true,
                 formatter: (cell) => `<span class="clickable-title" onclick="viewPolicyRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`
             },
-            { title: "DOCUMENT TYPE", field: "documentType", minWidth: 200, widthGrow: 4 },
-            { title: "DOCUMENT OWNER", field: "documentOwner", minWidth: 200, widthGrow: 4 },
-            { title: "DEPARTMENT", field: "department", minWidth: 200, widthGrow: 4 },
-            { title: "STATUS", field: "status", hozAlign: "center", headerHozAlign: "center", maxWidth: 200 },
-            { title: "ALIGNED", field: "aligned", hozAlign: "center", headerHozAlign: "center", maxWidth: 200 },
-            { title: "LAST REVIEW", field: "lastReview" },
-            { title: "NEXT REVIEW", field: "nextReview" },
+            { title: "DOCUMENT TYPE", field: "documentType", widthGrow: 1, minWidth: 300, frozen: true, headerSort: true },
+            {
+                title: "ALIGNED",
+                field: "aligned",
+                formatter: function (cell) {
+                    let rowData = cell.getRow().getData();
+                    let color = rowData.aligned === "true" || rowData.aligned === true ? "#28a745" : "#dc3545";
+                    let text = rowData.aligned === "true" || rowData.aligned === true ? "YES" : "NO";
+
+                    return `<div style="
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            width:100%;
+                            height:100%;
+                            border-radius:50px;
+                            color:${color};
+                            font-weight:bold;
+                        ">
+                ${text}
+            </div>`;
+                },
+                hozAlign: "center",
+                headerHozAlign: "center",
+                maxWidth: 200
+            },
+            {
+                title: "IN REVIEW",
+                field: "reviewStatus",
+                formatter: function (cell) {
+                    let rowData = cell.getRow().getData();
+                    let value = rowData.reviewStatus;
+                    let color = value === "OVERDUE" ? "#FF3E0A" : (value === "DUE" ? "#FF9704" : "#08A11C");
+                    let text = value === "OVERDUE" ? "PASSED DUE" : (value === "DUE" ? "DUE" : "UPTODATE");
+                    return `<div style="
+                                display:flex;
+                                align-items:center;
+                                justify-content:center;
+                                width:100%;
+                                height:100%;
+                                border-radius:50px;
+                                color:${color || "#D6D6D6"};
+                                font-weight:bold;">
+                                ${text}
+                            </div>`;
+                },
+                hozAlign: "center",
+                headerHozAlign: "center",
+                maxWidth: 150
+            }
+,
+            { title: "LAST REVIEW", field: "lastReview", minWidth: 300},
+            { title: "NEXT REVIEW", field: "nextReview", minWidth: 300},
+            {
+                title: "TASK",
+                formatter: function (cell) {
+                    let rowData = cell.getRow().getData();
+                    return `<button class="grc-table-btn grc-btn-default grc-task-action" onclick="deletePolicyRecord(${rowData.id})">
+                        <span><i class="mdi mdi-hand-coin" aria-hidden="true"></i></span>
+                            <span>ASSIGN TASK</span>
+                    </button>`;
+                },
+                width: 200,
+                hozAlign: "center",
+                headerHozAlign: "center",
+                headerSort: false
+            },
+            {
+                title: "LOCK",
+                formatter: function (cell) {
+                    let rowData = cell.getRow().getData();
+                    return `<button class="grc-table-btn grc-btn-default grc-task-action" onclick="deletePolicyRecord(${rowData.id})">
+                            <span><i class="mdi mdi-link-lock" aria-hidden="true"></i></span>
+                            <span>LOCKED</span>
+                        </button>`;
+                },
+                width: 200,
+                hozAlign: "center",
+                headerHozAlign: "center",
+                headerSort: false
+            },
             {
                 title: "ACTION",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                    return `<button class="grc-delete-action" onclick="deletePolicyRecord(${rowData.id})">Delete</button>`;
+                    return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deletePolicyRecord(${rowData.id})">
+                        <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                        <span>DELETE</span>
+                    </button>`;
                 },
                 width: 200,
                 hozAlign: "center",
@@ -134,9 +217,14 @@ $('.action-btn-complianceHome').on('click', function () {
     window.location.href = '/grc/compliance';
 });
 
-$('.action-btn-new-policy-doc').on('click', function () {
+$('.action-btn-policy-new').on('click', function () {
     addPolicyDocsRootRecord();
 });
+
+$('.action-btn-policy-task').on('click', function () {
+    addPolicyTaskRecord();
+});
+
 
 /*------------------------------------------
     Export to Excel
@@ -146,7 +234,7 @@ $('#btnPolicyDocsExportFiltered').on('click', function () {
         url: '/grc/compliance/register/policies-export',
         type: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify(regulatoryAuthorityTable.getData()),
+        data: JSON.stringify(policyRegisterTable.getData()),
         xhrFields: { responseType: 'blob' },
         success: function (blob) {
             let link = document.createElement('a');
@@ -160,12 +248,12 @@ $('#btnPolicyDocsExportFiltered').on('click', function () {
     });
 });
 
-$('.action-btn-policy-docs-export').on('click', function () {
+$('.action-btn-policy-export').on('click', function () {
     $.ajax({
         url: '/grc/compliance/register/policies-export-full',
         type: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify(regulatoryAuthorityTable.getData()),
+        data: JSON.stringify(policyRegisterTable.getData()),
         xhrFields: { responseType: 'blob' },
         success: function (blob) {
             let link = document.createElement('a');
@@ -227,6 +315,12 @@ function addPolicyDocsRootRecord() {
     }, false);
 }
 
+function addPolicyTaskRecord() {
+    $('#panelTitle').text("Policy/Procedure Tasks");
+    $('.task-overlay').addClass('active');
+    $('#slideTaskPanel').addClass('active');
+}
+
 /*------------------------------------------
     Open / Close Slide Panel
 -------------------------------------------*/
@@ -263,6 +357,10 @@ function closePolicyDocumentPanel() {
     $('.overlay').removeClass('active');
     $('#slidePanel').removeClass('active');
 }
+function closePolicyTaskPanel() {
+    $('.task-overlay').removeClass('active');
+    $('#slideTaskPanel').removeClass('active');
+}
 
 /*------------------------------------------
     Save Record
@@ -292,19 +390,23 @@ function savePolRegisterRecord() {
 function savePolicy(isEdit, payload) {
     let url = (isEdit === true || isEdit === "true")
         ? "/grc/compliance/register/policies-update"
-        : "/grc/compliance/settings/policies-create";
+        : "/grc/compliance/register/policies-create";
 
     $.ajax({
         url: url,
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify(payload),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getPolicyAntiForgeryToken()
+        },
         success: function (res) {
             if (res && res.data) {
                 if (isEdit) {
-                    regulatoryAuthorityTable.updateData([res.data]);
+                    policyRegisterTable.updateData([res.data]);
                 } else {
-                    regulatoryAuthorityTable.addData([res.data], true);
+                    policyRegisterTable.addData([res.data], true);
                 }
             }
             Swal.fire("Success", res.message || "Saved successfully.");
@@ -342,12 +444,16 @@ function deletePolicyRecord(id) {
         if (!result.isConfirmed) return;
 
         $.ajax({
-            url: `/app-compliance-register-policies-delete/${encodeURIComponent(id)}`,
+            url: `/grc/compliance/register/policies-delete/${encodeURIComponent(id)}`,
             type: 'DELETE',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getPolicyAntiForgeryToken()
+            },
             success: function (res) {
                 if (res && res.success) {
                     toastr.success(res.message || "Policy/Procedure deleted successfully.");
-                    regulatoryAuthorityTable.setPage(1, true);
+                    policyRegisterTable.setPage(1, true);
                 } else {
                     toastr.error(res?.message || "Delete failed.");
                 }
@@ -419,20 +525,18 @@ function initPolicyDocSearch() {
 
         typingTimer = setTimeout(function () {
             if (searchTerm && searchTerm.length >= 2) {
-                regulatoryAuthorityTable.setFilter([
+                policyRegisterTable.setFilter([
                     [
                         { field: "documentName", type: "like", value: searchTerm },
                         { field: "documentType", type: "like", value: searchTerm },
                         { field: "documentOwner", type: "like", value: searchTerm },
-                        { field: "department", type: "like", value: searchTerm },
-                        { field: "status", type: "like", value: searchTerm },
                         { field: "lastReview", type: "like", value: searchTerm },
                         { field: "nextReview", type: "like", value: searchTerm },
                     ]
                 ]);
-                regulatoryAuthorityTable.setPage(1, true);
+                policyRegisterTable.setPage(1, true);
             } else {
-                regulatoryAuthorityTable.clearFilter();
+                policyRegisterTable.clearFilter();
             }
         }, 300);
     });
@@ -464,4 +568,9 @@ function initializeDatePickers() {
 $(document).ready(function () {
     initializeDatePickers();
 });
+
+//..get antiforegery token from meta tag
+function getPolicyAntiForgeryToken() {
+    return $('meta[name="csrf-token"]').attr('content');
+}
 

@@ -209,12 +209,12 @@
                                     </li>
 
                                     <li class="sidebar-item">
-                                        <a asp-controller="CompliancePolicy" asp-action="PoliciesDocuments">
+                                        <a asp-controller="CompliancePolicy" asp-action="PoliciesTasks">
                                             <span class="menu-icon">
-                                                <i class="mdi mdi-folder-open-outline"></i>
+                                                <i class="mdi mdi-checkbox-marked-circle-auto-outline"></i>
                                             </span>
                                             <span class="sidebar-text">
-                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Policies.Compliance.Documents"))
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Policies.Compliance.Tasks"))
                                             </span>
                                         </a>
                                     </li>
@@ -420,6 +420,17 @@
                                             </span>
                                             <span class="sidebar-text">
                                                 @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Support.Responsibilites"))
+                                            </span>
+                                        </a>
+                                    </li>
+
+                                    <li class="sidebar-item">
+                                        <a asp-controller="CompliancePolicy" asp-action="PoliciesDocuments">
+                                            <span class="menu-icon">
+                                                <i class="mdi mdi-microsoft-sharepoint"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Policies.Compliance.Documents"))
                                             </span>
                                         </a>
                                     </li>

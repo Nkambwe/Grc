@@ -8,8 +8,8 @@ $(document).ready(function () {
 
 let regulatoryTypeTable;
 function initDocTypeTable() {
-    regulatoryTypeTable = new Tabulator("#app-regulation-doctypes", {
-        ajaxURL: "/grc/compliance/settings/doc-types-all",
+    regulatoryTypeTable = new Tabulator("#regulatory-doctypes-table", {
+        ajaxURL: "/grc/compliance/settings/document-types-all",
         paginationMode: "remote",
         filterMode: "remote",
         sortMode: "remote",
@@ -160,14 +160,14 @@ $('.action-btn-complianceHome').on('click', function () {
     }
 });
 
-$('.action-btn-new-doctype').on('click', function () {
+$('.action-btn-new-type').on('click', function () {
     addDocTypeRootRecord();
 });
 
 /*------------------------------------------------ export to excel*/
 $('#btnDoctypeExportFiltered').on('click', function () {
     $.ajax({
-        url: '/grc/compliance/settings/doc-types-export',
+        url: '/grc/compliance/settings/document-types-export',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(regulatoryTypeTable.getData()),
@@ -186,7 +186,7 @@ $('#btnDoctypeExportFiltered').on('click', function () {
 
 $('.action-btn-type-export').on('click', function () {
     $.ajax({
-        url: '/grc/compliance/settings/doc-types-export-full',
+        url: '/grc/compliance/settings/document-types-export-full',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(regulatoryTypeTable.getData()),
@@ -202,7 +202,6 @@ $('.action-btn-type-export').on('click', function () {
         }
     });
 });
-
 
 // Function to initialize basic Select2 with accessibility fixes
 function initializeDocTypeStatusSelect2() {
@@ -284,14 +283,18 @@ function updateRegulatoryTypeRecordInData(data, updatedRecord) {
 /*------------------------------------------------ save via controller*/
 function saveDocumentType(isEdit, payload) {
     let url = isEdit === true || isEdit === "true"
-        ? "/grc/compliance/settings/doc-types-update"
-        : "/grc/compliance/settings/doc-types-create";
+        ? "/grc/compliance/settings/document-types-update"
+        : "/grc/compliance/settings/document-types-create";
 
     $.ajax({
         url: url,
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify(payload),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getDoctypeAntiForgeryToken()
+        },
         success: function (res) {
             if (res && res.data) {
                 if (isEdit) {
@@ -303,7 +306,7 @@ function saveDocumentType(isEdit, payload) {
                 }
             }
 
-            Swal.fire("Success", res.message || "Saved successfully.");
+            Swal.fire("Process document type", res.message || "Saved successfully.");
             closeDoctypePanel();
         },
         error: function (xhr, status, error) {
@@ -343,15 +346,25 @@ function deleteDocTypeRecord(id) {
     }).then((result) => {
         if (!result.isConfirmed) return;
 
-        const url = `/grc/compliance/settings/doc-types-delete/${encodeURIComponent(id)}`;
-
+        const url = `/grc/compliance/settings/document-types-delete/${encodeURIComponent(id)}`;
         $.ajax({
             url: url,
             type: 'DELETE',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getDoctypeAntiForgeryToken()
+            }, 
             success: function (res) {
                 if (res && res.success) {
                     toastr.success(res.message || "Type deleted successfully.");
-                    regulatoryTypeTable.setPage(1, true);
+
+                    if (typeof regulatoryTypeTable.replaceData === "function") {
+                        regulatoryTypeTable.replaceData();
+                    }
+
+                    else if (typeof regulatoryTypeTable.ajax !== "undefined") {
+                        regulatoryTypeTable.ajax.reload();
+                    }
                 } else {
                     toastr.error(res?.message || "Delete failed.");
                 }
@@ -419,7 +432,7 @@ function viewDocTypeRecord(id) {
 function findDoctypeRecord(id) {
     return new Promise((resolve, reject) => {
         $.ajax({
-            url: `/grc/compliance/settings/doc-types-retrieve/${id}`,
+            url: `/grc/compliance/settings/types-retrieve/${id}`,
             type: "GET",
             dataType: "json",
             success: function (response) {
@@ -468,3 +481,7 @@ function initDoctypeSearch() {
     });
 }
 
+//..get antiforegery token from meta tag
+function getDoctypeAntiForgeryToken() {
+    return $('meta[name="csrf-token"]').attr('content');
+}

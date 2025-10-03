@@ -5,6 +5,11 @@
             <label class="form-searchbox-label text-right">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.Authority"))</label>
             <input id="authoritySearchbox" type="text" class="form-control searchbox-field">
         </div>
+        <div class="field-search-buttons">
+            <button id="btnAuthorityExportFiltered" class="btn btn-success">
+                <i class="mdi mdi-file-excel-outline"></i> @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.ExportFiltered"))
+            </button>
+        </div>
     </div>
     <div id="regulatory-authorities-table"></div>
 </div>
@@ -21,7 +26,7 @@
             </button>
         </div>
         <div class="panel-body">
-            <form id="recordForm" class="row">
+            <form id="recordForm" class="grc-form row g-3">
                 <input type="hidden" id="recordId">
                 <input type="hidden" id="isEdit">
 

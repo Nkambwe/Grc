@@ -40,7 +40,6 @@ wwwroot\js\app-policy-register.js
 wwwroot\js\app-regulation-authorities.js
 wwwroot\js\app-regulation-categories.js
 wwwroot\js\app-regulation-doctypes.js
-wwwroot\js\app-regulation-PolRegister.js
 wwwroot\js\app-regulation-types.js
 wwwroot\js\app-regulations-register.js
 wwwroot\js\app-returns-register.js
@@ -115,6 +114,8 @@ wwwroot\lib\datatables\datatables.css
 wwwroot\lib\datatables\datatables.js
 wwwroot\lib\datatables\datatables.min.css
 wwwroot\lib\datatables\datatables.min.js
+wwwroot\lib\flastpicker\flatpickr.js
+wwwroot\lib\flastpicker\flatpickr.min.css
 wwwroot\lib\icons\coreui-icons\css\all.css
 wwwroot\lib\icons\coreui-icons\css\all.min.css
 wwwroot\lib\icons\coreui-icons\css\all.min.css.map
@@ -190,3 +191,4 @@ wwwroot\lib\tooltips\popper.min.js
 wwwroot\lib\tooltips\tippy.css
 wwwroot\lib\tooltips\tippy.umd.min.js
 wwwroot\lib\xlsx\xlsx.full.min.js
+wwwroot\js\app-regulation-PolRegister.js

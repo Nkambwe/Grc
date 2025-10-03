@@ -24,6 +24,10 @@ namespace Grc.ui.App.Enums {
         UserRoles,
         [Description("departments")]
         Departments,
+        [Description("departments-new")]
+        NewDepartment,
+        [Description("responsibility-new")]
+        NewResponsibility,
         [Description("separator")] 
         Separator,
         [Description("permissions")]
@@ -80,5 +84,17 @@ namespace Grc.ui.App.Enums {
         NewAuthority,
         [Description("authority-export")]
         AuthorityExport,
+        [Description("policy-new")]
+        NewPolicy,
+        [Description("policy-export")]
+        ExportPolicy,
+        [Description("policy-task")]
+        PolicyTask,
+        [Description("policy-task-new")]
+        NewPolicyTask,
+        [Description("policy-task-mail")]
+        PolicyTaskMail,
+        [Description("policy-task-export")]
+        PolicyTaskExport,
     }
 }

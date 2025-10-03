@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using DocumentFormat.OpenXml.Office2016.Excel;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Helpers;
 using Grc.ui.App.Http.Requests;

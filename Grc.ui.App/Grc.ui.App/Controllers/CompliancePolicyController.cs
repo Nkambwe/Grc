@@ -13,11 +13,11 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
+using OpenXmlPowerTools;
 
 namespace Grc.ui.App.Controllers {
     public class CompliancePolicyController : GrcBaseController {
         private readonly IAuthenticationService _authService;
-        private readonly ISystemAccessService _accessService;
         private readonly IPolicyService _policyService;
         public CompliancePolicyController(IApplicationLoggerFactory loggerFactory, 
             IEnvironmentProvider environment, 
@@ -25,6 +25,7 @@ namespace Grc.ui.App.Controllers {
             ILocalizationService localizationService, 
             IErrorService errorService, 
             IAuthenticationService authService,
+            IPolicyService policyService,
             IGrcErrorFactory errorFactory, 
             SessionManager sessionManager) 
             : base(loggerFactory, environment, webHelper, 
@@ -33,6 +34,7 @@ namespace Grc.ui.App.Controllers {
 
             Logger.Channel = $"POLICY-{DateTime.Now:yyyyMMddHHmmss}";
              _authService = authService;
+            _policyService = policyService;
         }
 
         #region Policy Registers
@@ -113,13 +115,13 @@ namespace Grc.ui.App.Controllers {
                 var policyRecord = new
                 {
                     id = response.Id,
-                    policyName = response.PolicyName,
-                    policyCode = response.PolicyCode,
-                    owner = response.Owner,
-                    lastRevisionDate = response.LastRevisionDate?.ToString("yyyy-MM-dd"),
-                    nextRevisionDate = response.NextRevisionDate?.ToString("yyyy-MM-dd"),
+                    policyName = response.DocumentName,
+                    policyCode = response.DocumentStatus,
+                    //owner = response.DocumentOwner,
+                    lastRevisionDate = response.LastRevisionDate,
+                    nextRevisionDate = response.NextRevisionDate,
                     status = response.IsDeleted ? "Inactive" : "Active",
-                    addedOn = response.CreatedAt.ToString("dd-MM-yyyy")
+                    //addedOn = response.CreatedAt.ToString("dd-MM-yyyy")
                 };
 
                 return Ok(new { success = true, data = policyRecord });
@@ -128,13 +130,13 @@ namespace Grc.ui.App.Controllers {
             {
                 Logger.LogActivity($"Unexpected error retrieving policy: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "POLICY-REGISTER", ex.StackTrace);
-                return Redirect(Url.Action("PoliciesRegister", "ComplianceSettings"));
+                return Redirect(Url.Action("PoliciesRegisters", "ComplianceSettings"));
             }
         }
 
         [HttpPost]
         [LogActivityResult("Add Policy", "User added policy", ActivityTypeDefaults.COMPLIANCE_CREATE_POLICY, "Compliance")]
-        public async Task<IActionResult> CreatePolicy([FromBody] PolicyRegisterRequest request)
+        public async Task<IActionResult> CreatePolicy([FromBody] PolicyViewModel request)
         {
             try
             {
@@ -160,27 +162,28 @@ namespace Grc.ui.App.Controllers {
                     data = new
                     {
                         id = created.Id,
-                        policyName = created.PolicyName,
-                        policyCode = created.PolicyCode,
-                        owner = created.Owner,
-                        lastRevisionDate = created.LastRevisionDate?.ToString("dd-MM-yyyy"),
-                        nextRevisionDate = created.NextRevisionDate?.ToString("dd-MM-yyyy"),
-                        status = created.IsDeleted ? "Inactive" : "Active",
-                        addedOn = created.CreatedAt.ToString("dd-MM-yyyy")
+                        documentName = created.DocumentName,
+                        documentType = created.DocumentType,
+                        aligned = created.IsAligned,
+                        locked = created.IsLocked,
+                        reviewStatus = created.ReviewStatus,
+                        lastReview = created.LastRevisionDate,
+                        nextReview = created.NextRevisionDate,
                     }
                 });
+
             }
             catch (Exception ex)
             {
                 Logger.LogActivity($"Unexpected error creating policy: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "POLICY-REGISTER", ex.StackTrace);
-                return Redirect(Url.Action("PoliciesRegister", "ComplianceSettings"));
+                return Redirect(Url.Action("PoliciesRegisters", "ComplianceSettings"));
             }
         }
 
         [HttpPost]
         [LogActivityResult("Update Policy", "User updated policy", ActivityTypeDefaults.COMPLIANCE_EDITED_POLICY, "Compliance")]
-        public async Task<IActionResult> UpdatePolicy([FromBody] PolicyRegisterRequest request)
+        public async Task<IActionResult> UpdatePolicy([FromBody] PolicyViewModel request)
         {
             try
             {
@@ -206,13 +209,13 @@ namespace Grc.ui.App.Controllers {
                     data = new
                     {
                         id = updated.Id,
-                        policyName = updated.PolicyName,
-                        policyCode = updated.PolicyCode,
-                        owner = updated.Owner,
-                        lastRevisionDate = updated.LastRevisionDate?.ToString("dd-MM-yyyy"),
-                        nextRevisionDate = updated.NextRevisionDate?.ToString("dd-MM-yyyy"),
-                        status = updated.IsDeleted ? "Inactive" : "Active",
-                        addedOn = updated.CreatedAt.ToString("dd-MM-yyyy")
+                        documentName = updated.DocumentName,
+                        documentType = updated.DocumentType,
+                        aligned = updated.IsAligned,
+                        locked = updated.IsLocked,
+                        reviewStatus = updated.ReviewStatus,
+                        lastReview = updated.LastRevisionDate,
+                        nextReview = updated.NextRevisionDate,
                     }
                 });
             }
@@ -220,7 +223,7 @@ namespace Grc.ui.App.Controllers {
             {
                 Logger.LogActivity($"Unexpected error updating policy: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "POLICY-REGISTER", ex.StackTrace);
-                return Redirect(Url.Action("PoliciesRegister", "ComplianceSettings"));
+                return Redirect(Url.Action("PoliciesRegisters", "ComplianceSettings"));
             }
         }
 
@@ -257,7 +260,7 @@ namespace Grc.ui.App.Controllers {
             {
                 Logger.LogActivity($"Unexpected error deleting policy: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "POLICY-REGISTER", ex.StackTrace);
-                return Redirect(Url.Action("PoliciesRegister", "ComplianceSettings"));
+                return Redirect(Url.Action("PoliciesRegisters", "ComplianceSettings"));
             }
         }
 
@@ -268,24 +271,22 @@ namespace Grc.ui.App.Controllers {
             using var workbook = new XLWorkbook();
             var ws = workbook.Worksheets.Add("Policies");
 
-            ws.Cell(1, 1).Value = "Policy Name";
-            ws.Cell(1, 2).Value = "Code";
-            ws.Cell(1, 3).Value = "Owner";
-            ws.Cell(1, 4).Value = "Last Revision";
-            ws.Cell(1, 5).Value = "Next Revision";
-            ws.Cell(1, 6).Value = "Status";
-            ws.Cell(1, 7).Value = "Added On";
+            ws.Cell(1, 1).Value = "POLICY/PROCEDURE NAME";
+            ws.Cell(1, 2).Value = "DOCUMENT TYPE";
+            ws.Cell(1, 3).Value = "REVIEW STATUS";
+            ws.Cell(1, 4).Value = "LAST REVISION";
+            ws.Cell(1, 5).Value = "NEXT REVISION";
+            ws.Cell(1, 6).Value = "ALIGNED";
 
             int row = 2;
-            foreach (var item in data)
+            foreach (var p in data)
             {
-                ws.Cell(row, 1).Value = item.PolicyName;
-                ws.Cell(row, 2).Value = item.PolicyCode;
-                ws.Cell(row, 3).Value = item.Owner;
-                ws.Cell(row, 4).Value = item.LastRevisionDate.ToString("dd-MM-yyyy");
-                ws.Cell(row, 5).Value = item.NextRevisionDate.ToString("dd-MM-yyyy");
-                ws.Cell(row, 6).Value = item.IsDeleted ? "Inactive" : "Active";
-                ws.Cell(row, 7).Value = item.CreatedAt.ToString("dd-MM-yyyy");
+                ws.Cell(row, 1).Value = p.DocumentName;
+                ws.Cell(row, 2).Value = p.DocumentType;
+                ws.Cell(row, 3).Value = p.ReviewStatus == "OVERDUE" ? "PASSED DUE" : (p.ReviewStatus == "DUE" ? "DUE" : "UPTODATE");
+                ws.Cell(row, 4).Value = p.LastRevisionDate;
+                ws.Cell(row, 5).Value = p.NextRevisionDate;
+                ws.Cell(row, 6).Value = p.IsAligned ? "YES" : "NO";
                 row++;
             }
 
@@ -323,24 +324,22 @@ namespace Grc.ui.App.Controllers {
             using var workbook = new XLWorkbook();
             var ws = workbook.Worksheets.Add("Policies");
 
-            ws.Cell(1, 1).Value = "Policy Name";
-            ws.Cell(1, 2).Value = "Code";
-            ws.Cell(1, 3).Value = "Owner";
-            ws.Cell(1, 4).Value = "Last Revision";
-            ws.Cell(1, 5).Value = "Next Revision";
-            ws.Cell(1, 6).Value = "Status";
-            ws.Cell(1, 7).Value = "Added On";
+            ws.Cell(1, 1).Value = "POLICY/PROCEDURE NAME";
+            ws.Cell(1, 2).Value = "DOCUMENT TYPE";
+            ws.Cell(1, 3).Value = "REVIEW STATUS";
+            ws.Cell(1, 4).Value = "LAST REVISION";
+            ws.Cell(1, 5).Value = "NEXT REVISION";
+            ws.Cell(1, 6).Value = "ALIGNED";
 
             int row = 2;
             foreach (var p in result.Data.Entities)
             {
-                ws.Cell(row, 1).Value = p.PolicyName;
-                ws.Cell(row, 2).Value = p.PolicyCode;
-                ws.Cell(row, 3).Value = p.Owner;
-                ws.Cell(row, 4).Value = p.LastRevisionDate?.ToString("dd-MM-yyyy");
-                ws.Cell(row, 5).Value = p.NextRevisionDate?.ToString("dd-MM-yyyy");
-                ws.Cell(row, 6).Value = p.IsDeleted ? "Inactive" : "Active";
-                ws.Cell(row, 7).Value = p.CreatedAt.ToString("dd-MM-yyyy");
+                ws.Cell(row, 1).Value = p.DocumentName;
+                ws.Cell(row, 2).Value = p.DocumentType;
+                ws.Cell(row, 3).Value = p.ReviewStatus == "OVERDUE" ? "PASSED DUE" : (p.ReviewStatus == "DUE" ? "DUE" : "UPTODATE");
+                ws.Cell(row, 4).Value = p.LastRevisionDate;
+                ws.Cell(row, 5).Value = p.NextRevisionDate;
+                ws.Cell(row, 6).Value = p.IsAligned ? "YES" : "NO";
                 row++;
             }
 
@@ -374,13 +373,13 @@ namespace Grc.ui.App.Controllers {
                     .Select(p => new
                     {
                         id = p.Id,
-                        policyName = p.PolicyName,
-                        policyCode = p.PolicyCode,
-                        owner = p.Owner,
-                        lastRevisionDate = p.LastRevisionDate.ToString("dd-MM-yyyy"),
-                        nextRevisionDate = p.NextRevisionDate.ToString("dd-MM-yyyy"),
-                        status = p.IsDeleted ? "Inactive" : "Active",
-                        addedOn = p.CreatedAt.ToString("dd-MM-yyyy")
+                        documentName = p.DocumentName,
+                        documentType = p.DocumentType,
+                        aligned = p.IsAligned,
+                        locked = p.IsLocked,
+                        reviewStatus = p.ReviewStatus,
+                        lastReview = p.LastRevisionDate,
+                        nextReview = p.NextRevisionDate,
                     }).ToList();
 
                 var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
@@ -397,20 +396,84 @@ namespace Grc.ui.App.Controllers {
 
         #endregion
 
+        #region Policy Tasks
+
+        public async Task<IActionResult> PoliciesTasks() {
+            try
+            {
+                if (User.Identity?.IsAuthenticated == true)
+                {
+                    var ipAddress = WebHelper.GetCurrentIpAddress();
+                    var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                    if (userResponse.HasError || userResponse.Data == null)
+                    {
+                        return Redirect(Url.Action("Dashboard", "Application"));
+                    }
+
+                    var currentUser = userResponse.Data;
+                    var userDashboard = new UserDashboardModel
+                    {
+                        Initials = $"{currentUser.FirstName[..1]} {currentUser.LastName[..1]}",
+                        LastLogin = DateTime.Now,
+                        Workspace = SessionManager.GetWorkspace(),
+                        DashboardStatistics = new()
+                    };
+
+                    return View(userDashboard);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Application");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error loading Policy Tasks view: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "POLICY-TASKS", ex.StackTrace);
+                return Redirect(Url.Action("Dashboard", "Application"));
+            }
+
+        }
+
+        #endregion
+
         #region Policy Documnets
         public async Task<IActionResult> PoliciesDocuments()
         {
-            if (User.Identity?.IsAuthenticated == true)
+            try
             {
-                var userDashboard = new UserDashboardModel()
+                if (User.Identity?.IsAuthenticated == true)
                 {
-                    Initials = "JS",
-                };
+                    var ipAddress = WebHelper.GetCurrentIpAddress();
+                    var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                    if (userResponse.HasError || userResponse.Data == null)
+                    {
+                        return Redirect(Url.Action("Dashboard", "Application"));
+                    }
 
-                return View(userDashboard);
+                    var currentUser = userResponse.Data;
+                    var userDashboard = new UserDashboardModel
+                    {
+                        Initials = $"{currentUser.FirstName[..1]} {currentUser.LastName[..1]}",
+                        LastLogin = DateTime.Now,
+                        Workspace = SessionManager.GetWorkspace(),
+                        DashboardStatistics = new()
+                    };
+
+                    return View(userDashboard);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Application");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error loading Policy Documents view: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "POLICY-DOCUMENTS", ex.StackTrace);
+                return Redirect(Url.Action("Dashboard", "Application"));
             }
 
-            return Redirect(Url.Action("Dashboard", "Application"));
         }
         #endregion
 

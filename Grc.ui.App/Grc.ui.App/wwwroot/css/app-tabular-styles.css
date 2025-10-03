@@ -56,8 +56,24 @@
             background-color: var(--pearl-purple-dark-40) !important;
         }
 
+    .tabulator .tabulator-alert .tabulator-alert-msg.tabulator-alert-state-msg {
+        border: 4px solid var(--pearl-purple-dark-20) !important;
+        color: var(--orange-dark-strong) !important;
+    }
+
+    .tabulator .tabulator-alert .tabulator-alert-msg {
+        display: inline-block;
+        margin: 0 auto;
+        padding: 10px 20px;
+        border-radius: 10px;
+        background: var(--white-base);
+        font-weight: 700;
+        font-size: 16px;
+    }
+
 /****************************************** slide panel styles */
-.overlay {
+.overlay,
+.task-overlay {
     position: fixed;
     top: 70px;
     left: 0;
@@ -68,11 +84,13 @@
     z-index: 999;
 }
 
-    .overlay.active {
+    .overlay.active,
+    .task-overlay.active{
         display: block;
     }
 
-.slide-panel {
+.slide-panel,
+.slide-task-panel {
     position: fixed;
     top: 70px;
     right: -100vw;
@@ -85,9 +103,16 @@
     overflow-y: auto;
 }
 
-    .slide-panel.active {
+    .slide-panel.active,
+    .slide-task-panel.active{
         right: 8.5vw;
+        overflow: hidden;
     }
+
+.grc-form {
+    overflow-x: hidden!important;
+    overflow-y: auto!important;
+}
 
 .panel-header {
     background: var(--grey-light-extra);
@@ -115,6 +140,9 @@
 
 .panel-body {
     padding: 20px;
+    min-height: 500px;
+    height: 100%;
+    overflow: hidden;
 }
 
 .form-group {

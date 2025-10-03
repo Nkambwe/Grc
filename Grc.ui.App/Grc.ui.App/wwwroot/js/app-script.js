@@ -110,7 +110,7 @@ function showToast(message, type = 'info') {
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
-    
+ 
 $(document).ready(function () {
    
     // User dropdown toggle

@@ -4,151 +4,168 @@
         <div class="field-search-group">
             <label class="form-searchbox-label text-right">
                 @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.Policy-register"))</label>
-            <input id="authoritySearchbox" type="text" class="form-control searchbox-field">
+            <input id="policySearchbox" type="text" class="form-control searchbox-field">
+        </div>
+        <div class="field-search-buttons">
+            <button id="btnPolicyDocsExportFiltered" class="btn btn-primary">
+                <i class="mdi mdi-file-excel-outline"></i> @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.ExportFiltered"))
+            </button>
         </div>
     </div>
     <div id="regulatory-policy-register-table"></div>
 </div>
 
 <!-- Overlay -->
-<div class="overlay" onclick="closeRegulatoryAuthorityPanel()">
+<div class="overlay" onclick="closePolicyDocumentPanel()">
     <div id="slidePanel" class="slide-panel" onclick="event.stopPropagation()">
+        
         <div class="panel-header">
             <h3 id="panelTitle">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.PolRegister.Header"))</h3>
-            <button class="panel-close" onclick="closeRegulatoryAuthorityPanel()">
+            <button class="panel-close" onclick="closePolicyDocumentPanel()">
                 <i class="mdi mdi-close"></i>
             </button>
         </div>
 
+        <div class="panel-body">
+            <form id="recordForm" class="grc-form row g-3">
+                <input type="hidden" id="recordId" name="recordId">
+                <input type="hidden" id="isEdit" name="isEdit">
+
+                <!-- Document Name -->
+                <div class="col-sm-6">
+                    <div class="row mb-3">
+                        <label for="documentName" class="col-sm-4 col-form-label text-sm-end">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Name"))
+                        </label>
+                        <div class="col-sm-8">
+                            <input type="text" id="documentName" name="documentName" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Document Type -->
+                <div class="col-sm-6">
+                    <div class="row mb-3">
+                        <label for="dpDocumentType" class="col-sm-4 col-form-label text-sm-end">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Type"))
+                        </label>
+                        <div class="col-sm-8">
+                            <select class="js-record-doctype form-control" id="dpDocumentType" name="dpDocumentType">
+                                <option value="UNCLASSIFIED">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select"))</option>
+                                <option value="CATALOGUE">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Catalogue"))</option>
+                                <option value="FRAMEWORK">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Framework"))</option>
+                                <option value="MANUAL">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Manual"))</option>
+                                <option value="PLAN">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Plan"))</option>
+                                <option value="POLICY">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Ploicy"))</option>
+                                <option value="PROCEDURE">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Procedure"))</option>
+                                <option value="SLA">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.SLA"))</option>
+                                <option value="BLANK">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Blank"))</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status -->
+                <div class="col-sm-6">
+                    <div class="row mb-3">
+                        <label for="dpDocumentStatus" class="col-sm-4 col-form-label text-sm-end">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Item.Status"))
+                        </label>
+                        <div class="col-sm-8">
+                            <select class="js-record-docstatus form-control" id="dpDocumentStatus" name="dpDocumentStatus">
+                                <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Staus.Select"))</option>
+                                <option value="Active">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Status.Active"))</option>
+                                <option value="Inactive">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Status.InActive"))</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Owner -->
+                <div class="col-sm-6">
+                    <div class="row mb-3">
+                        <label for="dpOwner" class="col-sm-4 col-form-label text-sm-end">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.PolRegister.Owner"))
+                        </label>
+                        <div class="col-sm-8">
+                            <select class="js-record-docowner form-control" id="dpOwner" name="dpOwner">
+                                <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.PolRegister.Select.Responsible"))</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Department -->
+                <div class="col-sm-6">
+                    <div class="row mb-3">
+                        <label for="departmentName" class="col-sm-4 col-form-label text-sm-end">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Department.Name"))
+                        </label>
+                        <div class="col-sm-8">
+                            <input type="text" id="departmentName" name="departmentName" class="form-control" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aligned Checkbox -->
+                <div class="col-sm-6">
+                    <div class="form-check form-switch mt-2">
+                        <input class="form-check-input" type="checkbox" id="isAligned" name="isAligned">
+                        <label class="form-check-label" for="isAligned">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Aligned"))
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Last Revision -->
+                <div class="col-sm-6">
+                    <div class="row mb-3">
+                        <label for="lastRevisionDate" class="col-sm-4 col-form-label text-sm-end">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Revision.LastDate"))
+                        </label>
+                        <div class="col-sm-8">
+                            <input type="text" id="lastRevisionDate" name="lastRevisionDate" class="form-control datepicker">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Next Revision -->
+                <div class="col-sm-6">
+                    <div class="row mb-3">
+                        <label for="nextRevisionDate" class="col-sm-4 col-form-label text-sm-end">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Revision.NextDate"))
+                        </label>
+                        <div class="col-sm-8">
+                            <input type="text" id="nextRevisionDate" name="nextRevisionDate" class="form-control datepicker">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comments -->
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+                        <label for="comments" class="col-sm-2 col-form-label text-sm-end">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Comments"))
+                        </label>
+                        <div class="col-sm-10">
+                            <textarea id="comments" name="comments" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
    </div>
+</div>
 
-    <div class="panel-body">
-        <form id="recordForm" class="row g-3">
-            <input type="hidden" id="recordId" name="recordId">
-            <input type="hidden" id="isEdit" name="isEdit">
+<div class="task-overlay" onclick="closePolicyTaskPanel()">
+    <div id="slideTaskPanel" class="slide-task-panel" onclick="event.stopPropagation()">
 
-            <!-- Document Name -->
-            <div class="col-sm-6">
-                <div class="row mb-3">
-                    <label for="documentName" class="col-sm-4 col-form-label text-sm-end">
-                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Name"))
-                    </label>
-                    <div class="col-sm-8">
-                        <input type="text" id="documentName" name="documentName" class="form-control" required>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Document Type -->
-            <div class="col-sm-6">
-                <div class="row mb-3">
-                    <label for="dpDocumentType" class="col-sm-4 col-form-label text-sm-end">
-                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Type"))
-                    </label>
-                    <div class="col-sm-8">
-                        <select class="js-record-doctype form-control" id="dpDocumentType" name="dpDocumentType">
-                            <option value="UNCLASSIFIED">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select"))</option>
-                            <option value="CATALOGUE">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Catalogue"))</option>
-                            <option value="FRAMEWORK">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Framework"))</option>
-                            <option value="MANUAL">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Manual"))</option>
-                            <option value="PLAN">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Plan"))</option>
-                            <option value="POLICY">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Ploicy"))</option>
-                            <option value="PROCEDURE">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Procedure"))</option>
-                            <option value="SLA">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.SLA"))</option>
-                            <option value="BLANK">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Blank"))</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Status -->
-            <div class="col-sm-6">
-                <div class="row mb-3">
-                    <label for="dpDocumentStatus" class="col-sm-4 col-form-label text-sm-end">
-                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Item.Status"))
-                    </label>
-                    <div class="col-sm-8">
-                        <select class="js-record-docstatus form-control" id="dpDocumentStatus" name="dpDocumentStatus">
-                            <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Staus.Select"))</option>
-                            <option value="Active">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Status.Active"))</option>
-                            <option value="Inactive">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Status.InActive"))</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Owner -->
-            <div class="col-sm-6">
-                <div class="row mb-3">
-                    <label for="dpOwner" class="col-sm-4 col-form-label text-sm-end">
-                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.PolRegister.Owner"))
-                    </label>
-                    <div class="col-sm-8">
-                        <select class="js-record-docowner form-control" id="dpOwner" name="dpOwner">
-                            <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.PolRegister.Select.Responsible"))</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Department -->
-            <div class="col-sm-6">
-                <div class="row mb-3">
-                    <label for="departmentName" class="col-sm-4 col-form-label text-sm-end">
-                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Department.Name"))
-                    </label>
-                    <div class="col-sm-8">
-                        <input type="text" id="departmentName" name="departmentName" class="form-control" readonly>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Aligned Checkbox -->
-            <div class="col-sm-6">
-                <div class="form-check form-switch mt-2">
-                    <input class="form-check-input" type="checkbox" id="isAligned" name="isAligned">
-                    <label class="form-check-label" for="isAligned">
-                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Aligned"))
-                    </label>
-                </div>
-            </div>
-
-            <!-- Last Revision -->
-            <div class="col-sm-6">
-                <div class="row mb-3">
-                    <label for="lastRevisionDate" class="col-sm-4 col-form-label text-sm-end">
-                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Revision.LastDate"))
-                    </label>
-                    <div class="col-sm-8">
-                        <input type="text" id="lastRevisionDate" name="lastRevisionDate" class="form-control datepicker">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Next Revision -->
-            <div class="col-sm-6">
-                <div class="row mb-3">
-                    <label for="nextRevisionDate" class="col-sm-4 col-form-label text-sm-end">
-                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Revision.NextDate"))
-                    </label>
-                    <div class="col-sm-8">
-                        <input type="text" id="nextRevisionDate" name="nextRevisionDate" class="form-control datepicker">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Comments -->
-            <div class="col-sm-12">
-                <div class="row mb-3">
-                    <label for="comments" class="col-sm-2 col-form-label text-sm-end">
-                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Comments"))
-                    </label>
-                    <div class="col-sm-10">
-                        <textarea id="comments" name="comments" class="form-control" rows="3"></textarea>
-                    </div>
-                </div>
-            </div>
-        </form>
+        <div class="panel-header">
+            <h3 id="panelTitle">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Task.Header"))</h3>
+            <button class="panel-close" onclick="closePolicyTaskPanel()">
+                <i class="mdi mdi-close"></i>
+            </button>
+        </div>
     </div>
 </div>
 

@@ -39,11 +39,23 @@
 	<LocaleResource Name="App.Label.Department.Code">
 		<Value>Department Code</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Label.Branch.Code">
+		<Value>Branch Code</Value>
+	</LocaleResource>
 	<LocaleResource Name="App.Label.Department.Name">
 		<Value>Department Name</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Label.Branch.Name">
+		<Value>Branch Name</Value>
+	</LocaleResource>
 	<LocaleResource Name="App.Label.Department.Deactivate">
 		<Value>Deactivate Department</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Departments">
+		<Value>Departments</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Branch.Deactivate">
+		<Value>Deactivate Branch</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Label.Department.Branch">
 		<Value>Attached Branch</Value>
@@ -75,6 +87,24 @@
 	<LocaleResource Name="App.Label.ExportFiltered">
 		<Value>Filtered</Value>
 	</LocaleResource>
+
+	<LocaleResource Name="App.Label.Policy.Task">
+		<Value>Tasks</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Policies.Compliance.Tasks">
+		<Value>Task Assignment</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Responsibility">
+		<Value>Responsibility</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Mail.Send">
+		<Value>Send Mail</Value>
+	</LocaleResource>
+
+
+
+
+
 	<LocaleResource Name="App.Label.AllUsers">
 		<Value>All</Value>
 	</LocaleResource>
@@ -157,7 +187,7 @@
 	<LocaleResource Name="App.Label.CategoryNew">
 		<Value>New Category</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="App.Label.Organization.Departments">
 		<Value>Departments</Value>
 	</LocaleResource>
@@ -202,6 +232,9 @@
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.DocumentManagement">
 		<Value>Document Management</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.PolicyTasks">
+		<Value>Task Assignment</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.StandardsRegulationRegister">
 		<Value>Regulatory Returns</Value>
@@ -379,14 +412,23 @@
 	<LocaleResource Name="Component.Label.Header.New.Department">
 		<Value>New Department</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Label.Header.New.Branch">
+		<Value>New Branch</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Label.Header.Edit.Department">
 		<Value>Edit Department</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Label.Header.Edit.Branch">
+		<Value>Edit Branch</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Label.Departments.Select">
 		<Value>Select Department..</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Label.Header.Filter">
 		<Value>Filter List By</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Task.Header">
+		<Value>Task Assignment</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Label.Code">
 		<Value>Code</Value>
@@ -475,7 +517,7 @@
 	<LocaleResource Name="Component.Table.Policy.Comments">
 		<Value>Policy Comments</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Component.Table.Policy.Name">
 		<Value>Document Name</Value>
 	</LocaleResource>
@@ -491,19 +533,12 @@
 	<LocaleResource Name="Component.Table.Category.Status">
 		<Value>Category Status</Value>
 	</LocaleResource>
-	
-
-
-	
 	<LocaleResource Name="Component.Table.Policy.Type">
 		<Value>Document Type</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.Select">
 		<Value>Select type</Value>
 	</LocaleResource>
-	
-	
-	
 	<LocaleResource Name="Component.Table.Type.Status">
 		<Value>Type Status</Value>
 	</LocaleResource>
@@ -719,7 +754,7 @@
 		<Value>Guide Register</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Policies.Compliance.Documents">
-		<Value>Document Management</Value>
+		<Value>Sharepoint Documents</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Policies.Compliance.DocumentType">
 		<Value>Document Types</Value>

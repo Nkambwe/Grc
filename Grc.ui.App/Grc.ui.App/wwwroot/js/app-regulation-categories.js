@@ -320,6 +320,10 @@ function saveRegulatoryCategory(isEdit, payload) {
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify(payload),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getCategoryAntiForgeryToken()
+        },
         success: function (res) {
             if (res && res.data) {
                 if (isEdit) {
@@ -356,6 +360,11 @@ function saveRegulatoryCategory(isEdit, payload) {
 
 /*------------------------------------------------ delete Record*/
 function deleteRegulatoryCategoryRecord(id) {
+    if (!id && id !== 0) {
+        toastr.error("Invalid id for delete.");
+        return;
+    }
+
     Swal.fire({
         title: "Delete Category",
         text: "Are you sure you want to delete this category?",
@@ -365,20 +374,33 @@ function deleteRegulatoryCategoryRecord(id) {
         cancelButtonColor: "#f41369",
         cancelButtonText: "Cancel"
     }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: '/grc/compliance/support/category-delete/' + id,
-                type: 'DELETE',
-                success: function (res) {
-                    Swal.fire("Deleted!", res.message || "Category deleted successfully.");
-                    regulatoryCategoryTable.setPage(1, true); 
-                },
-                error: function (xhr, status, error) {
-                    Swal.fire("Error", error);
-                    console.error("Delete error:", error, xhr.responseText);
+        if (!result.isConfirmed) return;
+
+        const url = `/grc/compliance/support/category-delete/${encodeURIComponent(id)}`;
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getCategoryAntiForgeryToken()
+            },
+            success: function (res) {
+                if (res && res.success) {
+                    toastr.success(res.message || "Category deleted successfully.");
+                    regulatoryTypeTable.setPage(1, true);
+                } else {
+                    toastr.error(res?.message || "Delete failed.");
                 }
-            });
-        }
+            },
+            error: function (xhr, status, error) {
+                let msg = "Request failed.";
+                try {
+                    const json = xhr.responseJSON || JSON.parse(xhr.responseText || "{}");
+                    if (json && json.message) msg = json.message;
+                } catch (e) { }
+                toastr.error(msg);
+            }
+        });
     });
 }
 
@@ -481,4 +503,9 @@ function initRegulatoryCategorySearch() {
             }
         }, 300);
     });
+}
+
+//..get antiforegery token from meta tag
+function getCategoryAntiForgeryToken() {
+    return $('meta[name="csrf-token"]').attr('content');
 }

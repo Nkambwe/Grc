@@ -588,7 +588,6 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         #region Data actions
 
-        [HttpGet("support/organization/getBranches")]
         public async Task<IActionResult> GetBranches() { 
             try {
 
@@ -751,6 +750,11 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
                 //..update with user data
                 var currentUser = grcResponse.Data;
+                if (currentUser == null){
+                    //..session has expired
+                    return RedirectToAction("Login", "Application");
+                }
+                
                 request.UserId = currentUser.UserId;
                 request.IPAddress = ipAddress;
                 request.PageSize = 7;
@@ -799,6 +803,11 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
+                if (currentUser == null)
+                {
+                    //..session has expired
+                    return RedirectToAction("Login", "Application");
+                }
                 GrcRequest request = new() {
                     UserId = currentUser.UserId,
                     Action = Activity.RETRIEVEDEPARTMENTS.GetDescription(),
@@ -856,6 +865,11 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
+                if (currentUser == null)
+                {
+                    //..session has expired
+                    return RedirectToAction("Login", "Application");
+                }
                 GrcIdRequst request = new() {
                     RecordId = id,
                     UserId = currentUser.UserId,
@@ -901,6 +915,12 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
+                if (currentUser == null)
+                {
+                    //..session has expired
+                    return RedirectToAction("Login", "Application");
+                }
+
                 GrcRequest request = new() {
                     UserId = currentUser.UserId,
                     Action = Activity.RETRIEVEUNITS.GetDescription(),
@@ -953,6 +973,11 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
                 //..update with user data
                 var currentUser = grcResponse.Data;
+                if (currentUser == null)
+                {
+                    //..session has expired
+                    return RedirectToAction("Login", "Application");
+                }
                 request.UserId = currentUser.UserId;
                 request.IPAddress = ipAddress;
                 request.PageSize = 20;

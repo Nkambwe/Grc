@@ -48,6 +48,4 @@
         //..set row selection
         setupRowSelection('#departmentsTable', departmentsTable);
     }
-
-
 });

@@ -55,7 +55,6 @@ namespace Grc.ui.App.Enums {
         CREATEREGULATORYTYPE = 24,
         [Description("Get regulatory category details")]
         COMPLIANCE_GET_TYPE = 25,
-
         [Description("Get regulatory authority details")]
         COMPLIANCE_GET_AUTHORITY = 26,
         [Description("Get a list of regulatory authority available")]
@@ -72,12 +71,26 @@ namespace Grc.ui.App.Enums {
         COMPLIANCE_RETRIEVE_POLICY = 32,
         [Description("Add policy/procedure")]
         COMPLIANCE_CREATE_POLICY = 33,
-        [Description("Update policy/procedurey")]
+        [Description("Update policy/procedure")]
         COMPLIANCE_EDITED_POLICY = 34,
         [Description("Delete policy/procedure")]
         COMPLIANCE_DELETED_POLCIY = 35,
         [Description("Export policies/procedures")]
         COMPLIANCE_EXPORT_POLICIES = 36,
+        [Description("Get policies/procedure details")]
+        COMPLIANCE_GET_POLICY = 37,
+        [Description("Get a list of document types available")]
+        COMPLIANCE_RETRIEVE_DOCTYPE = 38,
+        [Description("Add document type")]
+        COMPLIANCE_CREATE_DOCTYPE = 39,
+        [Description("Update document type")]
+        COMPLIANCE_EDITED_DOCTYPE = 40,
+        [Description("Delete document type")]
+        COMPLIANCE_DELETED_DOCTYPE = 41,
+        [Description("Export document policy")]
+        COMPLIANCE_EXPORT_DOCTYPES = 42,
+        [Description("Get document type details")]
+        COMPLIANCE_GET_DOCTYPE = 43,
 
     }
 }
