@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.EMMA;
 using Grc.ui.App.Defaults;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -136,41 +137,48 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Add Policy", "User added policy", ActivityTypeDefaults.COMPLIANCE_CREATE_POLICY, "Compliance")]
-        public async Task<IActionResult> CreatePolicy([FromBody] PolicyViewModel request)
+        public async Task<IActionResult> CreatePolicy([FromBody] PolicyRecord request)
         {
             try
             {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
-                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (userResponse.HasError || userResponse.Data == null)
-                    return Ok(new { success = false, message = "Unable to resolve current user" });
+                //var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                //if (userResponse.HasError || userResponse.Data == null)
+                //    return Ok(new { success = false, message = "Unable to resolve current user" });
 
-                var currentUser = userResponse.Data;
-                request.UserId = currentUser.UserId;
-                request.IPAddress = ipAddress;
-                request.Action = Activity.COMPLIANCE_CREATE_POLICY.GetDescription();
+                //var currentUser = userResponse.Data;
+                ////request.UserId = currentUser.UserId;
+                ////request.IPAddress = ipAddress;
+                ////request.Action = Activity.COMPLIANCE_CREATE_POLICY.GetDescription();
 
-                var result = await _policyService.CreatePolicyAsync(request);
-                if (result.HasError || result.Data == null)
-                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create policy" });
+                //if (request == null) {
+                //    return Ok(new { success = false, message = "Invalid Policy/Procedure data" });
+                //}
 
-                var created = result.Data;
-                return Ok(new
-                {
-                    success = true,
-                    message = "Policy created successfully",
-                    data = new
-                    {
-                        id = created.Id,
-                        documentName = created.DocumentName,
-                        documentType = created.DocumentType,
-                        aligned = created.IsAligned,
-                        locked = created.IsLocked,
-                        reviewStatus = created.ReviewStatus,
-                        lastReview = created.LastRevisionDate,
-                        nextReview = created.NextRevisionDate,
-                    }
-                });
+
+                //var result = await _policyService.CreatePolicyAsync(request);
+                //if (result.HasError || result.Data == null)
+                //    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create policy" });
+
+                //var created = result.Data;
+                //return Ok(new
+                //{
+                //    success = true,
+                //    message = "Policy created successfully",
+                //    data = new
+                //    {
+                //        id = created.Id,
+                //        documentName = created.DocumentName,
+                //        documentType = created.DocumentType,
+                //        aligned = created.IsAligned,
+                //        locked = created.IsLocked,
+                //        reviewStatus = created.ReviewStatus,
+                //        lastReview = created.LastRevisionDate,
+                //        nextReview = created.NextRevisionDate,
+                //    }
+                //});
+
+                return Ok(new { success = true, message = "Policy created successfully", data = new { } });
 
             }
             catch (Exception ex)

@@ -322,30 +322,33 @@ function addPolicyTaskRecord() {
 }
 
 /*------------------------------------------
-    Open / Close Slide Panel
+    OpenSlide Panel
 -------------------------------------------*/
 function openPolicyDocPanel(title, record, isEdit) {
+    
     $('#isEdit').val(isEdit);
     $('#recordId').val(record.id);
     $('#documentName').val(record.documentName || '');
+    $('#dpDocumentStatus').val(record.documentStatus).trigger('change');
     $('#dpDocumentType').val(record.documentType).trigger('change');
-    $('#dpDocumentStatus').val(record.status).trigger('change');
+    $('#isAligned').prop('checked', (record.aligned || '').toString().toUpperCase() === 'true');
+    $('#isDeleted').prop('checked', (record.isDeleted || '').toString().toUpperCase() === 'true');
+    $('#isLocked').prop('checked', (record.locked || '').toString().toUpperCase() === 'true');
     $('#dpOwner').val(record.documentOwner).trigger('change');
-    $('#departmentName').val(record.department || '');
     $('#comments').val(record.comments || '');
-    $('#isAligned').prop('checked', record.aligned === 'YES');
 
-    //..use Flatpickr setDate
+    //..use setDate
+    const today = new Date();
     if (record.lastReview) {
         flatpickrInstances["lastRevisionDate"].setDate(record.lastReview, true, "Y-m-d");
     } else {
-        flatpickrInstances["lastRevisionDate"].clear();
+        flatpickrInstances["lastRevisionDate"].setDate(today, true, "Y-m-d");
     }
 
     if (record.nextReview) {
         flatpickrInstances["nextRevisionDate"].setDate(record.nextReview, true, "Y-m-d");
     } else {
-        flatpickrInstances["nextRevisionDate"].clear();
+        flatpickrInstances["nextRevisionDate"].setDate(today, true, "Y-m-d");
     }
 
     $('#panelTitle').text(title);
@@ -353,44 +356,42 @@ function openPolicyDocPanel(title, record, isEdit) {
     $('#slidePanel').addClass('active');
 }
 
-function closePolicyDocumentPanel() {
-    $('.overlay').removeClass('active');
-    $('#slidePanel').removeClass('active');
-}
-function closePolicyTaskPanel() {
-    $('.task-overlay').removeClass('active');
-    $('#slideTaskPanel').removeClass('active');
-}
-
 /*------------------------------------------
     Save Record
 -------------------------------------------*/
 function savePolRegisterRecord() {
     let isEdit = $('#isEdit').val();
-
     let recordData = {
         id: parseInt($('#recordId').val()) || 0,
         documentName: $('#documentName').val(),
+        documentStatus: $('#dpDocumentStatus').val(),
         documentType: $('#dpDocumentType').val(),
+        isDeleted: $('#isDeleted').is(':checked') ? "true" : "false",
+        aligned: $('#isAligned').is(':checked') ? "true" : "false",
         documentOwner: $('#dpOwner').val(),
-        status: $('#dpDocumentStatus').val() || "Active",
-        aligned: $('#isAligned').is(':checked') ? "YES" : "NO",
-        department: $('#departmentName').val(),
-
-        //..flatpickr value in ISO format
         lastReview: flatpickrInstances["lastRevisionDate"].input.value || null,
         nextReview: flatpickrInstances["nextRevisionDate"].input.value || null,
-
         comments: $('#comments').val()
     };
 
+    console.log("Saving Record:", recordData);
     savePolicy(isEdit, recordData);
 }
 
 function savePolicy(isEdit, payload) {
-    let url = (isEdit === true || isEdit === "true")
+    const url = (isEdit === true || isEdit === "true")
         ? "/grc/compliance/register/policies-update"
         : "/grc/compliance/register/policies-create";
+
+    Swal.fire({
+        title: isEdit ? "Updating Policy..." : "Saving Policy...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
 
     $.ajax({
         url: url,
@@ -402,6 +403,9 @@ function savePolicy(isEdit, payload) {
             'X-CSRF-TOKEN': getPolicyAntiForgeryToken()
         },
         success: function (res) {
+            //..lose loader and show success message
+            Swal.close();
+
             if (res && res.data) {
                 if (isEdit) {
                     policyRegisterTable.updateData([res.data]);
@@ -409,18 +413,44 @@ function savePolicy(isEdit, payload) {
                     policyRegisterTable.addData([res.data], true);
                 }
             }
-            Swal.fire("Success", res.message || "Saved successfully.");
+
+            Swal.fire({
+                title: isEdit ? "Updating Policy..." : "Saving Policy...",
+                text: res.message || "Saved successfully.",
+                timer: 2000,
+                showConfirmButton: false
+            });
+
             closePolicyDocumentPanel();
         },
-        error: function (xhr, status, error) {
-            let errorMessage = "Unexpected error occurred";
+        error: function (xhr) {
+            Swal.close();
+
+            let errorMessage = "Unexpected error occurred.";
             try {
                 let response = JSON.parse(xhr.responseText);
                 if (response.message) errorMessage = response.message;
             } catch (e) { }
-            Swal.fire(isEdit ? "Update Policy/Procedure" : "Save Policy/Procedure", errorMessage);
+
+            Swal.fire({
+                title: isEdit ? "Update Failed" : "Save Failed",
+                text: errorMessage
+            });
         }
     });
+}
+
+/*------------------------------------------
+   Close Slide Panel
+-------------------------------------------*/
+
+function closePolicyDocumentPanel() {
+    $('.overlay').removeClass('active');
+    $('#slidePanel').removeClass('active');
+}
+function closePolicyTaskPanel() {
+    $('.task-overlay').removeClass('active');
+    $('#slideTaskPanel').removeClass('active');
 }
 
 /*------------------------------------------

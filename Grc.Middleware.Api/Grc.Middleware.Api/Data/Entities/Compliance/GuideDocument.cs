@@ -8,6 +8,7 @@
         /// </summary>
         public bool PolicyAligned { get; set; }
         public DateTime LastRevisionDate { get; set; }
+        public int? ReviewPeriod { get; set; }
         public DateTime? NextRevisionDate { get; set; }
         public long DocumentTypeId { get; set; }
         public long ResponsibilityId { get; set; }

@@ -496,6 +496,9 @@
 	<LocaleResource Name="Component.Table.PolRegister.Owner">
 		<Value>Person Responsible</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.PolRegister.Review.Period">
+		<Value>Review Period</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.PolRegister.Select.Responsible">
 		<Value>Select owner...</Value>
 	</LocaleResource>
@@ -505,26 +508,28 @@
 	<LocaleResource Name="Component.Table.Policy.Aligned">
 		<Value>Aligned with Policy</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Deleted">
+		<Value>Not Used</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Locked">
+		<Value>Locked Documnent</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.Revision.LastDate">
 		<Value>Last Revision Date</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.Revision.NextDate">
 		<Value>Next Revision Date</Value>
 	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Aligned">
-		<Value>Aligned with Policy</Value>
-	</LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.Comments">
 		<Value>Policy Comments</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="Component.Table.Policy.Name">
 		<Value>Document Name</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Authority.Name">
 		<Value>Authority Name</Value>
 	</LocaleResource>
-	<LocaleResource Name="Component.Table.Doctype.Name">
+	<LocaleResource Name="Component.Table.Doctypes.Name">
 		<Value>Document Type</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Authority.Alias">
@@ -539,11 +544,67 @@
 	<LocaleResource Name="Component.Table.Policy.Select">
 		<Value>Select type</Value>
 	</LocaleResource>
+
+	<LocaleResource Name="Component.Table.Policy.Select.Status">
+		<Value>Select document status</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Status.Due">
+		<Value>Due for Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Status.Notapp">
+		<Value>Not Applicable</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Status.Onhold">
+		<Value>On hold</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Status.BoSignoff">
+		<Value>Pending-Board Signoff</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Status.SmSignOff">
+		<Value>Pending-SMT Signoff</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Status.DeptReview">
+		<Value>Under Department Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Status.Uptodate">
+		<Value>Uptodate</Value>
+	</LocaleResource>
+
+	<LocaleResource Name="Component.Table.Policy.Select.doctype">
+		<Value>Select document type</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Select.Catalogue">
+		<Value>Catalogue</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Select.Framework">
+		<Value>Framework</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Select.Manual">
+		<Value>Manual</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Select.Plan">
+		<Value>Plan</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Select.Ploicy">
+		<Value>Policy</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Select.Procedure">
+		<Value>Procedure</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Select.SLA">
+		<Value>SLA</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Select.Blank">
+		<Value>Unclassified</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Type.Status">
 		<Value>Type Status</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Item.Status">
 		<Value>Active Status</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Document.Status">
+		<Value>Document Status</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Staus.Select">
 		<Value>Select status</Value>
@@ -560,7 +621,6 @@
 	<LocaleResource Name="Component.Table.Status.InActive">
 		<Value>Inactive</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="App.User.Views">
 		<Value>Views</Value>
 	</LocaleResource>

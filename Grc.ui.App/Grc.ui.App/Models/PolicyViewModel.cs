@@ -7,38 +7,35 @@ namespace Grc.ui.App.Models
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
-        [JsonPropertyName("doucmentName")]
+        [JsonPropertyName("documentName")]
         public string DocumentName { get; set; }
 
-        [JsonPropertyName("typeId")]
+        [JsonPropertyName("documentType")]
         public long DocumentTypeId { get; set; }
+
+        [JsonPropertyName("documentStatus")]
+        public string DocumentStatus { get; set; }
 
         [JsonPropertyName("aligned")]
         public bool IsAligned { get; set; }
 
-        [JsonPropertyName("locked")]
-        public bool IsLocked { get; set; }
-
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 
-        [JsonPropertyName("underReview")]
-        public bool UnderReview { get; set; }
+        [JsonPropertyName("locked")]
+        public bool IsLocked { get; set; }
 
-        [JsonPropertyName("color")]
-        public string Color { get; set; }
-
-        [JsonPropertyName("ownerId")]
+        [JsonPropertyName("documentOwner")]
         public long OwnerId { get; set; }
-
-        [JsonPropertyName("documentStatus")]
-        public string DocumentStatus { get; set; }
 
         [JsonPropertyName("approverId")]
         public string Approver { get; set; }
 
         [JsonPropertyName("comments")]
         public string Comments { get; set; }
+
+        [JsonPropertyName("underReview")]
+        public bool UnderReview { get; set; }
 
         [JsonPropertyName("lastReview")]
         public DateTime LastRevisionDate { get; set; }
@@ -50,4 +47,42 @@ namespace Grc.ui.App.Models
         public string IPAddress { get; set; }
         public string Action { get; set; }
     }
+
+    public class  PolicyRecord 
+    {
+        [JsonPropertyName("id")]
+        public long Id { get; set; }
+
+        [JsonPropertyName("documentName")]
+        public string DocumentName { get; set; }
+
+        [JsonPropertyName("documentType")]
+        public long DocumentTypeId { get; set; }
+
+        [JsonPropertyName("documentStatus")]
+        public string DocumentStatus { get; set; }
+
+        [JsonPropertyName("aligned")]
+        public bool IsAligned { get; set; }
+
+        [JsonPropertyName("isDeleted")]
+        public bool IsDeleted { get; set; }
+
+        [JsonPropertyName("locked")]
+        public bool IsLocked { get; set; }
+
+        [JsonPropertyName("comments")]
+        public string Comments { get; set; }
+
+        [JsonPropertyName("lastReview")]
+        public DateTime LastRevisionDate { get; set; }
+
+        [JsonPropertyName("nextReview")]
+        public DateTime? NextRevisionDate { get; set; }
+
+        [JsonPropertyName("documentOwner")]
+        public long OwnerId { get; set; }
+    }
+
+
 }

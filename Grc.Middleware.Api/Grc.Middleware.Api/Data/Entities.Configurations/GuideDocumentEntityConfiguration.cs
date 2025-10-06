@@ -15,6 +15,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
             builder.Property(t => t.Comments).HasColumnName("doc_comments").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
             builder.Property(t => t.IsDeleted).HasColumnName("is_deleted");
             builder.Property(t => t.LastRevisionDate).HasColumnName("last_revision_on").IsRequired();
+            builder.Property(t => t.ReviewPeriod).HasColumnName("review_period").IsRequired(false);
             builder.Property(t => t.NextRevisionDate).HasColumnName("next_revision_on").IsRequired(false);
             builder.Property(t => t.DocumentTypeId).HasColumnName("doc_type_id");
             builder.Property(t => t.ResponsibilityId).HasColumnName("doc_owner_id");

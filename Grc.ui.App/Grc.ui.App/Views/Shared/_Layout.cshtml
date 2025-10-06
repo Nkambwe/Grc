@@ -21,6 +21,7 @@
             Html.AddCssFileParts("~/lib/ckeditor5/ckeditor5.css");
             Html.AddCssFileParts("~/lib/toastr/toastr.css");
             Html.AddCssFileParts("~/css/color-pallete.css");
+            Html.AddCssFileParts("~/lib/date-controls/daterangepicker.css");
             Html.AddCssFileParts("~/lib/sweet-alert/sweetalert2.css");
             Html.AddCssFileParts("~/lib/datatables/datatables.css");
             Html.AddCssFileParts("~/lib/datatables/datatables.min.css");
@@ -33,7 +34,6 @@
             Html.AddCssFileParts("~/css/app-tabular-styles.css");
         }
         <!-- Keep these in head because they need to be available early -->
-        
         <script src="~/lib/sweet-alert/sweetalert2.all.min.js"></script>
         <script src="~/lib/ckeditor5/ckeditor5.umd.js"></script>
         <script src="~/lib/chartjs/chart.bundle.min.js"></script>
@@ -550,6 +550,9 @@
             Html.AddScriptParts(ResourceLocation.Footer, "~/lib/toastr/toastr.min.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/lib/select-2/js/select2.min.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/lib/bootstrap/dist/js/bootstrap.js");
+            Html.AddScriptParts(ResourceLocation.Footer, "~/lib/date-controls/moment.min.js");
+            Html.AddScriptParts(ResourceLocation.Footer, "~/lib/date-controls/daterangepicker.min.js");
+            Html.AddScriptParts(ResourceLocation.Footer, "~/lib/flastpicker/flatpickr.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/js/component-script.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-script.js");        
             Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-table-script.js");
@@ -558,7 +561,7 @@
 
         @Html.GenerateScripts(ResourceLocation.Footer)
         @await RenderSectionAsync("Scripts", required: false)
-
+    <script src=""></script>
         <script>
             window.ADMIN_LOGOUT_URL = '@Url.Action("Logout", "Application")';
             @if (TempData["UiResponse"] != null)
