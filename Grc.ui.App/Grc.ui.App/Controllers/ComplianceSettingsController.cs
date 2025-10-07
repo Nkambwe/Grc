@@ -14,6 +14,7 @@ using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -24,6 +25,7 @@ namespace Grc.ui.App.Controllers {
         private readonly IRegulatonTypeService _regulatoryTypeService;
         private readonly IRegulatonAuthorityService _regulatoryAuthorityService;
         private readonly IDocumentTypeService _documentTypeService;
+        private readonly IResponsibilityService _responsibilityService;
 
         public ComplianceSettingsController(IApplicationLoggerFactory loggerFactory, 
             IEnvironmentProvider environment, 
@@ -36,6 +38,7 @@ namespace Grc.ui.App.Controllers {
             IRegulatonTypeService regulatoryTypeService,
             IRegulatonAuthorityService regulatoryAuthorityService,
             IDocumentTypeService documentTypeService,
+            IResponsibilityService responsibilityService,
             SessionManager sessionManager) 
             : base(loggerFactory, environment, webHelper, 
                   localizationService, errorService,
@@ -47,6 +50,7 @@ namespace Grc.ui.App.Controllers {
             _regulatoryTypeService = regulatoryTypeService;
             _regulatoryAuthorityService = regulatoryAuthorityService;
             _documentTypeService = documentTypeService;
+            _responsibilityService = responsibilityService;
         }
 
         #region Regulatory Categories
@@ -1624,14 +1628,14 @@ namespace Grc.ui.App.Controllers {
                     DecryptFields = Array.Empty<string>()
                 };
 
-                //..get list of all branches
+                //..get list of all document types
                 var doctypeData = await _documentTypeService.GetAllAsync(request);
 
                 List<DocumentTypeResponse> documentTypes;
                 if (doctypeData.HasError)
                 {
                     documentTypes = new();
-                    Logger.LogActivity($"DOCUMENT TYPE DATA ERROR: Failed to retrieve branch items - {JsonSerializer.Serialize(doctypeData)}");
+                    Logger.LogActivity($"DOCUMENT TYPE DATA ERROR: Failed to retrieve type items - {JsonSerializer.Serialize(doctypeData)}");
                 }
                 else
                 {
@@ -1919,7 +1923,7 @@ namespace Grc.ui.App.Controllers {
             return File(
                 stream.ToArray(),
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "RegulatoryAuthorities.xlsx"
+                "Document_types.xlsx"
             );
         }
 
@@ -2163,6 +2167,429 @@ namespace Grc.ui.App.Controllers {
                 return Redirect(Url.Action("Dashboard", "Application"));
             }
             
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetResponsibilities() {
+            try
+            {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError)
+                {
+                    Logger.LogActivity($"DOCUMENT OWNER LIST ERROR: Failed to Current user record - {JsonSerializer.Serialize(grcResponse)}");
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+                }
+
+                var currentUser = grcResponse.Data;
+                GrcRequest request = new()
+                {
+                    UserId = currentUser.UserId,
+                    Action = Activity.COMPLIANCE_RETRIEVE_DOCOWNERS.GetDescription(),
+                    IPAddress = ipAddress,
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>()
+                };
+
+                //..get list of all owners
+                var ownerData = await _responsibilityService.GetAllAsync(request);
+
+                List<OwnerResponse> owners;
+                if (ownerData.HasError)
+                {
+                    owners = new();
+                    Logger.LogActivity($"DOCUMENT OWNER DATA ERROR: Failed to retrieve owners - {JsonSerializer.Serialize(ownerData)}");
+                }
+                else
+                {
+                    owners = ownerData.Data;
+                    Logger.LogActivity($"DOCUMENT OWNERS DATA - {JsonSerializer.Serialize(owners)}");
+                }
+
+                //..get ajax data
+                List<object> select2Data = new();
+                if (owners.Any())
+                {
+                    select2Data = owners.Select(type => new
+                    {
+                        id = type.Id,
+                        ownerName = type.Name,
+                        ownerPhone = type.Phone,
+                        ownerEmail = type.Email,
+                        ownerPosition = type.Position,
+                        ownerComment = type.Comment,
+                        departmentId = type.DepartmentId,
+                        department = type.Department
+                    }).Cast<object>().ToList();
+                }
+
+                return Json(new { results = select2Data });
+            }
+            catch (Exception ex)
+            {
+                await ProcessErrorAsync(ex.Message, "DOCUMENT-OWNER", ex.StackTrace);
+                return Ok(new { last_page = 0, data = new List<object>() });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetResponsibility(long id)
+        {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                {
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+                }
+
+                if (id == 0)
+                    return BadRequest(new { success = false, message = "Owner Id is required" });
+
+                var currentUser = userResponse.Data;
+                var request = new GrcIdRequst
+                {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    IPAddress = ipAddress,
+                    Action = Activity.COMPLIANCE_GET_DOCOWNER.GetDescription(),
+                    IsDeleted = false
+                };
+
+                var result = await _responsibilityService.GetOwnerAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to retrieve document owner" });
+
+                var response = result.Data;
+                var record = new
+                {
+                    id = response.Id,
+                    ownerName = response.Name,
+                    ownerPhone = response.Phone,
+                    ownerEmail = response.Email,
+                    ownerPosition = response.Position,
+                    ownerComment = response.Comment,
+                    departmentId = response.DepartmentId,
+                    department = response.Department,
+                    isActive = response.IsDeleted ? "Inactive" : "Active",
+                    addedon = response.CreatedAt.ToString("dd-MM-yyyy")
+                };
+
+                return Ok(new { success = true, data = record });
+            }
+            catch (Exception ex)
+            {
+                await ProcessErrorAsync(ex.Message, "DOCUMENT-TYPE", ex.StackTrace);
+                return Ok(new { success = false, message = "Unexpected error retrieving document type" });
+            }
+        }
+
+        [HttpPost]
+        [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
+        [LogActivityResult("Add document owner", "User added document owner", ActivityTypeDefaults.COMPLIANCE_CREATE_DOCOWNER, "Responsibility")]
+        public async Task<IActionResult> CreateResponsibility([FromBody] OwnerViewModel request)  {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current owner" });
+
+                if (request == null)
+                    return BadRequest(new { success = false, message = "Invalid request" });
+
+                var currentUser = userResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.COMPLIANCE_CREATE_DOCOWNER.GetDescription();
+
+                var result = await _responsibilityService.CreateOwnerAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create document owner" });
+
+                var created = result.Data;
+                var record = new
+                {
+                    id = created.Id,
+                    ownerName = created.Name,
+                    ownerPhone = created.Phone,
+                    ownerEmail = created.Email,
+                    ownerPosition = created.Position,
+                    ownerComment = created.Comment,
+                    departmentId = created.DepartmentId,
+                    department = created.Department,
+                    isActive = created.IsDeleted ? "Inactive" : "Active",
+                    addedon = created.CreatedAt.ToString("dd-MM-yyyy")
+                };
+
+                return Ok(new { success = true, message = "Document owner created successfully", data = record });
+            }
+            catch (Exception ex)
+            {
+                await ProcessErrorAsync(ex.Message, "DOCUMENT-OWNER", ex.StackTrace);
+                return Ok(new { success = false, message = "Unexpected error creating document owner" });
+            }
+        }
+
+        [HttpPost]
+        [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
+        [LogActivityResult("Modify document owner", "User modified document owner", ActivityTypeDefaults.COMPLIANCE_EDITED_DOCOWNER, "Responsibility")]
+        public async Task<IActionResult> UpdateResponsibility([FromBody] OwnerViewModel request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                if (request == null)
+                    return BadRequest(new { success = false, message = "Invalid request" });
+
+                var currentUser = userResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.COMPLIANCE_EDITED_DOCOWNER.GetDescription();
+
+                var result = await _responsibilityService.UpdateOwnerAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update document owner" });
+
+                var updated = result.Data;
+                var record = new {
+                    id = updated.Id,
+                    ownerName = updated.Name,
+                    ownerPhone = updated.Phone,
+                    ownerEmail = updated.Email,
+                    ownerPosition = updated.Position,
+                    ownerComment = updated.Comment,
+                    departmentId = updated.DepartmentId,
+                    department = updated.Department,
+                    isActive = updated.IsDeleted ? "Inactive" : "Active",
+                    addedon = updated.CreatedAt.ToString("dd-MM-yyyy")
+                };
+
+                return Ok(new { success = true, message = "Document owner updated successfully", data = record });
+            }
+            catch (Exception ex)
+            {
+                await ProcessErrorAsync(ex.Message, "DOCUMENT-OWNER", ex.StackTrace);
+                return Ok(new { success = false, message = "Unexpected error updating document owner" });
+            }
+        }
+
+        [HttpDelete]
+        [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
+        [LogActivityResult("Export document owner", "User exported document owners to excel", ActivityTypeDefaults.COMPLIANCE_DELETED_DOCOWNER, "Responsibility")]
+        public async Task<IActionResult> DeleteResponsibility(long id)
+        {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                {
+                    var errMsg = userResponse.Error?.Message ?? "Unable to resolve current user";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg });
+                }
+
+                if (id == 0)
+                {
+                    var errMsg = "Owner Id is required";
+                    Logger.LogActivity(errMsg);
+                    return BadRequest(new { success = false, message = errMsg });
+                }
+
+                var currentUser = userResponse.Data;
+                var request = new GrcIdRequst
+                {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    IPAddress = ipAddress,
+                    Action = Activity.COMPLIANCE_DELETED_DOCOWNER.GetDescription(),
+                    IsDeleted = true
+                };
+
+                var result = await _documentTypeService.DeleteTypeAsync(request);
+                if (result.HasError || result.Data == null)
+                {
+                    var errMsg = result.Error?.Message ?? "Failed to delete document owner";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg });
+                }
+
+                return Ok(new { success = true, message = result.Data.Message });
+            }
+            catch (Exception ex)
+            {
+                await ProcessErrorAsync(ex.Message, "DOCUMENT-OWNER", ex.StackTrace);
+                return Ok(new { success = false, message = "Unexpected error deleting document owner" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AllResponsibilities([FromBody] TableListRequest request)
+        {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { last_page = 0, data = new List<object>() });
+
+                var currentUser = userResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.COMPLIANCE_RETRIEVE_DOCOWNERS.GetDescription();
+
+                var ownerData = await _responsibilityService.GetAllOwners(request);
+                PagedResponse<OwnerResponse> ownerList = new();
+
+                if (ownerData.HasError)
+                {
+                    Logger.LogActivity($"DOCUMENT OWNERS DATA ERROR: Failed to retrieve authority items - {JsonSerializer.Serialize(ownerList)}");
+                }
+                else
+                {
+                    ownerList = ownerData.Data;
+                    Logger.LogActivity($"DOCUMENT OWNERS DATA - {JsonSerializer.Serialize(ownerList)}");
+                }
+                ownerList.Entities ??= new();
+
+                var pagedEntities = ownerList.Entities
+                    .Skip((request.PageIndex - 1) * request.PageSize)
+                    .Take(request.PageSize)
+                    .Select(t => new {
+                        id = t.Id,
+                        startTab = "",
+                        ownerName = t.Name,
+                        ownerPhone = t.Phone,
+                        ownerEmail = t.Email,
+                        ownerPosition = t.Position,
+                        ownerComment = t.Comment,
+                        departmentId = t.DepartmentId,
+                        department = t.Department,
+                        isActive = t.IsDeleted ? "Inactive" : "Active",
+                        endTab = ""
+                    }).ToList();
+
+                var totalPages = (int)Math.Ceiling((double)ownerList.TotalCount / ownerList.Size);
+                return Ok(new {
+                    last_page = totalPages,
+                    total_records = ownerList.TotalCount,
+                    data = pagedEntities
+                });
+            }
+            catch (Exception ex)
+            {
+                await ProcessErrorAsync(ex.Message, "DOCUMENT-OWNERS", ex.StackTrace);
+                return Ok(new { last_page = 0, data = new List<object>() });
+            }
+        }
+
+        [HttpPost]
+        [LogActivityResult("Export document owners", "User exported document owners to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_DOCOWNER, "Responsibility")]
+        public IActionResult ExcelExportResponsibilities([FromBody] List<OwnerResponse> data) {
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Document Owners");
+
+            //..headers
+            worksheet.Cell(1, 2).Value = "ONWER NAME";
+            worksheet.Cell(1, 3).Value = "PHONE NUMBER";
+            worksheet.Cell(1, 4).Value = "EMAIL ADDRESS";
+            worksheet.Cell(1, 4).Value = "DEPARTMENT";
+            worksheet.Cell(1, 4).Value = "POSITION";
+
+            int row = 2;
+            foreach (var item in data) {
+                worksheet.Cell(row, 2).Value = item.Name;
+                worksheet.Cell(row, 2).Value = item.Phone;
+                worksheet.Cell(row, 2).Value = item.Email;
+                worksheet.Cell(row, 2).Value = item.Department;
+                worksheet.Cell(row, 2).Value = item.Position;
+                row++;
+            }
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "RegulatoryAuthorities.xlsx"
+            );
+        }
+
+        [HttpPost]
+        [LogActivityResult("Export document owners", "User exported document owners to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_DOCOWNER, "Responsibility")]
+        public async Task<IActionResult> ExcelExportAllResponsibilities() {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+            {
+                var msg = "Unable to resolve current user";
+                Logger.LogActivity(msg);
+                return Ok(new {
+                    success = false,
+                    message = msg,
+                    data = new { }
+                });
+            }
+
+            var request = new TableListRequest {
+                UserId = userResponse.Data.UserId,
+                IPAddress = ipAddress,
+                PageIndex = 1,
+                PageSize = int.MaxValue,
+                Action = Activity.COMPLIANCE_EXPORT_DOCOWNERS.GetDescription()
+            };
+
+            var ownerData = await _responsibilityService.GetAllOwners(request);
+            if (ownerData.HasError || ownerData.Data == null)
+            {
+                var errMsg = ownerData.Error?.Message ?? "Failed to retrieve document owners";
+                Logger.LogActivity(errMsg);
+                return Ok(new
+                {
+                    success = false,
+                    message = errMsg,
+                    data = new { }
+                });
+            }
+
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("Document_Types");
+
+            //..headers
+            ws.Cell(1, 2).Value = "ONWER NAME";
+            ws.Cell(1, 3).Value = "PHONE NUMBER";
+            ws.Cell(1, 4).Value = "EMAIL ADDRESS";
+            ws.Cell(1, 4).Value = "DEPARTMENT";
+            ws.Cell(1, 4).Value = "POSITION";
+
+            int row = 2;
+            foreach (var cat in ownerData.Data.Entities)
+            {
+                ws.Cell(row, 2).Value = cat.Name;
+                ws.Cell(row, 2).Value = cat.Phone;
+                ws.Cell(row, 2).Value = cat.Email;
+                ws.Cell(row, 2).Value = cat.Department;
+                ws.Cell(row, 2).Value = cat.Position;
+                row++;
+            }
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "Document_Owners.xlsx"
+            );
         }
 
         #endregion

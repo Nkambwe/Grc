@@ -45,7 +45,8 @@ namespace Grc.ui.App.Extensions.Mvc {
             services.AddScoped<IRegulatonAuthorityService, RegulatonAuthorityService>();
             services.AddScoped<IPolicyService, PolicyService>();
             services.AddScoped<IDocumentTypeService, DocumentTypeService>();
-
+            services.AddScoped<IResponsibilityService, ResponsibilityService>();
+            
             //..sessionExtensions manager
             services.AddScoped<SessionManager>();
 

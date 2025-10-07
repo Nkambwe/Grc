@@ -86,16 +86,7 @@
                             </a>
 
                             <ul id="company-menu" class="sidebar-submenu">
-                                <li class="sidebar-item with-submenu">
-                                    <a asp-controller="Configuration" asp-action="Organization" asp-area="Admin">
-                                        <span class="menu-icon">
-                                            <i class="mdi mdi-vector-combine"></i>
-                                        </span>
-                                        <span class="sidebar-text">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Organization.Info"))
-                                        </span>
-                                    </a>
-                                </li>
+                               
                                 <li class="sidebar-item with-submenu">
                                     <a asp-controller="Configuration" asp-action="Branches" asp-area="Admin">
                                         <span class="menu-icon">
@@ -430,6 +421,8 @@
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-script.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/department-units-script.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/department-script.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/js/branch-script.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/js/users-script.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-script-other.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-tables.js");
     }

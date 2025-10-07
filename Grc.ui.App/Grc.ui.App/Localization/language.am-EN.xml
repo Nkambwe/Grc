@@ -430,6 +430,34 @@
 	<LocaleResource Name="Component.Table.Task.Header">
 		<Value>Task Assignment</Value>
 	</LocaleResource>
+
+	<LocaleResource Name="Component.Table.Label.Users.DisplayName">
+		<Value>FULL NAME</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Users.Username">
+		<Value>ACCOUNT NAME</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Users.Email">
+		<Value>EMAIL ADDRESS</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Users.RoleName">
+		<Value>USER ROLE</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Users.RoleGroup">
+		<Value>ROLE GROUP</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Users.PFNumber">
+		<Value>PF NUMBER</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Users.Verified">
+		<Value>VERIFIED</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Users.Active">
+		<Value>ACCOUNT STATUS</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Users.Created">
+		<Value>CREATED ON</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Label.Code">
 		<Value>Code</Value>
 	</LocaleResource>
@@ -444,6 +472,18 @@
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Label.Department.Name">
 		<Value>Department Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Branch.Name">
+		<Value>BRANCH NAME</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Branch.Solid">
+		<Value>SOLID</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Branch.Active">
+		<Value>DELETED STATUS</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Branch.Created">
+		<Value>CREATED ON</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Label.Department.Alias">
 		<Value>Short Name</Value>
@@ -572,6 +612,42 @@
 
 	<LocaleResource Name="Component.Table.Policy.Select.doctype">
 		<Value>Select document type</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Task.OwnerName">
+		<Value>Assigned To</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Task.OwnerEmail">
+		<Value>Assignee Email</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Task.OwnerPhone">
+		<Value>Assignee Contact</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Task.OwnerDept">
+		<Value>Assignee Department</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Task.OwnerPos">
+		<Value>Assignee  Position</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Document">
+		<Value>Policy/Procedure document</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Select.Document">
+		<Value>Select document</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Task.Description">
+		<Value>Task Description</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Task.Owner">
+		<Value>Task Owner</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Select.Owner">
+		<Value>Select person to assign to</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Task.Document">
+		<Value>Document Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Task.Comment">
+		<Value>Document comments</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.Select.Catalogue">
 		<Value>Catalogue</Value>

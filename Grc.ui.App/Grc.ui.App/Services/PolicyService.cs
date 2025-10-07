@@ -16,79 +16,135 @@ namespace Grc.ui.App.Services {
                     {
                         Id=1,
                         DocumentName = "Occupational Health and Safety Policy",
+                        DocumentTypeId = 5,
                         DocumentType = "Policy",
-                        IsAligned = false,
+                        DocumentStatus = "NOT-APP",
+                        IsAligned = true,
                         IsLocked = false,
-                        ReviewStatus = "DUE",
+                        ReviewStatus = "UNKNOWN",
+                        OwnerId = 1,
+                        ReviewPeriod = 365,
+                        Department = "Digitization and Innovation",
+                        Owner = "Chief IT Officer",
+                        ApprovalDate = DateTime.Now.AddMonths(-9).ToString("dd-MM-yyyy"),
                         LastRevisionDate = DateTime.Now.AddMonths(-8).ToString("dd-MM-yyyy"),
                         NextRevisionDate = DateTime.Now.AddMonths(-3).ToString("dd-MM-yyyy"),
+                        Comments = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
                     },
                     new ()
                     {
                         Id=2,
                         DocumentName = "Administration Policy ",
+                        DocumentTypeId = 5,
                         DocumentType = "Policy",
+                        DocumentStatus = "UPTODATE",
                         IsAligned = true,
                         IsLocked = true,
                         ReviewStatus = "UPTODATE",
+                        OwnerId = 1,
+                        ReviewPeriod = 365,
+                        Department = "Board Of Directors",
+                        Owner = "BOD",
+                        ApprovalDate = DateTime.Now.AddMonths(-9).ToString("dd-MM-yyyy"),
                         LastRevisionDate = DateTime.Now.AddMonths(-2).ToString("dd-MM-yyyy"),
                         NextRevisionDate = DateTime.Now.AddMonths(12).ToString("dd-MM-yyyy"),
+                        Comments = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
                     },
                     new()
                     {
                         Id=3,
                         DocumentName = "Agent Banking Policy",
+                        DocumentTypeId = 5,
                         DocumentType = "Policy",
+                        DocumentStatus = "DUE-REV",
                         IsAligned = false,
                         IsLocked = false,
                         ReviewStatus = "DUE",
+                        OwnerId = 1,
+                        ReviewPeriod = 365,
+                        Department = "Operations and Services",
+                        Owner = "Head Operations",
+                        ApprovalDate = DateTime.Now.AddMonths(-9).ToString("dd-MM-yyyy"),
                         LastRevisionDate = DateTime.Now.AddMonths(-11).ToString("dd-MM-yyyy"),
                         NextRevisionDate = DateTime.Now.AddMonths(-12).ToString("dd-MM-yyyy"),
+                        Comments = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
                     },
                     new()
                     {
                         Id=4,
                         DocumentName = "Projects Management Policy",
+                        DocumentTypeId = 5,
                         DocumentType = "Policy",
+                        DocumentStatus = "DUE-REV",
                         IsAligned = false,
                         IsLocked = false,
+                        OwnerId = 1,
+                        ReviewPeriod = 365,
                         ReviewStatus = "OVERDUE",
+                        Department = "Products Department",
+                        Owner = "Head Products",
+                        ApprovalDate = DateTime.Now.AddMonths(-9).ToString("dd-MM-yyyy"),
                         LastRevisionDate = DateTime.Now.AddMonths(-9).ToString("dd-MM-yyyy"),
                         NextRevisionDate = DateTime.Now.AddMonths(-12).ToString("dd-MM-yyyy"),
+                        Comments = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
                     },
                     new()
                     {
                         Id=5,
                         DocumentName = "AML/CFT Policy",
+                        DocumentTypeId = 5,
                         DocumentType = "Policy",
+                        DocumentStatus = "UPTODATE",
                         IsAligned = true,
                         IsLocked = true,
                         ReviewStatus = "UPTODATE",
+                        OwnerId = 1,
+                        ReviewPeriod = 365,
+                        Department = "IT Security",
+                        Owner = "Chief Security Officer",
+                        ApprovalDate = DateTime.Now.AddMonths(-9).ToString("dd-MM-yyyy"),
                         LastRevisionDate = DateTime.Now.AddMonths(-12).ToString("dd-MM-yyyy"),
                         NextRevisionDate = DateTime.Now.AddMonths(12).ToString("dd-MM-yyyy"),
+                        Comments = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
                     },
                     new()
                     {
                         Id=6,
                         DocumentName = "Strategic Planning Procedures",
+                        DocumentTypeId = 6,
                         DocumentType = "Procedure",
+                        DocumentStatus = "DUE-REV",
                         IsAligned = true,
                         IsLocked = false,
                         ReviewStatus = "DUE",
+                        OwnerId = 1,
+                        ReviewPeriod = 365,
+                        Department = "Board OF Directors",
+                        Owner = "BOD",
+                        ApprovalDate = DateTime.Now.AddMonths(-9).ToString("dd-MM-yyyy"),
                         LastRevisionDate = DateTime.Now.AddMonths(-4).ToString("dd-MM-yyyy"),
                         NextRevisionDate = DateTime.Now.AddMonths(-16).ToString("dd-MM-yyyy"),
+                        Comments = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
                     },
                     new()
                     {
                         Id=7,
                         DocumentName = "Capacity Management Procedure",
-                        DocumentType = "Policy",
+                        DocumentTypeId = 2,
+                        DocumentType = "Framework",
+                        DocumentStatus = "DEPT-REV",
                         IsAligned = true,
                         IsLocked = true,
+                        OwnerId = 1,
+                        ReviewPeriod = 365,
                         ReviewStatus = "OVERDUE",
+                        Department = "Operations and Services",
+                        Owner = "Head Operations",
+                        ApprovalDate = DateTime.Now.AddMonths(-9).ToString("dd-MM-yyyy"),
                         LastRevisionDate = DateTime.Now.AddMonths(6).ToString("dd-MM-yyyy"),
-                        NextRevisionDate = DateTime.Now.AddMonths(-13).ToString("dd-MM-yyyy")
-                    }
+                        NextRevisionDate = DateTime.Now.AddMonths(-13).ToString("dd-MM-yyyy"),
+                        Comments = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+                    },
                 }.AsQueryable();
 
         public PolicyService(IApplicationLoggerFactory loggerFactory, 
@@ -106,7 +162,12 @@ namespace Grc.ui.App.Services {
 
         public async Task<GrcResponse<PolicyRegisterResponse>> GetPolicyAsync(GrcIdRequst getRequest)
         {
-            return await Task.FromResult(new GrcResponse<PolicyRegisterResponse>(query.FirstOrDefault()));
+            return await Task.FromResult(new GrcResponse<PolicyRegisterResponse>(query.FirstOrDefault(q => q.Id == getRequest.RecordId)));
+        }
+
+        public async Task<GrcResponse<List<PolicyRegisterResponse>>> GetAllAsync(GrcRequest request)
+        {
+            return await Task.FromResult(new GrcResponse<List<PolicyRegisterResponse>>(query.ToList()));
         }
 
         public async Task<GrcResponse<PagedResponse<PolicyRegisterResponse>>> GetAllPolicies(TableListRequest request)
@@ -117,7 +178,8 @@ namespace Grc.ui.App.Services {
                 var lookUp = request.SearchTerm.ToLower();
                 query = query.Where(a =>
                     (a.DocumentName != null && a.DocumentName.ToLower().Contains(lookUp)) ||
-                    (a.DocumentType != null && a.DocumentType.ToLower().Contains(lookUp))
+                    (a.DocumentStatus != null && a.DocumentStatus.ToLower().Contains(lookUp)) ||
+                    (a.ReviewStatus != null && a.ReviewStatus.ToLower().Contains(lookUp))
                 );
             }
 
@@ -144,12 +206,15 @@ namespace Grc.ui.App.Services {
             var record = new PolicyRegisterResponse
             {
                 DocumentName = request.DocumentName,
-                DocumentType = "",
-                IsAligned = request.IsAligned,
-                IsLocked = true,
+                DocumentTypeId = request.DocumentTypeId,
                 DocumentStatus = request.DocumentStatus,
-                Approver = request.Approver,
+                IsAligned = request.IsAligned,
+                IsLocked = request.IsLocked,
+                ReviewPeriod = request.ReviewPeriod,
+                ReviewStatus = request.ReviewStatus,
+                OwnerId = request.OwnerId,
                 Comments = request.Comments,
+                Approver = "",
                 LastRevisionDate = request.LastRevisionDate.ToString("dd-MM-yyyy"),
                 NextRevisionDate = request.NextRevisionDate?.ToString("dd-MM-yyyy"),
                 Id = query.Max(r => r.Id) + 1
@@ -167,12 +232,15 @@ namespace Grc.ui.App.Services {
             }
 
             record.DocumentName = request.DocumentName;
-            record.DocumentType = "";
-            record.IsAligned = request.IsAligned;
-            record.IsDeleted = false;
+            record.DocumentTypeId = request.DocumentTypeId;
             record.DocumentStatus = request.DocumentStatus;
-            record.Approver = request.Approver;
+            record.IsAligned = request.IsAligned;
+            record.IsLocked = request.IsLocked;
+            record.ReviewPeriod = request.ReviewPeriod;
+            record.ReviewStatus = request.ReviewStatus;
+            record.OwnerId = request.OwnerId;
             record.Comments = request.Comments;
+            record.Approver = "";
             record.LastRevisionDate = request.LastRevisionDate.ToString("dd-MM-yyyy");
             record.NextRevisionDate = request.NextRevisionDate?.ToString("dd-MM-yyyy");
             return await Task.FromResult(new GrcResponse<PolicyRegisterResponse>(record));

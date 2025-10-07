@@ -12,27 +12,14 @@ namespace Grc.ui.App.Services {
     public class DocumentTypeService : GrcBaseService, IDocumentTypeService
     {
         private IQueryable<DocumentTypeResponse> query = new List<DocumentTypeResponse> {
-                new() { Id = 1, TypeName = "First Type", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 2, TypeName = "Second Type", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 3, TypeName = "Third Type", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 4, TypeName = "Fourth Type", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 5, TypeName = "Fifth Type", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 6, TypeName = "Sixth Type", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 7, TypeName = "Seventh Type", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 8, TypeName = "Eighth Type", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 9, TypeName = "Nineth Type", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 10, TypeName = "Tenth Type", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 11, TypeName = "Eleventh Type", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 12, TypeName = "Twelveth Type", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 13, TypeName = "Thirteenth Type", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 14, TypeName = "Fourteenth Type", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 15, TypeName = "Fifteenth Type", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 16, TypeName = "Seventeenth Type", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 17, TypeName = "Mobile Type", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 18, TypeName = "Investment Type", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 19, TypeName = "Business Type", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 20, TypeName = "Trade Type", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 21, TypeName = "Banking Type", CreatedAt = DateTime.Now,IsDeleted = true }
+                new() { Id = 1, TypeName = "Catalogue", CreatedAt = DateTime.Now,IsDeleted = true},
+                new() { Id = 2, TypeName = "Framework", CreatedAt = DateTime.Now,IsDeleted = true},
+                new() { Id = 3, TypeName = "Manual", CreatedAt = DateTime.Now,IsDeleted = true},
+                new() { Id = 4, TypeName = "Plan", CreatedAt = DateTime.Now,IsDeleted = true},
+                new() { Id = 5, TypeName = "Ploicy", CreatedAt = DateTime.Now,IsDeleted = true},
+                new() { Id = 6, TypeName = "Procedure", CreatedAt = DateTime.Now,IsDeleted = true},
+                new() { Id = 7, TypeName = "SLA", CreatedAt = DateTime.Now,IsDeleted = true},
+                new() { Id = 8, TypeName = "Blank", CreatedAt = DateTime.Now,IsDeleted = true}
             }.AsQueryable();
 
         public DocumentTypeService(IApplicationLoggerFactory loggerFactory, 

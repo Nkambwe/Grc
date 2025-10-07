@@ -48,6 +48,31 @@ namespace Grc.ui.App.Services {
             try{
                var endpoint = $"{EndpointProvider.Organization.GetBranches}";
                 return await HttpHandler.PostAsync<GrcRequest, List<BranchResponse>>(endpoint, request);
+
+                //var branches = new List<BranchResponse> {
+                //    new() {
+                //        Id = 1,
+                //        BranchName = "Main Branch",
+                //        CompanyName = "Pearl Bank Uganda",
+                //        SolId = "MAIN",
+                //        IsDeleted = false,
+                //    },
+                //    new() {
+                //        Id = 1,
+                //        BranchName = "Kampala Road",
+                //        CompanyName = "Pearl Bank Uganda",
+                //        SolId = "1002",
+                //        IsDeleted = false,
+                //    },
+                //    new() {
+                //        Id = 1,
+                //        BranchName = "City Branch",
+                //        CompanyName = "Pearl Bank Uganda",
+                //        SolId = "025",
+                //        IsDeleted = false,
+                //    },
+                //};
+                //return await Task.FromResult(new GrcResponse<List<BranchResponse>>());
             } catch (Exception ex) {
                 Logger.LogActivity($"Error retrieving a list of branches: {ex.Message}", "Error");
                 await ProcessErrorAsync(ex.Message,"BRANCH-SERVICE" , ex.StackTrace);

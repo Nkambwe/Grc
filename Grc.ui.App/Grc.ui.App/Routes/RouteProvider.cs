@@ -17,6 +17,13 @@
             );
 
             routeBuilder.MapControllerRoute(
+                name: "admin-users",
+                pattern: "admin/support/users-all",
+                defaults: new { area = "Admin", controller = "Support", action = "GetUsers" }
+            );
+
+
+            routeBuilder.MapControllerRoute(
                 name: "admin-roles",
                 pattern: "admin/support/system-roles",
                 defaults: new { area = "Admin", controller = "Support", action = "Roles" }
@@ -343,6 +350,11 @@
                 defaults: new { controller = "CompliancePolicy", action = "AllPolicies" }
             );
             routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-policies-list",
+               pattern: "/grc/compliance/register/policies-list",
+               defaults: new { controller = "CompliancePolicy", action = "GetAllPolicies" }
+           );
+            routeBuilder.MapControllerRoute(
                 name: "app-compliance-register-policies-create",
                 pattern: "/grc/compliance/register/policies-create",
                 defaults: new { controller = "CompliancePolicy", action = "CreatePolicy" }
@@ -409,6 +421,46 @@
                 name: "app-compliance-settings-support-responsibilities",
                 pattern: "/grc/compliance/support/responsibilities",
                 defaults: new { controller = "ComplianceSettings", action = "ComplianceResponsibilities" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-responsibilities-types",
+                pattern: "/grc/compliance/settings/responsibilities-list",
+                defaults: new { controller = "ComplianceSettings", action = "GetResponsibilities" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-settings-responsibilities-retrieve",
+               pattern: "/grc/compliance/settings/responsibilities-retrieve/{id:long}",
+               defaults: new { controller = "ComplianceSettings", action = "GetResponsibility" }
+           );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-responsibilities-all",
+                pattern: "/grc/compliance/settings/responsibilities-all",
+                defaults: new { controller = "ComplianceSettings", action = "AllResponsibilities" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-responsibilities-create",
+                pattern: "/grc/compliance/settings/responsibilities-create",
+                defaults: new { controller = "ComplianceSettings", action = "CreateResponsibility" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-responsibilities-update",
+                pattern: "/grc/compliance/settings/responsibilities-update",
+                defaults: new { controller = "ComplianceSettings", action = "UpdateResponsibility" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-responsibilities-delete",
+                pattern: "/grc/compliance/settings/responsibilities-delete/{id:long}",
+                defaults: new { controller = "ComplianceSettings", action = "DeleteResponsibility" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-responsibilities-export",
+                pattern: "/grc/compliance/settings/responsibilities-export",
+                defaults: new { controller = "ComplianceSettings", action = "ExcelExportResponsibilities" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-responsibilities-full",
+                pattern: "/grc/compliance/settings/responsibilities-export-full",
+                defaults: new { controller = "ComplianceSettings", action = "ExcelExportAllResponsibilities" }
             );
 
             /*----------------------------------------------regulatory categories routes*/

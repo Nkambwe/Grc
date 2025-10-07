@@ -37,6 +37,9 @@ body {
     background-color: var(--background-color);
 }
 
+.table > :not(:last-child) > :last-child > * {
+    color: var(--grey-dark)!important;
+}
 .header-bar {
     position: fixed;
     top: 0;

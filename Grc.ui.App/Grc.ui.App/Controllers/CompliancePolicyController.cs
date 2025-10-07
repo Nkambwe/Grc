@@ -13,8 +13,10 @@ using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using OpenXmlPowerTools;
+using System.Text.Json;
 
 namespace Grc.ui.App.Controllers {
     public class CompliancePolicyController : GrcBaseController {
@@ -116,13 +118,17 @@ namespace Grc.ui.App.Controllers {
                 var policyRecord = new
                 {
                     id = response.Id,
-                    policyName = response.DocumentName,
-                    policyCode = response.DocumentStatus,
-                    //owner = response.DocumentOwner,
-                    lastRevisionDate = response.LastRevisionDate,
-                    nextRevisionDate = response.NextRevisionDate,
-                    status = response.IsDeleted ? "Inactive" : "Active",
-                    //addedOn = response.CreatedAt.ToString("dd-MM-yyyy")
+                    documentName = response.DocumentName,
+                    documentType = response.DocumentTypeId,
+                    documentStatus = response.DocumentStatus,
+                    aligned = response.IsAligned,
+                    locked = response.IsLocked,
+                    documentOwner = response.OwnerId,
+                    reviewPeriod = response.ReviewPeriod,
+                    reviewStatus = response.ReviewStatus,
+                    lastReview = response.LastRevisionDate,
+                    nextReview = response.NextRevisionDate,
+                    comments = response.Comments
                 };
 
                 return Ok(new { success = true, data = policyRecord });
@@ -137,48 +143,60 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Add Policy", "User added policy", ActivityTypeDefaults.COMPLIANCE_CREATE_POLICY, "Compliance")]
-        public async Task<IActionResult> CreatePolicy([FromBody] PolicyRecord request)
-        {
+        public async Task<IActionResult> CreatePolicy([FromBody] PolicyViewModel request) {
             try
             {
+                if (!ModelState.IsValid) {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+
+                    string combinedErrors = string.Join("; ", errors);
+                    return Ok(new {
+                        success = false,
+                        message = $"Please correct these errors: {combinedErrors}",
+                        data = (object)null
+                    });
+                }
+
                 var ipAddress = WebHelper.GetCurrentIpAddress();
-                //var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                //if (userResponse.HasError || userResponse.Data == null)
-                //    return Ok(new { success = false, message = "Unable to resolve current user" });
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
 
-                //var currentUser = userResponse.Data;
-                ////request.UserId = currentUser.UserId;
-                ////request.IPAddress = ipAddress;
-                ////request.Action = Activity.COMPLIANCE_CREATE_POLICY.GetDescription();
+                var currentUser = userResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.COMPLIANCE_CREATE_POLICY.GetDescription();
 
-                //if (request == null) {
-                //    return Ok(new { success = false, message = "Invalid Policy/Procedure data" });
-                //}
+                if (request == null)
+                {
+                    return Ok(new { success = false, message = "Invalid Policy/Procedure data" });
+                }
 
 
-                //var result = await _policyService.CreatePolicyAsync(request);
-                //if (result.HasError || result.Data == null)
-                //    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create policy" });
+                var result = await _policyService.CreatePolicyAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create policy" });
 
-                //var created = result.Data;
-                //return Ok(new
-                //{
-                //    success = true,
-                //    message = "Policy created successfully",
-                //    data = new
-                //    {
-                //        id = created.Id,
-                //        documentName = created.DocumentName,
-                //        documentType = created.DocumentType,
-                //        aligned = created.IsAligned,
-                //        locked = created.IsLocked,
-                //        reviewStatus = created.ReviewStatus,
-                //        lastReview = created.LastRevisionDate,
-                //        nextReview = created.NextRevisionDate,
-                //    }
-                //});
-
-                return Ok(new { success = true, message = "Policy created successfully", data = new { } });
+                var created = result.Data;
+                return Ok(new
+                {
+                    success = true,
+                    message = "Policy created successfully",
+                    data = new
+                    {
+                        id = created.Id,
+                        documentName = created.DocumentName,
+                        documentType = created.DocumentTypeId,
+                        aligned = created.IsAligned,
+                        locked = created.IsLocked,
+                        reviewStatus = created.ReviewStatus,
+                        lastReview = created.LastRevisionDate,
+                        nextReview = created.NextRevisionDate,
+                    }
+                });
 
             }
             catch (Exception ex)
@@ -218,7 +236,7 @@ namespace Grc.ui.App.Controllers {
                     {
                         id = updated.Id,
                         documentName = updated.DocumentName,
-                        documentType = updated.DocumentType,
+                        documentType = updated.DocumentTypeId,
                         aligned = updated.IsAligned,
                         locked = updated.IsLocked,
                         reviewStatus = updated.ReviewStatus,
@@ -282,19 +300,27 @@ namespace Grc.ui.App.Controllers {
             ws.Cell(1, 1).Value = "POLICY/PROCEDURE NAME";
             ws.Cell(1, 2).Value = "DOCUMENT TYPE";
             ws.Cell(1, 3).Value = "REVIEW STATUS";
-            ws.Cell(1, 4).Value = "LAST REVISION";
-            ws.Cell(1, 5).Value = "NEXT REVISION";
-            ws.Cell(1, 6).Value = "ALIGNED";
+            ws.Cell(1, 4).Value = "APPROVAL DATE";
+            ws.Cell(1, 5).Value = "LAST REVISION";
+            ws.Cell(1, 6).Value = "NEXT REVISION";
+            ws.Cell(1, 7).Value = "DEPARTMENT/FUNCTION";
+            ws.Cell(1, 8).Value = "POLICY OWNER";
+            ws.Cell(1, 9).Value = "POLICY ALIGNED";
+            ws.Cell(1, 10).Value = "COMMENTS";
 
             int row = 2;
-            foreach (var p in data)
-            {
+            foreach (var p in data) {
                 ws.Cell(row, 1).Value = p.DocumentName;
                 ws.Cell(row, 2).Value = p.DocumentType;
                 ws.Cell(row, 3).Value = p.ReviewStatus == "OVERDUE" ? "PASSED DUE" : (p.ReviewStatus == "DUE" ? "DUE" : "UPTODATE");
-                ws.Cell(row, 4).Value = p.LastRevisionDate;
-                ws.Cell(row, 5).Value = p.NextRevisionDate;
-                ws.Cell(row, 6).Value = p.IsAligned ? "YES" : "NO";
+                ws.Cell(row, 4).Value = p.ApprovalDate;
+                ws.Cell(row, 5).Value = p.LastRevisionDate;
+                ws.Cell(row, 6).Value = p.NextRevisionDate;
+                ws.Cell(row, 7).Value = p.Department;
+                ws.Cell(row, 8).Value = p.Owner;
+                ws.Cell(row, 9).Value = p.IsAligned ? "YES" : "NO";
+                ws.Cell(row, 10).Value = p.Comments;
+
                 row++;
             }
 
@@ -309,8 +335,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Export Policy", "User exported policies to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_POLICY, "Compliance")]
-        public async Task<IActionResult> ExcelExportAllPolicies()
-        {
+        public async Task<IActionResult> ExcelExportAllPolicies() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
             if (userResponse.HasError || userResponse.Data == null)
@@ -335,19 +360,27 @@ namespace Grc.ui.App.Controllers {
             ws.Cell(1, 1).Value = "POLICY/PROCEDURE NAME";
             ws.Cell(1, 2).Value = "DOCUMENT TYPE";
             ws.Cell(1, 3).Value = "REVIEW STATUS";
-            ws.Cell(1, 4).Value = "LAST REVISION";
-            ws.Cell(1, 5).Value = "NEXT REVISION";
-            ws.Cell(1, 6).Value = "ALIGNED";
+            ws.Cell(1, 4).Value = "APPROVAL DATE";
+            ws.Cell(1, 5).Value = "LAST REVISION";
+            ws.Cell(1, 6).Value = "NEXT REVISION";
+            ws.Cell(1, 7).Value = "DEPARTMENT/FUNCTION";
+            ws.Cell(1, 8).Value = "POLICY OWNER";
+            ws.Cell(1, 9).Value = "POLICY ALIGNED";
+            ws.Cell(1, 10).Value = "COMMENTS";
 
             int row = 2;
-            foreach (var p in result.Data.Entities)
-            {
+            foreach (var p in result.Data.Entities) {
                 ws.Cell(row, 1).Value = p.DocumentName;
                 ws.Cell(row, 2).Value = p.DocumentType;
                 ws.Cell(row, 3).Value = p.ReviewStatus == "OVERDUE" ? "PASSED DUE" : (p.ReviewStatus == "DUE" ? "DUE" : "UPTODATE");
-                ws.Cell(row, 4).Value = p.LastRevisionDate;
-                ws.Cell(row, 5).Value = p.NextRevisionDate;
-                ws.Cell(row, 6).Value = p.IsAligned ? "YES" : "NO";
+                ws.Cell(row, 4).Value = p.ApprovalDate;
+                ws.Cell(row, 5).Value = p.LastRevisionDate;
+                ws.Cell(row, 6).Value = p.NextRevisionDate;
+                ws.Cell(row, 7).Value = p.Department;
+                ws.Cell(row, 8).Value = p.Owner;
+                ws.Cell(row, 9).Value = p.IsAligned ? "YES" : "NO";
+                ws.Cell(row, 10).Value = p.Comments;
+
                 row++;
             }
 
@@ -358,11 +391,70 @@ namespace Grc.ui.App.Controllers {
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 "Policies.xlsx");
         }
-        
-        public async Task<IActionResult> AllPolicies([FromBody] TableListRequest request)
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllPolicies()
         {
             try
             {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError)
+                {
+                    Logger.LogActivity($"POLICY LIST ERROR: Failed to Current user record - {JsonSerializer.Serialize(grcResponse)}");
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+                }
+
+                var currentUser = grcResponse.Data;
+                GrcRequest request = new()
+                {
+                    UserId = currentUser.UserId,
+                    Action = Activity.COMPLIANCE_RETRIEVE_POLICY.GetDescription(),
+                    IPAddress = ipAddress,
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>()
+                };
+
+                //..get list of all document types
+                var doctypeData = await _policyService.GetAllAsync(request);
+
+                List<PolicyRegisterResponse> policies;
+                if (doctypeData.HasError)
+                {
+                    policies = new();
+                    Logger.LogActivity($"POLICY DATA ERROR: Failed to retrieve type items - {JsonSerializer.Serialize(doctypeData)}");
+                }
+                else
+                {
+                    policies = doctypeData.Data;
+                    Logger.LogActivity($"POLICY DATA - {JsonSerializer.Serialize(policies)}");
+                }
+
+                //..get ajax data
+                List<object> select2Data = new();
+                if (policies.Any())
+                {
+                    select2Data = policies.Select(type => new {
+                        id = type.Id,
+                        documentName = type.DocumentName
+                    }).Cast<object>().ToList();
+                }
+
+                return Json(new { results = select2Data });
+            }
+            catch (Exception ex)
+            {
+                await ProcessErrorAsync(ex.Message, "POLICY-DATA", ex.StackTrace);
+                return Ok(new { last_page = 0, data = new List<object>() });
+            }
+        }
+
+        public async Task<IActionResult> AllPolicies([FromBody] TableListRequest request) {
+            try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
                 var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (userResponse.HasError) Logger.LogActivity("POLICY DATA ERROR: Failed to get user");
@@ -378,11 +470,14 @@ namespace Grc.ui.App.Controllers {
                 var pagedEntities = (list.Entities ?? new List<PolicyRegisterResponse>())
                     .Skip((request.PageIndex - 1) * request.PageSize)
                     .Take(request.PageSize)
-                    .Select(p => new
-                    {
+                    .Select(p => new {
                         id = p.Id,
                         documentName = p.DocumentName,
                         documentType = p.DocumentType,
+                        approvedBy = p.Approver,
+                        policyOwner = p.Owner,
+                        department = p.Department,
+                        documentStatus = p.DocumentStatus,
                         aligned = p.IsAligned,
                         locked = p.IsLocked,
                         reviewStatus = p.ReviewStatus,

@@ -19,6 +19,7 @@ namespace Grc.ui.App.Enums {
         RETRIVEUSERBYNAME = 6,
         [Description("Retrieve user record by email")]
         RETRIVEUSERBYEMAIL = 7,
+        
         [Description("Retrieve record count for users")]
         COUNTUSERS = 8,
         [Description("Retrieve user statistics")]
@@ -87,10 +88,25 @@ namespace Grc.ui.App.Enums {
         COMPLIANCE_EDITED_DOCTYPE = 40,
         [Description("Delete document type")]
         COMPLIANCE_DELETED_DOCTYPE = 41,
-        [Description("Export document policy")]
+        [Description("Export document type")]
         COMPLIANCE_EXPORT_DOCTYPES = 42,
         [Description("Get document type details")]
         COMPLIANCE_GET_DOCTYPE = 43,
+        [Description("Get a list of document owners available")]
+        COMPLIANCE_RETRIEVE_DOCOWNERS = 44,
+        [Description("Add document owner")]
+        COMPLIANCE_CREATE_DOCOWNER = 45,
+        [Description("Update document owner")]
+        COMPLIANCE_EDITED_DOCOWNER = 46,
+        [Description("Delete document owner")]
+        COMPLIANCE_DELETED_DOCOWNER = 47,
+        [Description("Export document owner")]
+        COMPLIANCE_EXPORT_DOCOWNERS = 48,
+        [Description("Get document owner details")]
+        COMPLIANCE_GET_DOCOWNER = 49,
+
+        [Description("Retrieve all users")]
+        RETRIVEUSERS = 50,
 
     }
 }

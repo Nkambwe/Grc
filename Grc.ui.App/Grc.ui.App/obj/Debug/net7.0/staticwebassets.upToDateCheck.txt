@@ -46,6 +46,7 @@ wwwroot\js\app-regulations-register.js
 wwwroot\js\app-returns-register.js
 wwwroot\js\app-script.js
 wwwroot\js\app-table-script.js
+wwwroot\js\branch-script.js
 wwwroot\js\bug-signalr-script.js
 wwwroot\js\Component-script.js
 wwwroot\js\department-script.js
@@ -197,3 +198,4 @@ wwwroot\lib\tooltips\popper.min.js
 wwwroot\lib\tooltips\tippy.css
 wwwroot\lib\tooltips\tippy.umd.min.js
 wwwroot\lib\xlsx\xlsx.full.min.js
+wwwroot\js\users-script.js

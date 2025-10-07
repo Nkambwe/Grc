@@ -1264,6 +1264,11 @@ div.input-group.date {
     min-height: 250px;
 }
 
+.input-error {
+    border: 1px solid #e74c3c !important;
+    background-color: #fdecea !important;
+}
+
 @media (max-width: 480px) {
     .chart-container {
         height: 300px;

@@ -70,6 +70,11 @@
         public const string COMPLIANCE_EDITED_POLICY = "Regulatory.Policy.Edited";
         public const string COMPLIANCE_DELETED_POLICY = "Regulatory.Policy.Deleted";
         public const string COMPLIANCE_EXPORT_POLICY = "Regulatory.Policy.Export";
+        public const string COMPLIANCE_RETRIEVE_DOCOWNER = "Regulatory.Document.Owners.Retrieve";
+        public const string COMPLIANCE_CREATE_DOCOWNER = "Regulatory.Document.Owners.Create";
+        public const string COMPLIANCE_EDITED_DOCOWNER = "Regulatory.Document.Owners.Edited";
+        public const string COMPLIANCE_DELETED_DOCOWNER = "Regulatory.Document.Owners.Deleted";
+        public const string COMPLIANCE_EXPORT_DOCOWNER = "Regulatory.Document.Owners.Export";
 
         #endregion
 

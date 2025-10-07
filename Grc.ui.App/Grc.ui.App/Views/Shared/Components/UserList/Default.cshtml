@@ -1,6 +1,190 @@
 ﻿
-<div class="grc-user-component">
-    <span>User List</span>
-  
+<div class="component-split-container">
+
+    <div class="component-slideout">
+
+        <div class="component-create-container">
+
+            <div class="component-slide-header">
+                <div class="component-slide-header-label">
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Header.New.Department"))</span>
+                </div>
+                <button type="button" class="component-new-close" title='@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Close"))'>
+                    <span><i class="mdi mdi-close"></i></span>
+                </button>
+            </div>
+
+            <div class="component-slide-content">
+
+                <form id="form-department-new" method="post">
+                    <div class="field-group">
+                        <label for="tfNewDepartmentCode" class="form-label text-right">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Department.Code"))
+                        </label>
+                        <input type="text" class="form-control" id="tfNewDepartmentCode" name="tfNewDepartmentCode" placeholder="ENTER CODE">
+                    </div>
+
+                    <div class="field-group">
+                        <label for="tfNewDepartmentName" class="form-label text-right">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Department.Name"))
+                        </label>
+                        <input type="text" class="form-control" id="tfNewDepartmentName" name="tfNewDepartmentName" placeholder="ENTER NAME">
+                    </div>
+
+                    <div class="field-group">
+                        <label for="tfNewDepartmentTag" class="form-label text-right">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Department.Tag"))
+                        </label>
+                        <input type="text" class="form-control" id="tfNewDepartmentTag" name="tfNewDepartmentTag" placeholder="ENTER TAG">
+                    </div>
+
+                    <div class="field-group-box">
+                        <div class="field-group">
+                            <label for="dpNewBranches" class="form-label text-right select2-field select2-column">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Department.Branch"))
+                                <select class="js-branches form-control"
+                                        id="dpNewBranches"
+                                        name="dpNewBranches"
+                                        aria-labelledby="dpNewBranches-label"
+                                        aria-describedby="dpNewBranches-description">
+                                    <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Branch.Select"))</option>
+                                </select>
+                                <span id="dpNewBranches-description" class="sr-only">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                                </span>
+                            </label>
+
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <button id="btnDepartmentNew" type="submit" class="btn btn-primary" style="width:200px">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+
+        <div class="component-edit-container">
+
+            <div class="component-slide-header">
+                <div class="component-slide-header-label">
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Header.Edit.Department"))</span>
+                </div>
+                <button type="button" class="component-edit-close" title='@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Close"))'>
+                    <span><i class="mdi mdi-close"></i></span>
+                </button>
+            </div>
+
+            <div class="component-slide-content">
+
+                <form id="form-department-edit" method="post">
+                    <input type="hidden" id="departmentEditId" name="departmentEditId">
+
+                    <div class="field-group">
+                        <label for="tfEditDepartmentCode" class="form-label text-right">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Department.Code"))
+                        </label>
+                        <input type="text" class="form-control" id="tfEditDepartmentCode" name="tfEditDepartmentCode" placeholder="ENTER CODE">
+                    </div>
+
+                    <div class="field-group">
+                        <label for="tfEditDepartmentName" class="form-label text-right">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Department.Name"))
+                        </label>
+                        <input type="text" class="form-control" id="tfEditDepartmentName" name="tfEditDepartmentName" placeholder="ENTER NAME">
+                    </div>
+
+                    <div class="field-group">
+                        <label for="tfEditDepartmentTag" class="form-label text-right">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Department.Tag"))
+                        </label>
+                        <input type="text" class="form-control" id="tfEditDepartmentTag" name="tfEditDepartmentTag" placeholder="ENTER TAG">
+                    </div>
+
+                    <div class="field-group-box">
+                        <div class="field-group">
+                            <label for="dpEditDepartmentBranches" class="form-label text-right select2-field select2-column">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Department.Branch"))
+                                <select class="js-branches form-control"
+                                        id="dpEditDepartmentBranches"
+                                        name="dpEditDepartmentBranches"
+                                        aria-labelledby="dpNewBranches-label"
+                                        aria-describedby="dpNewBranches-description">
+                                    <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Branch.Select"))</option>
+                                </select>
+                                <span id="dpNewBranches-description" class="sr-only">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                                </span>
+                            </label>
+
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="isDeleted" name="isDeleted">
+                            <label class="form-check-label" for="exampleCheck1">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Department.Deactivate"))
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <button id="btnDepartmentEdit" type="submit" class="btn btn-primary" style="width:200px">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Button.Update"))
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="component-split-table-container">
+
+        <div class="table-container">
+            <table id="usersTable" class="table is-fullwidth is-striped">
+                <thead>
+                    <tr>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Users.DisplayName"))</th>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Users.Username"))</th>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Users.Email"))</th>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Users.RoleName"))</th>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Users.RoleGroup"))</th>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Users.PFNumber"))</th>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Users.Verified"))</th>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Users.Active"))</th>
+                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Users.Created"))</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="component-tabletools-container">
+            <div class="component-slide-header">
+                <div class="component-slide-header-label">
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Header.Filter"))</span>
+                </div>
+                <button type="button" class="component-filter-close" title='@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Close"))'>
+                    <span><i class="mdi mdi-close"></i></span>
+                </button>
+            </div>
+
+            <div class="component-slide-content">
+                <span>Filters goes here</span>
+            </div>
+        </div>
+
+    </div>
+
 </div>
+
+
+
 
