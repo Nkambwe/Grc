@@ -430,6 +430,34 @@
 	<LocaleResource Name="Component.Table.Task.Header">
 		<Value>Task Assignment</Value>
 	</LocaleResource>
+
+	<LocaleResource Name="Component.Table.Label.Users.DisplayName">
+		<Value>FULL NAME</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Users.Username">
+		<Value>ACCOUNT NAME</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Users.Email">
+		<Value>EMAIL ADDRESS</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Users.RoleName">
+		<Value>USER ROLE</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Users.RoleGroup">
+		<Value>ROLE GROUP</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Users.PFNumber">
+		<Value>PF NUMBER</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Users.Verified">
+		<Value>VERIFIED</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Users.Active">
+		<Value>ACCOUNT STATUS</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Users.Created">
+		<Value>CREATED ON</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Label.Code">
 		<Value>Code</Value>
 	</LocaleResource>
@@ -490,6 +518,9 @@
 	<LocaleResource Name="Component.Table.Search.Policy-register">
 		<Value>Search register... </Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.Acts">
+		<Value>Search laws.. </Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Category.Header">
 		<Value>Regulatory Category</Value>
 	</LocaleResource>
@@ -531,6 +562,18 @@
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.Revision.NextDate">
 		<Value>Next Revision Date</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Task.AssignedDate">
+		<Value>Assigned Date</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Task.DueDate">
+		<Value>Due Date</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Task.Interval">
+		<Value>Send reminders every(days)</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Task.Start">
+		<Value>Start Reminders on</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.Comments">
 		<Value>Policy Comments</Value>

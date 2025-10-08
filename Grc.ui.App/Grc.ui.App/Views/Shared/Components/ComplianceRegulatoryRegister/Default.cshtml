@@ -1,87 +1,130 @@
-﻿@* @model DormantProcessesModel *@
-<div class="grc-tabulator-container">
+﻿<div class="grc-tabulator-container">
+    <div class="grc-tabulator-search">
+        <div class="field-search-group">
+            <label class="form-searchbox-label text-right">
+                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.Acts"))
+            </label>
+            <input id="taskSearchbox" type="text" class="form-control searchbox-field">
+        </div>
+        <div class="field-search-buttons">
+            <button id="btnPolicyTaskExportFiltered" class="btn btn-primary">
+                <i class="mdi mdi-file-excel-outline"></i> @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.ExportFiltered"))
+            </button>
+        </div>
+    </div>
     <div id="registers-table"></div>
 
 </div>
 
 <!-- Overlay -->
-<div class="overlay" onclick="closeRegisterPanel()">
+<div class="overlay" onclick="closeActPanel()">
 
     <!-- Slide Panel -->
     <div id="slidePanel" class="slide-panel" onclick="event.stopPropagation()">
         <div class="panel-header">
             <h3 id="panelTitle">Record Details</h3>
-            <button class="panel-close" onclick="closeRegisterPanel()">&times;</button>
+            <button class="panel-close" onclick="closeActPanel()">&times;</button>
         </div>
         <div class="panel-body">
-            <form id="recordForm" class="grc-form row g-3">
+            <form id="actForm" class="grc-form row g-3">
                 <input type="hidden" id="recordId">
                 <input type="hidden" id="parentId">
                 <input type="hidden" id="isEdit">
 
-                <div class="field-group">
-                    <label class="form-label text-right">Record Code</label>
-                    <input class="form-control" type="text" id="recordCode" required>
+                <!-- Task -->
+                <div class="col-sm-6">
+
+                    <!-- regulatory Name -->
+                    <div class="row mb-3">
+                        <label for="regulatoryName" class="col-sm-4 col-form-label text-sm-end">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Task.Document"))
+                        </label>
+                        <div class="col-sm-8">
+                            <input type="text" id="regulatoryName" name="regulatoryName" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="actComments" class="col-sm-4 col-form-label text-sm-end">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Task.Description"))
+                        </label>
+                        <div class="col-sm-8">
+                            <textarea id="actComments" name="actComments" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Last review Date -->
+                    <div class="row mb-3">
+                        <label for="lastReviewDate" class="col-sm-4 col-form-label text-sm-end">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Task.AssignedDate"))
+                        </label>
+                        <div class="col-sm-8">
+                            <input type="text" id="lastReviewDate" name="lastReviewDate" class="form-control datepicker" placeholder="MM/DD/YYYY" />
+                        </div>
+                    </div>
+
                 </div>
 
-                <div class="field-group">
-                    <label class="form-label text-right">Title</label>
-                    <input type="text" id="recordTitle" class="form-control" required>
+                <!-- Assigne -->
+                <div class="col-sm-6">
+
+                    <div class="row mb-3">
+                        <label for="dpAuthority" class="col-sm-4 col-form-label text-sm-end">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Task.Owner"))
+                        </label>
+                        <div class="col-sm-8">
+                            <select class="js-act-authority form-control" id="dpAuthority" name="dpAuthority">
+                                <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Owner"))</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="dpResponsibility" class="col-sm-4 col-form-label text-sm-end">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Task.Owner"))
+                        </label>
+                        <div class="col-sm-8">
+                            <select class="js-act-respons form-control" id="dpResponsibility" name="dpResponsibility">
+                                <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Owner"))</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="dpFrequency" class="col-sm-4 col-form-label text-sm-end">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Task.Owner"))
+                        </label>
+                        <div class="col-sm-8">
+                            <select class="js-act-frequency form-control" id="dpFrequency" name="dpFrequency">
+                                <option value="UNKNOWN">Select frequency</option>
+                                <option value="Monthly">Monthly</option>
+                                <option value="Annually">Annually</option>
+                                <option value="Semi-Annually">Semi-Annually</option>
+                                <option value="Bi-Annually">Bi-Annually</option>
+                            </select>
+                        </div>
+                    </div>
+
                 </div>
 
-                <div class="field-group">
-                    <label for="recordCategory" class="form-label text-right select2-field select2-column">
-                        Category
-                        <select class="js-record-category form-control" id="dpRecordCategory" name="dpRecordCategory" aria-labelledby="dpRecordCategory-label" aria-describedby="dpRecordCategory-description">
-                            <option value="">Select Category</option>
-                            <option value="General">General</option>
-                            <option value="Technical">Technical</option>
-                            <option value="Administrative">Administrative</option>
-                            <option value="Financial">Financial</option>
-                        </select>
-                        <span id="dpNewBranches-description" class="sr-only">
-                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
-                        </span>
-                    </label>
-
-                </div>
-
-                <div class="field-group">
-                    <label for="recordStatus" class="form-label text-right select2-field select2-column">
-                        Status
-                        <select class="js-record-status form-control" id="dpRecordStatus" name="dpRecordStatus" aria-labelledby="dpRecordStatus-label" aria-describedby="dpRecordStatus-description">
-                            <option value="Active">Active</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Archived">Archived</option>
-                        </select>
-                        <span id="dpRecordStatus-description" class="sr-only">
-                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
-                        </span>
-                    </label>
-                </div>
-
-                <div class="field-group">
-                    <label class="form-label text-right">Owner</label>
-                    <input class="form-control" type="text" id="recordOwner">
-                </div>
-
-                <div class="field-group">
-                    <label class="form-label text-right">Description</label>
-                    <textarea class="form-control" id="recordDescription"></textarea>
-                </div>
-
-                <div class="field-group">
-                    <label class="form-label text-right">Parent Record</label>
-                    <input class="form-control" type="text" id="parentDisplay" readonly style="background:#f8f9fa;">
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveActRecord(event)">Save</button>
+                        </div>
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeActPanel()">Cancel</button>
+                        </div>
+                        <div class="col-sm-8"></div>
+                    </div>
                 </div>
             </form>
-        </div>
-        <div class="panel-footer">
-            <button class="btn btn-secondary" onclick="closeRegisterPanel()">Cancel</button>
-            <button class="btn btn-primary" onclick="saveRegulationRecord()">Save</button>
         </div>
     </div>
 </div>
 
-
+@{
+    Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-regulations-register.js");
+}

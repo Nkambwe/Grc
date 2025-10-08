@@ -124,59 +124,6 @@
                                         </a>
                                     </li>
 
-                                    <li class="sidebar-item">
-                                        <a asp-controller="Register" asp-action="RegulationMaps">
-                                            <span class="menu-icon">
-                                                <i class="material-icons">align_horizontal_left</i>
-                                            </span>
-                                            <span class="sidebar-text">
-                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Regulation.Maps"))
-                                            </span>
-                                        </a>
-                                    </li>
-
-                                </ul>
-
-                            </li>
-
-                            <li class="sidebar-item with-submenu">
-
-                                <a href="" class="toggle-submenu" data-id="regulations-menu">
-                                    <span class="menu-icon">
-                                    <i class="mdi mdi-file-document-multiple-outline"></i>
-                                    </span>
-                                    <span>
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Regulations"))
-                                    </span>
-                                    <span class="drop-icon">
-                                        <i class="mdi mdi-chevron-down"></i>
-                                    </span>
-                                </a>
-
-                                <ul id="regulations-menu" class="sidebar-submenu">
-
-                                    <li class="sidebar-item">
-                                        <a asp-controller="Register" asp-action="ManageRegulations">
-                                            <span class="menu-icon">
-                                                <i class="mdi mdi-file-replace-outline"></i>
-                                            </span>
-                                            <span class="sidebar-text">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Regulations"))
-                                            </span>
-                                        </a>
-                                    </li>
-
-                                    <li class="sidebar-item">
-                                        <a asp-controller="Register" asp-action="RegulationCirculars">
-                                            <span class="menu-icon">
-                                                <i class="mdi mdi-file-rotate-right-outline"></i>
-                                            </span>
-                                            <span class="sidebar-text">
-                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Regulation.Circulars"))
-                                            </span>
-                                        </a>
-                                    </li>
-
                                 </ul>
 
                             </li>
@@ -222,6 +169,48 @@
                                 </ul>
 
                             </li>
+
+                            <li class="sidebar-item with-submenu">
+
+                            <a href="" class="toggle-submenu" data-id="regulations-menu">
+                                <span class="menu-icon">
+                                    <i class="mdi mdi-file-document-multiple-outline"></i>
+                                </span>
+                                <span>
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Regulations"))
+                                </span>
+                                <span class="drop-icon">
+                                    <i class="mdi mdi-chevron-down"></i>
+                                </span>
+                            </a>
+
+                            <ul id="regulations-menu" class="sidebar-submenu">
+
+                                <li class="sidebar-item">
+                                    <a asp-controller="Register" asp-action="ManageRegulations">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-file-replace-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Regulations"))
+                                        </span>
+                                    </a>
+                                </li>
+
+                                <li class="sidebar-item">
+                                    <a asp-controller="Register" asp-action="RegulationCirculars">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-file-rotate-right-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Regulation.Circulars"))
+                                        </span>
+                                    </a>
+                                </li>
+
+                            </ul>
+
+                        </li>
 
                             <li class="sidebar-item with-submenu">
 

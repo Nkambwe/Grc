@@ -4,12 +4,10 @@
     var component = new PageComponentViewModel
     {
         ComponentId = $"0",
-        ComponentKey = "ObligationRegister",
+        ComponentKey = "RegulatoryMaps",
         LeftActions = new List<ComponentAction> {
             new ComponentAction {ActionKey = ActionKey.ComplianceHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home")},
-            new ComponentAction { ActionKey = ActionKey.Search.GetDescription(), Icon = "mdi mdi-magnify", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Search") },
-            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
-            new ComponentAction { ActionKey = ActionKey.New.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") },
+            new ComponentAction { ActionKey = ActionKey.ObligationRegister.GetDescription(), Icon = "mdi mdi-chart-multiple", Tooltip = ILocalize.GetLocalizedLabel("App.Menu.Registers.List") }
         }
     };
 }

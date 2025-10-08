@@ -96,5 +96,12 @@ namespace Grc.ui.App.Enums {
         PolicyTaskMail,
         [Description("policy-task-export")]
         PolicyTaskExport,
+
+        [Description("act-new")]
+        RegulatoryActNew,
+        [Description("oblig-map")]
+        ObligationMap,
+        [Description("oblig-register")]
+        ObligationRegister,
     }
 }

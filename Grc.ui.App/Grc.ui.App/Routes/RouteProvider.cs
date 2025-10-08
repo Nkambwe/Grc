@@ -193,11 +193,67 @@
                pattern: "/grc/register/obligations",
                defaults: new { controller = "Register", action = "RegulationObligations" }
             );
+
+            /*----------------------------------------------Acts and obligation routes*/
             routeBuilder.MapControllerRoute(
                name: "app-compliance-register-list",
                pattern: "/grc/register/register-list",
                defaults: new { controller = "Register", action = "RegulationList" }
             );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-acts-list",
+                pattern: "/grc/compliance/register/acts-list",
+                defaults: new { controller = "Register", action = "GetAllRegulatoryActs" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-acts-all",
+                pattern: "/grc/compliance/register/acts-all",
+                defaults: new { controller = "Register", action = "GetRegulatoryActs" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-acts-retrieve",
+               pattern: "/grc/compliance/register/acts-retrieve/{id:long}",
+               defaults: new { controller = "Register", action = "GetRegulatoryAct" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-acts-create",
+                pattern: "/grc/compliance/register/acts-create",
+                defaults: new { controller = "Register", action = "CreateRegulatoryAct" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-acts-update",
+                pattern: "/grc/compliance/register/acts-update",
+                defaults: new { controller = "Register", action = "UpdateRegulatoryAct" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-acts-delete",
+                pattern: "/grc/compliance/register/acts-delete/{id:long}",
+                defaults: new { controller = "Register", action = "DeleteRegulatory" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-acts-export",
+                pattern: "/grc/compliance/register/acts-export",
+                defaults: new { controller = "Register", action = "ExcelExportRegulatory" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-acts-full",
+                pattern: "/grc/compliance/register/acts-export-full",
+                defaults: new { controller = "Register", action = "ExcelExportAllRegulatory" }
+            );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             /*----------------------------------------------regulatory type routes*/
             routeBuilder.MapControllerRoute(
@@ -385,6 +441,46 @@
               name: "app-compliance-policies-registers-tasks",
               pattern: "/grc/register/policies-tasks",
               defaults: new { controller = "CompliancePolicy", action = "PoliciesTasks" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-policies-registers-tasks-retrieve",
+                pattern: "/grc/compliance/register/tasks-retrieve/{id:long}",
+                defaults: new { controller = "CompliancePolicy", action = "GetTask" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-policies-registers-tasks-all",
+                pattern: "/grc/compliance/register/tasks-all",
+                defaults: new { controller = "CompliancePolicy", action = "AllTasks" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-policies-registers-tasks-list",
+               pattern: "/grc/compliance/register/tasks-list",
+               defaults: new { controller = "CompliancePolicy", action = "GetAllTasks" }
+           );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-policies-registers-tasks-create",
+                pattern: "/grc/compliance/register/tasks-create",
+                defaults: new { controller = "CompliancePolicy", action = "CreateTask" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-policies-registers-tasks-update",
+                pattern: "/grc/compliance/register/tasks-update",
+                defaults: new { controller = "CompliancePolicy", action = "UpdateTask" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-policies-registers-tasks-delete",
+                pattern: "/grc/compliance/register/tasks-delete/{id:long}",
+                defaults: new { controller = "CompliancePolicy", action = "DeleteTask" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-policies-registers-tasks-export",
+                pattern: "/grc/compliance/register/tasks-export",
+                defaults: new { controller = "CompliancePolicy", action = "ExcelExportTasks" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-policies-registers-tasks-export-full",
+                pattern: "/grc/compliance/register/tasks-export-full",
+                defaults: new { controller = "CompliancePolicy", action = "ExcelExportAlTasks" }
             );
 
             /*--------------------------------------------- compliance Policies Documents routes*/

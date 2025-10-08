@@ -1,87 +1,40 @@
-﻿@* @model DormantProcessesModel *@
-<div class="grc-tabulator-container">
-    <div id="obligations-table"></div>
-   
-</div>
+﻿<div class="grc-tabulator-container">
 
-<!-- Overlay -->
-<div class="overlay" onclick="closeObligationPanel()">
-
-    <!-- Slide Panel -->
-    <div id="slidePanel" class="slide-panel" onclick="event.stopPropagation()">
-        <div class="panel-header">
-            <h3 id="panelTitle">Record Details</h3>
-            <button class="panel-close" onclick="closeObligationPanel()">&times;</button>
+    <div class="grc-tabulator-search">
+        <div class="field-search-group">
+            <label class="form-searchbox-label text-right">
+                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.Obligation"))
+            </label>
+            <input id="obligationSearchbox" type="text" class="form-control searchbox-field">
         </div>
-        <div class="panel-body">
-            <form id="recordForm" class="grc-form row g-3">
-                <input type="hidden" id="recordId">
-                <input type="hidden" id="parentId">
-                <input type="hidden" id="isEdit">
-
-                <div class="field-group">
-                    <label class="form-label text-right">>Record Code</label>
-                    <input class="form-control" type="text" id="recordCode" required>
-                </div>
-
-                <div class="field-group">
-                    <label class="form-label text-right">>Title</label>
-                    <input class="form-control" type="text" id="recordTitle" required>
-                </div>
-
-                <div class="field-group">
-                    <label for="recordCategory" class="form-label text-right select2-field select2-column">
-                        Category
-                        <select class="js-record-category form-control" id="dpRecordCategory" name="dpRecordCategory" aria-labelledby="dpRecordCategory-label" aria-describedby="dpRecordCategory-description">
-                            <option value="">Select Category</option>
-                            <option value="General">General</option>
-                            <option value="Technical">Technical</option>
-                            <option value="Administrative">Administrative</option>
-                            <option value="Financial">Financial</option>
-                        </select>
-                        <span id="dpNewBranches-description" class="sr-only">
-                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
-                        </span>
-                    </label>
-
-                </div>
-
-                <div class="field-group">
-                    <label for="recordStatus" class="form-label text-right select2-field select2-column">
-                        Status
-                        <select class="js-record-status form-control" id="dpRecordStatus" name="dpRecordStatus" aria-labelledby="dpRecordStatus-label" aria-describedby="dpRecordStatus-description">
-                            <option value="Active">Active</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Archived">Archived</option>
-                        </select>
-                        <span id="dpRecordStatus-description" class="sr-only">
-                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
-                        </span>
-                    </label>
-                </div>
-                
-                <div class="field-group">
-                    <label class="form-label text-right">Owner</label>
-                    <input class="form-control" type="text" id="recordOwner">
-                </div>
-
-                <div class="field-group">
-                    <label class="form-label text-right">Description</label>
-                    <textarea class="form-control" id="recordDescription"></textarea>
-                </div>
-
-               <div class="field-group">
-                    <label class="form-label text-right">Parent Record</label>
-                    <input class="form-control" type="text" id="parentDisplay" readonly style="background:#f8f9fa;">
-                </div>
-            </form>
-        </div>
-        <div class="panel-footer">
-            <button class="btn btn-secondary" onclick="closeObligationPanel()">Cancel</button>
-            <button class="btn btn-primary" onclick="saveObligationRecord()">Save</button>
+        <div class="field-search-buttons">
+            <button id="btnObligationExportFiltered" class="btn btn-primary">
+                <i class="mdi mdi-file-excel-outline"></i> @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.ExportFiltered"))
+            </button>
         </div>
     </div>
+
+    <div id="obligations-table"></div>
+
 </div>
+
+<!-- Slide-out Panel Overlay -->
+<div class="slide-panel-overlay" id="panelOverlay" onclick="closePanel()"></div>
+
+<!-- Slide-out Panel -->
+<div class="slide-panel" id="slidePanel">
+    <div class="panel-header">
+        <h2>Compliance Mapping</h2>
+        <button class="panel-close" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-content" id="panelContent">
+        <!-- Content will be dynamically inserted here -->
+    </div>
+</div>
+
+@{
+    Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-regulation-obligations.js");
+}
 
 

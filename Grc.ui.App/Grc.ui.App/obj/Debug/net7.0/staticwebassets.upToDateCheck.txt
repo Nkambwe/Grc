@@ -2,7 +2,6 @@ wwwroot\css\admin-style.css
 wwwroot\css\admin-tables-styles.css
 wwwroot\css\app-styles.css
 wwwroot\css\app-tables-styles.css
-wwwroot\css\app-tabular-styles.css
 wwwroot\css\color-pallete.css
 wwwroot\css\component-styles.css
 wwwroot\css\fonts\material-icons-outlined.woff
@@ -41,6 +40,7 @@ wwwroot\js\app-regulation-authorities.js
 wwwroot\js\app-regulation-categories.js
 wwwroot\js\app-regulation-doctypes.js
 wwwroot\js\app-regulation-PolRegister.js
+wwwroot\js\app-regulation-tasks.js
 wwwroot\js\app-regulation-types.js
 wwwroot\js\app-regulations-register.js
 wwwroot\js\app-returns-register.js
@@ -55,6 +55,7 @@ wwwroot\js\grc-sidebar.js
 wwwroot\js\login-script.js
 wwwroot\js\operations-dashboard-script.js
 wwwroot\js\register-script.js
+wwwroot\js\users-script.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
@@ -198,4 +199,5 @@ wwwroot\lib\tooltips\popper.min.js
 wwwroot\lib\tooltips\tippy.css
 wwwroot\lib\tooltips\tippy.umd.min.js
 wwwroot\lib\xlsx\xlsx.full.min.js
-wwwroot\js\users-script.js
+wwwroot\css\app-tabular-styles.css
+wwwroot\js\app-regulation-obligations.js

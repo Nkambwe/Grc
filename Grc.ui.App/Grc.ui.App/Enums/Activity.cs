@@ -104,9 +104,33 @@ namespace Grc.ui.App.Enums {
         COMPLIANCE_EXPORT_DOCOWNERS = 48,
         [Description("Get document owner details")]
         COMPLIANCE_GET_DOCOWNER = 49,
-
         [Description("Retrieve all users")]
         RETRIVEUSERS = 50,
+        [Description("Retrieve all tasks")]
+        COMPLIANCE_RETRIEVE_TASK = 51,
+        [Description("Add policy task")]
+        COMPLIANCE_CREATE_TASK = 52,
+        [Description("Update policy task")]
+        COMPLIANCE_EDITED_TASK = 53,
+        [Description("Delete policy task")]
+        COMPLIANCE_DELETED_TASK = 54,
+        [Description("Export policy task")]
+        COMPLIANCE_EXPORT_TASK = 55,
+        [Description("Get task details")]
+        COMPLIANCE_GET_TASK = 56,
+        [Description("Get legal act details")]
+        COMPLIANCE_GET_ACTS = 57,
+        [Description("Retrieve all legal acts")]
+        COMPLIANCE_RETRIEVE_ACTS = 58,
+        [Description("Add regulatory act")]
+        COMPLIANCE_CREATE_ACTS = 59,
+        [Description("Update regulatory acts")]
+        COMPLIANCE_EDITED_ACTS = 60,
+        [Description("Delete policy task")]
+        COMPLIANCE_DELETED_ACTS = 61,
+        [Description("Export regualtory acts")]
+        COMPLIANCE_EXPORT_ACTS = 62
+        
 
     }
 }

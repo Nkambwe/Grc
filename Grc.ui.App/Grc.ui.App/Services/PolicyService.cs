@@ -160,8 +160,7 @@ namespace Grc.ui.App.Services {
                   mapper, webHelper, sessionManager, errorFactory, errorService) {
         }
 
-        public async Task<GrcResponse<PolicyRegisterResponse>> GetPolicyAsync(GrcIdRequst getRequest)
-        {
+        public async Task<GrcResponse<PolicyRegisterResponse>> GetPolicyAsync(GrcIdRequst getRequest) {
             return await Task.FromResult(new GrcResponse<PolicyRegisterResponse>(query.FirstOrDefault(q => q.Id == getRequest.RecordId)));
         }
 
@@ -170,11 +169,9 @@ namespace Grc.ui.App.Services {
             return await Task.FromResult(new GrcResponse<List<PolicyRegisterResponse>>(query.ToList()));
         }
 
-        public async Task<GrcResponse<PagedResponse<PolicyRegisterResponse>>> GetAllPolicies(TableListRequest request)
-        {
+        public async Task<GrcResponse<PagedResponse<PolicyRegisterResponse>>> GetAllPolicies(TableListRequest request) {
             //..filter data
-            if (!string.IsNullOrWhiteSpace(request.SearchTerm))
-            {
+            if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
                 var lookUp = request.SearchTerm.ToLower();
                 query = query.Where(a =>
                     (a.DocumentName != null && a.DocumentName.ToLower().Contains(lookUp)) ||
@@ -184,14 +181,13 @@ namespace Grc.ui.App.Services {
             }
 
             //..apply sorting
-            if (!string.IsNullOrEmpty(request.SortBy))
-            {
+            if (!string.IsNullOrEmpty(request.SortBy)) {
                 var sortExpr = $"{request.SortBy} {(request.SortDirection == "Ascending" ? "asc" : "desc")}";
                 query = query.OrderBy(sortExpr);
             }
 
-            var page = new PagedResponse<PolicyRegisterResponse>()
-            {
+            //..get paged data
+            var page = new PagedResponse<PolicyRegisterResponse>() {
                 TotalCount = 20,
                 Page = request.PageIndex,
                 Size = request.PageSize,
@@ -255,14 +251,14 @@ namespace Grc.ui.App.Services {
                 {
                     Status = false,
                     StatusCode = 404,
-                    Message = "Authority not found"
+                    Message = "Policy not found"
                 }));
             }
             return await Task.FromResult(new GrcResponse<ServiceResponse>(new ServiceResponse
             {
                 Status = true,
                 StatusCode = 200,
-                Message = "Authority deleted successfully"
+                Message = "Policy deleted successfully"
             }));
         }
 

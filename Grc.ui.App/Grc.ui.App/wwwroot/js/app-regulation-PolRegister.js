@@ -215,10 +215,6 @@ $('.action-btn-policy-new').on('click', function () {
     addPolicyDocsRootRecord();
 });
 
-$('.action-btn-policy-task').on('click', function () {
-    addPolicyTaskRecord();
-});
-
 /*------------------------------------------
     Export to Excel
 -------------------------------------------*/
@@ -351,6 +347,7 @@ function initializeDocsOwnerElement($element) {
         fixSelect3Accessibility($element, labelText);
     }, 100);
 }
+
 /*------------------------------------------
     Add New Record
 -------------------------------------------*/
@@ -368,22 +365,6 @@ function addPolicyDocsRootRecord() {
         comments: ''
     }, false);
 }
-
-function addPolicyTaskRecord() {
-    $('#panelTitle').text("Policy/Procedure Tasks");
-    $('.task-overlay').addClass('active');
-    $('#slideTaskPanel').addClass('active');
-
-    // Load both async requests and wait for both to complete
-    $.when(loadTaskDocuments(), loadTaskOwners())
-        .done(function () {
-            console.log("Both Task Documents and Owners loaded successfully");
-        })
-        .fail(function () {
-            console.error("One or both task lists failed to load.");
-        });
-}
-
 
 /*------------------------------------------
     OpenSlide Panel

@@ -518,6 +518,12 @@
 	<LocaleResource Name="Component.Table.Search.Policy-register">
 		<Value>Search register... </Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.Acts">
+		<Value>Search laws.. </Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.Obligation">
+		<Value>Search obligations.. </Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Category.Header">
 		<Value>Regulatory Category</Value>
 	</LocaleResource>
@@ -559,6 +565,18 @@
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.Revision.NextDate">
 		<Value>Next Revision Date</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Task.AssignedDate">
+		<Value>Assigned Date</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Task.DueDate">
+		<Value>Due Date</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Task.Interval">
+		<Value>Send reminders every(days)</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Task.Start">
+		<Value>Start Reminders on</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.Comments">
 		<Value>Policy Comments</Value>

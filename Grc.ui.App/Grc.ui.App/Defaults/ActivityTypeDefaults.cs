@@ -75,6 +75,17 @@
         public const string COMPLIANCE_EDITED_DOCOWNER = "Regulatory.Document.Owners.Edited";
         public const string COMPLIANCE_DELETED_DOCOWNER = "Regulatory.Document.Owners.Deleted";
         public const string COMPLIANCE_EXPORT_DOCOWNER = "Regulatory.Document.Owners.Export";
+        public const string COMPLIANCE_RETRIEVE_TASK = "Regulatory.Policy.Tasks.Retrieve";
+        public const string COMPLIANCE_CREATE_TASK = "Regulatory.Policy.Tasks.Create";
+        public const string COMPLIANCE_EDITED_TASK = "Regulatory.Policy.Tasks.Edited";
+        public const string COMPLIANCE_DELETED_TASK = "Regulatory.Policy.Tasks.Deleted";
+        public const string COMPLIANCE_EXPORT_TASK = "Regulatory.Policy.Tasks.Export";
+
+        public const string COMPLIANCE_RETRIEVE_ACTS = "Register.Acts.Retrieve";
+        public const string COMPLIANCE_CREATE_ACT = "Register.Acts.Create";
+        public const string COMPLIANCE_EDITED_ACT = "Register.Acts.Edited";
+        public const string COMPLIANCE_DELETED_ACT = "Register.Acts.Deleted";
+        public const string COMPLIANCE_EXPORT_ACT = "Register.Acts.Export";
 
         #endregion
 
