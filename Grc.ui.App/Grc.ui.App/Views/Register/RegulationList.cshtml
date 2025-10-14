@@ -1,0 +1,16 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "REGULATORY LIST";
+    var component = new PageComponentViewModel
+    {
+        ComponentId = $"0",
+        ComponentKey = "RegulatoryRegister",
+        LeftActions = new List<ComponentAction> {
+            new ComponentAction {ActionKey = ActionKey.ComplianceHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home")},
+            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
+            new ComponentAction { ActionKey = ActionKey.RegulatoryActNew.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") },
+        }
+    };
+}
+
+@await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("ComplianceRegulatoryRegister") })

@@ -1,0 +1,16 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "SUPPORT-AUTHORITES";
+    var component = new PageComponentViewModel
+    {
+        ComponentId = $"0",
+        ComponentKey = "SettingAuthorities",
+        LeftActions = new List<ComponentAction> {
+            new ComponentAction {ActionKey = ActionKey.ComplianceHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home")},
+            new ComponentAction { ActionKey = ActionKey.NewAuthority.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") },
+            new ComponentAction { ActionKey = ActionKey.AuthorityExport.GetDescription(), Icon = "mdi mdi-file-excel-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Export") },
+        }
+    };
+}
+
+@await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("ComplianceRegulatoryAuthorities") })

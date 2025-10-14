@@ -110,9 +110,10 @@ function showToast(message, type = 'info') {
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
-    
-$(document).ready(function() {
-     // User dropdown toggle
+ 
+$(document).ready(function () {
+   
+    // User dropdown toggle
     window.toggleDropdown = function() {
         $('#userDropdown').toggleClass('is-active');
     };
@@ -431,3 +432,5 @@ $(document).ready(function() {
         `)
         .appendTo('head');
 });
+
+

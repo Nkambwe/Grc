@@ -6,7 +6,9 @@ using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Utils;
 
 namespace Grc.ui.App.Services {
+
     public class ProcessesService : GrcBaseService, IProcessesService {
+
         public ProcessesService(IApplicationLoggerFactory loggerFactory, 
             IHttpHandler httpHandler, IEnvironmentProvider environment, 
             IEndpointTypeProvider endpointType, IMapper mapper, 
@@ -16,87 +18,214 @@ namespace Grc.ui.App.Services {
                   mapper, webHelper, sessionManager, errorFactory, errorService) {
         }
 
-        public async Task<OperationsCountResponse> StatisticAsync(long userId, string ipAddress) {
-            var countResponse = new OperationsCountResponse
+        public async Task<OperationsUnitCountResponse> StatisticAsync(long userId, string ipAddress) {
+
+            var stats = new OperationsUnitCountResponse()
             {
-                CompletedProcesses = new Dictionary<OperationUnit, int> {
-                    {OperationUnit.AccountServices, 9 },
-                    {OperationUnit.Cash, 3 },
-                    {OperationUnit.Channels, 9 },
-                    {OperationUnit.CustomerExp, 12 },
-                    {OperationUnit.Reconciliation, 4 },
-                    {OperationUnit.RecordsMgt, 3 },
-                    {OperationUnit.Payments, 9 },
-                    {OperationUnit.Wallets, 15 },
-                    {OperationUnit.CategoryTotal, 64 }
+                UnitProcesses = new OperationsUnitStatisticsResponse
+                {
+                    TotalUnitProcess = new()
+                    {
+                        CashProcesses = 36,
+                        AccountServiceProcesses = 23,
+                        ChannelProcesses = 33,
+                        PaymentProcesses = 17,
+                        WalletProcesses = 18,
+                        RecordsManagementProcesses = 3,
+                        CustomerExperienceProcesses = 17,
+                        ReconciliationProcesses = 12,
+                        TotalProcesses = 159
+                    },
+                    CompletedProcesses = new UnitCountResponse()
+                    {
+                        AccountServiceProcesses = 9,
+                        CashProcesses = 3,
+                        ChannelProcesses = 9,
+                        CustomerExperienceProcesses = 12,
+                        ReconciliationProcesses = 4,
+                        RecordsManagementProcesses = 3,
+                        PaymentProcesses = 9,
+                        WalletProcesses = 15,
+                        TotalProcesses = 62
+
+                    },
+                    ProposedProcesses = new UnitCountResponse()
+                    {
+                        AccountServiceProcesses = 0,
+                        CashProcesses = 0,
+                        ChannelProcesses = 3,
+                        CustomerExperienceProcesses = 0,
+                        ReconciliationProcesses = 0,
+                        RecordsManagementProcesses = 0,
+                        PaymentProcesses = 5,
+                        WalletProcesses = 2,
+                        TotalProcesses = 10
+                    },
+                    UnchangedProcesses = new UnitCountResponse()
+                    {
+                        AccountServiceProcesses = 0,
+                        CashProcesses = 9,
+                        ChannelProcesses = 14,
+                        CustomerExperienceProcesses = 2,
+                        ReconciliationProcesses = 8,
+                        RecordsManagementProcesses = 0,
+                        PaymentProcesses = 6,
+                        WalletProcesses = 0,
+                        TotalProcesses = 30
+                    },
+                    ProcessesDueForReview = new UnitCountResponse()
+                    {
+                        AccountServiceProcesses = 0,
+                        CashProcesses = 1,
+                        ChannelProcesses = 7,
+                        CustomerExperienceProcesses = 3,
+                        ReconciliationProcesses = 0,
+                        RecordsManagementProcesses = 0,
+                        PaymentProcesses = 5,
+                        WalletProcesses = 1,
+                        TotalProcesses = 17
+                    },
+                    DormantProcesses = new UnitCountResponse()
+                    {
+                        AccountServiceProcesses = 0,
+                        CashProcesses = 0,
+                        ChannelProcesses = 1,
+                        CustomerExperienceProcesses = 0,
+                        ReconciliationProcesses = 0,
+                        RecordsManagementProcesses = 0,
+                        PaymentProcesses = 2,
+                        WalletProcesses = 1,
+                        TotalProcesses = 4
+
+                    },
+                    CancelledProcesses = new UnitCountResponse()
+                    {
+                        AccountServiceProcesses = 4,
+                        CashProcesses = 0,
+                        ChannelProcesses = 6,
+                        CustomerExperienceProcesses = 0,
+                        ReconciliationProcesses = 0,
+                        RecordsManagementProcesses = 1,
+                        PaymentProcesses = 0,
+                        WalletProcesses = 0,
+                        TotalProcesses = 11
+                    }
+
                 },
-                ProposedProcesses = new Dictionary<OperationUnit, int> {
-                    {OperationUnit.AccountServices, 0 },
-                    {OperationUnit.Cash, 0 },
-                    {OperationUnit.Channels, 3},
-                    {OperationUnit.CustomerExp, 0 },
-                    {OperationUnit.Reconciliation, 0 },
-                    {OperationUnit.RecordsMgt, 0 },
-                    {OperationUnit.Payments, 5 },
-                    {OperationUnit.Wallets, 2 },
-                    {OperationUnit.CategoryTotal, 10 }
-                },
-                UnchangedProcesses = new Dictionary<OperationUnit, int> {
-                    {OperationUnit.AccountServices, 0 },
-                    {OperationUnit.Cash, 9 },
-                    {OperationUnit.Channels, 14 },
-                    {OperationUnit.CustomerExp, 2 },
-                    {OperationUnit.Reconciliation, 8 },
-                    {OperationUnit.RecordsMgt, 0 },
-                    {OperationUnit.Payments, 6 },
-                    {OperationUnit.Wallets, 0 },
-                    {OperationUnit.CategoryTotal, 39 }
-                },
-                ProcessesDueForReview = new Dictionary<OperationUnit, int> {
-                    {OperationUnit.AccountServices, 0 },
-                    {OperationUnit.Cash, 1 },
-                    {OperationUnit.Channels, 7 },
-                    {OperationUnit.CustomerExp, 3 },
-                    {OperationUnit.Reconciliation, 0 },
-                    {OperationUnit.RecordsMgt, 0 },
-                    {OperationUnit.Payments, 5 },
-                    {OperationUnit.Wallets, 1 },
-                    {OperationUnit.CategoryTotal, 17 }
-                },
-                DormantProcesses = new Dictionary<OperationUnit, int> {
-                    {OperationUnit.AccountServices, 0 },
-                    {OperationUnit.Cash, 0 },
-                    {OperationUnit.Channels, 0 },
-                    {OperationUnit.CustomerExp, 0 },
-                    {OperationUnit.Reconciliation, 0 },
-                    {OperationUnit.RecordsMgt, 0 },
-                    {OperationUnit.Payments, 0 },
-                    {OperationUnit.Wallets, 0 },
-                    {OperationUnit.CategoryTotal, 64 }
-                },
-                CancelledProcesses = new Dictionary<OperationUnit, int> {
-                    {OperationUnit.AccountServices, 4 },
-                    {OperationUnit.Cash, 0 },
-                    {OperationUnit.Channels, 6 },
-                    {OperationUnit.CustomerExp, 0 },
-                    {OperationUnit.Reconciliation, 0 },
-                    {OperationUnit.RecordsMgt, 1 },
-                    {OperationUnit.Payments, 0 },
-                    {OperationUnit.Wallets, 0 },
-                    {OperationUnit.CategoryTotal, 11 }
-                },
-                UnitTotalProcesses = new Dictionary<ProcessCategories, int> {
-                    {ProcessCategories.UpToDate, 13 },
-                    {ProcessCategories.Proposed, 16 },
-                    {ProcessCategories.Unchanged, 39 },
-                    {ProcessCategories.Due, 17 },
-                    {ProcessCategories.Dormant, 8 },
-                    {ProcessCategories.Cancelled, 4 },
-                    {ProcessCategories.UnitTotal, 141 }
-                },
+
+                ProcessCategories = new ProcessCategoryStatisticsResponse() {
+
+                    CashProcesses = new CategoriesCountResponse() {
+                        Unclassified = 0,
+                        UpToDate = 9,
+                        Unchanged = 6,
+                        Proposed = 3,
+                        Due = 0,
+                        Dormant = 1,
+                        Cancelled = 2,
+                        Total = 21
+                    },
+                    AccountServiceProcesses = new CategoriesCountResponse() {
+                        Unclassified = 0,
+                        UpToDate = 9,
+                        Unchanged = 0,
+                        Proposed = 0,
+                        Due = 0,
+                        Dormant = 1,
+                        Cancelled = 3,
+                        Total = 13
+                    },
+                    RecordsMgtProcesses = new CategoriesCountResponse() {
+                        Unclassified = 5,
+                        UpToDate = 3,
+                        Unchanged = 0,
+                        Proposed = 0,
+                        Due = 0,
+                        Dormant = 1,
+                        Cancelled = 0,
+                        Total = 9
+                    },
+                    ChannelProcesses = new CategoriesCountResponse() {
+                        Unclassified = 0,
+                        UpToDate = 9,
+                        Unchanged = 14,
+                        Proposed = 7,
+                        Due = 2,
+                        Dormant = 5,
+                        Cancelled = 12,
+                        Total = 49
+                    },
+                    PaymentProcesses = new CategoriesCountResponse() {
+                        Unclassified = 2,
+                        UpToDate = 9,
+                        Unchanged = 5,
+                        Proposed = 39,
+                        Due = 17,
+                        Dormant = 8,
+                        Cancelled = 4,
+                        Total = 84
+                    },
+                    WalletProcesses = new CategoriesCountResponse() {
+                        Unclassified = 3,
+                        UpToDate = 15,
+                        Unchanged = 2,
+                        Proposed = 0,
+                        Due = 1,
+                        Dormant = 6,
+                        Cancelled = 7,
+                        Total = 35
+                    },
+                    CustomerExperienceProcesses = new CategoriesCountResponse() {
+                        Unclassified = 2,
+                        UpToDate = 12,
+                        Unchanged = 2,
+                        Proposed = 3,
+                        Due = 3,
+                        Dormant = 6,
+                        Cancelled = 0,
+                        Total = 28
+                    },
+                    ReconciliationProcesses = new CategoriesCountResponse() {
+                        Unclassified = 5,
+                        UpToDate = 4,
+                        Unchanged = 0,
+                        Proposed = 0,
+                        Due = 0,
+                        Dormant = 8,
+                        Cancelled = 0,
+                        Total = 12
+                    },
+                    TotalCategoryProcesses = new CategoriesCountResponse() {
+                        Unclassified = 40,
+                        UpToDate = 64,
+                        Unchanged = 39,
+                        Proposed = 10,
+                        Due = 17,
+                        Dormant = 2,
+                        Cancelled = 4,
+                        Total = 172
+                    },
+                }
             };
 
-            return await Task.FromResult(countResponse);
+            return await Task.FromResult(stats);
+        }
+
+        public async Task<CategoriesCountResponse> UnitCountAsync(long userId, string ipAddress, string unit)
+        {
+            var categories = new CategoriesCountResponse()
+            {
+                Unclassified = 9,
+                UpToDate = 5,
+                Unchanged = 12,
+                Proposed = 7,
+                Due = 3,
+                Dormant = 8,
+                Cancelled = 15,
+                Total = 59
+            };
+
+            return await Task.FromResult(categories);
         }
     }
 

@@ -1,6 +1,6 @@
-﻿using System.Text.Json.Serialization;
-
+﻿
 namespace Grc.ui.App.Models {
+
     public class UserModel {
         public long UserId { get; set; }
         public string FirstName { get; set; }
@@ -30,4 +30,5 @@ namespace Grc.ui.App.Models {
         public DateTime? ModifiedOn { get; set; }
         public string ModifiedBy { get; set; }
     }
+
 }

@@ -38,7 +38,16 @@ namespace Grc.ui.App.Extensions.Mvc {
             services.AddScoped<IDepartmentUnitService, DepartmentUnitService>();
             services.AddScoped<IErrorService, ErrorService>();
             services.AddScoped<ISystemActivityService, SystemActivityService>();
-            services.AddScoped<IProcessesService, ProcessesService>();
+            services.AddScoped<IProcessesService, ProcessesService>(); 
+            services.AddScoped<IRegistersService, RegistersService>();
+            services.AddScoped<IRegulatonCategoryService, RegulatonCategoryService>(); 
+            services.AddScoped<IRegulatonTypeService, RegulatonTypeService>(); 
+            services.AddScoped<IRegulatonAuthorityService, RegulatonAuthorityService>();
+            services.AddScoped<IPolicyService, PolicyService>();
+            services.AddScoped<IPolicyTaskService, PolicyTaskService>();
+            services.AddScoped<IDocumentTypeService, DocumentTypeService>(); 
+            services.AddScoped<IResponsibilityService, ResponsibilityService>();
+            services.AddScoped<IRegulatoryActService, RegulatoryActService>();
 
             //..sessionExtensions manager
             services.AddScoped<SessionManager>();

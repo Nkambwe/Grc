@@ -215,7 +215,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
             return View(model);
         }
-
+        
         public async Task<IActionResult> Roles() {
             var model = new AdminDashboardModel();
             try {
@@ -242,7 +242,37 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             return View(model);
         }
 
-        public async Task<IActionResult> PermissionSets() {
+        public async Task<IActionResult> RoleGroups() {
+            var model = new AdminDashboardModel();
+            try
+            {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError)
+                {
+                    await ProcessErrorAsync(grcResponse.Error.Message, "SUPPORT-CONTROLLER", string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            }
+            catch (Exception ex)
+            {
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> RoleDelegation() {
             var model = new AdminDashboardModel();
             try {
                 //..get user IP address
@@ -268,16 +298,18 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             return View(model);
         }
         
-        public async Task<IActionResult> AssignPermissions() {
+         public async Task<IActionResult> PasswordPolicy() {
             var model = new AdminDashboardModel();
-            try {
+            try
+            {
                 //..get user IP address
                 var ipAddress = WebHelper.GetCurrentIpAddress();
 
                 //..get current authenticated user record
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (grcResponse.HasError) {
-                    await ProcessErrorAsync(grcResponse.Error.Message,"SUPPORT-CONTROLLER" , string.Empty);
+                if (grcResponse.HasError)
+                {
+                    await ProcessErrorAsync(grcResponse.Error.Message, "SUPPORT-CONTROLLER", string.Empty);
                     return View(model);
                 }
 
@@ -286,24 +318,28 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
-            } catch(Exception ex){ 
-                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+            }
+            catch (Exception ex)
+            {
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
                 return View(model);
             }
 
             return View(model);
         }
-
-        public async Task<IActionResult> PermissionDelegation() {
+        public async Task<IActionResult> RolePermissions()
+        {
             var model = new AdminDashboardModel();
-            try {
+            try
+            {
                 //..get user IP address
                 var ipAddress = WebHelper.GetCurrentIpAddress();
 
                 //..get current authenticated user record
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (grcResponse.HasError) {
-                    await ProcessErrorAsync(grcResponse.Error.Message,"SUPPORT-CONTROLLER" , string.Empty);
+                if (grcResponse.HasError)
+                {
+                    await ProcessErrorAsync(grcResponse.Error.Message, "SUPPORT-CONTROLLER", string.Empty);
                     return View(model);
                 }
 
@@ -312,14 +348,47 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
-            } catch(Exception ex){ 
-                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+            }
+            catch (Exception ex)
+            {
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
                 return View(model);
             }
 
             return View(model);
         }
-        
+
+        public async Task<IActionResult> PermissionSets()
+        {
+            var model = new AdminDashboardModel();
+            try
+            {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError)
+                {
+                    await ProcessErrorAsync(grcResponse.Error.Message, "SUPPORT-CONTROLLER", string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            }
+            catch (Exception ex)
+            {
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
+        }
+
         public async Task<IActionResult> Bugs() {
             var model = new AdminDashboardModel();
             try {
@@ -519,7 +588,6 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         #region Data actions
 
-        [HttpGet("support/organization/getBranches")]
         public async Task<IActionResult> GetBranches() { 
             try {
 
@@ -558,11 +626,14 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 if(branches.Any()){ 
                     select2Data = branches.Select(branch => new {                        
                         id = branch.Id,
-                        text = branch.BranchName 
+                        branchName = branch.BranchName,
+                        solId = branch.SolId,
+                        isDeleted = branch.IsDeleted,
+                        createdOn = branch.CreatedOn
                     }).Cast<object>().ToList();
                 }
 
-                return Json(new { results = select2Data });
+                return Json(new { data = select2Data });
             } catch (Exception ex) {
                 Logger.LogActivity($"Error retrieving branches: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
@@ -682,6 +753,11 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
                 //..update with user data
                 var currentUser = grcResponse.Data;
+                if (currentUser == null){
+                    //..session has expired
+                    return RedirectToAction("Login", "Application");
+                }
+                
                 request.UserId = currentUser.UserId;
                 request.IPAddress = ipAddress;
                 request.PageSize = 7;
@@ -730,6 +806,11 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
+                if (currentUser == null)
+                {
+                    //..session has expired
+                    return RedirectToAction("Login", "Application");
+                }
                 GrcRequest request = new() {
                     UserId = currentUser.UserId,
                     Action = Activity.RETRIEVEDEPARTMENTS.GetDescription(),
@@ -787,6 +868,11 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
+                if (currentUser == null)
+                {
+                    //..session has expired
+                    return RedirectToAction("Login", "Application");
+                }
                 GrcIdRequst request = new() {
                     RecordId = id,
                     UserId = currentUser.UserId,
@@ -832,6 +918,12 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
+                if (currentUser == null)
+                {
+                    //..session has expired
+                    return RedirectToAction("Login", "Application");
+                }
+
                 GrcRequest request = new() {
                     UserId = currentUser.UserId,
                     Action = Activity.RETRIEVEUNITS.GetDescription(),
@@ -884,6 +976,11 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
                 //..update with user data
                 var currentUser = grcResponse.Data;
+                if (currentUser == null)
+                {
+                    //..session has expired
+                    return RedirectToAction("Login", "Application");
+                }
                 request.UserId = currentUser.UserId;
                 request.IPAddress = ipAddress;
                 request.PageSize = 20;
@@ -920,8 +1017,96 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         #endregion
 
+        #region Users
+
+        public async Task<IActionResult> GetUsers()
+        {
+            try
+            {
+
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError)
+                {
+                    Logger.LogActivity($"USER LIST ERROR: Failed to Current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                var currentUser = grcResponse.Data;
+                if (currentUser == null)
+                {
+                    //..session has expired
+                    return RedirectToAction("Login", "Application");
+                }
+                GrcRequest request = new()
+                {
+                    UserId = currentUser.UserId,
+                    Action = Activity.RETRIVEUSERS.GetDescription(),
+                    IPAddress = ipAddress,
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>()
+                };
+
+                //..get list of all users
+                var usersData = await _accessService.GetUsersAsync(request);
+
+                List<UserModel> users;
+                if (usersData.HasError)
+                {
+                    users = new();
+                    Logger.LogActivity($"USERS DATA ERROR: Failed to retrieve department items - {JsonSerializer.Serialize(usersData)}");
+                }
+                else
+                {
+                    users = usersData.Data;
+                    Logger.LogActivity($"USERS DATA - {JsonSerializer.Serialize(users)}");
+                }
+
+                //..get ajax data
+                List<object> listData = new();
+                if (users.Any())
+                {
+                    listData = users.Select(user => new {
+                        id = user.UserId,
+                        firstName = user.FirstName,
+                        lastName = user.LastName,
+                        middleName = user.MiddleName,
+                        userName = user.UserName,
+                        emailAddress = user.EmailAddress,
+                        displayName = user.DisplayName,
+                        phoneNumber = user.PhoneNumber,
+                        pfNumber = user.PFNumber,
+                        solId = user.SolId,
+                        roleId = user.RoleId,
+                        roleName = user.RoleName,
+                        roleGroup = user.RoleGroup,
+                        departmentId = user.DepartmentId,
+                        unitCode = user.UnitCode,
+                        isActive = user.IsActive,
+                        isVerified = user.IsVerified,
+                        createdOn = user.CreatedOn,
+                        createdBy = user.CreatedBy,
+                        modifiedOn = user.ModifiedOn,
+                        modifiedBy = user.ModifiedBy
+                    }).Cast<object>().ToList();
+                }
+
+                return Json(new { data = listData });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving users: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        #endregion
+
         #region Save and modify actions
-        
+
         [HttpPost("support/departments/saveUnit")]
         public async Task<IActionResult> SaveUnit([FromBody] DepartmentUnitRequest unit) {
 
@@ -1052,5 +1237,6 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         #endregion
+
     }
 }

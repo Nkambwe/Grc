@@ -1,21 +1,179 @@
-﻿using Grc.Middleware.Api.Data.Entities;
+﻿using EFCore.BulkExtensions;
+using Grc.Middleware.Api.Data.Entities;
+using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Utils;
-using EFCore.BulkExtensions;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Microsoft.Data.SqlClient;
-using Grc.Middleware.Api.Helpers;
+using System.Threading;
 
 namespace Grc.Middleware.Api.Data.Repositories {
     public class Repository<T> : IRepository<T> where T : BaseEntity {
         protected readonly IServiceLogger Logger;
-        protected readonly GrcContext context; 
+        protected readonly GrcContext context;
 
+        /// <summary>
+        /// C'tor
+        /// </summary>
+        /// <param name="loggerFactory">Logger Factory</param>
+        /// <param name="_context">DB Context objcet</param>
         public Repository(IServiceLoggerFactory loggerFactory, GrcContext _context)
         {
             Logger = loggerFactory.CreateLogger();
             Logger.Channel = $"REPO-{DateTime.Now:yyyyMMddHHmmss}";
             context = _context;
+        }
+
+        public int Count() {
+            try {
+                return context.Set<T>().Count();
+            }  catch (Exception ex) {
+                Logger.LogActivity($"Count operation failed: {ex.Message}", "DbAction");
+                Logger.LogActivity($"STACKTRACE :: {ex.StackTrace}", "DbStacktrace");
+                return 0;
+            }
+        }
+
+        public int Count(Expression<Func<T, bool>> predicate) {
+            ArgumentNullException.ThrowIfNull(predicate);
+
+            try {
+                return context.Set<T>().Count(predicate);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Count with predicate operation failed: {ex.Message}", "DbAction");
+                Logger.LogActivity($"STACKTRACE :: {ex.StackTrace}", "DbStacktrace");
+                return 0;
+            }
+        }
+
+        public async Task<int> CountAsync(CancellationToken cancellationToken = default) {
+            try {
+                return await context.Set<T>().CountAsync(cancellationToken: cancellationToken);
+            } catch (Exception ex) {
+                Logger.LogActivity($"CountAsync operation failed: {ex.Message}", "DbAction");
+                Logger.LogActivity($"STACKTRACE :: {ex.StackTrace}", "DbStacktrace");
+                return 0;
+            }
+        }
+
+        public async Task<int> CountAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default) {
+            ArgumentNullException.ThrowIfNull(predicate);
+
+            try {
+                return await context.Set<T>().CountAsync(predicate, cancellationToken: cancellationToken);
+            } catch (Exception ex) {
+                Logger.LogActivity($"CountAsync with predicate operation failed: {ex.Message}", "DbAction");
+                Logger.LogActivity($"STACKTRACE :: {ex.StackTrace}", "DbStacktrace");
+                return 0;
+            }
+        }
+
+        public async Task<int> CountAsync(bool excludeDeleted = true, CancellationToken cancellationToken = default) {
+            try {
+
+                //..exclude deleted records
+                if (excludeDeleted) {
+                    return await context.Set<T>().CountAsync(e => !EF.Property<bool>(e, "IsDeleted"), cancellationToken);
+                }
+
+                return await context.Set<T>().CountAsync(cancellationToken);
+            } catch (Exception ex) {
+                Logger.LogActivity($"CountAsync with excludeDeleted operation failed: {ex.Message}", "DbAction");
+                Logger.LogActivity($"STACKTRACE :: {ex.StackTrace}", "DbStacktrace");
+                return 0;
+            }
+        }
+
+        public async Task<int> CountAsync(Expression<Func<T, bool>> predicate, bool excludeDeleted = true, CancellationToken cancellationToken = default) {
+            ArgumentNullException.ThrowIfNull(predicate);
+
+            try {
+                var query = context.Set<T>().AsQueryable();
+                if (excludeDeleted) {
+                    query = query.Where(e => !e.IsDeleted);
+                }
+
+                return await query.CountAsync(predicate, cancellationToken);
+            } catch (Exception ex) {
+                Logger.LogActivity($"CountAsync with predicate and excludeDeleted operation failed: {ex.Message}", "DbAction");
+                Logger.LogActivity($"STACKTRACE :: {ex.StackTrace}", "DbStacktrace");
+                return 0;
+            }
+        }
+
+        public bool Exists(Expression<Func<T, bool>> predicate, bool excludeDeleted = true) {     
+            try {
+                ArgumentNullException.ThrowIfNull(predicate);
+                var dbSet = context.Set<T>();
+                var record = dbSet.FirstOrDefault(predicate);
+
+                if (excludeDeleted) {
+                    return record != null && !record.IsDeleted;
+                }
+
+                return record == null;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Exists operation failed: {ex.Message}", "DbAction");
+                Logger.LogActivity($"STACKTRACE :: {ex.StackTrace}", "DbStacktrace");
+                return false;
+            }
+        }
+
+        public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate, bool excludeDeleted = true, CancellationToken cancellationToken = default) {
+
+            try {
+                ArgumentNullException.ThrowIfNull(predicate);
+                var dbSet = context.Set<T>();
+                var record = await dbSet.FirstOrDefaultAsync(predicate, cancellationToken: cancellationToken);
+
+                if (excludeDeleted) {
+                    return record != null && !record.IsDeleted;
+                }
+
+                return record != null;
+            } catch (Exception ex)  {
+                Logger.LogActivity($"ExistsAsync operation failed: {ex.Message}", "DbAction");
+                Logger.LogActivity($"STACKTRACE :: {ex.StackTrace}", "DbStacktrace");
+                return false;
+            }
+               
+        }
+
+        public async Task<Dictionary<string, bool>> ExistsBatchAsync(Dictionary<string, Expression<Func<T, bool>>> predicates, bool excludeDeleted = true, CancellationToken cancellationToken = default) {
+            if (predicates == null || predicates.Count == 0)
+                return new Dictionary<string, bool>();
+
+            try
+            {
+                var results = new Dictionary<string, bool>();
+                var dbSet = context.Set<T>();
+                var query = dbSet.AsQueryable();
+
+                //..execute all queries in parallel for better performance
+                var tasks = predicates.Select(async kvp => {
+                    var predicate = kvp.Value;
+                    var key = kvp.Key;
+
+                    if (excludeDeleted) {
+                        query = query.Where(e => EF.Property<bool>(e, "IsDeleted") == false);
+                    }
+
+                    var result = await query.AnyAsync(predicate, cancellationToken);
+                    return new KeyValuePair<string, bool>(key, result);
+                });
+
+                var batchResults = await Task.WhenAll(tasks);
+                foreach (var result in batchResults)
+                {
+                    results[result.Key] = result.Value;
+                }
+
+                return results;
+            } catch (Exception ex) {
+                Logger.LogActivity($"ExistsBatch operation failed: {ex.Message}", "DbAction");
+                Logger.LogActivity($"STACKTRACE :: {ex.StackTrace}", "DbStacktrace");
+                return new Dictionary<string, bool>();
+            }
         }
 
         public T Get(long id, bool includeDeleted = false) {
@@ -309,12 +467,6 @@ namespace Grc.Middleware.Api.Data.Repositories {
             }
         }
         
-        public async Task<int> CountAsync() 
-            => await context.Set<T>().CountAsync();
-
-        public async Task<int> CountAsync(Expression<Func<T, bool>> where)
-            => await context.Set<T>().CountAsync(where);
-
         public bool Delete(T entity, bool markAsDeleted = false) {
             ArgumentNullException.ThrowIfNull(entity);
             var dbSet = context.Set<T>();
@@ -380,28 +532,6 @@ namespace Grc.Middleware.Api.Data.Repositories {
                 Logger.LogActivity($"{ex.StackTrace}", "ERROR");
                 return false;
             }
-        }
-
-        public bool Exists(Expression<Func<T, bool>> where, bool excludeDeleted = false) {
-            var dbSet = context.Set<T>();
-            var record = dbSet.FirstOrDefault(where);
-
-            if (excludeDeleted) {
-                return record != null && !record.IsDeleted;
-            }
-
-            return record == null;
-        }
-
-        public async Task<bool> ExistsAsync(Expression<Func<T, bool>> where, bool excludeDeleted = false) {
-            var dbSet = context.Set<T>();
-            var record = await dbSet.FirstOrDefaultAsync(where);
-
-            if (excludeDeleted) {
-                return record != null && !record.IsDeleted;
-            }
-
-            return record != null;
         }
 
         public async Task<bool> BulkyInsertAsync(T[] entities) {

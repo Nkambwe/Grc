@@ -1,0 +1,16 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "SETTINGS - DOCUMENT TYPES";
+    var component = new PageComponentViewModel
+    {
+        ComponentId = "0",
+        ComponentKey = "SettingDocumentType",
+        LeftActions = new List<ComponentAction> {
+            new ComponentAction {ActionKey = ActionKey.ComplianceHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home")},
+            new ComponentAction { ActionKey = ActionKey.NewType.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") },
+            new ComponentAction { ActionKey = ActionKey.TypeExport.GetDescription(), Icon = "mdi mdi-file-excel-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Export") },
+        }
+    };
+}
+
+@await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("ComplianceFileDocumentTypes") })

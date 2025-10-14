@@ -56,8 +56,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             return View(model);
         }
 
-
-        public async Task<IActionResult> IPManagement() {
+        public async Task<IActionResult> Organization() {
             var model = new AdminDashboardModel();
             try {
                 //..get user IP address
@@ -77,6 +76,37 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
             } catch(Exception ex){ 
                 await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> Branches()
+        {
+            var model = new AdminDashboardModel();
+            try
+            {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError)
+                {
+                    await ProcessErrorAsync(grcResponse.Error.Message, "SUPPORT-CONTROLLER", string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.LastLoginIpAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            }
+            catch (Exception ex)
+            {
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
                 return View(model);
             }
 
@@ -110,32 +140,6 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
         
         public async Task<IActionResult> UserGroups() {
-            var model = new AdminDashboardModel();
-            try {
-                //..get user IP address
-                var ipAddress = WebHelper.GetCurrentIpAddress();
-
-                //..get current authenticated user record
-                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (grcResponse.HasError) {
-                    await ProcessErrorAsync(grcResponse.Error.Message,"SUPPORT-CONTROLLER" , string.Empty);
-                    return View(model);
-                }
-
-                var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
-
-                //..prepare user dashboard
-                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
-            } catch(Exception ex){ 
-                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
-                return View(model);
-            }
-
-            return View(model);
-        }
-        
-        public async Task<IActionResult> UserAuthentication() {
             var model = new AdminDashboardModel();
             try {
                 //..get user IP address
@@ -238,5 +242,6 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
             return View(model);
         }
+
     }
 }

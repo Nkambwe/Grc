@@ -1,0 +1,40 @@
+﻿<div class="grc-tabulator-container">
+
+    <div class="grc-tabulator-search">
+        <div class="field-search-group">
+            <label class="form-searchbox-label text-right">
+                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.Obligation"))
+            </label>
+            <input id="obligationSearchbox" type="text" class="form-control searchbox-field">
+        </div>
+        <div class="field-search-buttons">
+            <button id="btnObligationExportFiltered" class="btn btn-primary">
+                <i class="mdi mdi-file-excel-outline"></i> @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.ExportFiltered"))
+            </button>
+        </div>
+    </div>
+
+    <div id="obligations-table"></div>
+
+</div>
+
+<!-- Slide-out Panel Overlay -->
+<div class="slide-panel-overlay" id="panelOverlay" onclick="closePanel()"></div>
+
+<!-- Slide-out Panel -->
+<div class="slide-panel" id="slidePanel">
+    <div class="panel-header">
+        <h2>Compliance Mapping</h2>
+        <button class="panel-close" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-content" id="panelContent">
+        <!-- Content will be dynamically inserted here -->
+    </div>
+</div>
+
+@{
+    Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-regulation-obligations.js");
+}
+
+

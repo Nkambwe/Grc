@@ -1,4 +1,5 @@
-﻿using Grc.ui.App.Http.Responses;
+﻿using Grc.ui.App.Http.Requests;
+using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Models;
 
 namespace Grc.ui.App.Services {
@@ -37,6 +38,8 @@ namespace Grc.ui.App.Services {
         /// Task containing user with provided email address or null
         /// </returns>
         Task<GrcResponse<UserModel>> GetUserByUsernameAsync(string username, long requestingUserId, string ipAddress);
+
+        Task<GrcResponse<List<UserModel>>> GetUsersAsync(GrcRequest request);
 
         /// <summary>
         /// Get user validation
@@ -78,6 +81,7 @@ namespace Grc.ui.App.Services {
         /// <param name="ipAddress">IP Address for current user</param>
         /// <returns></returns>
         Task UpdateLoggedInStatusAsync(long userId, bool isLoggedIn, string ipAddress);
+        
     }
 
 }

@@ -1,0 +1,65 @@
+﻿<div class="grc-tabulator-container">
+
+    <div class="grc-tabulator-search">
+        <div class="field-search-group">
+            <label class="form-searchbox-label text-right">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.Types"))</label>
+            <input id="typeSearchbox" type="text" class="form-control searchbox-field">
+        </div>
+    </div>
+    <div id="regulatory-types-table"></div>
+</div>
+
+<!-- Overlay -->
+<div class="overlay" onclick="closeRegulatoryTypePanel()">
+
+    <!-- Slide Panel -->
+    <div id="slidePanel" class="slide-panel" onclick="event.stopPropagation()">
+        <div class="panel-header">
+            <h3 id="panelTitle">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Type.Header"))</h3>
+            <button class="panel-close" onclick="closeRegulatoryTypePanel()">
+                <i class="mdi mdi-close"></i>
+            </button>
+        </div>
+        <div class="panel-body">
+            <form id="recordForm" class="grc-form row g-3">
+                <input type="hidden" id="recordId">
+                <input type="hidden" id="isEdit">
+
+                <div class="col-sm-6">
+                    <div class="row field-group">
+                        <label for="typeName" class="form-label text-right col-12">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Type.Header"))</label>
+                        <input type="text" id="typeName" name="typeName" class="col-12 form-control" required>
+                    </div>
+                </div>
+                
+                <div class="col-sm-6">
+                    <div class="row field-group">
+                        <label for="dpTypeStatus" class="col-sm-12 form-label text-right select2-field select2-column">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Item.Status"))
+                            <select class="js-record-type form-control" id="dpTypeStatus" name="dpTypeStatus" aria-labelledby="dpTypeStatus-label" aria-describedby="dpTypeStatus-description">
+                                <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Staus.Select"))</option>
+                                <option value="Active">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Status.Active"))</option>
+                                <option value="Inactive">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Status.InActive"))</option>
+                            </select>
+                            <span id="dpTypeStatus-description" class="sr-only">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                            </span>
+                        </label>
+
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="panel-footer">
+            <button class="btn btn-secondary" onclick="closeRegulatoryTypePanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+            <button class="btn btn-primary" onclick="saveRegulatoryTypeRecord()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+        </div>
+    </div>
+</div>
+
+@{
+    Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-regulation-types.js");
+}
+

@@ -9,6 +9,8 @@ namespace Grc.ui.App.Enums {
         [Description("units")]
         Units,
         [Description("Department Units")]
-        DepartmentUnits
+        DepartmentUnits,
+        [Description("Users All")]
+        UserList
     }
 }

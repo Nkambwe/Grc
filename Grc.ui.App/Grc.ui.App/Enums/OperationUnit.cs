@@ -15,9 +15,9 @@ namespace Grc.ui.App.Enums
         CustomerExp = 4,
         [Description("Reconciliation")]
         Reconciliation = 5,
-        [Description("Management Records")]
+        [Description("Records Management")]
         RecordsMgt = 6,
-        [Description("Payments")]
+        [Description("Payment")]
         Payments = 7,
         [Description("E-Wallet")]
         Wallets = 8,

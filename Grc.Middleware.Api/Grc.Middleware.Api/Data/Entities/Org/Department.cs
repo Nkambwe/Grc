@@ -1,4 +1,5 @@
-﻿using Grc.Middleware.Api.Data.Entities.System;
+﻿using Grc.Middleware.Api.Data.Entities.Compliance;
+using Grc.Middleware.Api.Data.Entities.System;
 
 namespace Grc.Middleware.Api.Data.Entities.Org {
 
@@ -10,6 +11,7 @@ namespace Grc.Middleware.Api.Data.Entities.Org {
         public virtual Branch Branch { get; set; }
         public virtual ICollection<SystemUser> Users {get; set;}
         public virtual ICollection<DepartmentUnit> Units { get; set; }
+        public virtual ICollection<Responsibility> Responsibilities { get; set; }
         public override bool Equals(object obj) {
 
             if (obj is not Department)

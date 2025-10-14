@@ -5,11 +5,71 @@ using System.Linq.Expressions;
 namespace Grc.Middleware.Api.Data.Repositories {
 
     public interface IRepository<T> where T : BaseEntity {
-         /// <summary>
-         /// DBContext HashCode
-         /// </summary>
-         /// <returns></returns>
-         int GetContextHashCode();
+        /// <summary>
+        /// Count number of entities in the database
+        /// </summary>
+        /// <returns>Number of entities found in the database</returns>
+        int Count();
+
+        /// <summary>
+        /// Count number of entities in the database
+        /// </summary>
+        /// <param name="predicate">Count filter</param>
+        /// <returns>Number of entities found in the database</returns>
+        int Count(Expression<Func<T, bool>> predicate);
+        /// <summary>
+        /// Count number of entities in the database
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Task containg number of entities found in the database</returns>
+        Task<int> CountAsync(CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Asynchronous count number of entities in the database
+        /// </summary>
+        /// <param name="excludeDeleted">Exclude deleted entities</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Task containg number of entities found in the database</returns>
+        Task<int> CountAsync(bool excludeDeleted = true, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Asynchronous count number of entities in the database
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Task containg number of entities found in the database</returns>
+        Task<int> CountAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Asynchronous count number of entities in the database
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <param name="excludeDeleted">Exclude deleted entities</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Task containg number of entities found in the database</returns>
+        Task<int> CountAsync(Expression<Func<T, bool>> predicate, bool excludeDeleted = true, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Check if an entity exists if it fits predicate
+        /// </summary>
+        /// <param name="where">Search predicate</param>
+        /// <param name="excludeDeleted">Flag to exclude deleted entities in the search</param>
+        /// <returns>Search result for entity</returns>
+        bool Exists(Expression<Func<T, bool>> where, bool excludeDeleted = false);
+
+        /// <summary>
+        /// Asynchronous check if an entity exists if it fits predicate
+        /// </summary>
+        /// <param name="where">Search predicate</param>
+        /// <param name="excludeDeleted">Flag to exclude deleted entities in the search</param>
+        /// <returns>Task containg search result for entity</returns>
+        Task<bool> ExistsAsync(Expression<Func<T, bool>> where, bool excludeDeleted = false, CancellationToken token = default);
+        /// <summary>
+        /// Check for batch existence for multiple conditions
+        /// </summary>
+        /// <param name="predicates"></param>
+        /// <param name="excludeDeleted"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<Dictionary<string, bool>> ExistsBatchAsync(Dictionary<string, Expression<Func<T, bool>>> predicates, bool excludeDeleted = true, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get entity by Id. Check whether to returned deleted entities <see cref="ISoftDelete"/>
@@ -182,26 +242,6 @@ namespace Grc.Middleware.Api.Data.Repositories {
         Task<bool> DeleteAllAsync(IList<T> entities, bool markAsDeleted = false);
 
         /// <summary>
-        /// Check if an entity exists if it fits predicate
-        /// </summary>
-        /// <param name="where">Search predicate</param>
-        /// <param name="excludeDeleted">Flag to exclude deleted entities in the search</param>
-        /// <returns>Search result for entity</returns>
-        bool Exists(Expression<Func<T, bool>> where, bool excludeDeleted = false);
-
-        /// <summary>
-        /// Asynchronous check if an entity exists if it fits predicate
-        /// </summary>
-        /// <param name="where">Search predicate</param>
-        /// <param name="excludeDeleted">Flag to exclude deleted entities in the search</param>
-        /// <returns>Task containg search result for entity</returns>
-        Task<bool> ExistsAsync(Expression<Func<T, bool>> where, bool excludeDeleted = false);
-        
-        Task<int> CountAsync();
-
-        Task<int> CountAsync(Expression<Func<T, bool>> where);
-
-        /// <summary>
         /// Bulk inserts to the database
         /// </summary>
         /// <param name="entities"></param>
@@ -265,6 +305,12 @@ namespace Grc.Middleware.Api.Data.Repositories {
         /// <param name="where">Filter predicate</param>
         /// <returns></returns>
         Task<PagedResult<T>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<T, bool>> where = null, bool includeDeleted = false);
+
+        /// <summary>
+        /// DBContext HashCode
+        /// </summary>
+        /// <returns></returns>
+        int GetContextHashCode();
 
     }
 

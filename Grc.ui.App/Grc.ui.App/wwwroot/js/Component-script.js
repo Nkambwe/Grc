@@ -32,12 +32,75 @@
             $(this).attr('title', 'Full Screen');
         }
     });
-    
+
+     //..handle action button clicks to open modal
+     $('.action-btn-departments').on('click', function (e) {
+         e.preventDefault();
+         openModal('departments');
+
+         console.log("Departments should open");
+         initDepartmentsTable();
+     });
+
+     function initDepartmentsTable() {
+         if ($.fn.DataTable.isDataTable('#departmentsTable')) {
+             $('#departmentsTable').DataTable().clear().destroy();
+             $('#departmentsTable').empty();
+         }
+
+         var departmentsTable = $('#departmentsTable').DataTable({
+             searching: false,
+             paging: true,
+             lengthChange: false,
+             info: false,
+             ordering: true,
+             responsive: true,
+             processing: true,
+             serverSide: true,
+             ajax: {
+                 url: '/support/departments/allDepartments',
+                 type: 'POST',
+                 contentType: "application/json",
+                 data: function (d) {
+                     return JSON.stringify({
+                         pageIndex: (d.start / d.length) + 1,
+                         pageSize: d.length,
+                         includeDeleted: false,
+                         action: "LOADDEPARTMENTS"
+                     });
+                 },
+                 dataSrc: function (json) {
+                     console.log('Ajax response:', json);
+                     return json.data || [];
+                 },
+                 error: function (xhr, status, error) {
+                     showToast("error", `Failed to load department data: ${error}`);
+                     console.error('Error during Ajax request:', error);
+                 }
+             },
+             columns: [
+                 { data: "departmentCode" },
+                 { data: "departmentName" },
+                 { data: "departmentAlias" },
+                 { data: "isDeleted" },
+                 { data: "branch" },
+                 { data: "creatdOn" }
+             ],
+             language: {
+                 emptyTable: "No department data available"
+             }
+         });
+
+         return departmentsTable;
+     }
+
+
     //..handle action button clicks to open modal
-    $('.action-btn-Units').on('click', function(e) {
+     $('.action-btn-units').on('click', function(e) {
         e.preventDefault();
          openModal('DepartmentUnits');
 
+        console.log("Units should be");
         initDepartmentUnitsTable();
     });
 
@@ -91,7 +154,7 @@
     initializeDepartments();
     
     // Your existing event handlers with Select2 initialization
-    $('.action-btn-New').on("click", function (e) {
+    $('.action-btn-new').on("click", function (e) {
         e.preventDefault();
         const $component = $(this).closest('.grc-page-component'); 
         resetButtons($component);
@@ -110,7 +173,7 @@
         clearNewUnitForm();
     });
 
-    $('.action-btn-Edit').on("click", function (e) {
+    $('.action-btn-edit').on("click", function (e) {
         e.preventDefault();
         const $component = $(this).closest('.grc-page-component'); 
         resetButtons($component);
@@ -432,8 +495,8 @@
 
     function resetButtons($component) {
         $component.find('.filterBtn').removeClass('active');
-        $component.find('.action-btn-New').removeClass('active');
-        $component.find('.action-btn-Edit').removeClass('active');
+        $component.find('.action-btn-new').removeClass('active');
+        $component.find('.action-btn-edit').removeClass('active');
     }
 
     function initDepartmentUnitsTable() {
@@ -525,7 +588,7 @@
         if ($popup.length === 0) {
             $popup = $(`.component-modal-overlay[data-popup-name="${popupIdOrName}"]`);
         }
-
+        console.log("Dialog >> ", $popup);
         if ($popup.length) {
             $popup.show();
             $(document).trigger('popup.opened', [$popup.attr('id')]);

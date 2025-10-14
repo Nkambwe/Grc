@@ -1,116 +1,53 @@
-﻿using Grc.ui.App.Models;
+﻿using AutoMapper;
+using Grc.ui.App.Extensions.Http;
+using Grc.ui.App.Http.Responses;
+using Grc.ui.App.Models;
 using Grc.ui.App.Services;
+using Grc.ui.App.Utils;
 
 namespace Grc.ui.App.Factories {
     public class DashboardFactory : IDashboardFactory {
         private readonly ILocalizationService _localizationService;
-        private readonly IPinnedService _pinnedService;
         private readonly IQuickActionService _quickActionService;
+        private readonly IMapper _mapper;
+        private readonly SessionManager _sessionManager;
+        private readonly IRegistersService _registersService;
         public DashboardFactory(ILocalizationService localizationService,
-                                IPinnedService pinnedService, 
-                                IQuickActionService quickActionService) {  
+                                IMapper mapper,
+                                IQuickActionService quickActionService,
+                                IRegistersService registersService,
+                                SessionManager session) {  
             _localizationService = localizationService;
-            _pinnedService = pinnedService;
             _quickActionService = quickActionService;
+            _mapper = mapper;
+            _sessionManager = session;
+            _registersService = registersService;
         }
 
         public async Task<UserDashboardModel>  PrepareUserDashboardModelAsync(UserModel currentUser) {
+            //..get quick items
+            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var quickActions = new List<QuickActionModel>();
+            if (!quicksData.HasError) {
+                var quickies = quicksData.Data;
+                if (quickies.Count > 0) {
+                    foreach (var action in quickies)
+                    {
+                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
+                    }
+                }
+            }
+
+            var stats = await _registersService.StatisticAsync(currentUser.UserId, currentUser.LastLoginIpAddress);
             var model = new UserDashboardModel {
-                WelcomeMessage = $"{_localizationService.GetLocalizedLabel("App.Label.Welcome")}, {currentUser?.FirstName}!",
+                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
-                QuickActions = new List<QuickActionModel> {
-                    new() {
-                        Label = "App.Menu.Users",
-                        IconClass = "mdi mdi-account-outline",
-                        Controller = "Support",
-                        Action = "Users",
-                        Area = "Admin",
-                        CssClass = ""
-                    },
-                    new() {
-                        Label = "App.Menu.Departments",
-                        IconClass = "mdi mdi-share-all-outline",
-                        Controller = "Support",
-                        Action = "Departments",
-                        Area = "Admin",
-                        CssClass = ""
-                    },
-                    new() {
-                        Label = "App.Menu.Permissions.Assign",
-                        IconClass = "mdi mdi-shield-check-outline",
-                        Controller = "Support",
-                        Action = "AssignPermissions",
-                        Area = "Admin",
-                        CssClass = ""
-                    }
-                    // Load from DB or user prefs in future
-                },
-
-                Recents = new List<RecentModel> {
-                    new() {
-                        Label = "App.Menu.Users",
-                        IconClass = "mdi mdi-account-outline",
-                        Controller = "Support",
-                        Action = "Users",
-                        Area = "Admin",
-                        CssClass = ""
-                    },
-                    new() {
-                        Label = "App.Menu.Departments",
-                        IconClass = "mdi mdi-share-all-outline",
-                        Controller = "Support",
-                        Action = "Departments",
-                        Area = "Admin",
-                        CssClass = ""
-                    },
-                    new() {
-                        Label = "App.Menu.Permissions.Assign",
-                        IconClass = "mdi mdi-shield-check-outline",
-                        Controller = "Support",
-                        Action = "AssignPermissions",
-                        Area = "Admin",
-                        CssClass = ""
-                    },
-                    new() {
-                        Label = "App.Menu.Configurations.Data",
-                        IconClass = "mdi mdi-account-details-outline",
-                        Controller = "Configuration",
-                        Action = "UserData",
-                        Area = "Admin",
-                        CssClass = ""
-                    },
-                    new() {
-                        Label = "App.Menu.Configurations.Groups",
-                        IconClass = "mdi mdi-account-group-outline",
-                        Controller = "Configuration",
-                        Action = "UserGroups",
-                        Area = "Admin",
-                        CssClass = ""
-                    }
-                    // Load from session
-                },
-
-                PinnedItems = new List<PinnedModel> {
-                    new() {
-                        Label = "App.Menu.Configurations.Data",
-                        IconClass = "mdi mdi-account-details-outline",
-                        Controller = "Configuration",
-                        Action = "UserData",
-                        Area = "Admin",
-                        CssClass = ""
-                    },
-                    new() {
-                        Label = "App.Menu.Configurations.Groups",
-                        IconClass = "mdi mdi-account-group-outline",
-                        Controller = "Configuration",
-                        Action = "UserGroups",
-                        Area = "Admin",
-                        CssClass = ""
-                    }
-                },
-
-                LastLogin = DateTime.UtcNow
+                QuickActions = quickActions,
+                Workspace = _sessionManager.GetWorkspace(),
+                //..statistics
+                DashboardStatistics = stats
             };
+
             return await Task.FromResult(model);
         }
 

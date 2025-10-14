@@ -1,0 +1,22 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "POLICY TASKS";
+    var component = new PageComponentViewModel
+    {
+        ComponentId = $"0",
+        ComponentKey = "PolicyTasks",
+        LeftActions = new List<ComponentAction> {
+            new ComponentAction {ActionKey = ActionKey.ComplianceHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home")},
+            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
+            new ComponentAction { ActionKey = ActionKey.PolicyTask.GetDescription(), Icon = "mdi mdi-checkbox-marked-circle-plus-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") },
+            new ComponentAction { ActionKey = ActionKey.NewDepartment.GetDescription(), Icon = "mdi mdi-widgets-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Department") },
+            new ComponentAction { ActionKey = ActionKey.NewResponsibility.GetDescription(), Icon = "mdi mdi-hand-coin-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Responsibility") },
+            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
+            new ComponentAction { ActionKey = ActionKey.PolicyTaskExport.GetDescription(), Icon = "mdi mdi-file-excel-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Export") },
+            new ComponentAction { ActionKey = ActionKey.PolicyTaskMail.GetDescription(), Icon = "mdi mdi-email-arrow-right-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Mail.Send") },
+        }
+    };
+}
+
+@await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("CompliancePolicyTasks") })
+

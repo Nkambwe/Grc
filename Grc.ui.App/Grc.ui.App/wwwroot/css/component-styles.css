@@ -315,6 +315,11 @@ button.icon-btn:hover span {
     color: var(--pearl-purple-dark-20);
 }
 
+button.action-btn.action-btn-separator {
+    border-right: solid 1px;
+    width: 1px !important;
+}
+
 .action-btn:hover,
 .action-btn:hover span {
     color: var(--pearl-purple-dark-light-light);

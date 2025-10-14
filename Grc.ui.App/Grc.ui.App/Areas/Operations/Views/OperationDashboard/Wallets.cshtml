@@ -1,0 +1,20 @@
+﻿@using System.Text.Json
+@model OperationsDashboardModel
+@{
+    Layout = "_OperationLayout";
+    ViewData["Title"] = "WALLETS";
+}
+
+@{
+    var component = new PageComponentViewModel
+    {
+        ComponentId = $"0",
+        ComponentKey = "WalletProcesses",
+        LeftActions = new List<ComponentAction>
+        {
+            new ComponentAction { ActionKey = ActionKey.OpsHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home") }
+        }
+    };
+}
+
+@await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("WalletDashboard") })

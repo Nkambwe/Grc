@@ -1,1 +1,120 @@
 ﻿
+.grc-tabulator-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.grc-tabulator-search {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.field-search-group {
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    width: 100%;
+}
+
+.field-search-buttons {
+    min-width: 200px;
+    padding: 15px 10px;
+}
+
+.form-searchbox-label {
+    min-width: 250px;
+    text-align: right;
+    padding: 10px 20px;
+    font-weight: 600;
+    font-size: 1.2em;
+    color: var(--grey-dark-slightly);
+}
+
+.searchbox-field {
+    border-radius: 50px;
+}
+.action-column {
+    padding: 0 !important;
+}
+
+.grc-table-btn {
+    border: none;
+    height: 100%;
+    width: 100%;
+    padding: 5px 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor:pointer;
+    display:flex;
+    flex-direction:row;
+    gap:1px;
+    background: transparent;
+    transition: all .5s ease-in-out;
+}
+
+.grc-table-btn span {
+    display:inline-block;
+    padding:5px;
+}
+
+.grc-btn-default:hover {
+    color: var(--pearl-purple-dark-light-extra);
+    transition: all .5s ease-in-out;
+}
+
+.grc-delete-action {
+    color: var(--pink-tarn-accent);
+    transition: all .5s ease-in-out;
+}
+
+    .grc-delete-action:hover {
+        font-weight: 600;
+        color: var(--pearl-orange);
+        transition: all .5s ease-in-out;
+    }
+
+div.dt-processing > div:last-child > div {
+    position: absolute;
+    top: 0;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: var(--yellow-dark-extra) !important;
+    background: rgb(var(--dt-row-selected));
+    animation-timing-function: cubic-bezier(0, 1, 1, 0)
+}
+
+/* style first column */
+.tabulator-cell:has(.record-tab) {
+    border-left: 2px solid var(--grey-light-slightly);
+    border-right: 2px solid var(--grey-light-slightly);
+    background: var(--white-base) !important;
+}
+
+/* Style cells with record-tab */
+.tabulator-cell:has(.record-tab) {
+    border-left: 2px solid var(--grey-light-slightly);
+    border-right: 2px solid var(--grey-light-slightly);
+    background: var(--white-base) !important;
+}
+
+/* Style headers for first and last columns - more specific */
+#category-table .tabulator-col:first-child,
+#category-table .tabulator-col:last-child {
+    border-left: 2px solid var(--grey-light-slightly) !important;
+    border-right: 2px solid var(--grey-light-slightly) !important;
+    background: var(--white-base) !important;
+}
+
+    /* Style header content for first and last columns */
+    #category-table .tabulator-col:last-child .tabulator-col-content {
+        border-left: 2px solid var(--grey-light-slightly) !important;
+        border-right: 2px solid var(--grey-light-slightly) !important;
+    }
+
+/* Style header content for first and last columns */
+#category-table .tabulator-col:last-child .tabulator-col-content {
+    border-left: 2px solid var(--grey-light-slightly) !important;
+    border-right: 2px solid var(--grey-light-slightly) !important;
+}
