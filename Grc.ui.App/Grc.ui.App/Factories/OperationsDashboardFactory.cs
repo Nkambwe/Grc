@@ -6,6 +6,7 @@ using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
+using Microsoft.CodeAnalysis;
 
 namespace Grc.ui.App.Factories {
 
@@ -283,20 +284,232 @@ namespace Grc.ui.App.Factories {
         }
 
         public async Task<OperationsDashboardModel> PrepareDefaultOperationsModelAsync(UserModel currentUser) {
-            
+
+            //..get quick items
+            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var quickActions = new List<QuickActionModel>();
+            if (!quicksData.HasError)
+            {
+                var quickies = quicksData.Data;
+                if (quickies.Count > 0)
+                {
+                    foreach (var action in quickies)
+                    {
+                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
+                    }
+                }
+            }
+
             return await Task.FromResult(new OperationsDashboardModel {
+                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
-                //..set workspace into seession
+                QuickActions = quickActions,
                 Workspace = _sessionManager.GetWorkspace(),
             });
         }
 
         public async Task<OperationsDashboardModel> PrepareUnitStatisticsModelAsync(UserModel currentUser, string unit) {
+
+            //..get quick items
+            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var quickActions = new List<QuickActionModel>();
+            if (!quicksData.HasError)
+            {
+                var quickies = quicksData.Data;
+                if (quickies.Count > 0)
+                {
+                    foreach (var action in quickies)
+                    {
+                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
+                    }
+                }
+            }
+
             var unitStatistics = await _processesService.UnitCountAsync(currentUser.UserId, currentUser.LastLoginIpAddress, unit);
             return new OperationsDashboardModel {
+                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
+                Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
+                QuickActions = quickActions,
                 Workspace = _sessionManager.GetWorkspace(),
                 UnitStatistics = unitStatistics
             };
+        }
+
+        public async Task<TotalExtensionModel> PrepareDefaultTotalExtensionsModelAsync(UserModel currentUser) {
+
+            //..get quick items
+            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var quickActions = new List<QuickActionModel>();
+            if (!quicksData.HasError)
+            {
+                var quickies = quicksData.Data;
+                if (quickies.Count > 0)
+                {
+                    foreach (var action in quickies)
+                    {
+                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
+                    }
+                }
+            }
+
+            var charts = await _processesService.TotalExtensionsCountAsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            return new TotalExtensionModel
+            {
+                WelcomeMessage = $"Processes Categories Per Unit",
+                Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
+                QuickActions = quickActions,
+                Workspace = _sessionManager.GetWorkspace(),
+                Charts = charts
+            };
+        }
+
+        public async Task<CategoryExtensionModel> PrepareCategoryExtensionsModelAsync(UserModel currentUser, string category)
+        {
+            //..get quick items
+            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var quickActions = new List<QuickActionModel>();
+            if (!quicksData.HasError)
+            {
+                var quickies = quicksData.Data;
+                if (quickies.Count > 0)
+                {
+                    foreach (var action in quickies)
+                    {
+                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
+                    }
+                }
+            }
+
+            CategoryExtensionModel record = await _processesService.CategoryExtensionsCountAsync(category, currentUser.UserId, currentUser.LastLoginIpAddress);
+            if (record != null) {
+                record.WelcomeMessage = $"{category} Processes breakdown";
+                record.Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}";
+                record.QuickActions = quickActions;
+                record.Workspace = _sessionManager.GetWorkspace();
+            } else
+            {
+                record = new()
+                {
+                    WelcomeMessage = $"{category} Processes breakdown",
+                    Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
+                    QuickActions = quickActions,
+                    Workspace = _sessionManager.GetWorkspace(),
+                    UnitProcesses = new()
+                };
+            }
+
+            return record;
+        }
+
+        public async Task<CategoryExtensionModel> PrepareDefaultExtensionCategoryErrorModelAsync(UserModel currentUser)
+        {
+            //..get quick items
+            if (currentUser != null)
+            {
+
+            }
+
+            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var quickActions = new List<QuickActionModel>();
+            if (!quicksData.HasError)
+            {
+                var quickies = quicksData.Data;
+                if (quickies.Count > 0)
+                {
+                    foreach (var action in quickies)
+                    {
+                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
+                    }
+                }
+            }
+
+            //..get dashboard statistics
+            //var stats = await _processesService.StatisticAsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var model = new CategoryExtensionModel
+            {
+                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
+                Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
+                QuickActions = quickActions,
+                UnitProcesses = new(),
+                //..set workspace into session
+                Workspace = _sessionManager.GetWorkspace(),
+            };
+            return model;
+        }
+
+        public async Task<TotalExtensionModel> PrepareExtensionCategoryErrorModelAsync(UserModel currentUser)
+        {
+            //..get quick items
+            if(currentUser != null)
+            {
+
+            }
+
+            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var quickActions = new List<QuickActionModel>();
+            if (!quicksData.HasError)
+            {
+                var quickies = quicksData.Data;
+                if (quickies.Count > 0)
+                {
+                    foreach (var action in quickies)
+                    {
+                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
+                    }
+                }
+            }
+
+            //..get dashboard statistics
+            var stats = await _processesService.StatisticAsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var model = new TotalExtensionModel
+            {
+                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
+                Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
+                QuickActions = quickActions,
+                Charts = new(),
+                //..set workspace into session
+                Workspace = _sessionManager.GetWorkspace(),
+            };
+            return model;
+        }
+
+        public async Task<OperationsDashboardModel> PrepareErrorOperationsDashboardModelAsync(UserModel currentUser)
+        {
+            if (currentUser != null)
+            {
+
+            }
+
+            //..get quick items
+            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var quickActions = new List<QuickActionModel>();
+            if (!quicksData.HasError)
+            {
+                var quickies = quicksData.Data;
+                if (quickies.Count > 0)
+                {
+                    foreach (var action in quickies)
+                    {
+                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
+                    }
+                }
+            }
+
+            //..get dashboard statistics
+            var stats = await _processesService.StatisticAsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var model = new OperationsDashboardModel
+            {
+                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
+                Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
+                QuickActions = quickActions,
+                //..set workspace into session
+                Workspace = _sessionManager.GetWorkspace(),
+                //..statistics
+                DashboardStatistics = stats,
+                //..create dashboard cards
+                ChartViewModel = new DashboardChartViewModel()
+            };
+            return model;
         }
 
     }

@@ -21,6 +21,7 @@ namespace Grc.ui.App.Models {
         public string UnitCode { get; set; }
         public bool IsActive { get; set; }
         public bool IsVerified { get; set; }
+        public bool IsAuthenticated { get; set; }
         public bool IsLogged { get; set; }
         public bool RequiresPasswordChange { get; set; }
         public string LastLoginIpAddress { get; set; } 

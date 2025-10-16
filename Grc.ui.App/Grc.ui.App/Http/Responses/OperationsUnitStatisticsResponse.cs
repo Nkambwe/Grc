@@ -30,6 +30,11 @@
         /// </summary>
         public UnitCountResponse CancelledProcesses { get; set; }
 
-        
+        /// <summary>
+        /// Get or set processes that are nolonger in use
+        /// </summary>
+        public UnitCountResponse UnclassifiedProcesses { get; set; }
+
+
     }
 }

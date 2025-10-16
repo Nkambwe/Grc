@@ -1,26 +1,49 @@
 ﻿@using System.Text.Json
-@model OperationsDashboardModel
+@model TotalExtensionModel
 @{
     Layout = "_OperationLayout";
-    ViewData["Title"] = "TOTAL POROCESSES";
+    ViewData["Title"] = "TOTAL PROCESSES";
+
+    var chartsJson = JsonSerializer.Serialize(Model.Charts);
 }
 
+<div class="welcome-container">
+    <div class="welcome-container-message">
+        <span class="display-1">@Model.WelcomeMessage</span>
+    </div>
+    <div class="incon-container-expand">
+        <button id="expandBtn" type="button" class="icon-btn">
+            <span>
+                <i id="toggleIcon" class="mdi mdi-arrow-expand"></i>
+            </span>
+        </button>
+    </div>
+
+</div>
+
+<div class="action-box">
+    <div class="title-box">
+        <h3 class="display-1 action-box-title">Quick Actions</h3>
+        <span class="title-line"></span>
+    </div>
+
+    @await Component.InvokeAsync("QuickActions", new { model = Model.QuickActions })
+</div>
+
+<div class="dashboard-category-grid">
+    <!-- Category total Cards -->
+    <div class="stats-category-grid" id="categoryCards">
+        <!-- Cards will be generated here -->
+    </div>
+
+    <!-- charts for each category -->
+    <div class="category-charts-grid" id="categoryChartsContainer">
+        <!-- Charts will be generated here -->
+    </div>
+</div>
 @{
-    var component = new PageComponentViewModel
-    {
-        ComponentId = $"0",
-        ComponentKey = "TotalProcesses",
-        LeftActions = new List<ComponentAction>
-        {
-            new ComponentAction { ActionKey = ActionKey.OpsHome.GetDescription(), Icon = "mdi mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home") },
-            new ComponentAction { ActionKey = ActionKey.TotalProposed.GetDescription(), Icon = "mdi mdi-application-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Processes.TotalProcesses.Proposed") },
-            new ComponentAction { ActionKey = ActionKey.TotalUnchanged.GetDescription(), Icon = "mdi mdi-application-settings-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Processes.TotalProcesses.Unchanged") },
-            new ComponentAction { ActionKey = ActionKey.TotalDueReview.GetDescription(), Icon = "mdi mdi-application-edit-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Processes.TotalProcesses.DueReview") },
-            new ComponentAction { ActionKey = ActionKey.TotalDormant.GetDescription(), Icon = "mdi mdi-application-cog-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Processes.TotalProcesses.Dormant") },
-            new ComponentAction { ActionKey = ActionKey.TotalCancelled.GetDescription(), Icon = "mdi mdi-application-variable-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Processes.TotalProcesses.Cancelled") },
-            new ComponentAction { ActionKey = ActionKey.TotalCompleted.GetDescription(), Icon = "mdi mdi-application-import", Tooltip = ILocalize.GetLocalizedLabel("App.Processes.TotalProcesses.Completed") },
-        }
-    };
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/operations-totals-dashboard-script.js");
 }
-
-@await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("TotalProcessesDashboard") })
+<script>
+    const chartData = @Html.Raw(chartsJson);
+</script>

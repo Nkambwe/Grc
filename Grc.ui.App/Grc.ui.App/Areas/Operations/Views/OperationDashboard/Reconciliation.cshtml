@@ -1,20 +1,32 @@
-﻿@using System.Text.Json
-@model OperationsDashboardModel
+﻿@model OperationsDashboardModel
 @{
     Layout = "_OperationLayout";
-    ViewData["Title"] = "RECONCILIATION";
+    ViewData["Title"] = "RECONCILIATION PROCESSES";
 }
 
-@{
-    var component = new PageComponentViewModel
-    {
-        ComponentId = $"0",
-        ComponentKey = "ReconProcesses",
-        LeftActions = new List<ComponentAction>
-        {
-            new ComponentAction { ActionKey = ActionKey.OpsHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home") }
-        }
-    };
-}
+<div class="welcome-container">
+    <div class="welcome-container-message">
+        <span class="display-1">@Model.WelcomeMessage</span>
+    </div>
+    <div class="incon-container-expand">
+        <button id="expandBtn" type="button" class="icon-btn">
+            <span>
+                <i id="toggleIcon" class="mdi mdi-arrow-expand"></i>
+            </span>
+        </button>
+    </div>
 
-@await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("ReconciliationDashboard") })
+</div>
+
+<div class="action-box">
+    <div class="title-box">
+        <h3 class="display-1 action-box-title">Quick Actions</h3>
+        <span class="title-line"></span>
+    </div>
+
+    @await Component.InvokeAsync("QuickActions", new { model = Model.QuickActions })
+</div>
+
+<div class="col-sm-12">
+    <span class="display-1 text-success">Reconciliation Process</span>
+</div>

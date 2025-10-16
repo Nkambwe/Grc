@@ -1,33 +1,26 @@
-﻿
+﻿@using System.Text.Json
 @model OperationsDashboardModel
 @{
     Layout = "_OperationLayout";
-    ViewData["Title"] = "PROCESS REGISTER";
+    ViewData["Title"] = "TOTAL POROCESSES";
 }
 
-<div class="welcome-container">
-    <div class="welcome-container-message">
-        <span class="display-1">@Model.WelcomeMessage</span>
-    </div>
-    <div class="incon-container-expand">
-        <button id="expandBtn" type="button" class="icon-btn">
-            <span>
-                <i id="toggleIcon" class="mdi mdi-arrow-expand"></i>
-            </span>
-        </button>
-    </div>
+@{
+    var component = new PageComponentViewModel
+    {
+        ComponentId = $"0",
+        ComponentKey = "TotalProcesses",
+        LeftActions = new List<ComponentAction>
+        {
+            new ComponentAction { ActionKey = ActionKey.OpsHome.GetDescription(), Icon = "mdi mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home") },
+            new ComponentAction { ActionKey = ActionKey.TotalProposed.GetDescription(), Icon = "mdi mdi-application-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Processes.TotalProcesses.Proposed") },
+            new ComponentAction { ActionKey = ActionKey.TotalUnchanged.GetDescription(), Icon = "mdi mdi-application-settings-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Processes.TotalProcesses.Unchanged") },
+            new ComponentAction { ActionKey = ActionKey.TotalDueReview.GetDescription(), Icon = "mdi mdi-application-edit-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Processes.TotalProcesses.DueReview") },
+            new ComponentAction { ActionKey = ActionKey.TotalDormant.GetDescription(), Icon = "mdi mdi-application-cog-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Processes.TotalProcesses.Dormant") },
+            new ComponentAction { ActionKey = ActionKey.TotalCancelled.GetDescription(), Icon = "mdi mdi-application-variable-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Processes.TotalProcesses.Cancelled") },
+            new ComponentAction { ActionKey = ActionKey.TotalCompleted.GetDescription(), Icon = "mdi mdi-application-import", Tooltip = ILocalize.GetLocalizedLabel("App.Processes.TotalProcesses.Completed") },
+        }
+    };
+}
 
-</div>
-
-<div class="action-box">
-    <div class="title-box">
-        <h3 class="display-1 action-box-title">Quick Actions</h3>
-        <span class="title-line"></span>
-    </div>
-
-    @await Component.InvokeAsync("QuickActions", new { model = Model.QuickActions })
-</div>
-
-<div class="col-sm-12">
-    <span class="display-1 text-success">Register Process</span>
-</div>
+@await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("TotalProcessesDashboard") })

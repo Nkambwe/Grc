@@ -375,7 +375,6 @@
 	<LocaleResource Name="Component.Key.RegulatoryMaps">
 		<Value>Compliance Maps</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="Component.Label.Branch">
 		<Value>Add Branch</Value>
 	</LocaleResource>
@@ -1355,6 +1354,9 @@
 	</LocaleResource>
 	<LocaleResource Name="App.Message.EnterPassword">
 		<Value>Password required for login</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Message.InvalidUsername">
+		<Value>Invalid username! Please correct your name and try again</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Message.EnterUsername">
 		<Value>Username required for login</Value>

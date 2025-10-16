@@ -2,6 +2,7 @@ wwwroot\css\admin-style.css
 wwwroot\css\admin-tables-styles.css
 wwwroot\css\app-styles.css
 wwwroot\css\app-tables-styles.css
+wwwroot\css\app-tabular-styles.css
 wwwroot\css\color-pallete.css
 wwwroot\css\component-styles.css
 wwwroot\css\fonts\material-icons-outlined.woff
@@ -39,6 +40,7 @@ wwwroot\js\app-policy-register.js
 wwwroot\js\app-regulation-authorities.js
 wwwroot\js\app-regulation-categories.js
 wwwroot\js\app-regulation-doctypes.js
+wwwroot\js\app-regulation-obligations.js
 wwwroot\js\app-regulation-PolRegister.js
 wwwroot\js\app-regulation-tasks.js
 wwwroot\js\app-regulation-types.js
@@ -54,6 +56,7 @@ wwwroot\js\department-units-script.js
 wwwroot\js\grc-sidebar.js
 wwwroot\js\login-script.js
 wwwroot\js\operations-dashboard-script.js
+wwwroot\js\operations-totals-dashboard-script.js
 wwwroot\js\register-script.js
 wwwroot\js\users-script.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
@@ -105,6 +108,7 @@ wwwroot\lib\bootstrap\LICENSE
 wwwroot\lib\bulma\bulma.css
 wwwroot\lib\bulma\bulma.css.map
 wwwroot\lib\bulma\bulma.min.css
+wwwroot\lib\chartjs\Chart-4.4.1-min.js
 wwwroot\lib\chartjs\Chart.bundle.js
 wwwroot\lib\chartjs\Chart.bundle.min.js
 wwwroot\lib\chartjs\Chart.css
@@ -199,5 +203,3 @@ wwwroot\lib\tooltips\popper.min.js
 wwwroot\lib\tooltips\tippy.css
 wwwroot\lib\tooltips\tippy.umd.min.js
 wwwroot\lib\xlsx\xlsx.full.min.js
-wwwroot\css\app-tabular-styles.css
-wwwroot\js\app-regulation-obligations.js

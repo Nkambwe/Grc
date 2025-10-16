@@ -208,7 +208,13 @@ $(document).ready(function () {
         const currentPath = window.location.pathname.toLowerCase();
         const $sidebarLinks = $('.sidebar-item a[href]');
 
-        $sidebarLinks.each(function() {
+        //..clear all active states first
+        $('.sidebar-item').removeClass('active open parent-active');
+        $('.sidebar-submenu').removeClass('open');
+
+        let foundMatch = false;
+
+        $sidebarLinks.each(function () {
             const $link = $(this);
             const href = $link.attr('href');
 
@@ -219,10 +225,11 @@ $(document).ready(function () {
 
             //..only mark exact path match as active
             if (currentPath === linkPath) {
+                foundMatch = true;
                 const $sidebarItem = $link.closest('.sidebar-item');
-                $sidebarItem.addClass('active'); 
+                $sidebarItem.addClass('active');
 
-                //..it's inside a submenu, expand it and highlight parent
+                //..if it's inside a submenu, expand it and highlight parent
                 const $submenu = $link.closest('.sidebar-submenu');
                 if ($submenu.length) {
                     $submenu.addClass('open');
@@ -230,11 +237,20 @@ $(document).ready(function () {
                     const $parentToggle = $('[data-id="' + submenuId + '"]');
                     if ($parentToggle.length) {
                         const $parentItem = $parentToggle.closest('.sidebar-item');
-                        $parentItem.addClass('open parent-active'); 
+                        $parentItem.addClass('open parent-active');
                     }
                 }
             }
         });
+
+        //..if no exact match found, activate Home as fallback
+        if (!foundMatch) {
+            const $homeLink = $('.sidebar-item a[href="/operations/dashboard"]').first();
+
+            if ($homeLink.length > 0) {
+                $homeLink.closest('.sidebar-item').addClass('active');
+            }
+        }
     }
 
     //..smooth transitions

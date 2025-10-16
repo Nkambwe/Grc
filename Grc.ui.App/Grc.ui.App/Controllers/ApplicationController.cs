@@ -1,8 +1,10 @@
-﻿using Grc.ui.App.Defaults;
+﻿using DocumentFormat.OpenXml.EMMA;
+using Grc.ui.App.Defaults;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Filters;
 using Grc.ui.App.Helpers;
+using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
@@ -47,41 +49,65 @@ namespace Grc.ui.App.Controllers {
             _dashboardFactory = dashboardFactory;
         }
 
-        public IActionResult Index() {
-            if (User.Identity.IsAuthenticated) {
-                //var role = User.FindFirst(ClaimTypes.Role)?.Value;
-                var roleGroup = User.FindFirst("RoleGroup")?.Value;
-                var redirectUrl = DetermineRedirectUrl(roleGroup);
-                return Redirect(redirectUrl);
-            } 
-
-            return RedirectToAction("Login");
-        }
-
         [LogActivityResult("User Login", "User logged in to the system", ActivityTypeDefaults.USER_LOGIN, "SystemUser")]
         public async Task<IActionResult> Dashboard() {
 
             try{
+
+                //..check if user is authenticated
+                if(User.Identity?.IsAuthenticated != true) {
+                    return RedirectToAction("Login");
+                }
+
+                //..get user role
+                var roleGroup = User.FindFirst("RoleGroup")?.Value;
+                if(roleGroup == null) {
+                    //..we cannot determine user role, force login
+                    return RedirectToAction("Login");
+                }
+
+                //..determine redirect URL based on user roles
+                //..route to admin
+                if (roleGroup.Equals("System Administrators") || roleGroup.Equals("Application Support"))
+                {
+                    return Redirect(Url.Action("Index", "Support", new { area = "Admin" }));
+                }
+
+                //..route to operations
+                if (roleGroup.Equals("Operations")) {
+                    return Redirect(Url.Action("Index", "OperationDashboard", new { area = "Operations" }));
+                }
+
                 var ipAddress = WebHelper.GetCurrentIpAddress();
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError) {
-                    return RedirectToAction("Login");
+                    var model = new LoginModel() {
+                        Username = "Unknown",
+                        DisplayName = "Unknown",
+                        CurrentStage = LoginStage.Username,
+                    };
+                    return HandleLoginError(new GrcResponse<UserModel>(grcResponse.Error), model);
                 }
 
                 return View(await _dashboardFactory.PrepareUserDashboardModelAsync(grcResponse.Data));
             } catch(Exception ex){ 
                 Logger.LogActivity($"Error Loading user dashboard: {ex.Message}", "ERROR");
-
-                //..capture error to bug tracker
                  _= await ProcessErrorAsync(ex.Message, "APPLICATIONCONTROLLER-DASHBORAD", ex.StackTrace);
-                return RedirectToAction("Login");
+                var errModel = new GrcResponseError(500, "Error Loading user dashboard", "");
+                var model = new LoginModel() {
+                    Username = "Unknown",
+                    DisplayName = "Unknown",
+                    CurrentStage = LoginStage.Username,
+                };
+                Logger.LogActivity($"LOGIN ERROR: {JsonSerializer.Serialize(errModel)}");
+                return HandleLoginError(new GrcResponse<UserModel>(errModel), model);
             }
         }
 
         [HttpGet]
         public async Task<IActionResult> Login() {
             if (User.Identity?.IsAuthenticated == true) {
-                return RedirectToAction("Index");
+                return RedirectToAction("Dashboard");
             }
 
             var loginModel = await _loginFactory.PrepareLoginModelAsync();
@@ -91,6 +117,7 @@ namespace Grc.ui.App.Controllers {
         [HttpPost]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
         public virtual async Task<IActionResult> Login([FromBody] LoginModel model) {
+
             if (!ModelState.IsValid) {
                 return HandleValidationErrors(model);
             }
@@ -104,7 +131,19 @@ namespace Grc.ui.App.Controllers {
                     return HandleLoginError(response, model);
                 }
 
-                await _authService.SignInAsync(response.Data, model.RememberMe);
+                var data = response.Data;
+                if(data == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.UNAUTHORIZED,
+                        LocalizationService.GetLocalizedLabel("App.Authentication.Failed"),"Invalid login response from authentication service");
+                    return HandleLoginError(new GrcResponse<UserModel>(error), model);
+                }
+
+                if (!data.IsAuthenticated)
+                {
+                    return HandleUsernameValidationError(LocalizationService.GetLocalizedLabel("App.Message.InvalidPassword"), model);
+                }
+
+                await _authService.SignInAsync(data, model.RememberMe);
                  Logger.LogActivity($"User successfully authenticated: {model.Username}");
 
                 //..determine redirect URL based on user roles
@@ -147,6 +186,11 @@ namespace Grc.ui.App.Controllers {
                      return HandleUsernameValidationError(grcResponse.Error.Message, model);
                 }
                 
+                var data = grcResponse.Data;
+                if(data == null || !data.IsValid) {
+                    return HandleUsernameValidationError(LocalizationService.GetLocalizedLabel("App.Message.InvalidUsername"), model);
+                }
+
                 //..username is valid, prepare for password stage
                 model.IsUsernameValidated = true;
                 model.DisplayName = grcResponse.Data.DisplayName;
@@ -171,7 +215,7 @@ namespace Grc.ui.App.Controllers {
 
                 //..capture error to bug tracker
                  _= await ProcessErrorAsync(ex.Message, "APPLICATIONCONTROLLER-VALIDATEUSERNAME", ex.StackTrace);
-                return HandleUsernameValidationError(LocalizationService.GetLocalizedLabel("Error.Service.Unavailable"), model);
+                return HandleUsernameValidationError(LocalizationService.GetLocalizedLabel("App.Authentication.Failed"), model);
             }
         }
 

@@ -1240,6 +1240,105 @@ div.input-group.date {
     background: var(--background-color);
 }
 
+
+/*---------------------------------*/
+
+.dashboard-category-grid {
+    margin: 0 auto;
+}
+
+.stats-category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stats-category-card {
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.2s;
+    background: var(--background-color);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
+
+.stats-card-title {
+    font-size: 1.2rem;
+    color: var(--grey-dark);
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.stats-card-value {
+    font-size: 36px;
+    font-weight: bold;
+    color: var(--pearl-purple-dark-70);
+}
+
+
+.category-charts-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px; 
+}
+
+.category-chart-card {
+    padding: 20px;
+    height: 370px;
+    display: flex;
+    flex-direction: column;
+    background: var(--background-color);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
+
+.chart-card-title {
+    display: inline-block;
+    font-size: 1.2em;
+    font-weight: 600;
+    color: var(--pearl-purple-dark-50);
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    padding: 5px;
+    text-shadow: 2px 4px 3px rgba(0, 0, 0, 0.3);
+}
+
+.chart-category-container {
+    height: 250px;
+    position: relative;
+    padding: 1.5rem;
+    background: var(--background-color);
+}
+
+.chart-container {
+    
+    
+}
+
+/* Status-specific colors */
+.card-uptodate {
+    border-top: 4px solid #10b981;
+}
+
+.card-proposed {
+    border-top: 4px solid #3b82f6;
+}
+
+.card-unchanged {
+    border-top: 4px solid #8b5cf6;
+}
+
+.card-due {
+    border-top: 4px solid #f59e0b;
+}
+
+.card-dormant {
+    border-top: 4px solid #ef4444;
+}
+
+.card-cancelled {
+    border-top: 4px solid #ef4444;
+}
+/*-------------------*/
 .charts-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));

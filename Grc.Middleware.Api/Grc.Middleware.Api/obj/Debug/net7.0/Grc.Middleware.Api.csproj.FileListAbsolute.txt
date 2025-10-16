@@ -539,7 +539,6 @@ C:\Projects\cs\GRC\github\Grc\Grc.Middleware.Api\Grc.Middleware.Api\obj\Debug\ne
 C:\Projects\cs\GRC\github\Grc\Grc.Middleware.Api\Grc.Middleware.Api\obj\Debug\net7.0\staticwebassets.build.json.cache
 C:\Projects\cs\GRC\github\Grc\Grc.Middleware.Api\Grc.Middleware.Api\obj\Debug\net7.0\staticwebassets.development.json
 C:\Projects\cs\GRC\github\Grc\Grc.Middleware.Api\Grc.Middleware.Api\obj\Debug\net7.0\staticwebassets.build.endpoints.json
-C:\Projects\cs\GRC\github\Grc\Grc.Middleware.Api\Grc.Middleware.Api\obj\Debug\net7.0\staticwebassets.upToDateCheck.txt
 C:\Projects\cs\GRC\github\Grc\Grc.Middleware.Api\Grc.Middleware.Api\obj\Debug\net7.0\Grc.Midd.5892BC4A.Up2Date
 C:\Projects\cs\GRC\github\Grc\Grc.Middleware.Api\Grc.Middleware.Api\obj\Debug\net7.0\Grc.Middleware.Api.dll
 C:\Projects\cs\GRC\github\Grc\Grc.Middleware.Api\Grc.Middleware.Api\obj\Debug\net7.0\refint\Grc.Middleware.Api.dll

@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
+using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
+using Grc.ui.App.Extensions;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Utils;
+using System.Collections.Generic;
 
 namespace Grc.ui.App.Services {
 
@@ -226,6 +229,194 @@ namespace Grc.ui.App.Services {
             };
 
             return await Task.FromResult(categories);
+        }
+
+        public async Task<List<DashboardRecord>> TotalExtensionsCountAsync(long userId, string ipAddress)
+        {
+            return await Task.FromResult(new List<DashboardRecord>()
+            {
+                new(){
+                    Banner = ProcessCategories.UpToDate.GetDescription(),
+                    Categories = new Dictionary<string, int> {
+                        { OperationUnit.AccountServices.GetDescription(),9 },
+                        { OperationUnit.Cash.GetDescription(), 3 },
+                        { OperationUnit.Channels.GetDescription(), 9 },
+                        { OperationUnit.CustomerExp.GetDescription(), 12 },
+                        { OperationUnit.Reconciliation.GetDescription(), 4 },
+                        { OperationUnit.RecordsMgt.GetDescription(), 3 },
+                        { OperationUnit.Payments.GetDescription(), 9 },
+                        { OperationUnit.Wallets.GetDescription(), 15 },
+                        { OperationUnit.CategoryTotal.GetDescription(), 62 }
+                    }
+                },
+                new()
+                {
+                    Banner = ProcessCategories.Proposed.GetDescription(),
+                    Categories = new Dictionary<string, int> {
+                        { OperationUnit.AccountServices.GetDescription(),0 },
+                        { OperationUnit.Cash.GetDescription(), 0 },
+                        { OperationUnit.Channels.GetDescription(), 3 },
+                        { OperationUnit.CustomerExp.GetDescription(), 0 },
+                        { OperationUnit.Reconciliation.GetDescription(), 0 },
+                        { OperationUnit.RecordsMgt.GetDescription(), 0 },
+                        { OperationUnit.Payments.GetDescription(), 5 },
+                        { OperationUnit.Wallets.GetDescription(), 2 },
+                        { OperationUnit.CategoryTotal.GetDescription(), 10 }
+                    }
+                },
+                new()
+                {
+                    Banner = ProcessCategories.Unchanged.GetDescription(),
+                    Categories = new Dictionary<string, int> {
+                        { OperationUnit.AccountServices.GetDescription(),0 },
+                        { OperationUnit.Cash.GetDescription(), 9 },
+                        { OperationUnit.Channels.GetDescription(), 14 },
+                        { OperationUnit.CustomerExp.GetDescription(), 2 },
+                        { OperationUnit.Reconciliation.GetDescription(), 8 },
+                        { OperationUnit.RecordsMgt.GetDescription(), 0 },
+                        { OperationUnit.Payments.GetDescription(), 6 },
+                        { OperationUnit.Wallets.GetDescription(), 0 },
+                        { OperationUnit.CategoryTotal.GetDescription(), 30 }
+                    },
+                },
+                new()
+                {
+                    Banner = ProcessCategories.Due.GetDescription(),
+                    Categories = new Dictionary<string, int> {
+                        { OperationUnit.AccountServices.GetDescription(),0 },
+                        { OperationUnit.Cash.GetDescription(), 1 },
+                        { OperationUnit.Channels.GetDescription(), 7 },
+                        { OperationUnit.CustomerExp.GetDescription(), 3 },
+                        { OperationUnit.Reconciliation.GetDescription(), 0 },
+                        { OperationUnit.RecordsMgt.GetDescription(), 0 },
+                        { OperationUnit.Payments.GetDescription(), 5 },
+                        { OperationUnit.Wallets.GetDescription(), 1 },
+                        { OperationUnit.CategoryTotal.GetDescription(), 17 }
+                    },
+                },
+                new()
+                {
+                    Banner = ProcessCategories.Dormant.GetDescription(),
+                    Categories = new Dictionary<string, int> {
+                        { OperationUnit.AccountServices.GetDescription(),0 },
+                        { OperationUnit.Cash.GetDescription(), 0 },
+                        { OperationUnit.Channels.GetDescription(), 1 },
+                        { OperationUnit.CustomerExp.GetDescription(), 0 },
+                        { OperationUnit.Reconciliation.GetDescription(), 0 },
+                        { OperationUnit.RecordsMgt.GetDescription(), 0 },
+                        { OperationUnit.Payments.GetDescription(), 2 },
+                        { OperationUnit.Wallets.GetDescription(), 1 },
+                        { OperationUnit.CategoryTotal.GetDescription(), 4 }
+                    },
+                },
+                new()
+                {
+                    Banner = ProcessCategories.Cancelled.GetDescription(),
+                    Categories = new Dictionary<string, int> {
+                        { OperationUnit.AccountServices.GetDescription(),4 },
+                        { OperationUnit.Cash.GetDescription(), 0 },
+                        { OperationUnit.Channels.GetDescription(), 6 },
+                        { OperationUnit.CustomerExp.GetDescription(), 0 },
+                        { OperationUnit.Reconciliation.GetDescription(), 0 },
+                        { OperationUnit.RecordsMgt.GetDescription(), 1 },
+                        { OperationUnit.Payments.GetDescription(), 0 },
+                        { OperationUnit.Wallets.GetDescription(), 0 },
+                        { OperationUnit.CategoryTotal.GetDescription(), 11 }
+                    },
+                }
+            });
+        }
+
+        public async Task<CategoryExtensionModel> CategoryExtensionsCountAsync(string category, long userId, string lastLoginIpAddress)
+        {
+            var processes = new List<CategoryExtensionModel>()
+            {
+                new(){
+                    Banner = ProcessCategories.UpToDate.GetDescription(),
+                    UnitProcesses = new Dictionary<string, int> {
+                        { OperationUnit.AccountServices.GetDescription(),9 },
+                        { OperationUnit.Cash.GetDescription(), 3 },
+                        { OperationUnit.Channels.GetDescription(), 9 },
+                        { OperationUnit.CustomerExp.GetDescription(), 12 },
+                        { OperationUnit.Reconciliation.GetDescription(), 4 },
+                        { OperationUnit.RecordsMgt.GetDescription(), 3 },
+                        { OperationUnit.Payments.GetDescription(), 9 },
+                        { OperationUnit.Wallets.GetDescription(), 15 }
+                    }
+                },
+                new()
+                {
+                    Banner = ProcessCategories.Proposed.GetDescription(),
+                    UnitProcesses = new Dictionary<string, int> {
+                        { OperationUnit.AccountServices.GetDescription(),0 },
+                        { OperationUnit.Cash.GetDescription(), 0 },
+                        { OperationUnit.Channels.GetDescription(), 3 },
+                        { OperationUnit.CustomerExp.GetDescription(), 0 },
+                        { OperationUnit.Reconciliation.GetDescription(), 0 },
+                        { OperationUnit.RecordsMgt.GetDescription(), 0 },
+                        { OperationUnit.Payments.GetDescription(), 5 },
+                        { OperationUnit.Wallets.GetDescription(), 2 }
+                    }
+                },
+                new()
+                {
+                    Banner = ProcessCategories.Unchanged.GetDescription(),
+                    UnitProcesses = new Dictionary<string, int> {
+                        { OperationUnit.AccountServices.GetDescription(),0 },
+                        { OperationUnit.Cash.GetDescription(), 9 },
+                        { OperationUnit.Channels.GetDescription(), 14 },
+                        { OperationUnit.CustomerExp.GetDescription(), 2 },
+                        { OperationUnit.Reconciliation.GetDescription(), 8 },
+                        { OperationUnit.RecordsMgt.GetDescription(), 0 },
+                        { OperationUnit.Payments.GetDescription(), 6 },
+                        { OperationUnit.Wallets.GetDescription(), 0 }
+                    },
+                },
+                new()
+                {
+                    Banner = ProcessCategories.Due.GetDescription(),
+                    UnitProcesses = new Dictionary<string, int> {
+                        { OperationUnit.AccountServices.GetDescription(),0 },
+                        { OperationUnit.Cash.GetDescription(), 1 },
+                        { OperationUnit.Channels.GetDescription(), 7 },
+                        { OperationUnit.CustomerExp.GetDescription(), 3 },
+                        { OperationUnit.Reconciliation.GetDescription(), 0 },
+                        { OperationUnit.RecordsMgt.GetDescription(), 0 },
+                        { OperationUnit.Payments.GetDescription(), 5 },
+                        { OperationUnit.Wallets.GetDescription(), 1 }
+                    },
+                },
+                new()
+                {
+                    Banner = ProcessCategories.Dormant.GetDescription(),
+                    UnitProcesses = new Dictionary<string, int> {
+                        { OperationUnit.AccountServices.GetDescription(),0 },
+                        { OperationUnit.Cash.GetDescription(), 0 },
+                        { OperationUnit.Channels.GetDescription(), 1 },
+                        { OperationUnit.CustomerExp.GetDescription(), 0 },
+                        { OperationUnit.Reconciliation.GetDescription(), 0 },
+                        { OperationUnit.RecordsMgt.GetDescription(), 0 },
+                        { OperationUnit.Payments.GetDescription(), 2 },
+                        { OperationUnit.Wallets.GetDescription(), 1 }
+                    },
+                },
+                new()
+                {
+                    Banner = ProcessCategories.Cancelled.GetDescription(),
+                    UnitProcesses = new Dictionary<string, int> {
+                        { OperationUnit.AccountServices.GetDescription(),4 },
+                        { OperationUnit.Cash.GetDescription(), 0 },
+                        { OperationUnit.Channels.GetDescription(), 6 },
+                        { OperationUnit.CustomerExp.GetDescription(), 0 },
+                        { OperationUnit.Reconciliation.GetDescription(), 0 },
+                        { OperationUnit.RecordsMgt.GetDescription(), 1 },
+                        { OperationUnit.Payments.GetDescription(), 0 },
+                        { OperationUnit.Wallets.GetDescription(), 0 }
+                    },
+                }
+            };
+            var obj = processes.FirstOrDefault(d => d.Banner.Trim().Equals(category?.Trim(), StringComparison.CurrentCultureIgnoreCase));
+            return await Task.FromResult(obj);
         }
     }
 

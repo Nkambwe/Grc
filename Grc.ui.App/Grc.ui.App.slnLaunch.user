@@ -7,7 +7,7 @@
         "Action": "Start"
       },
       {
-        "Path": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj",
+        "Path": "..\\..\\..\\grc_middleware\\grc-suitemw\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj",
         "Action": "Start"
       }
     ]

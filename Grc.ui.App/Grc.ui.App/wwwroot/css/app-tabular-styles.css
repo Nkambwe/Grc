@@ -228,7 +228,7 @@
     position: fixed;
     top: 70px;
     right: -100vw;
-    width: 75vw;
+    width: 96vw;
     height: 100vh;
     background: white;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
@@ -239,13 +239,14 @@
 
     .slide-panel.active,
     .slide-task-panel.active{
-        right: 8.5vw;
+        right: 2vw;
         overflow: hidden;
     }
 
 .grc-form {
-    overflow-x: hidden!important;
-    overflow-y: auto!important;
+    padding: 10px 40px;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
 }
 
 .panel-header {

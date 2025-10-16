@@ -1,0 +1,4244 @@
+﻿/*
+ * Color pallete: Color-pallete 1.0 July 2025
+ * Created by   : Nkambwe John Mark
+ * Company      : PostBank Uganda Limited
+ */
+
+/*create color pallette - all global variables*/
+
+:root {
+    /**
+        **/
+    /*reds*/
+    --red-light-extra: rgb(255, 235, 238);
+    --red-light: rgb(255, 205, 210);
+    --red-light-slightly: rgb(239, 154, 154);
+    --red-light-medium: rgb(229, 115, 115);
+    --red-light-strong: rgb(239, 83, 80);
+    --red: rgb(244, 67, 54);
+    --red-dark-slightly: rgb(229, 57, 53);
+    --red-dark: rgb(211, 47, 47);
+    --red-dark-strong: rgb(154, 22, 22);
+    --red-dark-extra: rgb(189, 28, 28);
+    --red-light-accent: rgb(255, 138, 128);
+    --red-medium-accent: rgb(255, 82, 82);
+    --red-tarn-accent: rgb(255, 23, 68);
+    --red-dark-accent-light: rgb(194, 1, 22);
+    --red-dark-accent: rgb(168, 0, 37);
+    --red-dark-accent-extra: rgb(83, 0, 35);
+    --red-trans-70: rgba(244, 67, 54, 0.7);
+    --light-red-trans-70: rgba(229, 115, 115, 0.70);
+    --dark-red-trans-70: rgba(154, 22, 22, 0.70);
+    --crimson-trans-01: rgba(168, 0, 39, 0.1);
+    --crimson-trans-70: rgba(168, 0, 39, 0.70);
+    --dark-crimson-trans-70: rgba(83, 0, 36, 0.70);
+    --dark-accent-trans-70: rgba(83, 0, 36, 0.70);
+    /**
+        **/
+    /*pinks*/
+    --pink-faint-light: rgb(255, 251, 251);
+    --pink-faint: rgb(252, 205, 210);
+    --pink-light-extra: rgb(252, 228, 236);
+    --pink-light: rgb(248, 187, 208);
+    --pink-light-slightly: rgb(244, 114, 208);
+    --pink-light-medium: rgb(220, 79, 173);
+    --pink-light-strong: rgb(236, 64, 122);
+    --pink: rgb(233, 30, 99);
+    --pink-dark-slightly: rgb(216, 0, 115);
+    --pink-dark: rgb(194, 24, 91);
+    --pink-dark-faint: rgb(166, 4, 68);
+    --pink-dark-strong: rgb(173, 20, 87);
+    --pink-dark-extra: rgb(136, 14, 79);
+    --pink-light-accent: rgb(255, 128, 171);
+    --pink-medium-accent: rgb(255, 64, 129);
+    --pink-tarn-accent: rgb(245, 0, 87);
+    --pink-dark-accent: rgb(197, 17, 98);
+    --pink-trans-70: rgba(220, 79, 173, 0.70);
+    --light-pink-trans-70: rgba(244, 114, 209, 0.70);
+    --dark-pink-trans-70: rgba(136, 14, 79, 0.70);
+    --magenta-trans-70: rgba(216, 0, 115, 0.70);
+    --dark-magenta-trans-70: rgba(245, 0, 87, 0.70);
+    /**
+        **/
+    /*purples*/
+    --purple-light-extra: rgb(243, 229, 245);
+    --purple-light: rgb(225, 190, 231);
+    --purple-light-slightly: rgb(206, 147, 216);
+    --purple-light-medium: rgb(186, 104, 200);
+    --purple-light-strong: rgb(167, 25, 255);
+    --purple: rgb(156, 39, 176);
+    --purple-dark-slightly: rgb(142, 36, 170);
+    --purple-dark: rgb(123, 31, 162);
+    --purple-dark-strong: rgb(106, 27, 154);
+    --purple-dark-extra: rgb(87, 22, 154);
+    --purple-light-accent: rgb(234, 128, 252);
+    --purple-medium-accent: rgb(224, 64, 251);
+    --purple-tarn-accent: rgb(213, 0, 249);
+    --purple-dark-accent: rgb(170, 0, 255);
+    --violet-trans-70: rgba(167, 25, 255, 0.70);
+    --dark-violet-70: rgba(87, 22, 154, 0.70);
+    /**
+        **/
+    /*deep purples*/
+    --purple-deep-light-extra: rgb(237, 231, 246);
+    --purple-deep-light: rgb(209, 196, 233);
+    --purple-deep-light-slightly: rgb(179, 157, 219);
+    --purple-deep-light-medium: rgb(149, 117, 205);
+    --purple-deep-light-strong: rgb(126, 87, 194);
+    --purple-deep: rgb(103, 58, 183);
+    --purple-deep-dark-slightly: rgb(94, 53, 177);
+    --purple-deep-dark: rgb(81, 45, 168);
+    --purple-deep-dark-strong: rgb(69, 39, 160);
+    --purple-deep-dark-extra: rgb(49, 27, 146);
+    --purple-deep-light-accent: rgb(179, 136, 255);
+    --purple-deep-medium-accent: rgb(124, 77, 255);
+    --purple-deep-tarn-accent: rgb(101, 31, 255);
+    --purple-deep-dark-accent: rgb(106, 0, 234);
+    --mauve-trans-70: rgba(148, 117, 205, 0.70);
+    --indigo-trans-70: rgba(106, 0, 234, 0.70);
+    --dark-indigo-trans-70: rgba(49, 27, 146, 0.70);
+    /**
+        **/
+    /*indigos*/
+    --indigo-light-extra: rgb(232, 234, 246);
+    --indigo-light: rgb(197, 202, 233);
+    --indigo-light-slightly: rgb(144, 153, 197);
+    --indigo-light-medium: rgb(140, 148, 177);
+    --indigo-light-strong: rgb(92, 107, 192);
+    --indigo: rgb(63, 81, 181);
+    --indigo-dark-slightly: rgb(57, 73, 171);
+    --indigo-dark: rgb(48, 63, 159);
+    --indigo-dark-strong: rgb(37, 45, 146);
+    --indigo-dark-extra: rgb(0, 53, 106);
+    --indigo-light-accent: rgb(140, 158, 255);
+    --indigo-medium-accent: rgb(83, 109, 254);
+    --indigo-tarn-accent: rgb(61, 90, 254);
+    --indigo-dark-accent: rgb(0, 80, 239);
+    --cobalt-trans-70: rgba(0, 84, 239, 0.70);
+    --steel-trans-70: rgba(144, 154, 197, 0.70);
+    --dark-cobalt-trans-70: rgba(0, 53, 106, 0.70);
+    /**
+        **/
+    /*blues*/
+    --blue-light-extra: rgb(227, 242, 253);
+    --blue-light: rgb(187, 222, 251);
+    --blue-light-slightly: rgb(144, 202, 249);
+    --blue-light-medium: rgb(100, 181, 246);
+    --blue-light-strong: rgb(67, 165, 245);
+    --blue: rgb(33, 150, 243);
+    --blue-dark-slightly: rgb(30, 136, 229);
+    --blue-dark: rgb(25, 118, 210);
+    --blue-dark-strong: rgb(21, 101, 192);
+    --blue-dark-extra: rgb(13, 71, 161);
+    --blue-light-accent: rgb(130, 177, 255);
+    --blue-medium-accent: rgb(68, 138, 255);
+    --blue-tarn-accent: rgb(41, 121, 255);
+    --blue-dark-accent: rgb(41, 98, 255);
+    --blue-trans-70: rgba(41, 121, 255, 0.70);
+    --light-blue-trans-70: rgba(67, 165, 245, 0.70);
+    --dark-blue-trans-70: rgba(13, 71, 161, 0.70);
+    /**
+        **/
+    /*light blues*/
+    --blue-light-light-extra: rgb(227, 245, 254);
+    --blue-ligh-light: rgb(179, 229, 252);
+    --blue-light-light-slightly: rgb(129, 212, 250);
+    --blue-light-light-medium: rgb(79, 195, 247);
+    --blue-light-light-strong: rgb(41, 182, 246);
+    --blue-light-control: rgb(0, 169, 244);
+    --blue-dark-light-slightly: rgb(3, 155, 229);
+    --blue-dark-light-light: rgb(2, 136, 209);
+    --blue-dark-light-strong: rgb(2, 119, 189);
+    --blue-dark-light-extra: rgb(1, 87, 155);
+    --blue-light-light-accent: rgb(128, 216, 255);
+    --blue-medium-light-accent: rgb(64, 196, 255);
+    --blue-tarn-light-accent: rgb(0, 176, 255);
+    --blue-dark-light-accent: rgb(0, 145, 234);
+    --lighter-blue-trans-70: rgba(0, 169, 244, 0.70);
+    /**
+        **/
+    /*cyans*/
+    --cyan-light-extra: rgb(224, 247, 250);
+    --cyan-light: rgb(178, 237, 242);
+    --cyan-light-slightly: rgb(128, 222, 234);
+    --cyan-light-medium: rgb(77, 208, 225);
+    --cyan-light-strong: rgb(38, 198, 218);
+    --cyan: rgb(38, 168, 212);
+    --cyan-dark-slightly: rgb(10, 125, 193);
+    --cyan-dark: rgb(38, 110, 174);
+    --cyan-dark-strong: rgb(38, 131, 143);
+    --cyan-dark-extra: rgb(38, 179, 192);
+    --cyan-light-accent: rgb(132, 255, 255);
+    --cyan-medium-accent: rgb(24, 225, 255);
+    --cyan-tarn-accent: rgb(0, 229, 255);
+    --cyan-dark-accent: rgb(0, 184, 212);
+    --cyan-trans-70: rgba(24, 225, 255, 0.70);
+    --light-cyan-trans-70: rgba(77, 208, 225, 0.70);
+    --dark-cyan-trans-70: rgba(0, 184, 212, 0.70);
+    /**
+        **/
+    /*teals*/
+    --teal-light-extra: rgb(224, 242, 241);
+    --teal-light: rgb(178, 223, 219);
+    --teal-light-slightly: rgb(128, 203, 194);
+    --teal-light-medium: rgb(69, 182, 172);
+    --teal-light-strong: rgb(38, 166, 154);
+    --teal: rgb(0, 153, 135);
+    --teal-dark-slightly: rgb(0, 137, 123);
+    --teal-dark: rgb(0, 121, 107);
+    --teal-dark-strong: rgb(0, 88, 77);
+    --teal-dark-extra: rgb(0, 59, 77);
+    --teal-light-accent: rgb(167, 255, 235);
+    --teal-medium-accent: rgb(100, 225, 218);
+    --teal-tarn-accent: rgb(29, 233, 182);
+    --teal-dark-accent: rgb(0, 171, 165);
+    --teal-trans-70: rgba(0, 171, 165, 0.70);
+    --light-teal-trans-70: rgba(38, 166, 153, 0.70);
+    --dark-teal-trans-70: rgba(0, 59, 77, 0.70);
+    /**
+        **/
+    /*greens*/
+    --green-light-extra: rgb(232, 245, 233);
+    --green-light: rgb(200, 230, 201);
+    --green-light-slightly: rgb(165, 214, 167);
+    --green-light-medium: rgb(129, 199, 132);
+    --green-light-strong: rgb(102, 187, 106);
+    --green: rgb(76, 175, 80);
+    --green-dark-slightly: rgb(67, 160, 71);
+    --green-dark: rgb(56, 140, 60);
+    --green-dark-strong: rgb(46, 125, 50);
+    --green-dark-extra: rgb(0, 100, 21);
+    --green-light-accent: rgb(185, 246, 202);
+    --green-medium-accent: rgb(105, 240, 174);
+    --green-tarn-accent: rgb(0, 230, 118);
+    --green-dark-accent: rgb(0, 168, 67);
+    --emerald-trans-70: rgba(0, 168, 64, 0.70);
+    --dark-emerald-trans-70: rgba(0, 100, 21, 0.70);
+    /**
+        **/
+    /*light green*/
+    --green-light-light-extra: rgb(241, 248, 233);
+    --green-ligh-light: rgb(220, 237, 200);
+    --green-light-light-slightly: rgb(195, 223, 162);
+    --green-light-light-medium: rgb(174, 213, 129);
+    --green-light-light-strong: rgb(156, 204, 101);
+    --green-light-control: rgb(139, 195, 74);
+    --green-dark-light-slightly: rgb(124, 179, 66);
+    --green-dark-light-light: rgb(104, 159, 56);
+    --green-dark-light-strong: rgb(85, 139, 47);
+    --green-dark-light-extra: rgb(19, 134, 25);
+    --green-light-light-accent: rgb(204, 255, 144);
+    --green-medium-light-accent: rgb(178, 255, 89);
+    --green-tarn-light-accent: rgb(118, 255, 3);
+    --green-dark-light-accent: rgb(96, 221, 23);
+    --green-trans-70: rgba(99, 221, 23, 0.70);
+    --light-green-trans-70: rgba(118, 255, 3, 0.70);
+    --dark-green-trans-70: rgba(19, 134, 25, 0.70);
+    /*olive*/
+    --light-olive-trans-70: rgba(220, 237, 200, 0.70);
+    --olive-trans-70: rgba(195, 223, 162, 0.70);
+    --dark-olive-trans-70: rgba(104, 159, 56, 0.70);
+    /**
+        **/
+    /*limes*/
+    --lime-light-extra: rgb(249, 251, 231);
+    --lime-light: rgb(240, 244, 195);
+    --lime-light-slightly: rgb(230, 238, 156);
+    --lime-light-medium: rgb(220, 231, 117);
+    --lime-light-strong: rgb(212, 225, 87);
+    --lime: rgb(205, 220, 57);
+    --lime-dark-slightly: rgb(192, 202, 51);
+    --lime-dark: rgb(175, 180, 43);
+    --lime-dark-strong: rgb(158, 157, 36);
+    --lime-dark-extra: rgb(126, 122, 22);
+    --lime-light-accent: rgb(244, 255, 129);
+    --lime-medium-accent: rgb(238, 255, 65);
+    --lime-tarn-accent: rgb(198, 255, 0);
+    --lime-dark-accent: rgb(174, 234, 0);
+    --lime-strong-accent: rgb(120, 170, 28);
+    --lime-trans-70: rgba(206, 220, 57, 0.7);
+    /**
+        **/
+    /*yellows*/
+    --yellow-light-extra: rgb(255, 253, 231);
+    --yellow-light: rgb(253, 246, 193);
+    --yellow-light-slightly: rgb(255, 245, 157);
+    --yellow-light-medium: rgb(255, 241, 118);
+    --yellow-light-strong: rgb(255, 238, 88);
+    --yellow: rgb(255, 232, 59);
+    --yellow-dark-slightly: rgb(253, 216, 53);
+    --yellow-dark: rgb(251, 192, 45);
+    --yellow-dark-strong: rgb(249, 168, 37);
+    --yellow-dark-extra: rgb(245, 127, 23);
+    --yellow-light-accent: rgb(255, 255, 141);
+    --yellow-medium-accent: rgb(255, 255, 0);
+    --yellow-tarn-accent: rgb(255, 234, 0);
+    --yellow-dark-accent: rgb(255, 214, 0);
+    --yellow-trans-70: rgba(255, 255, 0, 0.70);
+    /**
+        **/
+    /*ambers*/
+    --amber-light-extra: rgb(255, 248, 225);
+    --amber-light: rgb(255, 254, 195);
+    --amber-light-slightly: rgb(255, 224, 130);
+    --amber-light-medium: rgb(255, 213, 79);
+    --amber-light-strong: rgb(255, 202, 40);
+    --amber: rgb(255, 193, 7);
+    --amber-dark-slightly: rgb(255, 179, 0);
+    --amber-dark: rgb(255, 160, 0);
+    --amber-dark-strong: rgb(255, 143, 0);
+    --amber-dark-extra: rgb(255, 111, 0);
+    --amber-light-accent: rgb(255, 229, 127);
+    --amber-medium-accent: rgb(255, 215, 64);
+    --amber-tarn-accent: rgb(255, 196, 0);
+    --amber-dark-accent: rgb(255, 171, 0);
+    /**
+       **/
+    /*oranges*/
+    --orange-light-extra: rgb(255, 242, 224);
+    --orange-light: rgb(255, 223, 179);
+    --orange-light-slightly: rgb(253, 200, 127);
+    --orange-light-medium: rgb(255, 183, 77);
+    --orange-light-strong: rgb(255, 167, 38);
+    --orange: rgb(255, 152, 0);
+    --orange-dark-slightly: rgb(251, 140, 0);
+    --orange-dark: rgb(247, 124, 1);
+    --orange-dark-strong: rgb(239, 108, 0);
+    --orange-dark-extra: rgb(230, 81, 0);
+    --orange-light-accent: rgb(255, 209, 128);
+    --orange-medium-accent: rgb(255, 171, 64);
+    --orange-tarn-accent: rgb(255, 145, 0);
+    --orange-dark-accent: rgb(255, 109, 0);
+    --light-orange-trans-70: rgba(253, 200, 127, 0.70);
+    /**
+        **/
+    /*deep oranges*/
+    --orange-deep-light-extra: rgb(251, 233, 231);
+    --orange-deep-light: rgb(255, 204, 188);
+    --orange-deep-light-slightly: rgb(255, 171, 145);
+    --orange-deep-light-medium: rgb(255, 138, 101);
+    --orange-deep-light-strong: rgb(255, 112, 67);
+    --orange-deep: rgb(255, 87, 34);
+    --orange-deep-dark-slightly: rgb(245, 80, 30);
+    --orange-deep-dark: rgb(230, 73, 25);
+    --orange-deep-dark-strong: rgb(218, 67, 21);
+    --orange-deep-dark-extra: rgb(191, 90, 12);
+    --orange-deep-light-accent: rgb(255, 159, 130);
+    --orange-deep-medium-accent: rgb(255, 112, 67);
+    --orange-deep-tarn-accent: rgb(255, 98, 52);
+    --orange-deep-dark-accent: rgb(255, 87, 0);
+    --dark-orange-trans-70: rgba(191, 90, 12, 0.70);
+    /**
+        **/
+    /*browns*/
+    --brown-light-extra: rgb(241, 236, 234);
+    --brown-light: rgb(214, 204, 200);
+    --brown-light-slightly: rgb(188, 170, 164);
+    --brown-light-medium: rgb(163, 138, 129);
+    --brown-light-strong: rgb(141, 110, 99);
+    --brown: rgb(114, 81, 69);
+    --brown-dark-slightly: rgb(109, 76, 65);
+    --brown-dark: rgb(94, 65, 56);
+    --brown-dark-strong: rgb(78, 52, 46);
+    --brown-dark-extra: rgb(62, 39, 35);
+    --brown-light-accent: rgb(212, 173, 158);
+    --brown-medium-accent: rgb(180, 140, 128);
+    --brown-tarn-accent: rgb(124, 96, 87);
+    --brown-dark-accent: rgb(83, 63, 62);
+    --brown-trans-70: rgba(180, 139, 128, 0.70);
+    --dark-brown-trans-70: rgba(62, 39, 35, 0.70);
+    /**
+        **/
+    /*greys*/
+    --white: rgb(255, 255, 255);
+    --grey-light-extra: rgb(248, 248, 248);
+    --grey-light: rgb(236, 236, 236);
+    --grey-light-slightly: rgb(231, 231, 231);
+    --grey-light-medium: rgb(221, 221, 221);
+    --grey-light-strong: rgb(185, 185, 185);
+    --grey: rgb(160, 158, 158);
+    --grey-dark-slightly: rgb(133, 131, 131);
+    --grey-dark: rgb(100, 99, 99);
+    --grey-dark-strong: rgb(76, 76, 75);
+    --grey-dark-extra: rgb(36, 36, 36);
+    --grey-light-accent: rgb(124, 124, 124);
+    --grey-medium-accent: rgb(83, 83, 83);
+    --grey-tarn-accent: rgb(29, 29, 29);
+    --grey-dark-accent: rgb(15, 15, 19);
+    --whitesmoke-trans-90: rgba(248, 245, 245, 0.70);
+    --lighter-grey-trans-20: rgba(236, 236, 236, 0.20);
+    --lighter-grey-trans-60: rgba(236, 236, 236, 0.60);
+    --lighter-grey-trans-70: rgba(236, 236, 236, 0.70);
+    --light-grey-trans-70: rgba(124, 124, 124, 0.7);
+    --grey-trans-90: rgba(83, 83, 83, 0.70);
+    --dark-grey-trans-70: rgba(29, 29, 29, 0.70);
+    --darker-trans-70: rgba(15, 15, 19, 0.70);
+    /*pearl-purple*/
+    --pearl-purple-light-light-trans-20: rgba(243, 235, 255, 0.20);
+    --pearl-purple-light-light-trans-50: rgba(243, 235, 255, 0.50);
+    --pearl-purple-light-light-trans-70: rgba(243, 235, 255, 0.70);
+    --pearl-purple-light-light-trans-90: rgba(243, 235, 255, 0.90);
+    --pearl-purple-light-light: rgb(243, 235, 255);
+    --pearl-purple-light-light-shadow-20: rgba(160, 155, 168, 0.20);
+    --pearl-purple-light-light-shadow-50: rgba(160, 155, 168, 0.50);
+    --pearl-purple-light-light-shadow-70: rgba(160, 155, 168, 0.70);
+    --pearl-purple-light-light-shadow-90: rgba(160, 155, 168, 0.90);
+    --pearl-purple-light-light-shadow: rgb(160, 155, 168);
+    --pearl-purple-dark-shade-light-plus-20: rgba(201, 161, 255, 0.20);
+    --pearl-purple-dark-shade-light-plus-50: rgba(201, 161, 255, 0.50);
+    --pearl-purple-dark-shade-light-plus-70: rgba(201, 161, 255, 0.70);
+    --pearl-purple-dark-shade-light-plus-90: rgba(201, 161, 255, 0.90);
+    --pearl-purple-dark-shade-light-plus: rgb(201, 161, 255);
+    --pearl-purple-dark-shade-light-light: rgb(179, 143, 227);
+    --pearl-purple-dark-shade-light: rgb(157, 126, 199);
+    --pearl-purple-dark-shade: rgb(133, 106, 168);
+    --pearl-purple-dark-shade-dark: rgb(97, 77, 122);
+    --pearl-purple-dark-shade-dark-plus: rgb(66, 53, 84);
+    --pearl-purple-dark-shade-dark-plus-2: rgb(34, 27, 43);
+    --pearl-purple-dark-light-extra: rgb(205, 100, 255);
+    --pearl-purple-dark-light-extra: rgb(183, 89, 227);
+    --pearl-purple-dark-light-light: rgb(160, 78, 199);
+    --pearl-purple-dark-light: rgb(144, 70, 179);
+    --pearl-purple-dark-10: rgb(129, 63, 161);
+    --pearl-purple-dark-20: rgb(115, 56, 143);
+    --pearl-purple-dark-30: rgb(94, 46, 117);
+    --pearl-purple-dark-40: rgb(78, 38, 97);
+    --pearl-purple-dark-50: rgb(64, 31, 79);
+    --pearl-purple-dark-60: rgb(53, 26, 66);
+    --pearl-purple-dark-70: rgb(43, 21, 54);
+    --pearl-purple-dark-80: rgb(33, 16, 41);
+    --pearl-purple-dark-90: rgb(23, 11, 28);
+    --pearl-purple-dark: rgb(10, 4, 8);
+    --pearl-purple-dark-strong-trans-20: rgba(245, 184, 255, 0.2);
+    --pearl-purple-dark-strong-trans-50: rgba(245, 184, 255, 0.5);
+    --pearl-purple-dark-strong-trans-70: rgba(245, 184, 255, 0.7);
+    --pearl-purple-dark-strong-trans-90: rgba(245, 184, 255, 0.9);
+    --pearl-purple-dark-strong-10: rgb(245, 184, 255);
+    --pearl-purple-dark-strong-20: rgb(203, 152, 212);
+    --pearl-purple-dark-strong-30: rgb(184, 138, 191);
+    --pearl-purple-dark-strong-40: rgb(157, 118, 163);
+    --pearl-purple-dark-strong-50: rgb(135, 101, 140);
+    --pearl-purple-dark-strong-60: rgb(98, 73, 102);
+    --pearl-purple-dark-strong-70: rgb(59, 44, 61);
+    --pearl-purple-dark-strong-80: rgb(42, 31, 43);
+    --pearl-purple-dark-strong-90: rgb(27, 20, 28);
+    --pearl-purple-dark-strong: rgb(15, 11, 15);
+    /*pearl-purple-orange*/
+    --pearl-purple-orange-light-light: rgb(255, 160, 173);
+    --pearl-purple-orange-light: rgb(255, 108, 131);
+    --pearl-purple-orange-light: rgb(222, 94, 114);
+    --pearl-purple-orange-dark-light: rgb(194, 82, 99);
+    --pearl-purple-orange-strong: rgb(144, 60, 73);
+    --pearl-purple-orange-dark: rgb(107, 45, 55);
+    --pearl-purple-orange-dark-shrong: rgb(74, 31, 38);
+    /*pearl-orange*/
+    --pearl-orange-light-extra: rgb(255, 242, 217);
+    --pearl-orange-light: rgb(225, 224, 191);
+    --pearl-orange-light-slightly: rgb(225, 205, 156);
+    --pearl-orange-light-medium: rgb(255, 175, 116);
+    --pearl-orange-light-medium-accent: rgb(173, 119, 79);
+    --pearl-orange-light-mediumdark: rgb(120, 82, 55);
+    --pearl-orange-light-strong: rgb(255, 153, 79);
+    --pearl-orange: rgb(255, 112, 41);
+    --pearl-orange-dark-acent-light: rgb(207, 92, 34);
+    --pearl-orange-dark-acent: rgb(163, 72, 27);
+    --pearl-orange-dark-slightly: rgb(130, 58, 21);
+    --pearl-orange-dark: rgb(97, 43, 16);
+    --pearl-orange-dark-strong: rgb(61, 27, 10);
+    --pearl-orange-dark-shadow-10: rgba(28, 12, 5, 0.1);
+    --pearl-orange-dark-shadow-20: rgba(28, 12, 5, 0.2);
+    --pearl-orange-dark-shadow-30: rgba(28, 12, 5, 0.3);
+    --pearl-orange-dark-shadow-40: rgba(28, 12, 5, 0.4);
+    --pearl-orange-dark-shadow-50: rgba(28, 12, 5, 0.5);
+    --pearl-orange-dark-shadow-70: rgba(28, 12, 5, 0.7);
+    --pearl-orange-dark-shadow-90: rgba(28, 12, 5, 0.9);
+    --pearl-orange-dark-shadow: rgb(28, 12, 5);
+    /**
+        **/
+    /**********************************************************end color pallete*********************************** **/
+    /**
+        **/
+    /*Accent colors*/
+    /*lime*/
+    --accent-lime-base: rgb(122, 199, 12);
+    --accent-lime-medium: rgb(142, 224, 0);
+    --accent-lime-light: rgb(191, 241, 153);
+    /*lime*/
+    --accent-blue-base: rgb(28, 176, 246);
+    --accent-blue-medium: rgb(20, 212, 244);
+    --accent-blue-light: rgb(188, 233, 255);
+    /*red*/
+    --accent-red-base: rgb(211, 49, 49);
+    --accent-red-medium: rgb(229, 59, 59);
+    --accent-red-light: rgb(255, 151, 151);
+    --accent-pink-light: rgb(224, 31, 152);
+    /*banana*/
+    --accent-banana-base: rgb(255, 176, 32);
+    --accent-banana-medium: rgb(255, 195, 0);
+    --accent-banana-light: rgb(255, 242, 119);
+    --amber-trans-70: rgb(255, 191, 0);
+    --amber-trans-70: rgba(255, 191, 0, 0.70);
+    /*pumpkin*/
+    --accent-pumpkin-base: rgb(250, 129, 24);
+    --accent-pumpkin-medium: rgb(255, 148, 0);
+    --accent-pumpkin-light: rgb(255, 207, 122);
+    --orange-trans-70: rgb(255, 145, 0);
+    --orange-trans-70: rgba(255, 145, 0, 0.70);
+    /*purple*/
+    --accent-purple-base: rgb(133, 73, 186);
+    --accent-purple-medium: rgb(165, 96, 235);
+    --accent-purple-light: rgb(202, 148, 255);
+    /*cocoa*/
+    --accent-cocoa-base: rgb(133, 76, 27);
+    --accent-cocoa-medium: rgb(168, 100, 37);
+    --accent-cocoa-light: rgb(222, 172, 95);
+    /*taupe*/
+    --accent-taupe-base: rgb(172, 144, 62);
+    --accent-taupe-medium: rgb(135, 121, 78);
+    --accent-taupe-light: rgb(177, 167, 141);
+    --taupe-trans-70: rgba(135, 121, 78, 0.70);
+    /*grey*/
+    --accent-grey-base: rgb(76, 76, 76);
+    --accent-grey-medium: rgb(117, 117, 117);
+    --accent-grey-light: rgb(175, 175, 175);
+    /*cloud*/
+    --accent-cloud-base: rgb(207, 207, 207);
+    --accent-cloud-medium: rgb(221, 221, 221);
+    --accent-cloud-light: rgb(240, 240, 240);
+    /*white*/
+    --white-base: rgb(255, 255, 255);
+    --white-trans-15: rgba(255, 255, 255, 0.15);
+    --white-trans-20: rgba(255, 255, 255, 0.2);
+    --white-trans-50: rgba(255, 255, 255, 0.5);
+    --white-trans-70: rgba(255, 255, 255, 0.7);
+    /*black*/
+    --black-base: rgb(0, 0, 0);
+    --black-trans: rgba(0, 0, 0, 0);
+    --black-trans-20: rgba(0, 0, 0, 0.20);
+    --black-trans-30: rgba(0, 0, 0, 0.30);
+    --black-trans-35: rgba(0, 0, 0, 0.35);
+    --black-trans-40: rgba(0, 0, 0, 0.40);
+    --black-trans-50: rgba(0, 0, 0, 0.50);
+    --black-trans-70: rgba(0, 0, 0, 0.70);
+    --black-trans-75: rgba(0, 0, 0, 0.75);
+    --black-trans-80: rgba(0, 0, 0, 0.8);
+    /**
+
+    /*black-accent*/
+    --black-accent-blue: rgb(2, 20, 30);
+    --black-accent-red: rgb(7, 1, 2);
+    --black-accent-green-light: rgb(6, 45, 65);
+    --black-accent-green: rgb(2, 19, 20);
+    /**
+       **/
+    /**************************************endaccent colors**************************************/
+    /**
+       **/
+    /************************************text colors********************************************/
+}
+
+/**
+    **/
+/************************************** def general back, fore, border, outline and text colors**************************************/
+/**
+    **/
+/*white backgrounds*/
+
+.bd-white {
+    border-color: var(--white-base) !important;
+}
+
+.bg-white {
+    background: var(--white-base) !important;
+}
+
+.out-white {
+    outline-color: var(--white-base) !important;
+}
+
+.trans-white {
+    background-color: var(--white-trans-70);
+}
+
+.bg-white-hover:hover {
+    background: var(--white-base) !important;
+}
+
+.bg-white-active:active {
+    background: var(--white-base) !important;
+}
+
+.bg-white-focus:focus {
+    background: var(--white-base) !important;
+}
+
+.bg-white-after:after {
+    background: var(--white-base) !important;
+}
+
+.bg-white-before:before {
+    background: var(--white-base) !important;
+}
+
+.bg-striped-white {
+    background: var(--white-base) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-white {
+    color: var(--white-base);
+}
+
+.fg-white-before:before {
+    color: var(--white-base) !important;
+}
+
+.fg-white-after:after {
+    color: var(--white-base) !important;
+}
+
+.fg-white-hover:hover {
+    color: var(--white-base) !important;
+}
+
+.fg-white-active:active {
+    color: var(--white-base) !important;
+}
+
+.fg-white-focus:focus {
+    color: var(--white-base) !important;
+}
+/**/
+/*whitesmoke backgrounds*/
+
+.bd-whitesmoke {
+    border-color: var(--grey-light-extra) !important;
+}
+
+.bg-whitesmoke {
+    background: var(--grey-light-extra) !important;
+}
+
+.out-whitesmoke {
+    outline-color: var(--grey-light-extra) !important;
+}
+
+.trans-whitesmoke {
+    background-color: var(--whitesmoke-trans-90);
+}
+
+.bg-whitesmoke-hover:hover {
+    background: var(--grey-light-extra) !important;
+}
+
+.bg-whitesmoke-active:active {
+    background: var(--grey-light-extra) !important;
+}
+
+.bg-whitesmoke-focus:focus {
+    background: var(--grey-light-extra) !important;
+}
+
+.bg-whitesmoke-after:after {
+    background: var(--grey-light-extra) !important;
+}
+
+.bg-whitesmoke-before:before {
+    background: var(--grey-light-extra) !important;
+}
+
+.bg-striped-whitesmoke {
+    background: var(--grey-light-extra) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-whitesmoke {
+    color: var(--grey-light-extra);
+}
+
+.fg-whitesmoke-before:before {
+    color: var(--grey-light-extra) !important;
+}
+
+.fg-whitesmoke-after:after {
+    color: var(--grey-light-extra) !important;
+}
+
+.fg-whitesmoke-hover:hover {
+    color: var(--grey-light-extra) !important;
+}
+
+.fg-whitesmoke-active:active {
+    color: var(--grey-light-extra) !important;
+}
+
+.fg-whitesmoke-focus:focus {
+    color: var(--grey-light-extra) !important;
+}
+/**/
+/*lighter-grey backgrounds*/
+
+.bd-lighter-grey {
+    border-color: var(--grey-light) !important;
+}
+
+.bg-lighter-grey {
+    background: var(--grey-light);
+}
+
+.out-lighter-grey {
+    outline-color: var(--grey-light) !important;
+}
+
+.trans-lighter-grey {
+    background-color: var(--lighter-grey-trans-70);
+}
+
+.bg-lighter-grey-hover:hover {
+    background: var(--grey-light) !important;
+}
+
+.bg-lighter-grey-active:active {
+    background: var(--grey-light) !important;
+}
+
+.bg-lighter-grey-focus:focus {
+    background: var(--grey-light) !important;
+}
+
+.bg-lighter-grey-after:after {
+    background: var(--grey-light) !important;
+}
+
+.bg-lighter-grey-before:before {
+    background: var(--grey-light) !important;
+}
+
+.bg-striped-lighter-grey {
+    background: var(--grey-light) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-lighter-grey {
+    color: var(--grey-light);
+}
+
+.fg-lighter-grey-before:before {
+    color: var(--grey-light) !important;
+}
+
+.fg-lighter-grey-after:after {
+    color: var(--grey-light) !important;
+}
+
+.fg-lighter-grey-hover:hover {
+    color: var(--grey-light) !important;
+}
+
+.fg-lighter-grey-active:active {
+    color: var(--grey-light) !important;
+}
+
+.fg-lighter-grey-focus:focus {
+    color: var(--grey-light) !important;
+}
+/**/
+/*light-grey backgrounds*/
+
+.bd-light-grey {
+    border-color: var(--grey-light-accent) !important;
+}
+
+.bg-light-grey {
+    background: var(--grey-light-strong);
+}
+
+.out-light-grey {
+    outline-color: var(--grey-light-accent) !important;
+}
+
+.trans-light-grey {
+    background-color: var(--light-grey-trans-70);
+}
+
+.bg-light-grey-hover:hover {
+    background: var(--grey-light-accent) !important;
+}
+
+.bg-light-grey-active:active {
+    background: var(--grey-light-accent) !important;
+}
+
+.bg-light-grey-focus:focus {
+    background: var(--grey-light-accent) !important;
+}
+
+.bg-light-grey-after:after {
+    background: var(--grey-light-accent) !important;
+}
+
+.bg-light-grey-before:before {
+    background: var(--grey-light-accent) !important;
+}
+
+.bg-striped-light-grey {
+    background: var(--grey-light-accent) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-light-grey {
+    color: var(--grey-light-accent);
+}
+
+.fg-light-grey-before:before {
+    color: var(--grey-light-accent) !important;
+}
+
+.fg-light-grey-after:after {
+    color: var(--grey-light-accent) !important;
+}
+
+.fg-light-grey-hover:hover {
+    color: var(--grey-light-accent) !important;
+}
+
+.fg-light-grey-active:active {
+    color: var(--grey-light-accent) !important;
+}
+
+.fg-light-grey-focus:focus {
+    color: var(--grey-light-accent) !important;
+}
+/**/
+/*grey backgrounds*/
+
+.bd-grey {
+    border-color: var(--grey-medium-accent) !important;
+}
+
+.bg-grey {
+    background: var(--grey-medium-accent);
+}
+
+.out-grey {
+    outline-color: var(--grey-medium-accent) !important;
+}
+
+.trans-grey {
+    background-color: var(--grey-trans-90);
+}
+
+.bg-grey-hover:hover {
+    background: var(--grey-medium-accent) !important;
+}
+
+.bg-grey-active:active {
+    background: var(--grey-medium-accent) !important;
+}
+
+.bg-grey-focus:focus {
+    background: var(--grey-medium-accent) !important;
+}
+
+.bg-grey-after:after {
+    background: var(--grey-medium-accent) !important;
+}
+
+.bg-grey-before:before {
+    background: var(--grey-medium-accent) !important;
+}
+
+.bg-striped-grey {
+    background: var(--grey-medium-accent) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-grey {
+    color: var(--grey-medium-accent);
+}
+
+.fg-grey-before:before {
+    color: var(--grey-medium-accent) !important;
+}
+
+.fg-grey-after:after {
+    color: var(--grey-medium-accent) !important;
+}
+
+.fg-grey-hover:hover {
+    color: var(--grey-medium-accent) !important;
+}
+
+.fg-grey-active:active {
+    color: var(--grey-light-accent) !important;
+}
+
+.fg-grey-focus:focus {
+    color: var(--grey-light-accent) !important;
+}
+/**/
+/*dark-grey backgrounds*/
+
+.bd-dark-grey {
+    border-color: var(--grey-tarn-accent) !important;
+}
+
+.bg-dark-grey {
+    background: var(--grey-tarn-accent);
+}
+
+.out-dark-grey {
+    outline-color: var(--grey-tarn-accent) !important;
+}
+
+.trans-dark-grey {
+    background-color: var(--dark-grey-trans-70);
+}
+
+.bg-dark-grey-hover:hover {
+    background: var(--grey-dark-accent) !important;
+}
+
+.bg-dark-grey-active:active {
+    background: var(--grey-tarn-accent) !important;
+}
+
+.bg-dark-grey-focus:focus {
+    background: var(--grey-tarn-accent) !important;
+}
+
+.bg-dark-grey-after:after {
+    background: var(--grey-tarn-accent) !important;
+}
+
+.bg-dark-grey-before:before {
+    background: var(--grey-tarn-accent) !important;
+}
+
+.bg-striped-dark-grey {
+    background: var(--grey-tarn-accent) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-dark-grey {
+    color: var(--grey-tarn-accent);
+}
+
+.fg-dark-grey-before:before {
+    color: var(--grey-tarn-accent) !important;
+}
+
+.fg-dark-grey-after:after {
+    color: var(--grey-tarn-accent) !important;
+}
+
+.fg-dark-grey-hover:hover {
+    color: var(--grey-tarn-accent) !important;
+}
+
+.fg-dark-grey-active:active {
+    color: var(--grey-tarn-accent) !important;
+}
+
+.fg-dark-grey-focus:focus {
+    color: var(--grey-tarn-accent) !important;
+}
+/**/
+/*darker backgrounds*/
+
+.bd-darker-grey {
+    border-color: var(--grey-dark-accent) !important;
+}
+
+.bg-darker-grey {
+    background: var(--grey-dark-accent);
+}
+
+.out-darker-grey {
+    outline-color: var(--grey-dark-accent) !important;
+}
+
+.trans-darker-grey {
+    background-color: var(--darker-trans-70);
+}
+
+.bg-darker-grey-hover:hover {
+    background: var(--grey-dark-accent) !important;
+}
+
+.bg-darker-grey-active:active {
+    background: var(--grey-dark-accent) !important;
+}
+
+.bg-darker-grey-focus:focus {
+    background: var(--grey-dark-accent) !important;
+}
+
+.bg-darker-grey-after:after {
+    background: var(--grey-dark-accent) !important;
+}
+
+.bg-darker-grey-before:before {
+    background: var(--grey-dark-accent) !important;
+}
+
+.bg-striped-darker-grey {
+    background: var(--grey-dark-accent) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-darker-grey {
+    color: var(--grey-dark-accent);
+}
+
+.fg-darker-grey-before:before {
+    color: var(--grey-dark-accent) !important;
+}
+
+.fg-darker-grey-after:after {
+    color: var(--grey-dark-accent) !important;
+}
+
+.fg-darker-grey-hover:hover {
+    color: var(--grey-dark-accent) !important;
+}
+
+.fg-darker-grey-active:active {
+    color: var(--grey-dark-accent) !important;
+}
+
+.fg-darker-grey-focus:focus {
+    color: var(--grey-dark-accent) !important;
+}
+/**/
+/*black colors*/
+
+.bd-black {
+    border-color: var(--black-base) !important;
+}
+
+.bg-black {
+    background: var(--black-base);
+}
+
+.out-black {
+    outline-color: var(--black-base) !important;
+}
+
+.trans-black {
+    background-color: var(--black-trans-70);
+}
+
+.bg-black {
+    background: var(--black-base);
+}
+
+.bg-black-before:before {
+    background: var(--black-base) !important;
+}
+
+.bg-black-after:after {
+    background: var(--black-base) !important;
+}
+
+.bg-black-hover:hover {
+    background: var(--black-base) !important;
+}
+
+.bg-black-active:active {
+    background: var(--black-base) !important;
+}
+
+.bg-focus-black:focus {
+    background: var(--black-base) !important;
+}
+
+.bg-striped-black {
+    background: var(--black-base) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-black {
+    color: var(--black-base);
+}
+
+.fg-black-before:before {
+    color: var(--black-base) !important;
+}
+
+.fg-black-after:after {
+    color: var(--black-base) !important;
+}
+
+.fg-black-hover:hover {
+    color: var(--black-base) !important;
+}
+
+.fg-black-active:active {
+    color: var(--black-base) !important;
+}
+
+.fg-black-focus:focus {
+    color: var(--black-base) !important;
+}
+/**/
+/*red backgrounds*/
+
+.bd-red {
+    border-color: var(--red) !important;
+}
+
+.bg-red {
+    background: var(--red);
+}
+
+.out-red {
+    outline-color: var(--red) !important;
+}
+
+.trans-red {
+    background-color: var(--red-trans-70);
+}
+
+.bg-red-hover:hover {
+    background: var(--red) !important;
+}
+
+.bg-red-active:active {
+    background: var(--red) !important;
+}
+
+.bg-red-focus:focus {
+    background: var(--red) !important;
+}
+
+.bg-red-after:after {
+    background: var(--red) !important;
+}
+
+.bg-red-before:before {
+    background: var(--red) !important;
+}
+
+.bg-striped-red {
+    background: var(--red) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-red {
+    color: var(--red);
+}
+
+.fg-red-before:before {
+    color: var(--red) !important;
+}
+
+.fg-red-after:after {
+    color: var(--red) !important;
+}
+
+.fg-red-hover:hover {
+    color: var(--red) !important;
+}
+
+.fg-red-active:active {
+    color: var(--red) !important;
+}
+
+.fg-red-focus:focus {
+    color: var(--red) !important;
+}
+/**/
+/*crimson backgrounds*/
+
+.bd-crimson {
+    border-color: var(--red-dark-accent) !important;
+}
+
+.bg-crimson {
+    background: var(--crimson-trans-70);
+}
+
+.out-crimson {
+    outline-color: var(--red-dark-accent) !important;
+}
+
+.trans-crimson {
+    background-color: var(--red-dark-accent);
+}
+
+.bg-crimson-hover:hover {
+    background: var(--red-dark-accent) !important;
+}
+
+.bg-crimson-active:active {
+    background: var(--red-dark-accent) !important;
+}
+
+.bg-crimson-focus:focus {
+    background: var(--red-dark-accent) !important;
+}
+
+.bg-crimson-after:after {
+    background: var(--red-dark-accent) !important;
+}
+
+.bg-crimson-before:before {
+    background: var(--red-dark-accent) !important;
+}
+
+.bg-striped-crimson {
+    background: var(--red-dark-accent) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-crimson {
+    color: var(--red-dark-accent);
+}
+
+.fg-crimson-before:before {
+    color: var(--red-dark-accent) !important;
+}
+
+.fg-crimson-after:after {
+    color: var(--red-dark-accent) !important;
+}
+
+.fg-crimson-hover:hover {
+    color: var(--red-dark-accent) !important;
+}
+
+.fg-crimson-active:active {
+    color: var(--red-dark-accent) !important;
+}
+
+.fg-crimson-focus:focus {
+    color: var(--red-dark-accent) !important;
+}
+/**/
+/*pink backgrounds*/
+
+.bd-pink {
+    border-color: var(--pink-light-medium) !important;
+}
+
+.bg-pink {
+    background: var(--pink-light-medium);
+}
+
+.out-pink {
+    outline-color: var(--pink-light-medium) !important;
+}
+
+.trans-pink {
+    background-color: var(--pink-trans-70);
+}
+
+.bg-pink-hover:hover {
+    background: var(--pink-light-medium) !important;
+}
+
+.bg-pink-active:active {
+    background: var(--pink-light-medium) !important;
+}
+
+.bg-pink-focus:focus {
+    background: var(--pink-light-medium) !important;
+}
+
+.bg-pink-after:after {
+    background: var(--pink-light-medium) !important;
+}
+
+.bg-pink-before:before {
+    background: var(--pink-light-medium) !important;
+}
+
+.bg-striped-pink {
+    background: var(--pink-light-medium) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-pink {
+    color: var(--pink-light-medium);
+}
+
+.fg-pink-before:before {
+    color: var(--pink-light-medium) !important;
+}
+
+.fg-pink-after:after {
+    color: var(--pink-light-medium) !important;
+}
+
+.fg-pink-hover:hover {
+    color: var(--pink-light-medium) !important;
+}
+
+.fg-pink-active:active {
+    color: var(--pink-light-medium) !important;
+}
+
+.fg-pink-focus:focus {
+    color: var(--pink-light-medium) !important;
+}
+/**/
+/*magenta backgrounds*/
+
+.bd-magenta {
+    border-color: var(--pink-dark-slightly) !important;
+}
+
+.bg-magenta {
+    background: var(--pink-dark-slightly);
+}
+
+.out-magenta {
+    outline-color: var(--pink-dark-slightly) !important;
+}
+
+.trans-magenta {
+    background-color: var(--magenta-trans-70);
+}
+
+.bg-magenta-hover:hover {
+    background: var(--pink-dark-slightly) !important;
+}
+
+.bg-magenta-active:active {
+    background: var(--pink-dark-slightly) !important;
+}
+
+.bg-magenta-focus:focus {
+    background: var(--pink-dark-slightly) !important;
+}
+
+.bg-magenta-after:after {
+    background: var(--pink-dark-slightly) !important;
+}
+
+.bg-magenta-before:before {
+    background: var(--pink-dark-slightly) !important;
+}
+
+.bg-striped-magenta {
+    background: var(--pink-dark-slightly) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-magenta {
+    color: var(--pink-dark-slightly);
+}
+
+.fg-magenta-before:before {
+    color: var(--pink-dark-slightly) !important;
+}
+
+.fg-magenta-after:after {
+    color: var(--pink-dark-slightly) !important;
+}
+
+.fg-magenta-hover:hover {
+    color: var(--pink-dark-slightly) !important;
+}
+
+.fg-magenta-active:active {
+    color: var(--pink-dark-slightly) !important;
+}
+
+.fg-magenta-focus:focus {
+    color: var(--pink-dark-slightly) !important;
+}
+/**/
+/*mauve backgrounds*/
+
+.bd-mauve {
+    border-color: var(--purple-deep-light-medium) !important;
+}
+
+.bg-mauve {
+    background: var(--purple-deep-light-medium);
+}
+
+.out-mauve {
+    outline-color: var(--purple-deep-light-medium) !important;
+}
+
+.trans-mauve {
+    background-color: var(--mauve-trans-70);
+}
+
+.bg-mauve-hover:hover {
+    background: var(--purple-deep-light-medium) !important;
+}
+
+.bg-mauve-active:active {
+    background: var(--purple-deep-light-medium) !important;
+}
+
+.bg-mauve-focus:focus {
+    background: var(--purple-deep-light-medium) !important;
+}
+
+.bg-mauve-after:after {
+    background: var(--purple-deep-light-medium) !important;
+}
+
+.bg-mauve-before:before {
+    background: var(--purple-deep-light-medium) !important;
+}
+
+.bg-striped-mauve {
+    background: var(--purple-deep-light-medium) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-mauve {
+    color: var(--purple-deep-light-medium);
+}
+
+.fg-mauve-before:before {
+    color: var(--purple-deep-light-medium) !important;
+}
+
+.fg-mauve-after:after {
+    color: var(--purple-deep-light-medium) !important;
+}
+
+.fg-mauve-hover:hover {
+    color: var(--purple-deep-light-medium) !important;
+}
+
+.fg-mauve-active:active {
+    color: var(--purple-deep-light-medium) !important;
+}
+
+.fg-mauve-focus:focus {
+    color: var(--purple-deep-light-medium) !important;
+}
+/**/
+/*steel backgrounds*/
+
+.bd-steel {
+    border-color: var(--indigo-light-slightly) !important;
+}
+
+.bg-steel {
+    background: var(--indigo-light-slightly);
+}
+
+.out-steel {
+    outline-color: var(--indigo-light-slightly) !important;
+}
+
+.trans-steel {
+    background-color: var(--steel-trans-70);
+}
+
+.bg-steel-hover:hover {
+    background: var(--indigo-light-slightly) !important;
+}
+
+.bg-steel-active:active {
+    background: var(--indigo-light-slightly) !important;
+}
+
+.bg-steel-focus:focus {
+    background: var(--indigo-light-slightly) !important;
+}
+
+.bg-steel-after:after {
+    background: var(--indigo-light-slightly) !important;
+}
+
+.bg-steel-before:before {
+    background: var(--indigo-light-slightly) !important;
+}
+
+.bg-striped-steel {
+    background: var(--indigo-light-slightly) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-steel {
+    color: var(--indigo-light-slightly);
+}
+
+.fg-steel-before:before {
+    color: var(--indigo-light-slightly) !important;
+}
+
+.fg-steel-after:after {
+    color: var(--indigo-light-slightly) !important;
+}
+
+.fg-steel-hover:hover {
+    color: var(--indigo-light-slightly) !important;
+}
+
+.fg-steel-active:active {
+    color: var(--indigo-light-slightly) !important;
+}
+
+.fg-steel-focus:focus {
+    color: var(--indigo-light-slightly) !important;
+}
+/**/
+/*orange backgrounds*/
+
+.bd-orange {
+    border-color: var(--accent-pumpkin-medium) !important;
+}
+
+.bg-orange {
+    background: var(--accent-pumpkin-medium);
+}
+
+.out-orange {
+    outline-color: var(--accent-pumpkin-medium) !important;
+}
+
+.trans-orange {
+    background-color: var(--orange-trans-70);
+}
+
+.bg-orange-hover:hover {
+    background: var(--accent-pumpkin-medium) !important;
+}
+
+.bg-orange-active:active {
+    background: var(--accent-pumpkin-medium) !important;
+}
+
+.bg-orange-focus:focus {
+    background: var(--accent-pumpkin-medium) !important;
+}
+
+.bg-orange-after:after {
+    background: var(--accent-pumpkin-medium) !important;
+}
+
+.bg-orange-before:before {
+    background: var(--accent-pumpkin-medium) !important;
+}
+
+.bg-striped-orange {
+    background: var(--accent-pumpkin-medium) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-orange {
+    color: var(--accent-pumpkin-medium);
+}
+
+.fg-orange-before:before {
+    color: var(--accent-pumpkin-medium) !important;
+}
+
+.fg-orange-after:after {
+    color: var(--accent-pumpkin-medium) !important;
+}
+
+.fg-orange-hover:hover {
+    color: var(--accent-pumpkin-medium) !important;
+}
+
+.fg-orange-active:active {
+    color: var(--accent-pumpkin-medium) !important;
+}
+
+.fg-orange-focus:focus {
+    color: var(--accent-pumpkin-medium) !important;
+}
+/**/
+/*amber backgrounds*/
+
+.bd-amber {
+    border-color: var(--accent-banana-medium) !important;
+}
+
+.bg-amber {
+    background: var(--accent-banana-medium);
+}
+
+.out-amber {
+    outline-color: var(--accent-banana-medium) !important;
+}
+
+.trans-amber {
+    background-color: var(--amber-trans-70);
+}
+
+.bg-amber-hover:hover {
+    background: var(--accent-banana-medium) !important;
+}
+
+.bg-amber-active:active {
+    background: var(--accent-banana-medium) !important;
+}
+
+.bg-amber-focus:focus {
+    background: var(--accent-banana-medium) !important;
+}
+
+.bg-amber-after:after {
+    background: var(--accent-banana-medium) !important;
+}
+
+.bg-amber-before:before {
+    background: var(--accent-banana-medium) !important;
+}
+
+.bg-striped-amber {
+    background: var(--accent-banana-medium) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-amber {
+    color: var(--accent-banana-medium);
+}
+
+.fg-amber-before:before {
+    color: var(--accent-banana-medium) !important;
+}
+
+.fg-amber-after:after {
+    color: var(--accent-banana-medium) !important;
+}
+
+.fg-amber-hover:hover {
+    color: var(--accent-banana-medium) !important;
+}
+
+.fg-amber-active:active {
+    color: var(--accent-banana-medium) !important;
+}
+
+.fg-amber-focus:focus {
+    color: var(--accent-banana-medium) !important;
+}
+/**/
+/*yellow backgrounds*/
+
+.bd-yellow {
+    border-color: var(--yellow-medium-accent) !important;
+}
+
+.bg-yellow {
+    background: var(--yellow-medium-accent);
+}
+
+.out-yellow {
+    outline-color: var(--yellow-medium-accent) !important;
+}
+
+.trans-yellow {
+    background-color: var(--yellow-trans-70);
+}
+
+.bg-yellow-hover:hover {
+    background: var(--yellow-medium-accent) !important;
+}
+
+.bg-yellow-active:active {
+    background: var(--yellow-medium-accent) !important;
+}
+
+.bg-yellow-focus:focus {
+    background: var(--yellow-medium-accent) !important;
+}
+
+.bg-yellow-after:after {
+    background: var(--yellow-medium-accent) !important;
+}
+
+.bg-yellow-before:before {
+    background: var(--yellow-medium-accent) !important;
+}
+
+.bg-striped-yellow {
+    background: var(--yellow-medium-accent) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-yellow {
+    color: var(--yellow-medium-accent);
+}
+
+.fg-yellow-before:before {
+    color: var(--yellow-medium-accent) !important;
+}
+
+.fg-yellow-after:after {
+    color: var(--yellow-medium-accent) !important;
+}
+
+.fg-yellow-hover:hover {
+    color: var(--yellow-medium-accent) !important;
+}
+
+.fg-yellow-active:active {
+    color: var(--yellow-medium-accent) !important;
+}
+
+.fg-yellow-focus:focus {
+    color: var(--yellow-medium-accent) !important;
+}
+/**/
+/*lime backgrounds*/
+
+.bd-lime {
+    border-color: var(--lime-dark-accent) !important;
+}
+
+.ol-lime {
+    outline-color: var(--lime-dark-accent) !important;
+}
+
+.bg-lime {
+    background: var(--lime-dark-accent);
+}
+
+.trans-lime {
+    background-color: var(--lime-trans-70);
+}
+
+.bg-lime-hover:hover {
+    background: var(--lime-dark-accent) !important;
+}
+
+.bg-lime-active:active {
+    background: var(--lime-dark-accent) !important;
+}
+
+.bg-lime-focus:focus {
+    background: var(--lime-dark-accent) !important;
+}
+
+.bg-lime-before:before {
+    background: var(--lime-dark-accent) !important;
+}
+
+.bg-lime-after:after {
+    background: var(--lime-dark-accent) !important;
+}
+
+.bg-striped-lime {
+    background: var(--lime-dark-accent) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-lime-before:before {
+    color: var(--lime-dark-accent) !important;
+}
+
+.fg-lime-after:after {
+    color: var(--lime-dark-accent) !important;
+}
+
+.fg-lime-hover:hover {
+    color: var(--lime-dark-accent) !important;
+}
+
+.fg-lime-active:active {
+    color: var(--lime-dark-accent) !important;
+}
+
+.fg-lime-focus:focus {
+    color: var(--lime-dark-accent) !important;
+}
+/**/
+/*green backgrounds*/
+
+.bd-green {
+    border-color: var(--green-dark-light-accent) !important;
+}
+
+.ol-green {
+    outline-color: var(--green-dark-light-accent) !important;
+}
+
+.bg-green {
+    background: var(--green-dark-light-accent);
+}
+
+.trans-green {
+    background-color: var(--green-trans-70);
+}
+
+.bg-green-hover:hover {
+    background: var(--green-dark-light-accent) !important;
+}
+
+.bg-green-active:active {
+    background: var(--green-dark-light-accent) !important;
+}
+
+.bg-green-focus:focus {
+    background: var(--green-dark-light-accent) !important;
+}
+
+.bg-green-before:before {
+    background: var(--green-dark-light-accent) !important;
+}
+
+.bg-green-after:after {
+    background: var(--green-dark-accent) !important;
+}
+
+.bg-striped-green {
+    background: var(--green-dark-light-accent) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-green-before:before {
+    color: var(--green-dark-light-accent) !important;
+}
+
+.fg-green-after:after {
+    color: var(--green-dark-light-accent) !important;
+}
+
+.fg-green-hover:hover {
+    color: var(--green-dark-light-accent) !important;
+}
+
+.fg-green-active:active {
+    color: var(--green-dark-light-accent) !important;
+}
+
+.fg-green-focus:focus {
+    color: var(--green-dark-light-accent) !important;
+}
+/**/
+/*emerald backgrounds*/
+
+.bd-emerald {
+    border-color: var(--green-dark-accent) !important;
+}
+
+.ol-emerald {
+    outline-color: var(--green-dark-accent) !important;
+}
+
+.bg-emerald {
+    background: var(--green-dark-accent);
+}
+
+.trans-emerald {
+    background-color: var(--emerald-trans-70);
+}
+
+.bg-emerald-hover:hover {
+    background: var(--green-dark-accent) !important;
+}
+
+.bg-emerald-active:active {
+    background: var(--green-dark-accent) !important;
+}
+
+.bg-emerald-focus:focus {
+    background: var(--green-dark-accent) !important;
+}
+
+.bg-emerald-before:before {
+    background: var(--green-dark-accent) !important;
+}
+
+.bg-emerald-after:after {
+    background: var(--green-dark-accent) !important;
+}
+
+.bg-striped-emerald {
+    background: var(--green-dark-accent) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-emerald-before:before {
+    color: var(--green-dark-accent) !important;
+}
+
+.fg-emerald-after:after {
+    color: var(--green-dark-accent) !important;
+}
+
+.fg-emerald-hover:hover {
+    color: var(--green-dark-accent) !important;
+}
+
+.fg-emerald-active:active {
+    color: var(--green-dark-accent) !important;
+}
+
+.fg-emerald-focus:focus {
+    color: var(--green-dark-accent) !important;
+}
+/**/
+/*cyan backgrounds*/
+
+.bd-cyan {
+    border-color: var(--cyan-tarn-accent) !important;
+}
+
+.ol-cyan {
+    outline-color: var(--cyan-tarn-accent) !important;
+}
+
+.bg-cyan {
+    background: var(--cyan-tarn-accent);
+}
+
+.trans-cyan {
+    background-color: var(--cyan-trans-70);
+}
+
+.bg-cyan-hover:hover {
+    background: var(--cyan-tarn-accent) !important;
+}
+
+.bg-cyan-active:active {
+    background: var(--cyan-tarn-accent) !important;
+}
+
+.bg-cyan-focus:focus {
+    background: var(--cyan-tarn-accent) !important;
+}
+
+.bg-cyan-before:before {
+    background: var(--cyan-tarn-accent) !important;
+}
+
+.bg-cyan-after:after {
+    background: var(--cyan-tarn-accent) !important;
+}
+
+.bg-striped-cyan {
+    background: var(--cyan-tarn-accent) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-cyan-before:before {
+    color: var(--cyan-tarn-accent) !important;
+}
+
+.fg-cyan-after:after {
+    color: var(--cyan-tarn-accent) !important;
+}
+
+.fg-cyan-hover:hover {
+    color: var(--cyan-tarn-accent) !important;
+}
+
+.fg-cyan-active:active {
+    color: var(--cyan-tarn-accent) !important;
+}
+
+.fg-cyan-focus:focus {
+    color: var(--cyan-tarn-accent) !important;
+}
+/**/
+/*teal backgrounds*/
+
+.bd-teal {
+    border-color: var(--teal-dark-accent) !important;
+}
+
+.ol-teal {
+    outline-color: var(--teal-dark-accent) !important;
+}
+
+.bg-teal {
+    background: var(--teal-dark-accent);
+}
+
+.trans-teal {
+    background-color: var(--teal-trans-70);
+}
+
+.bg-teal-hover:hover {
+    background: var(--teal-dark-accent) !important;
+}
+
+.bg-teal-active:active {
+    background: var(--teal-dark-accent) !important;
+}
+
+.bg-teal-focus:focus {
+    background: var(--teal-dark-accent) !important;
+}
+
+.bg-teal-before:before {
+    background: var(--teal-dark-accent) !important;
+}
+
+.bg-teal-after:after {
+    background: var(--teal-dark-accent) !important;
+}
+
+.bg-striped-teal {
+    background: var(--teal-dark-accent) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-teal-before:before {
+    color: var(--teal-dark-accent) !important;
+}
+
+.fg-teal-after:after {
+    color: var(--teal-dark-accent) !important;
+}
+
+.fg-teal-hover:hover {
+    color: var(--teal-dark-accent) !important;
+}
+
+.fg-teal-active:active {
+    color: var(--teal-dark-accent) !important;
+}
+
+.fg-teal-focus:focus {
+    color: var(--teal-dark-accent) !important;
+}
+/**/
+/*blue backgrounds*/
+
+.bd-blue {
+    border-color: var(--blue-tarn-accent) !important;
+}
+
+.ol-blue {
+    outline-color: var(--blue-tarn-accent) !important;
+}
+
+.bg-blue {
+    background: var(--blue-tarn-accent);
+}
+
+.trans-blue {
+    background-color: var(--blue-trans-70);
+}
+
+.bg-blue-hover:hover {
+    background: var(--blue-tarn-accent) !important;
+}
+
+.bg-blue-active:active {
+    background: var(--blue-tarn-accent) !important;
+}
+
+.bg-blue-focus:focus {
+    background: var(--blue-tarn-accent) !important;
+}
+
+.bg-blue-before:before {
+    background: var(--blue-tarn-accent) !important;
+}
+
+.bg-blue-after:after {
+    background: var(--blue-tarn-accent) !important;
+}
+
+.bg-striped-blue {
+    background: var(--blue-tarn-accent) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-blue-before:before {
+    color: var(--blue-tarn-accent) !important;
+}
+
+.fg-blue-after:after {
+    color: var(--blue-tarn-accent) !important;
+}
+
+.fg-blue-hover:hover {
+    color: var(--blue-tarn-accent) !important;
+}
+
+.fg-blue-active:active {
+    color: var(--blue-tarn-accent) !important;
+}
+
+.fg-blue-focus:focus {
+    color: var(--blue-tarn-accent) !important;
+}
+/**/
+/*cobalt backgrounds*/
+
+.bd-cobalt {
+    border-color: var(--indigo-dark-accent) !important;
+}
+
+.ol-cobalt {
+    outline-color: var(--indigo-dark-accent) !important;
+}
+
+.bg-cobalt {
+    background: var(--indigo-dark-accent);
+}
+
+.trans-cobalt {
+    background-color: var(--cobalt-trans-70);
+}
+
+.bg-cobalt-hover:hover {
+    background: var(--indigo-dark-accent) !important;
+}
+
+.bg-cobalt-active:active {
+    background: var(--indigo-dark-accent) !important;
+}
+
+.bg-cobalt-focus:focus {
+    background: var(--indigo-dark-accent) !important;
+}
+
+.bg-cobalt-before:before {
+    background: var(--indigo-dark-accent) !important;
+}
+
+.bg-cobalt-after:after {
+    background: var(--indigo-dark-accent) !important;
+}
+
+.bg-striped-cobalt {
+    background: var(--indigo-dark-accent) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-cobalt-before:before {
+    color: var(--indigo-dark-accent) !important;
+}
+
+.fg-cobalt-after:after {
+    color: var(--indigo-dark-accent) !important;
+}
+
+.fg-cobalt-hover:hover {
+    color: var(--indigo-dark-accent) !important;
+}
+
+.fg-cobalt-active:active {
+    color: var(--indigo-dark-accent) !important;
+}
+
+.fg-cobalt-focus:focus {
+    color: var(--indigo-dark-accent) !important;
+}
+/**/
+/*indigo backgrounds*/
+
+.bd-indigo {
+    border-color: var(--purple-deep-dark-accent) !important;
+}
+
+.ol-indigo {
+    outline-color: var(--purple-deep-dark-accent) !important;
+}
+
+.bg-indigo {
+    background: var(--purple-deep-dark-accent);
+}
+
+.trans-indigo {
+    background-color: var(--indigo-trans-70);
+}
+
+.bg-indigo-hover:hover {
+    background: var(--purple-deep-dark-accent) !important;
+}
+
+.bg-indigo-active:active {
+    background: var(--purple-deep-dark-accent) !important;
+}
+
+.bg-indigo-focus:focus {
+    background: var(--purple-deep-dark-accent) !important;
+}
+
+.bg-indigo-before:before {
+    background: var(--purple-deep-dark-accent) !important;
+}
+
+.bg-indigo-after:after {
+    background: var(--purple-deep-dark-accent) !important;
+}
+
+.bg-striped-indigo {
+    background: var(--purple-deep-dark-accent) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-indigo-before:before {
+    color: var(--purple-deep-dark-accent) !important;
+}
+
+.fg-indigo-after:after {
+    color: var(--purple-deep-dark-accent) !important;
+}
+
+.fg-indigo-hover:hover {
+    color: var(--purple-deep-dark-accent) !important;
+}
+
+.fg-indigo-active:active {
+    color: var(--purple-deep-dark-accent) !important;
+}
+
+.fg-indigo-focus:focus {
+    color: var(--purple-deep-dark-accent) !important;
+}
+/**/
+/*violet background*/
+
+.bd-violet {
+    border-color: var(--purple-light-strong) !important;
+}
+
+.bg-violet {
+    background: var(--purple-light-strong);
+}
+
+.out-violet {
+    outline-color: var(--purple-light-strong) !important;
+}
+
+.trans-violet {
+    background-color: var(--violet-trans-70);
+}
+
+.bg-violet-hover:hover {
+    background: var(--purple-light-strong) !important;
+}
+
+.bg-violet-active:active {
+    background: var(--purple-light-strong) !important;
+}
+
+.bg-violet-focus:focus {
+    background: var(--purple-light-strong) !important;
+}
+
+.bg-violet-after:after {
+    background: var(--purple-light-strong) !important;
+}
+
+.bg-violet-before:before {
+    background: var(--purple-light-strong) !important;
+}
+
+.bg-striped-violet {
+    background: var(--purple-light-strong) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-violet {
+    color: var(--purple-light-strong);
+}
+
+.fg-violet-before:before {
+    color: var(--purple-light-strong) !important;
+}
+
+.fg-violet-after:after {
+    color: var(--purple-light-strong) !important;
+}
+
+.fg-violet-hover:hover {
+    color: var(--purple-light-strong) !important;
+}
+
+.fg-violet-active:active {
+    color: var(--purple-light-strong) !important;
+}
+
+.fg-violet-focus:focus {
+    color: var(--purple-light-strong) !important;
+}
+/**/
+/*brown background*/
+
+.bd-brown {
+    border-color: var(--brown-medium-accent) !important;
+}
+
+.bg-brown {
+    background: var(--brown-medium-accent);
+}
+
+.out-brown {
+    outline-color: var(--brown-medium-accent) !important;
+}
+
+.trans-brown {
+    background-color: var(--brown-trans-70);
+}
+
+.bg-brown-hover:hover {
+    background: var(--brown-medium-accent) !important;
+}
+
+.bg-brown-active:active {
+    background: var(--brown-medium-accent) !important;
+}
+
+.bg-brown-focus:focus {
+    background: var(--brown-medium-accent) !important;
+}
+
+.bg-brown-after:after {
+    background: var(--brown-medium-accent) !important;
+}
+
+.bg-brown-before:before {
+    background: var(--brown-medium-accent) !important;
+}
+
+.bg-striped-brown {
+    background: var(--brown-medium-accent) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-brown {
+    color: var(--brown-medium-accent);
+}
+
+.fg-brown-before:before {
+    color: var(--brown-medium-accent) !important;
+}
+
+.fg-brown-after:after {
+    color: var(--brown-medium-accent) !important;
+}
+
+.fg-brown-hover:hover {
+    color: var(--brown-medium-accent) !important;
+}
+
+.fg-brown-active:active {
+    color: var(--brown-medium-accent) !important;
+}
+
+.fg-brown-focus:focus {
+    color: var(--green-light-light-slightly) !important;
+}
+/**/
+/*olive background*/
+
+.bd-olive {
+    border-color: var(--green-light-light-strong) !important;
+}
+
+.bg-olive {
+    background: var(--green-light-light-strong);
+}
+
+.out-olive {
+    outline-color: var(--green-light-light-strong) !important;
+}
+
+.trans-olive {
+    background-color: var(--olive-trans-70);
+}
+
+.bg-olive-hover:hover {
+    background: var(--green-light-light-strong) !important;
+}
+
+.bg-olive-active:active {
+    background: var(--green-light-light-strong) !important;
+}
+
+.bg-olive-focus:focus {
+    background: var(--green-light-light-strong) !important;
+}
+
+.bg-olive-after:after {
+    background: var(--green-light-light-strong) !important;
+}
+
+.bg-olive-before:before {
+    background: var(--green-light-light-strong) !important;
+}
+
+.bg-striped-olive {
+    background: var(--green-light-light-strong) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-olive {
+    color: var(--green-light-light-strong);
+}
+
+.fg-olive-before:before {
+    color: var(--green-light-light-strong) !important;
+}
+
+.fg-olive-after:after {
+    color: var(--green-light-light-strong) !important;
+}
+
+.fg-olive-hover:hover {
+    color: var(--green-light-light-strong) !important;
+}
+
+.fg-olive-active:active {
+    color: var(--green-light-light-strong) !important;
+}
+
+.fg-olive-focus:focus {
+    color: var(--green-light-light-strong) !important;
+}
+/**/
+/*taupe background*/
+
+.bd-taupe {
+    border-color: var(--accent-taupe-medium) !important;
+}
+
+.bg-taupe {
+    background: var(--accent-taupe-medium);
+}
+
+.out-taupe {
+    outline-color: var(--accent-taupe-medium) !important;
+}
+
+.trans-taupe {
+    background-color: var(--taupe-trans-70);
+}
+
+.bg-taupe-hover:hover {
+    background: var(--accent-taupe-medium) !important;
+}
+
+.bg-taupe-active:active {
+    background: var(--accent-taupe-medium) !important;
+}
+
+.bg-taupe-focus:focus {
+    background: var(--accent-taupe-medium) !important;
+}
+
+.bg-taupe-after:after {
+    background: var(--accent-taupe-medium) !important;
+}
+
+.bg-taupe-before:before {
+    background: var(--accent-taupe-medium) !important;
+}
+
+.bg-striped-taupe {
+    background: var(--accent-taupe-medium) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-taupe {
+    color: var(--accent-taupe-medium);
+}
+
+.fg-taupe-before:before {
+    color: var(--accent-taupe-medium) !important;
+}
+
+.fg-taupe-after:after {
+    color: var(--accent-taupe-medium) !important;
+}
+
+.fg-taupe-hover:hover {
+    color: var(--accent-taupe-medium) !important;
+}
+
+.fg-taupe-active:active {
+    color: var(--accent-taupe-medium) !important;
+}
+
+.fg-taupe-focus:focus {
+    color: var(--accent-taupe-medium) !important;
+}
+/**/
+/*dark background*/
+
+.bd-dark {
+    border-color: var(--grey-tarn-accent) !important;
+}
+
+.bg-dark {
+    background: var(--grey-tarn-accent);
+}
+
+.out-dark {
+    outline-color: var(--grey-tarn-accent) !important;
+}
+
+.trans-dark {
+    background-color: var(--dark-trans-70);
+}
+
+.bg-dark-hover:hover {
+    background: var(--grey-tarn-accent) !important;
+}
+
+.bg-dark-active:active {
+    background: var(--grey-tarn-accent) !important;
+}
+
+.bg-dark-focus:focus {
+    background: var(--grey-tarn-accent) !important;
+}
+
+.bg-dark-after:after {
+    background: var(--grey-tarn-accent) !important;
+}
+
+.bg-dark-before:before {
+    background: var(--grey-tarn-accent) !important;
+}
+
+.bg-striped-dark {
+    background: var(--grey-tarn-accent) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-dark {
+    color: var(--grey-tarn-accent);
+}
+
+.fg-dark-before:before {
+    color: var(--grey-tarn-accent) !important;
+}
+
+.fg-dark-after:after {
+    color: var(--grey-tarn-accent) !important;
+}
+
+.fg-dark-hover:hover {
+    color: var(--grey-tarn-accent) !important;
+}
+
+.fg-dark-active:active {
+    color: var(--grey-tarn-accent) !important;
+}
+
+.fg-dark-focus:focus {
+    color: var(--grey-tarn-accent) !important;
+}
+/**/
+/*dark-brown background*/
+
+.bd-dark-brown {
+    border-color: var(--brown-dark-extra) !important;
+}
+
+.bg-dark-brown {
+    background: var(--brown-dark-extra);
+}
+
+.out-dark-brown {
+    outline-color: var(--brown-dark-extra) !important;
+}
+
+.trans-dark-brown {
+    background-color: var(--dark-brown-trans-70);
+}
+
+.bg-dark-brown-hover:hover {
+    background: var(--brown-dark-extra) !important;
+}
+
+.bg-dark-brown-active:active {
+    background: var(--brown-dark-extra) !important;
+}
+
+.bg-dark-brown-focus:focus {
+    background: var(--brown-dark-extra) !important;
+}
+
+.bg-dark-brown-after:after {
+    background: var(--brown-dark-extra) !important;
+}
+
+.bg-dark-brown-before:before {
+    background: var(--brown-dark-extra) !important;
+}
+
+.bg-striped-dark-brown {
+    background: var(--brown-dark-extra) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-dark-brown {
+    color: var(--brown-dark-extra);
+}
+
+.fg-dark-brown-before:before {
+    color: var(--brown-dark-extra) !important;
+}
+
+.fg-dark-brown-after:after {
+    color: var(--brown-dark-extra) !important;
+}
+
+.fg-dark-brown-hover:hover {
+    color: var(--brown-dark-extra) !important;
+}
+
+.fg-dark-brown-active:active {
+    color: var(--brown-dark-extra) !important;
+}
+
+.fg-dark-brown-focus:focus {
+    color: var(--brown-dark-extra) !important;
+}
+/**/
+/*dark-crimson background*/
+
+.bd-dark-crimson {
+    border-color: var(--red-dark-accent-extra) !important;
+}
+
+.bg-dark-crimson {
+    background: var(--red-dark-accent-extra);
+}
+
+.out-dark-crimson {
+    outline-color: var(--red-dark-accent-extra) !important;
+}
+
+.trans-dark-crimson {
+    background-color: var(--dark-crimson-trans-70);
+}
+
+.bg-dark-crimson-hover:hover {
+    background: var(--red-dark-accent-extra) !important;
+}
+
+.bg-dark-crimson-active:active {
+    background: var(--red-dark-accent-extra) !important;
+}
+
+.bg-dark-crimson-focus:focus {
+    background: var(--red-dark-accent-extra) !important;
+}
+
+.bg-dark-crimson-after:after {
+    background: var(--red-dark-accent-extra) !important;
+}
+
+.bg-dark-crimson-before:before {
+    background: var(--red-dark-accent-extra) !important;
+}
+
+.bg-striped-dark-crimson {
+    background: var(--red-dark-accent-extra) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-dark-crimson {
+    color: var(--red-dark-accent-extra);
+}
+
+.fg-dark-crimson-before:before {
+    color: var(--red-dark-accent-extra) !important;
+}
+
+.fg-dark-crimson-after:after {
+    color: var(--red-dark-accent-extra) !important;
+}
+
+.fg-dark-crimson-hover:hover {
+    color: var(--red-dark-accent-extra) !important;
+}
+
+.fg-dark-crimson-active:active {
+    color: var(--red-dark-accent-extra) !important;
+}
+
+.fg-dark-crimson-focus:focus {
+    color: var(--red-dark-accent-extra) !important;
+}
+/**/
+/*dark-magenta background*/
+
+.bd-dark-magenta {
+    border-color: var(--pink-dark-accent) !important;
+}
+
+.bg-dark-magenta {
+    background: var(--pink-dark-accent);
+}
+
+.out-dark-magenta {
+    outline-color: var(--pink-dark-accent) !important;
+}
+
+.trans-dark-magenta {
+    background-color: var(--dark-magenta-trans-70);
+}
+
+.bg-dark-magenta-hover:hover {
+    background: var(--pink-dark-accent) !important;
+}
+
+.bg-dark-magenta-active:active {
+    background: var(--pink-dark-accent) !important;
+}
+
+.bg-dark-magenta-focus:focus {
+    background: var(--pink-dark-accent) !important;
+}
+
+.bg-dark-magenta-after:after {
+    background: var(--pink-dark-accent) !important;
+}
+
+.bg-dark-magenta-before:before {
+    background: var(--pink-dark-accent) !important;
+}
+
+.bg-striped-dark-magenta {
+    background: var(--pink-dark-accent) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-dark-magenta {
+    color: var(--pink-dark-accent);
+}
+
+.fg-dark-magenta-before:before {
+    color: var(--pink-dark-accent) !important;
+}
+
+.fg-dark-magenta-after:after {
+    color: var(--pink-dark-accent) !important;
+}
+
+.fg-dark-magenta-hover:hover {
+    color: var(--pink-dark-accent) !important;
+}
+
+.fg-dark-magenta-active:active {
+    color: var(--pink-dark-accent) !important;
+}
+
+.fg-dark-magenta-focus:focus {
+    color: var(--pink-dark-accent) !important;
+}
+/**/
+/*dark-indigo background*/
+
+.bd-dark-indigo {
+    border-color: var(--purple-deep-dark-extra) !important;
+}
+
+.bg-dark-indigo {
+    background: var(--purple-deep-dark-extra);
+}
+
+.out-dark-indigo {
+    outline-color: var(--purple-deep-dark-extra) !important;
+}
+
+.trans-dark-indigo {
+    background-color: var(--dark-indigo-trans-70);
+}
+
+.bg-dark-indigo-hover:hover {
+    background: var(--purple-deep-dark-extra) !important;
+}
+
+.bg-dark-indigo-active:active {
+    background: var(--purple-deep-dark-extra) !important;
+}
+
+.bg-dark-indigo-focus:focus {
+    background: var(--purple-deep-dark-extra) !important;
+}
+
+.bg-dark-indigo-after:after {
+    background: var(--purple-deep-dark-extra) !important;
+}
+
+.bg-dark-indigo-before:before {
+    background: var(--purple-deep-dark-extra) !important;
+}
+
+.bg-striped-dark-indigo {
+    background: var(--purple-deep-dark-extra) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-dark-indigo {
+    color: var(--purple-deep-dark-extra);
+}
+
+.fg-dark-indigo-before:before {
+    color: var(--purple-deep-dark-extra) !important;
+}
+
+.fg-dark-indigo-after:after {
+    color: var(--purple-deep-dark-extra) !important;
+}
+
+.fg-dark-indigo-hover:hover {
+    color: var(--purple-deep-dark-extra) !important;
+}
+
+.fg-dark-indigo-active:active {
+    color: var(--purple-deep-dark-extra) !important;
+}
+
+.fg-dark-indigo-focus:focus {
+    color: var(--purple-deep-dark-extra) !important;
+}
+/**/
+/*dark-cyan background*/
+
+.bd-dark-cyan {
+    border-color: var(--cyan-dark-accent) !important;
+}
+
+.bg-dark-cyan {
+    background: var(--cyan-dark-accent);
+}
+
+.out-dark-cyan {
+    outline-color: var(--cyan-dark-accent) !important;
+}
+
+.trans-dark-cyan {
+    background-color: var(--dark-cyan-trans-70);
+}
+
+.bg-dark-cyan-hover:hover {
+    background: var(--cyan-dark-accent) !important;
+}
+
+.bg-dark-cyan-active:active {
+    background: var(--cyan-dark-accent) !important;
+}
+
+.bg-dark-cyan-focus:focus {
+    background: var(--cyan-dark-accent) !important;
+}
+
+.bg-dark-cyan-after:after {
+    background: var(--cyan-dark-accent) !important;
+}
+
+.bg-dark-cyan-before:before {
+    background: var(--cyan-dark-accent) !important;
+}
+
+.bg-striped-dark-cyan {
+    background: var(--cyan-dark-accent) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-dark-cyan {
+    color: var(--cyan-dark-accent);
+}
+
+.fg-dark-cyan-before:before {
+    color: var(--cyan-dark-accent) !important;
+}
+
+.fg-dark-cyan-after:after {
+    color: var(--cyan-dark-accent) !important;
+}
+
+.fg-dark-cyan-hover:hover {
+    color: var(--cyan-dark-accent) !important;
+}
+
+.fg-dark-cyan-active:active {
+    color: var(--cyan-dark-accent) !important;
+}
+
+.fg-dark-cyan-focus:focus {
+    color: var(--cyan-dark-accent) !important;
+}
+/**/
+/*dark-cobalt background*/
+
+.bd-dark-cobalt {
+    border-color: var(--indigo-dark-extra) !important;
+}
+
+.bg-dark-cobalt {
+    background: var(--indigo-dark-extra);
+}
+
+.out-dark-cobalt {
+    outline-color: var(--indigo-dark-extra) !important;
+}
+
+.trans-dark-cobalt {
+    background-color: var(--dark-cobalt-trans-70);
+}
+
+.bg-dark-cobalt-hover:hover {
+    background: var(--indigo-dark-extra) !important;
+}
+
+.bg-dark-cobalt-active:active {
+    background: var(--indigo-dark-extra) !important;
+}
+
+.bg-dark-cobalt-focus:focus {
+    background: var(--indigo-dark-extra) !important;
+}
+
+.bg-dark-cobalt-after:after {
+    background: var(--indigo-dark-extra) !important;
+}
+
+.bg-dark-cobalt-before:before {
+    background: var(--indigo-dark-extra) !important;
+}
+
+.bg-striped-dark-cobalt {
+    background: var(--indigo-dark-extra) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-dark-cobalt {
+    color: var(--indigo-dark-extra);
+}
+
+.fg-dark-cobalt-before:before {
+    color: var(--indigo-dark-extra) !important;
+}
+
+.fg-dark-cobalt-after:after {
+    color: var(--indigo-dark-extra) !important;
+}
+
+.fg-dark-cobalt-hover:hover {
+    color: var(--indigo-dark-extra) !important;
+}
+
+.fg-dark-cobalt-active:active {
+    color: var(--indigo-dark-extra) !important;
+}
+
+.fg-dark-cobalt-focus:focus {
+    color: var(--indigo-dark-extra) !important;
+}
+/**/
+/*dark-teal background*/
+
+.bd-dark-teal {
+    border-color: var(--teal-dark-extra) !important;
+}
+
+.bg-dark-teal {
+    background: var(--teal-dark-extra);
+}
+
+.out-dark-teal {
+    outline-color: var(--teal-dark-extra) !important;
+}
+
+.trans-dark-teal {
+    background-color: var(--dark-teal-trans-70);
+}
+
+.bg-dark-teal-hover:hover {
+    background: var(--teal-dark-extra) !important;
+}
+
+.bg-dark-teal-active:active {
+    background: var(--teal-dark-extra) !important;
+}
+
+.bg-dark-teal-focus:focus {
+    background: var(--teal-dark-extra) !important;
+}
+
+.bg-dark-teal-after:after {
+    background: var(--teal-dark-extra) !important;
+}
+
+.bg-dark-teal-before:before {
+    background: var(--teal-dark-extra) !important;
+}
+
+.bg-striped-dark-teal {
+    background: var(--teal-dark-extra) linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-dark-teal {
+    color: var(--teal-dark-extra);
+}
+
+.fg-dark-teal-before:before {
+    color: var(--teal-dark-extra) !important;
+}
+
+.fg-dark-teal-after:after {
+    color: var(--teal-dark-extra) !important;
+}
+
+.fg-dark-teal-hover:hover {
+    color: var(--teal-dark-extra) !important;
+}
+
+.fg-dark-teal-active:active {
+    color: var(--teal-dark-extra) !important;
+}
+
+.fg-dark-teal-focus:focus {
+    color: var(--teal-dark-extra) !important;
+}
+/**/
+/*dark-emerald background*/
+
+.bd-dark-emerald {
+    border-color: var(--green-dark-extra) !important;
+}
+
+.bg-dark-emerald {
+    background: var(--green-dark-extra);
+}
+
+.out-dark-emerald {
+    outline-color: var(--green-dark-extra) !important;
+}
+
+.trans-dark-emerald {
+    background-color: var(--dark-emerald-trans-70);
+}
+
+.bg-dark-emerald-hover:hover {
+    background: var(--green-dark-extra) !important;
+}
+
+.bg-dark-emerald-active:active {
+    background: var(--green-dark-extra) !important;
+}
+
+.bg-dark-emerald-focus:focus {
+    background: var(--green-dark-extra) !important;
+}
+
+.bg-dark-emerald-after:after {
+    background: var(--green-dark-extra) !important;
+}
+
+.bg-dark-emerald-before:before {
+    background: var(--green-dark-extra) !important;
+}
+
+.bg-striped-dark-emerald {
+    background: var(--green-dark-extra)linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-dark-emerald {
+    color: var(--green-dark-extra);
+}
+
+.fg-dark-emerald-before:before {
+    color: var(--green-dark-extra) !important;
+}
+
+.fg-dark-emerald-after:after {
+    color: var(--green-dark-extra) !important;
+}
+
+.fg-dark-emerald-hover:hover {
+    color: var(--green-dark-extra) !important;
+}
+
+.fg-dark-emerald-active:active {
+    color: var(--green-dark-extra) !important;
+}
+
+.fg-dark-emerald-focus:focus {
+    color: var(--green-dark-extra) !important;
+}
+/**/
+/*dark-green background*/
+
+.bd-dark-green {
+    border-color: var(--green-dark-light-extra) !important;
+}
+
+.bg-dark-green {
+    background: var(--green-dark-light-extra);
+}
+
+.out-dark-green {
+    outline-color: var(--green-dark-extra) !important;
+}
+
+.trans-dark-green {
+    background-color: var(--dark-green-trans-70);
+}
+
+.bg-dark-green-hover:hover {
+    background: var(--green-dark-light-extra) !important;
+}
+
+.bg-dark-green-active:active {
+    background: var(--green-dark-light-extra) !important;
+}
+
+.bg-dark-green-focus:focus {
+    background: var(--green-dark-light-extra) !important;
+}
+
+.bg-dark-green-after:after {
+    background: var(--green-dark-light-extra) !important;
+}
+
+.bg-dark-green-before:before {
+    background: var(--green-dark-light-extra) !important;
+}
+
+.bg-striped-dark-green {
+    background: var(--green-dark-light-extra)linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-dark-green {
+    color: var(--green-dark-light-extra);
+}
+
+.fg-dark-green-before:before {
+    color: var(--green-dark-light-extra) !important;
+}
+
+.fg-dark-green-after:after {
+    color: var(--green-dark-light-extra) !important;
+}
+
+.fg-dark-green-hover:hover {
+    color: var(--green-dark-light-extra) !important;
+}
+
+.fg-dark-green-active:active {
+    color: var(--green-dark-light-extra) !important;
+}
+
+.fg-dark-green-focus:focus {
+    color: var(--green-dark-light-extra) !important;
+}
+/**/
+/*dark-orange background*/
+
+.bd-dark-orange {
+    border-color: var(--orange-deep-dark-extra) !important;
+}
+
+.bg-dark-orange {
+    background: var(--orange-deep-dark-extra);
+}
+
+.out-dark-orange {
+    outline-color: var(--orange-deep-dark-extra) !important;
+}
+
+.trans-dark-orange {
+    background-color: var(--dark-orange-trans-70);
+}
+
+.bg-dark-orange-hover:hover {
+    background: var(--orange-deep-dark-extra) !important;
+}
+
+.bg-dark-orange-active:active {
+    background: var(--orange-deep-dark-extra) !important;
+}
+
+.bg-dark-orange-focus:focus {
+    background: var(--orange-deep-dark-extra) !important;
+}
+
+.bg-dark-orange-after:after {
+    background: var(--orange-deep-dark-extra) !important;
+}
+
+.bg-dark-orange-before:before {
+    background: var(--orange-deep-dark-extra) !important;
+}
+
+.bg-striped-dark-orange {
+    background: var(--orange-deep-dark-extra)linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-dark-orange {
+    color: var(--orange-deep-dark-extra);
+}
+
+.fg-dark-orange-before:before {
+    color: var(--orange-deep-dark-extra) !important;
+}
+
+.fg-dark-orange-after:after {
+    color: var(--orange-deep-dark-extra) !important;
+}
+
+.fg-dark-orange-hover:hover {
+    color: var(--orange-deep-dark-extra) !important;
+}
+
+.fg-dark-orange-active:active {
+    color: var(--orange-deep-dark-extra) !important;
+}
+
+.fg-dark-orange-focus:focus {
+    color: var(--orange-deep-dark-extra) !important;
+}
+/**/
+/*dark-olive background*/
+
+.bd-dark-olive {
+    border-color: var(--green-dark-light-light) !important;
+}
+
+.bg-dark-olive {
+    background: var(--green-dark-light-light);
+}
+
+.out-dark-olive {
+    outline-color: var(--green-dark-light-light) !important;
+}
+
+.trans-dark-olive {
+    background-color: var(--dark-olive-trans-70);
+}
+
+.bg-dark-olive-hover:hover {
+    background: var(--green-dark-light-light) !important;
+}
+
+.bg-dark-olive-active:active {
+    background: var(--green-dark-light-light) !important;
+}
+
+.bg-dark-olive-focus:focus {
+    background: var(--green-dark-light-light) !important;
+}
+
+.bg-dark-olive-after:after {
+    background: var(--green-dark-light-light) !important;
+}
+
+.bg-dark-olive-before:before {
+    background: var(--green-dark-light-light) !important;
+}
+
+.bg-striped-dark-olive {
+    background: var(--green-dark-light-light)linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-dark-olive {
+    color: var(--green-dark-light-light);
+}
+
+.fg-dark-olive-before:before {
+    color: var(--green-dark-light-light) !important;
+}
+
+.fg-dark-olive-after:after {
+    color: var(--green-dark-light-light) !important;
+}
+
+.fg-dark-olive-hover:hover {
+    color: var(--green-dark-light-light) !important;
+}
+
+.fg-dark-olive-active:active {
+    color: var(--green-dark-light-light) !important;
+}
+
+.fg-dark-olive-focus:focus {
+    color: var(--green-dark-light-light) !important;
+}
+/**/
+/*dark-red background*/
+
+.bd-dark-red {
+    border-color: var(--red-dark-strong) !important;
+}
+
+.bg-dark-red {
+    background: var(--red-dark-strong);
+}
+
+.out-dark-red {
+    outline-color: var(--red-dark-strong) !important;
+}
+
+.trans-dark-red {
+    background-color: var(--dark-orange-trans-70);
+}
+
+.bg-dark-red-hover:hover {
+    background: var(--red-dark-strong) !important;
+}
+
+.bg-dark-red-active:active {
+    background: var(--red-dark-strong) !important;
+}
+
+.bg-dark-red-focus:focus {
+    background: var(--red-dark-strong) !important;
+}
+
+.bg-dark-red-after:after {
+    background: var(--red-dark-strong) !important;
+}
+
+.bg-dark-red-before:before {
+    background: var(--red-dark-strong) !important;
+}
+
+.bg-striped-dark-red {
+    background: var(--red-dark-strong)linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-dark-red {
+    color: var(--red-dark-strong);
+}
+
+.fg-dark-red-before:before {
+    color: var(--red-dark-strong) !important;
+}
+
+.fg-dark-red-after:after {
+    color: var(--red-dark-strong) !important;
+}
+
+.fg-dark-red-hover:hover {
+    color: var(--red-dark-strong) !important;
+}
+
+.fg-dark-red-active:active {
+    color: var(--red-dark-strong) !important;
+}
+
+.fg-dark-red-focus:focus {
+    color: var(--red-dark-strong) !important;
+}
+/**/
+/*dark-pink background*/
+
+.bd-dark-pink {
+    border-color: var(--pink-dark-extra) !important;
+}
+
+.bg-dark-pink {
+    background: var(--pink-dark-extra);
+}
+
+.out-dark-pink {
+    outline-color: var(--pink-dark-extra) !important;
+}
+
+.trans-dark-pink {
+    background-color: var(--dark-pink-trans-70);
+}
+
+.bg-dark-pink-hover:hover {
+    background: var(--pink-dark-extra) !important;
+}
+
+.bg-dark-pink-active:active {
+    background: var(--pink-dark-extra) !important;
+}
+
+.bg-dark-pink-focus:focus {
+    background: var(--pink-dark-extra) !important;
+}
+
+.bg-dark-pink-after:after {
+    background: var(--pink-dark-extra) !important;
+}
+
+.bg-dark-pink-before:before {
+    background: var(--pink-dark-extra) !important;
+}
+
+.bg-striped-dark-pink {
+    background: var(--pink-dark-extra)linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-dark-pink {
+    color: var(--pink-dark-extra);
+}
+
+.fg-dark-pink-before:before {
+    color: var(--pink-dark-extra) !important;
+}
+
+.fg-dark-pink-after:after {
+    color: var(--pink-dark-extra) !important;
+}
+
+.fg-dark-pink-hover:hover {
+    color: var(--pink-dark-extra) !important;
+}
+
+.fg-dark-pink-active:active {
+    color: var(--pink-dark-extra) !important;
+}
+
+.fg-dark-pink-focus:focus {
+    color: var(--pink-dark-extra) !important;
+}
+/**/
+/*dark-violet background*/
+
+.bd-dark-violet {
+    border-color: var(--purple-dark-extra) !important;
+}
+
+.bg-dark-violet {
+    background: var(--purple-dark-extra);
+}
+
+.out-dark-violet {
+    outline-color: var(--purple-dark-extra) !important;
+}
+
+.trans-dark-violet {
+    background-color: var(--dark-violet-70);
+}
+
+.bg-dark-violet-hover:hover {
+    background: var(--purple-dark-extra) !important;
+}
+
+.bg-dark-violet-active:active {
+    background: var(--purple-dark-extra) !important;
+}
+
+.bg-dark-violet-focus:focus {
+    background: var(--purple-dark-extra) !important;
+}
+
+.bg-dark-violet-after:after {
+    background: var(--purple-dark-extra) !important;
+}
+
+.bg-dark-violet-before:before {
+    background: var(--purple-dark-extra) !important;
+}
+
+.bg-striped-dark-violet {
+    background: var(--purple-dark-extra)linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-dark-violet {
+    color: var(--purple-dark-extra);
+}
+
+.fg-dark-violet-before:before {
+    color: var(--purple-dark-extra) !important;
+}
+
+.fg-dark-violet-after:after {
+    color: var(--purple-dark-extra) !important;
+}
+
+.fg-dark-violet-hover:hover {
+    color: var(--purple-dark-extra) !important;
+}
+
+.fg-dark-violet-active:active {
+    color: var(--purple-dark-extra) !important;
+}
+
+.fg-dark-violet-focus:focus {
+    color: var(--purple-dark-extra) !important;
+}
+/**/
+/*dark-blue background*/
+
+.bd-dark-blue {
+    border-color: var(--blue-dark-extra) !important;
+}
+
+.bg-dark-blue {
+    background: var(--blue-dark-extra);
+}
+
+.out-dark-blue {
+    outline-color: var(--blue-dark-extra) !important;
+}
+
+.trans-dark-blue {
+    background-color: var(--dark-blue-trans-70);
+}
+
+.bg-dark-blue-hover:hover {
+    background: var(--blue-dark-extra) !important;
+}
+
+.bg-dark-blue-active:active {
+    background: var(--blue-dark-extra) !important;
+}
+
+.bg-dark-blue-focus:focus {
+    background: var(--blue-dark-extra) !important;
+}
+
+.bg-dark-blue-after:after {
+    background: var(--blue-dark-extra) !important;
+}
+
+.bg-dark-blue-before:before {
+    background: var(--blue-dark-extra) !important;
+}
+
+.bg-striped-dark-blue {
+    background: var(--blue-dark-extra)linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-dark-blue {
+    color: var(--blue-dark-extra);
+}
+
+.fg-dark-blue-before:before {
+    color: var(--blue-dark-extra) !important;
+}
+
+.fg-dark-blue-after:after {
+    color: var(--blue-dark-extra) !important;
+}
+
+.fg-dark-blue-hover:hover {
+    color: var(--blue-dark-extra) !important;
+}
+
+.fg-dark-blue-active:active {
+    color: var(--blue-dark-extra) !important;
+}
+
+.fg-dark-blue-focus:focus {
+    color: var(--blue-dark-extra) !important;
+}
+/**/
+/*light-blue background*/
+
+.bd-light-blue {
+    border-color: var(--blue-light-strong) !important;
+}
+
+.bg-light-blue {
+    background: var(--blue-light-strong);
+}
+
+.out-light-blue {
+    outline-color: var(--blue-light-strong) !important;
+}
+
+.trans-light-blue {
+    background-color: var(--light-blue-trans-70);
+}
+
+.bg-light-blue-hover:hover {
+    background: var(--blue-light-strong) !important;
+}
+
+.bg-light-blue-active:active {
+    background: var(--blue-light-strong) !important;
+}
+
+.bg-light-blue-focus:focus {
+    background: var(--blue-light-strong) !important;
+}
+
+.bg-light-blue-after:after {
+    background: var(--blue-light-strong) !important;
+}
+
+.bg-light-blue-before:before {
+    background: var(--blue-light-strong) !important;
+}
+
+.bg-striped-light-blue {
+    background: var(--blue-light-strong)linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-light-blue {
+    color: var(--blue-light-strong);
+}
+
+.fg-light-blue-before:before {
+    color: var(--blue-light-strong) !important;
+}
+
+.fg-light-blue-after:after {
+    color: var(--blue-light-strong) !important;
+}
+
+.fg-light-blue-hover:hover {
+    color: var(--blue-light-strong) !important;
+}
+
+.fg-light-blue-active:active {
+    color: var(--blue-light-strong) !important;
+}
+
+.fg-light-blue-focus:focus {
+    color: var(--blue-light-strong) !important;
+}
+/**/
+/*lighter-blue background*/
+
+.bd-lighter-blue {
+    border-color: var(--blue-light-control) !important;
+}
+
+.bg-lighter-blue {
+    background: var(--blue-light-control);
+}
+
+.out-lighter-blue {
+    outline-color: var(--blue-light-control) !important;
+}
+
+.trans-lighter-blue {
+    background-color: var(--lighter-blue-trans-70);
+}
+
+.bg-lighter-blue-hover:hover {
+    background: var(--blue-light-control) !important;
+}
+
+.bg-lighter-blue-active:active {
+    background: var(--blue-light-control) !important;
+}
+
+.bg-lighter-blue-focus:focus {
+    background: var(--blue-light-control) !important;
+}
+
+.bg-lighter-blue-after:after {
+    background: var(--blue-light-control) !important;
+}
+
+.bg-lighter-blue-before:before {
+    background: var(--blue-light-control) !important;
+}
+
+.bg-striped-lighter-blue {
+    background: var(--blue-light-control)linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-lighter-blue {
+    color: var(--blue-light-control);
+}
+
+.fg-lighter-blue-before:before {
+    color: var(--blue-light-control) !important;
+}
+
+.fg-light-blue-after:after {
+    color: var(--blue-light-control) !important;
+}
+
+.fg-lighter-blue-hover:hover {
+    color: var(--blue-light-control) !important;
+}
+
+.fg-lighter-blue-active:active {
+    color: var(--blue-light-control) !important;
+}
+
+.fg-lighter-blue-focus:focus {
+    color: var(--blue-light-control) !important;
+}
+/**/
+/*light-teal background*/
+
+.bd-light-teal {
+    border-color: var(--teal-light-strong) !important;
+}
+
+.bg-light-teal {
+    background: var(--teal-light-strong);
+}
+
+.out-light-teal {
+    outline-color: var(--teal-light-strong) !important;
+}
+
+.trans-light-teal {
+    background-color: var(--light-teal-trans-70);
+}
+
+.bg-light-teal-hover:hover {
+    background: var(--teal-light-strong) !important;
+}
+
+.bg-light-teal-active:active {
+    background: var(--teal-light-strong) !important;
+}
+
+.bg-light-teal-focus:focus {
+    background: var(--teal-light-strong) !important;
+}
+
+.bg-light-teal-after:after {
+    background: var(--teal-light-strong) !important;
+}
+
+.bg-light-teal-before:before {
+    background: var(--teal-light-strong) !important;
+}
+
+.bg-striped-light-teal {
+    background: var(--teal-light-strong)linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-light-teal {
+    color: var(--teal-light-strong);
+}
+
+.fg-light-teal-before:before {
+    color: var(--teal-light-strong) !important;
+}
+
+.fg-light-teal-after:after {
+    color: var(--teal-light-strong) !important;
+}
+
+.fg-light-teal-hover:hover {
+    color: var(--teal-light-strong) !important;
+}
+
+.fg-light-teal-active:active {
+    color: var(--teal-light-strong) !important;
+}
+
+.fg-light-teal-focus:focus {
+    color: var(--teal-light-strong) !important;
+}
+/**/
+/*light-cyan background*/
+
+.bd-light-cyan {
+    border-color: var(--cyan-light-medium) !important;
+}
+
+.bg-light-cyan {
+    background: var(--cyan-light-medium);
+}
+
+.out-light-cyan {
+    outline-color: var(--cyan-light-medium) !important;
+}
+
+.trans-light-cyan {
+    background-color: var(--light-cyan-trans-70);
+}
+
+.bg-light-cyan-hover:hover {
+    background: var(--cyan-light-medium) !important;
+}
+
+.bg-light-cyan-active:active {
+    background: var(--cyan-light-medium) !important;
+}
+
+.bg-light-cyan-focus:focus {
+    background: var(--cyan-light-medium) !important;
+}
+
+.bg-light-cyan-after:after {
+    background: var(--cyan-light-medium) !important;
+}
+
+.bg-light-cyan-before:before {
+    background: var(--cyan-light-medium) !important;
+}
+
+.bg-striped-light-cyan {
+    background: var(--cyan-light-medium)linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-light-cyan {
+    color: var(--cyan-light-medium);
+}
+
+.fg-light-cyan-before:before {
+    color: var(--cyan-light-medium) !important;
+}
+
+.fg-light-cyan-after:after {
+    color: var(--cyan-light-medium) !important;
+}
+
+.fg-light-cyan-hover:hover {
+    color: var(--cyan-light-medium) !important;
+}
+
+.fg-light-cyan-active:active {
+    color: var(--cyan-light-medium) !important;
+}
+
+.fg-light-cyan-focus:focus {
+    color: var(--cyan-light-medium) !important;
+}
+/**/
+/*light-green background*/
+
+.bd-light-green {
+    border-color: var(--green-tarn-light-accent) !important;
+}
+
+.bg-light-green {
+    background: var(--cyan-light-medium);
+}
+
+.out-light-green {
+    outline-color: var(--green-tarn-light-accent) !important;
+}
+
+.trans-light-green {
+    background-color: var(--light-green-trans-70);
+}
+
+.bg-light-green-hover:hover {
+    background: var(--green-tarn-light-accent) !important;
+}
+
+.bg-light-green-active:active {
+    background: var(--green-tarn-light-accent) !important;
+}
+
+.bg-light-green-focus:focus {
+    background: var(--green-tarn-light-accent) !important;
+}
+
+.bg-light-green-after:after {
+    background: var(--green-tarn-light-accent) !important;
+}
+
+.bg-light-green-before:before {
+    background: var(--green-tarn-light-accent) !important;
+}
+
+.bg-striped-light-green {
+    background: var(--green-tarn-light-accent)linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-light-green {
+    color: var(--green-tarn-light-accent);
+}
+
+.fg-light-green-before:before {
+    color: var(--green-tarn-light-accent) !important;
+}
+
+.fg-light-green-after:after {
+    color: var(--green-tarn-light-accent) !important;
+}
+
+.fg-light-green-hover:hover {
+    color: var(--green-tarn-light-accent) !important;
+}
+
+.fg-light-green-active:active {
+    color: var(--green-tarn-light-accent) !important;
+}
+
+.fg-light-green-focus:focus {
+    color: var(--green-tarn-light-accent) !important;
+}
+/**/
+/*light-red background*/
+
+.bd-light-red {
+    border-color: var(--red-light-medium) !important;
+}
+
+.bg-light-red {
+    background: var(--red-light-medium);
+}
+
+.out-light-red {
+    outline-color: var(--red-light-medium) !important;
+}
+
+.trans-light-red {
+    background-color: var(--light-red-trans-70);
+}
+
+.bg-light-red-hover:hover {
+    background: var(--red-light-medium) !important;
+}
+
+.bg-light-red-active:active {
+    background: var(--red-light-medium) !important;
+}
+
+.bg-light-red-focus:focus {
+    background: var(--red-light-medium) !important;
+}
+
+.bg-light-red-after:after {
+    background: var(--red-light-medium) !important;
+}
+
+.bg-light-red-before:before {
+    background: var(--red-light-medium) !important;
+}
+
+.bg-striped-light-red {
+    background: var(--red-light-medium)linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-light-red {
+    color: var(--red-light-medium);
+}
+
+.fg-light-red-before:before {
+    color: var(--red-light-medium) !important;
+}
+
+.fg-light-red-after:after {
+    color: var(--red-light-medium) !important;
+}
+
+.fg-light-red-hover:hover {
+    color: var(--red-light-medium) !important;
+}
+
+.fg-light-red-active:active {
+    color: var(--red-light-medium) !important;
+}
+
+.fg-light-red-focus:focus {
+    color: var(--red-light-medium) !important;
+}
+/**/
+/*light-pink background*/
+
+.bd-light-pink {
+    border-color: var(--pink-light-slightly) !important;
+}
+
+.bg-light-pink {
+    background: var(--pink-light-slightly);
+}
+
+.out-light-pink {
+    outline-color: var(--pink-light-slightly) !important;
+}
+
+.trans-light-pink {
+    background-color: var(--light-pink-trans-70);
+}
+
+.bg-light-pink-hover:hover {
+    background: var(--pink-light-slightly) !important;
+}
+
+.bg-light-pink-active:active {
+    background: var(--pink-light-slightly) !important;
+}
+
+.bg-light-pink-focus:focus {
+    background: var(--pink-light-slightly) !important;
+}
+
+.bg-light-pink-after:after {
+    background: var(--pink-light-slightly) !important;
+}
+
+.bg-light-pink-before:before {
+    background: var(--pink-light-slightly) !important;
+}
+
+.bg-striped-light-pink {
+    background: var(--pink-light-slightly)linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-light-pink {
+    color: var(--pink-light-slightly);
+}
+
+.fg-light-pink-before:before {
+    color: var(--pink-light-slightly) !important;
+}
+
+.fg-light-pink-after:after {
+    color: var(--pink-light-slightly) !important;
+}
+
+.fg-light-pink-hover:hover {
+    color: var(--pink-light-slightly) !important;
+}
+
+.fg-light-pink-active:active {
+    color: var(--pink-light-slightly) !important;
+}
+
+.fg-light-pink-focus:focus {
+    color: var(--pink-light-slightly) !important;
+}
+/**/
+/*light-red background*/
+
+.bd-light-red {
+    border-color: var(--red-light-medium) !important;
+}
+
+.bg-light-red {
+    background: var(--red-light-medium);
+}
+
+.out-light-red {
+    outline-color: var(--red-light-medium) !important;
+}
+
+.trans-light-red {
+    background-color: var(--light-red-trans-70);
+}
+
+.bg-light-red-hover:hover {
+    background: var(--red-light-medium) !important;
+}
+
+.bg-light-red-active:active {
+    background: var(--red-light-medium) !important;
+}
+
+.bg-light-red-focus:focus {
+    background: var(--red-light-medium) !important;
+}
+
+.bg-light-red-after:after {
+    background: var(--red-light-medium) !important;
+}
+
+.bg-light-red-before:before {
+    background: var(--red-light-medium) !important;
+}
+
+.bg-striped-light-red {
+    background: var(--red-light-medium)linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-light-red {
+    color: var(--red-light-medium);
+}
+
+.fg-light-red-before:before {
+    color: var(--red-light-medium) !important;
+}
+
+.fg-light-red-after:after {
+    color: var(--red-light-medium) !important;
+}
+
+.fg-light-red-hover:hover {
+    color: var(--red-light-medium) !important;
+}
+
+.fg-light-red-active:active {
+    color: var(--red-light-medium) !important;
+}
+
+.fg-light-red-focus:focus {
+    color: var(--red-light-medium) !important;
+}
+/**/
+/*light-orange background*/
+
+.bd-light-orange {
+    border-color: var(--orange-light-slightly) !important;
+}
+
+.bg-light-orange {
+    background: var(--orange-light-slightly);
+}
+
+.out-light-orange {
+    outline-color: var(--orange-light-slightly) !important;
+}
+
+.trans-light-orange {
+    background-color: var(--light-orange-trans-70);
+}
+
+.bg-light-orange-hover:hover {
+    background: var(--orange-light-slightly) !important;
+}
+
+.bg-light-orange-active:active {
+    background: var(--orange-light-slightly) !important;
+}
+
+.bg-light-orange-focus:focus {
+    background: var(--orange-light-slightly) !important;
+}
+
+.bg-light-orange-after:after {
+    background: var(--orange-light-slightly) !important;
+}
+
+.bg-light-orange-before:before {
+    background: var(--orange-light-slightly) !important;
+}
+
+.bg-striped-light-orange {
+    background: var(--orange-light-slightly)linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-light-orange {
+    color: var(--orange-light-slightly);
+}
+
+.fg-light-orange-before:before {
+    color: var(--orange-light-slightly) !important;
+}
+
+.fg-light-orange-after:after {
+    color: var(--orange-light-slightly) !important;
+}
+
+.fg-light-orange-hover:hover {
+    color: var(--orange-light-slightly) !important;
+}
+
+.fg-light-orange-active:active {
+    color: var(--orange-light-slightly) !important;
+}
+
+.fg-light-orange-focus:focus {
+    color: var(--orange-light-slightly) !important;
+}
+/**/
+/*light-olive background*/
+
+.bd-light-olive {
+    border-color: var(--green-light-light-slightly) !important;
+}
+
+.bg-light-olive {
+    background: var(--green-light-light-slightly);
+}
+
+.out-light-olive {
+    outline-color: var(--green-light-light-slightly) !important;
+}
+
+.trans-light-olive {
+    background-color: var(--green-light-light-slightly);
+}
+
+.bg-light-olive-hover:hover {
+    background: var(--green-light-light-slightly) !important;
+}
+
+.bg-light-olive-active:active {
+    background: var(--green-light-light-slightly) !important;
+}
+
+.bg-light-olive-focus:focus {
+    background: var(--green-light-light-slightly) !important;
+}
+
+.bg-light-olive-after:after {
+    background: var(--green-light-light-slightly) !important;
+}
+
+.bg-light-olive-before:before {
+    background: var(--green-light-light-slightly) !important;
+}
+
+.bg-striped-light-olive {
+    background: var(--green-light-light-slightly)linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+
+.fg-light-olive {
+    color: var(--green-light-light-slightly);
+}
+
+.fg-light-olive-before:before {
+    color: var(--green-light-light-slightly) !important;
+}
+
+.fg-light-olive-after:after {
+    color: var(--green-light-light-slightly) !important;
+}
+
+.fg-light-olive-hover:hover {
+    color: var(--green-light-light-slightly) !important;
+}
+
+.fg-light-olive-active:active {
+    color: var(--green-light-light-slightly) !important;
+}
+
+.fg-light-olive-focus:focus {
+    color: var(--green-light-light-slightly) !important;
+}
+/**/
+/**/
+/*additional background colors*/
+
+.bg-strong-red {
+    background: var(--red-light-strong);
+}
+
+.out-strong-red {
+    outline-color: var(--red-light-strong) !important;
+}
+
+.trans-strong-red {
+    background-color: var(--red-light-strong);
+}
+
+.bg-strong-red-hover:hover {
+    background: var(--red-light-strong) !important;
+}
+
+.bg-strong-red-active:active {
+    background: var(--red-light-strong) !important;
+}
+
+.bg-strong-red-focus:focus {
+    background: var(--red-light-strong) !important;
+}
+
+.bg-strong-red-after:after {
+    background: var(--red-light-strong) !important;
+}
+
+.bg-strong-red-before:before {
+    background: var(--red-light-strong) !important;
+}
+
+.bg-striped-strong-red {
+    background: var(--red-light-strong)linear-gradient(-45deg, var(--white-trans-15) 25%, transparent 25%, transparent 50%, var(--white-trans-15) 50%, var(--white-trans-15) 75%, transparent 75%, transparent) !important;
+    background-size: 40px 40px !important;
+}
+/**
+  **/
+/**************************************end general back, fore, border, outline and text colors**************************************/
+
