@@ -21,6 +21,10 @@
       "PackagePath": "staticwebassets\\css\\app-tables-styles.css"
     },
     {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\app-tabular-styles.css",
+      "PackagePath": "staticwebassets\\css\\app-tabular-styles.css"
+    },
+    {
       "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\color-pallete.css",
       "PackagePath": "staticwebassets\\css\\color-pallete.css"
     },
@@ -29,12 +33,60 @@
       "PackagePath": "staticwebassets\\css\\component-styles.css"
     },
     {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\fonts\\material-icons-outlined.woff",
+      "PackagePath": "staticwebassets\\css\\fonts\\material-icons-outlined.woff"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\fonts\\material-icons-outlined.woff2",
+      "PackagePath": "staticwebassets\\css\\fonts\\material-icons-outlined.woff2"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\fonts\\material-icons-round.woff",
+      "PackagePath": "staticwebassets\\css\\fonts\\material-icons-round.woff"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\fonts\\material-icons-round.woff2",
+      "PackagePath": "staticwebassets\\css\\fonts\\material-icons-round.woff2"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\fonts\\material-icons-sharp.woff",
+      "PackagePath": "staticwebassets\\css\\fonts\\material-icons-sharp.woff"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\fonts\\material-icons-sharp.woff2",
+      "PackagePath": "staticwebassets\\css\\fonts\\material-icons-sharp.woff2"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\fonts\\material-icons-two-tone.woff",
+      "PackagePath": "staticwebassets\\css\\fonts\\material-icons-two-tone.woff"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\fonts\\material-icons-two-tone.woff2",
+      "PackagePath": "staticwebassets\\css\\fonts\\material-icons-two-tone.woff2"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\fonts\\material-icons.scss",
+      "PackagePath": "staticwebassets\\css\\fonts\\material-icons.scss"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\fonts\\material-icons.woff",
+      "PackagePath": "staticwebassets\\css\\fonts\\material-icons.woff"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\fonts\\material-icons.woff2",
+      "PackagePath": "staticwebassets\\css\\fonts\\material-icons.woff2"
+    },
+    {
       "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\grc-style.css",
       "PackagePath": "staticwebassets\\css\\grc-style.css"
     },
     {
       "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\login-style.css",
       "PackagePath": "staticwebassets\\css\\login-style.css"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\material-icons.css",
+      "PackagePath": "staticwebassets\\css\\material-icons.css"
     },
     {
       "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\register-styles.css",
@@ -101,8 +153,52 @@
       "PackagePath": "staticwebassets\\js\\admin-tables.js"
     },
     {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-obligation-register.js",
+      "PackagePath": "staticwebassets\\js\\app-obligation-register.js"
+    },
+    {
       "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-other-script.js",
       "PackagePath": "staticwebassets\\js\\app-other-script.js"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-policy-register.js",
+      "PackagePath": "staticwebassets\\js\\app-policy-register.js"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-regulation-PolRegister.js",
+      "PackagePath": "staticwebassets\\js\\app-regulation-PolRegister.js"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-regulation-authorities.js",
+      "PackagePath": "staticwebassets\\js\\app-regulation-authorities.js"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-regulation-categories.js",
+      "PackagePath": "staticwebassets\\js\\app-regulation-categories.js"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-regulation-doctypes.js",
+      "PackagePath": "staticwebassets\\js\\app-regulation-doctypes.js"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-regulation-obligations.js",
+      "PackagePath": "staticwebassets\\js\\app-regulation-obligations.js"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-regulation-tasks.js",
+      "PackagePath": "staticwebassets\\js\\app-regulation-tasks.js"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-regulation-types.js",
+      "PackagePath": "staticwebassets\\js\\app-regulation-types.js"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-regulations-register.js",
+      "PackagePath": "staticwebassets\\js\\app-regulations-register.js"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-returns-register.js",
+      "PackagePath": "staticwebassets\\js\\app-returns-register.js"
     },
     {
       "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-script.js",
@@ -111,6 +207,10 @@
     {
       "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-table-script.js",
       "PackagePath": "staticwebassets\\js\\app-table-script.js"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\branch-script.js",
+      "PackagePath": "staticwebassets\\js\\branch-script.js"
     },
     {
       "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\bug-signalr-script.js",
@@ -133,8 +233,16 @@
       "PackagePath": "staticwebassets\\js\\login-script.js"
     },
     {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\operations-dashboard-script.js",
+      "PackagePath": "staticwebassets\\js\\operations-dashboard-script.js"
+    },
+    {
       "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\register-script.js",
       "PackagePath": "staticwebassets\\js\\register-script.js"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\users-script.js",
+      "PackagePath": "staticwebassets\\js\\users-script.js"
     },
     {
       "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\bootstrap\\LICENSE",
@@ -381,6 +489,34 @@
       "PackagePath": "staticwebassets\\lib\\datatables\\datatables.min.js"
     },
     {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\date-controls\\bootstrap-datepicker.min.css",
+      "PackagePath": "staticwebassets\\lib\\date-controls\\bootstrap-datepicker.min.css"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\date-controls\\bootstrap-datepicker.min.js",
+      "PackagePath": "staticwebassets\\lib\\date-controls\\bootstrap-datepicker.min.js"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\date-controls\\daterangepicker.css",
+      "PackagePath": "staticwebassets\\lib\\date-controls\\daterangepicker.css"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\date-controls\\daterangepicker.min.js",
+      "PackagePath": "staticwebassets\\lib\\date-controls\\daterangepicker.min.js"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\date-controls\\moment.min.js",
+      "PackagePath": "staticwebassets\\lib\\date-controls\\moment.min.js"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\flastpicker\\flatpickr.js",
+      "PackagePath": "staticwebassets\\lib\\flastpicker\\flatpickr.js"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\flastpicker\\flatpickr.min.css",
+      "PackagePath": "staticwebassets\\lib\\flastpicker\\flatpickr.min.css"
+    },
+    {
       "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\icons\\coreui-icons\\css\\all.css",
       "PackagePath": "staticwebassets\\lib\\icons\\coreui-icons\\css\\all.css"
     },
@@ -621,6 +757,30 @@
       "PackagePath": "staticwebassets\\lib\\sweet-alert\\sweetalert2.css"
     },
     {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\tabulator\\css\\tabulator.min.css",
+      "PackagePath": "staticwebassets\\lib\\tabulator\\css\\tabulator.min.css"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\tabulator\\css\\tabulator_bootstrap5.min.css",
+      "PackagePath": "staticwebassets\\lib\\tabulator\\css\\tabulator_bootstrap5.min.css"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\tabulator\\css\\tabulator_materialize.min.css",
+      "PackagePath": "staticwebassets\\lib\\tabulator\\css\\tabulator_materialize.min.css"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\tabulator\\css\\tabulator_modern.min.css",
+      "PackagePath": "staticwebassets\\lib\\tabulator\\css\\tabulator_modern.min.css"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\tabulator\\css\\tabulator_simple.min.css",
+      "PackagePath": "staticwebassets\\lib\\tabulator\\css\\tabulator_simple.min.css"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\tabulator\\js\\tabulator.min.js",
+      "PackagePath": "staticwebassets\\lib\\tabulator\\js\\tabulator.min.js"
+    },
+    {
       "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\toastr\\toastr.css",
       "PackagePath": "staticwebassets\\lib\\toastr\\toastr.css"
     },
@@ -635,6 +795,26 @@
     {
       "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\toastr\\toastr.min.js",
       "PackagePath": "staticwebassets\\lib\\toastr\\toastr.min.js"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\tooltips\\light.css",
+      "PackagePath": "staticwebassets\\lib\\tooltips\\light.css"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\tooltips\\popper.min.js",
+      "PackagePath": "staticwebassets\\lib\\tooltips\\popper.min.js"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\tooltips\\tippy.css",
+      "PackagePath": "staticwebassets\\lib\\tooltips\\tippy.css"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\tooltips\\tippy.umd.min.js",
+      "PackagePath": "staticwebassets\\lib\\tooltips\\tippy.umd.min.js"
+    },
+    {
+      "Id": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\lib\\xlsx\\xlsx.full.min.js",
+      "PackagePath": "staticwebassets\\lib\\xlsx\\xlsx.full.min.js"
     },
     {
       "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.Grc.ui.App.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
