@@ -32,11 +32,20 @@ namespace Grc.ui.App.Services {
         /// <summary>
         /// Get count of processes per category
         /// </summary>
-        /// <param name="category"></param>
-        /// <param name="userId"></param>
-        /// <param name="lastLoginIpAddress"></param>
+        /// <param name="category">Process category</param>
+        /// <param name="userId">Current user id</param>
+        /// <param name="ipAddress">Current user IP Address</param>
         /// <returns></returns>
-        Task<CategoryExtensionModel> CategoryExtensionsCountAsync(string category, long userId, string lastLoginIpAddress);
+        Task<CategoryExtensionModel> CategoryExtensionsCountAsync(string category, long userId, string ipAddress);
+
+        /// <summary>
+        /// Get count of processes per unit
+        /// </summary>
+        /// <param name="unit">Operations Unit</param>
+        /// <param name="userId">Current user id</param>
+        /// <param name="ipAddress">Current user IP Address</param>
+        /// <returns></returns>
+        Task<UnitExtensionModel> UnitExtensionsCountAsync(string unit, long userId, string ipAddress);
     }
 
 }

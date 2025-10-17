@@ -94,11 +94,9 @@ function prepareChartData(unit) {
 function createHorizontalChart(canvasId, data) {
     const ctx = document.getElementById(canvasId);
     if (!ctx) {
-        console.error(`Canvas element with id ${canvasId} not found.`);
         return;
     }
 
-    console.log("Canvas version >> ", Chart.version);
     new Chart(ctx, {
         type: 'bar',
         data: {

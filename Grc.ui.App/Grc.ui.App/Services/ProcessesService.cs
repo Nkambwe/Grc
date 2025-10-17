@@ -6,7 +6,6 @@ using Grc.ui.App.Factories;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Utils;
-using System.Collections.Generic;
 
 namespace Grc.ui.App.Services {
 
@@ -333,7 +332,7 @@ namespace Grc.ui.App.Services {
             {
                 new(){
                     Banner = ProcessCategories.UpToDate.GetDescription(),
-                    UnitProcesses = new Dictionary<string, int> {
+                    CategoryProcesses = new Dictionary<string, int> {
                         { OperationUnit.AccountServices.GetDescription(),9 },
                         { OperationUnit.Cash.GetDescription(), 3 },
                         { OperationUnit.Channels.GetDescription(), 9 },
@@ -347,7 +346,7 @@ namespace Grc.ui.App.Services {
                 new()
                 {
                     Banner = ProcessCategories.Proposed.GetDescription(),
-                    UnitProcesses = new Dictionary<string, int> {
+                    CategoryProcesses = new Dictionary<string, int> {
                         { OperationUnit.AccountServices.GetDescription(),0 },
                         { OperationUnit.Cash.GetDescription(), 0 },
                         { OperationUnit.Channels.GetDescription(), 3 },
@@ -361,7 +360,7 @@ namespace Grc.ui.App.Services {
                 new()
                 {
                     Banner = ProcessCategories.Unchanged.GetDescription(),
-                    UnitProcesses = new Dictionary<string, int> {
+                    CategoryProcesses = new Dictionary<string, int> {
                         { OperationUnit.AccountServices.GetDescription(),0 },
                         { OperationUnit.Cash.GetDescription(), 9 },
                         { OperationUnit.Channels.GetDescription(), 14 },
@@ -375,7 +374,7 @@ namespace Grc.ui.App.Services {
                 new()
                 {
                     Banner = ProcessCategories.Due.GetDescription(),
-                    UnitProcesses = new Dictionary<string, int> {
+                    CategoryProcesses = new Dictionary<string, int> {
                         { OperationUnit.AccountServices.GetDescription(),0 },
                         { OperationUnit.Cash.GetDescription(), 1 },
                         { OperationUnit.Channels.GetDescription(), 7 },
@@ -389,7 +388,7 @@ namespace Grc.ui.App.Services {
                 new()
                 {
                     Banner = ProcessCategories.Dormant.GetDescription(),
-                    UnitProcesses = new Dictionary<string, int> {
+                    CategoryProcesses = new Dictionary<string, int> {
                         { OperationUnit.AccountServices.GetDescription(),0 },
                         { OperationUnit.Cash.GetDescription(), 0 },
                         { OperationUnit.Channels.GetDescription(), 1 },
@@ -403,7 +402,7 @@ namespace Grc.ui.App.Services {
                 new()
                 {
                     Banner = ProcessCategories.Cancelled.GetDescription(),
-                    UnitProcesses = new Dictionary<string, int> {
+                    CategoryProcesses = new Dictionary<string, int> {
                         { OperationUnit.AccountServices.GetDescription(),4 },
                         { OperationUnit.Cash.GetDescription(), 0 },
                         { OperationUnit.Channels.GetDescription(), 6 },
@@ -416,6 +415,110 @@ namespace Grc.ui.App.Services {
                 }
             };
             var obj = processes.FirstOrDefault(d => d.Banner.Trim().Equals(category?.Trim(), StringComparison.CurrentCultureIgnoreCase));
+            return await Task.FromResult(obj);
+        }
+
+        public async Task<UnitExtensionModel> UnitExtensionsCountAsync(string unit, long userId, string ipAddress)
+        {
+            var processes = new List<UnitExtensionModel>()
+            {
+                new(){
+                    Banner =  OperationUnit.AccountServices.GetDescription(),
+                    UnitProcesses = new Dictionary<string, int> {
+                        { ProcessCategories.UpToDate.GetDescription(), 9 },
+                        { ProcessCategories.Proposed.GetDescription(),0 },
+                        { ProcessCategories.Unchanged.GetDescription(), 0 },
+                        { ProcessCategories.Due.GetDescription(), 0 },
+                        { ProcessCategories.Dormant.GetDescription(), 0 },
+                        { ProcessCategories.Cancelled.GetDescription(), 4 }
+                    }
+                },
+                new()
+                {
+                    Banner = OperationUnit.Cash.GetDescription(),
+                    UnitProcesses = new Dictionary<string, int> {
+                        { ProcessCategories.UpToDate.GetDescription(), 3 },
+                        { ProcessCategories.Proposed.GetDescription(),0 },
+                        { ProcessCategories.Unchanged.GetDescription(), 9 },
+                        { ProcessCategories.Due.GetDescription(), 1 },
+                        { ProcessCategories.Dormant.GetDescription(), 0 },
+                        { ProcessCategories.Cancelled.GetDescription(), 0 }
+                    }
+                },
+                new()
+                {
+                    Banner = OperationUnit.Channels.GetDescription(),
+                    UnitProcesses = new Dictionary<string, int> {
+                        { ProcessCategories.UpToDate.GetDescription(), 9 },
+                        { ProcessCategories.Proposed.GetDescription(),3 },
+                        { ProcessCategories.Unchanged.GetDescription(), 14 },
+                        { ProcessCategories.Due.GetDescription(), 7 },
+                        { ProcessCategories.Dormant.GetDescription(), 1 },
+                        { ProcessCategories.Cancelled.GetDescription(), 6 }
+                    }
+                },
+                new()
+                {
+                    Banner = OperationUnit.CustomerExp.GetDescription(),
+                    UnitProcesses = new Dictionary<string, int> {
+                        { ProcessCategories.UpToDate.GetDescription(), 12 },
+                        { ProcessCategories.Proposed.GetDescription(),0 },
+                        { ProcessCategories.Unchanged.GetDescription(), 2 },
+                        { ProcessCategories.Due.GetDescription(), 3 },
+                        { ProcessCategories.Dormant.GetDescription(), 0 },
+                        { ProcessCategories.Cancelled.GetDescription(), 0 }
+                    }
+                },
+                new()
+                {
+                    Banner = OperationUnit.Reconciliation.GetDescription(),
+                    UnitProcesses = new Dictionary<string, int> {
+                        { ProcessCategories.UpToDate.GetDescription(), 4 },
+                        { ProcessCategories.Proposed.GetDescription(),0 },
+                        { ProcessCategories.Unchanged.GetDescription(), 8 },
+                        { ProcessCategories.Due.GetDescription(), 0 },
+                        { ProcessCategories.Dormant.GetDescription(), 0 },
+                        { ProcessCategories.Cancelled.GetDescription(), 0 }
+                    }
+                },
+                new()
+                {
+                    Banner = OperationUnit.RecordsMgt.GetDescription(),
+                    UnitProcesses = new Dictionary<string, int> {
+                        { ProcessCategories.UpToDate.GetDescription(), 3 },
+                        { ProcessCategories.Proposed.GetDescription(),0 },
+                        { ProcessCategories.Unchanged.GetDescription(), 0 },
+                        { ProcessCategories.Due.GetDescription(), 0 },
+                        { ProcessCategories.Dormant.GetDescription(), 0 },
+                        { ProcessCategories.Cancelled.GetDescription(), 1 }
+                    }
+                },
+                new()
+                {
+                    Banner = OperationUnit.Payments.GetDescription(),
+                    UnitProcesses = new Dictionary<string, int> {
+                        { ProcessCategories.UpToDate.GetDescription(), 9 },
+                        { ProcessCategories.Proposed.GetDescription(),5 },
+                        { ProcessCategories.Unchanged.GetDescription(), 6 },
+                        { ProcessCategories.Due.GetDescription(), 5 },
+                        { ProcessCategories.Dormant.GetDescription(), 2 },
+                        { ProcessCategories.Cancelled.GetDescription(), 0 }
+                    }
+                },
+                new()
+                {
+                    Banner = OperationUnit.Wallets.GetDescription(),
+                    UnitProcesses = new Dictionary<string, int> {
+                        { ProcessCategories.UpToDate.GetDescription(), 15 },
+                        { ProcessCategories.Proposed.GetDescription(),2 },
+                        { ProcessCategories.Unchanged.GetDescription(), 0 },
+                        { ProcessCategories.Due.GetDescription(), 1 },
+                        { ProcessCategories.Dormant.GetDescription(), 1 },
+                        { ProcessCategories.Cancelled.GetDescription(), 0 }
+                    },
+                }
+            };
+            var obj = processes.FirstOrDefault(d => d.Banner.Trim().Equals(unit?.Trim(), StringComparison.CurrentCultureIgnoreCase));
             return await Task.FromResult(obj);
         }
     }

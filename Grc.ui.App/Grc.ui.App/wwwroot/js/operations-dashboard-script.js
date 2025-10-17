@@ -58,8 +58,8 @@ const barConfig = {
 /* =======================
    Doughnut Chart Creation
 ======================= */
-const categoryLabels = Object.keys(categories); // your category keys
-const categoryData = Object.values(categories); // your category values
+const categoryLabels = Object.keys(categories); 
+const categoryData = Object.values(categories); 
 const categoryColors = categoryLabels.map((_, i) => `hsl(${i * 45},70%,60%)`);
 
 new Chart(document.getElementById("categoryChart"), {

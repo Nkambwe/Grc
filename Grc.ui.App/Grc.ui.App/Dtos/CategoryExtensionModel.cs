@@ -1,5 +1,4 @@
-﻿using Grc.ui.App.Defaults;
-using Grc.ui.App.Models;
+﻿using Grc.ui.App.Models;
 
 namespace Grc.ui.App.Dtos {
     public class CategoryExtensionModel
@@ -8,7 +7,7 @@ namespace Grc.ui.App.Dtos {
         public string WelcomeMessage { get; set; } = string.Empty;
         public string Initials { get; set; }
         public WorkspaceModel Workspace { get; set; }
-        public Dictionary<string, int> UnitProcesses { get; set; } = new();
+        public Dictionary<string, int> CategoryProcesses { get; set; } = new();
         public List<QuickActionModel> QuickActions { get; set; } = new();
 
     }

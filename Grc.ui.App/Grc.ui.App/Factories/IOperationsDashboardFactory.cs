@@ -11,6 +11,8 @@ namespace Grc.ui.App.Factories {
         Task<TotalExtensionModel> PrepareExtensionCategoryErrorModelAsync(UserModel model);
         Task<CategoryExtensionModel> PrepareDefaultExtensionCategoryErrorModelAsync(UserModel model);
         Task<OperationsDashboardModel> PrepareErrorOperationsDashboardModelAsync(UserModel model);
+        Task<UnitExtensionModel> PrepareUnitExtensionsModelAsync(UserModel model, string category);
+        Task<UnitExtensionModel> PrepareDefaultExtensionUnitErrorModelAsync(UserModel model);
     }
 }
    

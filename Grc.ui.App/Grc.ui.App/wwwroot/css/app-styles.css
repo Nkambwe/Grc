@@ -1338,7 +1338,81 @@ div.input-group.date {
 .card-cancelled {
     border-top: 4px solid #ef4444;
 }
+
+
+.card-category-proposed {
+    border-top: 4px solid var(--pearl-purple-dark-light-extra);
+}
+
+.card-category-unchanged {
+    border-top: 4px solid var(--grey-light-strong);
+}
+
+.card-category-due {
+    border-top: 4px solid var(--pink-dark-slightly);
+}
+
+.card-category-dormant {
+    border-top: 4px solid var(--pearl-orange);
+}
+
+.card-category-cancelled {
+    border-top: 4px solid var(--pearl-orange-dark-acent);
+}
+
+.card-category-completed {
+    border-top: 4px solid var(--green-dark-accent);
+}
+
+.card-unit-default {
+    border-top: 4px solid var(--pearl-orange-dark-acent);
+}
+
+#unitPieChart {
+    max-height: 300px;
+}
+
+.btn-category-button {
+    display: flex;
+    border: none;
+    width: 100%;
+    align-content: center;
+    align-items: center;
+    background: transparent;
+    transition: filter 0.2s ease;
+}
+
+    .btn-category-button span:first-child {
+        transition: filter 0.2s ease;
+    }
+
+    .btn-category-button span:last-child {
+        transition: color 0.2s ease;
+    }
+
+    .btn-category-button:hover span:first-child {
+        filter: brightness(1.4);
+    }
+
+    .btn-category-button:hover span:last-child {
+        color: rgba(0,0,0,0.5);
+    }
+
+#processTable {
+
+}
+
 /*-------------------*/
+
+.category-chart-container {
+    border-radius: 8px;
+    padding: 1.5rem;
+    position: relative;
+    height: auto;
+    background: var(--background-color);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
+
 .charts-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));

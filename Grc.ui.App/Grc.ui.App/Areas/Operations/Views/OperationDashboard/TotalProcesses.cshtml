@@ -27,7 +27,13 @@
         <span class="title-line"></span>
     </div>
 
-    @await Component.InvokeAsync("QuickActions", new { model = Model.QuickActions })
+    <div class="quick-actions">
+        <a href="/operations/dashboard">
+            <span><i class="mdi mdi-home"></i></span>
+            <span>Home</span>
+        </a>
+        @await Component.InvokeAsync("QuickActions", new { model = Model.QuickActions })
+    </div>
 </div>
 
 <div class="dashboard-category-grid">

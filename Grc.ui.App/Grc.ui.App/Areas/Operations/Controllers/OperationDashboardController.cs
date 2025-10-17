@@ -86,7 +86,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         public async Task<IActionResult> TotalProcesses() {
-            var model = new TotalExtensionModel();
+            TotalExtensionModel model;
             UserModel currentUser = null;
             try {
                 //..get user IP address
@@ -96,7 +96,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError)
                 {
-                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-CONTROLLER", string.Empty);
+                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-TOTALPROCESSES", string.Empty);
                     return RedirectToAction("Index");
                 }
 
@@ -106,7 +106,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 //..prepare user dashboard
                 model = await _operationsDashboardFactory.PrepareDefaultTotalExtensionsModelAsync(currentUser);
             } catch (Exception ex) {
-                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-CONTROLLER", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-TOTALPROCESSES", ex.StackTrace);
                 model = await _operationsDashboardFactory.PrepareExtensionCategoryErrorModelAsync(currentUser);
             }
 
@@ -114,7 +114,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         public async Task<IActionResult> Completed() {
-            var model = new CategoryExtensionModel();
+            CategoryExtensionModel model;
             UserModel currentUser = null;
             try {
                 //..get user IP address
@@ -123,7 +123,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 //..get current authenticated user record
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError) {
-                    await ProcessErrorAsync(grcResponse.Error.Message,"OPERATION-DASHBOARD-CONTROLLER" , string.Empty);
+                    await ProcessErrorAsync(grcResponse.Error.Message,"OPERATION-DASHBOARD-COMPLETEDPROCESSES" , string.Empty);
                     model = await _operationsDashboardFactory.PrepareDefaultExtensionCategoryErrorModelAsync(currentUser);
                 }
 
@@ -133,7 +133,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 //..prepare user dashboard
                 model = await _operationsDashboardFactory.PrepareCategoryExtensionsModelAsync(currentUser, ProcessCategories.UpToDate.GetDescription());
             } catch(Exception ex){ 
-                await ProcessErrorAsync(ex.Message,"OPERATION-DASHBOARD-CONTROLLER" , ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-COMPLETEDPROCESSES", ex.StackTrace);
                 model = await _operationsDashboardFactory.PrepareDefaultExtensionCategoryErrorModelAsync(currentUser);
             }
 
@@ -141,7 +141,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         public async Task<IActionResult> Proposed() {
-            var model = new CategoryExtensionModel();
+            CategoryExtensionModel model;
             UserModel currentUser = null;
             try
             {
@@ -152,7 +152,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError)
                 {
-                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-CONTROLLER", string.Empty);
+                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-PROPOSEDPROCESSES", string.Empty);
                     model = await _operationsDashboardFactory.PrepareDefaultExtensionCategoryErrorModelAsync(currentUser);
                 }
 
@@ -164,7 +164,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             }
             catch (Exception ex)
             {
-                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-CONTROLLER", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-PROPOSEDPROCESSES", ex.StackTrace);
                 model = await _operationsDashboardFactory.PrepareDefaultExtensionCategoryErrorModelAsync(currentUser);
             }
 
@@ -172,7 +172,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         public async Task<IActionResult> Dormant() {
-            var model = new CategoryExtensionModel();
+            CategoryExtensionModel model;
             UserModel currentUser = null;
             try
             {
@@ -183,7 +183,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError)
                 {
-                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-CONTROLLER", string.Empty);
+                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-DORMANTPROCESSES", string.Empty);
                     model = await _operationsDashboardFactory.PrepareDefaultExtensionCategoryErrorModelAsync(currentUser);
                 }
 
@@ -195,7 +195,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             }
             catch (Exception ex)
             {
-                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-CONTROLLER", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-DORMANTPROCESSES", ex.StackTrace);
                 model = await _operationsDashboardFactory.PrepareDefaultExtensionCategoryErrorModelAsync(currentUser);
             }
 
@@ -203,7 +203,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         public async Task<IActionResult> Cancelled() {
-            var model = new CategoryExtensionModel();
+            CategoryExtensionModel model;
             UserModel currentUser = null;
             try
             {
@@ -214,7 +214,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError)
                 {
-                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-CONTROLLER", string.Empty);
+                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-CANCELLEDPROCESSES", string.Empty);
                     model = await _operationsDashboardFactory.PrepareDefaultExtensionCategoryErrorModelAsync(currentUser);
                 }
 
@@ -226,7 +226,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             }
             catch (Exception ex)
             {
-                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-CONTROLLER", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-CANCELLEDPROCESSES", ex.StackTrace);
                 model = await _operationsDashboardFactory.PrepareDefaultExtensionCategoryErrorModelAsync(currentUser);
             }
 
@@ -234,7 +234,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         public async Task<IActionResult> Unchanged() {
-            var model = new CategoryExtensionModel();
+            CategoryExtensionModel model;
             UserModel currentUser = null;
             try
             {
@@ -245,7 +245,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError)
                 {
-                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-CONTROLLER", string.Empty);
+                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-UNCHANGEDPROCESSES", string.Empty);
                     model = await _operationsDashboardFactory.PrepareDefaultExtensionCategoryErrorModelAsync(currentUser);
                 }
 
@@ -257,7 +257,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             }
             catch (Exception ex)
             {
-                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-CONTROLLER", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-UNCHANGEDPROCESSES", ex.StackTrace);
                 model = await _operationsDashboardFactory.PrepareDefaultExtensionCategoryErrorModelAsync(currentUser);
             }
 
@@ -265,7 +265,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         public async Task<IActionResult> Due() {
-            var model = new CategoryExtensionModel();
+            CategoryExtensionModel model;
             UserModel currentUser = null;
             try
             {
@@ -276,7 +276,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError)
                 {
-                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-CONTROLLER", string.Empty);
+                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-DUEPROCESSES", string.Empty);
                     model = await _operationsDashboardFactory.PrepareDefaultExtensionCategoryErrorModelAsync(currentUser);
                 }
 
@@ -288,7 +288,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             }
             catch (Exception ex)
             {
-                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-CONTROLLER", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-DUEPROCESSES", ex.StackTrace);
                 model = await _operationsDashboardFactory.PrepareDefaultExtensionCategoryErrorModelAsync(currentUser);
             }
 
@@ -296,7 +296,8 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         public async Task<IActionResult> AccountServices() {
-            OperationsDashboardModel model;
+            UnitExtensionModel model;
+            UserModel currentUser = null;
             try
             {
                 //..get user IP address
@@ -306,28 +307,28 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError)
                 {
-                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-ACCOUNTSERVICES", string.Empty);
-                    return RedirectToAction("Index");
+                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-ACCOUNTSERVICE", string.Empty);
+                    model = await _operationsDashboardFactory.PrepareDefaultExtensionUnitErrorModelAsync(currentUser);
                 }
 
-                var currentUser = grcResponse.Data;
+                currentUser = grcResponse.Data;
                 currentUser.LastLoginIpAddress = ipAddress;
 
                 //..prepare user dashboard
-                model = await _operationsDashboardFactory.PrepareUnitStatisticsModelAsync(currentUser, OperationUnit.AccountServices.GetDescription());
+                model = await _operationsDashboardFactory.PrepareUnitExtensionsModelAsync(currentUser, OperationUnit.AccountServices.GetDescription());
             }
             catch (Exception ex)
             {
-                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-ACCOUNTSERVICES", ex.StackTrace);
-                return RedirectToAction("Index");
-                
+                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-ACCOUNTSERVICE", ex.StackTrace);
+                model = await _operationsDashboardFactory.PrepareDefaultExtensionUnitErrorModelAsync(currentUser);
             }
 
             return View(model);
         }
 
         public async Task<IActionResult> Reconciliation() {
-            OperationsDashboardModel model;
+            UnitExtensionModel model;
+            UserModel currentUser = null;
             try
             {
                 //..get user IP address
@@ -338,54 +339,58 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 if (grcResponse.HasError)
                 {
                     await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-RECONCILIATION", string.Empty);
-                    return RedirectToAction("Index");  
+                    model = await _operationsDashboardFactory.PrepareDefaultExtensionUnitErrorModelAsync(currentUser);
                 }
 
-                var currentUser = grcResponse.Data;
+                currentUser = grcResponse.Data;
                 currentUser.LastLoginIpAddress = ipAddress;
 
                 //..prepare user dashboard
-                model = await _operationsDashboardFactory.PrepareUnitStatisticsModelAsync(currentUser, OperationUnit.Reconciliation.GetDescription());
+                model = await _operationsDashboardFactory.PrepareUnitExtensionsModelAsync(currentUser, OperationUnit.Reconciliation.GetDescription());
             }
             catch (Exception ex)
             {
                 await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-RECONCILIATION", ex.StackTrace);
-                return RedirectToAction("Index");
+                model = await _operationsDashboardFactory.PrepareDefaultExtensionUnitErrorModelAsync(currentUser);
             }
 
             return View(model);
         }
 
         public async Task<IActionResult> RecordsManagement() {
-            OperationsDashboardModel model;
-            try {
+            UnitExtensionModel model;
+            UserModel currentUser = null;
+            try
+            {
                 //..get user IP address
                 var ipAddress = WebHelper.GetCurrentIpAddress();
 
                 //..get current authenticated user record
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (grcResponse.HasError) {
+                if (grcResponse.HasError)
+                {
                     await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-RECORDSMANAGEMENT", string.Empty);
-                    return RedirectToAction("Index");  
+                    model = await _operationsDashboardFactory.PrepareDefaultExtensionUnitErrorModelAsync(currentUser);
                 }
 
-                var currentUser = grcResponse.Data;
+                currentUser = grcResponse.Data;
                 currentUser.LastLoginIpAddress = ipAddress;
 
                 //..prepare user dashboard
-                model = await _operationsDashboardFactory.PrepareUnitStatisticsModelAsync(currentUser, OperationUnit.RecordsMgt.GetDescription());
+                model = await _operationsDashboardFactory.PrepareUnitExtensionsModelAsync(currentUser, OperationUnit.RecordsMgt.GetDescription());
             }
             catch (Exception ex)
             {
                 await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-RECORDSMANAGEMENT", ex.StackTrace);
-                return RedirectToAction("Index");
+                model = await _operationsDashboardFactory.PrepareDefaultExtensionUnitErrorModelAsync(currentUser);
             }
 
             return View(model);
         }
 
         public async Task<IActionResult> Wallets() {
-            OperationsDashboardModel model;
+            UnitExtensionModel model;
+            UserModel currentUser = null;
             try
             {
                 //..get user IP address
@@ -396,27 +401,28 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 if (grcResponse.HasError)
                 {
                     await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-WALLETS", string.Empty);
-                    return RedirectToAction("Index");  
+                    model = await _operationsDashboardFactory.PrepareDefaultExtensionUnitErrorModelAsync(currentUser);
                 }
 
-                var currentUser = grcResponse.Data;
+                currentUser = grcResponse.Data;
                 currentUser.LastLoginIpAddress = ipAddress;
 
                 //..prepare user dashboard
-                model = await _operationsDashboardFactory.PrepareUnitStatisticsModelAsync(currentUser, OperationUnit.Wallets.GetDescription());
+                model = await _operationsDashboardFactory.PrepareUnitExtensionsModelAsync(currentUser, OperationUnit.Wallets.GetDescription());
             }
             catch (Exception ex)
             {
                 await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-WALLETS", ex.StackTrace);
-                return RedirectToAction("Index");
+                model = await _operationsDashboardFactory.PrepareDefaultExtensionUnitErrorModelAsync(currentUser);
             }
 
             return View(model);
-            
+
         }
 
         public async Task<IActionResult> Cash() {
-            OperationsDashboardModel model;
+            UnitExtensionModel model;
+            UserModel currentUser = null;
             try
             {
                 //..get user IP address
@@ -427,26 +433,28 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 if (grcResponse.HasError)
                 {
                     await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-CASH", string.Empty);
-                    return RedirectToAction("Index"); 
+                    model = await _operationsDashboardFactory.PrepareDefaultExtensionUnitErrorModelAsync(currentUser);
                 }
 
-                var currentUser = grcResponse.Data;
+                currentUser = grcResponse.Data;
                 currentUser.LastLoginIpAddress = ipAddress;
 
                 //..prepare user dashboard
-                model = await _operationsDashboardFactory.PrepareUnitStatisticsModelAsync(currentUser, OperationUnit.Cash.GetDescription());
+                model = await _operationsDashboardFactory.PrepareUnitExtensionsModelAsync(currentUser, OperationUnit.Cash.GetDescription());
             }
             catch (Exception ex)
             {
                 await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-CASH", ex.StackTrace);
-                return RedirectToAction("Index");
+                model = await _operationsDashboardFactory.PrepareDefaultExtensionUnitErrorModelAsync(currentUser);
             }
 
             return View(model);
+
         }
 
         public async Task<IActionResult> Payments() {
-            OperationsDashboardModel model;
+            UnitExtensionModel model;
+            UserModel currentUser = null;
             try
             {
                 //..get user IP address
@@ -456,18 +464,20 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError)
                 {
-                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-PAYMENTS", string.Empty);
-                    return RedirectToAction("Index");  
+                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-PAYMENT", string.Empty);
+                    model = await _operationsDashboardFactory.PrepareDefaultExtensionUnitErrorModelAsync(currentUser);
                 }
 
-                var currentUser = grcResponse.Data;
+                currentUser = grcResponse.Data;
                 currentUser.LastLoginIpAddress = ipAddress;
 
                 //..prepare user dashboard
-                model = await _operationsDashboardFactory.PrepareUnitStatisticsModelAsync(currentUser, OperationUnit.Payments.GetDescription());
-            } catch (Exception ex) {
-                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-PAYMENTS", ex.StackTrace);
-                return RedirectToAction("Index");
+                model = await _operationsDashboardFactory.PrepareUnitExtensionsModelAsync(currentUser, OperationUnit.Payments.GetDescription());
+            }
+            catch (Exception ex)
+            {
+                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-PAYMENT", ex.StackTrace);
+                model = await _operationsDashboardFactory.PrepareDefaultExtensionUnitErrorModelAsync(currentUser);
             }
 
             return View(model);
@@ -475,7 +485,8 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
 
         public async Task<IActionResult> Channels()
         {
-            OperationsDashboardModel model;
+            UnitExtensionModel model;
+            UserModel currentUser = null;
             try
             {
                 //..get user IP address
@@ -485,47 +496,51 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError)
                 {
-                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-PAYMENTS", string.Empty);
-                    return RedirectToAction("Index");
+                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-CHANNELS", string.Empty);
+                    model = await _operationsDashboardFactory.PrepareDefaultExtensionUnitErrorModelAsync(currentUser);
                 }
 
-                var currentUser = grcResponse.Data;
+                currentUser = grcResponse.Data;
                 currentUser.LastLoginIpAddress = ipAddress;
 
                 //..prepare user dashboard
-                model = await _operationsDashboardFactory.PrepareUnitStatisticsModelAsync(currentUser, OperationUnit.Channels.GetDescription());
+                model = await _operationsDashboardFactory.PrepareUnitExtensionsModelAsync(currentUser, OperationUnit.Channels.GetDescription());
             }
             catch (Exception ex)
             {
-                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-PAYMENTS", ex.StackTrace);
-                return RedirectToAction("Index");
+                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-CHANNELS", ex.StackTrace);
+                model = await _operationsDashboardFactory.PrepareDefaultExtensionUnitErrorModelAsync(currentUser);
             }
 
             return View(model);
         }
 
         public async Task<IActionResult> CustomerExperience() {
-            OperationsDashboardModel model;
-            try {
+            UnitExtensionModel model;
+            UserModel currentUser = null;
+            try
+            {
                 //..get user IP address
                 var ipAddress = WebHelper.GetCurrentIpAddress();
 
                 //..get current authenticated user record
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (grcResponse.HasError) {
-                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-CUSTOMEREXPERIENCE", string.Empty);
-                    return RedirectToAction("Index");
+                if (grcResponse.HasError)
+                {
+                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-CUSTOMEREXP", string.Empty);
+                    model = await _operationsDashboardFactory.PrepareDefaultExtensionUnitErrorModelAsync(currentUser);
                 }
 
-                var currentUser = grcResponse.Data;
+                currentUser = grcResponse.Data;
                 currentUser.LastLoginIpAddress = ipAddress;
 
                 //..prepare user dashboard
-                model = await _operationsDashboardFactory.PrepareUnitStatisticsModelAsync(currentUser, OperationUnit.CustomerExp.GetDescription());
+                model = await _operationsDashboardFactory.PrepareUnitExtensionsModelAsync(currentUser, OperationUnit.CustomerExp.GetDescription());
             }
-            catch (Exception ex) {
-                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-CUSTOMEREXPERIENCE", ex.StackTrace);
-                return RedirectToAction("Index");
+            catch (Exception ex)
+            {
+                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-CUSTOMEREXP", ex.StackTrace);
+                model = await _operationsDashboardFactory.PrepareDefaultExtensionUnitErrorModelAsync(currentUser);
             }
 
             return View(model);
