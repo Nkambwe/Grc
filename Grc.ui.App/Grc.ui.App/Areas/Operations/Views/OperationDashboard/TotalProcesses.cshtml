@@ -41,9 +41,11 @@
         <!-- Charts will be generated here -->
     </div>
 </div>
+
 @{
     Html.AddScriptParts(ResourceLocation.Footer, "~/js/operations-totals-dashboard-script.js");
 }
+
 <script>
     const chartData = @Html.Raw(chartsJson);
 </script>
