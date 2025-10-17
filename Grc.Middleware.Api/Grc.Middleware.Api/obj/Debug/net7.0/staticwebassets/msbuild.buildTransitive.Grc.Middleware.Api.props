@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\Grc.Middleware.Api.props" />
-</Project>

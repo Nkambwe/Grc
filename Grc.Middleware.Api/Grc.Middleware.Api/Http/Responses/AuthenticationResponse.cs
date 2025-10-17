@@ -67,7 +67,7 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("checkApproval")]
         public bool CheckApproval { get; set; }
 
-        [JsonPropertyName("authenticated")]
+        [JsonPropertyName("isAuthenticated")]
         public bool IsAuthenticated { get; set; }
 
         [JsonPropertyName("isAdmin")]
