@@ -94,6 +94,8 @@ namespace Grc.Middleware.Api.Data {
             ProcessActivityEntityConfiguration.Configure(modelBuilder.Entity<ProcessActivity>());
             ProcessTaskEntityConfiguration.Configure(modelBuilder.Entity<ProcessTask>());
             OperationProcessEntityConfiguration.Configure(modelBuilder.Entity<OperationProcess>());
+            ProcessProcessTagEntityConfiguration.Configure(modelBuilder.Entity<ProcessProcessTag>());
+            ProcessProcessGroupEntityConfiguration.Configure(modelBuilder.Entity<ProcessProcessGroup>());
 
             base.OnModelCreating(modelBuilder);
         }

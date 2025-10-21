@@ -47,6 +47,17 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IStatutoryRegulationRepository, StatutoryRegulationRepository>();
             services.AddScoped<IGuideDocumentRepository, GuideDocumentRepository>();
             services.AddScoped<IGuideDocumentTypeRepository, GuideDocumentTypeRepository>();
+            services.AddScoped<ICircularSubmissionRepository, CircularSubmissionRepository>();
+            services.AddScoped<IProcessTagRepository, ProcessTagRepository>();
+            services.AddScoped<IProcessTaskRepository, ProcessTaskRepository>();
+            services.AddScoped<IProcessActivityRepository, ProcessActivityRepository>();
+            services.AddScoped<IProcessGroupRepository, ProcessGroupRepository>();
+            services.AddScoped<IProcessTypeRepository, ProcessTypeRepository>();
+            services.AddScoped<IOperationProcessRepository, OperationProcessRepository>();
+            services.AddScoped<IAuditExceptionRepository, AuditExceptionRepository>();
+            services.AddScoped<IAuditReportRepository, AuditReportRepository>();
+            services.AddScoped<IAuditRepository, AuditRepository>();
+            services.AddScoped<IAuditTaskRepository, AuditTaskRepository>(); 
         }
 
         /// <summary>
@@ -89,6 +100,19 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IStatutoryRegulationService, StatutoryRegulationService>();
             services.AddScoped<IGuideDocumentService, GuideDocumentService>();
             services.AddScoped<IGuideDocumentTypeService, GuideDocumentTypeService>();
+
+
+            services.AddScoped<ICircularSubmissionService, CircularSubmissionService>();
+            services.AddScoped<IProcessTagService, ProcessTagService>();
+            services.AddScoped<IProcessTaskService, ProcessTaskService>();
+            services.AddScoped<IProcessActivityService, ProcessActivityService>();
+            services.AddScoped<IProcessGroupService, ProcessGroupService>();
+            services.AddScoped<IProcessTypeService, ProcessTypeService>();
+            services.AddScoped<IOperationProcessService, OperationProcessService>();
+            services.AddScoped<IAuditExceptionService, AuditExceptionService>();
+            services.AddScoped<IAuditReportService, AuditReportService>();
+            services.AddScoped<IAuditService, AuditService>();
+            services.AddScoped<IAuditTaskService, AuditTaskService>();
 
             //allow html helpers to acces current action context
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
