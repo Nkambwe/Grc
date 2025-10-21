@@ -15,21 +15,6 @@ namespace Grc.Middleware.Api.Services
         {
         }
 
-        public Task<bool> BulkyInsertAsync(CircularSubmission[] curcularSubmissions)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> BulkyUpdateAsync(CircularSubmission[] curcularSubmissions)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> BulkyUpdateAsync(CircularSubmission[] curcularSubmissions, params Expression<Func<CircularSubmission, object>>[] propertySelectors)
-        {
-            throw new NotImplementedException();
-        }
-
         public int Count()
         {
             throw new NotImplementedException();
@@ -56,21 +41,6 @@ namespace Grc.Middleware.Api.Services
         }
 
         public Task<int> CountAsync(Expression<Func<CircularSubmission, bool>> predicate, bool excludeDeleted = true, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Delete(CircularSubmission circularSubmission, bool markAsDeleted = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> DeleteAllAsync(IList<CircularSubmission> curcularSubmissions, bool markAsDeleted = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> DeleteAsync(CircularSubmission circularSubmission, bool markAsDeleted = false)
         {
             throw new NotImplementedException();
         }
@@ -170,6 +140,46 @@ namespace Grc.Middleware.Api.Services
             throw new NotImplementedException();
         }
 
+        public bool Update(CircularSubmission circularSubmission, bool includeDeleted = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateAsync(CircularSubmission circularSubmission, bool includeDeleted = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Delete(CircularSubmission circularSubmission, bool markAsDeleted = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeleteAllAsync(IList<CircularSubmission> curcularSubmissions, bool markAsDeleted = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeleteAsync(CircularSubmission circularSubmission, bool markAsDeleted = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> BulkyInsertAsync(CircularSubmission[] curcularSubmissions)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> BulkyUpdateAsync(CircularSubmission[] curcularSubmissions)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> BulkyUpdateAsync(CircularSubmission[] curcularSubmissions, params Expression<Func<CircularSubmission, object>>[] propertySelectors)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<PagedResult<CircularSubmission>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<CircularSubmission, object>>[] includes)
         {
             throw new NotImplementedException();
@@ -190,14 +200,5 @@ namespace Grc.Middleware.Api.Services
             throw new NotImplementedException();
         }
 
-        public bool Update(CircularSubmission circularSubmission, bool includeDeleted = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateAsync(CircularSubmission circularSubmission, bool includeDeleted = false)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

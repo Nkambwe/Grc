@@ -14,21 +14,6 @@ namespace Grc.Middleware.Api.Services {
         {
         }
 
-        public Task<bool> BulkyInsertAsync(Audit[] audits)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> BulkyUpdateAsync(Audit[] audits)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> BulkyUpdateAsync(Audit[] audits, params Expression<Func<Audit, object>>[] propertySelectors)
-        {
-            throw new NotImplementedException();
-        }
-
         public int Count()
         {
             throw new NotImplementedException();
@@ -55,21 +40,6 @@ namespace Grc.Middleware.Api.Services {
         }
 
         public Task<int> CountAsync(Expression<Func<Audit, bool>> predicate, bool excludeDeleted = true, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Delete(Audit audit, bool markAsDeleted = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> DeleteAllAsync(IList<Audit> audits, bool markAsDeleted = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> DeleteAsync(Audit audit, bool markAsDeleted = false)
         {
             throw new NotImplementedException();
         }
@@ -169,6 +139,46 @@ namespace Grc.Middleware.Api.Services {
             throw new NotImplementedException();
         }
 
+        public bool Update(Audit audit, bool includeDeleted = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateAsync(Audit audit, bool includeDeleted = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Delete(Audit audit, bool markAsDeleted = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeleteAllAsync(IList<Audit> audits, bool markAsDeleted = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeleteAsync(Audit audit, bool markAsDeleted = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> BulkyInsertAsync(Audit[] audits)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> BulkyUpdateAsync(Audit[] audits)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> BulkyUpdateAsync(Audit[] audits, params Expression<Func<Audit, object>>[] propertySelectors)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<PagedResult<Audit>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<Audit, object>>[] includes)
         {
             throw new NotImplementedException();
@@ -189,14 +199,5 @@ namespace Grc.Middleware.Api.Services {
             throw new NotImplementedException();
         }
 
-        public bool Update(Audit audit, bool includeDeleted = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateAsync(Audit audit, bool includeDeleted = false)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
