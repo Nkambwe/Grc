@@ -1,4 +1,4 @@
-﻿using Grc.Middleware.Api.Data.Entities.Compliance;
+﻿using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -24,7 +24,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
             builder.Property(t => t.LastModifiedOn).HasColumnName("modified_on").IsRequired(false);
             builder.Property(t => t.LastModifiedBy).HasColumnName("modified_by").HasColumnType("NVARCHAR(50)").IsRequired(false);
             builder.HasOne(t => t.DocumentType).WithMany(o => o.Documents).HasForeignKey(s => s.DocumentTypeId);
-            builder.HasOne(t => t.Owner).WithMany(o => o.Documents).HasForeignKey(s => s.ResponsibilityId);
+            builder.HasOne(t => t.Owner).WithMany(o => o.ComplianceDocuments).HasForeignKey(s => s.ResponsibilityId);
         }
     }
 }

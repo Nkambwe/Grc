@@ -8,18 +8,17 @@
     {
         ComponentId = "1",
         ComponentKey = "Users",
-        LeftActions = new List<ComponentAction>
-        {
-            new ComponentAction { ActionKey = ActionKey.Search.GetDescription(), Icon = "mdi mdi-magnify", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Search") },
+        LeftActions = new List<ComponentAction> {
+            new ComponentAction { ActionKey = ActionKey.AdminHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home") },
             new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
-            new ComponentAction { ActionKey = ActionKey.New.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") },
-            new ComponentAction { ActionKey = ActionKey.Edit.GetDescription(), Icon = "mdi mdi-pencil", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Edit") },
-            new ComponentAction { ActionKey = ActionKey.Delete.GetDescription(), Icon = "mdi mdi-delete", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Delete") },
+            new ComponentAction { ActionKey = ActionKey.NewUser.GetDescription(), Icon = "mdi mdi-account-multiple-plus-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") },
+            new ComponentAction { ActionKey = ActionKey.EditUser.GetDescription(), Icon = "mdi mdi-account-edit-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Edit") },
+            new ComponentAction { ActionKey = ActionKey.DeleteUser.GetDescription(), Icon = "mdi mdi-account-minus-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Delete") },
             new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
-            new ComponentAction { ActionKey = ActionKey.UserGroups.GetDescription(), Icon = "mdi mdi-gamepad-circle-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Menu.Configurations.RoleGroups") },
-            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
-            new ComponentAction { ActionKey = ActionKey.Departments.GetDescription(), Icon = "mdi mdi-gamepad-circle-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Menu.Configurations.Departments") },
-            new ComponentAction { ActionKey = ActionKey.Units.GetDescription(), Icon = "mdi mdi-gamepad-circle-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Menu.Configurations.Units") }
+            new ComponentAction { ActionKey = ActionKey.ApproveUser.GetDescription(), Icon = "mdi mdi-account-multiple-check-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Approve.User") },
+            new ComponentAction { ActionKey = ActionKey.LockAccount.GetDescription(), Icon = "mdi mdi-account-lock-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Lock.User") },
+            new ComponentAction { ActionKey = ActionKey.UserPassword.GetDescription(), Icon = "mdi mdi-account-key-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.User.Password") },
+            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()}
         }
     };
 }

@@ -30,7 +30,7 @@ namespace Grc.ui.App.Factories {
         public async Task<OperationsDashboardModel> PrepareOperationsDashboardModelAsync(UserModel currentUser) {
 
             //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
             var quickActions = new List<QuickActionModel>();
             if (!quicksData.HasError) {
                 var quickies = quicksData.Data;
@@ -42,7 +42,7 @@ namespace Grc.ui.App.Factories {
             }
 
             //..get dashboard statistics
-            var stats = await _processesService.StatisticAsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var stats = await _processesService.StatisticAsync(currentUser.UserId, currentUser.IPAddress);
             var model = new OperationsDashboardModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}  - Operations Processes",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
@@ -284,7 +284,7 @@ namespace Grc.ui.App.Factories {
         public async Task<OperationsDashboardModel> PrepareDefaultOperationsModelAsync(UserModel currentUser) {
 
             //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
             var quickActions = new List<QuickActionModel>();
             if (!quicksData.HasError)
             {
@@ -309,7 +309,7 @@ namespace Grc.ui.App.Factories {
         public async Task<OperationsDashboardModel> PrepareUnitStatisticsModelAsync(UserModel currentUser, string unit) {
 
             //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
             var quickActions = new List<QuickActionModel>();
             if (!quicksData.HasError)
             {
@@ -323,7 +323,7 @@ namespace Grc.ui.App.Factories {
                 }
             }
 
-            var unitStatistics = await _processesService.UnitCountAsync(currentUser.UserId, currentUser.LastLoginIpAddress, unit);
+            var unitStatistics = await _processesService.UnitCountAsync(currentUser.UserId, currentUser.IPAddress, unit);
             return new OperationsDashboardModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName} - Operations Processes",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
@@ -336,7 +336,7 @@ namespace Grc.ui.App.Factories {
         public async Task<TotalExtensionModel> PrepareDefaultTotalExtensionsModelAsync(UserModel currentUser) {
 
             //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
             var quickActions = new List<QuickActionModel>();
             if (!quicksData.HasError)
             {
@@ -350,7 +350,7 @@ namespace Grc.ui.App.Factories {
                 }
             }
 
-            var charts = await _processesService.TotalExtensionsCountAsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var charts = await _processesService.TotalExtensionsCountAsync(currentUser.UserId, currentUser.IPAddress);
             return new TotalExtensionModel
             {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName} - Processes Categories Per Unit",
@@ -364,7 +364,7 @@ namespace Grc.ui.App.Factories {
         public async Task<CategoryExtensionModel> PrepareCategoryExtensionsModelAsync(UserModel currentUser, string category)
         {
             //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
             var quickActions = new List<QuickActionModel>();
             if (!quicksData.HasError)
             {
@@ -378,7 +378,7 @@ namespace Grc.ui.App.Factories {
                 }
             }
 
-            CategoryExtensionModel record = await _processesService.CategoryExtensionsCountAsync(category, currentUser.UserId, currentUser.LastLoginIpAddress);
+            CategoryExtensionModel record = await _processesService.CategoryExtensionsCountAsync(category, currentUser.UserId, currentUser.IPAddress);
             if (record != null) {
                 record.WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName} - {category} Processes breakdown";
                 record.Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}";
@@ -401,7 +401,7 @@ namespace Grc.ui.App.Factories {
 
         public async Task<CategoryExtensionModel> PrepareDefaultExtensionCategoryErrorModelAsync(UserModel currentUser)
         {
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
             var quickActions = new List<QuickActionModel>();
             if (!quicksData.HasError)
             {
@@ -431,7 +431,7 @@ namespace Grc.ui.App.Factories {
 
         public async Task<TotalExtensionModel> PrepareExtensionCategoryErrorModelAsync(UserModel currentUser)
         {
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
             var quickActions = new List<QuickActionModel>();
             if (!quicksData.HasError)
             {
@@ -446,7 +446,7 @@ namespace Grc.ui.App.Factories {
             }
 
             //..get dashboard statistics
-            var stats = await _processesService.StatisticAsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var stats = await _processesService.StatisticAsync(currentUser.UserId, currentUser.IPAddress);
             var model = new TotalExtensionModel
             {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName} - Operations Processes",
@@ -463,7 +463,7 @@ namespace Grc.ui.App.Factories {
         {
             
             //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
             var quickActions = new List<QuickActionModel>();
             if (!quicksData.HasError)
             {
@@ -478,7 +478,7 @@ namespace Grc.ui.App.Factories {
             }
 
             //..get dashboard statistics
-            var stats = await _processesService.StatisticAsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var stats = await _processesService.StatisticAsync(currentUser.UserId, currentUser.IPAddress);
             var model = new OperationsDashboardModel
             {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}  - Operations Processes",
@@ -497,7 +497,7 @@ namespace Grc.ui.App.Factories {
         public async Task<UnitExtensionModel> PrepareUnitExtensionsModelAsync(UserModel currentUser, string unit)
         {
             //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
             var quickActions = new List<QuickActionModel>();
             if (!quicksData.HasError)
             {
@@ -511,7 +511,7 @@ namespace Grc.ui.App.Factories {
                 }
             }
 
-            UnitExtensionModel record = await _processesService.UnitExtensionsCountAsync(unit, currentUser.UserId, currentUser.LastLoginIpAddress);
+            UnitExtensionModel record = await _processesService.UnitExtensionsCountAsync(unit, currentUser.UserId, currentUser.IPAddress);
             if (record != null)
             {
                 record.WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName} - {unit} Processes breakdown";
@@ -536,7 +536,7 @@ namespace Grc.ui.App.Factories {
 
         public async Task<UnitExtensionModel> PrepareDefaultExtensionUnitErrorModelAsync(UserModel currentUser)
         {
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
             var quickActions = new List<QuickActionModel>();
             if (!quicksData.HasError)
             {

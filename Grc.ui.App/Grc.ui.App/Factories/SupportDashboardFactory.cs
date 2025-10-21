@@ -41,7 +41,7 @@ namespace Grc.ui.App.Factories {
         public async Task<AdminDashboardModel> PrepareAdminDashboardModelAsync(UserModel currentUser) {
 
             //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
             var quickActions = new List<QuickActionModel>();
             if(!quicksData.HasError){ 
                 var quickies = quicksData.Data;
@@ -59,7 +59,7 @@ namespace Grc.ui.App.Factories {
                 (middlewareOptions?.ProdBaseUrl?.TrimEnd('/'));
 
             //..get dashboard statistics
-            var stats = (await _accessService.StatisticAsync(currentUser.UserId, currentUser.LastLoginIpAddress));
+            var stats = (await _accessService.StatisticAsync(currentUser.UserId, currentUser.IPAddress));
 
             //..populate dashboard data
             AdminDashboardChartViewModel statistics = new() {
@@ -164,7 +164,7 @@ namespace Grc.ui.App.Factories {
             var recents = _sessionManager.Get<List<RecentModel>>(SessionKeys.RecentItems.GetDescription()) ?? new List<RecentModel>();
 
             //..get pinned items
-            var pinData = await _pinnedService.GetPinnedItemAsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var pinData = await _pinnedService.GetPinnedItemAsync(currentUser.UserId, currentUser.IPAddress);
             var pins = new List<PinnedModel>();
             if(!pinData.HasError){ 
                 var pinItems = pinData.Data;

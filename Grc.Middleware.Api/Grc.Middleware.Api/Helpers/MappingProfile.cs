@@ -60,6 +60,7 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(a => a.RoleName, reg => reg.MapFrom(o => o.Role.RoleName))
                 .ForMember(a => a.DepartmentId, reg => reg.MapFrom(o => o.DepartmentId))
                 .ForMember(a => a.DepartmentCode, reg => reg.MapFrom(o => o.Department.DepartmenCode))
+                .ForMember(a => a.DepartmentName, reg => reg.MapFrom(o => o.Department.DepartmentName))
                 .ForMember(a => a.UnitCode, reg => reg.MapFrom(o => o.DepartmentUnit))
                 .ForMember(a => a.IsActive, reg => reg.MapFrom(o => o.IsActive))
                 .ForMember(a => a.IsVerified, reg => reg.MapFrom(o => o.IsVerified))
@@ -69,6 +70,32 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(a => a.Favourites, reg => reg.MapFrom(o => new List<string>()))
                 .ForMember(a => a.Views, reg => reg.MapFrom(o => new List<string>()))
                 .ForMember(a => a.Claims, reg => reg.MapFrom(o => new Dictionary<string, object>()));
+
+            //..map user from registration
+            CreateMap<UserRecordRequest, SystemUser>()
+                .ForMember(a => a.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(a => a.FirstName, reg => reg.MapFrom(o => (o.FirstName ?? string.Empty).Trim()))
+                .ForMember(a => a.LastName, reg => reg.MapFrom(o => (o.LastName ?? string.Empty).Trim()))
+                .ForMember(a => a.OtherName, reg => reg.MapFrom(o => (o.MiddleName ?? string.Empty).Trim()))
+                .ForMember(a => a.EmailAddress, reg => reg.MapFrom(o => (o.EmailAddress ?? string.Empty).Trim()))
+                .ForMember(a => a.Username, reg => reg.MapFrom(o => (o.UserName ?? string.Empty).Trim()))
+                .ForMember(a => a.PasswordHash, reg => reg.MapFrom(o => (o.Password ?? string.Empty).Trim()))
+                .ForMember(a => a.PFNumber, reg => reg.MapFrom(o => (o.PFNumber ?? string.Empty).Trim()))
+                .ForMember(a => a.BranchSolId, reg => reg.MapFrom(o => (o.SolId ?? "MAIN").Trim()))
+                .ForMember(a => a.PhoneNumber, reg => reg.MapFrom(o => o.PhoneNumber))
+                .ForMember(a => a.RoleId, reg => reg.MapFrom(o => o.RoleId))
+                .ForMember(a => a.DepartmentId, reg => reg.MapFrom(o => o.DepartmentId))
+                .ForMember(a => a.DepartmentUnit, reg => reg.MapFrom(o => o.UnitCode))
+                .ForMember(a => a.IsActive, reg => reg.MapFrom(o => o.IsActive))
+                .ForMember(a => a.IsLoggedIn, reg => reg.MapFrom(o => false))
+                .ForMember(a => a.IsVerified, reg => reg.MapFrom(o => o.IsVerified))
+                .ForMember(a => a.IsApproved, reg => reg.MapFrom(o => o.IsApproved))
+                .ForMember(a => a.IsDeleted, reg => reg.MapFrom(o => !o.IsActive))
+                .ForMember(a => a.IsApproved, reg => reg.MapFrom(o => o.IsApproved))
+                .ForMember(a => a.CreatedOn, reg => reg.MapFrom(o => DateTime.Now))
+                .ForMember(a => a.CreatedBy, reg => reg.MapFrom(o => o.CreatedBy))
+                .ForMember(a => a.LastModifiedOn, reg => reg.MapFrom(o => DateTime.Now))
+                .ForMember(a => a.LastModifiedBy, reg => reg.MapFrom(o => o.CreatedBy));
 
             //..map quick actions
             CreateMap<UserQuickAction, QuickActionResponse>()

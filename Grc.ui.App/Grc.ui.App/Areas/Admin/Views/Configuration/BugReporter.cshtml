@@ -10,12 +10,11 @@
         ComponentKey = "BugTracker",
         LeftActions = new List<ComponentAction>
         {
-            new ComponentAction { ActionKey = ActionKey.Search.GetDescription(), Icon = "mdi mdi-magnify", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Search") },
+            new ComponentAction { ActionKey = ActionKey.AdminHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home") },
             new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
             new ComponentAction { ActionKey = ActionKey.New.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") },
-            new ComponentAction { ActionKey = ActionKey.Close.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Reset") },
             new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
-            new ComponentAction { ActionKey = ActionKey.Email.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Email") }
+            new ComponentAction { ActionKey = ActionKey.Email.GetDescription(), Icon = "mdi mdi-email-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Email") }
 
         }
     };

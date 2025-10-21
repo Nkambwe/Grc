@@ -1,4 +1,6 @@
-﻿namespace Grc.Middleware.Api.Data.Entities.Compliance {
+﻿using Grc.Middleware.Api.Data.Entities.Support;
+
+namespace Grc.Middleware.Api.Data.Entities.Compliance.Regulations {
     public class StatutoryRegulation: BaseEntity {
         public string Code { get; set; }
         public string RegulatoryName { get; set; }

@@ -44,7 +44,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -70,7 +70,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -99,7 +99,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -127,7 +127,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -153,7 +153,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -179,7 +179,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -205,7 +205,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -231,7 +231,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);

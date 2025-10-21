@@ -1,5 +1,6 @@
 ﻿using Grc.Middleware.Api.Data.Entities;
-using Grc.Middleware.Api.Data.Entities.Compliance;
+using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
+using Grc.Middleware.Api.Data.Entities.Compliance.Returns;
 
 public class StatutoryArticle : BaseEntity {
     public string Article { get; set; }

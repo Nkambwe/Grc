@@ -44,6 +44,9 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("departmentCode")]
         public string DepartmentCode { get; set; }
 
+        [JsonPropertyName("departmentName")]
+        public string DepartmentName { get; set; }
+
         [JsonPropertyName("unitCode")]
         public string UnitCode { get; set; }
 

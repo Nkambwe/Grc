@@ -1,4 +1,5 @@
 ﻿using Grc.Middleware.Api.Data.Entities.System;
+using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Responses;
 
 namespace Grc.Middleware.Api.Services {
@@ -56,6 +57,19 @@ namespace Grc.Middleware.Api.Services {
         /// Task containg count of active system users
         /// </returns>
         Task<int> GetActiveUsersCountAsync();
+        /// <summary>
+        /// Get a list of all users in the system
+        /// </summary>
+        /// <returns></returns>
+        Task<List<SystemUser>> GetAllUsersAsync();
+        /// <summary>
+        /// Get paged user list
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="includeDeleted"></param>
+        /// <returns></returns>
+        Task<PagedResult<SystemUser>> GetPagedUsersAsync(int pageIndex = 1, int pageSize = 5, bool includeDeleted = false);
         /// <summary>
         /// Validate username in the system
         /// </summary>
@@ -122,5 +136,12 @@ namespace Grc.Middleware.Api.Services {
         /// Task containg System role group record
         /// </returns>
         Task<SystemRoleGroup> GetRoleGroupByIdAsync(long id);
+        /// <summary>
+        /// Save user record
+        /// </summary>
+        /// <param name="userRecord">User record to insert</param>
+        /// <returns></returns>
+        Task<bool> InsertUserAsync(SystemUser userRecord);
+       
     }
 }

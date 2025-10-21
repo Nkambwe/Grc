@@ -154,7 +154,7 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(
                         ResponseCodes.BADREQUEST,
                         "Request record cannot be empty",
-                        "The company registration model cannot be null"
+                        "The activity record cannot be null"
                     );
         
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");

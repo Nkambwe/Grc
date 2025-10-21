@@ -1,10 +1,13 @@
-﻿using Grc.Middleware.Api.Data.Entities.Compliance;
+﻿using Grc.Middleware.Api.Data.Entities.Compliance.Audits;
+using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
+using Grc.Middleware.Api.Data.Entities.Compliance.Returns;
 using Grc.Middleware.Api.Data.Entities.Configurations;
 using Grc.Middleware.Api.Data.Entities.Logging;
+using Grc.Middleware.Api.Data.Entities.Operations.Processes;
 using Grc.Middleware.Api.Data.Entities.Org;
+using Grc.Middleware.Api.Data.Entities.Support;
 using Grc.Middleware.Api.Data.Entities.System;
 using Microsoft.EntityFrameworkCore;
-using System.Xml.Linq;
 
 namespace Grc.Middleware.Api.Data {
 
@@ -25,18 +28,28 @@ namespace Grc.Middleware.Api.Data {
         public DbSet<LoginAttempt> Attempts { get; set; }
         public DbSet<UserQuickAction> QuickActions { get; set; }
         public DbSet<UserPinnedItem> PinnedItems { get; set; }
-
         public DbSet<Authority> Authorities { get; set; }
         public DbSet<Frequency> Frequencies { get; set; }
         public DbSet<RegulatoryCategory> RegulatoryCategories { get; set; }
         public DbSet<RegulatoryReturn> RegulatoryReturns { get; set; }
         public DbSet<RegulatoryType> RegulatoryTypes { get; set; }
+        public DbSet<CircularSubmission> CircularSubmissions { get; set; }
         public DbSet<GuideDocument> GuideDocuments { get; set; }
         public DbSet<GuideDocumentType> DocumentTypes { get; set; }
-        public DbSet<Responsibility> Responsibilities { get; set; }
+        public DbSet<Responsebility> Responsibilities { get; set; }
         public DbSet<ReturnType> ReturnTypes { get; set; }
         public DbSet<StatutoryArticle> StatutoryArticles { get; set; }
         public DbSet<StatutoryRegulation> StatutoryRegulations { get; set; }
+        public DbSet<Audit> Audits { get; set; }
+        public DbSet<AuditTask> AuditTasks { get; set; }
+        public DbSet<AuditException> AuditExceptions { get; set; }
+        public DbSet<AuditReport> AuditReports { get; set; }
+        public DbSet<ProcessTag> ProcessTypes { get; set; }
+        public DbSet<ProcessTag> ProcessTags { get; set; }
+        public DbSet<ProcessGroup> ProcessGroups { get; set; }
+        public DbSet<ProcessActivity> ProcessActivities { get; set; }
+        public DbSet<ProcessTask> ProcessTasks { get; set; }
+        public DbSet<OperationProcess> Processes { get; set; }
 
         public GrcContext(DbContextOptions<GrcContext> options)  
             : base(options){
@@ -66,10 +79,21 @@ namespace Grc.Middleware.Api.Data {
             RegulatoryTypeEntityConfiguration.Configure(modelBuilder.Entity<RegulatoryType>());
             GuideDocumentEntityConfiguration.Configure(modelBuilder.Entity<GuideDocument>());
             GuideDocumentTypeEntityConfiguration.Configure(modelBuilder.Entity<GuideDocumentType>());
-            ResponsibilityEntityConfiguration.Configure(modelBuilder.Entity<Responsibility>());
+            ResponsibilityEntityConfiguration.Configure(modelBuilder.Entity<Responsebility>());
             ReturnTypeEntityConfiguration.Configure(modelBuilder.Entity<ReturnType>());
             StatutoryArticleEntityConfiguration.Configure(modelBuilder.Entity<StatutoryArticle>());
             StatutoryRegulationEntityConfiguration.Configure(modelBuilder.Entity<StatutoryRegulation>());
+            CircularSubmissionEntityConfiguration.Configure(modelBuilder.Entity<CircularSubmission>());
+            AuditEntityConfiguration.Configure(modelBuilder.Entity<Audit>());
+            AuditTaskEntityConfiguration.Configure(modelBuilder.Entity<AuditTask>());
+            AuditExceptionEntityConfiguration.Configure(modelBuilder.Entity<AuditException>());
+            AuditReportEntityConfiguration.Configure(modelBuilder.Entity<AuditReport>());
+            ProcessTagEntityConfiguration.Configure(modelBuilder.Entity<ProcessTag>());
+            ProcessTypeEntityConfiguration.Configure(modelBuilder.Entity<ProcessType>());
+            ProcessGroupEntityConfiguration.Configure(modelBuilder.Entity<ProcessGroup>());
+            ProcessActivityEntityConfiguration.Configure(modelBuilder.Entity<ProcessActivity>());
+            ProcessTaskEntityConfiguration.Configure(modelBuilder.Entity<ProcessTask>());
+            OperationProcessEntityConfiguration.Configure(modelBuilder.Entity<OperationProcess>());
 
             base.OnModelCreating(modelBuilder);
         }

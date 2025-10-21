@@ -1,4 +1,6 @@
 ﻿
+using Grc.Middleware.Api.Data.Entities.Operations.Processes;
+
 namespace Grc.Middleware.Api.Data.Entities.Org {
 
     public class DepartmentUnit : BaseEntity {
@@ -6,6 +8,8 @@ namespace Grc.Middleware.Api.Data.Entities.Org {
         public string UnitCode { get; set; }
         public string UnitName { get; set; }
         public virtual Department Department { get; set; }
+
+        public virtual ICollection<OperationProcess> Processes { get; set; }
         public override bool Equals(object obj) {
 
             if (obj is not DepartmentUnit)

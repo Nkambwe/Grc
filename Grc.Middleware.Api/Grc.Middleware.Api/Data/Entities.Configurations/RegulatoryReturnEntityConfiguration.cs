@@ -1,4 +1,4 @@
-﻿using Grc.Middleware.Api.Data.Entities.Compliance;
+﻿using Grc.Middleware.Api.Data.Entities.Compliance.Returns;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -6,7 +6,6 @@ public class RegulatoryReturnEntityConfiguration {
     public static void Configure(EntityTypeBuilder<RegulatoryReturn> builder) {
         builder.ToTable("TBL_GRC_RETURNS");
         builder.HasKey(r => r.Id);
-        builder.Property(r => r.Code).HasColumnName("return_code").HasColumnType("NVARCHAR(10)").IsRequired(true);
         builder.Property(r => r.ReturnName).HasColumnName("return_name").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
         builder.Property(r => r.Description).HasColumnName("return_descr").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
         builder.Property(r => r.TypeId).HasColumnName("type_id");

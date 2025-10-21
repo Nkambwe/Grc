@@ -26,7 +26,7 @@ namespace Grc.ui.App.Factories {
 
         public async Task<UserDashboardModel>  PrepareUserDashboardModelAsync(UserModel currentUser) {
             //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
             var quickActions = new List<QuickActionModel>();
             if (!quicksData.HasError) {
                 var quickies = quicksData.Data;
@@ -38,7 +38,7 @@ namespace Grc.ui.App.Factories {
                 }
             }
 
-            var stats = await _registersService.StatisticAsync(currentUser.UserId, currentUser.LastLoginIpAddress);
+            var stats = await _registersService.StatisticAsync(currentUser.UserId, currentUser.IPAddress);
             var model = new UserDashboardModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",

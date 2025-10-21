@@ -1,4 +1,6 @@
-﻿using Grc.ui.App.Defaults;
+﻿using DocumentFormat.OpenXml.Office2016.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Grc.ui.App.Defaults;
 using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -12,6 +14,7 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -70,7 +73,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareAdminDashboardModelAsync(currentUser);
@@ -96,7 +99,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -126,7 +129,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -152,7 +155,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -178,7 +181,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -204,7 +207,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -230,7 +233,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -258,7 +261,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -286,7 +289,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -298,7 +301,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             return View(model);
         }
         
-         public async Task<IActionResult> PasswordPolicy() {
+        public async Task<IActionResult> PasswordPolicy() {
             var model = new AdminDashboardModel();
             try
             {
@@ -314,7 +317,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -327,6 +330,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
             return View(model);
         }
+
         public async Task<IActionResult> RolePermissions()
         {
             var model = new AdminDashboardModel();
@@ -344,7 +348,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -375,7 +379,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -403,7 +407,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -429,7 +433,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -455,7 +459,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -481,7 +485,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -507,7 +511,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -533,7 +537,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
@@ -1018,6 +1022,69 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         #endregion
 
         #region Users
+        [LogActivityResult("Retrieve User", "User retrieved user record", ActivityTypeDefaults.USER_RETRIEVED, "SystemUser")]
+        public async Task<IActionResult> GetUser(long id)
+        {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0)
+                {
+                    return BadRequest(new { success = false, message = "User Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                var result = await _accessService.GetUserByIdAsync(currentUser.UserId, id, ipAddress);
+                if (result.HasError || result.Data == null)
+                {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving policy";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var user = result.Data;
+                var userRecord = new
+                {
+                    id = user.Id,
+                    firstName = user.FirstName,
+                    lastName = user.LastName,
+                    middleName = user.MiddleName,
+                    userName = user.UserName,
+                    emailAddress = user.Email,
+                    displayName = user.DisplayName,
+                    phoneNumber = user.PhoneNumber,
+                    pfNumber = user.PFNumber,
+                    solId = user.SolId,
+                    roleId = user.RoleId,
+                    roleName = user.RoleName,
+                    roleGroup = user.RoleGroup,
+                    departmentId = user.DepartmentId,
+                    unitCode = user.UnitCode,
+                    isActive = user.IsActive,
+                    isVerified = user.IsVerified,
+                    createdOn = user.CreatedOn,
+                    createdBy = user.CreatedBy,
+                    modifiedOn = user.ModifiedOn,
+                    modifiedBy = user.ModifiedBy
+                };
+
+                return Ok(new { success = true, data = userRecord });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving user record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
 
         public async Task<IActionResult> GetUsers()
         {
@@ -1046,13 +1113,13 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                     Action = Activity.RETRIVEUSERS.GetDescription(),
                     IPAddress = ipAddress,
                     EncryptFields = Array.Empty<string>(),
-                    DecryptFields = Array.Empty<string>()
+                    DecryptFields = new string[] { "FirstName","MiddleName","LastName", "PhoneNumber", "PFNumber", "Email" }
                 };
 
                 //..get list of all users
                 var usersData = await _accessService.GetUsersAsync(request);
 
-                List<UserModel> users;
+                List<UserResponse> users;
                 if (usersData.HasError)
                 {
                     users = new();
@@ -1060,7 +1127,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
                 else
                 {
-                    users = usersData.Data;
+                    users = usersData.Data.Data;
                     Logger.LogActivity($"USERS DATA - {JsonSerializer.Serialize(users)}");
                 }
 
@@ -1069,12 +1136,12 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 if (users.Any())
                 {
                     listData = users.Select(user => new {
-                        id = user.UserId,
+                        id = user.Id,
                         firstName = user.FirstName,
                         lastName = user.LastName,
                         middleName = user.MiddleName,
                         userName = user.UserName,
-                        emailAddress = user.EmailAddress,
+                        emailAddress = user.Email,
                         displayName = user.DisplayName,
                         phoneNumber = user.PhoneNumber,
                         pfNumber = user.PFNumber,
@@ -1098,6 +1165,117 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Error retrieving users: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        public async Task<IActionResult> GetPagedUsers([FromBody] TableListRequest request) {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError) Logger.LogActivity("USER DATA ERROR: Failed to get user");
+
+                var currentUser = userResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.USER_RETRIEVED.GetDescription();
+
+                var result = await _accessService.GetPagedUsersAsync(request);
+                PagedResponse<UserResponse> list = result.Data ?? new();
+
+                var pagedEntities = (list.Entities ?? new List<UserResponse>())
+                    .Skip((request.PageIndex - 1) * request.PageSize)
+                    .Take(request.PageSize)
+                    .Select(user => new {
+                        id = user.Id,
+                        firstName = user.FirstName,
+                        lastName = user.LastName,
+                        middleName = user.MiddleName,
+                        userName = user.UserName,
+                        emailAddress = user.Email,
+                        displayName = user.DisplayName,
+                        phoneNumber = user.PhoneNumber,
+                        pfNumber = user.PFNumber,
+                        solId = user.SolId,
+                        roleId = user.RoleId,
+                        roleName = user.RoleName,
+                        roleGroup = user.RoleGroup,
+                        departmentId = user.DepartmentId,
+                        departmentName = user.DepartmentName,
+                        unitCode = user.UnitCode,
+                        isActive = user.IsActive,
+                        isVerified = user.IsVerified,
+                        createdOn = user.CreatedOn,
+                        createdBy = user.CreatedBy,
+                        modifiedOn = user.ModifiedOn,
+                        modifiedBy = user.ModifiedBy
+                    }).ToList();
+
+                var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
+
+                return Ok(new { last_page = totalPages, total_records = list.TotalCount, data = pagedEntities });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving policies: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "POLICY-REGISTER", ex.StackTrace);
+                return Ok(new { last_page = 0, data = new List<object>() });
+            }
+        }
+        [HttpPost]
+        [LogActivityResult("Add User", "User added user record", ActivityTypeDefaults.USER_ADDED, "SystemUser")]
+        public async Task<IActionResult> CreateUser([FromBody] UserViewModel request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+
+                    string combinedErrors = string.Join("; ", errors);
+                    return Ok(new
+                    {
+                        success = false,
+                        message = $"Please correct these errors: {combinedErrors}",
+                        data = (object)null
+                    });
+                }
+
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                if (request == null)
+                {
+                    return Ok(new { success = false, message = "Invalid user data" });
+                }
+
+                var result = await _accessService.CreateUserAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create user record" });
+
+                var user = result.Data;
+                return Ok(new
+                {
+                    success = user.Status,
+                    message = user.Message,
+                    data = new
+                    {
+                        status = user.Status,
+                    }
+                });
+
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error create user record: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
                 return Json(new { results = new List<object>() });
             }

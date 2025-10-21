@@ -36,6 +36,7 @@ namespace Grc.Middleware.Api.Controllers {
         }
 
         #region Authentication
+
         [HttpPost("sam/users/validate-username")] 
         public async Task<IActionResult> ValidateUsername([FromBody] UsernameValidationRequest request) {
 
@@ -901,7 +902,296 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
-        #endregion
+        [HttpPost("sam/users/createuser")]
+        public async Task<IActionResult> CreateUser([FromBody] UserRecordRequest request) {
+            try {
+                Logger.LogActivity("Creating new user record", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "The user record cannot be null"
+                    );
 
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<UserResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                //..get activity type
+                SystemUser user = null;
+                if (!string.IsNullOrWhiteSpace(request.UserName)) {
+                    user = await _accessService.GetByUsernameAsync(request.UserName);
+                    if (user != null)
+                    {
+                        var error = new ResponseError(
+                            ResponseCodes.DUPLICATE,
+                            "Duplicate Record",
+                            "Another user found with same username"
+                        );
+
+                        Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<UserResponse>(error));
+                    }
+                }
+
+                //..create company
+                var userRecord = Mapper.Map<SystemUser>(request);
+
+                //..hash the password
+                userRecord.PasswordHash = ExtendedHashMapper.HashPassword(userRecord.PasswordHash);
+                //..encrypt fields
+                Cypher.EncryptProperties(userRecord, request.EncryptFields);
+
+                //..create company
+                var result = await _accessService.InsertUserAsync(userRecord);
+
+                var response = new GeneralResponse();
+                if (result)
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "User saved successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+                else
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to save user record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var error = new ResponseError(
+                    ResponseCodes.BADREQUEST,
+                    $"Oops! Something thing went wrong",
+                    $"System Error - {ex.Message}"
+                );
+
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("sam/users/getusers")]
+        public async Task<IActionResult> GetPagedUsers([FromBody] GeneralRequest request) {
+            try
+            {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null)
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<UserResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var result = await _accessService.GetAllUsersAsync();
+
+                if (result == null || !result.Any())
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.SUCCESS,
+                        "No data",
+                        "No user records found"
+                    );
+
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ListResponse<UserResponse>>(error));
+                }
+
+                //..map to UserResponse
+                var users = result.Select(Mapper.Map<UserResponse>).ToList();
+
+                //..decrypt fields
+                var fieldsToDecrypt = new[] { "FirstName", "LastName", "MiddleName", "EmailAddress", "PhoneNumber", "PFNumber" };
+
+                //..decrypt in parallel for better performance with large datasets
+                var decryptedUsers = users
+                    .AsParallel()
+                    .AsOrdered()
+                    .Select(user => Cypher.DecryptProperties(user, fieldsToDecrypt))
+                    .ToList();
+
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(decryptedUsers)}");
+                return Ok(new GrcResponse<ListResponse<UserResponse>>(new ListResponse<UserResponse>() {
+                    Data = decryptedUsers
+                }));
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var conpany = await CompanyService.GetDefaultCompanyAsync();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "SUPPORT-MIDDLEWARE-COTROLLER",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                var result = await SystemErrorService.SaveErrorAsync(errorObj);
+                var response = new GeneralResponse();
+                if (result)
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Error captured and saved successfully";
+                    Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+                else
+                {
+                    response.Status = false;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to capture error to database. An error occurrred";
+                    Logger.LogActivity($"SUPPORT-MIDDLEWARE-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                var error = new ResponseError(
+                    ResponseCodes.BADREQUEST,
+                    "Oops! Something went wrong",
+                    $"System Error - {ex.Message}"
+                );
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<PagedResponse<UserResponse>>(error));
+            }
+        }
+
+        [HttpPost("sam/users/pagedusers")]
+        public async Task<IActionResult> GetPagedUsers([FromBody] ListRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<UserResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _accessService.GetPagedUsersAsync(request.PageIndex, request.PageSize, true);
+
+                if (pageResult.Entities == null || !pageResult.Entities.Any())
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.SUCCESS,
+                        "No data",
+                        "No user records found"
+                    );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+
+                    return Ok(new GrcResponse<PagedResponse<UserResponse>>(new PagedResponse<UserResponse>(
+                        new List<UserResponse>(),
+                        0,
+                        pageResult.Page,
+                        pageResult.Size
+                    )));
+                }
+
+                // Map to UserResponse (removed unnecessary null! and AsQueryable)
+                var users = pageResult.Entities.Select(Mapper.Map<UserResponse>).ToList();
+
+                // Decrypt fields - define once outside loop
+                var fieldsToDecrypt = new[] { "FirstName", "LastName", "MiddleName", "EmailAddress", "PhoneNumber", "PFNumber" };
+
+                // Decrypt in parallel for better performance with large datasets
+                var decryptedUsers = users
+                    .AsParallel()
+                    .AsOrdered()
+                    .Select(user => Cypher.DecryptProperties(user, fieldsToDecrypt))
+                    .ToList();
+
+                // Apply search filter if provided
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                    var searchTerm = request.SearchTerm.ToLower();
+
+                    decryptedUsers = decryptedUsers.Where(u =>
+                        (u.Username?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.FirstName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.MiddleName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.LastName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.DepartmentCode?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.DepartmentName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.EmailAddress?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.PFNumber?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.RoleName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                    ).ToList();
+                }
+
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(decryptedUsers)}");
+                return Ok(new GrcResponse<PagedResponse<UserResponse>>(new PagedResponse<UserResponse>(
+                    decryptedUsers,
+                    pageResult.Count,
+                    pageResult.Page,
+                    pageResult.Size
+                )));
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var conpany = await CompanyService.GetDefaultCompanyAsync();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "SUPPORT-MIDDLEWARE-COTROLLER",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                var result = await SystemErrorService.SaveErrorAsync(errorObj);
+                var response = new GeneralResponse();
+                if (result)
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Error captured and saved successfully";
+                    Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+                else
+                {
+                    response.Status = false;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to capture error to database. An error occurrred";
+                    Logger.LogActivity($"SUPPORT-MIDDLEWARE-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                var error = new ResponseError(
+                    ResponseCodes.BADREQUEST,
+                    "Oops! Something went wrong",
+                    $"System Error - {ex.Message}"
+                );
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<PagedResponse<UserResponse>>(error));
+            }
+        }
+
+        #endregion
     }
 }

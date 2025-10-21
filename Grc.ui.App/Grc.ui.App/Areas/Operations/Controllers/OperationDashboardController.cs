@@ -73,7 +73,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 }
 
                 currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare operations dashboard
                 model = await _operationsDashboardFactory.PrepareOperationsDashboardModelAsync(currentUser);
@@ -101,7 +101,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 }
 
                 currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _operationsDashboardFactory.PrepareDefaultTotalExtensionsModelAsync(currentUser);
@@ -128,7 +128,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 }
 
                 currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _operationsDashboardFactory.PrepareCategoryExtensionsModelAsync(currentUser, ProcessCategories.UpToDate.GetDescription());
@@ -157,7 +157,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 }
 
                 currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _operationsDashboardFactory.PrepareCategoryExtensionsModelAsync(currentUser, ProcessCategories.Proposed.GetDescription());
@@ -188,7 +188,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 }
 
                 currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _operationsDashboardFactory.PrepareCategoryExtensionsModelAsync(currentUser, ProcessCategories.Dormant.GetDescription());
@@ -219,7 +219,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 }
 
                 currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _operationsDashboardFactory.PrepareCategoryExtensionsModelAsync(currentUser, ProcessCategories.Cancelled.GetDescription());
@@ -250,7 +250,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 }
 
                 currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _operationsDashboardFactory.PrepareCategoryExtensionsModelAsync(currentUser, ProcessCategories.Unchanged.GetDescription());
@@ -281,7 +281,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 }
 
                 currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _operationsDashboardFactory.PrepareCategoryExtensionsModelAsync(currentUser, ProcessCategories.Due.GetDescription());
@@ -312,7 +312,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 }
 
                 currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _operationsDashboardFactory.PrepareUnitExtensionsModelAsync(currentUser, OperationUnit.AccountServices.GetDescription());
@@ -343,7 +343,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 }
 
                 currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _operationsDashboardFactory.PrepareUnitExtensionsModelAsync(currentUser, OperationUnit.Reconciliation.GetDescription());
@@ -374,7 +374,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 }
 
                 currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _operationsDashboardFactory.PrepareUnitExtensionsModelAsync(currentUser, OperationUnit.RecordsMgt.GetDescription());
@@ -405,7 +405,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 }
 
                 currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _operationsDashboardFactory.PrepareUnitExtensionsModelAsync(currentUser, OperationUnit.Wallets.GetDescription());
@@ -437,7 +437,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 }
 
                 currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _operationsDashboardFactory.PrepareUnitExtensionsModelAsync(currentUser, OperationUnit.Cash.GetDescription());
@@ -469,7 +469,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 }
 
                 currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _operationsDashboardFactory.PrepareUnitExtensionsModelAsync(currentUser, OperationUnit.Payments.GetDescription());
@@ -501,7 +501,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 }
 
                 currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _operationsDashboardFactory.PrepareUnitExtensionsModelAsync(currentUser, OperationUnit.Channels.GetDescription());
@@ -532,7 +532,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 }
 
                 currentUser = grcResponse.Data;
-                currentUser.LastLoginIpAddress = ipAddress;
+                currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
                 model = await _operationsDashboardFactory.PrepareUnitExtensionsModelAsync(currentUser, OperationUnit.CustomerExp.GetDescription());

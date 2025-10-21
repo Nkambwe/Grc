@@ -1,6 +1,6 @@
-﻿using Grc.Middleware.Api.Data.Entities.Org;
+﻿using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
 
-namespace Grc.Middleware.Api.Data.Entities.Compliance {
+namespace Grc.Middleware.Api.Data.Entities.Support {
 
     public class RegulatoryType : BaseEntity
     {

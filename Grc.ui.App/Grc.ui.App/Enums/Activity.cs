@@ -19,7 +19,6 @@ namespace Grc.ui.App.Enums {
         RETRIVEUSERBYNAME = 6,
         [Description("Retrieve user record by email")]
         RETRIVEUSERBYEMAIL = 7,
-        
         [Description("Retrieve record count for users")]
         COUNTUSERS = 8,
         [Description("Retrieve user statistics")]
@@ -129,8 +128,24 @@ namespace Grc.ui.App.Enums {
         [Description("Delete policy task")]
         COMPLIANCE_DELETED_ACTS = 61,
         [Description("Export regualtory acts")]
-        COMPLIANCE_EXPORT_ACTS = 62
-        
-
+        COMPLIANCE_EXPORT_ACTS = 62,
+        [Description("User retrieved")]
+        USER_RETRIEVED = 63,
+        [Description("User added")]
+        USER_ADDED = 64,
+        [Description("User editted")]
+        USER_EDITED =65,
+        [Description("User deleted")]
+        USER_DELETED =66,
+        [Description("User approved")]
+        USER_APPROVED =67,
+        [Description("User verified")]
+        USER_VERIFIED =68,
+        [Description("User password reset")]
+        USER_PASSWORD_RESET =69,
+        [Description("User password changed")]
+        USER_PASSWORD_CHANGED = 70,
+        [Description("Export user records")]
+        USER_EXPORTED = 71,
     }
 }

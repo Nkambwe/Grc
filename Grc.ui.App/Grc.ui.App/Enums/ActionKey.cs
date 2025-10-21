@@ -18,9 +18,9 @@ namespace Grc.ui.App.Enums {
         Search,
         [Description("units")]
         Units,
-        [Description("ugroups")]
+        [Description("user-groups")]
         UserGroups,
-        [Description("ugroles")]
+        [Description("user-group-roles")]
         UserRoles,
         [Description("departments")]
         Departments,
@@ -38,6 +38,12 @@ namespace Grc.ui.App.Enums {
         Close,
         [Description("email")]
         Email,
+        [Description("lock-account")]
+        LockAccount,
+        [Description("approve-user")]
+        ApproveUser,
+        [Description("password-user")]
+        UserPassword,
         [Description("excel")]
         Excel,
         [Description("opsHome")]
@@ -96,12 +102,23 @@ namespace Grc.ui.App.Enums {
         PolicyTaskMail,
         [Description("policy-task-export")]
         PolicyTaskExport,
-
+        [Description("admin-home")]
+        AdminHome,
         [Description("act-new")]
         RegulatoryActNew,
         [Description("oblig-map")]
         ObligationMap,
         [Description("oblig-register")]
         ObligationRegister,
+        [Description("new-user")]
+        NewUser,
+        [Description("edit-user")]
+        EditUser,
+        [Description("delete-user")]
+        DeleteUser,
+        [Description("user-units")]
+        UserUnits,
+        [Description("user-departments")]
+        UserDepartments,
     }
 }

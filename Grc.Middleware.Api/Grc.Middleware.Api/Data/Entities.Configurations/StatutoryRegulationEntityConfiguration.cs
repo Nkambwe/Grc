@@ -1,4 +1,4 @@
-﻿using Grc.Middleware.Api.Data.Entities.Compliance;
+﻿using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

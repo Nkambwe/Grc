@@ -1,10 +1,11 @@
-﻿using Grc.Middleware.Api.Data.Containers;
+﻿using AutoMapper;
+using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.System;
-using Grc.Middleware.Api.Utils;
-using System.Text.Json.Serialization;
-using System.Text.Json;
+using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Responses;
-using AutoMapper;
+using Grc.Middleware.Api.Utils;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Grc.Middleware.Api.Services {
 
@@ -650,5 +651,90 @@ namespace Grc.Middleware.Api.Services {
                 throw;
             }
         }
+
+        public async Task<List<SystemUser>> GetAllUsersAsync()
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieve list of user records", "INFO");
+
+            try
+            {
+                var users = await uow.UserRepository.GetAllAsync();
+                var usersJson = JsonSerializer.Serialize(users, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                return users.ToList();
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve user records: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<SystemUser>> GetPagedUsersAsync(int pageIndex = 1, int pageSize = 5, bool includeDeleted = false) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve all log settings", "INFO");
+
+            try {
+                return await uow.UserRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, u => u.Role, u=> u.Department);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve activity logs: {ex.Message}", "ERROR");
+                throw;
+            }
+        }
+
+        public async Task<bool> InsertUserAsync(SystemUser userRecord) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Save user record >>>>", "INFO");
+
+            try
+            {
+                //..log the company data being saved
+                var userJson = JsonSerializer.Serialize(userRecord, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"User data: {userJson}", "DEBUG");
+
+                await uow.UserRepository.InsertAsync(userRecord);
+
+                //..check entity state
+                var entityState = ((UnitOfWork)uow).Context.Entry(userRecord).State;
+                Logger.LogActivity($"User state after insert: {entityState}", "DEBUG");
+
+                var result = await uow.SaveChangesAsync();
+                Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"InsertUserAsync failed: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                //..re-throw to the controller handle
+                throw;
+            }
+        }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using Grc.ui.App.Http.Requests;
+﻿using Grc.ui.App.Helpers;
+using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Models;
 
@@ -11,11 +12,11 @@ namespace Grc.ui.App.Services {
         /// </summary>
         /// <param name="userId">User ID to look for</param>
         /// <param name="ipAddress">Current login IP Address of the requesting user</param>
-        /// <param name="requestingUserId">User ID of the requesting user</param>
+        /// <param name="recordId">Record IF</param>
         /// <returns>
         /// Task containing user with provided ID or null
         /// </returns>
-        Task<GrcResponse<UserModel>> GetUserByIdAsync(long userId, long requestingUserId, string ipAddress);
+        Task<GrcResponse<UserResponse>> GetUserByIdAsync(long userId, long recordId, string ipAddress);
 
         /// <summary>
         /// Get user info by user email address
@@ -26,7 +27,7 @@ namespace Grc.ui.App.Services {
         /// <returns>
         /// Task containing user with provided email address or null
         /// </returns>
-        Task<GrcResponse<UserModel>> GetUserByEmailAsync(string email, long requestingUserId, string ipAddress);
+        Task<GrcResponse<UserResponse>> GetUserByEmailAsync(string email, long requestingUserId, string ipAddress);
 
         /// <summary>
         /// Get user info by user email address
@@ -37,10 +38,20 @@ namespace Grc.ui.App.Services {
         /// <returns>
         /// Task containing user with provided email address or null
         /// </returns>
-        Task<GrcResponse<UserModel>> GetUserByUsernameAsync(string username, long requestingUserId, string ipAddress);
+        Task<GrcResponse<UserResponse>> GetUserByUsernameAsync(string username, long requestingUserId, string ipAddress);
 
-        Task<GrcResponse<List<UserModel>>> GetUsersAsync(GrcRequest request);
-
+        /// <summary>
+        /// Get a list of users in the system
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<GrcResponse<ListResponse<UserResponse>>> GetUsersAsync(GrcRequest request);
+        /// <summary>
+        /// Get a list of pagednated user records
+        /// </summary>
+        /// <param name="request">Pagenated request</param>
+        /// <returns></returns>
+        Task<GrcResponse<PagedResponse<UserResponse>>> GetPagedUsersAsync(TableListRequest request);
         /// <summary>
         /// Get user validation
         /// </summary>
@@ -81,6 +92,14 @@ namespace Grc.ui.App.Services {
         /// <param name="ipAddress">IP Address for current user</param>
         /// <returns></returns>
         Task UpdateLoggedInStatusAsync(long userId, bool isLoggedIn, string ipAddress);
+        /// <summary>
+        /// Create a new user in the system
+        /// </summary>
+        /// <param name="userRecord">User record to add</param>
+        /// <param name="userId">User ID for user to logout</param>
+        /// <param name="ipAddress">IP Address for current user</param>
+        /// <returns></returns>
+        Task<GrcResponse<ServiceResponse>> CreateUserAsync(UserViewModel userRecord, long userId, string ipAddress);
         
     }
 

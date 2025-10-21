@@ -1,4 +1,6 @@
-﻿namespace Grc.Middleware.Api.Data.Entities.Compliance {
+﻿using Grc.Middleware.Api.Data.Entities.Support;
+
+namespace Grc.Middleware.Api.Data.Entities.Compliance.Regulations {
     public class GuideDocument : BaseEntity {
         public string DocumentName { get; set; }
         public string Status { get; set; }
@@ -13,7 +15,7 @@
         public long DocumentTypeId { get; set; }
         public long ResponsibilityId { get; set; }
         public string Comments { get; set; }
-        public virtual Responsibility Owner { get; set; }
+        public virtual Responsebility Owner { get; set; }
         public virtual GuideDocumentType DocumentType { get; set; }
     }
 

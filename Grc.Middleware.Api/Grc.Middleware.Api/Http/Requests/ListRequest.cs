@@ -23,6 +23,11 @@ namespace Grc.Middleware.Api.Http.Requests {
         [JsonPropertyName("action")]
         public string Action { get; set; }
         /// <summary>
+        /// Get or Set Intended action
+        /// </summary>
+        [JsonPropertyName("searchTerm")]
+        public string SearchTerm { get; set; }
+        /// <summary>
         /// Get or Set User IP Address
         /// </summary>
         [JsonPropertyName("ipAddress")]
@@ -35,6 +40,14 @@ namespace Grc.Middleware.Api.Http.Requests {
         /// Get or Set Page size
         /// </summary>
         public int PageSize { get; set; }
+        /// <summary>
+        /// Get or Set sort parameter
+        /// </summary>
+        public string SortBy { get; set; }
+        /// <summary>
+        /// Get or Set sort direction
+        /// </summary>
+        public string SortDirection { get; set; }
         /// <summary>
         /// Get or Set flag whether to include deleted items
         /// </summary>

@@ -3,6 +3,9 @@
 namespace Grc.ui.App.Http.Responses {
 
     public class UserResponse {
+        [JsonPropertyName("id")]
+        public long Id { get; set; }
+
         [JsonPropertyName("firstName")]
         public string FirstName { get; set; }
 
@@ -11,6 +14,9 @@ namespace Grc.ui.App.Http.Responses {
 
         [JsonPropertyName("middleName")]
         public string MiddleName { get; set; }
+
+        [JsonPropertyName("displayName")]
+        public string DisplayName { get; set; }
 
         [JsonPropertyName("email")]
         public string Email { get; set; }
@@ -33,14 +39,20 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("roleId")]
         public long RoleId { get; set; }
 
+        [JsonPropertyName("roleId")]
+        public string RoleName { get; set; }
+
         [JsonPropertyName("roleCode")]
-        public long RoleCode { get; set; }
+        public string RoleGroup { get; set; }
 
         [JsonPropertyName("departmentId")]
         public long DepartmentId { get; set; }
 
         [JsonPropertyName("departmentCode")]
-        public long DepartmentCode { get; set; }
+        public string DepartmentCode { get; set; }
+
+        [JsonPropertyName("departmentName")]
+        public string DepartmentName { get; set; }
 
         [JsonPropertyName("unitCode")]
         public string UnitCode { get; set; }
@@ -53,6 +65,21 @@ namespace Grc.ui.App.Http.Responses {
 
         [JsonPropertyName("isLogged")]
         public bool IsLogged { get; set; }
+
+        [JsonPropertyName("createdOn")]
+        public DateTime CreatedOn { get; set; }
+
+        [JsonPropertyName("createdBy")]
+        public string CreatedBy { get; set; } = string.Empty;
+
+        [JsonPropertyName("modifiedOn")]
+        public DateTime? ModifiedOn { get; set; }
+
+        [JsonPropertyName("modifiedBy")]
+        public string ModifiedBy { get; set; } = string.Empty;
+
+        [JsonPropertyName("changePassword")]
+        public bool RequiresPasswordChange { get; set; }
 
         [JsonPropertyName("favourites")]
         public List<string> Favourites { get; set; }

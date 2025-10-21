@@ -1,4 +1,4 @@
-﻿using Grc.Middleware.Api.Data.Entities.Compliance;
+﻿using Grc.Middleware.Api.Data.Entities.Support;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -6,7 +6,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
 {
     public class ResponsibilityEntityConfiguration
     {
-        public static void Configure(EntityTypeBuilder<Responsibility> builder)
+        public static void Configure(EntityTypeBuilder<Responsebility> builder)
         {
             builder.ToTable("TBL_GRC_RETURN_RESPONSE");
             builder.HasKey(c => c.Id);

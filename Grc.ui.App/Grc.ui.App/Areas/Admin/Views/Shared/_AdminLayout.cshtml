@@ -26,13 +26,24 @@
         Html.AddCssFileParts("~/css/admin-tables-styles.css");
         Html.AddCssFileParts("~/css/admin-style.css");
         Html.AddCssFileParts("~/css/component-styles.css");
+        Html.AddCssFileParts("~/lib/flastpicker/flatpickr.min.css");
+        Html.AddCssFileParts("~/lib/tabulator/css/tabulator.min.css");
+        Html.AddCssFileParts("~/lib/tabulator/css/tabulator_bootstrap5.min.css");
+        Html.AddCssFileParts("~/css/component-styles.css");
+        Html.AddCssFileParts("~/css/app-tables-styles.css");
+        Html.AddCssFileParts("~/css/app-styles.css");
+        Html.AddCssFileParts("~/css/app-tabular-styles.css");
     }
 
     <!-- Keep these in head because they need to be available early -->
     <script src="~/lib/toastr/toastr.min.js"></script>
     <script src="~/lib/sweet-alert/sweetalert2.all.min.js"></script>
     <script src="~/lib/ckeditor5/ckeditor5.umd.js"></script>
-    <script src="~/lib/chartjs/chart.bundle.min.js"></script>
+    <script src="~/lib/chartjs/chart-4.4.1-min.js"></script>
+    <script src="~/lib/tabulator/js/tabulator.min.js"></script>
+    <script src="~/lib/xlsx/xlsx.full.min.js"></script>
+    <script src="~/lib/flastpicker/flatpickr.js"></script>
+
     <script src=""></script>
     @Html.GenerateCssFiles()
     @Html.GenerateHeadCustom()
@@ -422,7 +433,6 @@
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/department-units-script.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/department-script.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/branch-script.js");
-        Html.AddScriptParts(ResourceLocation.Footer, "~/js/users-script.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-script-other.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-tables.js");
     }

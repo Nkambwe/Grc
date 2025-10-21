@@ -21,11 +21,23 @@
 	<LocaleResource Name="App.Label.New">
 		<Value>New</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Label.Lock">
+		<Value>Lock</Value>
+	</LocaleResource>
 	<LocaleResource Name="App.Label.Edit">
 		<Value>Edit</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Label.Delete">
 		<Value>Delete</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Approve.User">
+		<Value>Approve</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.User.Password">
+		<Value>Password Reset</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Lock.User">
+		<Value>Lock</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Label.Search">
 		<Value>Search</Value>
@@ -217,6 +229,9 @@
 	</LocaleResource>
 	<LocaleResource Name="App.Label.srOnly.ArrowKeys">
 		<Value>Use arrow keys to navigate options. Press Enter to select</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Password">
+		<Value>Password Reset</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.Departments">
 		<Value>Departments</Value>
@@ -517,8 +532,17 @@
 	<LocaleResource Name="Component.Table.Search.Policy-register">
 		<Value>Search register... </Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.Bugs">
+		<Value>Search bugs... </Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Search.Acts">
 		<Value>Search laws.. </Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.User">
+		<Value>Search users.. </Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.Entity">
+		<Value>Search entities.. </Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Search.Obligation">
 		<Value>Search obligations.. </Value>
@@ -1379,5 +1403,4 @@
 	<LocaleResource Name="Error.Service.Unavailable">
 		<Value>Service unavailable. Please try again later.</Value>
 	</LocaleResource>
-
 </Language>

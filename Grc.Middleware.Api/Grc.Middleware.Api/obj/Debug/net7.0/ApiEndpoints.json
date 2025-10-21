@@ -405,6 +405,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "CreateUser",
+    "RelativePath": "grc/sam/users/createuser",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.UserRecordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
     "Method": "GetByEmail",
     "RelativePath": "grc/sam/users/getByEmail",
     "HttpMethod": "POST",
@@ -485,6 +501,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "GetPagedUsers",
+    "RelativePath": "grc/sam/users/getusers",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
     "Method": "Workspace",
     "RelativePath": "grc/sam/users/getworkspace",
     "HttpMethod": "POST",
@@ -510,6 +542,22 @@
       {
         "Name": "logoutRequest",
         "Type": "Grc.Middleware.Api.Http.Requests.LogoutRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "GetPagedUsers",
+    "RelativePath": "grc/sam/users/pagedusers",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
         "IsRequired": true
       }
     ],

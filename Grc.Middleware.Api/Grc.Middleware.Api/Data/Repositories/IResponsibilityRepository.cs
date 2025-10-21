@@ -1,7 +1,7 @@
-﻿using Grc.Middleware.Api.Data.Entities.Compliance;
+﻿using Grc.Middleware.Api.Data.Entities.Support;
 
 namespace Grc.Middleware.Api.Data.Repositories {
-    public interface IResponsibilityRepository : IRepository<Responsibility>
+    public interface IResponsibilityRepository : IRepository<Responsebility>
     {
     }
 

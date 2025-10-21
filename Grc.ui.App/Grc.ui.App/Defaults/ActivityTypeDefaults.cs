@@ -3,13 +3,16 @@
     public class ActivityTypeDefaults {
 
         #region User Activities
-
+        public const string USER_RETRIEVED = "User.Retrieve";
         public const string USER_ADDED = "User.Added";
         public const string USER_EDITED = "User.Edited";
         public const string USER_DELETED = "User.Deleted";
+        public const string USER_APPROVED = "User.Approved";
+        public const string USER_VERIFIED = "User.Verified";
         public const string USER_LOGIN = "User.Login";
         public const string USER_LOGOUT = "User.Logout";
-        public const string USER_PASSWORD_CHANGED = "User.PasswordChanged";
+        public const string USER_PASSWORD_RESET = "User.Password.Reset";
+        public const string USER_PASSWORD_CHANGED = "User.Password.Changed";
 
         #endregion
 

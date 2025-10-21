@@ -38,7 +38,33 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(dest => dest.ModifiedOn, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => "1"));
 
-             CreateMap<UsernameValidationModel, UsernameValidationRequest>()
+
+            CreateMap<UserViewModel, UserModel>()
+               .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+               .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
+               .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
+               .ForMember(dest => dest.MiddleName, opt => opt.MapFrom(src => src.MiddleName))
+               .ForMember(dest => dest.EmailAddress, opt => opt.MapFrom(src => src.EmailAddress))
+               .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+               .ForMember(dest => dest.PFNumber, opt => opt.MapFrom(src => src.PFNumber))
+               .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
+               .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password))
+               .ForMember(dest => dest.SolId, opt => opt.MapFrom(src => src.SolId))
+               .ForMember(dest => dest.RoleId, opt => opt.MapFrom(src => src.RoleId))
+               .ForMember(dest => dest.DepartmentId, opt => opt.MapFrom(src => src.DepartmentId))
+               .ForMember(dest => dest.UnitCode, opt => opt.MapFrom(src => src.UnitCode))
+               .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
+               .ForMember(dest => dest.IsVerified, opt => opt.MapFrom(src => src.IsVerified))
+               .ForMember(dest => dest.IsLogged, opt => opt.MapFrom(src => src.IsLogged))
+               .ForMember(dest => dest.EncryptFields, opt => opt.MapFrom(src => new string[] { "FirstName", "LastName", "OtherName", "Email", "PhoneNumber", "PFNumber", "Password" }))
+               .ForMember(dest => dest.DecryptFields, opt => opt.MapFrom(src => new string[] { }))
+               .ForMember(dest => dest.CreatedOn, opt => opt.MapFrom(src => DateTime.Now))
+               .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => string.Empty))
+               .ForMember(dest => dest.ModifiedOn, opt => opt.MapFrom(src => DateTime.Now))
+               .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => string.Empty));
+
+
+            CreateMap<UsernameValidationModel, UsernameValidationRequest>()
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Username))
                 .ForMember(dest => dest.IPAddress, opt => opt.MapFrom(src => src.IPAddress))
                 .ForMember(dest => dest.Action, opt => opt.MapFrom(src => Activity.USERNAMEVALIDATION.GetDescription()))
@@ -123,7 +149,7 @@ namespace Grc.ui.App.Helpers {
 
             CreateMap<UserViewResponse, UserViewModel>()
                 .ForMember(v => v.Id, reg => reg.MapFrom(o => o.Id))
-                .ForMember(v => v.Name, reg => reg.MapFrom(o => (o.Name ?? string.Empty).Trim()))
+                .ForMember(v => v.FullName, reg => reg.MapFrom(o => (o.Name ?? string.Empty).Trim()))
                 .ForMember(v => v.View, reg => reg.MapFrom(o => o.View));
 
             CreateMap<GrcErrorModel, ErrorRequest>()

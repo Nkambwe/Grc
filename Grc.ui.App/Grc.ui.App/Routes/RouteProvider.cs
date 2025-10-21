@@ -15,13 +15,41 @@
                 pattern: "admin/support/system-users",
                 defaults: new { area = "Admin", controller = "Support", action = "Users" }
             );
-
+            routeBuilder.MapControllerRoute(
+                name: "admin-users-list",
+                pattern: "admin/support/system-users/list",
+                defaults: new { area = "Admin", controller = "Support", action = "GetPagedUsers" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-users-retrieve",
+                pattern: "admin/support/users-retrieve/{id:long}",
+                defaults: new { area = "Admin", controller = "Support", action = "GetUser" }
+            );
             routeBuilder.MapControllerRoute(
                 name: "admin-users",
                 pattern: "admin/support/users-all",
                 defaults: new { area = "Admin", controller = "Support", action = "GetUsers" }
             );
-
+            routeBuilder.MapControllerRoute(
+                name: "admin-users-create",
+                pattern: "admin/support/users-create",
+                defaults: new { area = "Admin", controller = "Support", action = "CreateUser" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-users-modify",
+                pattern: "admin/support/users-modify",
+                defaults: new { area = "Admin", controller = "Support", action = "ModifyUser" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-users-approve",
+                pattern: "admin/support/users-approve",
+                defaults: new { area = "Admin", controller = "Support", action = "ApproveUser" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-users-delete",
+                pattern: "admin/support/users-delete/{id:long}",
+                defaults: new { area = "Admin", controller = "Support", action = "DeleteUser" }
+            );
 
             routeBuilder.MapControllerRoute(
                 name: "admin-roles",
@@ -41,7 +69,6 @@
                defaults: new { area = "Admin", controller = "Support", action = "RoleDelegation" }
             );
 
-
             routeBuilder.MapControllerRoute(
                name: "admin-support-branches",
                pattern: "support/organization/branches-all",
@@ -54,6 +81,75 @@
                 defaults: new { area = "Admin", controller = "Settings", action = "Index" }
             );
 
+
+            /*----------------------- Admin configuration*/
+            routeBuilder.MapControllerRoute(
+                name: "admin-configuration",
+                pattern: "admin/configuration",
+                defaults: new { area = "Admin", controller = "Configuration", action = "Index" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-organization",
+               pattern: "admin/configuration/organization",
+               defaults: new { area = "Admin", controller = "Configuration", action = "Organization" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-branches",
+               pattern: "admin/configuration/branches",
+               defaults: new { area = "Admin", controller = "Configuration", action = "Branches" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-users",
+               pattern: "admin/configuration/users",
+               defaults: new { area = "Admin", controller = "Configuration", action = "UserData" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-users-groups",
+               pattern: "admin/configuration/users/groups",
+               defaults: new { area = "Admin", controller = "Configuration", action = "UserGroups" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-cypher",
+               pattern: "admin/configuration/cypher",
+               defaults: new { area = "Admin", controller = "Configuration", action = "DataEncryptions" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-bugs",
+               pattern: "admin/configuration/bugs",
+               defaults: new { area = "Admin", controller = "Configuration", action = "BugReporter" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-activities",
+               pattern: "admin/configuration/activities",
+               defaults: new { area = "Admin", controller = "Configuration", action = "SystemActivity" }
+            );
+
+            /*----------------------- Admin Support*/
+            routeBuilder.MapControllerRoute(
+                name: "admin-support",
+                pattern: "admin/support",
+                defaults: new { area = "Admin", controller = "Support", action = "Index" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-support-departments",
+               pattern: "admin/support/departments",
+               defaults: new { area = "Admin", controller = "Support", action = "Departments" }
+            );
+            routeBuilder.MapControllerRoute(
+              name: "admin-support-passwords",
+              pattern: "admin/support/passwords",
+              defaults: new { area = "Admin", controller = "Support", action = "PasswordPolicy" }
+            );
+            routeBuilder.MapControllerRoute(
+              name: "admin-support-permissions",
+              pattern: "admin/support/permissions",
+              defaults: new { area = "Admin", controller = "Support", action = "RolePermissions" }
+            );
+            routeBuilder.MapControllerRoute(
+                 name: "admin-support-permission-sets",
+                 pattern: "admin/support/permission/sets",
+                 defaults: new { area = "Admin", controller = "Support", action = "PermissionSets" }
+             );
             /*----------------------- Operations dashboard routes*/
             routeBuilder.MapControllerRoute(
                 name: "ops-dashboard",
@@ -241,20 +337,6 @@
                 defaults: new { controller = "Register", action = "ExcelExportAllRegulatory" }
             );
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             /*----------------------------------------------regulatory type routes*/
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-settings-regulatory-types",
@@ -339,7 +421,6 @@
                 pattern: "/grc/compliance/settings/authorities-export-full",
                 defaults: new { controller = "ComplianceSettings", action = "ExcelExportAllAuthorities" }
             );
-
 
             /*----------------------------------------------document type routes*/
             routeBuilder.MapControllerRoute(
