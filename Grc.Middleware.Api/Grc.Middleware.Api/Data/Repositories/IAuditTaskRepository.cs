@@ -4,6 +4,8 @@ namespace Grc.Middleware.Api.Data.Repositories {
     public interface IAuditTaskRepository : IRepository<AuditTask>
     {
     }
+   
+
 }
 
 

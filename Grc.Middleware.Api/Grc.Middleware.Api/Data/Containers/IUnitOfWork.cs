@@ -33,7 +33,7 @@ namespace Grc.Middleware.Api.Data.Containers {
         IRegulatoryTypeRepository RegulatoryTypeRepository { get; set; }
         IGuideDocumentRepository GuideDocumentRepository { get; set; }
         IGuideDocumentTypeRepository GuideDocumentTypeRepository { get; set; }
-        ICircularSubmissionRepository CircularSubmissionRepository { get; set; }
+        IRegulatorySubmissionRepository RegulatorySubmissionRepository { get; set; }
         IProcessTagRepository ProcessTagRepository { get; set; }
         IProcessTaskRepository ProcessTaskRepository { get; set; }
         IProcessActivityRepository ProcessActivityRepository { get; set; }
@@ -44,6 +44,7 @@ namespace Grc.Middleware.Api.Data.Containers {
         IAuditReportRepository AuditReportRepository { get; set; }
         IAuditRepository AuditRepository { get; set; }
         IAuditTaskRepository AuditTaskRepository { get; set; }
+        INotificationRepository NotificationRepository { get; set; }
 
         Task<int> SaveChangesAsync(); 
         int SaveChanges(); 

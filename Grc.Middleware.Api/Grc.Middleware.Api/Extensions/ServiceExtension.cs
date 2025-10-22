@@ -5,6 +5,11 @@ using Grc.Middleware.Api.Data.Repositories;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Security;
 using Grc.Middleware.Api.Services;
+using Grc.Middleware.Api.Services.Compliance.Audits;
+using Grc.Middleware.Api.Services.Compliance.Regulations;
+using Grc.Middleware.Api.Services.Compliance.Support;
+using Grc.Middleware.Api.Services.Operations;
+using Grc.Middleware.Api.Services.Organization;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -47,7 +52,7 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IStatutoryRegulationRepository, StatutoryRegulationRepository>();
             services.AddScoped<IGuideDocumentRepository, GuideDocumentRepository>();
             services.AddScoped<IGuideDocumentTypeRepository, GuideDocumentTypeRepository>();
-            services.AddScoped<ICircularSubmissionRepository, CircularSubmissionRepository>();
+            services.AddScoped<IRegulatorySubmissionRepository, CircularSubmissionRepository>();
             services.AddScoped<IProcessTagRepository, ProcessTagRepository>();
             services.AddScoped<IProcessTaskRepository, ProcessTaskRepository>();
             services.AddScoped<IProcessActivityRepository, ProcessActivityRepository>();
@@ -56,8 +61,9 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IOperationProcessRepository, OperationProcessRepository>();
             services.AddScoped<IAuditExceptionRepository, AuditExceptionRepository>();
             services.AddScoped<IAuditReportRepository, AuditReportRepository>();
-            services.AddScoped<IAuditRepository, AuditRepository>();
-            services.AddScoped<IAuditTaskRepository, AuditTaskRepository>(); 
+            services.AddScoped<IAuditRepository, AuditRepository>(); 
+            services.AddScoped<IAuditTaskRepository, AuditTaskRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
         }
 
         /// <summary>
@@ -89,20 +95,19 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IDepartmentUnitService, DepartmentUnitService>();
             services.AddScoped<IQuickActionService, QuickActionService>();
             services.AddScoped<IPinnedItemService, PinnedItemService>();
-            services.AddScoped<IAuthorityService, AuthorityService>();
+            services.AddScoped<IAuthorityService, AuthorityService>(); 
             services.AddScoped<IFrequencyService, FrequencyService>();
             services.AddScoped<IRegulatoryCategoryService, RegulatoryCategoryService>();
             services.AddScoped<IRegulatoryReturnService, RegulatoryReturnService>();
             services.AddScoped<IRegulatoryTypeService, RegulatoryTypeService>();
             services.AddScoped<IResponsibilityService, ResponsibilityService>();
             services.AddScoped<IReturnTypeService, ReturnTypeService>();
+            services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IStatutoryArticleService, StatutoryArticleService>(); 
             services.AddScoped<IStatutoryRegulationService, StatutoryRegulationService>();
-            services.AddScoped<IGuideDocumentService, GuideDocumentService>();
-            services.AddScoped<IGuideDocumentTypeService, GuideDocumentTypeService>();
-
-
-            services.AddScoped<ICircularSubmissionService, CircularSubmissionService>();
+            services.AddScoped<IRegulatoryDocumentService, RegulatoryDocumentService>();
+            services.AddScoped<IRegulatoryDocumentTypeService, RegulatoryDocumentTypeService>();
+            services.AddScoped<IReturnsSubmissionService, ReturnsSubmissionService>();
             services.AddScoped<IProcessTagService, ProcessTagService>();
             services.AddScoped<IProcessTaskService, ProcessTaskService>();
             services.AddScoped<IProcessActivityService, ProcessActivityService>();

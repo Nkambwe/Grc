@@ -33,9 +33,9 @@ namespace Grc.Middleware.Api.Data {
         public DbSet<RegulatoryCategory> RegulatoryCategories { get; set; }
         public DbSet<RegulatoryReturn> RegulatoryReturns { get; set; }
         public DbSet<RegulatoryType> RegulatoryTypes { get; set; }
-        public DbSet<CircularSubmission> CircularSubmissions { get; set; }
-        public DbSet<GuideDocument> GuideDocuments { get; set; }
-        public DbSet<GuideDocumentType> DocumentTypes { get; set; }
+        public DbSet<ReturnSubmission> CircularSubmissions { get; set; }
+        public DbSet<RegulatoryDocument> GuideDocuments { get; set; }
+        public DbSet<RegulatoryDocumentType> DocumentTypes { get; set; }
         public DbSet<Responsebility> Responsibilities { get; set; }
         public DbSet<ReturnType> ReturnTypes { get; set; }
         public DbSet<StatutoryArticle> StatutoryArticles { get; set; }
@@ -50,6 +50,7 @@ namespace Grc.Middleware.Api.Data {
         public DbSet<ProcessActivity> ProcessActivities { get; set; }
         public DbSet<ProcessTask> ProcessTasks { get; set; }
         public DbSet<OperationProcess> Processes { get; set; }
+        public DbSet<SubmissionNotification> Notifications { get; set; }
 
         public GrcContext(DbContextOptions<GrcContext> options)  
             : base(options){
@@ -77,13 +78,14 @@ namespace Grc.Middleware.Api.Data {
             RegulatoryCategoryEntityConfiguration.Configure(modelBuilder.Entity<RegulatoryCategory>());
             RegulatoryReturnEntityConfiguration.Configure(modelBuilder.Entity<RegulatoryReturn>());
             RegulatoryTypeEntityConfiguration.Configure(modelBuilder.Entity<RegulatoryType>());
-            GuideDocumentEntityConfiguration.Configure(modelBuilder.Entity<GuideDocument>());
-            GuideDocumentTypeEntityConfiguration.Configure(modelBuilder.Entity<GuideDocumentType>());
+            GuideDocumentEntityConfiguration.Configure(modelBuilder.Entity<RegulatoryDocument>());
+            GuideDocumentTypeEntityConfiguration.Configure(modelBuilder.Entity<RegulatoryDocumentType>());
             ResponsibilityEntityConfiguration.Configure(modelBuilder.Entity<Responsebility>());
             ReturnTypeEntityConfiguration.Configure(modelBuilder.Entity<ReturnType>());
             StatutoryArticleEntityConfiguration.Configure(modelBuilder.Entity<StatutoryArticle>());
             StatutoryRegulationEntityConfiguration.Configure(modelBuilder.Entity<StatutoryRegulation>());
-            CircularSubmissionEntityConfiguration.Configure(modelBuilder.Entity<CircularSubmission>());
+            ReturnSubmissionEntityConfiguration.Configure(modelBuilder.Entity<ReturnSubmission>());
+            SubmissionNotificationEntityConfiguration.Configure(modelBuilder.Entity<SubmissionNotification>());
             AuditEntityConfiguration.Configure(modelBuilder.Entity<Audit>());
             AuditTaskEntityConfiguration.Configure(modelBuilder.Entity<AuditTask>());
             AuditExceptionEntityConfiguration.Configure(modelBuilder.Entity<AuditException>());

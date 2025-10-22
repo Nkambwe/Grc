@@ -751,17 +751,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
               }
             }
           }
@@ -906,17 +906,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
               }
             }
           }
@@ -937,17 +937,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
               }
             }
           }
@@ -968,17 +968,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
               }
             }
           }
@@ -1123,17 +1123,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequst"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
               }
             }
           }
@@ -1359,7 +1359,7 @@
         },
         "additionalProperties": false
       },
-      "Grc.Middleware.Api.Http.Requests.IdRequst": {
+      "Grc.Middleware.Api.Http.Requests.IdRequest": {
         "type": "object",
         "properties": {
           "recordId": {

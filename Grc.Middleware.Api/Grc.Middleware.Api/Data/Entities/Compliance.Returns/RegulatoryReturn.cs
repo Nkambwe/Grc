@@ -29,7 +29,7 @@ namespace Grc.Middleware.Api.Data.Entities.Compliance.Returns {
         public virtual StatutoryArticle Article { get; set; }
         public virtual ReturnType ReturnType { get; set; }
         public virtual Frequency Frequency { get; set; }
-        public virtual ICollection<CircularSubmission> Submissions { get; set; }
+        public virtual ICollection<ReturnSubmission> Submissions { get; set; }
     }
 
 }

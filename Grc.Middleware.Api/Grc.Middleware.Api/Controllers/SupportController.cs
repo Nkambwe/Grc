@@ -7,6 +7,8 @@ using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Security;
 using Grc.Middleware.Api.Services;
+using Grc.Middleware.Api.Services.Operations;
+using Grc.Middleware.Api.Services.Organization;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -499,7 +501,7 @@ namespace Grc.Middleware.Api.Controllers {
         }
 
         [HttpPost("organization/deleteBranch")]
-        public async Task<IActionResult> DeleteBranch([FromBody] IdRequst request) {
+        public async Task<IActionResult> DeleteBranch([FromBody] IdRequest request) {
             try {
                 Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
 
@@ -827,7 +829,7 @@ namespace Grc.Middleware.Api.Controllers {
         }
         
         [HttpPost("departments/deleteDepartment")]
-        public async Task<IActionResult> DeleteDepartment([FromBody] IdRequst request) {
+        public async Task<IActionResult> DeleteDepartment([FromBody] IdRequest request) {
             try {
                 Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
                 
@@ -887,7 +889,7 @@ namespace Grc.Middleware.Api.Controllers {
         }
         
         [HttpPost("departments/getDepartmentById")]
-        public async Task<IActionResult> GetDepartmentById([FromBody] IdRequst request) { 
+        public async Task<IActionResult> GetDepartmentById([FromBody] IdRequest request) { 
             try {
                 Logger.LogActivity($"{request.Action}", "INFO");
 
@@ -956,7 +958,7 @@ namespace Grc.Middleware.Api.Controllers {
         }
         
         [HttpPost("departments/getUnitById")]
-        public async Task<IActionResult> GetUnitById([FromBody] IdRequst request) { 
+        public async Task<IActionResult> GetUnitById([FromBody] IdRequest request) { 
             var data = await Task.FromResult(new DepartmentUnitResponse() {
                 Id = request.RecordId,
                 DepartmentId = 1,
@@ -1262,7 +1264,7 @@ namespace Grc.Middleware.Api.Controllers {
         }
         
         [HttpPost("departments/deleteUnit")]
-        public async Task<IActionResult> DeleteUnit([FromBody] IdRequst request) {
+        public async Task<IActionResult> DeleteUnit([FromBody] IdRequest request) {
             try {
                 Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
                 

@@ -83,7 +83,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Grc.Middleware.Api.Http.Requests.IdRequst",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
         "IsRequired": true
       }
     ],
@@ -99,7 +99,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Grc.Middleware.Api.Http.Requests.IdRequst",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
         "IsRequired": true
       }
     ],
@@ -115,7 +115,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Grc.Middleware.Api.Http.Requests.IdRequst",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
         "IsRequired": true
       }
     ],
@@ -147,7 +147,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Grc.Middleware.Api.Http.Requests.IdRequst",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
         "IsRequired": true
       }
     ],
@@ -285,7 +285,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Grc.Middleware.Api.Http.Requests.IdRequst",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
         "IsRequired": true
       }
     ],

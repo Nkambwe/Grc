@@ -47,7 +47,7 @@ namespace Grc.Middleware.Api.Data.Containers {
         public IRegulatoryTypeRepository RegulatoryTypeRepository { get; set; }
         public IGuideDocumentRepository GuideDocumentRepository { get; set; }
         public IGuideDocumentTypeRepository GuideDocumentTypeRepository { get; set; }
-        public ICircularSubmissionRepository CircularSubmissionRepository { get; set; }
+        public IRegulatorySubmissionRepository RegulatorySubmissionRepository { get; set; }
         public IProcessTagRepository ProcessTagRepository { get; set; }
         public IProcessTaskRepository ProcessTaskRepository { get; set; }
         public IProcessActivityRepository ProcessActivityRepository { get; set; }
@@ -58,7 +58,7 @@ namespace Grc.Middleware.Api.Data.Containers {
         public IAuditReportRepository AuditReportRepository { get; set; }
         public IAuditRepository AuditRepository { get; set; }
         public IAuditTaskRepository AuditTaskRepository { get; set; }
-
+        public INotificationRepository NotificationRepository { get; set; }
 
         #endregion
 
@@ -103,7 +103,7 @@ namespace Grc.Middleware.Api.Data.Containers {
             RegulatoryTypeRepository = new RegulatoryTypeRepository(_loggerFactory, Context);
             GuideDocumentRepository = new GuideDocumentRepository(_loggerFactory, Context);
             GuideDocumentTypeRepository = new GuideDocumentTypeRepository(_loggerFactory, Context);
-            CircularSubmissionRepository = new CircularSubmissionRepository(_loggerFactory, Context);
+            RegulatorySubmissionRepository = new CircularSubmissionRepository(_loggerFactory, Context);
             ProcessTagRepository = new ProcessTagRepository(_loggerFactory, Context);
             ProcessTaskRepository = new ProcessTaskRepository(_loggerFactory, Context);
             ProcessActivityRepository = new ProcessActivityRepository(_loggerFactory, Context);
@@ -114,6 +114,7 @@ namespace Grc.Middleware.Api.Data.Containers {
             AuditReportRepository = new AuditReportRepository(_loggerFactory, Context);
             AuditRepository = new AuditRepository(_loggerFactory, Context);
             AuditTaskRepository = new AuditTaskRepository(_loggerFactory, Context);
+            NotificationRepository = new NotificationRepository(_loggerFactory, Context);
         }
 
         /// <summary>
@@ -256,7 +257,7 @@ namespace Grc.Middleware.Api.Data.Containers {
                     RegulatoryTypeRepository = null;
                     GuideDocumentRepository = null;
                     GuideDocumentTypeRepository = null;
-                    CircularSubmissionRepository = null;
+                    RegulatorySubmissionRepository = null;
                     ProcessTagRepository = null;
                     ProcessTaskRepository = null;
                     ProcessActivityRepository = null;
@@ -267,6 +268,7 @@ namespace Grc.Middleware.Api.Data.Containers {
                     AuditReportRepository = null;
                     AuditRepository = null;
                     AuditTaskRepository = null;
+                    NotificationRepository = null;
                 }
             }
             _disposed = true;

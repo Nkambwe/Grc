@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Grc.Middleware.Api.Data.Entities.Configurations
 {
     public class GuideDocumentEntityConfiguration {
-        public static void Configure(EntityTypeBuilder<GuideDocument> builder) {
+        public static void Configure(EntityTypeBuilder<RegulatoryDocument> builder) {
             builder.ToTable("TBL_GRC_GUIDE_DOCUMENT");
             builder.HasKey(t => t.Id);
             builder.Property(t => t.DocumentName).HasColumnName("doc_name").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
