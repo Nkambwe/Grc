@@ -33,8 +33,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         Task<bool> InsertAsync(RegulatoryReturnRequest submission);
         bool Update(RegulatoryReturnRequest submission, bool includeDeleted = false);
         Task<bool> UpdateAsync(RegulatoryReturnRequest submission, bool includeDeleted = false);
-        bool Delete(IdRequest request, bool markAsDeleted = false);
-        Task<bool> DeleteAsync(IdRequest request, bool markAsDeleted = false);
+        bool Delete(IdRequest request);
+        Task<bool> DeleteAsync(IdRequest request);
         Task<bool> DeleteAllAsync(IList<long> requestIds, bool markAsDeleted = false);
         Task<bool> BulkyInsertAsync(RegulatoryReturnRequest[] request);
         Task<bool> BulkyUpdateAsync(RegulatoryReturnRequest[] request);

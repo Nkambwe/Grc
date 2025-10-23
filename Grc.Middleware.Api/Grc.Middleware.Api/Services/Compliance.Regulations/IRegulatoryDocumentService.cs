@@ -34,8 +34,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations
         Task<bool> InsertAsync(RegulatoryDocumentRequest document);
         bool Update(RegulatoryDocumentRequest document, bool includeDeleted = false);
         Task<bool> UpdateAsync(RegulatoryDocumentRequest document, bool includeDeleted = false);
-        bool Delete(IdRequest request, bool markAsDeleted = false);
-        Task<bool> DeleteAsync(IdRequest request, bool markAsDeleted = false);
+        bool Delete(IdRequest request);
+        Task<bool> DeleteAsync(IdRequest request);
         Task<bool> DeleteAllAsync(IList<long> requestIds, bool markAsDeleted = false);
         Task<bool> BulkyInsertAsync(RegulatoryDocumentRequest[] request);
         Task<bool> BulkyUpdateAsync(RegulatoryDocumentRequest[] request);

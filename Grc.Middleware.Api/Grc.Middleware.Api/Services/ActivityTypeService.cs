@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using Grc.Middleware.Api.Defaults;
 
-namespace Grc.Middleware.Api.Services.Operations {
+namespace Grc.Middleware.Api.Services {
 
     public class ActivityTypeService : BaseService, IActivityTypeService {
 

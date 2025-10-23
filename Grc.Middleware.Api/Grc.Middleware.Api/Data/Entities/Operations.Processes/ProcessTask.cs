@@ -7,7 +7,7 @@ namespace Grc.Middleware.Api.Data.Entities.Operations.Processes {
         public string Status { get; set; }
         public DateTime DueDate { get; set; }
         public long ProcessId { get; set; }
-        public long TaskOwnerId { get; set; }
+        public long OwnerId { get; set; }
         public virtual Responsebility TaskOwner { get; set; }
         public virtual OperationProcess Process { get; set; }
     }

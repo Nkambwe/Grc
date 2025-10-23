@@ -1,5 +1,6 @@
 ﻿using Grc.Middleware.Api.Data.Entities;
 using Grc.Middleware.Api.Data.Repositories;
+using Grc.Middleware.Api.Services.Compliance.Support;
 
 namespace Grc.Middleware.Api.Data.Containers {
 
@@ -27,12 +28,12 @@ namespace Grc.Middleware.Api.Data.Containers {
         IRegulatoryCategoryRepository RegulatoryCategoryRepository { get; set; }
         IStatutoryRegulationRepository StatutoryRegulationRepository { get; set; }
         IStatutoryArticleRepository StatutoryArticleRepository { get; set; }
-        IResponsibilityRepository ResponsibilityRepository { get; set; }
+        IResponsebilityRepository ResponsebilityRepository { get; set; }
         IRegulatoryReturnRepository RegulatoryReturnRepository { get; set; }
         IReturnTypeRepository ReturnTypeRepository { get; set; }
         IRegulatoryTypeRepository RegulatoryTypeRepository { get; set; }
-        IGuideDocumentRepository GuideDocumentRepository { get; set; }
-        IGuideDocumentTypeRepository GuideDocumentTypeRepository { get; set; }
+        IRegulatoryDocumentRepository RegulatoryDocumentRepository { get; set; }
+        IRegulatoryDocumentTypeRepository RegulatoryDocumentTypeRepository { get; set; }
         IRegulatorySubmissionRepository RegulatorySubmissionRepository { get; set; }
         IProcessTagRepository ProcessTagRepository { get; set; }
         IProcessTaskRepository ProcessTaskRepository { get; set; }

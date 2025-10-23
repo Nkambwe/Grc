@@ -1,5 +1,6 @@
 ﻿using Grc.Middleware.Api.Data.Entities;
 using Grc.Middleware.Api.Data.Repositories;
+using Grc.Middleware.Api.Services.Compliance.Support;
 using Grc.Middleware.Api.Utils;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,12 +42,12 @@ namespace Grc.Middleware.Api.Data.Containers {
         public IRegulatoryCategoryRepository RegulatoryCategoryRepository { get; set; }
         public IStatutoryRegulationRepository StatutoryRegulationRepository { get; set; }
         public IStatutoryArticleRepository StatutoryArticleRepository { get; set; }
-        public IResponsibilityRepository ResponsibilityRepository { get; set; }
+        public IResponsebilityRepository ResponsebilityRepository { get; set; }
         public IRegulatoryReturnRepository RegulatoryReturnRepository { get; set; }
         public IReturnTypeRepository ReturnTypeRepository { get; set; }
         public IRegulatoryTypeRepository RegulatoryTypeRepository { get; set; }
-        public IGuideDocumentRepository GuideDocumentRepository { get; set; }
-        public IGuideDocumentTypeRepository GuideDocumentTypeRepository { get; set; }
+        public IRegulatoryDocumentRepository RegulatoryDocumentRepository { get; set; }
+        public IRegulatoryDocumentTypeRepository RegulatoryDocumentTypeRepository { get; set; }
         public IRegulatorySubmissionRepository RegulatorySubmissionRepository { get; set; }
         public IProcessTagRepository ProcessTagRepository { get; set; }
         public IProcessTaskRepository ProcessTaskRepository { get; set; }
@@ -97,12 +98,12 @@ namespace Grc.Middleware.Api.Data.Containers {
             RegulatoryCategoryRepository = new RegulatoryCategoryRepository(_loggerFactory, Context);
             StatutoryRegulationRepository = new StatutoryRegulationRepository(_loggerFactory, Context);
             StatutoryArticleRepository = new StatutoryArticleRepository(_loggerFactory, Context);
-            ResponsibilityRepository = new ResponsibilityRepository(_loggerFactory, Context);
+            ResponsebilityRepository = new ResponsebilityRepository(_loggerFactory, Context);
             RegulatoryReturnRepository = new RegulatoryReturnRepository(_loggerFactory, Context);
             ReturnTypeRepository = new ReturnTypeRepository(_loggerFactory, Context);
             RegulatoryTypeRepository = new RegulatoryTypeRepository(_loggerFactory, Context);
-            GuideDocumentRepository = new GuideDocumentRepository(_loggerFactory, Context);
-            GuideDocumentTypeRepository = new GuideDocumentTypeRepository(_loggerFactory, Context);
+            RegulatoryDocumentRepository = new GuideDocumentRepository(_loggerFactory, Context);
+            RegulatoryDocumentTypeRepository = new GuideDocumentTypeRepository(_loggerFactory, Context);
             RegulatorySubmissionRepository = new CircularSubmissionRepository(_loggerFactory, Context);
             ProcessTagRepository = new ProcessTagRepository(_loggerFactory, Context);
             ProcessTaskRepository = new ProcessTaskRepository(_loggerFactory, Context);
@@ -251,12 +252,12 @@ namespace Grc.Middleware.Api.Data.Containers {
                     RegulatoryCategoryRepository = null;
                     StatutoryRegulationRepository = null;
                     StatutoryArticleRepository = null;
-                    ResponsibilityRepository = null;
+                    ResponsebilityRepository = null;
                     RegulatoryReturnRepository = null;
                     ReturnTypeRepository = null;
                     RegulatoryTypeRepository = null;
-                    GuideDocumentRepository = null;
-                    GuideDocumentTypeRepository = null;
+                    RegulatoryDocumentRepository = null;
+                    RegulatoryDocumentTypeRepository = null;
                     RegulatorySubmissionRepository = null;
                     ProcessTagRepository = null;
                     ProcessTaskRepository = null;

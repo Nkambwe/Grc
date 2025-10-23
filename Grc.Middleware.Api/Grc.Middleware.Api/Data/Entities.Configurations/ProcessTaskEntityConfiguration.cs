@@ -15,7 +15,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
             builder.Property(t => t.Status).HasColumnName("task_status").HasColumnType("NVARCHAR(50)").IsRequired();
             builder.Property(t => t.DueDate).HasColumnName("due_date").IsRequired();
             builder.Property(t => t.ProcessId).HasColumnName("process_id");
-            builder.Property(t => t.TaskOwnerId).HasColumnName("owner_id");
+            builder.Property(t => t.OwnerId).HasColumnName("owner_id");
             builder.Property(t => t.IsDeleted).HasColumnName("is_deleted");
             builder.Property(t => t.CreatedOn).HasColumnName("created_on").IsRequired();
             builder.Property(t => t.CreatedBy).HasColumnName("created_by").HasColumnType("NVARCHAR(50)").IsRequired();

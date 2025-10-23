@@ -1054,7 +1054,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                     auditTask.LastModifiedBy = $"{request.UserId}";
 
                     //..check entity state
-                    _ = uow.AuditTaskRepository.Update(auditTask);
+                    _ = uow.AuditTaskRepository.Update(auditTask, includeDeleted);
                     var entityState = ((UnitOfWork)uow).Context.Entry(auditTask).State;
                     Logger.LogActivity($"Audit task state after Update: {entityState}", "DEBUG");
 
@@ -1118,7 +1118,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                     auditTask.LastModifiedBy = $"{request.UserId}";
 
                     //..check entity state
-                    _ = await uow.AuditTaskRepository.UpdateAsync(auditTask);
+                    _ = await uow.AuditTaskRepository.UpdateAsync(auditTask, includeDeleted);
                     var entityState = ((UnitOfWork)uow).Context.Entry(auditTask).State;
                     Logger.LogActivity($"Audit task state after Update: {entityState}", "DEBUG");
 
@@ -1161,7 +1161,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             }
         }
 
-        public bool Delete(IdRequest request, bool markAsDeleted = false)
+        public bool Delete(IdRequest request)
         {
             using var uow = UowFactory.Create();
             try
@@ -1217,7 +1217,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             }
         }
 
-        public async Task<bool> DeleteAsync(IdRequest request, bool markAsDeleted = false)
+        public async Task<bool> DeleteAsync(IdRequest request)
         {
             using var uow = UowFactory.Create();
             try

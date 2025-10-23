@@ -18,7 +18,7 @@ namespace Grc.Middleware.Api.Controllers {
         private readonly IRegulatoryCategoryService _categoryService;
         private readonly IRegulatoryReturnService _returnsService;
         private readonly IRegulatoryTypeService _regulatoryType;
-        private readonly IResponsibilityService _responsibilityService;
+        private readonly IResponsebilityService _responsibilityService;
         private readonly IReturnTypeService _returnTypeService;
         private readonly IStatutoryArticleService _articleService;
         private readonly IStatutoryRegulationService _regulatoryService;
@@ -31,7 +31,7 @@ namespace Grc.Middleware.Api.Controllers {
             IRegulatoryCategoryService categoryService,
             IRegulatoryReturnService returnsService,
             IRegulatoryTypeService regulatoryType,
-            IResponsibilityService responsibilityService,
+            IResponsebilityService responsibilityService,
             IReturnTypeService returnTypeService,
             IStatutoryArticleService articleService,
             IStatutoryRegulationService regulatoryService,

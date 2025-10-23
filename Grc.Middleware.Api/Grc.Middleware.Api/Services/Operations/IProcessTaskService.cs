@@ -1,8 +1,10 @@
 ﻿using Grc.Middleware.Api.Data.Entities.Operations.Processes;
 using Grc.Middleware.Api.Helpers;
+using Grc.Middleware.Api.Http.Requests;
 using System.Linq.Expressions;
 
 namespace Grc.Middleware.Api.Services.Operations {
+
     public interface IProcessTaskService
     {
         int Count();
@@ -28,19 +30,20 @@ namespace Grc.Middleware.Api.Services.Operations {
         Task<IList<ProcessTask>> GetAllAsync(Expression<Func<ProcessTask, bool>> where, bool includeDeleted = false, params Expression<Func<ProcessTask, object>>[] includes);
         Task<IList<ProcessTask>> GetAllAsync(bool includeDeleted = false, params Expression<Func<ProcessTask, object>>[] includes);
         Task<IList<ProcessTask>> GetTopAsync(Expression<Func<ProcessTask, bool>> where, int top, bool includeDeleted = false);
-        bool Insert(ProcessTask processTask);
-        Task<bool> InsertAsync(ProcessTask processTask);
-        bool Update(ProcessTask processTask, bool includeDeleted = false);
-        Task<bool> UpdateAsync(ProcessTask processTask, bool includeDeleted = false);
-        bool Delete(ProcessTask processTask, bool markAsDeleted = false);
-        Task<bool> DeleteAsync(ProcessTask processTask, bool markAsDeleted = false);
-        Task<bool> DeleteAllAsync(IList<ProcessTask> processTasks, bool markAsDeleted = false);
-        Task<bool> BulkyInsertAsync(ProcessTask[] processTasks);
-        Task<bool> BulkyUpdateAsync(ProcessTask[] processTasks);
-        Task<bool> BulkyUpdateAsync(ProcessTask[] processTasks, params Expression<Func<ProcessTask, object>>[] propertySelectors);
+        bool Insert(ProcessTaskRequest request);
+        Task<bool> InsertAsync(ProcessTaskRequest request);
+        bool Update(ProcessTaskRequest request, bool includeDeleted = false);
+        Task<bool> UpdateAsync(ProcessTaskRequest request, bool includeDeleted = false);
+        bool Delete(IdRequest request);
+        Task<bool> DeleteAsync(IdRequest request);
+        Task<bool> DeleteAllAsync(IList<long> requestIds, bool markAsDeleted = false);
+        Task<bool> BulkyInsertAsync(ProcessTaskRequest[] request);
+        Task<bool> BulkyUpdateAsync(ProcessTaskRequest[] request);
+        Task<bool> BulkyUpdateAsync(ProcessTaskRequest[] request, params Expression<Func<ProcessTask, object>>[] propertySelectors);
         Task<PagedResult<ProcessTask>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<ProcessTask, object>>[] includes);
         Task<PagedResult<ProcessTask>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<ProcessTask, object>>[] includes);
         Task<PagedResult<ProcessTask>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<ProcessTask, bool>> where = null);
         Task<PagedResult<ProcessTask>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<ProcessTask, bool>> where = null, bool includeDeleted = false);
     }
+
 }

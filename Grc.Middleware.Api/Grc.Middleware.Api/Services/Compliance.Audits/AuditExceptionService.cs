@@ -1020,7 +1020,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                     audit.LastModifiedBy = $"{request.UserId}";
 
                     //..check entity state
-                    _ = uow.AuditExceptionRepository.Update(audit);
+                    _ = uow.AuditExceptionRepository.Update(audit, includeDeleted);
                     var entityState = ((UnitOfWork)uow).Context.Entry(audit).State;
                     Logger.LogActivity($"Entity state after Update: {entityState}", "DEBUG");
 
@@ -1089,7 +1089,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                     audit.LastModifiedBy = $"{request.UserId}";
 
                     //..check entity state
-                    _ = await uow.AuditExceptionRepository.UpdateAsync(audit);
+                    _ = await uow.AuditExceptionRepository.UpdateAsync(audit, includeDeleted);
                     var entityState = ((UnitOfWork)uow).Context.Entry(audit).State;
                     Logger.LogActivity($"Entity state after Update: {entityState}", "DEBUG");
 
@@ -1132,7 +1132,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             }
         }
 
-        public bool Delete(IdRequest request, bool markAsDeleted = false) {
+        public bool Delete(IdRequest request) {
             using var uow = UowFactory.Create();
             try {
                 var exJson = JsonSerializer.Serialize(request, new JsonSerializerOptions {
@@ -1182,7 +1182,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             }
         }
 
-        public async Task<bool> DeleteAsync(IdRequest request, bool markAsDeleted = false) {
+        public async Task<bool> DeleteAsync(IdRequest request) {
             using var uow = UowFactory.Create();
             try
             {

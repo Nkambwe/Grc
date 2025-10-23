@@ -1,6 +1,6 @@
 ﻿using Grc.Middleware.Api.Data.Entities.Logging;
 
-namespace Grc.Middleware.Api.Services.Operations {
+namespace Grc.Middleware.Api.Services {
 
     public interface IActivityTypeService:IBaseService {
         Task<IList<KeyValuePair<string, string>>> GetSystemKeyWordsAsync();

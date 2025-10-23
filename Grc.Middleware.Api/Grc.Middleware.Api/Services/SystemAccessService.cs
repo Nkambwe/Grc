@@ -1,9 +1,14 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Grc.Middleware.Api.Data.Containers;
+using Grc.Middleware.Api.Data.Entities.Operations.Processes;
 using Grc.Middleware.Api.Data.Entities.System;
+using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Helpers;
+using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
+using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -16,126 +21,7 @@ namespace Grc.Middleware.Api.Services {
             : base(loggerFactory, unitOfWorkFactory, mapper) {
         }
 
-        public async Task<SystemUser> GetByEmailAsync(string email) {
-            
-            using var uow = UowFactory.Create();
-            Logger.LogActivity("Retrieve user by email", "INFO");
-    
-            try {
-
-                Logger.LogActivity($"User email: {email}", "DEBUG");
-                var user = await uow.UserRepository.GetAsync(u => u.EmailAddress == email);
-
-                //..log user record
-                var companyJson = JsonSerializer.Serialize(user, new JsonSerializerOptions { 
-                    WriteIndented = true,
-                    ReferenceHandler = ReferenceHandler.IgnoreCycles 
-                });
-                Logger.LogActivity($"User record: {companyJson}", "DEBUG");
-
-                return user;
-            } catch (Exception ex) {
-                Logger.LogActivity($"Failed to retrieve user: {ex.Message}", "ERROR");
-        
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null) {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                throw; 
-            }
-        }
-
-        public async Task<SystemUser> GetByIdAsync(long id) {
-            using var uow = UowFactory.Create();
-            Logger.LogActivity("Retrieve user by ID", "INFO");
-    
-            try {
-
-                Logger.LogActivity($"User ID: {id}", "DEBUG");
-                var user = await uow.UserRepository.GetAsync(id);
-
-                //..log user record
-                var companyJson = JsonSerializer.Serialize(user, new JsonSerializerOptions { 
-                    WriteIndented = true,
-                    ReferenceHandler = ReferenceHandler.IgnoreCycles 
-                });
-                Logger.LogActivity($"User record: {companyJson}", "DEBUG");
-
-                return user;
-            } catch (Exception ex) {
-                Logger.LogActivity($"Failed to retrieve user: {ex.Message}", "ERROR");
-        
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null) {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                throw; 
-            }
-        }
-
-        public async Task<SystemUser> GetByUsernameAsync(string username) {
-            using var uow = UowFactory.Create();
-            Logger.LogActivity("Retrieve user by email", "INFO");
-    
-            try {
-
-                Logger.LogActivity($"User Username: {username}", "DEBUG");
-                var user = await uow.UserRepository.GetAsync(u => u.Username == username);
-
-                //..log user record
-                var companyJson = JsonSerializer.Serialize(user, new JsonSerializerOptions { 
-                    WriteIndented = true,
-                    ReferenceHandler = ReferenceHandler.IgnoreCycles 
-                });
-                Logger.LogActivity($"User record: {companyJson}", "DEBUG");
-
-                return user;
-            } catch (Exception ex) {
-                Logger.LogActivity($"Failed to retrieve user: {ex.Message}", "ERROR");
-        
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null) {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                throw; 
-            }
-        }
-
-        public async Task<string> GetUserRoleAsync(long userId) {
-            using var uow = UowFactory.Create();
-            Logger.LogActivity($"Retrieve user role for user {userId}", "INFO");
-    
-            try {
-
-                var user = await uow.UserRepository.GetAsync(u => u.Id == userId, false, x => x.Role);
-
-                //..log user record
-                var companyJson = JsonSerializer.Serialize(user, new JsonSerializerOptions { 
-                    WriteIndented = true,
-                    ReferenceHandler = ReferenceHandler.IgnoreCycles 
-                });
-                Logger.LogActivity($"User record: {companyJson}", "DEBUG");
-
-                return user.Role.RoleName;
-            } catch (Exception ex) {
-                Logger.LogActivity($"Failed to retrieve user role: {ex.Message}", "ERROR");
-        
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null) {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                throw; 
-            }
-        }
-
+        #region Admin Dashboard
         public async Task<int> GetTotalUsersCountAsync() {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Total User Count", "INFO");
@@ -218,6 +104,9 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
+        #endregion
+
+        #region System Access
         public async Task<UsernameValidationResponse> ValidateUsernameAsync(string username) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Validating username: {username}", "INFO");
@@ -292,8 +181,10 @@ namespace Grc.Middleware.Api.Services {
 
                 //..map response
                 var response = Mapper.Map<AuthenticationResponse>(user);
-
-                var role = await GetRoleByIdAsync(user.RoleId);
+                var requestId = new IdRequest() {
+                    RecordId = user.RoleId
+                };
+                var role = await GetRoleByIdAsync(requestId);
                 if (role != null) {
                     response.RoleGroup = role.Group?.GroupName ?? string.Empty;
                 }
@@ -582,30 +473,22 @@ namespace Grc.Middleware.Api.Services {
             return workspace;
         }
 
-        public async Task<SystemRole> GetRoleByIdAsync(long id) {
+        #endregion
+
+        #region System Users
+
+        public bool UserExists(Expression<Func<SystemUser, bool>> predicate, bool excludeDeleted = false)
+        {
             using var uow = UowFactory.Create();
-            Logger.LogActivity("Retrieve role by ID", "INFO");
+            Logger.LogActivity($"Check if an System User exists in the database that fit predicate >> '{predicate}'", "INFO");
 
             try
             {
-
-                Logger.LogActivity($"Role ID: {id}", "DEBUG");
-                //..get role with role group
-                var role = await uow.RoleRepository.GetAsync(r => r.Id == id, true, r=> r.Group);
-
-                //..log role record
-                var roleJson = JsonSerializer.Serialize(role, new JsonSerializerOptions
-                {
-                    WriteIndented = true,
-                    ReferenceHandler = ReferenceHandler.IgnoreCycles
-                });
-                Logger.LogActivity($"Role record: {roleJson}", "DEBUG");
-
-                return role;
+                return uow.UserRepository.Exists(predicate, excludeDeleted);
             }
             catch (Exception ex)
             {
-                Logger.LogActivity($"Failed to retrieve role: {ex.Message}", "ERROR");
+                Logger.LogActivity($"Failed to check for System User in the database: {ex.Message}", "ERROR");
 
                 //..log inner exceptions here too
                 var innerEx = ex.InnerException;
@@ -614,32 +497,37 @@ namespace Grc.Middleware.Api.Services {
                     Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
                     innerEx = innerEx.InnerException;
                 }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
                 throw;
             }
         }
 
-        public async Task<SystemRoleGroup> GetRoleGroupByIdAsync(long id) {
+        public async Task<bool> UserExistsAsync(Expression<Func<SystemUser, bool>> predicate, bool excludeDeleted = false, CancellationToken token = default)
+        {
             using var uow = UowFactory.Create();
-            Logger.LogActivity("Retrieve role group by ID", "INFO");
+            Logger.LogActivity($"Check if an System User exists in the database that fit predicate >> '{predicate}'", "INFO");
 
             try
             {
-
-                Logger.LogActivity($"Role Group ID: {id}", "DEBUG");
-                var group = await uow.RoleGroupRepository.GetAsync(id);
-
-                //..log role group record
-                var groupJson = JsonSerializer.Serialize(group, new JsonSerializerOptions
-                {
-                    WriteIndented = true,
-                    ReferenceHandler = ReferenceHandler.IgnoreCycles
-                });
-                Logger.LogActivity($"Role Group record: {groupJson}", "DEBUG");
-
-                return group;
+                return await uow.UserRepository.ExistsAsync(predicate, excludeDeleted, token);
             }
-            catch (Exception ex) {
-                Logger.LogActivity($"Failed to retrieve role group: {ex.Message}", "ERROR");
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to check for System User in the database: {ex.Message}", "ERROR");
 
                 //..log inner exceptions here too
                 var innerEx = ex.InnerException;
@@ -648,6 +536,178 @@ namespace Grc.Middleware.Api.Services {
                     Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
                     innerEx = innerEx.InnerException;
                 }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<SystemUser> GetUserByEmailAsync(string email)
+        {
+
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieve user by email", "INFO");
+
+            try
+            {
+
+                Logger.LogActivity($"User email: {email}", "DEBUG");
+                var user = await uow.UserRepository.GetAsync(u => u.EmailAddress == email);
+
+                //..log user record
+                var companyJson = JsonSerializer.Serialize(user, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"User record: {companyJson}", "DEBUG");
+
+                return user;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve user: {ex.Message}", "ERROR");
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<SystemUser> GetByIdAsync(long id)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieve user by ID", "INFO");
+
+            try
+            {
+
+                Logger.LogActivity($"User ID: {id}", "DEBUG");
+                var user = await uow.UserRepository.GetAsync(id);
+
+                //..log user record
+                var companyJson = JsonSerializer.Serialize(user, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"User record: {companyJson}", "DEBUG");
+
+                return user;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve user: {ex.Message}", "ERROR");
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<SystemUser> GetUserByUsernameAsync(string username)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieve user by email", "INFO");
+
+            try
+            {
+
+                Logger.LogActivity($"User Username: {username}", "DEBUG");
+                var user = await uow.UserRepository.GetAsync(u => u.Username == username);
+
+                //..log user record
+                var companyJson = JsonSerializer.Serialize(user, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"User record: {companyJson}", "DEBUG");
+
+                return user;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve user: {ex.Message}", "ERROR");
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
                 throw;
             }
         }
@@ -666,8 +726,10 @@ namespace Grc.Middleware.Api.Services {
                     ReferenceHandler = ReferenceHandler.IgnoreCycles
                 });
                 return users.ToList();
-            } catch (Exception ex) {
-                Logger.LogActivity($"Failed to retrieve user records: {ex.Message}", "ERROR");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve System User records: {ex.Message}", "ERROR");
 
                 //..log inner exceptions here too
                 var innerEx = ex.InnerException;
@@ -676,25 +738,29 @@ namespace Grc.Middleware.Api.Services {
                     Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
                     innerEx = innerEx.InnerException;
                 }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
                 throw;
             }
         }
 
-        public async Task<PagedResult<SystemUser>> GetPagedUsersAsync(int pageIndex = 1, int pageSize = 5, bool includeDeleted = false) {
-            using var uow = UowFactory.Create();
-            Logger.LogActivity($"Retrieve all log settings", "INFO");
-
-            try {
-                return await uow.UserRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, u => u.Role, u=> u.Department);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogActivity($"Failed to retrieve activity logs: {ex.Message}", "ERROR");
-                throw;
-            }
-        }
-
-        public async Task<bool> InsertUserAsync(SystemUser userRecord) {
+        public async Task<bool> InsertUserAsync(SystemUser userRecord)
+        {
             using var uow = UowFactory.Create();
             Logger.LogActivity("Save user record >>>>", "INFO");
 
@@ -721,7 +787,7 @@ namespace Grc.Middleware.Api.Services {
             }
             catch (Exception ex)
             {
-                Logger.LogActivity($"InsertUserAsync failed: {ex.Message}", "ERROR");
+                Logger.LogActivity($"Failed to insert System User record: {ex.Message}", "ERROR");
 
                 //..log inner exceptions here too
                 var innerEx = ex.InnerException;
@@ -731,10 +797,1583 @@ namespace Grc.Middleware.Api.Services {
                     innerEx = innerEx.InnerException;
                 }
 
-                //..re-throw to the controller handle
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
                 throw;
             }
         }
+
+        public bool PasswordUpdate(PasswordResetRequest request)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Update System User request", "INFO");
+
+            try
+            {
+                var user = uow.UserRepository.Get(a => a.Id == request.UserId);
+                if (user != null)
+                {
+                    //..update System User password
+                    user.PasswordHash = (request.Password ?? string.Empty).Trim();
+                    user.LastModifiedOn = DateTime.Now;
+                    user.LastModifiedBy = $"{request.UserId}";
+
+                    //..check entity state
+                    _ = uow.UserRepository.Update(user);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
+                    Logger.LogActivity($"System User state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to update System User password: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
+        }
+
+        public bool UpdateUser(UserRecordRequest request, bool includeDeleted = false)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Update System User request", "INFO");
+
+            try
+            {
+                var user = uow.UserRepository.Get(a => a.Id == request.Id);
+                if (user != null)
+                {
+                    //..update System User record
+                    user.FirstName = (request.FirstName ?? string.Empty).Trim();
+                    user.LastName = (request.LastName ?? string.Empty).Trim();
+                    user.OtherName = (request.MiddleName ?? string.Empty).Trim();
+                    user.Username = (request.UserName ?? string.Empty).Trim();
+                    user.EmailAddress = (request.EmailAddress ?? string.Empty).Trim();
+                    user.PhoneNumber = (request.PhoneNumber ?? string.Empty).Trim();
+                    user.PFNumber = (request.PFNumber ?? string.Empty).Trim();
+                    user.BranchSolId = (request.SolId ?? string.Empty).Trim();
+                    user.DepartmentUnit = (request.UnitCode ?? string.Empty).Trim();
+                    user.IsActive = request.IsActive;
+                    user.IsVerified = request.IsVerified;
+                    user.IsApproved = request.IsApproved;
+                    user.RoleId = request.RoleId;
+                    user.DepartmentId = request.DepartmentId;
+                    user.IsDeleted = request.IsDeleted;
+                    user.LastModifiedOn = DateTime.Now;
+                    user.LastModifiedBy = $"{request.UserId}";
+
+                    //..check entity state
+                    _ = uow.UserRepository.Update(user, includeDeleted);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
+                    Logger.LogActivity($"System User state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to update System User record: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<bool> UpdateUserAsync(UserRecordRequest request, bool includeDeleted = false)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Update System User", "INFO");
+
+            try
+            {
+                var user = await uow.UserRepository.GetAsync(a => a.Id == request.Id);
+                if (user != null)
+                {
+                    //..update System User record
+                    user.FirstName = (request.FirstName ?? string.Empty).Trim();
+                    user.LastName = (request.LastName ?? string.Empty).Trim();
+                    user.OtherName = (request.MiddleName ?? string.Empty).Trim();
+                    user.Username = (request.UserName ?? string.Empty).Trim();
+                    user.EmailAddress = (request.EmailAddress ?? string.Empty).Trim();
+                    user.PhoneNumber = (request.PhoneNumber ?? string.Empty).Trim();
+                    user.PFNumber = (request.PFNumber ?? string.Empty).Trim();
+                    user.BranchSolId = (request.SolId ?? string.Empty).Trim();
+                    user.DepartmentUnit = (request.UnitCode ?? string.Empty).Trim();
+                    user.IsActive = request.IsActive;
+                    user.IsVerified = request.IsVerified;
+                    user.IsApproved = request.IsApproved;
+                    user.RoleId = request.RoleId;
+                    user.DepartmentId = request.DepartmentId;
+                    user.IsDeleted = request.IsDeleted;
+                    user.LastModifiedOn = DateTime.Now;
+                    user.LastModifiedBy = $"{request.UserId}";
+
+                    //..check entity state
+                    _ = await uow.UserRepository.UpdateAsync(user, includeDeleted);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
+                    Logger.LogActivity($"System User state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to update System User record: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public bool DeleteUser(IdRequest request)
+        {
+            using var uow = UowFactory.Create();
+            try
+            {
+                var userJson = JsonSerializer.Serialize(request, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"System User data: {userJson}", "DEBUG");
+
+                var user = uow.UserRepository.Get(t => t.Id == request.RecordId);
+                if (user != null)
+                {
+                    //..mark as delete this System User
+                    _ = uow.UserRepository.Delete(user, request.IsDeleted);
+
+                    //..check entity state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
+                    Logger.LogActivity($"Entity state after deletion: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to delete System User : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteUserAsync(IdRequest request)
+        {
+            using var uow = UowFactory.Create();
+            try
+            {
+                var userJson = JsonSerializer.Serialize(request, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"System User data: {userJson}", "DEBUG");
+
+                var user = await uow.UserRepository.GetAsync(t => t.Id == request.RecordId);
+                if (user != null)
+                {
+                    //..mark as delete this System User
+                    _ = await uow.UserRepository.DeleteAsync(user, request.IsDeleted);
+
+                    //..check entity state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
+                    Logger.LogActivity($"Entity state after deletion: {entityState}", "DEBUG");
+
+                    var result = await uow.SaveChangesAsync();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to delete System User : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<SystemUser>> PagedUsersAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve all System Users", "INFO");
+
+            try
+            {
+                return await uow.UserRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, u => u.Role, u => u.Department);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve user records : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<SystemUser>> PageAllUsersAsync(CancellationToken token, int page, int size, Expression<Func<SystemUser, bool>> predicate = null, bool includeDeleted = false)
+        {
+
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve paged User records", "INFO");
+
+            try
+            {
+                return await uow.UserRepository.PageAllAsync(token, page, size, predicate, includeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve user records : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        #endregion
+
+        #region Roles
+
+        public bool RoleExists(Expression<Func<SystemRole, bool>> predicate, bool excludeDeleted = false)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Check if a System Role exists in the database that fit predicate >> '{predicate}'", "INFO");
+
+            try
+            {
+                return uow.RoleRepository.Exists(predicate, excludeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to check for System Role in the database: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<bool> RoleExistsAsync(Expression<Func<SystemRole, bool>> predicate, bool excludeDeleted = false, CancellationToken token = default)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Check if an System Role exists in the database that fit predicate >> '{predicate}'", "INFO");
+
+            try
+            {
+                return await uow.RoleRepository.ExistsAsync(predicate, excludeDeleted, token);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to check for System Role in the database: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<SystemRole> GetRoleByIdAsync(IdRequest request) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieve system role by ID", "INFO");
+
+            try
+            {
+                Logger.LogActivity($"Role ID: {request.RecordId}", "DEBUG");
+                //..get role with role group
+                var role = await uow.RoleRepository.GetAsync(r => r.Id == request.RecordId, true, r=> r.Group);
+
+                //..log role record
+                var roleJson = JsonSerializer.Serialize(role, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Role record: {roleJson}", "DEBUG");
+
+                return role;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve system role: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<string> GetRoleNameAsync(long userId)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve role name for user {userId}", "INFO");
+
+            try
+            {
+
+                var user = await uow.UserRepository.GetAsync(u => u.Id == userId, false, x => x.Role);
+
+                //..log user record
+                var companyJson = JsonSerializer.Serialize(user, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Role name record: {companyJson}", "DEBUG");
+
+                return user.Role.RoleName;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve user role name: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<IList<SystemRole>> GetAllRolesAsync(bool includeDeleted = false)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieve list of System Roles records", "INFO");
+            try
+            {
+                return await uow.RoleRepository.GetAllAsync(includeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve System role records: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<bool> InsertRoleAsync(RoleRequest request)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Save role record >>>>");
+            try
+            {
+                //..map System Role request to System Role entity
+                var roleGroup = Mapper.Map<RoleRequest, SystemRole>(request);
+
+                //..log the System Role data being saved
+                var groupJson = JsonSerializer.Serialize(roleGroup, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Role Group data: {groupJson}", "DEBUG");
+
+                var added = await uow.RoleRepository.InsertAsync(roleGroup);
+                if (added)
+                {
+                    //..check object state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(roleGroup).State;
+                    Logger.LogActivity($"Entity state after insert: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to insert System Role record: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public bool UpdateRole(RoleRequest request, bool includeDeleted = false)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Update System Role request", "INFO");
+
+            try
+            {
+                var role = uow.RoleRepository.Get(a => a.Id == request.Id);
+                if (role != null)
+                {
+                    //..update System Role record
+                    role.RoleName = (request.RoleName ?? string.Empty).Trim();
+                    role.Description = (request.Description ?? string.Empty).Trim();
+                    role.GroupId = request.GroupId;
+                    role.IsVerified = request.IsVerified;
+                    role.IsApproved = request.IsApproved;
+                    role.IsDeleted = request.IsDeleted;
+                    role.LastModifiedOn = DateTime.Now;
+                    role.LastModifiedBy = $"{request.UserId}";
+
+                    //..check entity state
+                    _ = uow.RoleRepository.Update(role, includeDeleted);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(role).State;
+                    Logger.LogActivity($"System Role state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to update System Role record: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<bool> UpdateRoleAsync(RoleRequest request, bool includeDeleted = false)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Update System Role", "INFO");
+
+            try
+            {
+                var role = await uow.RoleRepository.GetAsync(a => a.Id == request.Id);
+                if (role != null)
+                {
+                    //..update System Role record
+                    role.RoleName = (request.RoleName ?? string.Empty).Trim();
+                    role.Description = (request.Description ?? string.Empty).Trim();
+                    role.GroupId =request.GroupId;
+                    role.IsVerified = request.IsVerified;
+                    role.IsApproved = request.IsApproved;
+                    role.IsDeleted = request.IsDeleted;
+                    role.LastModifiedOn = DateTime.Now;
+                    role.LastModifiedBy = $"{request.UserId}";
+
+                    //..check entity state
+                    _ = await uow.RoleRepository.UpdateAsync(role, includeDeleted);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(role).State;
+                    Logger.LogActivity($"System Role state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to update System Role record: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public bool DeleteRole(IdRequest request)
+        {
+            using var uow = UowFactory.Create();
+            try
+            {
+                var roleJson = JsonSerializer.Serialize(request, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"System Role data: {roleJson}", "DEBUG");
+
+                var user = uow.UserRepository.Get(t => t.Id == request.RecordId);
+                if (user != null)
+                {
+                    //..mark as delete this System Role
+                    _ = uow.UserRepository.Delete(user, request.IsDeleted);
+
+                    //..check entity state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
+                    Logger.LogActivity($"Entity state after deletion: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to delete System Role : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteRoleAsync(IdRequest request)
+        {
+            using var uow = UowFactory.Create();
+            try
+            {
+                var roleJson = JsonSerializer.Serialize(request, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"System Role data: {roleJson}", "DEBUG");
+
+                var role = await uow.RoleRepository.GetAsync(t => t.Id == request.RecordId);
+                if (role != null)
+                {
+                    //..mark as delete this System Role
+                    _ = await uow.RoleRepository.DeleteAsync(role, request.IsDeleted);
+
+                    //..check entity state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(role).State;
+                    Logger.LogActivity($"Entity state after deletion: {entityState}", "DEBUG");
+
+                    var result = await uow.SaveChangesAsync();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to delete Role Group : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<SystemRole>> PagedRolesAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve all System Role", "INFO");
+
+            try
+            {
+                return await uow.RoleRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, r => r.Group);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve System Role records : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<SystemRole>> PageAllRolesAsync(CancellationToken token, int page, int size, Expression<Func<SystemRole, bool>> predicate = null, bool includeDeleted = false)
+        {
+
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve paged System Role records", "INFO");
+
+            try
+            {
+                return await uow.RoleRepository.PageAllAsync(token, page, size, predicate, includeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve System Role records : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        #endregion
+
+        #region Role Groups
+
+        public bool RoleGroupExists(Expression<Func<SystemRoleGroup, bool>> predicate, bool excludeDeleted = false)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Check if an Role Group exists in the database that fit predicate >> '{predicate}'", "INFO");
+
+            try
+            {
+                return uow.RoleGroupRepository.Exists(predicate, excludeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to check for Role Group in the database: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<bool> RoleGroupExistsAsync(Expression<Func<SystemRoleGroup, bool>> predicate, bool excludeDeleted = false, CancellationToken token = default)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Check if an Role Group exists in the database that fit predicate >> '{predicate}'", "INFO");
+
+            try
+            {
+                return await uow.RoleGroupRepository.ExistsAsync(predicate, excludeDeleted, token);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to check for Role Group in the database: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<SystemRoleGroup> GetRoleGroupByIdAsync(long id) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieve role group by ID", "INFO");
+
+            try
+            {
+                Logger.LogActivity($"Role Group ID: {id}", "DEBUG");
+                var group = await uow.RoleGroupRepository.GetAsync(id);
+
+                //..log role group record
+                var groupJson = JsonSerializer.Serialize(group, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Role Group record: {groupJson}", "DEBUG");
+
+                return group;
+            }
+            catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve role group record: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<IList<SystemRoleGroup>> GetAllRoleGroupsAsync(bool includeDeleted = false)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieve list of Role group records", "INFO");
+            try
+            {
+                return await uow.RoleGroupRepository.GetAllAsync(includeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve role group records: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<bool> InsertRoleGroupAsync(RoleGroupRequest request) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Save role group record >>>>");
+            try
+            {
+                //..map Role Group request to Role Group entity
+                var roleGroup = Mapper.Map<RoleGroupRequest, SystemRoleGroup>(request);
+
+                //..log the Role Group data being saved
+                var groupJson = JsonSerializer.Serialize(roleGroup, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Role Group data: {groupJson}", "DEBUG");
+
+                var added = await uow.RoleGroupRepository.InsertAsync(roleGroup);
+                if (added)
+                {
+                    //..check object state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(roleGroup).State;
+                    Logger.LogActivity($"Entity state after insert: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to insert Role Group record: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public bool UpdateRoleGroup(RoleGroupRequest request, bool includeDeleted = false) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Update Role Group request", "INFO");
+
+            try
+            {
+                var roleGroup = uow.RoleGroupRepository.Get(a => a.Id == request.Id);
+                if (roleGroup != null)
+                {
+                    //..update Role Group record
+                    roleGroup.GroupName = (request.GroupName ?? string.Empty).Trim();
+                    roleGroup.Description = (request.Description ?? string.Empty).Trim();
+                    roleGroup.Scope = (GroupScope)request.Scope;
+                    roleGroup.Type = (RoleGroup)request.Type;
+                    roleGroup.Department = (request.Department ?? string.Empty).Trim();
+                    roleGroup.IsVerified = request.IsVerified;
+                    roleGroup.IsApproved = request.IsApproved;
+                    roleGroup.IsDeleted = request.IsDeleted;
+                    roleGroup.LastModifiedOn = DateTime.Now;
+                    roleGroup.LastModifiedBy = $"{request.UserId}";
+
+                    //..check entity state
+                    _ = uow.RoleGroupRepository.Update(roleGroup, includeDeleted);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(roleGroup).State;
+                    Logger.LogActivity($"Role Group state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to update Role Group record: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<bool> UpdateRoleGroupAsync(RoleGroupRequest request, bool includeDeleted = false)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Update Role Group", "INFO");
+
+            try
+            {
+                var roleGroup = await uow.RoleGroupRepository.GetAsync(a => a.Id == request.Id);
+                if (roleGroup != null)
+                {
+                    //..update Role Group record
+                    roleGroup.GroupName = (request.GroupName ?? string.Empty).Trim();
+                    roleGroup.Description = (request.Description ?? string.Empty).Trim();
+                    roleGroup.Scope = (GroupScope)request.Scope;
+                    roleGroup.Type = (RoleGroup)request.Type;
+                    roleGroup.Department = (request.Department ?? string.Empty).Trim();
+                    roleGroup.IsVerified = request.IsVerified;
+                    roleGroup.IsApproved = request.IsApproved;
+                    roleGroup.IsDeleted = request.IsDeleted;
+                    roleGroup.LastModifiedOn = DateTime.Now;
+                    roleGroup.LastModifiedBy = $"{request.UserId}";
+
+                    //..check entity state
+                    _ = await uow.RoleGroupRepository.UpdateAsync(roleGroup, includeDeleted);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(roleGroup).State;
+                    Logger.LogActivity($"Role Group state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to update Role Group record: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public bool DeleteRoleGroup(IdRequest request)
+        {
+            using var uow = UowFactory.Create();
+            try
+            {
+                var roleGroupJson = JsonSerializer.Serialize(request, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Role Group data: {roleGroupJson}", "DEBUG");
+
+                var user = uow.RoleGroupRepository.Get(t => t.Id == request.RecordId);
+                if (user != null)
+                {
+                    //..mark as delete this Role Group
+                    _ = uow.RoleGroupRepository.Delete(user, request.IsDeleted);
+
+                    //..check entity state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
+                    Logger.LogActivity($"Entity state after deletion: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to delete Role Group : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteRoleGroupAsync(IdRequest request)
+        {
+            using var uow = UowFactory.Create();
+            try
+            {
+                var roleGroupJson = JsonSerializer.Serialize(request, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Role Group data: {roleGroupJson}", "DEBUG");
+
+                var roleGroup = await uow.RoleGroupRepository.GetAsync(t => t.Id == request.RecordId);
+                if (roleGroup != null)
+                {
+                    //..mark as delete this Role Group
+                    _ = await uow.RoleGroupRepository.DeleteAsync(roleGroup, request.IsDeleted);
+
+                    //..check entity state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(roleGroup).State;
+                    Logger.LogActivity($"Entity state after deletion: {entityState}", "DEBUG");
+
+                    var result = await uow.SaveChangesAsync();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to delete Role Group : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<SystemRoleGroup>> PagedRoleGroupAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve all Role Groups", "INFO");
+
+            try
+            {
+                return await uow.RoleGroupRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, g => g.Roles);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Role Group records : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<SystemRoleGroup>> PageAllRoleGroupssAsync(CancellationToken token, int page, int size, Expression<Func<SystemRoleGroup, bool>> predicate = null, bool includeDeleted = false)
+        {
+
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve paged Role Group records", "INFO");
+
+            try
+            {
+                return await uow.RoleGroupRepository.PageAllAsync(token, page, size, predicate, includeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Role Group records : {ex.Message}", "ERROR");
+
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        #endregion
 
     }
 }

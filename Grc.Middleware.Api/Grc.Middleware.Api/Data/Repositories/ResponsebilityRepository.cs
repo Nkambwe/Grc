@@ -2,9 +2,9 @@
 using Grc.Middleware.Api.Utils;
 
 namespace Grc.Middleware.Api.Data.Repositories {
-    public class ResponsibilityRepository : Repository<Responsebility>, IResponsibilityRepository
+    public class ResponsebilityRepository : Repository<Responsebility>, IResponsebilityRepository
     {
-        public ResponsibilityRepository(IServiceLoggerFactory loggerFactory, GrcContext _context)
+        public ResponsebilityRepository(IServiceLoggerFactory loggerFactory, GrcContext _context)
             : base(loggerFactory, _context)
         {
         }

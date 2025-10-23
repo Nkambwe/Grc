@@ -492,7 +492,7 @@ namespace Grc.Middleware.Api.Controllers {
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
 
-                var response = await _accessService.GetByUsernameAsync(request.Username);
+                var response = await _accessService.GetUserByUsernameAsync(request.Username);
                 if (response != null) {
                     //..map response
                     var userRecord = Mapper.Map<UserResponse>(response);
@@ -577,7 +577,7 @@ namespace Grc.Middleware.Api.Controllers {
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
 
-                var response = await _accessService.GetByEmailAsync(request.Email);
+                var response = await _accessService.GetUserByEmailAsync(request.Email);
                 if (response != null) {
                     //..map response
                     var userRecord = Mapper.Map<UserResponse>(response);
@@ -923,7 +923,7 @@ namespace Grc.Middleware.Api.Controllers {
                 //..get activity type
                 SystemUser user = null;
                 if (!string.IsNullOrWhiteSpace(request.UserName)) {
-                    user = await _accessService.GetByUsernameAsync(request.UserName);
+                    user = await _accessService.GetUserByUsernameAsync(request.UserName);
                     if (user != null)
                     {
                         var error = new ResponseError(
@@ -1091,7 +1091,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                var pageResult = await _accessService.GetPagedUsersAsync(request.PageIndex, request.PageSize, true);
+                var pageResult = await _accessService.PagedUsersAsync(request.PageIndex, request.PageSize, true);
 
                 if (pageResult.Entities == null || !pageResult.Entities.Any())
                 {

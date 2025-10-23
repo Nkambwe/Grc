@@ -32,8 +32,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
         Task<bool> InsertAsync(AuditReportRequest auditReport);
         bool Update(AuditReportRequest AuditReportRequest, bool includeDeleted = false);
         Task<bool> UpdateAsync(AuditReportRequest auditReport, bool includeDeleted = false);
-        bool Delete(IdRequest auditReport, bool markAsDeleted = false);
-        Task<bool> DeleteAsync(IdRequest auditReport, bool markAsDeleted = false);
+        bool Delete(IdRequest auditReport);
+        Task<bool> DeleteAsync(IdRequest auditReport);
         Task<bool> DeleteAllAsync(IList<long> entityIds, bool markAsDeleted = false);
         Task<bool> BulkyInsertAsync(AuditReportRequest[] auditReports);
         Task<bool> BulkyUpdateAsync(AuditReportRequest[] auditReports);

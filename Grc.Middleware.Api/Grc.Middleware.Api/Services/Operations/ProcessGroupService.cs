@@ -1,202 +1,1597 @@
 ﻿using AutoMapper;
 using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Support;
+using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Helpers;
+using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Utils;
 using System.Linq.Expressions;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Grc.Middleware.Api.Services.Operations {
     public class ProcessGroupService : BaseService, IProcessGroupService
     {
         public ProcessGroupService(IServiceLoggerFactory loggerFactory,
             IUnitOfWorkFactory uowFactory,
-            IMapper mapper) : base(loggerFactory, uowFactory, mapper)
-        {
-        }
-
-        public Task<bool> BulkyInsertAsync(ProcessGroup[] processGroups)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> BulkyUpdateAsync(ProcessGroup[] processGroups)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> BulkyUpdateAsync(ProcessGroup[] processGroups, params Expression<Func<ProcessGroup, object>>[] propertySelectors)
-        {
-            throw new NotImplementedException();
+            IMapper mapper) : base(loggerFactory, uowFactory, mapper) {
         }
 
         public int Count()
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Count number of Process Groups in the database", "INFO");
+
+            try
+            {
+                return uow.ProcessGroupRepository.Count();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to Process Groups in the database: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
         }
 
         public int Count(Expression<Func<ProcessGroup, bool>> predicate)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Count number of Process Groups in the database", "INFO");
+
+            try
+            {
+                return uow.ProcessGroupRepository.Count(predicate);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to count Process Groups in the database: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
         }
 
-        public Task<int> CountAsync(CancellationToken cancellationToken = default)
+        public async Task<int> CountAsync(CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Count number of Process Groups in the database", "INFO");
+
+            try
+            {
+                return await uow.ProcessGroupRepository.CountAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to count Process Groups in the database: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
         }
 
-        public Task<int> CountAsync(bool excludeDeleted = true, CancellationToken cancellationToken = default)
+        public async Task<int> CountAsync(bool excludeDeleted = true, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Count number of  Process Groups in the database", "INFO");
+
+            try
+            {
+                return await uow.StatutoryArticleRepository.CountAsync(excludeDeleted, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to count Process Groups in the database: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
         }
 
-        public Task<int> CountAsync(Expression<Func<ProcessGroup, bool>> predicate, CancellationToken cancellationToken = default)
+        public async Task<int> CountAsync(Expression<Func<ProcessGroup, bool>> predicate, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Count number of Process Groups in the database that fit predicate >> '{predicate}'", "INFO");
+
+            try
+            {
+                return await uow.ProcessGroupRepository.CountAsync(predicate, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to count Process Groups in the database: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
         }
 
-        public Task<int> CountAsync(Expression<Func<ProcessGroup, bool>> predicate, bool excludeDeleted = true, CancellationToken cancellationToken = default)
+        public async Task<int> CountAsync(Expression<Func<ProcessGroup, bool>> predicate, bool excludeDeleted = true, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Count number of Process Groups in the database that fit predicate >> '{predicate}'", "INFO");
+
+            try
+            {
+                return await uow.ProcessGroupRepository.CountAsync(predicate, excludeDeleted, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to count Process Groups in the database: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
         }
 
-        public bool Delete(ProcessGroup processGroup, bool markAsDeleted = false)
+        public bool Exists(Expression<Func<ProcessGroup, bool>> predicate, bool excludeDeleted = false)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Check if an Process Groups exists in the database that fit predicate >> '{predicate}'", "INFO");
+
+            try
+            {
+                return uow.ProcessGroupRepository.Exists(predicate, excludeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to check for Process Groups in the database: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
         }
 
-        public Task<bool> DeleteAllAsync(IList<ProcessGroup> processGroups, bool markAsDeleted = false)
+        public async Task<bool> ExistsAsync(Expression<Func<ProcessGroup, bool>> predicate, bool excludeDeleted = false, CancellationToken token = default)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Check if an Process Groups exists in the database that fit predicate >> '{predicate}'", "INFO");
+
+            try
+            {
+                return await uow.ProcessGroupRepository.ExistsAsync(predicate, excludeDeleted, token);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to check for Process Groups in the database: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
         }
 
-        public Task<bool> DeleteAsync(ProcessGroup processGroup, bool markAsDeleted = false)
+        public async Task<Dictionary<string, bool>> ExistsBatchAsync(Dictionary<string, Expression<Func<ProcessGroup, bool>>> predicates, bool excludeDeleted = true, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
-        }
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Check for batch Process Groups if they exist in the database that fit predicate >> '{predicates}'", "INFO");
 
-        public bool Exists(Expression<Func<ProcessGroup, bool>> where, bool excludeDeleted = false)
-        {
-            throw new NotImplementedException();
-        }
+            try
+            {
+                return await uow.ProcessGroupRepository.ExistsBatchAsync(predicates, excludeDeleted, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to check for Process Groups in the database: {ex.Message}", "ERROR");
 
-        public Task<bool> ExistsAsync(Expression<Func<ProcessGroup, bool>> where, bool excludeDeleted = false, CancellationToken token = default)
-        {
-            throw new NotImplementedException();
-        }
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
 
-        public Task<Dictionary<string, bool>> ExistsBatchAsync(Dictionary<string, Expression<Func<ProcessGroup, bool>>> predicates, bool excludeDeleted = true, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
         }
 
         public ProcessGroup Get(long id, bool includeDeleted = false)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Get Process Group with ID '{id}'", "INFO");
+
+            try
+            {
+                return uow.ProcessGroupRepository.Get(id, includeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Process Group: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
         }
 
-        public ProcessGroup Get(Expression<Func<ProcessGroup, bool>> where, bool includeDeleted = false)
+        public ProcessGroup Get(Expression<Func<ProcessGroup, bool>> predicate, bool includeDeleted = false)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Get Process Group that fits predicate >> '{predicate}'", "INFO");
+
+            try
+            {
+                return uow.ProcessGroupRepository.Get(predicate, includeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Process Group : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
         }
 
-        public ProcessGroup Get(Expression<Func<ProcessGroup, bool>> where, bool includeDeleted = false, params Expression<Func<ProcessGroup, object>>[] includes)
+        public ProcessGroup Get(Expression<Func<ProcessGroup, bool>> predicate, bool includeDeleted = false, params Expression<Func<ProcessGroup, object>>[] includes)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Get Process Groups that fits predicate >> '{predicate}'", "INFO");
+
+            try
+            {
+                return uow.ProcessGroupRepository.Get(predicate, includeDeleted, includes);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
         }
 
         public IQueryable<ProcessGroup> GetAll(bool includeDeleted = false, params Expression<Func<ProcessGroup, object>>[] includes)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Get all Process Groups", "INFO");
+
+            try
+            {
+                return uow.ProcessGroupRepository.GetAll(includeDeleted, includes);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
         }
 
         public IList<ProcessGroup> GetAll(bool includeDeleted = false)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Get all Process Groups", "INFO");
+
+            try
+            {
+                return uow.ProcessGroupRepository.GetAll(includeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
         }
 
-        public IList<ProcessGroup> GetAll(Expression<Func<ProcessGroup, bool>> where, bool includeDeleted)
+        public IList<ProcessGroup> GetAll(Expression<Func<ProcessGroup, bool>> predicate, bool includeDeleted)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Get all Process Groups that fit predicate '{predicate}'", "INFO");
+
+            try
+            {
+                return uow.ProcessGroupRepository.GetAll(predicate, includeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
         }
 
-        public Task<IList<ProcessGroup>> GetAllAsync(bool includeDeleted = false)
+        public async Task<IList<ProcessGroup>> GetAllAsync(bool includeDeleted = false)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Get all Process Groups", "INFO");
+
+            try
+            {
+                return await uow.ProcessGroupRepository.GetAllAsync(includeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
         }
 
-        public Task<IList<ProcessGroup>> GetAllAsync(Expression<Func<ProcessGroup, bool>> where, bool includeDeleted)
+        public async Task<IList<ProcessGroup>> GetAllAsync(Expression<Func<ProcessGroup, bool>> predicate, bool includeDeleted)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Get all Process Groups that fit predicate '{predicate}'", "INFO");
+
+            try
+            {
+                return await uow.ProcessGroupRepository.GetAllAsync(predicate, includeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
         }
 
-        public Task<IList<ProcessGroup>> GetAllAsync(Expression<Func<ProcessGroup, bool>> where, bool includeDeleted = false, params Expression<Func<ProcessGroup, object>>[] includes)
+        public async Task<IList<ProcessGroup>> GetAllAsync(Expression<Func<ProcessGroup, bool>> predicate, bool includeDeleted = false, params Expression<Func<ProcessGroup, object>>[] includes)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Get all Process Groups that fit predicate '{predicate}'", "INFO");
+
+            try
+            {
+                return await uow.ProcessGroupRepository.GetAllAsync(predicate, includeDeleted, includes);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
         }
 
-        public Task<IList<ProcessGroup>> GetAllAsync(bool includeDeleted = false, params Expression<Func<ProcessGroup, object>>[] includes)
+        public async Task<IList<ProcessGroup>> GetAllAsync(bool includeDeleted = false, params Expression<Func<ProcessGroup, object>>[] includes)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Get all Process Groups", "INFO");
+
+            try
+            {
+                return await uow.ProcessGroupRepository.GetAllAsync(includeDeleted, includes);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
         }
 
-        public Task<ProcessGroup> GetAsync(long id, bool includeDeleted = false)
+        public async Task<ProcessGroup> GetAsync(long id, bool includeDeleted = false)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Get Process Group with ID '{id}'", "INFO");
+
+            try
+            {
+                return await uow.ProcessGroupRepository.GetAsync(id, includeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Process Group : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
         }
 
-        public Task<ProcessGroup> GetAsync(Expression<Func<ProcessGroup, bool>> where, bool includeDeleted = false)
+        public async Task<ProcessGroup> GetAsync(Expression<Func<ProcessGroup, bool>> predicate, bool includeDeleted = false)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Get Process Group that fit predicate '{predicate}'", "INFO");
+
+            try
+            {
+                return await uow.ProcessGroupRepository.GetAsync(predicate, includeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Process Group : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
         }
 
-        public Task<ProcessGroup> GetAsync(Expression<Func<ProcessGroup, bool>> where, bool includeDeleted = false, params Expression<Func<ProcessGroup, object>>[] includes)
+        public async Task<ProcessGroup> GetAsync(Expression<Func<ProcessGroup, bool>> predicate, bool includeDeleted = false, params Expression<Func<ProcessGroup, object>>[] includes)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Get Process Group that fit predicate '{predicate}'", "INFO");
+
+            try
+            {
+                return await uow.ProcessGroupRepository.GetAsync(predicate, includeDeleted, includes);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Process Group : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
         }
 
-        public Task<IList<ProcessGroup>> GetTopAsync(Expression<Func<ProcessGroup, bool>> where, int top, bool includeDeleted = false)
+        public async Task<IList<ProcessGroup>> GetTopAsync(Expression<Func<ProcessGroup, bool>> predicate, int top, bool includeDeleted = false)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Get top {top} Process Groups that fit predicate >> {predicate}", "INFO");
+
+            try
+            {
+                return await uow.ProcessGroupRepository.GetTopAsync(predicate, top, includeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
         }
 
-        public bool Insert(ProcessGroup processGroup)
+        public bool Insert(ProcessGroupRequest request)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            try
+            {
+                //..map Process Group request to Process Group entity
+                var group = Mapper.Map<ProcessGroupRequest, ProcessGroup>(request);
+
+                //..log the Process Group data being saved
+                var groupJson = JsonSerializer.Serialize(group, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Process Group data: {groupJson}", "DEBUG");
+
+                var added = uow.ProcessGroupRepository.Insert(group);
+                if (added)
+                {
+                    //..check object state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(group).State;
+                    Logger.LogActivity($"Entity state after insert: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to save Process Group : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
         }
 
-        public Task<bool> InsertAsync(ProcessGroup processGroup)
+        public async Task<bool> InsertAsync(ProcessGroupRequest request)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            try
+            {
+                //..map Process Group request to Process Group entity
+                var group = Mapper.Map<ProcessGroupRequest, ProcessGroup>(request);
+
+                //..log the Process Group data being saved
+                var groupJson = JsonSerializer.Serialize(group, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Process Group data: {groupJson}", "DEBUG");
+
+                var added = await uow.ProcessGroupRepository.InsertAsync(group);
+                if (added)
+                {
+                    //..check object state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(group).State;
+                    Logger.LogActivity($"Entity state after insert: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to save Process Group : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
         }
 
-        public Task<PagedResult<ProcessGroup>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<ProcessGroup, object>>[] includes)
+        public bool Update(ProcessGroupRequest request, bool includeDeleted = false)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Update Process Group request", "INFO");
+
+            try
+            {
+                var group = uow.ProcessGroupRepository.Get(a => a.Id == request.Id);
+                if (group != null)
+                {
+                    //..update Process Group record
+                    group.GroupName = (request.GroupName ?? string.Empty).Trim();
+                    group.Description = (request.Description ?? string.Empty).Trim();
+                    group.IsDeleted = request.IsDeleted;
+                    group.LastModifiedOn = DateTime.Now;
+                    group.LastModifiedBy = $"{request.UserId}";
+
+                    //..check entity state
+                    _ = uow.ProcessGroupRepository.Update(group, includeDeleted);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(group).State;
+                    Logger.LogActivity($"Process Group state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to update Process Group record: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
         }
 
-        public Task<PagedResult<ProcessGroup>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<ProcessGroup, object>>[] includes)
+        public async Task<bool> UpdateAsync(ProcessGroupRequest request, bool includeDeleted = false)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Update Process Group", "INFO");
+
+            try
+            {
+                var group = await uow.ProcessGroupRepository.GetAsync(a => a.Id == request.Id);
+                if (group != null)
+                {
+                    //..update Process Group record
+                    group.GroupName = (request.GroupName ?? string.Empty).Trim();
+                    group.Description = (request.Description ?? string.Empty).Trim();
+                    group.IsDeleted = request.IsDeleted;
+                    group.LastModifiedOn = DateTime.Now;
+                    group.LastModifiedBy = $"{request.UserId}";
+
+                    //..check entity state
+                    _ = await uow.ProcessGroupRepository.UpdateAsync(group, includeDeleted);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(group).State;
+                    Logger.LogActivity($"Process Group state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to update Process Group record: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
         }
 
-        public Task<PagedResult<ProcessGroup>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<ProcessGroup, bool>> where = null)
+        public bool Delete(IdRequest request)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            try
+            {
+                var groupJson = JsonSerializer.Serialize(request, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Process Group data: {groupJson}", "DEBUG");
+
+                var groups = uow.ProcessGroupRepository.Get(t => t.Id == request.RecordId);
+                if (groups != null)
+                {
+                    //..mark as delete this Process Group
+                    _ = uow.ProcessGroupRepository.Delete(groups, request.IsDeleted);
+
+                    //..check entity state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(groups).State;
+                    Logger.LogActivity($"Entity state after deletion: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to delete Process Group : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+                throw;
+            }
         }
 
-        public Task<PagedResult<ProcessGroup>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<ProcessGroup, bool>> where = null, bool includeDeleted = false)
+        public async Task<bool> DeleteAsync(IdRequest request)
         {
-            throw new NotImplementedException();
+
+            using var uow = UowFactory.Create();
+            try
+            {
+                var groupJson = JsonSerializer.Serialize(request, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Process Group data: {groupJson}", "DEBUG");
+
+                var group = await uow.ProcessGroupRepository.GetAsync(t => t.Id == request.RecordId);
+                if (group != null)
+                {
+                    //..mark as delete this Process Group
+                    _ = await uow.ProcessGroupRepository.DeleteAsync(group, request.IsDeleted);
+
+                    //..check entity state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(group).State;
+                    Logger.LogActivity($"Entity state after deletion: {entityState}", "DEBUG");
+
+                    var result = await uow.SaveChangesAsync();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to delete Process Group : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                throw;
+            }
         }
 
-        public bool Update(ProcessGroup processGroup, bool includeDeleted = false)
+        public async Task<bool> DeleteAllAsync(IList<long> requestIds, bool markAsDeleted = false)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            try
+            {
+                var groups = await uow.ProcessGroupRepository.GetAllAsync(e => requestIds.Contains(e.Id));
+                if (groups.Count == 0)
+                {
+                    Logger.LogActivity($"Records not found", "INFO");
+                    return false;
+                }
+                return await uow.ProcessGroupRepository.DeleteAllAsync(groups, markAsDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to delete Process Groups: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+                throw;
+            }
+
         }
 
-        public Task<bool> UpdateAsync(ProcessGroup processGroup, bool includeDeleted = false)
+        public async Task<bool> BulkyInsertAsync(ProcessGroupRequest[] requestItems)
         {
-            throw new NotImplementedException();
+            using var uow = UowFactory.Create();
+            try
+            {
+                //..map Process Groups to Process Groups entity
+                var groups = requestItems.Select(Mapper.Map<ProcessGroupRequest, ProcessGroup>).ToArray();
+                var groupJson = JsonSerializer.Serialize(groups, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Process Groups data: {groupJson}", "DEBUG");
+                return await uow.ProcessGroupRepository.BulkyInsertAsync(groups);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to save Process Groups : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
         }
+
+        public async Task<bool> BulkyUpdateAsync(ProcessGroupRequest[] requestItems)
+        {
+            using var uow = UowFactory.Create();
+            try
+            {
+                //..map Process Groups request to Process Groups entity
+                var groups = requestItems.Select(Mapper.Map<ProcessGroupRequest, ProcessGroup>).ToArray();
+                var groupJson = JsonSerializer.Serialize(groups, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Process Groups data: {groupJson}", "DEBUG");
+                return await uow.ProcessGroupRepository.BulkyUpdateAsync(groups);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to save Process Groups : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<bool> BulkyUpdateAsync(ProcessGroupRequest[] requestItems, params Expression<Func<ProcessGroup, object>>[] propertySelectors)
+        {
+            using var uow = UowFactory.Create();
+            try
+            {
+                //..map Process Groups request to Process Groups entity
+                var groups = requestItems.Select(Mapper.Map<ProcessGroupRequest, ProcessGroup>).ToArray();
+                var groupJson = JsonSerializer.Serialize(groups, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Process Groups data: {groupJson}", "DEBUG");
+                return await uow.ProcessGroupRepository.BulkyUpdateAsync(groups, propertySelectors);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to save Process Groups : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<ProcessGroup>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<ProcessGroup, object>>[] includes)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve paged Process Groups", "INFO");
+
+            try
+            {
+                return await uow.ProcessGroupRepository.PageAllAsync(page, size, includeDeleted, includes);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Process Groups: {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<ProcessGroup>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<ProcessGroup, object>>[] includes)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve paged Process Groups", "INFO");
+
+            try
+            {
+                return await uow.ProcessGroupRepository.PageAllAsync(token, page, size, includeDeleted, includes);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<ProcessGroup>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<ProcessGroup, bool>> predicate = null)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve paged Process Groups", "INFO");
+
+            try
+            {
+                return await uow.ProcessGroupRepository.PageAllAsync(page, size, includeDeleted, predicate);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Process Groups: {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<ProcessGroup>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<ProcessGroup, bool>> predicate = null, bool includeDeleted = false)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve paged Process Groups", "INFO");
+
+            try
+            {
+                return await uow.ProcessGroupRepository.PageAllAsync(token, page, size, predicate, includeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "PROCESS-GROUPS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
     }
 }

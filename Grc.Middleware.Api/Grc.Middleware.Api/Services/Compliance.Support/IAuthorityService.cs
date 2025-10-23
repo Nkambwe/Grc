@@ -1,5 +1,6 @@
 ﻿using Grc.Middleware.Api.Data.Entities.Support;
 using Grc.Middleware.Api.Helpers;
+using Grc.Middleware.Api.Http.Requests;
 using System.Linq.Expressions;
 
 namespace Grc.Middleware.Api.Services.Compliance.Support {
@@ -27,16 +28,16 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
         Task<IList<Authority>> GetAllAsync(Expression<Func<Authority, bool>> where, bool includeDeleted = false, params Expression<Func<Authority, object>>[] includes);
         Task<IList<Authority>> GetAllAsync(bool includeDeleted = false, params Expression<Func<Authority, object>>[] includes);
         Task<IList<Authority>> GetTopAsync(Expression<Func<Authority, bool>> where, int top, bool includeDeleted = false);
-        bool Insert(Authority authority);
-        Task<bool> InsertAsync(Authority authority);
-        bool Update(Authority authority, bool includeDeleted = false);
-        Task<bool> UpdateAsync(Authority authority, bool includeDeleted = false);
-        bool Delete(Authority authority, bool markAsDeleted = false);
-        Task<bool> DeleteAsync(Authority authority, bool markAsDeleted = false);
-        Task<bool> DeleteAllAsync(IList<Authority> authorities, bool markAsDeleted = false);
-        Task<bool> BulkyInsertAsync(Authority[] authorities);
-        Task<bool> BulkyUpdateAsync(Authority[] authorities);
-        Task<bool> BulkyUpdateAsync(Authority[] authorities, params Expression<Func<Authority, object>>[] propertySelectors);
+        bool Insert(AuthorityRequest authority);
+        Task<bool> InsertAsync(AuthorityRequest authority);
+        bool Update(AuthorityRequest authority, bool includeDeleted = false);
+        Task<bool> UpdateAsync(AuthorityRequest authority, bool includeDeleted = false);
+        bool Delete(IdRequest authority);
+        Task<bool> DeleteAsync(IdRequest request);
+        Task<bool> DeleteAllAsync(IList<long> requestIds, bool markAsDeleted = false);
+        Task<bool> BulkyInsertAsync(AuthorityRequest[] authorities);
+        Task<bool> BulkyUpdateAsync(AuthorityRequest[] authorities);
+        Task<bool> BulkyUpdateAsync(AuthorityRequest[] authorities, params Expression<Func<Authority, object>>[] propertySelectors);
         Task<PagedResult<Authority>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<Authority, object>>[] includes);
         Task<PagedResult<Authority>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<Authority, object>>[] includes);
         Task<PagedResult<Authority>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<Authority, bool>> where = null);

@@ -33,8 +33,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
         Task<bool> InsertAsync(AuditExceptionRequest exception);
         bool Update(AuditExceptionRequest exception, bool includeDeleted = false);
         Task<bool> UpdateAsync(AuditExceptionRequest exception, bool includeDeleted = false);
-        bool Delete(IdRequest exception, bool markAsDeleted = false);
-        Task<bool> DeleteAsync(IdRequest exception, bool markAsDeleted = false);
+        bool Delete(IdRequest exception);
+        Task<bool> DeleteAsync(IdRequest exception);
         Task<bool> DeleteAllAsync(IList<long> requestIds, bool markAsDeleted = false);
         Task<bool> BulkyInsertAsync(AuditExceptionRequest[] exceptions);
         Task<bool> BulkyUpdateAsync(AuditExceptionRequest[] exceptions);

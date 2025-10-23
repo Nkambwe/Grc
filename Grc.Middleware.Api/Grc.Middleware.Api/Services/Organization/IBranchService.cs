@@ -1,4 +1,5 @@
 ﻿using Grc.Middleware.Api.Data.Entities.Org;
+using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 
 namespace Grc.Middleware.Api.Services.Organization {
@@ -13,6 +14,7 @@ namespace Grc.Middleware.Api.Services.Organization {
         Task<bool> DeleteBranchAsync(IdRequest request);
         Task<bool> ExistsByIdAsync(long id);
         Task<bool> ExistsAsync(BranchRequest request);
+        Task<PagedResult<Branch>> GetPagedDepartmentsAsync(DateTime? createdFrom = null, DateTime? createdTo = null, long? userId = null, int pageIndex = 1, int pageSize = 20, bool includeDeleted = false);
 
     }
 

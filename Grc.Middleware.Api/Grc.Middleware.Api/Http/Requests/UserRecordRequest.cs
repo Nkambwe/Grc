@@ -61,6 +61,10 @@ namespace Grc.Middleware.Api.Http.Requests {
         /// </summary>
         [JsonPropertyName("action")]
         public string Action { get; set; }
+
+        [JsonPropertyName("isDeleted")]
+        public bool IsDeleted { get; set; }
+
         /// <summary>
         /// Get or Set User IP Address
         /// </summary>

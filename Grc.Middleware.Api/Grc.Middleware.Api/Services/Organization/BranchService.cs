@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Org;
-using Grc.Middleware.Api.Utils;
-using System.Text.Json.Serialization;
-using System.Text.Json;
-using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Data.Entities.System;
+using Grc.Middleware.Api.Helpers;
+using Grc.Middleware.Api.Http.Requests;
+using Grc.Middleware.Api.Utils;
+using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Grc.Middleware.Api.Services.Organization {
     public class BranchService : BaseService , IBranchService, IBaseService {
@@ -255,7 +257,6 @@ namespace Grc.Middleware.Api.Services.Organization {
                     //..update branch record
                     branch.BranchName = request.BranchName;
                     branch.SolId = request.SolId;
-                    //branch.CompanyId = request.CompanyId;
                     branch.IsDeleted = request.IsDeleted;
                     branch.LastModifiedOn = DateTime.Now;
                     branch.LastModifiedBy = $"{request.UserId}";
@@ -399,5 +400,59 @@ namespace Grc.Middleware.Api.Services.Organization {
             }
         }
 
+        public async Task<PagedResult<Branch>> GetPagedDepartmentsAsync(DateTime? createdFrom = null, DateTime? createdTo = null, long? userId = null, int pageIndex = 1, int pageSize = 20, bool includeDeleted = false)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve all branches", "INFO");
+
+            try
+            {
+                //...build query first
+                var query = uow.BranchRepository.GetAll(includeDeleted, d => d.Company)
+                    .AsQueryable();
+
+                //..apply filters
+                var filteredQuery = query.Where(a =>
+                    (!createdFrom.HasValue || a.CreatedOn >= createdFrom.Value) &&
+                    (!createdTo.HasValue || a.CreatedOn <= createdTo.Value) &&
+                    (!userId.HasValue || a.CreatedBy == $"{userId.Value}")
+                );
+
+                var orderedQuery = filteredQuery.OrderByDescending(x => x.CreatedOn);
+
+                //..execute query
+                var totalRecords = await orderedQuery.CountAsync();
+                var entities = await orderedQuery
+                    .Skip((pageIndex - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+
+                return new PagedResult<Branch>
+                {
+                    Entities = entities,
+                    Count = totalRecords,
+                    Page = pageIndex,
+                    Size = pageSize
+                };
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve branches: {ex.Message}", "ERROR");
+
+                var conpany = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "BRANCH-SERVICE-MIDDLEWARE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                throw;
+            }
+        }
     }
 }

@@ -12,12 +12,10 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Grc.Middleware.Api.Services.Compliance.Regulations {
-    public class RegulatoryReturnService : BaseService, IRegulatoryReturnService
-    {
+    public class RegulatoryReturnService : BaseService, IRegulatoryReturnService {
+
         public RegulatoryReturnService(IServiceLoggerFactory loggerFactory,
-            IUnitOfWorkFactory uowFactory,
-            IMapper mapper) : base(loggerFactory, uowFactory, mapper)
-        {
+            IUnitOfWorkFactory uowFactory, IMapper mapper) : base(loggerFactory, uowFactory, mapper) {
         }
 
         public int Count()
@@ -1064,7 +1062,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     regReturn.LastModifiedBy = $"{request.UserId}";
 
                     //..check entity state
-                    _ = uow.RegulatoryReturnRepository.Update(regReturn);
+                    _ = uow.RegulatoryReturnRepository.Update(regReturn, includeDeleted);
                     var entityState = ((UnitOfWork)uow).Context.Entry(regReturn).State;
                     Logger.LogActivity($"Regulatory Return state after Update: {entityState}", "DEBUG");
 
@@ -1110,7 +1108,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         public async Task<bool> UpdateAsync(RegulatoryReturnRequest request, bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
-            Logger.LogActivity($"Update Regulatory Submission", "INFO");
+            Logger.LogActivity($"Update Regulatory Return", "INFO");
 
             try
             {
@@ -1136,7 +1134,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     regReturn.LastModifiedBy = $"{request.UserId}";
 
                     //..check entity state
-                    _ = await uow.RegulatoryReturnRepository.UpdateAsync(regReturn);
+                    _ = await uow.RegulatoryReturnRepository.UpdateAsync(regReturn, includeDeleted);
                     var entityState = ((UnitOfWork)uow).Context.Entry(regReturn).State;
                     Logger.LogActivity($"Regulatory Regulatory Return state after Update: {entityState}", "DEBUG");
 
@@ -1179,7 +1177,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public bool Delete(IdRequest request, bool markAsDeleted = false)
+        public bool Delete(IdRequest request)
         {
             using var uow = UowFactory.Create();
             try
@@ -1235,7 +1233,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<bool> DeleteAsync(IdRequest request, bool markAsDeleted = false)
+        public async Task<bool> DeleteAsync(IdRequest request)
         {
             using var uow = UowFactory.Create();
             try
