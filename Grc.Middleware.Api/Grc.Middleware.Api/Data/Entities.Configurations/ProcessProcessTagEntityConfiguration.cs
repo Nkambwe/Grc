@@ -8,8 +8,11 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
         public static void Configure(EntityTypeBuilder<ProcessProcessTag> builder)
         {
             builder.ToTable("TBL_GRC_PROCESS_PROCESS_TAG");
-            builder.Property(t => t.TagId).HasColumnName("tag_id").IsRequired(false);
-            builder.Property(p => p.ProcessId).HasColumnName("process_id").IsRequired();
+            builder.HasKey(pt => new { pt.ProcessId, pt.TagId });
+            builder.Property(pt => pt.ProcessId).HasColumnName("process_id").IsRequired();
+            builder.Property(pt => pt.TagId).HasColumnName("tag_id").IsRequired();
+            builder.HasOne(pt => pt.Process).WithMany(p => p.Tags).HasForeignKey(pt => pt.ProcessId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(pt => pt.Tag).WithMany(g => g.Processes).HasForeignKey(pt => pt.TagId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

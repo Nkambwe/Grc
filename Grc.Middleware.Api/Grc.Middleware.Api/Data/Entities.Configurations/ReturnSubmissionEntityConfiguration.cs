@@ -9,7 +9,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
             builder.ToTable("TBL_GRC_RETURN_SUBMISSION");
             builder.HasKey(t => t.Id);
             builder.Property(t => t.Description).HasColumnName("return_description").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
-            builder.Property(t => t.Deadline).HasColumnName("deadline").IsRequired(false);
+            builder.Property(t => t.Deadline).HasColumnName("deadline").IsRequired(true);
             builder.Property(t => t.Status).HasColumnName("return_status").HasColumnType("NVARCHAR(50)").IsRequired(true);
             builder.Property(t => t.IsDeleted).HasColumnName("is_deleted");
             builder.Property(t => t.SubmissionDate).HasColumnName("submission_date").IsRequired();
@@ -17,6 +17,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
             builder.Property(t => t.SubmittedBy).HasColumnName("submitted_by").HasColumnType("NVARCHAR(50)").IsRequired(true);
             builder.Property(t => t.Comments).HasColumnName("return_comments").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
             builder.Property(t => t.CreatedOn).HasColumnName("created_on").IsRequired();
+            builder.Property(t => t.ReturnId).HasColumnName("return_id").IsRequired(true);
             builder.Property(t => t.CreatedBy).HasColumnName("created_by").HasColumnType("NVARCHAR(50)").IsRequired();
             builder.Property(t => t.LastModifiedOn).HasColumnName("modified_on").IsRequired(false);
             builder.Property(t => t.LastModifiedBy).HasColumnName("modified_by").HasColumnType("NVARCHAR(50)").IsRequired(false);

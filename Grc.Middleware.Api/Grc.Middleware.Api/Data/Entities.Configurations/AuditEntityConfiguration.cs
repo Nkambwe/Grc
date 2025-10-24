@@ -8,12 +8,12 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
     {
         public static void Configure(EntityTypeBuilder<Audit> builder)
         {
-            builder.ToTable("TBL_GRC_COMPLIANCE_AUDITS");
+            builder.ToTable("TBL_GRC_AUDITS");
             builder.HasKey(a => a.Id);
             builder.Property(a => a.AuditName).HasColumnName("audit_name").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
             builder.Property(a => a.Priority).HasColumnName("audit_priority").HasColumnType("NVARCHAR(50)").IsRequired(true);
             builder.Property(a => a.Category).HasColumnName("audit_category").HasColumnType("NVARCHAR(180)").IsRequired(false);
-            builder.Property(a => a.SubCategory).HasColumnName("audit_sub_category").IsRequired(false);
+            builder.Property(a => a.SubCategory).HasColumnName("audit_sub_category").HasColumnType("NVARCHAR(50)").IsRequired(false);
             builder.Property(a => a.NumberOfReports).HasColumnName("reports").HasColumnType("INT").IsRequired(true).HasDefaultValue(0);
             builder.Property(a => a.IsDeleted).HasColumnName("is_deleted");
             builder.Property(a => a.Attachement).HasColumnName("file_attachment").HasColumnType("NVARCHAR(MAX)").IsRequired(true);

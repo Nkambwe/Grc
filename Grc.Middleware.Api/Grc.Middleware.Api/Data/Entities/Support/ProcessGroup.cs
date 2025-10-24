@@ -6,6 +6,6 @@ namespace Grc.Middleware.Api.Data.Entities.Support
     {
         public string GroupName { get; set; }
         public string Description { get; set; }
-        public virtual ICollection<ProcessProcessGroup> Processes { get; set; }
+        public ICollection<ProcessProcessGroup> Processes { get; set; } = new List<ProcessProcessGroup>();
     }
 }

@@ -26,8 +26,8 @@ namespace Grc.Middleware.Api.Data.Entities.Operations.Processes {
         public virtual DepartmentUnit Unit { get; set; }
         public virtual Responsebility Owner { get; set; }
         public virtual ICollection<ProcessTask> Tasks { get; set; }
-        public virtual ICollection<ProcessProcessTag> Tags { get; set; }
-        public virtual ICollection<ProcessProcessGroup> Groups { get; set; }
+        public virtual ICollection<ProcessProcessTag> Tags { get; set; } = new List<ProcessProcessTag>();
+        public ICollection<ProcessProcessGroup> Groups { get; set; } = new List<ProcessProcessGroup>();
         public virtual ICollection<ProcessActivity> Activities { get; set; }
 
     }
