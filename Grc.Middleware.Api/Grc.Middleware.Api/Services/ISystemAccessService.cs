@@ -20,6 +20,7 @@ namespace Grc.Middleware.Api.Services {
         Task<SystemUser> GetUserByUsernameAsync(string username);
 
         Task<List<SystemUser>> GetAllUsersAsync();
+
         Task<bool> InsertUserAsync(SystemUser userRecord);
 
         bool PasswordUpdate(PasswordResetRequest request);
@@ -115,6 +116,31 @@ namespace Grc.Middleware.Api.Services {
         Task<PagedResult<SystemRoleGroup>> PagedRoleGroupAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false);
 
         Task<PagedResult<SystemRoleGroup>> PageAllRoleGroupssAsync(CancellationToken token, int page, int size, Expression<Func<SystemRoleGroup, bool>> predicate = null, bool includeDeleted = false);
+
+        #endregion
+
+        #region System Permissions
+
+        Task<PagedResult<SystemPermission>> PagedPermissionsAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false);
+
+        Task<PagedResult<SystemPermission>> PageAllPermissionsAsync(CancellationToken token, int page, int size, Expression<Func<SystemPermission, bool>> predicate = null, bool includeDeleted = false);
+
+        #endregion
+
+        #region System Permissions
+        Task<bool> InsertPermissionSetAsync(PermissionSetRequest request);
+
+        bool UpdatePermissionSet(PermissionSetRequest request, bool includeDeleted = false);
+
+        Task<bool> UpdatePermissionSetAsync(PermissionSetRequest request, bool includeDeleted = false);
+
+        bool DeletePermissionSet(IdRequest request);
+
+        Task<bool> DeletePermissionSetAsync(IdRequest request);
+
+        Task<PagedResult<SystemPermissionSet>> PagedPermissionSetAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false);
+
+        Task<PagedResult<SystemPermissionSet>> PageAllPermissionSetAsync(CancellationToken token, int page, int size, Expression<Func<SystemPermissionSet, bool>> predicate = null, bool includeDeleted = false);
 
         #endregion
 

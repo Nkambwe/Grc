@@ -39,6 +39,7 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IPinnedItemRepository, PinnedItemRepository>();
             services.AddScoped<ISystemErrorRespository, SystemErrorRespository>();
             services.AddScoped<IActivityLogRepository, ActivityLogRepository>();
+            services.AddScoped<ISystemConfigurationRepository, SystemConfigurationRepository>();
             services.AddScoped<IActivityTypeRepository, ActivityTypeRepository>();
             services.AddScoped<IActivityLogSettingRepository, ActivityLogSettingRepository>();
             services.AddScoped<IAuthoritiesRepository, AuthoritiesRepository>();
@@ -59,6 +60,8 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IProcessGroupRepository, ProcessGroupRepository>();
             services.AddScoped<IProcessTypeRepository, ProcessTypeRepository>();
             services.AddScoped<IOperationProcessRepository, OperationProcessRepository>();
+            services.AddScoped<IPermissionRepository, PermissionRepository>();
+            services.AddScoped<IPermissionSetRepository, PermissionSetRepository>();
             services.AddScoped<IAuditExceptionRepository, AuditExceptionRepository>();
             services.AddScoped<IAuditReportRepository, AuditReportRepository>();
             services.AddScoped<IAuditRepository, AuditRepository>(); 
@@ -118,7 +121,8 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IAuditReportService, AuditReportService>();
             services.AddScoped<IAuditService, AuditService>();
             services.AddScoped<IAuditTaskService, AuditTaskService>();
-
+            services.AddScoped<ISystemConfigurationService, SystemConfigurationService>();
+            
             //allow html helpers to acces current action context
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         }

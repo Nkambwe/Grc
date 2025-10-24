@@ -13,8 +13,6 @@ namespace Grc.Middleware.Api.Data.Repositories {
             await context.Database.ExecuteSqlRawAsync("DELETE FROM TBL_GRC_ACTIVITY_LOG");
         }
     }
-
-
 }
 
 

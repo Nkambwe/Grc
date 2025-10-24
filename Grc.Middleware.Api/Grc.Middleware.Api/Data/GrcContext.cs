@@ -51,7 +51,10 @@ namespace Grc.Middleware.Api.Data {
         public DbSet<ProcessTask> ProcessTasks { get; set; }
         public DbSet<OperationProcess> Processes { get; set; }
         public DbSet<SubmissionNotification> Notifications { get; set; }
-
+        public DbSet<SystemConfiguration> SystemConfiguration { get; set; }
+        public DbSet<SystemPermission> SystemPermissions { get; set; }
+        public DbSet<SystemPermissionPermissionSet> SystemPermissionSets { get; set; }
+        
         public GrcContext(DbContextOptions<GrcContext> options)  
             : base(options){
         }
@@ -60,6 +63,7 @@ namespace Grc.Middleware.Api.Data {
             CompanyEntityConfiguration.Configure(modelBuilder.Entity<Company>());
             BranchEntityConfiguration.Configure(modelBuilder.Entity<Branch>());
             SystemErrorEntityConfiguration.Configure(modelBuilder.Entity<SystemError>());
+            SystemConfigurationEntityConfiguration.Configure(modelBuilder.Entity<SystemConfiguration>());
             ActivityLogSettingEntityConfiguration.Configure(modelBuilder.Entity<ActivityLogSetting>());
             ActivityTypeEntityConfiguration.Configure(modelBuilder.Entity<ActivityType>());
             ActivityLogEntityConfiguration.Configure(modelBuilder.Entity<ActivityLog>());
@@ -98,6 +102,9 @@ namespace Grc.Middleware.Api.Data {
             OperationProcessEntityConfiguration.Configure(modelBuilder.Entity<OperationProcess>());
             ProcessProcessTagEntityConfiguration.Configure(modelBuilder.Entity<ProcessProcessTag>());
             ProcessProcessGroupEntityConfiguration.Configure(modelBuilder.Entity<ProcessProcessGroup>());
+            SystemPermissionEntityConfiguration.Configure(modelBuilder.Entity<SystemPermission>());
+            SystemPermissionSetEntityConfiguration.Configure(modelBuilder.Entity<SystemPermissionSet>());
+            SystemPermissionPermissionSetEntityConfiguration.Configure(modelBuilder.Entity<SystemPermissionPermissionSet>());
 
             base.OnModelCreating(modelBuilder);
         }

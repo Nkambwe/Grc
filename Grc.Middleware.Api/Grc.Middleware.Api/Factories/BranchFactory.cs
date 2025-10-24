@@ -39,7 +39,7 @@ namespace Grc.Middleware.Api.Factories {
                 LastModifiedOn = DateTime.Now,
                 Departments = new List<Department>() {
                     new() {
-                        DepartmenCode = "TECH",
+                        DepartmentCode = "TECH",
                         DepartmentName = "Business Technology",
                         Alias = "BT",
                         IsDeleted = false,
@@ -91,7 +91,7 @@ namespace Grc.Middleware.Api.Factories {
                         }
                     },
                     new() {
-                        DepartmenCode = "DIGI",
+                        DepartmentCode = "DIGI",
                         DepartmentName = "Digitization and Innovation",
                         Alias = "DI",
                         IsDeleted = false,
@@ -101,7 +101,7 @@ namespace Grc.Middleware.Api.Factories {
                         LastModifiedOn = DateTime.Now,
                     },
                     new() {
-                        DepartmenCode = "RICO",
+                        DepartmentCode = "RICO",
                         DepartmentName = "Risk and Compliance",
                         Alias = "CR",
                         IsDeleted = false,

@@ -1,6 +1,5 @@
 ﻿using Grc.Middleware.Api.Data.Entities;
 using Grc.Middleware.Api.Data.Repositories;
-using Grc.Middleware.Api.Services.Compliance.Support;
 
 namespace Grc.Middleware.Api.Data.Containers {
 
@@ -46,6 +45,9 @@ namespace Grc.Middleware.Api.Data.Containers {
         IAuditRepository AuditRepository { get; set; }
         IAuditTaskRepository AuditTaskRepository { get; set; }
         INotificationRepository NotificationRepository { get; set; }
+        ISystemConfigurationRepository SystemConfigurationRepository { get; set; }
+        IPermissionRepository PermissionRepository { get; set; }
+        IPermissionSetRepository PermissionSetRepository { get; set; }
 
         Task<int> SaveChangesAsync(); 
         int SaveChanges(); 

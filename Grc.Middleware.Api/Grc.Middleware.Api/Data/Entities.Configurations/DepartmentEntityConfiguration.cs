@@ -10,7 +10,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
             builder.ToTable("TBL_GRC_DEPARTMENT");
             builder.HasKey(d => d.Id);
             builder.Property(d => d.DepartmentName).HasColumnName("Department_name").HasColumnType("NVARCHAR(MAX)").IsRequired();
-            builder.Property(d => d.DepartmenCode).HasColumnName("Department_code").HasColumnType("NVARCHAR(MAX)").IsRequired();
+            builder.Property(d => d.DepartmentCode).HasColumnName("Department_code").HasColumnType("NVARCHAR(MAX)").IsRequired();
             builder.Property(d => d.Alias).HasColumnName("Department_alias").HasColumnType("NVARCHAR(MAX)").IsRequired();
             builder.Property(d => d.BranchId).HasColumnName("Branch_id");
             builder.Property(d => d.IsDeleted).HasColumnName("is_deleted");

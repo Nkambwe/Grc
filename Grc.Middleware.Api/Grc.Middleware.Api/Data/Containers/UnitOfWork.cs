@@ -1,6 +1,5 @@
 ﻿using Grc.Middleware.Api.Data.Entities;
 using Grc.Middleware.Api.Data.Repositories;
-using Grc.Middleware.Api.Services.Compliance.Support;
 using Grc.Middleware.Api.Utils;
 using Microsoft.EntityFrameworkCore;
 
@@ -60,6 +59,9 @@ namespace Grc.Middleware.Api.Data.Containers {
         public IAuditRepository AuditRepository { get; set; }
         public IAuditTaskRepository AuditTaskRepository { get; set; }
         public INotificationRepository NotificationRepository { get; set; }
+        public ISystemConfigurationRepository SystemConfigurationRepository { get; set; }
+        public IPermissionRepository PermissionRepository { get; set; }
+        public IPermissionSetRepository PermissionSetRepository { get; set; }
 
         #endregion
 
@@ -88,6 +90,7 @@ namespace Grc.Middleware.Api.Data.Containers {
             QuickActionRepository = new QuickActionRepository(_loggerFactory, Context); 
             PinnedItemRepository = new PinnedItemRepository(_loggerFactory, Context);
             SystemErrorRespository = new SystemErrorRespository(_loggerFactory, Context);
+            SystemConfigurationRepository = new SystemConfigurationRepository(_loggerFactory, Context);
             ActivityLogRepository = new ActivityLogRepository(_loggerFactory, Context);
             ActivityTypeRepository = new ActivityTypeRepository(_loggerFactory, Context);
             ActivityLogSettingRepository = new ActivityLogSettingRepository(_loggerFactory, Context);
@@ -116,6 +119,8 @@ namespace Grc.Middleware.Api.Data.Containers {
             AuditRepository = new AuditRepository(_loggerFactory, Context);
             AuditTaskRepository = new AuditTaskRepository(_loggerFactory, Context);
             NotificationRepository = new NotificationRepository(_loggerFactory, Context);
+            PermissionRepository = new PermissionRepository(_loggerFactory, Context);
+            PermissionSetRepository = new PermissionSetRepository(_loggerFactory, Context);
         }
 
         /// <summary>
@@ -270,6 +275,9 @@ namespace Grc.Middleware.Api.Data.Containers {
                     AuditRepository = null;
                     AuditTaskRepository = null;
                     NotificationRepository = null;
+                    SystemConfigurationRepository = null;
+                    PermissionRepository = null;
+                    PermissionSetRepository = null;
                 }
             }
             _disposed = true;

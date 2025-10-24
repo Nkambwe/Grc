@@ -1150,6 +1150,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                         roleName = user.RoleName,
                         roleGroup = user.RoleGroup,
                         departmentId = user.DepartmentId,
+                        department = user.DepartmentName,
                         unitCode = user.UnitCode,
                         isActive = user.IsActive,
                         isVerified = user.IsVerified,
@@ -1224,6 +1225,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 return Ok(new { last_page = 0, data = new List<object>() });
             }
         }
+
         [HttpPost]
         [LogActivityResult("Add User", "User added user record", ActivityTypeDefaults.USER_ADDED, "SystemUser")]
         public async Task<IActionResult> CreateUser([FromBody] UserViewModel request)

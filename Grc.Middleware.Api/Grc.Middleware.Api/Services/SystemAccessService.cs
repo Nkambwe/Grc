@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using Grc.Middleware.Api.Data.Containers;
-using Grc.Middleware.Api.Data.Entities.Operations.Processes;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Helpers;
@@ -16,7 +14,7 @@ namespace Grc.Middleware.Api.Services {
 
     public class SystemAccessService : BaseService, ISystemAccessService {
 
-        public SystemAccessService(IServiceLoggerFactory loggerFactory, 
+        public SystemAccessService(IServiceLoggerFactory loggerFactory,
             IUnitOfWorkFactory unitOfWorkFactory, IMapper mapper)
             : base(loggerFactory, unitOfWorkFactory, mapper) {
         }
@@ -25,61 +23,61 @@ namespace Grc.Middleware.Api.Services {
         public async Task<int> GetTotalUsersCountAsync() {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Total User Count", "INFO");
-    
+
             try {
                 return await uow.UserRepository.CountAsync(false);
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve total user count: {ex.Message}", "ERROR");
-        
+
                 //..log inner exceptions here too
                 var innerEx = ex.InnerException;
                 while (innerEx != null) {
                     Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
                     innerEx = innerEx.InnerException;
                 }
-                throw; 
+                throw;
             }
         }
-        
+
         public async Task<int> GetActiveUsersCountAsync() {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Active User Count", "INFO");
-    
+
             try {
                 return await uow.UserRepository.CountAsync(u => u.IsActive, false);
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve active user count: {ex.Message}", "ERROR");
-        
+
                 //..log inner exceptions here too
                 var innerEx = ex.InnerException;
                 while (innerEx != null) {
                     Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
                     innerEx = innerEx.InnerException;
                 }
-                throw; 
+                throw;
             }
         }
-        
+
         public async Task<AdminCountResponse> GetAdminiDashboardStatisticsAsync() {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Admin Dashboard Statistics", "INFO");
-    
+
             try {
                 // Get all user counts sequentially
                 var totalUsers = await uow.UserRepository.CountAsync(false);
                 var activeUsers = await uow.UserRepository.CountAsync(u => u.IsActive, true);
                 var deactivatedUsers = await uow.UserRepository.CountAsync(u => !u.IsActive, true);
-                var unApprovedUsers = await uow.UserRepository.CountAsync(u => !(bool)u.IsApproved, true); 
-                var unverifiedUsers = await uow.UserRepository.CountAsync(u => !(bool)u.IsVerified, true); 
-                var deletedUsers = await uow.UserRepository.CountAsync(u => u.IsDeleted, true); 
-        
+                var unApprovedUsers = await uow.UserRepository.CountAsync(u => !(bool)u.IsApproved, true);
+                var unverifiedUsers = await uow.UserRepository.CountAsync(u => !(bool)u.IsVerified, true);
+                var deletedUsers = await uow.UserRepository.CountAsync(u => u.IsDeleted, true);
+
                 // Get all bug counts sequentially
                 var totalBugs = await uow.SystemErrorRespository.CountAsync(false);
-                var newBugs = await uow.SystemErrorRespository.CountAsync(b => b.FixStatus == "OPEN",false); 
-                var bugFixes = await uow.SystemErrorRespository.CountAsync(b => b.FixStatus == "CLOSED", false); 
+                var newBugs = await uow.SystemErrorRespository.CountAsync(b => b.FixStatus == "OPEN", false);
+                var bugFixes = await uow.SystemErrorRespository.CountAsync(b => b.FixStatus == "CLOSED", false);
                 var bugProgressTask = await uow.SystemErrorRespository.CountAsync(b => b.FixStatus == "PROGRESS", false);
-                var userReportedBugsTask = await uow.SystemErrorRespository.CountAsync(b => b.IsUserReported, false); 
-        
+                var userReportedBugsTask = await uow.SystemErrorRespository.CountAsync(b => b.IsUserReported, false);
+
                 return new AdminCountResponse {
                     TotalUsers = totalUsers,
                     ActiveUsers = activeUsers,
@@ -110,10 +108,10 @@ namespace Grc.Middleware.Api.Services {
         public async Task<UsernameValidationResponse> ValidateUsernameAsync(string username) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Validating username: {username}", "INFO");
-    
+
             try {
                 var user = await uow.UserRepository.GetAsync(u => u.Username.ToLower() == username.ToLower());
-        
+
                 if (user == null) {
                     Logger.LogActivity($"Username not found: {username}", "DEBUG");
                     return new UsernameValidationResponse {
@@ -149,7 +147,7 @@ namespace Grc.Middleware.Api.Services {
                     Logger.LogActivity($"Inner Exception: {innerEx.Message}", "ERROR");
                     innerEx = innerEx.InnerException;
                 }
-        
+
                 return new UsernameValidationResponse {
                     IsValid = false,
                     Message = "Service unavailable. Please try again later.",
@@ -162,13 +160,13 @@ namespace Grc.Middleware.Api.Services {
         public async Task<AuthenticationResponse> AuthenticateUserAsync(string username) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Validating username: {username}", "INFO");
-    
+
             try {
                 //..get user record
                 var user = await uow.UserRepository.GetAsync(u => u.Username.ToLower() == username.ToLower(), true, u => u.Role, u => u.Department);
                 if (user == null) {
                     Logger.LogActivity($"Username not found: {username}", "DEBUG");
-                    return new AuthenticationResponse(){ 
+                    return new AuthenticationResponse() {
                         RedirectUrl = string.Empty,
                         IsActive = false,
                         IsAuthenticated = false,
@@ -220,8 +218,8 @@ namespace Grc.Middleware.Api.Services {
                     Logger.LogActivity($"Inner Exception: {innerEx.Message}", "ERROR");
                     innerEx = innerEx.InnerException;
                 }
-        
-                return new AuthenticationResponse(){ 
+
+                return new AuthenticationResponse() {
                     RedirectUrl = string.Empty,
                     IsActive = false,
                     IsAuthenticated = false,
@@ -233,23 +231,23 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async  Task<bool> UpdateLoginStatusAsync(long userId, DateTime loginTime) {
+        public async Task<bool> UpdateLoginStatusAsync(long userId, DateTime loginTime) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update the logout of user with ID {userId}", "INFO");
-    
+
             try {
 
                 var user = await uow.UserRepository.GetAsync(u => u.Id == userId);
-                if(user != null){ 
+                if (user != null) {
                     //..update system users
                     user.IsLoggedIn = false;
                     user.LastLoginDate = DateTime.Now;
-                   
+
                     //..check entity state
-                    _= await uow.UserRepository.UpdateAsync(user);
+                    _ = await uow.UserRepository.UpdateAsync(user);
                     var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
                     Logger.LogActivity($"Entity state after Update: {entityState}", "DEBUG");
-                   
+
                     var result = await uow.SaveChangesAsync();
                     Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
                     return result > 0;
@@ -258,58 +256,58 @@ namespace Grc.Middleware.Api.Services {
                 return false;
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve user role: {ex.Message}", "ERROR");
-        
+
                 //..log inner exceptions here too
                 var innerEx = ex.InnerException;
                 while (innerEx != null) {
                     Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
                     innerEx = innerEx.InnerException;
                 }
-                throw; 
+                throw;
             }
         }
 
         public async Task UpdateLastLoginAsync(long userId, DateTime loginTime) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update user login with ID {userId}", "INFO");
-    
+
             try {
 
                 var user = await uow.UserRepository.GetAsync(u => u.Id == userId);
-                if(user != null){ 
+                if (user != null) {
                     //..update system users
                     user.IsLoggedIn = true;
                     user.LastLoginDate = loginTime;
                     user.LastModifiedOn = loginTime;
                     user.LastModifiedBy = $"{userId}";
-                   
+
                     //..check entity state
-                    _= await uow.UserRepository.UpdateAsync(user);
+                    _ = await uow.UserRepository.UpdateAsync(user);
                     var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
                     Logger.LogActivity($"Entity state after Update: {entityState}", "DEBUG");
-                   
+
                     var result = await uow.SaveChangesAsync();
                     Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
                 }
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve user role: {ex.Message}", "ERROR");
-        
+
                 //..log inner exceptions here too
                 var innerEx = ex.InnerException;
                 while (innerEx != null) {
                     Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
                     innerEx = innerEx.InnerException;
                 }
-                throw; 
+                throw;
             }
         }
-    
+
         public async Task<bool> LogFailedLoginAsync(long userId, string ipAddress) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Log Failed Login for user with ID {userId}", "INFO");
-    
+
             try {
-                 var attempt = new LoginAttempt {
+                var attempt = new LoginAttempt {
                     UserId = userId,
                     IpAddress = ipAddress,
                     AttemptTime = DateTime.UtcNow,
@@ -321,18 +319,18 @@ namespace Grc.Middleware.Api.Services {
                 };
 
                 //..log the company data being saved
-                var attemptJson = JsonSerializer.Serialize(attempt, new JsonSerializerOptions { 
+                var attemptJson = JsonSerializer.Serialize(attempt, new JsonSerializerOptions {
                     WriteIndented = true,
-                    ReferenceHandler = ReferenceHandler.IgnoreCycles 
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
                 });
                 Logger.LogActivity($"Attempt data: {attemptJson}", "DEBUG");
-        
+
                 await uow.AttemptRepository.InsertAsync(attempt);
 
                 //..check entity state
                 var entityState = ((UnitOfWork)uow).Context.Entry(attempt).State;
                 Logger.LogActivity($"Entity state after insert: {entityState}", "DEBUG");
-        
+
                 var result = await uow.SaveChangesAsync();
                 Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
 
@@ -342,30 +340,30 @@ namespace Grc.Middleware.Api.Services {
                 return result > 0;
             } catch (Exception ex) {
                 Logger.LogActivity($"CreateCompanyAsync failed: {ex.Message}", "ERROR");
-        
+
                 //..log inner exceptions here too
                 var innerEx = ex.InnerException;
                 while (innerEx != null) {
                     Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
                     innerEx = innerEx.InnerException;
                 }
-        
+
                 //..re-throw to the controller handle
-                throw; 
+                throw;
             }
         }
 
         public async Task LockUserAccountAsync(long userId) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Lock user accounts for User ID {userId}", "INFO");
-    
+
             try {
                 //..count failed attempts in the last 15 minutes
                 var cutoffTime = DateTime.UtcNow.AddMinutes(-15);
 
                 //..get attempts
-                var failedAttempts  = await uow.AttemptRepository.CountAsync(u => u.UserId == userId && u.AttemptTime >= cutoffTime && !u.IsSuccessful,true);
-                 if (failedAttempts >= 5){ 
+                var failedAttempts = await uow.AttemptRepository.CountAsync(u => u.UserId == userId && u.AttemptTime >= cutoffTime && !u.IsSuccessful, true);
+                if (failedAttempts >= 5) {
 
                     var user = await uow.UserRepository.GetAsync(userId);
                     if (user != null && !user.IsActive) {
@@ -381,15 +379,15 @@ namespace Grc.Middleware.Api.Services {
                         _ = await uow.UserRepository.UpdateAsync(user);
                         var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
                         Logger.LogActivity($"Entity state after Update: {entityState}", "DEBUG");
-                   
+
                         var result = await uow.SaveChangesAsync();
                         Logger.LogActivity($"User {userId} locked due to {failedAttempts} failed login attempts", "SECURITY");
                     }
-                    
-                 }
+
+                }
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve user role: {ex.Message}", "ERROR");
-        
+
                 //..log inner exceptions here too
                 var innerEx = ex.InnerException;
                 while (innerEx != null) {
@@ -397,14 +395,14 @@ namespace Grc.Middleware.Api.Services {
                     innerEx = innerEx.InnerException;
                 }
 
-                throw; 
+                throw;
             }
         }
 
         public async Task<WorkspaceResponse> GetWorkspaceAsync(long userId, string ipAddress) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Generating user workspace for user ID {userId} at IP Address {ipAddress}", "INFO");
-            
+
             WorkspaceResponse workspace = null;
             try {
                 // Get all user counts sequentially
@@ -423,18 +421,18 @@ namespace Grc.Middleware.Api.Services {
                         },
 
                         RoleId = user.RoleId,
-                        Role = user.Role?.RoleName?? string.Empty,
+                        Role = user.Role?.RoleName ?? string.Empty,
                     };
 
                     //..get brnch info
                     string solId = user.BranchSolId?.ToString();
-                    if(!string.IsNullOrWhiteSpace(solId)) { 
+                    if (!string.IsNullOrWhiteSpace(solId)) {
                         var branch = await uow.BranchRepository.GetAsync(b => b.SolId == solId, true, b => b.Company);
-                        if (branch != null) { 
+                        if (branch != null) {
                             workspace.AssignedBranch = new() {
                                 BranchId = branch.Id,
                                 SolId = branch.SolId,
-                                BranchName = branch.BranchName, 
+                                BranchName = branch.BranchName,
                                 OrganizationId = branch.Company?.Id ?? 0,
                                 OrganizationName = branch.Company?.CompanyName ?? string.Empty,
                                 OrgAlias = branch.Company?.ShortName ?? string.Empty
@@ -444,8 +442,8 @@ namespace Grc.Middleware.Api.Services {
 
                     //..get prefferences
                     var preference = await uow.UserPreferenceRepository.GetAsync(u => u.UserId == user.Id);
-                    if (preference != null) { 
-                        workspace.Preferences = new() { 
+                    if (preference != null) {
+                        workspace.Preferences = new() {
                             Id = preference.Id,
                             Theme = preference.Theme,
                             Language = preference.Language
@@ -453,7 +451,7 @@ namespace Grc.Middleware.Api.Services {
                     }
 
                     var views = await uow.UserViewRepository.GetAllAsync(u => u.UserId == user.Id, false);
-                    if (views.Count > 0) { 
+                    if (views.Count > 0) {
                         workspace.UserViews = (from view in views select new UserViewResponse() {
                             Id = view.Id,
                             Name = view.Name,
@@ -467,7 +465,7 @@ namespace Grc.Middleware.Api.Services {
                 while (innerEx != null) {
                     Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
                     innerEx = innerEx.InnerException;
-                }  
+                }
             }
 
             return workspace;
@@ -719,7 +717,7 @@ namespace Grc.Middleware.Api.Services {
 
             try
             {
-                var users = await uow.UserRepository.GetAllAsync();
+                var users = await uow.UserRepository.GetAllAsync(true, u => u.Role, u => u.Department);
                 var usersJson = JsonSerializer.Serialize(users, new JsonSerializerOptions
                 {
                     WriteIndented = true,
@@ -1302,7 +1300,7 @@ namespace Grc.Middleware.Api.Services {
             {
                 Logger.LogActivity($"Role ID: {request.RecordId}", "DEBUG");
                 //..get role with role group
-                var role = await uow.RoleRepository.GetAsync(r => r.Id == request.RecordId, true, r=> r.Group);
+                var role = await uow.RoleRepository.GetAsync(r => r.Id == request.RecordId, true, r => r.Group);
 
                 //..log role record
                 var roleJson = JsonSerializer.Serialize(role, new JsonSerializerOptions
@@ -1402,7 +1400,7 @@ namespace Grc.Middleware.Api.Services {
             Logger.LogActivity("Retrieve list of System Roles records", "INFO");
             try
             {
-                return await uow.RoleRepository.GetAllAsync(includeDeleted);
+                return await uow.RoleRepository.GetAllAsync(includeDeleted, r => r.Group);
             }
             catch (Exception ex)
             {
@@ -1576,7 +1574,7 @@ namespace Grc.Middleware.Api.Services {
                     //..update System Role record
                     role.RoleName = (request.RoleName ?? string.Empty).Trim();
                     role.Description = (request.Description ?? string.Empty).Trim();
-                    role.GroupId =request.GroupId;
+                    role.GroupId = request.GroupId;
                     role.IsVerified = request.IsVerified;
                     role.IsApproved = request.IsApproved;
                     role.IsDeleted = request.IsDeleted;
@@ -2347,6 +2345,458 @@ namespace Grc.Middleware.Api.Services {
             {
                 Logger.LogActivity($"Failed to retrieve Role Group records : {ex.Message}", "ERROR");
 
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        #endregion
+
+        #region System Permissions
+
+        public async Task<PagedResult<SystemPermission>> PagedPermissionsAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve all system permissions", "INFO");
+
+            try
+            {
+                return await uow.PermissionRepository.PageAllAsync(pageIndex, pageSize, includeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve system permissions records : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<SystemPermission>> PageAllPermissionsAsync(CancellationToken token, int page, int size, Expression<Func<SystemPermission, bool>> predicate = null, bool includeDeleted = false) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve all system permissions", "INFO");
+
+            try
+            {
+                return await uow.PermissionRepository.PageAllAsync(token, page, size, predicate, includeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve system permissions records : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        #endregion
+
+        #region System Permissions
+
+        public async Task<bool> InsertPermissionSetAsync(PermissionSetRequest request) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Save Permission Set record >>>>");
+            try
+            {
+                //..map Permission Set request to Permission Set entity
+                var permissionSet = Mapper.Map<PermissionSetRequest, SystemPermissionSet>(request);
+
+                //..log the Permission Set data being saved
+                var setJson = JsonSerializer.Serialize(permissionSet, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Permission Set data: {setJson}", "DEBUG");
+
+                var added = await uow.PermissionSetRepository.InsertAsync(permissionSet);
+                if (added)
+                {
+                    //..check object state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(permissionSet).State;
+                    Logger.LogActivity($"Entity state after insert: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to insert Permission Set record: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public bool UpdatePermissionSet(PermissionSetRequest request, bool includeDeleted = false)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Update Permission Set", "INFO");
+
+            try
+            {
+                var permissionSet = uow.PermissionSetRepository.Get(a => a.Id == request.Id);
+                if (permissionSet != null)
+                {
+                    //..update Permission Set record
+                    permissionSet.SetName = (request.SetName ?? string.Empty).Trim();
+                    permissionSet.Description = (request.Description ?? string.Empty).Trim();
+                    permissionSet.IsDeleted = request.IsDeleted;
+                    permissionSet.LastModifiedOn = DateTime.Now;
+                    permissionSet.LastModifiedBy = $"{request.UserId}";
+
+                    //..check entity state
+                    _ = uow.PermissionSetRepository.Update(permissionSet, includeDeleted);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(permissionSet).State;
+                    Logger.LogActivity($"Permission Set state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to update Permission Set record: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<bool> UpdatePermissionSetAsync(PermissionSetRequest request, bool includeDeleted = false) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Update Permission Set", "INFO");
+
+            try
+            {
+                var permissionSet = await uow.PermissionSetRepository.GetAsync(a => a.Id == request.Id);
+                if (permissionSet != null)
+                {
+                    //..update Permission Set record
+                    permissionSet.SetName = (request.SetName ?? string.Empty).Trim();
+                    permissionSet.Description = (request.Description ?? string.Empty).Trim();
+                    permissionSet.IsDeleted = request.IsDeleted;
+                    permissionSet.LastModifiedOn = DateTime.Now;
+                    permissionSet.LastModifiedBy = $"{request.UserId}";
+
+                    //..check entity state
+                    _ = await uow.PermissionSetRepository.UpdateAsync(permissionSet, includeDeleted);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(permissionSet).State;
+                    Logger.LogActivity($"Permission Set state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to update Permission Set record: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public bool DeletePermissionSet(IdRequest request)
+        {
+            using var uow = UowFactory.Create();
+            try
+            {
+                var permissionSetJson = JsonSerializer.Serialize(request, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Permission Set data: {permissionSetJson}", "DEBUG");
+
+                var user = uow.PermissionSetRepository.Get(t => t.Id == request.RecordId);
+                if (user != null)
+                {
+                    //..mark as delete this Permission Set
+                    _ = uow.PermissionSetRepository.Delete(user, request.IsDeleted);
+
+                    //..check entity state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
+                    Logger.LogActivity($"Entity state after deletion: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to delete Permission Set : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+                throw;
+            }
+        }
+
+        public async Task<bool> DeletePermissionSetAsync(IdRequest request){
+            using var uow = UowFactory.Create();
+            try
+            {
+                var permissionSetJson = JsonSerializer.Serialize(request, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Permission Set data: {permissionSetJson}", "DEBUG");
+
+                var user = await uow.PermissionSetRepository.GetAsync(t => t.Id == request.RecordId);
+                if (user != null)
+                {
+                    //..mark as delete this Permission Set
+                    _ = await uow.PermissionSetRepository.DeleteAsync(user, request.IsDeleted);
+
+                    //..check entity state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
+                    Logger.LogActivity($"Entity state after deletion: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to delete Permission Set : {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<SystemPermissionSet>> PagedPermissionSetAsync(int page = 1, int size = 10, bool includeDeleted = false) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve all system permission sets", "INFO");
+
+            try
+            {
+                return await uow.PermissionSetRepository.PageAllAsync(page, size, includeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve system permissions records : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<SystemPermissionSet>> PageAllPermissionSetAsync(CancellationToken token, int page, int size, Expression<Func<SystemPermissionSet, bool>> predicate = null, bool includeDeleted = false)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve all system permission sets", "INFO");
+
+            try
+            {
+                return await uow.PermissionSetRepository.PageAllAsync(token, page, size, predicate, includeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve system permission sets records : {ex.Message}", "ERROR");
                 var innerEx = ex.InnerException;
                 while (innerEx != null)
                 {

@@ -13,6 +13,7 @@ namespace Grc.Middleware.Api.Data.Entities.Org {
         public virtual ICollection<Branch> Branches { get; set; }
         public virtual ICollection<SystemError> SystemErrors { get; set; }
         public virtual ICollection<ActivityLogSetting> ActivitySettings { get; set; }
+        public virtual ICollection<SystemConfiguration> SystemConfigurations { get; set; }
         public override bool Equals(object obj) {
 
             if (obj is not Company)

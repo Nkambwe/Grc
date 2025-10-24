@@ -2,10 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Grc.Middleware.Api.Data.Entities.Configurations {
-    public class OperationProcessEntityConfiguration {
+namespace Grc.Middleware.Api.Data.Entities.Configurations
+{
+    public class OperationProcessEntityConfiguration
+    {
 
-        public static void Configure(EntityTypeBuilder<OperationProcess> builder) {
+        public static void Configure(EntityTypeBuilder<OperationProcess> builder)
+        {
             builder.ToTable("TBL_GRC_OPERATION_PROCESS");
             builder.HasKey(p => p.Id);
             builder.Property(p => p.ProcessName).HasColumnName("process_name").HasColumnType("NVARCHAR(MAX)").IsRequired();
@@ -29,12 +32,11 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
             builder.Property(p => p.LastModifiedOn).HasColumnName("modified_on").IsRequired(false);
             builder.Property(p => p.LastModifiedBy).HasColumnName("modified_by").HasColumnType("NVARCHAR(50)").IsRequired(false);
             builder.HasOne(p => p.ProcessType).WithMany(t => t.Processes).HasForeignKey(t => t.TypeId);
-            //builder.HasOne(p => p.Unit).WithMany(u => u.Processes).HasForeignKey(t => t.UnitId);
-            //builder.HasMany(p => p.Tags).WithOne(t => t.Process).HasForeignKey(t => t.ProcessId);
             builder.HasMany(p => p.Tasks).WithOne(t => t.Process).HasForeignKey(t => t.ProcessId);
             builder.HasOne(p => p.Owner).WithMany(p => p.OperationProcesses).HasForeignKey(p => p.ResponsibilityId);
             builder.HasMany(p => p.Groups).WithOne(g => g.Process).HasForeignKey(a => a.ProcessId);
             builder.HasMany(p => p.Activities).WithOne(a => a.Process).HasForeignKey(a => a.ProcessId);
         }
+
     }
 }

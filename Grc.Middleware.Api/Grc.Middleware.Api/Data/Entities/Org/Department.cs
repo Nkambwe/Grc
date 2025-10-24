@@ -5,7 +5,7 @@ namespace Grc.Middleware.Api.Data.Entities.Org {
 
     public class Department : BaseEntity {
         public long BranchId { get; set; }
-        public string DepartmenCode { get; set; }
+        public string DepartmentCode { get; set; }
         public string DepartmentName { get; set; }
         public string Alias { get; set; }
         public virtual Branch Branch { get; set; }
@@ -25,11 +25,11 @@ namespace Grc.Middleware.Api.Data.Entities.Org {
             if (item.IsNew() || IsNew())
                 return false;
 
-            return item.DepartmenCode.Equals(DepartmenCode) && item.DepartmentName.Equals(DepartmentName);
+            return item.DepartmentCode.Equals(DepartmentCode) && item.DepartmentName.Equals(DepartmentName);
         }
 
         public override string ToString() 
-            => $"{DepartmenCode}-{DepartmentName}";
+            => $"{DepartmentCode}-{DepartmentName}";
 
         public override int GetHashCode() 
             => ToString().GetHashCode() ^ 31;

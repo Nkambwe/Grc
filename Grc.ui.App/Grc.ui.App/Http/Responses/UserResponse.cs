@@ -18,7 +18,7 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("displayName")]
         public string DisplayName { get; set; }
 
-        [JsonPropertyName("email")]
+        [JsonPropertyName("emailAddress")]
         public string Email { get; set; }
 
         [JsonPropertyName("phone")]
@@ -39,7 +39,7 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("roleId")]
         public long RoleId { get; set; }
 
-        [JsonPropertyName("roleId")]
+        [JsonPropertyName("roleName")]
         public string RoleName { get; set; }
 
         [JsonPropertyName("roleCode")]

@@ -66,7 +66,7 @@ namespace Grc.Middleware.Api.Services.Organization {
             Logger.LogActivity($"Retrieve department record with '{code}' code", "INFO");
     
             try {;
-                var department = await uow.DepartmentRepository.GetAsync(t => t.DepartmenCode == code, includeDeleted);
+                var department = await uow.DepartmentRepository.GetAsync(t => t.DepartmentCode == code, includeDeleted);
                 if(department != null) {
                     //..log the Department data being retrieved
                     var typeJson = JsonSerializer.Serialize(department, new JsonSerializerOptions { 
@@ -244,7 +244,7 @@ namespace Grc.Middleware.Api.Services.Organization {
 
                 //..create department record
                 var department = new Department(){ 
-                    DepartmenCode = request.DepartmentCode,
+                    DepartmentCode = request.DepartmentCode,
                     DepartmentName = request.DepartmentName,
                     Alias = request.Alias,
                     BranchId = request.BranchId,
@@ -305,7 +305,7 @@ namespace Grc.Middleware.Api.Services.Organization {
 
                 var department = await uow.DepartmentRepository.GetAsync(u => u.Id == request.Id);
                 if(department != null){ 
-                    department.DepartmenCode = request.DepartmentCode;
+                    department.DepartmentCode = request.DepartmentCode;
                     department.DepartmentName = request.DepartmentName;
                     department.Alias = request.Alias;
                     department.IsDeleted = request.IsDeleted;
@@ -435,7 +435,7 @@ namespace Grc.Middleware.Api.Services.Organization {
     
             try {
                 //...build query first
-                return await uow.DepartmentRepository.ExistsAsync(d => d.DepartmenCode == request.DepartmentCode || d.DepartmenCode == request.DepartmentCode); 
+                return await uow.DepartmentRepository.ExistsAsync(d => d.DepartmentCode == request.DepartmentCode || d.DepartmentCode == request.DepartmentCode); 
             } catch (Exception ex)  {
                 Logger.LogActivity($"Failed to retrieve department info: {ex.Message}", "ERROR");
                 
