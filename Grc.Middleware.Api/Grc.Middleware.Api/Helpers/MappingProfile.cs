@@ -7,6 +7,7 @@ using Grc.Middleware.Api.Data.Entities.Operations.Processes;
 using Grc.Middleware.Api.Data.Entities.Org;
 using Grc.Middleware.Api.Data.Entities.Support;
 using Grc.Middleware.Api.Data.Entities.System;
+using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 
@@ -475,6 +476,7 @@ namespace Grc.Middleware.Api.Helpers {
                .ForMember(p => p.Id, reg => reg.MapFrom(o => o.Id))
                .ForMember(p => p.GroupName, reg => reg.MapFrom(o => (o.GroupName ?? string.Empty).Trim()))
                .ForMember(p => p.Description, reg => reg.MapFrom(o => (o.Description ?? string.Empty).Trim()))
+               .ForMember(p => p.GroupCategory, reg => reg.MapFrom(o => (o.GroupCategory ?? string.Empty).Trim()))
                .ForMember(p => p.Scope, reg => reg.MapFrom(o => o.Scope))
                .ForMember(p => p.Department, reg => reg.MapFrom(o => (o.Department ?? string.Empty).Trim()))
                .ForMember(p => p.Type, reg => reg.MapFrom(o => o.Type))
@@ -485,6 +487,23 @@ namespace Grc.Middleware.Api.Helpers {
                .ForMember(p => p.CreatedOn, reg => reg.MapFrom(o => o.CreatedOn))
                .ForMember(p => p.LastModifiedBy, reg => reg.MapFrom(o => o.ModifiedBy))
                .ForMember(p => p.LastModifiedOn, reg => reg.MapFrom(o => o.ModifiedOn));
+
+
+            CreateMap<SystemRoleGroup, RoleGroupResponse>()
+               .ForMember(p => p.Id, reg => reg.MapFrom(o => o.Id))
+               .ForMember(p => p.GroupName, reg => reg.MapFrom(o => (o.GroupName ?? string.Empty).Trim()))
+               .ForMember(p => p.Description, reg => reg.MapFrom(o => (o.Description ?? string.Empty).Trim()))
+               .ForMember(p => p.GroupCategory, reg => reg.MapFrom(o => (o.GroupCategory ?? string.Empty).Trim()))
+               .ForMember(p => p.GroupScope, reg => reg.MapFrom(o => o.Scope.Equals(GroupScope.SYSTEM) ? "System Role Group": "Department Role Group"))
+               .ForMember(p => p.GroupType, reg => reg.MapFrom(o => o.Type.Equals(RoleGroup.SYSTEM) ? "System Group" : "Custom Group"))
+               .ForMember(p => p.DepartmentName, reg => reg.MapFrom(o => (o.Department ?? string.Empty).Trim()))
+               .ForMember(p => p.IsApproved, reg => reg.MapFrom(o => o.IsApproved))
+               .ForMember(p => p.IsVerified, reg => reg.MapFrom(o => o.IsVerified))
+               .ForMember(p => p.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
+               .ForMember(p => p.CreatedBy, reg => reg.MapFrom(o => (o.CreatedBy ?? string.Empty).Trim()))
+               .ForMember(p => p.CreatedOn, reg => reg.MapFrom(o => o.CreatedOn))
+               .ForMember(p => p.ModifiedBy, reg => reg.MapFrom(o => o.LastModifiedBy))
+               .ForMember(p => p.ModifiedOn, reg => reg.MapFrom(o => o.LastModifiedOn));
 
             CreateMap<RoleRequest, SystemRole>()
                .ForMember(p => p.Id, reg => reg.MapFrom(o => o.Id))
@@ -505,6 +524,7 @@ namespace Grc.Middleware.Api.Helpers {
               .ForMember(p => p.Description, reg => reg.MapFrom(o => (o.Description ?? string.Empty).Trim()))
               .ForMember(p => p.GroupId, reg => reg.MapFrom(o => o.GroupId))
               .ForMember(p => p.GroupName, reg => reg.MapFrom(o => (o.Group.GroupName ?? string.Empty).Trim()))
+              .ForMember(p => p.GroupCategory, reg => reg.MapFrom(o => (o.Group.GroupCategory ?? string.Empty).Trim()))
               .ForMember(p => p.IsApproved, reg => reg.MapFrom(o => o.IsApproved))
               .ForMember(p => p.IsVerified, reg => reg.MapFrom(o => o.IsVerified))
               .ForMember(p => p.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
@@ -532,7 +552,7 @@ namespace Grc.Middleware.Api.Helpers {
                .ForMember(u =>u.IsApproved, reg => reg.MapFrom(o => o.IsApproved))
                .ForMember(u =>u.IsVerified, reg => reg.MapFrom(o => o.IsVerified))
                .ForMember(u =>u.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
-               .ForMember(u => u.IsActive, reg => reg.MapFrom(o => !o.IsDeleted))
+               .ForMember(u => u.IsActive, reg => reg.MapFrom(o => o.IsActive))
                .ForMember(u =>u.CreatedBy, reg => reg.MapFrom(o => (o.CreatedBy ?? string.Empty).Trim()))
                .ForMember(u =>u.CreatedOn, reg => reg.MapFrom(o => o.CreatedOn))
                .ForMember(u =>u.ModifiedBy, reg => reg.MapFrom(o => o.LastModifiedBy))

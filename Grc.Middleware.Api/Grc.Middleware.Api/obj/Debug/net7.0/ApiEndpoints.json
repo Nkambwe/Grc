@@ -373,6 +373,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "CreateRoleGroup",
+    "RelativePath": "grc/sam/roles/createrolegroup",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.RoleGroupRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
     "Method": "DeleteRole",
     "RelativePath": "grc/sam/roles/deleterole",
     "HttpMethod": "POST",
@@ -382,6 +398,102 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "DeleteRoleGroup",
+    "RelativePath": "grc/sam/roles/deleterolegroup",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "GetRoleById",
+    "RelativePath": "grc/sam/roles/getrole-by-id",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "GetRoleGroupById",
+    "RelativePath": "grc/sam/roles/getrolegroup-by-id",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "GetPagedGroupRoles",
+    "RelativePath": "grc/sam/roles/getrolegroups",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "GetPagedRoles",
+    "RelativePath": "grc/sam/roles/getroles",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "GetPagedRoleGroups",
+    "RelativePath": "grc/sam/roles/pagedrolegroups",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
         "IsRequired": true
       }
     ],
@@ -414,6 +526,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.RoleRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "UpdateRoleGroup",
+    "RelativePath": "grc/sam/roles/updaterolegroup",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.RoleGroupRequest",
         "IsRequired": true
       }
     ],
@@ -574,22 +702,6 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.UserRequest",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
-    "Method": "GetPagedRoles",
-    "RelativePath": "grc/sam/users/getroles",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "request",
-        "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
         "IsRequired": true
       }
     ],

@@ -13,6 +13,7 @@ namespace Grc.Middleware.Api.Factories {
                 Group = new SystemRoleGroup() {
                     GroupName = "Application Support",
                     Description = "This role group provides application support to system users. They have access to much of the system",
+                    GroupCategory = "ADMINSUPPORT",
                     Scope = GroupScope.SYSTEM,
                     Type = RoleGroup.SYSTEM,
                     CreatedBy = "1",
@@ -67,6 +68,7 @@ namespace Grc.Middleware.Api.Factories {
                                     Description = "System Administrator Role",
                                     Group = new SystemRoleGroup() {
                                         GroupName = "System Administrators",
+                                        GroupCategory = "ADMINSUPPORT",
                                         Description = "This role group has complete and total access to the entire system",
                                         Scope = GroupScope.SYSTEM,
                                         Type = RoleGroup.SYSTEM,

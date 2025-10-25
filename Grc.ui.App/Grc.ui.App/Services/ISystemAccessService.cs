@@ -53,6 +53,12 @@ namespace Grc.ui.App.Services {
         /// <returns></returns>
         Task<GrcResponse<PagedResponse<UserResponse>>> GetPagedUsersAsync(TableListRequest request);
         /// <summary>
+        /// Delete system user from the system
+        /// </summary>
+        /// <param name="request">User record to delete</param>
+        /// <returns>Task containing persistance status of this user record</returns>
+        Task<GrcResponse<ServiceResponse>> DeleteUserAsync(GrcIdRequst request);
+        /// <summary>
         /// Get user validation
         /// </summary>
         /// <param name="model">Login model to validate agnest</param>
@@ -100,6 +106,56 @@ namespace Grc.ui.App.Services {
         /// <param name="ipAddress">IP Address for current user</param>
         /// <returns></returns>
         Task<GrcResponse<ServiceResponse>> CreateUserAsync(UserViewModel userRecord, long userId, string ipAddress);
+        /// <summary>
+        /// Update system user in the system
+        /// </summary>
+        /// <param name="userRecord">User record to update</param>
+        /// <param name="userId">User ID for user to look out for</param>
+        /// <param name="ipAddress">IP Address for current user</param>
+        /// <returns>Task containing update status of this user</returns>
+        Task<GrcResponse<ServiceResponse>> UpdateUserAsync(UserViewModel userRecord, long userId, string ipAddress);
+        /// <summary>
+        /// Get System Role info by Database ID
+        /// </summary>
+        /// <param name="recordId">Record ID to look for</param>
+        /// <param name="userId">User ID for user initiating action</param>
+        /// <param name="ipAddress">Current login IP Address of the requesting user</param>
+        /// <returns>Task containing system role with provided ID or null</returns>
+        Task<GrcResponse<GrcRoleResponse>> GetRoleByIdAsync(long recordId, long userId, string ipAddress);
+        /// <summary>
+        /// Get a list of roles in the system
+        /// </summary>
+        /// <param name="request">Role request object</param>
+        /// <returns>Task containing a list of system roles or empty list if none</returns>
+        Task<GrcResponse<ListResponse<GrcRoleResponse>>> GetRolesAsync(GrcRequest request);
+        /// <summary>
+        /// Get a list of pagednated system roles records
+        /// </summary>
+        /// <param name="request">Pagenated request</param>
+        /// <returns>Task containing a list of system roles or empty list if none</returns>
+        Task<GrcResponse<PagedResponse<GrcRoleResponse>>> GetPagedRolesAsync(TableListRequest request);
+        /// <summary>
+        /// Create a new system role in the system
+        /// </summary>
+        /// <param name="roleRecord">System role record to add</param>
+        /// <param name="userId">User ID for user to logout</param>
+        /// <param name="ipAddress">IP Address for current user</param>
+        /// <returns>Task containing persistance status of this role</returns>
+        Task<GrcResponse<ServiceResponse>> CreateRoleAsync(RoleViewModel roleRecord, long userId, string ipAddress);
+        /// <summary>
+        /// Update system role in the system
+        /// </summary>
+        /// <param name="roleRecord">System role record to update</param>
+        /// <param name="userId">User ID for user to look out for</param>
+        /// <param name="ipAddress">IP Address for current user</param>
+        /// <returns>Task containing update status of this role</returns>
+        Task<GrcResponse<ServiceResponse>> UpdateRoleAsync(RoleViewModel roleRecord, long userId, string ipAddress);
+        /// <summary>
+        /// Delete system role from the system
+        /// </summary>
+        /// <param name="request">System record to delete</param>
+        /// <returns>Task containing persistance status of this user role</returns>
+        Task<GrcResponse<ServiceResponse>> DeleteRoleAsync(GrcIdRequst request);
         
     }
 

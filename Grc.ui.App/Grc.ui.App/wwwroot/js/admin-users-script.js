@@ -119,9 +119,10 @@ function initUserTable() {
                 field: "isActive",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                    let value = rowData.isVerified;
-                    let color = value !== true ? "#FF2E80" : "#08A11C";
+                    let value = rowData.isActive;
+                    let color = value === true ? "#08A11C" : "#FF2E80";
                     let text = value === true ? "Active" : "Blocked";
+                    console.log("User status >> " + text);
                     return `<div style="
                                 display:flex;
                                 align-items:center;
@@ -165,17 +166,24 @@ function initUserTable() {
             {
                 title: "CREATED ON",
                 formatter: function (cell) {
-                    let rowData = cell.getRow().getData();
-                    let value = rowData.createdOn;
+                    const value = cell.getRow().getData().createdOn;
                     if (!value) return "";
+
                     const date = new Date(value);
-                    return `<div style="
-                            display:flex;
-                            align-items:center;
-                            justify-content:center;
-                            font-weight:bold;">
-                            <span>${date.toLocaleDateString()}</span>
-                           </div>`;
+
+                    const day = String(date.getDate()).padStart(2, "0");
+                    const month = String(date.getMonth() + 1).padStart(2, "0");
+                    const year = date.getFullYear();
+                    const formattedDate = `${day}-${month}-${year}`;
+
+                    return `
+                            <div style="
+                                display:flex;
+                                align-items:center;
+                                justify-content:center;
+                                font-weight:bold;">
+                                <span>${formattedDate}</span>
+                            </div>`;
                 },
                 width: 200,
                 hozAlign: "center",

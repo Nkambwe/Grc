@@ -10,6 +10,7 @@
                 defaults: new { area = "Admin", controller = "Support", action = "Departments" }
             );
 
+            /*----------------------- Users routes*/
             routeBuilder.MapControllerRoute(
                 name: "admin-users",
                 pattern: "admin/support/system-users",
@@ -26,7 +27,7 @@
                 defaults: new { area = "Admin", controller = "Support", action = "GetUser" }
             );
             routeBuilder.MapControllerRoute(
-                name: "admin-users",
+                name: "admin-users-all",
                 pattern: "admin/support/users-all",
                 defaults: new { area = "Admin", controller = "Support", action = "GetUsers" }
             );
@@ -51,18 +52,57 @@
                 defaults: new { area = "Admin", controller = "Support", action = "DeleteUser" }
             );
 
+
+            /*----------------------- Role routes*/
             routeBuilder.MapControllerRoute(
                 name: "admin-roles",
                 pattern: "admin/support/system-roles",
                 defaults: new { area = "Admin", controller = "Support", action = "Roles" }
             );
+            routeBuilder.MapControllerRoute(
+                name: "admin-roles-list",
+                pattern: "admin/support/system-roles/list",
+                defaults: new { area = "Admin", controller = "Support", action = "GetPagedRoles" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-roles-retrieve",
+                pattern: "admin/support/roles-retrieve/{id:long}",
+                defaults: new { area = "Admin", controller = "Support", action = "GetRole" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-roles-all",
+                pattern: "admin/support/roles-all",
+                defaults: new { area = "Admin", controller = "Support", action = "GetRoles" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-roles-create",
+                pattern: "admin/support/roles-create",
+                defaults: new { area = "Admin", controller = "Support", action = "CreateRole" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-roles-modify",
+                pattern: "admin/support/roles-modify",
+                defaults: new { area = "Admin", controller = "Support", action = "ModifyRole" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-roles-approve",
+                pattern: "admin/support/roles-approve",
+                defaults: new { area = "Admin", controller = "Support", action = "ApproveRole" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-roles-delete",
+                pattern: "admin/support/roles-delete/{id:long}",
+                defaults: new { area = "Admin", controller = "Support", action = "DeleteRole" }
+            );
 
+            /*----------------------- Role Group routes*/
             routeBuilder.MapControllerRoute(
                name: "admin-rolesGroups",
                pattern: "admin/support/system-roles-groups",
                defaults: new { area = "Admin", controller = "Support", action = "RoleGroups" }
             );
 
+            /*----------------------- Role Delegation routes*/
             routeBuilder.MapControllerRoute(
                name: "admin-rolesDelegations",
                pattern: "admin/support/system-roles-delegations",

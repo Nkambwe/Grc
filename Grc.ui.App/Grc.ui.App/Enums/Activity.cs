@@ -147,5 +147,19 @@ namespace Grc.ui.App.Enums {
         USER_PASSWORD_CHANGED = 70,
         [Description("Export user records")]
         USER_EXPORTED = 71,
+        [Description("Retrieve role record by ID")]
+        RETRIVEROLEBYID = 72,
+        [Description("Retrieve all system roles")]
+        RETRIVEROLES = 73,
+        [Description("System Role added")]
+        ROLE_ADDED = 74,
+        [Description("System Role editted")]
+        ROLE_EDITED = 75,
+        [Description("System Role deleted")]
+        ROLE_DELETED = 76,
+        [Description("System Role approved")]
+        ROLE_APPROVED = 77,
+        [Description("System Role verified")]
+        ROLE_VERIFIED = 78,
     }
 }

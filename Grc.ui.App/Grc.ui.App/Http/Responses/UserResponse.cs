@@ -57,8 +57,11 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("unitCode")]
         public string UnitCode { get; set; }
 
-        [JsonPropertyName("isActive")]
+        [JsonPropertyName("active")]
         public bool IsActive { get; set; }
+
+        [JsonPropertyName("deleted")]
+        public bool IsDeleted { get; set; }
 
         [JsonPropertyName("isVerified")]
         public bool IsVerified { get; set; }

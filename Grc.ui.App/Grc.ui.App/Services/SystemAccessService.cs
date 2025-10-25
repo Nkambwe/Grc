@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
 using Grc.ui.App.Factories;
@@ -27,9 +28,7 @@ namespace Grc.ui.App.Services {
                                    SessionManager sessionManager,
                                    IGrcErrorFactory errorFactory,
                                    IErrorService errorService)
-             : base(loggerFactory, httpHandler, environment, 
-                                  endpointType, mapper,webHelper,
-                                  sessionManager,errorFactory,errorService) {
+             : base(loggerFactory, httpHandler, environment, endpointType, mapper,webHelper, sessionManager,errorFactory,errorService) {
 
         }
 
@@ -331,6 +330,117 @@ namespace Grc.ui.App.Services {
             }
         }
 
+        public async Task<GrcResponse<ServiceResponse>> UpdateUserAsync(UserViewModel userRecord, long userId, string ipAddress)
+        {
+            if (userRecord == null)
+            {
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    "User record cannot be null",
+                    "Invalid user record"
+                );
+
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+
+            try
+            {
+                //..build request model
+                var request = Mapper.Map<UserModel>(userRecord);
+                request.UserId = userId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.USER_EDITED.GetDescription();
+
+                //..map request
+                Logger.LogActivity($"UPDATE USER REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Sam.Users}/updateuser";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<UserModel, ServiceResponse>(endpoint, request);
+            }
+            catch (HttpRequestException httpEx)
+            {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "SYSTEM-ACCESS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            }
+            catch (GRCException ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> DeleteUserAsync(GrcIdRequst request)
+        {
+            if (request == null)
+            {
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    "User record cannot be null",
+                    "Invalid user record"
+                );
+
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+
+            try
+            {
+                //..map request
+                Logger.LogActivity($"DELETE USER REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Sam.Users}/deleteuser";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcIdRequst, ServiceResponse>(endpoint, request);
+            }
+            catch (HttpRequestException httpEx)
+            {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "SYSTEM-ACCESS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            }
+            catch (GRCException ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
+
+        }
+
         public async Task UpdateLoggedInStatusAsync(long userId, bool isLoggedIn, string ipAddress) {
             try {
                 //..create request
@@ -382,6 +492,271 @@ namespace Grc.ui.App.Services {
                 Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
                 await ProcessErrorAsync(ex.Message,"SYSTEM-ACCESS-SERVICE" , ex.StackTrace);
                 return new GrcResponse<UsernameValidationResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<GrcRoleResponse>> GetRoleByIdAsync(long recordId, long userId, string ipAddress)
+        {
+            if (recordId == 0)
+            {
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    "Role ID is required",
+                    "Invalid user request"
+                );
+
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<GrcRoleResponse>(error);
+            }
+
+            try
+            {
+                var request = new GrcIdRequst()
+                {
+                    UserId = userId,
+                    RecordId = recordId,
+                    IPAddress = ipAddress,
+                    Action = Activity.RETRIVEROLEBYID.GetDescription(),
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>(),
+                };
+
+                var endpoint = $"{EndpointProvider.Sam.Roles}/getrole-by-id";
+                return await HttpHandler.PostAsync<GrcIdRequst, GrcRoleResponse>(endpoint, request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve role record for User ID {userId}: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "ACCESS-SERVICE", ex.StackTrace);
+                throw new GRCException("Uanble to retrieve role.", ex);
+            }
+        }
+
+        public async Task<GrcResponse<ListResponse<GrcRoleResponse>>> GetRolesAsync(GrcRequest request) {
+
+            if (request == null)
+            {
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    "Invalid request",
+                    "Request body cannot be null"
+                );
+
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<ListResponse<GrcRoleResponse>>(error);
+            }
+
+            try
+            {
+                var endpoint = $"{EndpointProvider.Sam.Roles}/getroles";
+                return await HttpHandler.PostAsync<GrcRequest, ListResponse<GrcRoleResponse>>(endpoint, request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve roles records: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SYSTEM-ACCESS-SERVICE", ex.StackTrace);
+                throw new GRCException("Uanble to retrieve system role.", ex);
+            }
+        }
+
+        public async Task<GrcResponse<PagedResponse<GrcRoleResponse>>> GetPagedRolesAsync(TableListRequest request)
+        {
+            if (request == null)
+            {
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    "Invalid Request object",
+                    "Request object cannot be null"
+                );
+
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<PagedResponse<GrcRoleResponse>>(error);
+            }
+
+            try
+            {
+                var endpoint = $"{EndpointProvider.Sam.Roles}/pagedroles";
+                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<GrcRoleResponse>>(endpoint, request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<PagedResponse<GrcRoleResponse>>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> CreateRoleAsync(RoleViewModel roleRecord, long userId, string ipAddress)
+        {
+            if (roleRecord == null)
+            {
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    "Role record cannot be null",
+                    "Invalid role record"
+                );
+
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+
+            try
+            {
+                //..build request object
+                var request = Mapper.Map<GrcRoleRequest>(roleRecord);
+                request.UserId = userId;
+                request.IpAddress = ipAddress;
+                request.Action = Activity.ROLE_ADDED.GetDescription();
+
+                //..map request
+                Logger.LogActivity($"CREATE ROLE REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Sam.Roles}/createuser";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcRoleRequest, ServiceResponse>(endpoint, request);
+            }
+            catch (HttpRequestException httpEx)
+            {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "SYSTEM-ACCESS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            }
+            catch (GRCException ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> UpdateRoleAsync(RoleViewModel roleRecord, long userId, string ipAddress)
+        {
+            if (roleRecord == null)
+            {
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    "Role record cannot be null",
+                    "Invalid role record"
+                );
+
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+
+            try
+            {
+                //..build request object
+                var request = Mapper.Map<GrcRoleRequest>(roleRecord);
+                request.UserId = userId;
+                request.IpAddress = ipAddress;
+                request.Action = Activity.ROLE_EDITED.GetDescription();
+
+                //..map request
+                Logger.LogActivity($"CREATE ROLE REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Sam.Roles}/updaterole";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcRoleRequest, ServiceResponse>(endpoint, request);
+            }
+            catch (HttpRequestException httpEx)
+            {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "SYSTEM-ACCESS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            }
+            catch (GRCException ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> DeleteRoleAsync(GrcIdRequst request)
+        {
+            if (request == null)
+            {
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    "Role record cannot be null",
+                    "Invalid user record"
+                );
+
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+
+            try
+            {
+                //..map request
+                Logger.LogActivity($"DELETE SYSTEM ROLE REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Sam.Roles}/deleterole";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcIdRequst, ServiceResponse>(endpoint, request);
+            }
+            catch (HttpRequestException httpEx)
+            {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "SYSTEM-ACCESS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            }
+            catch (GRCException ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
             }
         }
 

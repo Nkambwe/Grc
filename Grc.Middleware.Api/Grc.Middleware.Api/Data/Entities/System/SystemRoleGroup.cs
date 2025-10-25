@@ -4,6 +4,7 @@ namespace Grc.Middleware.Api.Data.Entities.System {
     public class SystemRoleGroup : BaseEntity {
         public string GroupName { get; set; }
         public string Description { get; set; }
+        public string GroupCategory { get; set; }
         /// <summary>
         /// Get or Set Scope of group
         /// </summary>

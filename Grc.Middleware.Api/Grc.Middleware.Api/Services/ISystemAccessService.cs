@@ -99,7 +99,7 @@ namespace Grc.Middleware.Api.Services {
 
         Task<bool> RoleGroupExistsAsync(Expression<Func<SystemRoleGroup, bool>> predicate, bool excludeDeleted = false, CancellationToken token = default);
 
-        Task<SystemRoleGroup> GetRoleGroupByIdAsync(long id);
+        Task<SystemRoleGroup> GetRoleGroupByIdAsync(IdRequest request);
 
         Task<IList<SystemRoleGroup>> GetAllRoleGroupsAsync(bool includeDeleted = false);
 
@@ -113,9 +113,9 @@ namespace Grc.Middleware.Api.Services {
 
         Task<bool> DeleteRoleGroupAsync(IdRequest request);
 
-        Task<PagedResult<SystemRoleGroup>> PagedRoleGroupAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false);
+        Task<PagedResult<SystemRoleGroup>> PagedRoleGroupsAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false);
 
-        Task<PagedResult<SystemRoleGroup>> PageAllRoleGroupssAsync(CancellationToken token, int page, int size, Expression<Func<SystemRoleGroup, bool>> predicate = null, bool includeDeleted = false);
+        Task<PagedResult<SystemRoleGroup>> PageAllRoleGroupsAsync(CancellationToken token, int page, int size, Expression<Func<SystemRoleGroup, bool>> predicate = null, bool includeDeleted = false);
 
         #endregion
 

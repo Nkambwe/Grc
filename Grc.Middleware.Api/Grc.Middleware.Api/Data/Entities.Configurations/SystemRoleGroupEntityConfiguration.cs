@@ -7,9 +7,10 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
 
         public static void Configure(EntityTypeBuilder<SystemRoleGroup> builder) {
             builder.ToTable("TBL_GRC_ROLE_GROUP");
-            builder.HasKey(g => g.Id);
+            builder.HasKey(g => g.Id); 
             builder.Property(g => g.GroupName).HasColumnName("Group_name").HasColumnType("NVARCHAR(MAX)").IsRequired();
             builder.Property(g => g.Description).HasColumnName("Group_description").HasColumnType("NVARCHAR(MAX)").IsRequired();
+            builder.Property(g => g.GroupCategory).HasColumnName("Attached_category").HasColumnType("NVARCHAR(100)").IsRequired(false);
             builder.Property(g => g.Scope).HasColumnName("Group_scope").IsRequired();
             builder.Property(g => g.Department).HasColumnName("Department").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(g => g.Type).HasColumnName("Group_type").IsRequired();

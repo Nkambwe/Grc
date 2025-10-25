@@ -3,12 +3,13 @@
     public class ActivityTypeDefaults {
 
         #region User Activities
-        public const string USER_RETRIEVED = "User.Retrieve";
+       
         public const string USER_ADDED = "User.Added";
         public const string USER_EDITED = "User.Edited";
         public const string USER_DELETED = "User.Deleted";
         public const string USER_APPROVED = "User.Approved";
         public const string USER_VERIFIED = "User.Verified";
+        public const string USER_RETRIEVED = "User.Retrieve";
         public const string USER_LOGIN = "User.Login";
         public const string USER_LOGOUT = "User.Logout";
         public const string USER_PASSWORD_RESET = "User.Password.Reset";
@@ -23,12 +24,8 @@
         public const string ROLE_DELETED = "Role.Deleted";
         public const string ROLE_ASSIGNED_TO_USER = "Role.Assigned";
         public const string ROLE_REMOVED_FROM_USER = "Role.Revoked";
-        public const string PERMISSION_SET_ADDED = "Permission.Set.Added";
-        public const string PERMISSION_SET_EDITED = "Permission.Set.Edited";
-        public const string PERMISSION_SET_DELETED = "Permission.Set.Deleted";
-        public const string PERMISSION_SET_ASSIGNED_TO_ROLE = "Permission.Set.AssignedToRole";
-        public const string PERMISSION_SET_REMOVED_FROM_ROLE = "Permission.Set.RemovedFromRole";
-
+        public const string ROLE_RETRIEVED = "Role.Retrieve";
+        public const string ROLE_APPROVED = "Role.Approved";
         #endregion
 
         #region Permission Activities
@@ -39,6 +36,14 @@
         public const string PERMISSION_ASSIGNED_TO_ROLE = "Permission.AssignedToRole";
         public const string PERMISSION_REMOVED_FROM_ROLE = "Permission.RemovedFromRole";
 
+        #endregion
+
+        #region Permission Sets
+        public const string PERMISSION_SET_ADDED = "Permission.Set.Added";
+        public const string PERMISSION_SET_EDITED = "Permission.Set.Edited";
+        public const string PERMISSION_SET_DELETED = "Permission.Set.Deleted";
+        public const string PERMISSION_SET_ASSIGNED_TO_ROLE = "Permission.Set.AssignedToRole";
+        public const string PERMISSION_SET_REMOVED_FROM_ROLE = "Permission.Set.RemovedFromRole";
         #endregion
 
         #region System Activities

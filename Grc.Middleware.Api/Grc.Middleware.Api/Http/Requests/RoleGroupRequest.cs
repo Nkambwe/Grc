@@ -14,6 +14,9 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("description")]
         public string Description { get; set; }
 
+        [JsonPropertyName("description")]
+        public string GroupCategory { get; set; }
+
         [JsonPropertyName("scope")]
         public int Scope { get; set; }
 

@@ -106,9 +106,9 @@ namespace Grc.ui.App.Controllers {
 
         [HttpGet]
         public async Task<IActionResult> Login() {
-            if (User.Identity?.IsAuthenticated == true) {
-                return RedirectToAction("Dashboard");
-            }
+            //if (User.Identity?.IsAuthenticated == true) {
+            //    return RedirectToAction("Dashboard");
+            //}
 
             var loginModel = await _loginFactory.PrepareLoginModelAsync();
             return View(loginModel);
@@ -435,20 +435,32 @@ namespace Grc.ui.App.Controllers {
         private string DetermineRedirectUrl(string roleGroup) {
             if(!string.IsNullOrWhiteSpace(roleGroup)){
                 //..route to admin
-                if (roleGroup.Equals("System Administrators") || roleGroup.Equals("Application Support")) {
+                if (RoleCategory.ANONYMOUS.ToString().Equals(roleGroup.ToUpper()) || RoleCategory.ADMINSUPPORT.ToString().Equals(roleGroup.ToUpper())) {
                     return Url.Action("Index", "Support", new { area = "Admin" });
                 }
 
-                //..route to admin
-                if (roleGroup.Equals("Operations"))
+                //..route to operations
+                if (RoleCategory.OPERATIONSERVICES.ToString().Equals(roleGroup.ToUpper()))
                 {
                     return Url.Action("Index", "OperationDashboard", new { area = "Operations" });
                 }
 
+                //..operations guest
+                if (RoleCategory.OPERATIONGUESTS.ToString().Equals(roleGroup.ToUpper()))
+                {
+                    return Url.Action("Guest", "OperationDashboard");
+                }
+
+                //..compliance
+                if (RoleCategory.COMPLIANCEDEPT.ToString().Equals(roleGroup.ToUpper()))
+                {
+                    return Url.Action("Dashboard", "Application");
+                }
+
             }
 
-            // Redirect to dashboard
-            return Url.Action("Dashboard", "Application");
+            // Redirect to login for unknow roles
+            return Url.Action("Login", "Application");
         }
 
         #endregion

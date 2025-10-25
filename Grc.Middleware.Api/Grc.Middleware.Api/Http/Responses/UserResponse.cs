@@ -63,7 +63,7 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("createdBy")]
         public string CreatedBy { get; set; }
 
-        [JsonPropertyName("ceatedOn")]
+        [JsonPropertyName("createdOn")]
         public DateTime CreatedOn { get; set; }
 
         [JsonPropertyName("modifiedBy")]

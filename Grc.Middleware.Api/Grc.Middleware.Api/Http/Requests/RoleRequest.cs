@@ -29,6 +29,15 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("createdBy")]
         public string CreatedBy { get; set; }
 
+        [JsonPropertyName("userId")]
+        public long UserId { get; set; }
+
+        [JsonPropertyName("ipAddress")]
+        public string IpAddress { get; set; }
+
+        [JsonPropertyName("action")]
+        public string Action { get; set; }
+
         [JsonPropertyName("ceatedOn")]
         public DateTime CreatedOn { get; set; }
 
@@ -38,14 +47,6 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("modifiedOn")]
         public DateTime ModifiedOn { get; set; }
 
-        [JsonPropertyName("userId")]
-        public long UserId { get; set; }
-
-        [JsonPropertyName("ipAddress")]
-        public string IpAddress { get; set; }
-
-        [JsonPropertyName("action")]
-        public string Action { get; set; }
     }
 
 }

@@ -12,17 +12,20 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("description")]
         public string Description { get; set; }
 
-        [JsonPropertyName("solId")]
-        public string SolId { get; set; }
-
         [JsonPropertyName("groupId")]
         public long GroupId { get; set; }
 
-        [JsonPropertyName("roleName")]
+        [JsonPropertyName("groupName")]
         public string GroupName { get; set; }
+
+        [JsonPropertyName("groupCategory")]
+        public string GroupCategory { get; set; }
 
         [JsonPropertyName("deleted")]
         public bool IsDeleted { get; set; }
+
+        [JsonPropertyName("isActive")]
+        public bool IsActive { get; set; }
 
         [JsonPropertyName("verified")]
         public bool IsVerified { get; set; }

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Grc.Middleware.Api.Data.Entities.Logging;
-using Grc.Middleware.Api.Data.Entities.Org;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Http.Requests;

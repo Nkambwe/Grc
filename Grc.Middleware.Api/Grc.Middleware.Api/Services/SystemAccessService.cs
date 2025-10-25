@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Enums;
@@ -184,7 +185,7 @@ namespace Grc.Middleware.Api.Services {
                 };
                 var role = await GetRoleByIdAsync(requestId);
                 if (role != null) {
-                    response.RoleGroup = role.Group?.GroupName ?? string.Empty;
+                    response.RoleGroup = role.Group?.GroupCategory ?? string.Empty;
                 }
 
                 // Check if user is active
@@ -1897,27 +1898,29 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<SystemRoleGroup> GetRoleGroupByIdAsync(long id) {
+        public async Task<SystemRoleGroup> GetRoleGroupByIdAsync(IdRequest request) {
             using var uow = UowFactory.Create();
-            Logger.LogActivity("Retrieve role group by ID", "INFO");
+            Logger.LogActivity("Retrieve system role group by ID", "INFO");
 
             try
             {
-                Logger.LogActivity($"Role Group ID: {id}", "DEBUG");
-                var group = await uow.RoleGroupRepository.GetAsync(id);
+                Logger.LogActivity($"Role Group ID: {request.RecordId}", "DEBUG");
+                //..get role group
+                var role = await uow.RoleGroupRepository.GetAsync(r => r.Id == request.RecordId, true, r => r.Department);
 
                 //..log role group record
-                var groupJson = JsonSerializer.Serialize(group, new JsonSerializerOptions
+                var roleJson = JsonSerializer.Serialize(role, new JsonSerializerOptions
                 {
                     WriteIndented = true,
                     ReferenceHandler = ReferenceHandler.IgnoreCycles
                 });
-                Logger.LogActivity($"Role Group record: {groupJson}", "DEBUG");
+                Logger.LogActivity($"Role Group record: {roleJson}", "DEBUG");
 
-                return group;
+                return role;
             }
-            catch (Exception ex) {
-                Logger.LogActivity($"Failed to retrieve role group record: {ex.Message}", "ERROR");
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve system role group: {ex.Message}", "ERROR");
 
                 //..log inner exceptions here too
                 var innerEx = ex.InnerException;
@@ -1926,7 +1929,6 @@ namespace Grc.Middleware.Api.Services {
                     Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
                     innerEx = innerEx.InnerException;
                 }
-
                 Logger.LogActivity($"{ex.StackTrace}", "ERROR");
 
                 var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
@@ -2061,6 +2063,7 @@ namespace Grc.Middleware.Api.Services {
                     //..update Role Group record
                     roleGroup.GroupName = (request.GroupName ?? string.Empty).Trim();
                     roleGroup.Description = (request.Description ?? string.Empty).Trim();
+                    roleGroup.GroupCategory = (request.GroupCategory ?? string.Empty).Trim();
                     roleGroup.Scope = (GroupScope)request.Scope;
                     roleGroup.Type = (RoleGroup)request.Type;
                     roleGroup.Department = (request.Department ?? string.Empty).Trim();
@@ -2127,6 +2130,7 @@ namespace Grc.Middleware.Api.Services {
                     //..update Role Group record
                     roleGroup.GroupName = (request.GroupName ?? string.Empty).Trim();
                     roleGroup.Description = (request.Description ?? string.Empty).Trim();
+                    roleGroup.GroupCategory = (request.GroupCategory ?? string.Empty).Trim();
                     roleGroup.Scope = (GroupScope)request.Scope;
                     roleGroup.Type = (RoleGroup)request.Type;
                     roleGroup.Department = (request.Department ?? string.Empty).Trim();
@@ -2293,7 +2297,7 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<PagedResult<SystemRoleGroup>> PagedRoleGroupAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false)
+        public async Task<PagedResult<SystemRoleGroup>> PagedRoleGroupsAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve all Role Groups", "INFO");
@@ -2331,7 +2335,7 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<PagedResult<SystemRoleGroup>> PageAllRoleGroupssAsync(CancellationToken token, int page, int size, Expression<Func<SystemRoleGroup, bool>> predicate = null, bool includeDeleted = false)
+        public async Task<PagedResult<SystemRoleGroup>> PageAllRoleGroupsAsync(CancellationToken token, int page, int size, Expression<Func<SystemRoleGroup, bool>> predicate = null, bool includeDeleted = false)
         {
 
             using var uow = UowFactory.Create();
