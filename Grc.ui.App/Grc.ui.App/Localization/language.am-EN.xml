@@ -541,6 +541,15 @@
 	<LocaleResource Name="Component.Table.Search.User">
 		<Value>Search users.. </Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.Role">
+		<Value>Search roles.. </Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.Role.Group">
+		<Value>Search role groups..</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.User.Activity">
+		<Value>Search activities..</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Search.Entity">
 		<Value>Search entities.. </Value>
 	</LocaleResource>

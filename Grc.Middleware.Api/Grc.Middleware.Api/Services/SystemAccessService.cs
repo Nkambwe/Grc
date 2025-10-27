@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
 using Azure.Core;
 using Grc.Middleware.Api.Data.Containers;
+using Grc.Middleware.Api.Data.Entities.Logging;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -2379,6 +2382,295 @@ namespace Grc.Middleware.Api.Services {
 
         #region System Permissions
 
+        public async Task<List<SystemPermission>> GetAllPermissionsAsync()
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieve list of system permissions", "INFO");
+            try
+            {
+                return (await uow.PermissionRepository.GetAllAsync(true)).ToList();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve system permissions: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<List<SystemPermission>> GetRolePermissionsAsync(RolePermissionRequest request) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieve list of Role permissions", "INFO");
+
+            try
+            {
+                var roles = await uow.RoleRepository.GetAllAsync(
+                    r => r.Id == request.RoleId,
+                    request.IsDeleted,
+                    r => r.PermissionSets,
+                    r => r.PermissionSets.Select(rp => rp.PermissionSet),
+                    r => r.PermissionSets.Select(rp => rp.PermissionSet.Permissions),
+                    r => r.PermissionSets.Select(rp => rp.PermissionSet.Permissions.Select(pps => pps.Permission)),
+                    r => r.Group,
+                    r => r.Group.PermissionSets.Select(gp => gp.PermissionSet.Permissions.Select(pps => pps.Permission))
+                );
+
+                var role = roles.FirstOrDefault();
+                if (role == null)
+                    return new List<SystemPermission>();
+
+                // --- Role-specific permissions ---
+                var rolePermissions = role.PermissionSets
+                    .SelectMany(rp => rp.PermissionSet.Permissions)
+                    .Select(pps => pps.Permission);
+
+                // --- Group-level permissions (inherited) ---
+                var groupPermissions = role.Group?.PermissionSets?
+                    .SelectMany(gp => gp.PermissionSet.Permissions)
+                    .Select(pps => pps.Permission)
+                    ?? Enumerable.Empty<SystemPermission>();
+
+                // Combine and remove duplicates
+                var allPermissions = rolePermissions
+                    .Concat(groupPermissions)
+                    .DistinctBy(p => p.Id) 
+                    .ToList();
+
+                return allPermissions;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve role permissions: {ex.Message}", "ERROR");
+
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company?.Id ?? 1;
+
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = ex.InnerException?.Message ?? ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<bool> UpdateRolePermissionSetsAsync(long roleId, List<long> newPermissionSetIds) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Merging permission sets for Role {roleId}", "INFO");
+
+            try
+            {
+                var role = await uow.RoleRepository.GetAsync(
+                    r => r.Id == roleId,
+                    false,
+                    r => r.PermissionSets
+                ) ?? throw new Exception($"Role with ID {roleId} not found");
+                var existingIds = role.PermissionSets.Select(p => p.PermissionSetId).ToList();
+                var (toAdd, toRemove) = GetChanges(existingIds, newPermissionSetIds);
+
+                //..remove outdated role-permission-set links
+                role.PermissionSets = role.PermissionSets
+                    .Where(p => !toRemove.Contains(p.PermissionSetId))
+                    .ToList();
+
+                //..add new links
+                foreach (var setId in toAdd)
+                {
+                    role.PermissionSets.Add(new SystemRolePermissionSet
+                    {
+                        RoleId = role.Id,
+                        PermissionSetId = setId
+                    });
+                }
+
+                await uow.RoleRepository.UpdateAsync(role);
+                var result = uow.SaveChanges();
+                Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                return result > 0;
+
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to merge permission sets for Role : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<List<SystemPermission>> GetPermissionSetPermissionsAsync(long permissionSetId, bool includeDeleted = false)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieve list of permissions for a permission set", "INFO");
+
+            try
+            {
+                var sets = await uow.PermissionSetRepository.GetAllAsync(ps => ps.Id == permissionSetId, includeDeleted, ps => ps.Permissions.Select(pps => pps.Permission));
+                var set = sets.FirstOrDefault();
+                if (set == null)
+                    return new List<SystemPermission>();
+
+                var permissions = set.Permissions
+                    .Select(pps => pps.Permission)
+                    .DistinctBy(p => p.Id)
+                    .ToList();
+
+                return permissions;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve set permissions: {ex.Message}", "ERROR");
+
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company?.Id ?? 1;
+
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = ex.InnerException?.Message ?? ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+
+        }
+
+        public async Task<bool> UpdatePermissionSetPermissionsAsync(long permissionSetId, List<long> newPermissionIds) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Merging permissions for PermissionSet {permissionSetId}", "INFO");
+
+            try
+            {
+                var set = await uow.PermissionSetRepository.GetAsync(
+                    ps => ps.Id == permissionSetId, false,
+                    ps => ps.Permissions
+                ) ?? throw new Exception($"PermissionSet with ID {permissionSetId} not found");
+                var existingIds = set.Permissions.Select(p => p.PermissionId).ToList();
+                var (toAdd, toRemove) = GetChanges(existingIds, newPermissionIds);
+
+                // Remove outdated links
+                set.Permissions = set.Permissions
+                    .Where(p => !toRemove.Contains(p.PermissionId))
+                    .ToList();
+
+                // Add new links
+                foreach (var permId in toAdd)
+                {
+                    set.Permissions.Add(new SystemPermissionPermissionSet
+                    {
+                        PermissionId = permId,
+                        PermissionSetId = set.Id
+                    });
+                }
+
+                await uow.PermissionSetRepository.UpdateAsync(set);
+                var result = uow.SaveChanges();
+                Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                return result > 0;
+
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to merge permissions for PermissionSet : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
         public async Task<PagedResult<SystemPermission>> PagedPermissionsAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
@@ -2456,7 +2748,158 @@ namespace Grc.Middleware.Api.Services {
 
         #endregion
 
-        #region System Permissions
+        #region System Permission Sets
+
+        public async Task<bool> PermissionSetExistsAsync(Expression<Func<SystemPermissionSet, bool>> predicate)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Check if an Permission Set exists in the database that fit predicate >> '{predicate}'", "INFO");
+
+            try
+            {
+                return await uow.PermissionSetRepository.ExistsAsync(predicate, false);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to check for System User in the database: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<List<SystemPermissionSet>> GetRoleGroupPermissionSetsAsync(long roleGroupId, bool includePermissions = false) {
+
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieving permission sets for RoleGroup {roleGroupId}", "INFO");
+
+            try {
+                var groups = await uow.RoleGroupRepository.GetAllAsync(
+                g => g.Id == roleGroupId,
+                false,
+                g => g.PermissionSets.Select(rgp => rgp.PermissionSet), includePermissions ?
+                g => g.PermissionSets.Select(rgp => rgp.PermissionSet.Permissions.Select(p => p.Permission)):
+                null);
+
+                var group = groups.FirstOrDefault();
+                if (group == null)
+                    return new List<SystemPermissionSet>();
+
+                return group.PermissionSets
+                            .Select(rgp => rgp.PermissionSet)
+                            .DistinctBy(ps => ps.Id)
+                            .ToList();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve permission sets for RoleGroup : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+
+        }
+
+        public async Task<bool> UpdateRoleGroupPermissionSetsAsync(long roleGroupId, List<long> newPermissionSetIds) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Merging permission sets for RoleGroup {roleGroupId}", "INFO");
+            try
+            {
+                var group = await uow.RoleGroupRepository.GetAsync(
+                    g => g.Id == roleGroupId,false,
+                    g => g.PermissionSets
+                ) ?? throw new Exception($"RoleGroup with ID {roleGroupId} not found");
+                var existingIds = group.PermissionSets.Select(p => p.PermissionSetId).ToList();
+                var (toAdd, toRemove) = GetChanges(existingIds, newPermissionSetIds);
+
+                //..remove outdated links
+                group.PermissionSets = group.PermissionSets
+                    .Where(p => !toRemove.Contains(p.PermissionSetId))
+                    .ToList();
+
+                //..add new links
+                foreach (var setId in toAdd) {
+                    group.PermissionSets.Add(new SystemRoleGroupPermissionSet {
+                        RoleGroupId = group.Id,
+                        PermissionSetId = setId
+                    });
+                }
+
+                await uow.RoleGroupRepository.UpdateAsync(group);
+                var result = uow.SaveChanges();
+                Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                return result > 0;
+
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to merge permission sets for RoleGroup : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
 
         public async Task<bool> InsertPermissionSetAsync(PermissionSetRequest request) {
             using var uow = UowFactory.Create();
@@ -2752,6 +3195,45 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
+        public async Task<List<SystemPermissionSet>> GetAllPermissionSetsAsync() {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieve list of Permission Sets", "INFO");
+            try
+            {
+                return (await uow.PermissionSetRepository.GetAllAsync()).ToList();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve permission sets records: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
         public async Task<PagedResult<SystemPermissionSet>> PagedPermissionSetAsync(int page = 1, int size = 10, bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve all system permission sets", "INFO");
@@ -2825,6 +3307,112 @@ namespace Grc.Middleware.Api.Services {
                 _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
                 throw;
             }
+        }
+
+        #endregion
+
+        #region System Activities
+
+        public async Task<ActivityLog> GetActivityLogAsync(IdRequest request) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieve activity log by ID", "INFO");
+
+            try {
+
+                Logger.LogActivity($"Activity Log ID: {request.RecordId}", "DEBUG");
+
+                //..get activity log
+                var role = await uow.ActivityLogRepository.GetAsync(a => a.Id == request.RecordId, true, a => a.ActivityType, a => a.User);
+
+                //..log activity log record
+                var roleJson = JsonSerializer.Serialize(role, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Activity Log record: {roleJson}", "DEBUG");
+
+                return role;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve activity log: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<ActivityLog>> GetPagedActivityLogAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve all activity logs", "INFO");
+
+            try
+            {
+                return await uow.ActivityLogRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, a => a.ActivityType, a => a.User);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve activity logs records : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        #endregion
+
+        #region private methods
+        private static (List<long> toAdd, List<long> toRemove) GetChanges(IEnumerable<long> existingIds, IEnumerable<long> newIds) {
+            var existingSet = new HashSet<long>(existingIds);
+            var newSet = new HashSet<long>(newIds);
+
+            var toAdd = newSet.Except(existingSet).ToList();
+            var toRemove = existingSet.Except(newSet).ToList();
+
+            return (toAdd, toRemove);
         }
 
         #endregion

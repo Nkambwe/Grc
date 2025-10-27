@@ -15,6 +15,7 @@ namespace Grc.Middleware.Api.Helpers {
     public class MappingProfile : Profile {
 
         public MappingProfile() {
+
             CreateMap<RegistrationRequest, Company>()
                 .ForMember(co => co.Id, reg => reg.MapFrom(o => 0))
                 .ForMember(co => co.CompanyName, reg => reg.MapFrom(o => (o.CompanyName ?? string.Empty).Trim()))
@@ -123,7 +124,12 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(a => a.Area, reg => reg.MapFrom(o => (o.Area ?? string.Empty).Trim()))
                 .ForMember(a => a.CssClass, reg => reg.MapFrom(o => (o.CssClass ?? string.Empty).Trim()));
 
-            
+            //..map system permissions
+            CreateMap<SystemPermission, PermissionResponse>()
+                .ForMember(a => a.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(a => a.PermissionName, reg => reg.MapFrom(o => (o.PermissionName ?? string.Empty).Trim()))
+                .ForMember(a => a.PermissionDescription, reg => reg.MapFrom(o => (o.Description ?? string.Empty).Trim()));
+
             //..map pinned items
             CreateMap<ErrorRequest, SystemError>()
                 .ForMember(e => e.CompanyId, reg => reg.MapFrom(o => o.CompanyId))
@@ -568,6 +574,16 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(r => r.CreatedOn, reg => reg.MapFrom(o => o.CreatedOn))
                 .ForMember(r => r.LastModifiedBy, reg => reg.MapFrom(o => o.ModifiedBy))
                 .ForMember(r => r.LastModifiedOn, reg => reg.MapFrom(o => o.ModifiedOn));
+
+            CreateMap<ActivityLog, SystemActivityResponse>()
+                .ForMember(a => a.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(a => a.EntityName, reg => reg.MapFrom(o => (o.EntityName ?? string.Empty).Trim()))
+                .ForMember(a => a.ActivityType, reg => reg.MapFrom(o => (o.ActivityType.Name ?? string.Empty).Trim()))
+                .ForMember(a => a.IpAddress, reg => reg.MapFrom(o => (o.IpAddress ?? string.Empty).Trim()))
+                .ForMember(a => a.Action, reg => reg.MapFrom(o => (o.Comment ?? string.Empty).Trim()))
+                .ForMember(a => a.UserId, reg => reg.MapFrom(o => o.UserId))
+                .ForMember(a => a.AccessedBy, reg => reg.MapFrom(o => $"{(o.User.FirstName ?? string.Empty).Trim()} {(o.User.LastName ?? string.Empty).Trim()}".Trim()))
+                .ForMember(a => a.ActivityDate, reg => reg.MapFrom(o => o.CreatedOn));
 
         }
     }

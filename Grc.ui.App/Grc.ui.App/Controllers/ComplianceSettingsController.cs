@@ -123,7 +123,7 @@ namespace Grc.ui.App.Controllers {
                     });
                 }
                 var currentUser = userResponse.Data;
-                GrcIdRequst getRequest = new() {
+                GrcIdRequest getRequest = new() {
                     RecordId = id,
                     UserId = currentUser.UserId,
                     Action = Activity.COMPLIANCE_GET_CATEGORY.GetDescription(),
@@ -324,7 +324,7 @@ namespace Grc.ui.App.Controllers {
                     });
                 }
                 var currentUser = userResponse.Data;
-                GrcIdRequst deleteRequest = new() {
+                GrcIdRequest deleteRequest = new() {
                     RecordId = id,
                     UserId = currentUser.UserId,
                     Action = Activity.COMPLIANCE_DELETED_CATEGORY.GetDescription(),
@@ -651,7 +651,7 @@ namespace Grc.ui.App.Controllers {
                     });
                 }
                 var currentUser = userResponse.Data;
-                GrcIdRequst getRequest = new() {
+                GrcIdRequest getRequest = new() {
                     RecordId = id,
                     UserId = currentUser.UserId,
                     Action = Activity.COMPLIANCE_GET_TYPE.GetDescription(),
@@ -859,7 +859,7 @@ namespace Grc.ui.App.Controllers {
                     });
                 }
                 var currentUser = userResponse.Data;
-                GrcIdRequst deleteRequest = new() {
+                GrcIdRequest deleteRequest = new() {
                     RecordId = id,
                     UserId = currentUser.UserId,
                     Action = Activity.COMPLIANCE_DELETED_TYPE.GetDescription(),
@@ -1120,7 +1120,7 @@ namespace Grc.ui.App.Controllers {
                     });
                 }
                 var currentUser = userResponse.Data;
-                GrcIdRequst getRequest = new() {
+                GrcIdRequest getRequest = new() {
                     RecordId = id,
                     UserId = currentUser.UserId,
                     Action = Activity.COMPLIANCE_GET_AUTHORITY.GetDescription(),
@@ -1414,7 +1414,7 @@ namespace Grc.ui.App.Controllers {
                     });
                 }
                 var currentUser = userResponse.Data;
-                GrcIdRequst deleteRequest = new()
+                GrcIdRequest deleteRequest = new()
                 {
                     RecordId = id,
                     UserId = currentUser.UserId,
@@ -1678,7 +1678,7 @@ namespace Grc.ui.App.Controllers {
                     return BadRequest(new { success = false, message = "Type Id is required" });
 
                 var currentUser = userResponse.Data;
-                var request = new GrcIdRequst
+                var request = new GrcIdRequest
                 {
                     RecordId = id,
                     UserId = currentUser.UserId,
@@ -1814,7 +1814,7 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 var currentUser = userResponse.Data;
-                var request = new GrcIdRequst
+                var request = new GrcIdRequest
                 {
                     RecordId = id,
                     UserId = currentUser.UserId,
@@ -2251,7 +2251,7 @@ namespace Grc.ui.App.Controllers {
                     return BadRequest(new { success = false, message = "Owner Id is required" });
 
                 var currentUser = userResponse.Data;
-                var request = new GrcIdRequst
+                var request = new GrcIdRequest
                 {
                     RecordId = id,
                     UserId = currentUser.UserId,
@@ -2404,7 +2404,7 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 var currentUser = userResponse.Data;
-                var request = new GrcIdRequst
+                var request = new GrcIdRequest
                 {
                     RecordId = id,
                     UserId = currentUser.UserId,

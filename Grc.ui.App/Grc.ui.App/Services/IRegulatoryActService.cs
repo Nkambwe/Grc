@@ -7,10 +7,10 @@ namespace Grc.ui.App.Services {
     public interface IRegulatoryActService : IGrcBaseService
     {
         Task<GrcResponse<RegulatoryActResponse>> CreateRegulatoryActAsync(RegulatoryActViewModel request);
-        Task<GrcResponse<ServiceResponse>> DeleteRegulatoryActAsync(GrcIdRequst deleteRequest);
+        Task<GrcResponse<ServiceResponse>> DeleteRegulatoryActAsync(GrcIdRequest deleteRequest);
         Task<GrcResponse<List<RegulatoryActResponse>>> GetAllAsync(GrcRequest request);
         Task<GrcResponse<PagedResponse<RegulatoryActResponse>>> GetPagedRegulatoryActAsync(TableListRequest request);
-        Task<GrcResponse<RegulatoryActResponse>> GetRegulatoryActAsyncAsync(GrcIdRequst getRequest);
+        Task<GrcResponse<RegulatoryActResponse>> GetRegulatoryActAsyncAsync(GrcIdRequest getRequest);
         Task<GrcResponse<RegulatoryActResponse>> UpdateRegulatoryActAsync(RegulatoryActViewModel request);
     }
 }

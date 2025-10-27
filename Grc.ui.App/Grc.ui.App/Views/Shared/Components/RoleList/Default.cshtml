@@ -1,6 +1,33 @@
-﻿
-<div class="grc-user-component">
-    <span>Roles List</span>
-  
+﻿<div class="grc-tabulator-container">
+
+    <div class="grc-tabulator-search">
+        <div class="field-search-group">
+            <label class="form-searchbox-label text-right">
+                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.Role"))
+            </label>
+            <input id="roleSearchbox" type="text" class="form-control searchbox-field">
+        </div>
+        <div class="field-search-buttons">
+            <button id="btnRoleExportFiltered" class="btn btn-primary">
+                <i class="mdi mdi-file-excel-outline"></i> @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.ExportFiltered"))
+            </button>
+        </div>
+    </div>
+    <div id="adminRolesTable"></div>
 </div>
 
+<div id="adminRoleOverLay" class="role-overlay"></div>
+
+<div id="newRoleContainer" class="admin-role-container">
+    <form id="roleForm">
+        <input type="hidden" id="recordId">
+        <input type="hidden" id="isVerify">
+        <input type="hidden" id="isApprove">
+        <!--- add controls to create or moify role-->
+    </form>
+</div>
+
+@{
+    Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-role.js");
+}

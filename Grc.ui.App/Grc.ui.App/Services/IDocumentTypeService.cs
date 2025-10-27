@@ -6,12 +6,12 @@ using Grc.ui.App.Models;
 namespace Grc.ui.App.Services {
     public interface IDocumentTypeService : IGrcBaseService
     {
-        Task<GrcResponse<DocumentTypeResponse>> GetTypeAsync(GrcIdRequst getRequest);
+        Task<GrcResponse<DocumentTypeResponse>> GetTypeAsync(GrcIdRequest getRequest);
         Task<GrcResponse<List<DocumentTypeResponse>>> GetAllAsync(GrcRequest getRequest);
         Task<GrcResponse<PagedResponse<DocumentTypeResponse>>> GetAllDocumentTypes(TableListRequest request);
         Task<GrcResponse<DocumentTypeResponse>> CreateTypeAsync(DocumentTypeViewModel request);
         Task<GrcResponse<DocumentTypeResponse>> UpdateTypeAsync(DocumentTypeViewModel request);
-        Task<GrcResponse<ServiceResponse>> DeleteTypeAsync(GrcIdRequst deleteRequest);
+        Task<GrcResponse<ServiceResponse>> DeleteTypeAsync(GrcIdRequest deleteRequest);
         
         
     }

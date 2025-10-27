@@ -193,7 +193,7 @@ namespace Grc.ui.App.Services {
                                           errorFactory, errorService) {
         }
 
-        public async Task<GrcResponse<RegulatoryActResponse>> GetRegulatoryActAsyncAsync(GrcIdRequst getRequest)
+        public async Task<GrcResponse<RegulatoryActResponse>> GetRegulatoryActAsyncAsync(GrcIdRequest getRequest)
         {
             return await Task.FromResult(new GrcResponse<RegulatoryActResponse>(query.FirstOrDefault(q => q.Id == getRequest.RecordId)));
         }
@@ -266,7 +266,7 @@ namespace Grc.ui.App.Services {
             return await Task.FromResult(new GrcResponse<RegulatoryActResponse>(record));
         }
 
-        public async Task<GrcResponse<ServiceResponse>> DeleteRegulatoryActAsync(GrcIdRequst deleteRequest)
+        public async Task<GrcResponse<ServiceResponse>> DeleteRegulatoryActAsync(GrcIdRequest deleteRequest)
         {
             var record = query.FirstOrDefault(r => r.Id == deleteRequest.RecordId);
             if (record == null)

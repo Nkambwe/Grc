@@ -24,7 +24,7 @@ namespace Grc.ui.App.Services {
                   mapper, webHelper, sessionManager, errorFactory, errorService) {
         }
 
-        public async Task<GrcResponse<RegulatoryTypeResponse>> GetTypeAsync(GrcIdRequst getRequest) {
+        public async Task<GrcResponse<RegulatoryTypeResponse>> GetTypeAsync(GrcIdRequest getRequest) {
             var result = new RegulatoryTypeResponse {
                 Id = 31,
                 TypeName = "Sample Type",
@@ -93,7 +93,7 @@ namespace Grc.ui.App.Services {
             }));
         }
 
-        public async Task<GrcResponse<ServiceResponse>> DeleteTypeAsync(GrcIdRequst deleteRequest) {
+        public async Task<GrcResponse<ServiceResponse>> DeleteTypeAsync(GrcIdRequest deleteRequest) {
             return await Task.FromResult(new GrcResponse<ServiceResponse>(new ServiceResponse {
                 Status = true,
                 StatusCode = 200,

@@ -27,12 +27,12 @@ namespace Grc.ui.App.Services {
                                   sessionManager,errorFactory,errorService) {
         }
 
-        public async Task<GrcResponse<DepartmentModel>> GetDepartmentById(GrcIdRequst request) {
+        public async Task<GrcResponse<DepartmentModel>> GetDepartmentById(GrcIdRequest request) {
             Logger.LogActivity($"Get department record", "INFO");
 
             try{
                var endpoint = $"{EndpointProvider.Departments.DepartmentById}";
-                return await HttpHandler.PostAsync<GrcIdRequst, DepartmentModel>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcIdRequest, DepartmentModel>(endpoint, request);
             } catch (Exception ex) {
                 Logger.LogActivity($"Error retrieving department record: {ex.Message}", "Error");
                 await ProcessErrorAsync(ex.Message,"DEPARTMENT-SERVICE" , ex.StackTrace);
@@ -166,7 +166,7 @@ namespace Grc.ui.App.Services {
         
         public async Task<GrcResponse<ServiceResponse>> DeleteDepartmentAsync(long id, long userId, string ipAddress = null) {
             try {
-                var request = new GrcIdRequst(){ 
+                var request = new GrcIdRequest(){ 
                     RecordId = id,
                     UserId = userId,
                     IPAddress = ipAddress,
@@ -174,14 +174,14 @@ namespace Grc.ui.App.Services {
                 };
 
                 var endpoint = EndpointProvider.Departments.DeleteDepartment;
-                var response = await HttpHandler.PostAsync<GrcIdRequst, StatusResponse>(endpoint, request);
+                var response = await HttpHandler.PostAsync<GrcIdRequest, StatusResponse>(endpoint, request);
                 if(response.HasError) { 
                     Logger.LogActivity($"Failed to delete department on server. {response.Error.Message}");
                 } else {
                     Logger.LogActivity("Department deleted successfully.");
                 }
                 
-                return await HttpHandler.PostAsync<GrcIdRequst, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcIdRequest, ServiceResponse>(endpoint, request);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"Http Exception: {httpEx.Message}", "ERROR");
                 await ProcessErrorAsync(httpEx.Message,"DEPARTMENT-SERVICE" , httpEx.StackTrace);

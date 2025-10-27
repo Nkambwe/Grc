@@ -8,7 +8,8 @@ namespace Grc.Middleware.Api.Data.Entities.System {
         public bool? IsApproved { get; set; }
         public bool? IsVerified { get; set; }
         public virtual SystemRoleGroup Group { get; set; }
-        public virtual ICollection<SystemUser> Users { get; set; }
+        public virtual ICollection<SystemUser> Users { get; set; } = new List<SystemUser>();
+        public virtual ICollection<SystemRolePermissionSet> PermissionSets { get; set; } = new List<SystemRolePermissionSet>();
         public override bool Equals(object obj) {
 
             if (obj is not SystemRole)

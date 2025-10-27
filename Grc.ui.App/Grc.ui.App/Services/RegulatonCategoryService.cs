@@ -25,7 +25,7 @@ namespace Grc.ui.App.Services
                   errorFactory, errorService) {
         }
 
-        public async Task<GrcResponse<RegulatoryCategoryResponse>> GetCategoryAsync(GrcIdRequst deleteRequest) {
+        public async Task<GrcResponse<RegulatoryCategoryResponse>> GetCategoryAsync(GrcIdRequest deleteRequest) {
             var result = new RegulatoryCategoryResponse {
                 Id = 31,
                 CategoryName = "Sample Regulation",
@@ -133,7 +133,7 @@ namespace Grc.ui.App.Services
             }));
         }
 
-        public async Task<GrcResponse<ServiceResponse>> DeleteCategoryAsync(GrcIdRequst deleteRequest)
+        public async Task<GrcResponse<ServiceResponse>> DeleteCategoryAsync(GrcIdRequest deleteRequest)
         {
             return await Task.FromResult(new GrcResponse<ServiceResponse>(new ServiceResponse
             {

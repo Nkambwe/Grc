@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace Grc.ui.App.Http.Requests {
-    public class GrcIdRequst {
+    public class GrcIdRequest {
         /// <summary>
         /// Get or Set ID for the record to delete
         /// </summary>

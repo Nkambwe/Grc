@@ -1,6 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2016.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
-using Grc.ui.App.Defaults;
+﻿using Grc.ui.App.Defaults;
 using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -14,9 +12,11 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using System.Net;
 using System.Security.Claims;
 using System.Text.Json;
+using Activity = Grc.ui.App.Enums.Activity;
 
 namespace Grc.ui.App.Areas.Admin.Controllers {
 
@@ -911,7 +911,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                     //..session has expired
                     return RedirectToAction("Login", "Application");
                 }
-                GrcIdRequst request = new() {
+                GrcIdRequest request = new() {
                     RecordId = id,
                     UserId = currentUser.UserId,
                     Action = Activity.RETRIEVEUNITS.GetDescription(),
@@ -1091,6 +1091,92 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         #endregion
 
+        #region System Activity
+
+        [LogActivityResult("Retrieve System Activity", "User retrieved system activity", ActivityTypeDefaults.ACTIVITY_RETRIEVED, "SystemActivity")]
+        public async Task<IActionResult> GetSystemActivity(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0) {
+                    return BadRequest(new { success = false, message = "System Activity Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                var result = await _accessService.GetSystemActivityIdAsync(currentUser.UserId, id, ipAddress);
+                if (result.HasError || result.Data == null) {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving system Activity";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var activity = result.Data;
+                var activityRecord = new {
+                    id = activity.Id,
+                    action = activity.Action,
+                    userId = activity.Id,
+                    entityName = activity.EntityName,
+                    activityType = activity.ActivityType,
+                    accessedBy = activity.AccessedBy,
+                    ipAddress = activity.IpAddress,
+                    activityDate = activity.ActivityDate
+                };
+
+                return Ok(new { success = true, data = activityRecord });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving system activity: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        public async Task<IActionResult> GetPagedSystemActivities([FromBody] TableListRequest request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError) Logger.LogActivity("SYSTEM ACTIVITY DATA ERROR: Failed to get system activities");
+
+                var currentUser = userResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.RETRIEVEALLSYSTEMACTIVITIES.GetDescription();
+
+                var result = await _accessService.GetPagedActivitiesAsync(request);
+                PagedResponse<GrcSystemActivityResponse> list = result.Data ?? new();
+
+                var pagedEntities = (list.Entities ?? new List<GrcSystemActivityResponse>())
+                    .Select(activity => new {
+                        id = activity.Id,
+                        action = activity.Action,
+                        userId = activity.Id,
+                        entityName = activity.EntityName,
+                        activityType = activity.ActivityType,
+                        accessedBy = activity.AccessedBy,
+                        ipAddress = activity.IpAddress,
+                        activityDate = activity.ActivityDate
+                    }).ToList();
+
+                var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
+                return Ok(new { last_page = totalPages, total_records = list.TotalCount, data = pagedEntities });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving system activities: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Ok(new { last_page = 0, data = new List<object>() });
+            }
+        }
+
+        #endregion
+
         #region System Users
 
         [LogActivityResult("Retrieve User", "User retrieved user record", ActivityTypeDefaults.USER_RETRIEVED, "SystemUser")]
@@ -1258,8 +1344,6 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 PagedResponse<UserResponse> list = result.Data ?? new();
 
                 var pagedEntities = (list.Entities ?? new List<UserResponse>())
-                    .Skip((request.PageIndex - 1) * request.PageSize)
-                    .Take(request.PageSize)
                     .Select(user => new {
                         id = user.Id,
                         firstName = user.FirstName,
@@ -1406,7 +1490,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 if (id == 0) return BadRequest(new { success = false, message = "User Id is required" });
 
                 var currentUser = userResponse.Data;
-                GrcIdRequst request = new()
+                GrcIdRequest request = new()
                 {
                     RecordId = id,
                     UserId = currentUser.UserId,
@@ -1483,11 +1567,8 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             }
         }
 
-        public async Task<IActionResult> GetRoles()
-        {
-            try
-            {
-
+        public async Task<IActionResult> GetRoles() {
+            try {
                 //..get user IP address
                 var ipAddress = WebHelper.GetCurrentIpAddress();
 
@@ -1570,14 +1651,14 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 PagedResponse<GrcRoleResponse> list = result.Data ?? new();
 
                 var pagedEntities = (list.Entities ?? new List<GrcRoleResponse>())
-                    .Skip((request.PageIndex - 1) * request.PageSize)
-                    .Take(request.PageSize)
                     .Select(role => new {
                         id = role.Id,
                         roleName = role.RoleName,
                         roleDescription = role.Description,
                         groupName = role.GroupName,
-                        isActive = !role.IsDeleted,
+                        isDeleted = role.IsDeleted,
+                        isApproved = role.IsApproved,
+                        isVerified = role.IsVerified,
                         createdOn = role.CreatedOn,
                         createdBy = role.CreatedBy,
                         modifiedOn = role.ModifiedOn,
@@ -1632,14 +1713,14 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 if (result.HasError || result.Data == null)
                     return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create role record" });
 
-                var user = result.Data;
+                var role = result.Data;
                 return Ok(new
                 {
-                    success = user.Status,
-                    message = user.Message,
+                    success = role.Status,
+                    message = role.Message,
                     data = new
                     {
-                        status = user.Status,
+                        status = role.Status,
                     }
                 });
 
@@ -1653,7 +1734,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Update User", "User updated user record", ActivityTypeDefaults.USER_EDITED, "SystemUser")]
+        [LogActivityResult("Update System Role", "User updated system role", ActivityTypeDefaults.ROLE_EDITED, "SystemRole")]
         public async Task<IActionResult> UpdateRole([FromBody] RoleViewModel request)
         {
             try
@@ -1706,7 +1787,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 if (id == 0) return BadRequest(new { success = false, message = "Role Id is required" });
 
                 var currentUser = userResponse.Data;
-                GrcIdRequst request = new()
+                GrcIdRequest request = new()
                 {
                     RecordId = id,
                     UserId = currentUser.UserId,
@@ -1723,7 +1804,318 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             }
             catch (Exception ex)
             {
-                Logger.LogActivity($"Error deleting user record: {ex.Message}", "ERROR");
+                Logger.LogActivity($"Error deleting system role record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        #endregion
+
+        #region System Role Groups
+
+        [LogActivityResult("Retrieve Role Group", "User retrieved role group", ActivityTypeDefaults.ROLE_GROUP_RETRIEVED, "SystemRoleGroup")]
+        public async Task<IActionResult> GetRoleGroup(long id)
+        {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0)
+                {
+                    return BadRequest(new { success = false, message = "Role Group Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                var result = await _accessService.GetRoleGroupByIdAsync(currentUser.UserId, id, ipAddress);
+                if (result.HasError || result.Data == null)
+                {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving role group";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var roleGroup = result.Data;
+                var userRecord = new
+                {
+                    id = roleGroup.Id,
+                    roleName = roleGroup.GroupName,
+                    roleDescription = roleGroup.Description,
+                    groupName = roleGroup.GroupName,
+                    department = roleGroup.DepartmentName,
+                    groupScope = roleGroup.GroupScope,
+                    groupCategory = roleGroup.GroupCategory,
+                    groupType = roleGroup.GroupType,
+                    isDeleted = roleGroup.IsDeleted,
+                    isVerified = roleGroup.IsVerified,
+                    isApproved = roleGroup.IsApproved,
+                    createdOn = roleGroup.CreatedOn,
+                    createdBy = roleGroup.CreatedBy,
+                    modifiedOn = roleGroup.ModifiedOn,
+                    modifiedBy = roleGroup.ModifiedBy
+                };
+
+                return Ok(new { success = true, data = userRecord });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving role group: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        public async Task<IActionResult> GetRoleGroups() {
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError)
+                {
+                    Logger.LogActivity($"ROLE LIST ERROR: Failed to retrieve current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                var currentUser = grcResponse.Data;
+                if (currentUser == null)
+                {
+                    //..session has expired
+                    return RedirectToAction("Login", "Application");
+                }
+                GrcRequest request = new()
+                {
+                    UserId = currentUser.UserId,
+                    Action = Activity.RETRIVEROLEGROUPS.GetDescription(),
+                    IPAddress = ipAddress,
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>()
+                };
+
+                //..get list of all role groups
+                var rolesData = await _accessService.GetRoleGroupsAsync(request);
+
+                List<GrcRoleGroupResponse> roleGroups;
+                if (rolesData.HasError)
+                {
+                    roleGroups = new();
+                    Logger.LogActivity($"ROLES DATA ERROR: Failed to retrieve system role groups - {JsonSerializer.Serialize(rolesData)}");
+                }
+                else
+                {
+                    roleGroups = rolesData.Data.Data;
+                    Logger.LogActivity($"ROLE GROUP DATA - {JsonSerializer.Serialize(roleGroups)}");
+                }
+
+                //..get ajax data
+                List<object> listData = new();
+                if (roleGroups.Any())
+                {
+                    listData = roleGroups.Select(roleGroup => new {
+                        id = roleGroup.Id,
+                        groupName = roleGroup.GroupName,
+                        groupDescription = roleGroup.Description,
+                        department = roleGroup.DepartmentName,
+                        groupScope = roleGroup.GroupScope,
+                        groupCategory = roleGroup.GroupCategory,
+                        groupType = roleGroup.GroupType,
+                        isDeleted = roleGroup.IsDeleted,
+                        isVerified = roleGroup.IsVerified,
+                        isApproved = roleGroup.IsApproved,
+                        createdOn = roleGroup.CreatedOn,
+                        createdBy = roleGroup.CreatedBy,
+                        modifiedOn = roleGroup.ModifiedOn,
+                        modifiedBy = roleGroup.ModifiedBy
+                    }).Cast<object>().ToList();
+                }
+
+                return Json(new { data = listData });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving roles: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        public async Task<IActionResult> GetPagedRoleGroups([FromBody] TableListRequest request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError) Logger.LogActivity("ROLE GROUP DATA ERROR: Failed to get role group");
+
+                var currentUser = userResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.RETRIVEROLEGROUPS.GetDescription();
+
+                var result = await _accessService.GetPagedRoleGroupsAsync(request);
+                PagedResponse<GrcRoleGroupResponse> list = result.Data ?? new();
+
+                var pagedEntities = (list.Entities ?? new List<GrcRoleGroupResponse>())
+                    .Select(roleGroup => new {
+                        id = roleGroup.Id,
+                        groupName = roleGroup.GroupName,
+                        groupDescription = roleGroup.Description,
+                        department = roleGroup.DepartmentName,
+                        groupScope = roleGroup.GroupScope,
+                        groupCategory = roleGroup.GroupCategory,
+                        groupType = roleGroup.GroupType,
+                        isDeleted = roleGroup.IsDeleted,
+                        isVerified = roleGroup.IsVerified,
+                        isApproved = roleGroup.IsApproved,
+                        createdOn = roleGroup.CreatedOn,
+                        createdBy = roleGroup.CreatedBy,
+                        modifiedOn = roleGroup.ModifiedOn,
+                        modifiedBy = roleGroup.ModifiedBy
+                    }).ToList();
+
+                var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
+
+                return Ok(new { last_page = totalPages, total_records = list.TotalCount, data = pagedEntities });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving system role groups: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Ok(new { last_page = 0, data = new List<object>() });
+            }
+        }
+
+        [HttpPost]
+        [LogActivityResult("Add System Role Group", "User added system role group", ActivityTypeDefaults.ROLE_GROUP_ADDED, "SystemRoleGroup")]
+        public async Task<IActionResult> CreateRoleGroup([FromBody] RoleGroupViewModel request) {
+            try {
+                if (!ModelState.IsValid) {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+
+                    string combinedErrors = string.Join("; ", errors);
+                    return Ok(new
+                    {
+                        success = false,
+                        message = $"Please correct these errors: {combinedErrors}",
+                        data = (object)null
+                    });
+                }
+
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                if (request == null)
+                {
+                    return Ok(new { success = false, message = "Invalid role group data" });
+                }
+
+                var result = await _accessService.CreateRoleGroupAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create role group" });
+
+                var roleGroup = result.Data;
+                return Ok(new
+                {
+                    success = roleGroup.Status,
+                    message = roleGroup.Message,
+                    data = new
+                    {
+                        status = roleGroup.Status,
+                    }
+                });
+
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error create role group: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        [HttpPost]
+        [LogActivityResult("Update System Role Group", "User updated system role group", ActivityTypeDefaults.ROLE_GROUP_EDITED, "SystemRoleGroup")]
+        public async Task<IActionResult> UpdateRoleGroup([FromBody] RoleGroupViewModel request)
+        {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                if (request == null)
+                {
+                    return Ok(new { success = false, message = "Invalid user data" });
+                }
+
+                var result = await _accessService.UpdateRoleGroupAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update system role group" });
+
+                var data = result.Data;
+                return Ok(new
+                {
+                    success = data.Status,
+                    message = data.Message,
+                    data = new
+                    {
+                        status = data.Status,
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error update system role group: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        [HttpPost]
+        [LogActivityResult("Delete System Role Group", "User deleted System Role Group", ActivityTypeDefaults.ROLE_GROUP_DELETED, "SystemRoleGroup")]
+        public async Task<IActionResult> DeleteRoleGroup(long id)
+        {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                if (id == 0) return BadRequest(new { success = false, message = "Role Group Id is required" });
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new()
+                {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.ROLE_GROUP_DELETED.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = true
+                };
+
+                var result = await _accessService.DeleteRoleGroupAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to delete system role group" });
+
+                return Ok(new { success = result.Data.Status, message = result.Data.Message });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error deleting role group record: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
                 return Json(new { results = new List<object>() });
             }
@@ -1851,7 +2243,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             TempData["Message"] = JsonSerializer.Serialize(notificationMessage); 
         }
         
-        protected async Task<GrcResponse<DepartmentUnitModel>> GetUnitByIdAsync(GrcIdRequst request) {
+        protected async Task<GrcResponse<DepartmentUnitModel>> GetUnitByIdAsync(GrcIdRequest request) {
             try {
                 return await _departmentUnitService.GetUnitById(request);
             } catch (Exception ex) {

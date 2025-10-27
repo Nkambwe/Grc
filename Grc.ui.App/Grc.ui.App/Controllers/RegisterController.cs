@@ -93,7 +93,7 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 var currentUser = userResponse.Data;
-                GrcIdRequst request = new()
+                GrcIdRequest request = new()
                 {
                     RecordId = id,
                     UserId = currentUser.UserId,
@@ -265,7 +265,7 @@ namespace Grc.ui.App.Controllers {
                 if (id == 0) return BadRequest(new { success = false, message = "Task Id is required" });
 
                 var currentUser = userResponse.Data;
-                GrcIdRequst request = new()
+                GrcIdRequest request = new()
                 {
                     RecordId = id,
                     UserId = currentUser.UserId,

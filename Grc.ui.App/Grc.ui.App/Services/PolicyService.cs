@@ -160,7 +160,7 @@ namespace Grc.ui.App.Services {
                   mapper, webHelper, sessionManager, errorFactory, errorService) {
         }
 
-        public async Task<GrcResponse<PolicyRegisterResponse>> GetPolicyAsync(GrcIdRequst getRequest) {
+        public async Task<GrcResponse<PolicyRegisterResponse>> GetPolicyAsync(GrcIdRequest getRequest) {
             return await Task.FromResult(new GrcResponse<PolicyRegisterResponse>(query.FirstOrDefault(q => q.Id == getRequest.RecordId)));
         }
 
@@ -242,7 +242,7 @@ namespace Grc.ui.App.Services {
             return await Task.FromResult(new GrcResponse<PolicyRegisterResponse>(record));
         }
 
-        public async Task<GrcResponse<ServiceResponse>> DeletePolicyAsync(GrcIdRequst deleteRequest)
+        public async Task<GrcResponse<ServiceResponse>> DeletePolicyAsync(GrcIdRequest deleteRequest)
         {
             var record = query.FirstOrDefault(r => r.Id == deleteRequest.RecordId);
             if (record == null)

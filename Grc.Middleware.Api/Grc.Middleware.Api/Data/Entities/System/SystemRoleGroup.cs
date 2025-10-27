@@ -21,6 +21,7 @@ namespace Grc.Middleware.Api.Data.Entities.System {
         public bool? IsVerified { get; set; }
 
         public virtual ICollection<SystemRole> Roles { get; set; }
+        public virtual ICollection<SystemRoleGroupPermissionSet> PermissionSets { get; set; } = new List<SystemRoleGroupPermissionSet>();
         public override bool Equals(object obj) {
 
             if (obj is not SystemRoleGroup)

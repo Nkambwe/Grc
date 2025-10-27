@@ -2,8 +2,15 @@
 
     public class ActivityTypeDefaults {
 
+        #region User Action Activities
+
+        public const string ACTIVITY_DELETED = "System.Activity.Deleted";
+        public const string ACTIVITY_RETRIEVED = "System.Activity.Retrieve";
+
+        #endregion
+
         #region User Activities
-       
+
         public const string USER_ADDED = "User.Added";
         public const string USER_EDITED = "User.Edited";
         public const string USER_DELETED = "User.Deleted";
@@ -26,6 +33,18 @@
         public const string ROLE_REMOVED_FROM_USER = "Role.Revoked";
         public const string ROLE_RETRIEVED = "Role.Retrieve";
         public const string ROLE_APPROVED = "Role.Approved";
+        #endregion
+
+        #region Role Group Activities
+
+        public const string ROLE_GROUP_ADDED = "Role.Group.Added";
+        public const string ROLE_GROUP_EDITED = "Role.Group.Edited";
+        public const string ROLE_GROUP_DELETED = "Role.Group.Deleted";
+        public const string ROLE_GROUP_ASSIGNED_TO_ROLE = "Role.Group.Assigned";
+        public const string ROLE_GROUP_REMOVED_FROM_ROLE = "Role.Group.Revoked";
+        public const string ROLE_GROUP_RETRIEVED = "Role.Group.Retrieve";
+        public const string ROLE_GROUP_APPROVED = "Role.Group.Approved";
+
         #endregion
 
         #region Permission Activities

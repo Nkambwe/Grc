@@ -161,5 +161,21 @@ namespace Grc.ui.App.Enums {
         ROLE_APPROVED = 77,
         [Description("System Role verified")]
         ROLE_VERIFIED = 78,
+        [Description("Retrieve role group by ID")]
+        RETRIVEROLEGROUPBYID = 79,
+        [Description("Retrieve all system role groups")]
+        RETRIVEROLEGROUPS = 80,
+        [Description("System role group added")]
+        ROLE_GROUP_ADDED = 90,
+        [Description("System role group editted")]
+        ROLE_GROUP_EDITED = 91,
+        [Description("System role group deleted")]
+        ROLE_GROUP_DELETED = 92,
+        [Description("System role group approved")]
+        ROLE_GROUP_APPROVED = 93,
+        [Description("System role group verified")]
+        ROLE_GROUP_VERIFIED = 94,
+        [Description("Get a list of all system activities")]
+        RETRIEVEALLSYSTEMACTIVITIES = 95,
     }
 }

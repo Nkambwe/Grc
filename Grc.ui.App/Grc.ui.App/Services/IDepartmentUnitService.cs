@@ -5,7 +5,7 @@ using Grc.ui.App.Models;
 
 namespace Grc.ui.App.Services {
     public interface IDepartmentUnitService : IGrcBaseService {
-        Task<GrcResponse<DepartmentUnitModel>> GetUnitById(GrcIdRequst request);
+        Task<GrcResponse<DepartmentUnitModel>> GetUnitById(GrcIdRequest request);
         Task<GrcResponse<List<DepartmentUnitModel>>> GetUnitsAsync(GrcRequest request);
         Task<GrcResponse<PagedResponse<DepartmentUnitModel>>> GetDepartmentUnitsAsync(TableListRequest request);
         Task<GrcResponse<ServiceResponse>> InsertDepartmentUnitAsync(GrcInsertRequest<DepartmentUnitRequest> data);

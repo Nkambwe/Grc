@@ -30,7 +30,7 @@ namespace Grc.ui.App.Services {
                   mapper, webHelper, sessionManager, errorFactory, errorService) {
         }
 
-        public async Task<GrcResponse<OwnerResponse>> GetOwnerAsync(GrcIdRequst getRequest)
+        public async Task<GrcResponse<OwnerResponse>> GetOwnerAsync(GrcIdRequest getRequest)
         {
             return await Task.FromResult(new GrcResponse<OwnerResponse>(query.FirstOrDefault()));
         }
@@ -102,7 +102,7 @@ namespace Grc.ui.App.Services {
             return await Task.FromResult(new GrcResponse<OwnerResponse>(record));
         }
 
-        public async Task<GrcResponse<ServiceResponse>> DeleteOwnerAsync(GrcIdRequst deleteRequest)
+        public async Task<GrcResponse<ServiceResponse>> DeleteOwnerAsync(GrcIdRequest deleteRequest)
         {
             var record = query.FirstOrDefault(r => r.Id == deleteRequest.RecordId);
             if (record == null)

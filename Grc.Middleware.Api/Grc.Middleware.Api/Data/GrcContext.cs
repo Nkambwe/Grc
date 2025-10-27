@@ -105,7 +105,8 @@ namespace Grc.Middleware.Api.Data {
             SystemPermissionEntityConfiguration.Configure(modelBuilder.Entity<SystemPermission>());
             SystemPermissionSetEntityConfiguration.Configure(modelBuilder.Entity<SystemPermissionSet>());
             SystemPermissionPermissionSetEntityConfiguration.Configure(modelBuilder.Entity<SystemPermissionPermissionSet>());
-
+            SystemRolePermissionSetEntityConfiguration.Configure(modelBuilder.Entity<SystemRolePermissionSet>());
+            SystemRoleGroupPermissionSetEntityConfiguration.Configure(modelBuilder.Entity<SystemRoleGroupPermissionSet>());
             base.OnModelCreating(modelBuilder);
         }
     }

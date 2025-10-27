@@ -1,4 +1,5 @@
-﻿using Grc.Middleware.Api.Data.Entities.System;
+﻿using Grc.Middleware.Api.Data.Entities.Logging;
+using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
@@ -120,6 +121,15 @@ namespace Grc.Middleware.Api.Services {
         #endregion
 
         #region System Permissions
+        Task<List<SystemPermission>> GetAllPermissionsAsync();
+
+        Task<List<SystemPermission>> GetRolePermissionsAsync(RolePermissionRequest request);
+
+        Task<bool> UpdateRolePermissionSetsAsync(long roleId, List<long> newPermissionSetIds);
+
+        Task<List<SystemPermission>> GetPermissionSetPermissionsAsync(long permissionSetId, bool includeDeleted = false);
+
+        Task<bool> UpdatePermissionSetPermissionsAsync(long permissionSetId, List<long> newPermissionIds);
 
         Task<PagedResult<SystemPermission>> PagedPermissionsAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false);
 
@@ -127,7 +137,14 @@ namespace Grc.Middleware.Api.Services {
 
         #endregion
 
-        #region System Permissions
+        #region System Permission Sets
+
+        Task<bool> PermissionSetExistsAsync(Expression<Func<SystemPermissionSet, bool>> expression);
+
+        Task<List<SystemPermissionSet>> GetRoleGroupPermissionSetsAsync(long roleGroupId, bool includePermissions = false);
+        
+        Task<bool> UpdateRoleGroupPermissionSetsAsync(long roleGroupId, List<long> newPermissionSetIds);
+
         Task<bool> InsertPermissionSetAsync(PermissionSetRequest request);
 
         bool UpdatePermissionSet(PermissionSetRequest request, bool includeDeleted = false);
@@ -138,9 +155,19 @@ namespace Grc.Middleware.Api.Services {
 
         Task<bool> DeletePermissionSetAsync(IdRequest request);
 
+        Task<List<SystemPermissionSet>> GetAllPermissionSetsAsync();
+
         Task<PagedResult<SystemPermissionSet>> PagedPermissionSetAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false);
 
         Task<PagedResult<SystemPermissionSet>> PageAllPermissionSetAsync(CancellationToken token, int page, int size, Expression<Func<SystemPermissionSet, bool>> predicate = null, bool includeDeleted = false);
+
+        #endregion
+
+        #region System Activities
+
+        Task<ActivityLog> GetActivityLogAsync(IdRequest request);
+
+        Task<PagedResult<ActivityLog>> GetPagedActivityLogAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false);
 
         #endregion
 

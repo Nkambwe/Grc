@@ -31,7 +31,7 @@ namespace Grc.ui.App.Services {
                   webHelper, sessionManager, errorFactory, errorService) {
         }
 
-        public async Task<GrcResponse<DocumentTypeResponse>> GetTypeAsync(GrcIdRequst getRequest)
+        public async Task<GrcResponse<DocumentTypeResponse>> GetTypeAsync(GrcIdRequest getRequest)
         {
             return await Task.FromResult(new GrcResponse<DocumentTypeResponse>(query.FirstOrDefault()));
         }
@@ -98,7 +98,7 @@ namespace Grc.ui.App.Services {
             return await Task.FromResult(new GrcResponse<DocumentTypeResponse>(record));
         }
 
-        public async Task<GrcResponse<ServiceResponse>> DeleteTypeAsync(GrcIdRequst deleteRequest)
+        public async Task<GrcResponse<ServiceResponse>> DeleteTypeAsync(GrcIdRequest deleteRequest)
         {
             var record = query.FirstOrDefault(r => r.Id == deleteRequest.RecordId);
             if (record == null)
