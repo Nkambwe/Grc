@@ -138,6 +138,7 @@ namespace Grc.Middleware.Api.Services {
         #endregion
 
         #region System Permission Sets
+        Task<SystemPermissionSet> GetPermissionSetAsync(IdRequest request);
 
         Task<bool> PermissionSetExistsAsync(Expression<Func<SystemPermissionSet, bool>> expression);
 

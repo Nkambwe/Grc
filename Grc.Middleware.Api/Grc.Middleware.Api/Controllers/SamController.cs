@@ -11,7 +11,6 @@ using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Concurrent;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 
 namespace Grc.Middleware.Api.Controllers {
 
@@ -2954,11 +2953,127 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
+        #endregion
+
+        #region Permission Sets
+
+        [HttpPost("sam/permissions/retrieve-permission")]
+        public async Task<IActionResult> GetPermissionSetId([FromBody] IdRequest request)
+        {
+            try
+            {
+                Logger.LogActivity("Get permission set by ID", "INFO");
+
+                if (request == null)
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PermissionSetResponse>(error));
+                }
+
+                if (request.RecordId == 0)
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request Permission Set ID is required",
+                        "Invalid request Permission Set ID"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PermissionSetResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var set = await _accessService.GetPermissionSetAsync(request);
+                if (set != null) {
+                    //..map response
+                    var setRecord = new PermissionSetResponse {
+                        Id = set.Id,
+                        SetName = set.SetName,
+                        CreatedOn = set.CreatedOn,
+                        CreatedBy = set.CreatedBy ?? string.Empty,
+                        ModifiedOn = set.LastModifiedOn,
+                        ModifiedBy = set.LastModifiedBy ?? string.Empty,
+                        Permissions = set.Permissions
+                        .Select(p => new PermissionResponse {
+                            Id = p.Permission.Id,
+                            PermissionName = p.Permission.PermissionName,
+                            PermissionDescription = p.Permission.Description
+                        })
+                        .DistinctBy(p => p.Id)
+                        .ToList()
+                    };
+
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(set)}");
+                    return Ok(new GrcResponse<PermissionSetResponse>(setRecord));
+                }
+                else
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.FAILED,
+                        "Permission Set not found",
+                        "No permission set matched the provided ID"
+                    );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PermissionSetResponse>(error));
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var conpany = await CompanyService.GetDefaultCompanyAsync();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "MIDDLEWARE-SAM-COTROLLER",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                var result = await SystemErrorService.SaveErrorAsync(errorObj);
+                var response = new GeneralResponse();
+                if (result)
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Error captured and saved successfully";
+                    Logger.LogActivity($"SAM-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+                else
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to capture error to database. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE-SAM-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                var error = new ResponseError(
+                    ResponseCodes.BADREQUEST,
+                    "Oops! Something went wrong",
+                    $"System Error - {ex.Message}"
+                );
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<UserResponse>(error));
+            }
+        }
+
         [HttpPost("sam/permissions/get-permissionsets")]
-        public async Task<IActionResult> GetPermissionSets([FromBody] GeneralRequest request) {
-            try {
+        public async Task<IActionResult> GetPermissionSets([FromBody] GeneralRequest request)
+        {
+            try
+            {
                 Logger.LogActivity($"{request.Action}", "INFO");
-                if (request == null) {
+                if (request == null)
+                {
                     var error = new ResponseError(
                         ResponseCodes.BADREQUEST,
                         "Request record cannot be empty",
@@ -2970,7 +3085,8 @@ namespace Grc.Middleware.Api.Controllers {
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
                 var permissionSets = await _accessService.GetAllPermissionSetsAsync();
-                if (permissionSets == null || !permissionSets.Any()) {
+                if (permissionSets == null || !permissionSets.Any())
+                {
                     var error = new ResponseError(
                         ResponseCodes.SUCCESS,
                         "No data",
@@ -2985,17 +3101,20 @@ namespace Grc.Middleware.Api.Controllers {
                 var permissionData = permissionSets.Select(Mapper.Map<PermissionSetResponse>).ToList();
 
                 Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: Retrieved {permissionData.Count} system permissions (IDs: {string.Join(", ", permissionData.Select(u => u.Id))})");
-                return Ok(new GrcResponse<ListResponse<PermissionSetResponse>>(new ListResponse<PermissionSetResponse>() {
+                return Ok(new GrcResponse<ListResponse<PermissionSetResponse>>(new ListResponse<PermissionSetResponse>()
+                {
                     Data = permissionData
                 }));
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 Logger.LogActivity($"{ex.Message}", "ERROR");
                 Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
 
                 var conpany = await CompanyService.GetDefaultCompanyAsync();
                 long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new() {
+                SystemError errorObj = new()
+                {
                     ErrorMessage = ex.Message,
                     ErrorSource = "SUPPORT-MIDDLEWARE-COTROLLER",
                     StackTrace = ex.StackTrace,
@@ -3032,12 +3151,82 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
-        [HttpPost("sam/permissions/updaterole-permissionsets")]
-        public async Task<IActionResult> UpdatePermissionSets([FromBody] PermissionSetRequest request) {
-            try {
+        [HttpPost("sam/permissions/create-permissionset")]
+        public async Task<IActionResult> CreatePermissionSet([FromBody] PermissionSetRequest request) {
+            try
+            {
+                Logger.LogActivity("Creating new permission set", "INFO");
+                if (request == null)
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "The permission set record cannot be null"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!string.IsNullOrWhiteSpace(request.SetName)) {
+                    if (await _accessService.PermissionSetExistsAsync(r => r.SetName == request.SetName)) {
+                        var error = new ResponseError(
+                            ResponseCodes.DUPLICATE,
+                            "Duplicate Record",
+                            "Another Permission Set found with same set name"
+                        );
+
+                        Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<GeneralResponse>(error));
+                    }
+                }
+
+                //..create permission set
+                var result = await _accessService.InsertPermissionSetAsync(request);
+                var response = new GeneralResponse();
+                if (result)
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Permission Set saved successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+                else
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to save permission set record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var error = new ResponseError(
+                    ResponseCodes.BADREQUEST,
+                    $"Oops! Something thing went wrong",
+                    $"System Error - {ex.Message}"
+                );
+
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("sam/permissions/update-permissionsets")]
+        public async Task<IActionResult> UpdatePermissionSets([FromBody] PermissionSetRequest request)
+        {
+            try
+            {
                 Logger.LogActivity("Get permission sets", "INFO");
 
-                if (request == null) {
+                if (request == null)
+                {
                     var error = new ResponseError(
                         ResponseCodes.BADREQUEST,
                         "Request record cannot be empty",
@@ -3059,7 +3248,8 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 //..check if permission set exist
-                if (!await _accessService.PermissionSetExistsAsync(r => r.Id == request.Id)) {
+                if (!await _accessService.PermissionSetExistsAsync(r => r.Id == request.Id))
+                {
                     var error = new ResponseError(
                         ResponseCodes.NOTFOUND,
                         "Record Not Found",
@@ -3070,7 +3260,8 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
-                if (request.PermissionSets == null || request.PermissionSets.Count == 0) {
+                if (request.Permissions == null || request.Permissions.Count == 0)
+                {
                     var error = new ResponseError(
                         ResponseCodes.BADREQUEST,
                         "No Permission sets",
@@ -3085,7 +3276,7 @@ namespace Grc.Middleware.Api.Controllers {
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
 
                 //..get permissions
-                var ids = request.PermissionSets.Select(p => p.Id).ToList();
+                var ids = request.Permissions;
                 var result = await _accessService.UpdateRolePermissionSetsAsync(request.Id, ids);
 
                 var response = new GeneralResponse();
@@ -3106,7 +3297,8 @@ namespace Grc.Middleware.Api.Controllers {
 
                 return Ok(new GrcResponse<GeneralResponse>(response));
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 Logger.LogActivity($"{ex.Message}", "ERROR");
                 Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
 
@@ -3147,6 +3339,70 @@ namespace Grc.Middleware.Api.Controllers {
                 );
                 Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
                 return Ok(new GrcResponse<List<PermissionResponse>>(error));
+            }
+        }
+
+        [HttpPost("sam/permissions/delete-permissionset")]
+        public async Task<IActionResult> DeletePermissionSet([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
+
+                //..check if record exists
+                var response = new GeneralResponse();
+                if (!await _accessService.PermissionSetExistsAsync(r => r.Id == request.RecordId)) {
+                    response.Status = false;
+                    response.StatusCode = (int)ResponseCodes.NOTFOUND;
+                    response.Message = $"Record Not Found! No permission set record found";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    return Ok(new GrcResponse<GeneralResponse>(response));
+                }
+
+                //..delete permission set
+                var status = await _accessService.DeletePermissionSetAsync(request);
+                if (!status)
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.FAILED,
+                        "Failed to delete permission set",
+                        "An error occurred! could delete permission set");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse() { Status = status }));
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error deleting permission set by user {request.UserId}: {ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var conpany = await CompanyService.GetDefaultCompanyAsync();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "MIDDLEWARE-COTROLLER",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                var result = await SystemErrorService.SaveErrorAsync(errorObj);
+                var response = new GeneralResponse();
+                if (result)
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Error captured and saved successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+                else
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to capture error to database. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return StatusCode(500, "An error occurred while deleting unit.");
             }
         }
 

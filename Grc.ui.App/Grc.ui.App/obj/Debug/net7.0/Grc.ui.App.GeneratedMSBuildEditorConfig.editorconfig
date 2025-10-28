@@ -68,12 +68,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU3VwcG9ydFxCdWdzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Areas/Admin/Views/Support/DeletedUsers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU3VwcG9ydFxEZWxldGVkVXNlcnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Areas/Admin/Views/Support/Departments.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU3VwcG9ydFxEZXBhcnRtZW50cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Areas/Admin/Views/Support/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU3VwcG9ydFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Areas/Admin/Views/Support/LockedUsers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU3VwcG9ydFxMb2NrZWRVc2Vycy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Areas/Admin/Views/Support/NewBugs.cshtml]
@@ -90,6 +98,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Areas/Admin/Views/Support/RoleDelegation.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU3VwcG9ydFxSb2xlRGVsZWdhdGlvbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Areas/Admin/Views/Support/RoleGroupPermissions.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU3VwcG9ydFxSb2xlR3JvdXBQZXJtaXNzaW9ucy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Areas/Admin/Views/Support/RoleGroups.cshtml]
@@ -110,6 +122,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Areas/Admin/Views/Support/UnapprovedUsers.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU3VwcG9ydFxVbmFwcHJvdmVkVXNlcnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Areas/Admin/Views/Support/UnverifiedUser.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU3VwcG9ydFxVbnZlcmlmaWVkVXNlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Areas/Admin/Views/Support/UserData.cshtml]
@@ -404,6 +420,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQWNjb3VudFN2Y0Rhc2hib2FyZFxEZWZhdWx0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/ActiveUserList/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQWN0aXZlVXNlckxpc3RcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/ActivitiesList/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQWN0aXZpdGllc0xpc3RcRGVmYXVsdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -500,6 +520,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQ3VzdG9tZXJFeERhc2hib2FyZFxEZWZhdWx0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/DeletedUserList/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcRGVsZXRlZFVzZXJMaXN0XERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/DepartmentList/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcRGVwYXJ0bWVudExpc3RcRGVmYXVsdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -522,6 +546,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/EncryptionList/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcRW5jcnlwdGlvbkxpc3RcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/LockedUserList/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcTG9ja2VkVXNlckxpc3RcRGVmYXVsdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/PasswordConfig/Default.cshtml]
@@ -572,6 +600,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUm9sZUdyb3VwTGlzdFxEZWZhdWx0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/RoleGroupPermissionsList/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUm9sZUdyb3VwUGVybWlzc2lvbnNMaXN0XERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/RoleList/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUm9sZUxpc3RcRGVmYXVsdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -584,8 +616,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcVG90YWxQcm9jZXNzZXNEYXNoYm9hcmRcRGVmYXVsdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/UnapprovedUserList/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcVW5hcHByb3ZlZFVzZXJMaXN0XERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/UnchangedProcessesDashboard/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcVW5jaGFuZ2VkUHJvY2Vzc2VzRGFzaGJvYXJkXERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/UnverifiedUserList/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcVW52ZXJpZmllZFVzZXJMaXN0XERlZmF1bHQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/UserDataForm/Default.cshtml]

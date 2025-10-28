@@ -1144,7 +1144,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 var exception = uow.AuditExceptionRepository.Get(t => t.Id == request.RecordId);
                 if (exception != null) {
                     //..mark as delete this audit exception
-                   _ = uow.AuditExceptionRepository.Delete(exception, request.IsDeleted);
+                   _ = uow.AuditExceptionRepository.Delete(exception, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(exception).State;
@@ -1197,7 +1197,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 if (exception != null)
                 {
                     //..mark as delete this audit exception
-                    _ = await uow.AuditExceptionRepository.DeleteAsync(exception, request.IsDeleted);
+                    _ = await uow.AuditExceptionRepository.DeleteAsync(exception, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(exception).State;

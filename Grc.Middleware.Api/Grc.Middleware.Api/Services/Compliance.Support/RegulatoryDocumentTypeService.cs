@@ -1167,7 +1167,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support
                 if (types != null)
                 {
                     //..mark as delete this  Document Type
-                    _ = uow.RegulatoryDocumentTypeRepository.Delete(types, request.IsDeleted);
+                    _ = uow.RegulatoryDocumentTypeRepository.Delete(types, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(types).State;
@@ -1224,7 +1224,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support
                 if (typestask != null)
                 {
                     //..mark as delete this  Document Type
-                    _ = await uow.RegulatoryDocumentTypeRepository.DeleteAsync(typestask, request.IsDeleted);
+                    _ = await uow.RegulatoryDocumentTypeRepository.DeleteAsync(typestask, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(typestask).State;

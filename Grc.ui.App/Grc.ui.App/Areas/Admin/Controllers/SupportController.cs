@@ -153,7 +153,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             return View(model);
         }
 
-        public async Task<IActionResult> DisabledUsers() {
+        public async Task<IActionResult> LockedUsers() {
             var model = new AdminDashboardModel();
             try {
                 //..get user IP address
@@ -199,6 +199,66 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
             } catch(Exception ex){ 
                 await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> UnverifiedUser() {
+            var model = new AdminDashboardModel();
+            try
+            {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError)
+                {
+                    await ProcessErrorAsync(grcResponse.Error.Message, "SUPPORT-CONTROLLER", string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.IPAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            }
+            catch (Exception ex)
+            {
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> DeletedUsers() {
+            var model = new AdminDashboardModel();
+            try
+            {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError)
+                {
+                    await ProcessErrorAsync(grcResponse.Error.Message, "SUPPORT-CONTROLLER", string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.IPAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            }
+            catch (Exception ex)
+            {
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
                 return View(model);
             }
 
@@ -453,6 +513,37 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         public async Task<IActionResult> RolePermissions()
+        {
+            var model = new AdminDashboardModel();
+            try
+            {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError)
+                {
+                    await ProcessErrorAsync(grcResponse.Error.Message, "SUPPORT-CONTROLLER", string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.IPAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            }
+            catch (Exception ex)
+            {
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> RoleGroupPermissions()
         {
             var model = new AdminDashboardModel();
             try
@@ -1961,25 +2052,49 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 PagedResponse<GrcRoleGroupResponse> list = result.Data ?? new();
 
                 var pagedEntities = (list.Entities ?? new List<GrcRoleGroupResponse>())
-                    .Select(roleGroup => new {
-                        id = roleGroup.Id,
-                        groupName = roleGroup.GroupName,
-                        groupDescription = roleGroup.Description,
-                        department = roleGroup.DepartmentName,
-                        groupScope = roleGroup.GroupScope,
-                        groupCategory = roleGroup.GroupCategory,
-                        groupType = roleGroup.GroupType,
-                        isDeleted = roleGroup.IsDeleted,
-                        isVerified = roleGroup.IsVerified,
-                        isApproved = roleGroup.IsApproved,
-                        createdOn = roleGroup.CreatedOn,
-                        createdBy = roleGroup.CreatedBy,
-                        modifiedOn = roleGroup.ModifiedOn,
-                        modifiedBy = roleGroup.ModifiedBy
-                    }).ToList();
+                .Select(roleGroup => new {
+                    id = roleGroup.Id,
+                    groupName = roleGroup.GroupName,
+                    groupDescription = roleGroup.Description,
+                    department = roleGroup.DepartmentName,
+                    groupScope = roleGroup.GroupScope,
+                    groupCategory = roleGroup.GroupCategory,
+                    groupType = roleGroup.GroupType,
+                    isDeleted = roleGroup.IsDeleted,
+                    isVerified = roleGroup.IsVerified,
+                    isApproved = roleGroup.IsApproved,
+                    createdOn = roleGroup.CreatedOn,
+                    createdBy = roleGroup.CreatedBy,
+                    modifiedOn = roleGroup.ModifiedOn,
+                    modifiedBy = roleGroup.ModifiedBy,
+                    roles = roleGroup.Roles?.Select(role => new {
+                        id = role.Id,
+                        roleName = role.RoleName,
+                        description = role.Description,
+                        groupId = role.GroupId,
+                        groupName = role.GroupName,
+                        groupCategory = role.GroupCategory,
+                        deleted = role.IsDeleted,
+                        verified = role.IsVerified,
+                        approved = role.IsApproved,
+                        createdBy = role.CreatedBy,
+                        createdOn = role.CreatedOn,
+                        modifiedBy = role.ModifiedBy,
+                        modifiedOn = role.ModifiedOn
+                    }).ToList()
+                }).ToList();
+
+                //..handle null roles after projection
+                foreach (var entity in pagedEntities) {
+                    if (entity.roles == null)
+                    {
+                        var anonymousType = entity.GetType();
+                        var rolesProperty = anonymousType.GetProperty("roles");
+                        rolesProperty?.SetValue(entity, new List<object>());
+                    }
+                }
 
                 var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
-
                 return Ok(new { last_page = totalPages, total_records = list.TotalCount, data = pagedEntities });
             }
             catch (Exception ex)
@@ -2087,6 +2202,259 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         [HttpPost]
         [LogActivityResult("Delete System Role Group", "User deleted System Role Group", ActivityTypeDefaults.ROLE_GROUP_DELETED, "SystemRoleGroup")]
         public async Task<IActionResult> DeleteRoleGroup(long id)
+        {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                if (id == 0) return BadRequest(new { success = false, message = "Role Group Id is required" });
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new()
+                {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.ROLE_GROUP_DELETED.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = true
+                };
+
+                var result = await _accessService.DeleteRoleGroupAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to delete system role group" });
+
+                return Ok(new { success = result.Data.Status, message = result.Data.Message });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error deleting role group record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        #endregion
+
+        #region System Permission Sets
+
+        [LogActivityResult("Retrieve Permission Set", "User retrieved Permission Set", ActivityTypeDefaults.PERMISSION_SET_RETRIEVED, "SystemPermissionSet")]
+        public async Task<IActionResult> GetPermissionSet(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0) {
+                    return BadRequest(new { success = false, message = "Permission Set Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                var result = await _accessService.GetPermissionSetIdAsync(currentUser.UserId, id, ipAddress);
+                if (result.HasError || result.Data == null) {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving Permission Set";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var setData = result.Data;
+                var setRecord = new {
+                    id = setData.Id,
+                    setName = setData.SetName,
+                    setDescription = setData.SetDescription,
+                    isDeleted = setData.IsDeleted,
+                    createdOn = setData.CreatedOn,
+                    createdBy = setData.CreatedBy,
+                    modifiedOn = setData.ModifiedOn,
+                    modifiedBy = setData.ModifiedBy
+                };
+
+                return Ok(new { success = true, data = setRecord });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving permission set : {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        public async Task<IActionResult> GetPermissionSets()
+        {
+            try
+            {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError)
+                {
+                    Logger.LogActivity($"PERMISSION SET LIST ERROR: Failed to retrieve current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                var currentUser = grcResponse.Data;
+                if (currentUser == null)
+                {
+                    //..session has expired
+                    return RedirectToAction("Login", "Application");
+                }
+                GrcRequest request = new()
+                {
+                    UserId = currentUser.UserId,
+                    Action = Activity.PERMISSION_SET_RETRIVED.GetDescription(),
+                    IPAddress = ipAddress,
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>()
+                };
+
+                //..get list of all permission sets
+                var setData = await _accessService.GetPermissionSetAsync(request);
+
+                List<GrcPermissionSetResponse> permissionsets;
+                if (setData.HasError)
+                {
+                    permissionsets = new();
+                    Logger.LogActivity($"PERMISSION SET DATA ERROR: Failed to retrieve permission sets - {JsonSerializer.Serialize(setData)}");
+                }
+                else
+                {
+                    permissionsets = setData.Data.Data;
+                    Logger.LogActivity($"PERMISSION SET DATA - {JsonSerializer.Serialize(permissionsets)}");
+                }
+
+                //..get ajax data
+                List<object> listData = new();
+                if (permissionsets.Any())
+                {
+                    listData = permissionsets.Select(set => new {
+                        id = set.Id,
+                        setName = set.SetName,
+                        setDescription = set.SetDescription,
+                        isDeleted = set.IsDeleted,
+                        createdOn = set.CreatedOn,
+                        createdBy = set.CreatedBy,
+                        modifiedOn = set.ModifiedOn,
+                        modifiedBy = set.ModifiedBy
+                    }).Cast<object>().ToList();
+                }
+
+                return Json(new { data = listData });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving permission sets: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        [HttpPost]
+        [LogActivityResult("Add Permission Set", "User added Permission Set", ActivityTypeDefaults.PERMISSION_SET_ADDED, "SystemPermissionSet")]
+        public async Task<IActionResult> CreatePermissionSet([FromBody] GrcPermissionSetViewModel request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+
+                    string combinedErrors = string.Join("; ", errors);
+                    return Ok(new
+                    {
+                        success = false,
+                        message = $"Please correct these errors: {combinedErrors}",
+                        data = (object)null
+                    });
+                }
+
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                if (request == null)
+                {
+                    return Ok(new { success = false, message = "Invalid permission sets data" });
+                }
+
+                var result = await _accessService.CreatePermissionSetAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create permission sets" });
+
+                var roleGroup = result.Data;
+                return Ok(new
+                {
+                    success = roleGroup.Status,
+                    message = roleGroup.Message,
+                    data = new
+                    {
+                        status = roleGroup.Status,
+                    }
+                });
+
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error create role group: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        [HttpPost]
+        [LogActivityResult("Update Permission Set", "User updated Permission Set", ActivityTypeDefaults.PERMISSION_SET_EDITED, "SystemPermissionSet")]
+        public async Task<IActionResult> UpdatePermissionSet([FromBody] GrcPermissionSetViewModel request) {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                if (request == null)
+                {
+                    return Ok(new { success = false, message = "Invalid permission set data" });
+                }
+
+                var result = await _accessService.UpdatePermissionSetAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update permission set" });
+
+                var data = result.Data;
+                return Ok(new
+                {
+                    success = data.Status,
+                    message = data.Message,
+                    data = new
+                    {
+                        status = data.Status,
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error update permission set : {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        [HttpPost]
+        [LogActivityResult("Delete Permission Set", "User deleted Permission Set", ActivityTypeDefaults.PERMISSION_SET_DELETED, "SystemPermissionSet")]
+        public async Task<IActionResult> DeletePermissionSet(long id)
         {
             try
             {

@@ -434,7 +434,7 @@ namespace Grc.Middleware.Api.Services.Organization {
                 var unit = await uow.DepartmentUnitRepository.GetAsync(t => t.Id == request.RecordId);
                 if(unit != null){ 
                     //..mark as deleted this department unit
-                    _= await uow.DepartmentUnitRepository.DeleteAsync(unit, request.IsDeleted);
+                    _= await uow.DepartmentUnitRepository.DeleteAsync(unit, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(unit).State;

@@ -240,10 +240,21 @@
                                 <li class="sidebar-item with-submenu">
                                     <a asp-controller="Support" asp-action="RolePermissions" asp-area="Admin">
                                         <span class="menu-icon">
-                                            <i class="mdi mdi-account-key"></i>
+                                            <i class="mdi mdi-key-chain"></i>
                                         </span>
                                         <span class="sidebar-text">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Permissions.Assign"))
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Permissions.Roles"))
+                                        </span>
+                                    </a>
+                                </li>
+
+                                <li class="sidebar-item with-submenu">
+                                    <a asp-controller="Support" asp-action="RoleGroupPermissions" asp-area="Admin">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-key-link"></i>
+                                        </span>
+                                        <span class="sidebar-text">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Permissions.Group"))
                                         </span>
                                     </a>
                                 </li>

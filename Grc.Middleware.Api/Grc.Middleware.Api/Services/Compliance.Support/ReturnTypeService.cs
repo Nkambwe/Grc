@@ -1168,7 +1168,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
                 if (types != null)
                 {
                     //..mark as delete this  Return Type
-                    _ = uow.ReturnTypeRepository.Delete(types, request.IsDeleted);
+                    _ = uow.ReturnTypeRepository.Delete(types, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(types).State;
@@ -1225,7 +1225,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
                 if (typestask != null)
                 {
                     //..mark as delete this  Return Type
-                    _ = await uow.ReturnTypeRepository.DeleteAsync(typestask, request.IsDeleted);
+                    _ = await uow.ReturnTypeRepository.DeleteAsync(typestask, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(typestask).State;

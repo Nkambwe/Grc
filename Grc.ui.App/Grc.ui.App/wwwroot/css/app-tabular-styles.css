@@ -153,6 +153,59 @@
     visibility: hidden;
 }
 
+.role-permission-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    z-index: 9998;
+}
+
+.admin-role-permission-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 10px;
+    z-index: 9999;
+    display: none;
+}
+
+.permissions-list {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.permission-set {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+    .permission-set h6 {
+        font-weight: bold;
+        color: #007bff;
+    }
+
+.perm-item {
+    margin-left: 20px;
+}
+
+
+
+
+
+
+
 
 .compliant-yes {
     color: #27ae60;

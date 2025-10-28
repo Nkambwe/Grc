@@ -1172,7 +1172,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                 if (tags != null)
                 {
                     //..mark as delete this Process Tag
-                    _ = uow.ProcessTagRepository.Delete(tags, request.IsDeleted);
+                    _ = uow.ProcessTagRepository.Delete(tags, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(tags).State;
@@ -1229,7 +1229,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                 if (tag != null)
                 {
                     //..mark as delete this Process Tag
-                    _ = await uow.ProcessTagRepository.DeleteAsync(tag, request.IsDeleted);
+                    _ = await uow.ProcessTagRepository.DeleteAsync(tag, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(tag).State;

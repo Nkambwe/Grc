@@ -38,7 +38,13 @@ namespace Grc.Middleware.Api.Http.Requests
         public string Action { get; set; }
 
         [JsonPropertyName("permissions")]
-        public List<PermissionRequest> PermissionSets { get; set; } = new List<PermissionRequest>();
+        public List<long> Permissions { get; set; } = new();
+
+        [JsonPropertyName("roles")]
+        public List<long> Roles { get; set; } = new();
+
+        [JsonPropertyName("roleGroups")]
+        public List<long> RoleGroups { get; set; } = new();
     }
 
 }

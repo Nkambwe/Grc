@@ -598,8 +598,7 @@ namespace Grc.ui.App.Services {
 
         #region Roles
 
-        public async Task<GrcResponse<GrcRoleResponse>> GetRoleByIdAsync(long recordId, long userId, string ipAddress)
-        {
+        public async Task<GrcResponse<GrcRoleResponse>> GetRoleByIdAsync(long recordId, long userId, string ipAddress) {
             if (recordId == 0)
             {
                 var error = new GrcResponseError(
@@ -711,7 +710,7 @@ namespace Grc.ui.App.Services {
             try
             {
                 //..build request object
-                var request = Mapper.Map<GrcRoleRequest>(roleRecord);
+                var request = Mapper.Map<GrcPermissionSetRequest>(roleRecord);
                 request.UserId = userId;
                 request.IpAddress = ipAddress;
                 request.Action = Activity.ROLE_ADDED.GetDescription();
@@ -723,7 +722,7 @@ namespace Grc.ui.App.Services {
                 var endpoint = $"{EndpointProvider.Sam.Roles}/createuser";
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
-                return await HttpHandler.PostAsync<GrcRoleRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcPermissionSetRequest, ServiceResponse>(endpoint, request);
             }
             catch (HttpRequestException httpEx)
             {
@@ -769,7 +768,7 @@ namespace Grc.ui.App.Services {
             try
             {
                 //..build request object
-                var request = Mapper.Map<GrcRoleRequest>(roleRecord);
+                var request = Mapper.Map<GrcPermissionSetRequest>(roleRecord);
                 request.UserId = userId;
                 request.IpAddress = ipAddress;
                 request.Action = Activity.ROLE_EDITED.GetDescription();
@@ -781,7 +780,7 @@ namespace Grc.ui.App.Services {
                 var endpoint = $"{EndpointProvider.Sam.Roles}/updaterole";
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
-                return await HttpHandler.PostAsync<GrcRoleRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcPermissionSetRequest, ServiceResponse>(endpoint, request);
             }
             catch (HttpRequestException httpEx)
             {
@@ -967,7 +966,7 @@ namespace Grc.ui.App.Services {
 
             try {
                 //..build request object
-                var request = Mapper.Map<GrcRoleRequest>(roleRecord);
+                var request = Mapper.Map<GrcPermissionSetRequest>(roleRecord);
                 request.UserId = userId;
                 request.IpAddress = ipAddress;
                 request.Action = Activity.ROLE_GROUP_ADDED.GetDescription();
@@ -979,7 +978,7 @@ namespace Grc.ui.App.Services {
                 var endpoint = $"{EndpointProvider.Sam.Roles}/createrolegroup";
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
-                return await HttpHandler.PostAsync<GrcRoleRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcPermissionSetRequest, ServiceResponse>(endpoint, request);
             }
             catch (HttpRequestException httpEx)
             {
@@ -1022,7 +1021,7 @@ namespace Grc.ui.App.Services {
 
             try {
                 //..build request object
-                var request = Mapper.Map<GrcRoleRequest>(roleRecord);
+                var request = Mapper.Map<GrcPermissionSetRequest>(roleRecord);
                 request.UserId = userId;
                 request.IpAddress = ipAddress;
                 request.Action = Activity.ROLE_GROUP_EDITED.GetDescription();
@@ -1033,7 +1032,7 @@ namespace Grc.ui.App.Services {
                 //..build endpoint
                 var endpoint = $"{EndpointProvider.Sam.Roles}/updaterolegroup";
                 Logger.LogActivity($"Endpoint: {endpoint}");
-                return await HttpHandler.PostAsync<GrcRoleRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcPermissionSetRequest, ServiceResponse>(endpoint, request);
             }
             catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
@@ -1065,7 +1064,7 @@ namespace Grc.ui.App.Services {
                 var error = new GrcResponseError(
                     GrcStatusCodes.BADREQUEST,
                     "Role Group cannot be null",
-                    "Invalid user record"
+                    "Invalid Role Group record"
                 );
 
                 Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
@@ -1104,6 +1103,228 @@ namespace Grc.ui.App.Services {
                 return new GrcResponse<ServiceResponse>(error);
             }
 
+        }
+
+        #endregion
+
+        #region Permission Sets
+
+        public async Task<GrcResponse<GrcPermissionSetResponse>> GetPermissionSetIdAsync(long recordId, long userId, string ipAddress) {
+            if (recordId == 0)
+            {
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    "Permission Set ID is required",
+                    "Invalid Permission Set request"
+                );
+
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<GrcPermissionSetResponse>(error);
+            }
+
+            try {
+                var request = new GrcIdRequest()
+                {
+                    UserId = userId,
+                    RecordId = recordId,
+                    IPAddress = ipAddress,
+                    Action = Activity.PERMISSION_SET_RETRIVED.GetDescription(),
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>(),
+                };
+
+                var endpoint = $"{EndpointProvider.Sam.Permissions}/retrieve-permission";
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcPermissionSetResponse>(endpoint, request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve permission set record for User ID {userId}: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "ACCESS-SERVICE", ex.StackTrace);
+                throw new GRCException("Uanble to retrieve role.", ex);
+            }
+        }
+
+        public async Task<GrcResponse<ListResponse<GrcPermissionSetResponse>>> GetPermissionSetAsync(GrcRequest request) {
+            if (request == null)
+            {
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    "Invalid request",
+                    "Request body cannot be null"
+                );
+
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<ListResponse<GrcPermissionSetResponse>>(error);
+            }
+
+            try
+            {
+                var endpoint = $"{EndpointProvider.Sam.Permissions}/get-permissionsets";
+                return await HttpHandler.PostAsync<GrcRequest, ListResponse<GrcPermissionSetResponse>>(endpoint, request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve permission setss: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SYSTEM-ACCESS-SERVICE", ex.StackTrace);
+                throw new GRCException("Uanble to retrieve system role.", ex);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> CreatePermissionSetAsync(GrcPermissionSetViewModel roleRecord, long userId, string ipAddress) {
+            if (roleRecord == null) {
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    "Permission Set record cannot be null",
+                    "Invalid Permission Set record"
+                );
+
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+
+            try
+            {
+                //..build request object
+                var request = Mapper.Map<GrcPermissionSetRequest>(roleRecord);
+                request.UserId = userId;
+                request.IpAddress = ipAddress;
+                request.Action = Activity.PERMISSION_SET_ADDED.GetDescription();
+
+                //..map request
+                Logger.LogActivity($"CREATE PERMISSION SET REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Sam.Permissions}/create-permissionset";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcPermissionSetRequest, ServiceResponse>(endpoint, request);
+            }
+            catch (HttpRequestException httpEx)
+            {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "SYSTEM-ACCESS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            }
+            catch (GRCException ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> UpdatePermissionSetAsync(GrcPermissionSetViewModel setRecord, long userId, string ipAddress) {
+            if (setRecord == null)
+            {
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    "Permission Set record cannot be null",
+                    "Invalid Permission Set record"
+                );
+
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+
+            try
+            {
+                //..build request object
+                var request = Mapper.Map<GrcPermissionSetRequest>(setRecord);
+                request.UserId = userId;
+                request.IpAddress = ipAddress;
+                request.Action = Activity.PERMISSION_SET_RETRIVED.GetDescription();
+
+                //..map request
+                Logger.LogActivity($"CREATE PERMISSION SET REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Sam.Permissions}/update-permissionsets";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+                return await HttpHandler.PostAsync<GrcPermissionSetRequest, ServiceResponse>(endpoint, request);
+            }
+            catch (HttpRequestException httpEx)
+            {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "SYSTEM-ACCESS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            }
+            catch (GRCException ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> DeletePermissionSetAsync(GrcIdRequest request) {
+            if (request == null) {
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    "Permission set cannot be null",
+                    "Invalid permission set record"
+                );
+
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+
+            try {
+                //..map request
+                Logger.LogActivity($"DELETE PERMISSION SET REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Sam.Permissions}/delete-permissionset";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcIdRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "SYSTEM-ACCESS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
         }
 
         #endregion

@@ -1176,6 +1176,37 @@
         }
       }
     },
+    "/grc/sam/permissions/retrieve-permission": {
+      "post": {
+        "tags": [
+          "Sam"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/grc/sam/permissions/get-permissionsets": {
       "post": {
         "tags": [
@@ -1207,7 +1238,7 @@
         }
       }
     },
-    "/grc/sam/permissions/updaterole-permissionsets": {
+    "/grc/sam/permissions/create-permissionset": {
       "post": {
         "tags": [
           "Sam"
@@ -1227,6 +1258,68 @@
             "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.PermissionSetRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/sam/permissions/update-permissionsets": {
+      "post": {
+        "tags": [
+          "Sam"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.PermissionSetRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.PermissionSetRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.PermissionSetRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/sam/permissions/delete-permissionset": {
+      "post": {
+        "tags": [
+          "Sam"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
               }
             }
           }
@@ -2341,7 +2434,24 @@
           "permissions": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.PermissionRequest"
+              "type": "integer",
+              "format": "int64"
+            },
+            "nullable": true
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "nullable": true
+          },
+          "roleGroups": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
             },
             "nullable": true
           }

@@ -1165,7 +1165,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                 if (types != null)
                 {
                     //..mark as delete this  Process Type
-                    _ = uow.ProcessTypeRepository.Delete(types, request.IsDeleted);
+                    _ = uow.ProcessTypeRepository.Delete(types, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(types).State;
@@ -1222,7 +1222,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                 if (typestask != null)
                 {
                     //..mark as delete this  Process Type
-                    _ = await uow.ProcessTypeRepository.DeleteAsync(typestask, request.IsDeleted);
+                    _ = await uow.ProcessTypeRepository.DeleteAsync(typestask, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(typestask).State;

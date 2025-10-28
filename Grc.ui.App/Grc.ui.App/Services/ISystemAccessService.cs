@@ -222,6 +222,20 @@ namespace Grc.ui.App.Services {
 
         #endregion
 
+        #region Permission Sets
+
+        Task<GrcResponse<GrcPermissionSetResponse>> GetPermissionSetIdAsync(long recordId, long userId, string ipAddress);
+
+        Task<GrcResponse<ListResponse<GrcPermissionSetResponse>>> GetPermissionSetAsync(GrcRequest request);
+
+        Task<GrcResponse<ServiceResponse>> CreatePermissionSetAsync(GrcPermissionSetViewModel roleRecord, long userId, string ipAddress);
+
+        Task<GrcResponse<ServiceResponse>> UpdatePermissionSetAsync(GrcPermissionSetViewModel roleRecord, long userId, string ipAddress);
+
+        Task<GrcResponse<ServiceResponse>> DeletePermissionSetAsync(GrcIdRequest request);
+
+        #endregion
+
     }
 
 }

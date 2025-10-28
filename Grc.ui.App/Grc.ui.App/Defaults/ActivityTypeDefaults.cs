@@ -58,11 +58,15 @@
         #endregion
 
         #region Permission Sets
+
         public const string PERMISSION_SET_ADDED = "Permission.Set.Added";
         public const string PERMISSION_SET_EDITED = "Permission.Set.Edited";
         public const string PERMISSION_SET_DELETED = "Permission.Set.Deleted";
+        public const string PERMISSION_SET_RETRIEVED = "Permission.Set.Retrieve";
+        public const string PERMISSION_SET_APPROVED = "Permission.Set.Approved";
         public const string PERMISSION_SET_ASSIGNED_TO_ROLE = "Permission.Set.AssignedToRole";
         public const string PERMISSION_SET_REMOVED_FROM_ROLE = "Permission.Set.RemovedFromRole";
+
         #endregion
 
         #region System Activities

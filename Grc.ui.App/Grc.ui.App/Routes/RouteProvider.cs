@@ -9,6 +9,31 @@
                 pattern: "admin/support/departments",
                 defaults: new { area = "Admin", controller = "Support", action = "Departments" }
             );
+            routeBuilder.MapControllerRoute(
+                name: "admin-support-activeusers",
+                pattern: "admin/support/users-active",
+                defaults: new { area = "Admin", controller = "Support", action = "ActiveUsers" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-support-lockedusers",
+                pattern: "admin/support/users-locked",
+                defaults: new { area = "Admin", controller = "Support", action = "LockedUsers" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-support-unapprovedUsers",
+                pattern: "admin/support/users-unapproved",
+                defaults: new { area = "Admin", controller = "Support", action = "UnapprovedUsers" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-support-unverifiedUser",
+                pattern: "admin/support/users-unverified",
+                defaults: new { area = "Admin", controller = "Support", action = "UnverifiedUser" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-support-deletedUsers",
+                pattern: "admin/support/users-deactivated",
+                defaults: new { area = "Admin", controller = "Support", action = "DeletedUsers" }
+            );
 
             /*----------------------- System activity routes*/
             routeBuilder.MapControllerRoute(

@@ -177,5 +177,17 @@ namespace Grc.ui.App.Enums {
         ROLE_GROUP_VERIFIED = 94,
         [Description("Get a list of all system activities")]
         RETRIEVEALLSYSTEMACTIVITIES = 95,
+        [Description("Permission Set added")]
+        PERMISSION_SET_ADDED = 96,
+        [Description("Permission Set editted")]
+        PERMISSION_SET_EDITED = 97,
+        [Description("Permission Set deleted")]
+        PERMISSION_SET_DELETED = 98,
+        [Description("Permission Set approved")]
+        PERMISSION_SET_APPROVED = 99,
+        [Description("Permission Set verified")]
+        PERMISSION_SET_VERIFIED = 100,
+        [Description("Get a list of all permission sets")]
+        PERMISSION_SET_RETRIVED = 101
     }
 }

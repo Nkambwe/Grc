@@ -159,6 +159,14 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(e => e.Source, reg => reg.MapFrom(o => (o.Source ?? string.Empty).Trim()))
                 .ForMember(e => e.Severity, reg => reg.MapFrom(o => (o.Severity ?? "ERROR").Trim()))
                 .ForMember(e => e.StackTrace, reg => reg.MapFrom(o => o.StackTrace));
+
+            CreateMap<GrcPermissionSetViewModel, GrcPermissionSetRequest>()
+                .ForMember(e => e.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(e => e.SetName, reg => reg.MapFrom(o => (o.Description ?? string.Empty).Trim()))
+                .ForMember(e => e.Roles, reg => reg.MapFrom(o => o.Roles ?? new()))
+                .ForMember(e => e.Permissions, reg => reg.MapFrom(o => o.Permissions ?? new()))
+                .ForMember(e => e.RoleGroups, reg => reg.MapFrom(o => o.RoleGroups ?? new()));
+
         }
     }
 }

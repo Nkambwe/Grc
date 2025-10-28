@@ -83,7 +83,7 @@ namespace Grc.ui.App.Factories {
                         Value = stats.DeactivatedUsers,
                         CssClass = "stat-separator-danger",
                         Controller = "Support",
-                        Action = "DisabledUsers"
+                        Action = "LockedUsers"
                     },
                     new(){
                         Title = _localizationService.GetLocalizedLabel("App.Admin.Dashboard.Labels.PendingApproval"),
@@ -97,14 +97,14 @@ namespace Grc.ui.App.Factories {
                         Value = stats.UnverifiedUsers,
                         CssClass = "stat-separator-primary",
                         Controller = "Support",
-                        Action = "UnapprovedUsers"
+                        Action = "UnverifiedUser"
                     },
                     new(){
                         Title = _localizationService.GetLocalizedLabel("App.Admin.Dashboard.Labels.DeletedAccounts"),
                         Value = stats.DeletedUsers,
                         CssClass = "stat-separator-danger",
                         Controller = "Support",
-                        Action = "DeletedAccounts"
+                        Action = "DeletedUsers"
                     }
                 },
                 Bugs = new()

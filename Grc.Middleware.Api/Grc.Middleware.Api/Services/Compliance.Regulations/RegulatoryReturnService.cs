@@ -1193,7 +1193,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 if (statute != null)
                 {
                     //..mark as delete this Regulatory Return
-                    _ = uow.RegulatoryReturnRepository.Delete(statute, request.IsDeleted);
+                    _ = uow.RegulatoryReturnRepository.Delete(statute, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(statute).State;
@@ -1249,7 +1249,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 if (tasktask != null)
                 {
                     //..mark as delete this Regulatory Return
-                    _ = await uow.RegulatoryReturnRepository.DeleteAsync(tasktask, request.IsDeleted);
+                    _ = await uow.RegulatoryReturnRepository.DeleteAsync(tasktask, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(tasktask).State;

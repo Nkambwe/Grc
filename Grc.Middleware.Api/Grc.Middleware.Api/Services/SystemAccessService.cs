@@ -11,6 +11,7 @@ using Grc.Middleware.Api.Utils;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq.Expressions;
+using System.Security;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -1040,7 +1041,7 @@ namespace Grc.Middleware.Api.Services {
                 if (user != null)
                 {
                     //..mark as delete this System User
-                    _ = uow.UserRepository.Delete(user, request.IsDeleted);
+                    _ = uow.UserRepository.Delete(user, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
@@ -1096,7 +1097,7 @@ namespace Grc.Middleware.Api.Services {
                 if (user != null)
                 {
                     //..mark as delete this System User
-                    _ = await uow.UserRepository.DeleteAsync(user, request.IsDeleted);
+                    _ = await uow.UserRepository.DeleteAsync(user, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
@@ -1645,7 +1646,7 @@ namespace Grc.Middleware.Api.Services {
                 if (user != null)
                 {
                     //..mark as delete this System Role
-                    _ = uow.UserRepository.Delete(user, request.IsDeleted);
+                    _ = uow.UserRepository.Delete(user, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
@@ -1701,7 +1702,7 @@ namespace Grc.Middleware.Api.Services {
                 if (role != null)
                 {
                     //..mark as delete this System Role
-                    _ = await uow.RoleRepository.DeleteAsync(role, request.IsDeleted);
+                    _ = await uow.RoleRepository.DeleteAsync(role, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(role).State;
@@ -2203,7 +2204,7 @@ namespace Grc.Middleware.Api.Services {
                 if (user != null)
                 {
                     //..mark as delete this Role Group
-                    _ = uow.RoleGroupRepository.Delete(user, request.IsDeleted);
+                    _ = uow.RoleGroupRepository.Delete(user, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
@@ -2259,7 +2260,7 @@ namespace Grc.Middleware.Api.Services {
                 if (roleGroup != null)
                 {
                     //..mark as delete this Role Group
-                    _ = await uow.RoleGroupRepository.DeleteAsync(roleGroup, request.IsDeleted);
+                    _ = await uow.RoleGroupRepository.DeleteAsync(roleGroup, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(roleGroup).State;
@@ -2750,6 +2751,57 @@ namespace Grc.Middleware.Api.Services {
 
         #region System Permission Sets
 
+        public async Task<SystemPermissionSet> GetPermissionSetAsync(IdRequest request) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieving PermissionSet {request.RecordId} with permissions", "INFO");
+
+            try {
+                var sets = await uow.PermissionSetRepository.GetAllAsync(
+                    ps => ps.Id == request.RecordId,
+                    request.markAsDeleted,
+                    ps => ps.Permissions.Select(pps => pps.Permission)
+                );
+
+                var set = sets.FirstOrDefault();
+                if (set == null)
+                    return null;
+
+                //..ensure permissions are distinct
+                set.Permissions = set.Permissions
+                    .GroupBy(p => p.PermissionId)
+                    .Select(g => g.First())
+                    .ToList();
+
+                return set;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve permission set: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new() {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
+            
+        }
+
         public async Task<bool> PermissionSetExistsAsync(Expression<Func<SystemPermissionSet, bool>> predicate)
         {
             using var uow = UowFactory.Create();
@@ -2908,6 +2960,22 @@ namespace Grc.Middleware.Api.Services {
             {
                 //..map Permission Set request to Permission Set entity
                 var permissionSet = Mapper.Map<PermissionSetRequest, SystemPermissionSet>(request);
+                permissionSet.CreatedBy = $"{request.UserId}";
+                permissionSet.CreatedOn = DateTime.Now;
+
+                // Link permissions if provided
+                if (request.Permissions != null && request.Permissions.Any())
+                {
+                    var permissions = await uow.PermissionRepository.GetAllAsync(p => request.Permissions.Contains(p.Id));
+                    foreach (var perm in permissions)
+                    {
+                        permissionSet.Permissions.Add(new SystemPermissionPermissionSet {
+                            Permission = perm,
+                            PermissionSet = permissionSet
+                        });
+                    }
+                }
+
 
                 //..log the Permission Set data being saved
                 var setJson = JsonSerializer.Serialize(permissionSet, new JsonSerializerOptions
@@ -3096,22 +3164,36 @@ namespace Grc.Middleware.Api.Services {
                 });
                 Logger.LogActivity($"Permission Set data: {permissionSetJson}", "DEBUG");
 
-                var user = uow.PermissionSetRepository.Get(t => t.Id == request.RecordId);
-                if (user != null)
-                {
-                    //..mark as delete this Permission Set
-                    _ = uow.PermissionSetRepository.Delete(user, request.IsDeleted);
-
-                    //..check entity state
-                    var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
-                    Logger.LogActivity($"Entity state after deletion: {entityState}", "DEBUG");
-
-                    var result = uow.SaveChanges();
-                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
-                    return result > 0;
+                var set = uow.PermissionSetRepository.Get(ps => ps.Id == request.RecordId, includeDeleted: true, ps => ps.Permissions);
+                if (set == null) {
+                    Logger.LogActivity($"PermissionSet {request.RecordId} not found", "WARN");
+                    return false;
                 }
 
-                return false;
+                if (request.markAsDeleted) {
+                    // Soft delete
+                    set.IsDeleted = true;
+                    set.LastModifiedOn = DateTime.UtcNow;
+                    set.LastModifiedBy = $"{request.UserId}";
+                    uow.PermissionSetRepository.Update(set);
+                    Logger.LogActivity($"PermissionSet {set.SetName} marked as deleted.", "INFO");
+                }
+                else
+                {
+                    // Remove join table entries first
+                    set.Permissions.Clear();
+                    uow.PermissionSetRepository.Delete(set);
+                    Logger.LogActivity($"PermissionSet {set.SetName} permanently deleted.", "INFO");
+
+                    //..check entity state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(set).State;
+                    Logger.LogActivity($"Entity state after deletion: {entityState}", "DEBUG");
+
+                }
+
+                var result = uow.SaveChanges();
+                Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                return result > 0;
             }
             catch (Exception ex)
             {
@@ -3151,22 +3233,38 @@ namespace Grc.Middleware.Api.Services {
                 });
                 Logger.LogActivity($"Permission Set data: {permissionSetJson}", "DEBUG");
 
-                var user = await uow.PermissionSetRepository.GetAsync(t => t.Id == request.RecordId);
-                if (user != null)
+                var set = await uow.PermissionSetRepository.GetAsync(ps => ps.Id == request.RecordId, includeDeleted: true, ps => ps.Permissions);
+                if (set == null)
                 {
-                    //..mark as delete this Permission Set
-                    _ = await uow.PermissionSetRepository.DeleteAsync(user, request.IsDeleted);
-
-                    //..check entity state
-                    var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
-                    Logger.LogActivity($"Entity state after deletion: {entityState}", "DEBUG");
-
-                    var result = uow.SaveChanges();
-                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
-                    return result > 0;
+                    Logger.LogActivity($"PermissionSet {request.RecordId} not found", "WARN");
+                    return false;
                 }
 
-                return false;
+                if (request.markAsDeleted)
+                {
+                    // Soft delete
+                    set.IsDeleted = true;
+                    set.LastModifiedOn = DateTime.UtcNow;
+                    set.LastModifiedBy = $"{request.UserId}";
+                    await uow.PermissionSetRepository.UpdateAsync(set);
+                    Logger.LogActivity($"PermissionSet {set.SetName} marked as deleted.", "INFO");
+                }
+                else
+                {
+                    // Remove join table entries first
+                    set.Permissions.Clear();
+                    await uow.PermissionSetRepository.DeleteAsync(set);
+                    Logger.LogActivity($"PermissionSet {set.SetName} permanently deleted.", "INFO");
+
+                    //..check entity state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(set).State;
+                    Logger.LogActivity($"Entity state after deletion: {entityState}", "DEBUG");
+
+                }
+
+                var result = uow.SaveChanges();
+                Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                return result > 0;
             }
             catch (Exception ex)
             {
@@ -3240,7 +3338,7 @@ namespace Grc.Middleware.Api.Services {
 
             try
             {
-                return await uow.PermissionSetRepository.PageAllAsync(page, size, includeDeleted);
+                return await uow.PermissionSetRepository.PageAllAsync(page, size, includeDeleted, p => p.Permissions);
             }
             catch (Exception ex)
             {

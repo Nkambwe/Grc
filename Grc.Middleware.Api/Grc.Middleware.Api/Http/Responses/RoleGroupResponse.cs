@@ -45,5 +45,8 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("modifiedOn")]
         public DateTime ModifiedOn { get; set; }
 
+        [JsonPropertyName("roles")]
+        public List<RoleResponse> Roles { get; set; } = new();
+
     }
 }

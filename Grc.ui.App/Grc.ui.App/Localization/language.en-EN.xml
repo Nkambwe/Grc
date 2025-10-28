@@ -99,7 +99,6 @@
 	<LocaleResource Name="App.Label.ExportFiltered">
 		<Value>Filtered</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="App.Label.Policy.Task">
 		<Value>Tasks</Value>
 	</LocaleResource>
@@ -112,11 +111,6 @@
 	<LocaleResource Name="App.Label.Mail.Send">
 		<Value>Send Mail</Value>
 	</LocaleResource>
-
-
-
-
-
 	<LocaleResource Name="App.Label.AllUsers">
 		<Value>All</Value>
 	</LocaleResource>
@@ -192,14 +186,12 @@
 	<LocaleResource Name="App.Label.Home">
 		<Value>Home</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="App.Label.ComplianceHome">
 		<Value>Compliance Home</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Label.CategoryNew">
 		<Value>New Category</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="App.Label.Organization.Departments">
 		<Value>Departments</Value>
 	</LocaleResource>
@@ -293,7 +285,6 @@
 	<LocaleResource Name="Component.Key.ProposedProcesses">
 		<Value>Proposed Processes</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="Component.Key.Users">
 		<Value>Users</Value>
 	</LocaleResource>
@@ -313,7 +304,10 @@
 		<Value>Permission Sets</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.RolePermissions">
-		<Value>Permissions</Value>
+		<Value>Role Permissions</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.RoleGroupPermissions">
+		<Value>Group Permissions</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.Delegations">
 		<Value>Delegation</Value>
@@ -390,6 +384,23 @@
 	<LocaleResource Name="Component.Key.RegulatoryMaps">
 		<Value>Compliance Maps</Value>
 	</LocaleResource>
+
+	<LocaleResource Name="Component.Key.ActiveUsers">
+		<Value>Active Users</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.LockedUsers">
+		<Value>Locked Users</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.UnapprovedUsers">
+		<Value>Unapproved Users</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.UnverifiedUsers">
+		<Value>Unverified Users</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.DeletedUsers">
+		<Value>Deleted Users</Value>
+	</LocaleResource>
+
 	<LocaleResource Name="Component.Label.Branch">
 		<Value>Add Branch</Value>
 	</LocaleResource>
@@ -547,6 +558,25 @@
 	<LocaleResource Name="Component.Table.Search.Role.Group">
 		<Value>Search role groups..</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.User.Activity">
+		<Value>Search activities..</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.User.Active">
+		<Value>Search users..</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.User.Locked">
+		<Value>Search users..</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.User.Unapproved">
+		<Value>Search users..</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.User.Unverified">
+		<Value>Search users..</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.User.Deleted">
+		<Value>Search users..</Value>
+	</LocaleResource>
+
 	<LocaleResource Name="Component.Table.Search.Entity">
 		<Value>Search entities.. </Value>
 	</LocaleResource>
@@ -777,8 +807,11 @@
 	<LocaleResource Name="App.Menu.Permissions">
 		<Value>Permissions</Value>
 	</LocaleResource>
-	<LocaleResource Name="App.Menu.Permissions.Assign">
-		<Value>Permissions</Value>
+	<LocaleResource Name="App.Menu.Permissions.Roles">
+		<Value>Role Permissions</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Permissions.Group">
+		<Value>Group Permissions</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Permissions.Sets">
 		<Value>Permission Sets</Value>

@@ -1167,7 +1167,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
                 if (frequency != null)
                 {
                     //..mark as delete this Frequency
-                    _ = uow.FrequencyRepository.Delete(frequency, request.IsDeleted);
+                    _ = uow.FrequencyRepository.Delete(frequency, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(frequency).State;
@@ -1223,7 +1223,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
                 if (frequency != null)
                 {
                     //..mark as delete this Frequency
-                    _ = await uow.FrequencyRepository.DeleteAsync(frequency, request.IsDeleted);
+                    _ = await uow.FrequencyRepository.DeleteAsync(frequency, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(frequency).State;

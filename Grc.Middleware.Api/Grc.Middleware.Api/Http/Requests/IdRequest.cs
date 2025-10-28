@@ -16,7 +16,7 @@ namespace Grc.Middleware.Api.Http.Requests {
         /// Get or Set value whether o mark as deleted or delete record
         /// </summary>
         [JsonPropertyName("isDeleted")]
-        public bool IsDeleted { get; set; }
+        public bool markAsDeleted { get; set; }
         /// <summary>
         /// Get or Set Intended action
         /// </summary>

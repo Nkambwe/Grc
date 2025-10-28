@@ -1177,7 +1177,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 if (auditTask != null)
                 {
                     //..mark as delete this audit task
-                    _ = uow.AuditTaskRepository.Delete(auditTask, request.IsDeleted);
+                    _ = uow.AuditTaskRepository.Delete(auditTask, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(auditTask).State;
@@ -1233,7 +1233,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 if (tasktask != null)
                 {
                     //..mark as delete this audit task
-                    _ = await uow.AuditTaskRepository.DeleteAsync(tasktask, request.IsDeleted);
+                    _ = await uow.AuditTaskRepository.DeleteAsync(tasktask, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(tasktask).State;
