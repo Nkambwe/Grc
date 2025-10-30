@@ -120,5 +120,11 @@ namespace Grc.ui.App.Enums {
         UserUnits,
         [Description("user-departments")]
         UserDepartments,
+        [Description("new-set")]
+        NewSet,
+        [Description("edit-set")]
+        EditSet,
+        [Description("delete-set")]
+        DeleteSet
     }
 }

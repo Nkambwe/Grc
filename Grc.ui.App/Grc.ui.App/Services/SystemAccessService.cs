@@ -596,6 +596,36 @@ namespace Grc.ui.App.Services {
 
         #endregion
 
+        #region System Permissions
+
+        public async Task<GrcResponse<ListResponse<GrcPermissionResponse>>> GetPermissionsAsync(GrcRequest request) {
+            if (request == null)
+            {
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    "Invalid request",
+                    "Request body cannot be null"
+                );
+
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<ListResponse<GrcPermissionResponse>>(error);
+            }
+
+            try
+            {
+                var endpoint = $"{EndpointProvider.Sam.Permissions}/get-permissions";
+                return await HttpHandler.PostAsync<GrcRequest, ListResponse<GrcPermissionResponse>>(endpoint, request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve system permissions: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SYSTEM-ACCESS-SERVICE", ex.StackTrace);
+                throw new GRCException("Uanble to retrieve system permissions.", ex);
+            }
+        }
+
+        #endregion
+
         #region Roles
 
         public async Task<GrcResponse<GrcRoleResponse>> GetRoleByIdAsync(long recordId, long userId, string ipAddress) {
@@ -1133,14 +1163,14 @@ namespace Grc.ui.App.Services {
                     DecryptFields = Array.Empty<string>(),
                 };
 
-                var endpoint = $"{EndpointProvider.Sam.Permissions}/retrieve-permission";
+                var endpoint = $"{EndpointProvider.Sam.Permissions}/retrieve-permission-set";
                 return await HttpHandler.PostAsync<GrcIdRequest, GrcPermissionSetResponse>(endpoint, request);
             }
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve permission set record for User ID {userId}: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "ACCESS-SERVICE", ex.StackTrace);
-                throw new GRCException("Uanble to retrieve role.", ex);
+                throw new GRCException("Uanble to retrieve permission set.", ex);
             }
         }
 
@@ -1164,9 +1194,9 @@ namespace Grc.ui.App.Services {
             }
             catch (Exception ex)
             {
-                Logger.LogActivity($"Failed to retrieve permission setss: {ex.Message}", "ERROR");
+                Logger.LogActivity($"Failed to retrieve permission sets: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "SYSTEM-ACCESS-SERVICE", ex.StackTrace);
-                throw new GRCException("Uanble to retrieve system role.", ex);
+                throw new GRCException("Uanble to retrieve permission sets.", ex);
             }
         }
 

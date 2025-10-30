@@ -188,6 +188,9 @@ namespace Grc.ui.App.Enums {
         [Description("Permission Set verified")]
         PERMISSION_SET_VERIFIED = 100,
         [Description("Get a list of all permission sets")]
-        PERMISSION_SET_RETRIVED = 101
+        PERMISSION_SET_RETRIVED = 101,
+
+        [Description("Get a list of all system permission")]
+        PERMISSIONS_RETRIVED = 102
     }
 }

@@ -363,3 +363,67 @@ button.action-btn.action-btn-separator {
     white-space: nowrap;
 }
 
+.set-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.set-panel-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+}
+
+.grc-set-form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 10px 40px;
+    overflow: hidden;
+}
+
+    .grc-set-form > .row {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+    }
+
+.main-row {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+}
+
+.form-fields-section {
+    flex-shrink: 0;
+}
+
+.permission-list-section {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.button-section {
+    flex-shrink: 0;
+    margin-top: 1rem;
+}
+
+.permission-setList-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid var(--grey-light, #ddd);
+    border-radius: 4px;
+    padding: 10px;
+}
+
+

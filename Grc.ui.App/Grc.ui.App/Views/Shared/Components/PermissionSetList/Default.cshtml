@@ -1,5 +1,106 @@
-﻿
-<div class="grc-user-component">
-    <span>Permission Set List</span>
+﻿<div class="grc-tabulator-container">
+    <div class="grc-tabulator-search">
+        <div class="field-search-group">
+            <label class="form-searchbox-label text-right">
+                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.Permission.Set"))
+            </label>
+            <input id="permissionSetSearchbox" type="text" class="form-control searchbox-field">
+        </div>
+        <div class="field-search-buttons">
+            <button id="btnRolePermissionsExportFiltered" class="btn btn-primary">
+                <i class="mdi mdi-file-excel-outline"></i>
+                @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.ExportFiltered"))
+            </button>
+        </div>
+    </div>
+
+    <div id="adminPermissionSetTable"></div>
 </div>
+
+<!-- Overlay -->
+<div class="overlay" onclick="closeSetPanel()">
+
+    <div id="setPanel" class="set-panel" onclick="event.stopPropagation()">
+
+        <div class="panel-header">
+            <h3 id="panelTitle">Permission Set</h3>
+            <button class="panel-close" onclick="closeSetPanel()">&times;</button>
+        </div>
+        <div class="set-panel-body">
+            <form id="setForm" class="grc-set-form">
+                <input type="hidden" id="setId">
+                <input type="hidden" id="isEdit">
+
+                <div class="row main-row">
+                    <!-- Top section - form fields -->
+                    <div class="col-sm-12 form-fields-section">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <!-- set Name -->
+                                <div class="row mb-3">
+                                    <label for="setName" class="col-sm-4 col-form-label text-sm-end">
+                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Set.Name"))
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" id="setName" name="setName" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- set description-->
+                            <div class="col-sm-6">
+                                <div class="row mb-3">
+                                    <label for="setDescription" class="col-sm-4 col-form-label text-sm-end">
+                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Set.Description"))
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" id="setDescription" name="setDescription" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Active status -->
+                            <div class="col-sm-6 d-flex justify-content-end">
+                                <div class="form-check form-switch mt-2">
+                                    <input class="form-check-input" type="checkbox" id="isDeleted" name="isDeleted">
+                                    <label class="form-check-label" for="isDeleted">
+                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Set.Deleted"))
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Middle section - permission list -->
+                    <div class="col-sm-12 permission-list-section">
+                        <div id="permissionSetListContainer" class="permission-setList-container"></div>
+                    </div>
+
+                    <!-- Bottom section - buttons -->
+                    <div class="col-sm-12 button-section">
+                        <div class="row mb-3">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-1">
+                                <button class="btn btn-grc-primary w-100" onclick="savePermissionSet(event)">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))
+                                </button>
+                            </div>
+                            <div class="col-sm-1">
+                                <button class="btn btn-grc-secondary w-100" onclick="closeSetPanel()">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))
+                                </button>
+                            </div>
+                            <div class="col-sm-8"></div>
+                        </div>
+                    </div>
+                </div>
+               
+            </form>
+        </div>
+    </div>
+
+</div>
+
+@{
+    Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-permissionsets.js");
+}
 

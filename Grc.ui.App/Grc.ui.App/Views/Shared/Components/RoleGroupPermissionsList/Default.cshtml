@@ -1,5 +1,38 @@
-﻿
-<div class="grc-user-component">
-    <span>Group Permission List</span>
+﻿<div class="grc-tabulator-container">
+    <div class="grc-tabulator-search">
+        <div class="field-search-group">
+            <label class="form-searchbox-label text-right">
+                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.RoleGroup.Permission.Sets"))
+            </label>
+            <input id="rolePermissionsSearchbox" type="text" class="form-control searchbox-field">
+        </div>
+        <div class="field-search-buttons">
+            <button id="btnRolePermissionsExportFiltered" class="btn btn-primary">
+                <i class="mdi mdi-file-excel-outline"></i>
+                @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.ExportFiltered"))
+            </button>
+        </div>
+    </div>
+
+    <div id="adminRolePermissionsTable"></div>
 </div>
 
+<div id="adminRolePermissionOverLay" class="role-permission-overlay"></div>
+
+<div id="editRolePermissionContainer" class="admin-role-permission-container">
+    <form id="rolePermissionForm">
+        <input type="hidden" id="recordId">
+        <div class="form-group">
+            <label>@Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Group.Name"))</label>
+            <input type="text" id="roleName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>@Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Group.Description"))</label>
+            <textarea id="roleDescription" class="form-control"></textarea>
+        </div>
+        <div id="permissionSetListContainer"></div>
+        <button type="button" id="btnSaveRolePermissions" class="btn btn-success mt-3">
+            @Html.Raw(ILocalize.GetLocalizedLabel("App.Button.Save"))
+        </button>
+    </form>
+</div>

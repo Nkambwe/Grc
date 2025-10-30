@@ -575,7 +575,16 @@
 	</LocaleResource>	
 	<LocaleResource Name="Component.Table.Search.User.Deleted">
 		<Value>Search users..</Value>
-	</LocaleResource>		
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.Permission.Set">
+		<Value>Search permissions..</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.RoleGroup.Permission.Sets">
+		<Value>Search permissions..</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.Role.Permissions">
+		<Value>Search permissions..</Value>
+	</LocaleResource>
 	
 	<LocaleResource Name="Component.Table.Search.Entity">
 		<Value>Search entities.. </Value>
@@ -716,6 +725,15 @@
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Task.Owner">
 		<Value>Task Owner</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Set.Name">
+		<Value>Set Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Set.Description">
+		<Value>Set Description</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Set.Deleted">
+		<Value>Deactivated</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.Select.Owner">
 		<Value>Select person to assign to</Value>

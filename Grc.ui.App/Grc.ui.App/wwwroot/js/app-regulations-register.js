@@ -259,7 +259,7 @@ function deleteActRecord(id) {
             },
             success: function (res) {
                 if (res && res.success) {
-                    toastr.success(res.message || "Delete Law/regulation/Guide deleted successfully.");
+                    toastr.success(res.message || "Law/regulation/Guide deleted successfully.");
                     policyRegisterTable.setPage(1, true);
                 } else {
                     toastr.error(res?.message || "Delete failed.");
@@ -316,6 +316,7 @@ function findActRecord(id) {
         });
     });
 }
+
 function saveActRecord(e) {
     if (e) e.preventDefault();
     let isEdit = $('#isEdit').val();
@@ -558,7 +559,6 @@ function initFrequencyElement($element) {
         fixSelect5Accessibility($element, labelText);
     }, 100);
 }
-
 
 function fixSelect5Accessibility($originalSelect, labelText) {
     const selectId = $originalSelect.attr('id');

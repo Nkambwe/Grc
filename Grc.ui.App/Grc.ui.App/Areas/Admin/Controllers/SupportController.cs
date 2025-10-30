@@ -12,8 +12,6 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using System.Net;
 using System.Security.Claims;
 using System.Text.Json;
 using Activity = Grc.ui.App.Enums.Activity;
@@ -2238,6 +2236,72 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         #endregion
 
+        #region System Permissions
+
+        public async Task<IActionResult> GetPermissions() {
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError)
+                {
+                    Logger.LogActivity($"PERMISSION LIST ERROR: Failed to retrieve current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                var currentUser = grcResponse.Data;
+                if (currentUser == null)
+                {
+                    //..session has expired
+                    return RedirectToAction("Login", "Application");
+                }
+
+                GrcRequest request = new()
+                {
+                    UserId = currentUser.UserId,
+                    Action = Activity.PERMISSIONS_RETRIVED.GetDescription(),
+                    IPAddress = ipAddress,
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>()
+                };
+
+                //..get list of all system permission
+                var permissionData = await _accessService.GetPermissionsAsync(request);
+
+                List<GrcPermissionResponse> permissions;
+                if (permissionData.HasError)
+                {
+                    permissions = new();
+                    Logger.LogActivity($"PERMISSION DATA ERROR: Failed to retrieve permission sets - {JsonSerializer.Serialize(permissionData)}");
+                } else {
+                    permissions = permissionData.Data.Data;
+                    Logger.LogActivity($"PERMISSION DATA - {JsonSerializer.Serialize(permissions)}");
+                }
+
+                //..get ajax data
+                List<object> listData = new();
+                if (permissions.Any())
+                {
+                    listData = permissions.Select(permission => new {
+                        id = permission.Id,
+                        permissionName = permission.PermissionName,
+                        permissionDescription = permission.PermissionDescription
+                    }).Cast<object>().ToList();
+                }
+
+                return Json(new { data = listData });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving permission sets: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        #endregion
+
         #region System Permission Sets
 
         [LogActivityResult("Retrieve Permission Set", "User retrieved Permission Set", ActivityTypeDefaults.PERMISSION_SET_RETRIEVED, "SystemPermissionSet")]
@@ -2273,7 +2337,8 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                     createdOn = setData.CreatedOn,
                     createdBy = setData.CreatedBy,
                     modifiedOn = setData.ModifiedOn,
-                    modifiedBy = setData.ModifiedBy
+                    modifiedBy = setData.ModifiedBy,
+                    permissions = setData.Permissions,
                 };
 
                 return Ok(new { success = true, data = setRecord });
@@ -2327,7 +2392,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 else
                 {
                     permissionsets = setData.Data.Data;
-                    Logger.LogActivity($"PERMISSION SET DATA - {JsonSerializer.Serialize(permissionsets)}");
+                    //Logger.LogActivity($"PERMISSION SET DATA - {JsonSerializer.Serialize(permissionsets)}");
                 }
 
                 //..get ajax data

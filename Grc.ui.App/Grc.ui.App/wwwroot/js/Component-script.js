@@ -1,4 +1,5 @@
-﻿ $(document).ready(function () {
+﻿$(document).ready(function () {
+
     let isCompExpanded = false;
 
     $(".status-indicator").on("click", function (e) {
@@ -205,9 +206,9 @@
 
     });
 
-     $('.action-btn-Delete').on("click", function (e) {
+    $('.action-btn-Delete').on("click", function (e) {
 
-     });
+    });
 
      // filter buttons
     $('.filter-btn').on("click", function (e) {

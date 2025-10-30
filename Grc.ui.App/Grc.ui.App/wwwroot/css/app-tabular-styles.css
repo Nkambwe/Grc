@@ -200,13 +200,6 @@
     margin-left: 20px;
 }
 
-
-
-
-
-
-
-
 .compliant-yes {
     color: #27ae60;
     font-weight: bold;
@@ -277,6 +270,7 @@
     }
 
 .slide-panel,
+.set-panel,
 .slide-task-panel {
     position: fixed;
     top: 70px;
@@ -291,7 +285,8 @@
 }
 
     .slide-panel.active,
-    .slide-task-panel.active{
+    .set-panel.active,
+    .slide-task-panel.active {
         right: 2vw;
         overflow: hidden;
     }
