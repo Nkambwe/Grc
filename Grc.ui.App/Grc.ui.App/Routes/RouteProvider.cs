@@ -152,7 +152,7 @@
                name: "admin-role-groups-list",
                pattern: "admin/support/system-role-groups/list",
                defaults: new { area = "Admin", controller = "Support", action = "GetPagedRoleGroups" }
-           );
+            );
             routeBuilder.MapControllerRoute(
                 name: "admin-role-groups-create",
                 pattern: "admin/support/role-groups-create",
@@ -183,11 +183,10 @@
 
             /*----------------------- Group Permission routes*/
             routeBuilder.MapControllerRoute(
-              name: "admin-support-permission-roles",
-              pattern: "admin/support/role-permissions",
-              defaults: new { area = "Admin", controller = "Support", action = "RolePermissions" }
+              name: "admin-support-permission-role-groups",
+              pattern: "admin/support/permission/role-groups",
+              defaults: new { area = "Admin", controller = "Support", action = "RoleGroup" }
             );
-
 
             /*----------------------- Permission Sets routes*/
             routeBuilder.MapControllerRoute(
@@ -199,11 +198,16 @@
                name: "admin-support-permission-sets-retrieve",
                pattern: "admin/support/permission-sets-retrieve/{id:long}",
                defaults: new { area = "Admin", controller = "Support", action = "GetPermissionSet" }
-           );
+            );
             routeBuilder.MapControllerRoute(
                 name: "admin-support-permission-sets-all",
                 pattern: "admin/support/permission-sets-all",
                 defaults: new { area = "Admin", controller = "Support", action = "GetPermissionSets" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-support-permission-sets-list",
+               pattern: "admin/support/permission-sets/list",
+               defaults: new { area = "Admin", controller = "Support", action = "GetPagedPermissionSets" }
             );
             routeBuilder.MapControllerRoute(
                 name: "admin-support-permission-sets-create",
@@ -213,7 +217,7 @@
             routeBuilder.MapControllerRoute(
                 name: "admin-support-permission-sets-modify",
                 pattern: "admin/support/permission-sets-modify",
-                defaults: new { area = "Admin", controller = "Support", action = "UpdatePermissionSets" }
+                defaults: new { area = "Admin", controller = "Support", action = "UpdatePermissionSet" }
             );
             routeBuilder.MapControllerRoute(
                 name: "admin-support-permission-sets-delete",

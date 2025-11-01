@@ -234,8 +234,14 @@
 	<LocaleResource Name="Component.Key.ObligationRegister">
 		<Value>Compliance Obligations</Value>
 	</LocaleResource>
+
+
 	<LocaleResource Name="Component.Key.PolicyRegister">
 		<Value>Policies and Procedures</Value>
+	</LocaleResource>
+
+	<LocaleResource Name="Component.Key.PermissionSets">
+		<Value>Permission Sets</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.DocumentManagement">
 		<Value>Document Management</Value>
@@ -307,7 +313,7 @@
 		<Value>Role Permissions</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.RoleGroupPermissions">
-		<Value>Group Permissions</Value>
+		<Value>Role Groups</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.Delegations">
 		<Value>Delegation</Value>
@@ -384,23 +390,23 @@
 	<LocaleResource Name="Component.Key.RegulatoryMaps">
 		<Value>Compliance Maps</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Component.Key.ActiveUsers">
 		<Value>Active Users</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.LockedUsers">
 		<Value>Locked Users</Value>
-	</LocaleResource>	
+	</LocaleResource>
 	<LocaleResource Name="Component.Key.UnapprovedUsers">
 		<Value>Unapproved Users</Value>
-	</LocaleResource>	
+	</LocaleResource>
 	<LocaleResource Name="Component.Key.UnverifiedUsers">
 		<Value>Unverified Users</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.DeletedUsers">
 		<Value>Deleted Users</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Component.Label.Branch">
 		<Value>Add Branch</Value>
 	</LocaleResource>
@@ -566,18 +572,21 @@
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Search.User.Locked">
 		<Value>Search users..</Value>
-	</LocaleResource>	
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Search.User.Unapproved">
 		<Value>Search users..</Value>
-	</LocaleResource>	
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Search.User.Unverified">
 		<Value>Search users..</Value>
-	</LocaleResource>	
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Search.User.Deleted">
 		<Value>Search users..</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Search.Permission.Set">
 		<Value>Search permissions..</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.role.groups">
+		<Value>Search groups..</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Search.RoleGroup.Permission.Sets">
 		<Value>Search permissions..</Value>
@@ -585,7 +594,7 @@
 	<LocaleResource Name="Component.Table.Search.Role.Permissions">
 		<Value>Search permissions..</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Component.Table.Search.Entity">
 		<Value>Search entities.. </Value>
 	</LocaleResource>
@@ -735,6 +744,18 @@
 	<LocaleResource Name="Component.Table.Set.Deleted">
 		<Value>Deactivated</Value>
 	</LocaleResource>
+
+	<LocaleResource Name="Component.Table.Role.Group.Name">
+		<Value>Group Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Role.Group.Description">
+		<Value>Group Description</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Role.Group.Deleted">
+		<Value>Deactivated</Value>
+	</LocaleResource>
+
+
 	<LocaleResource Name="Component.Table.Policy.Select.Owner">
 		<Value>Select person to assign to</Value>
 	</LocaleResource>

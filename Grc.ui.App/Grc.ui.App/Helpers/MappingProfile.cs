@@ -162,7 +162,8 @@ namespace Grc.ui.App.Helpers {
 
             CreateMap<GrcPermissionSetViewModel, GrcPermissionSetRequest>()
                 .ForMember(e => e.Id, reg => reg.MapFrom(o => o.Id))
-                .ForMember(e => e.SetName, reg => reg.MapFrom(o => (o.Description ?? string.Empty).Trim()))
+                .ForMember(e => e.SetName, reg => reg.MapFrom(o => (o.SetName ?? string.Empty).Trim()))
+                .ForMember(e => e.Description, reg => reg.MapFrom(o => (o.Description ?? string.Empty).Trim()))
                 .ForMember(e => e.Roles, reg => reg.MapFrom(o => o.Roles ?? new()))
                 .ForMember(e => e.Permissions, reg => reg.MapFrom(o => o.Permissions ?? new()))
                 .ForMember(e => e.RoleGroups, reg => reg.MapFrom(o => o.RoleGroups ?? new()));

@@ -232,6 +232,8 @@ namespace Grc.ui.App.Services {
 
         Task<GrcResponse<GrcPermissionSetResponse>> GetPermissionSetIdAsync(long recordId, long userId, string ipAddress);
 
+        Task<GrcResponse<PagedResponse<GrcPermissionSetResponse>>> GetPagedPermissionSetAsync(TableListRequest request);
+
         Task<GrcResponse<ListResponse<GrcPermissionSetResponse>>> GetPermissionSetAsync(GrcRequest request);
 
         Task<GrcResponse<ServiceResponse>> CreatePermissionSetAsync(GrcPermissionSetViewModel roleRecord, long userId, string ipAddress);

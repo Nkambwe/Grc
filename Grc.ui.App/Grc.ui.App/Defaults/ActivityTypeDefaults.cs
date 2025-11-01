@@ -69,6 +69,18 @@
 
         #endregion
 
+        #region Role Group Permissions
+
+        public const string ROLE_GROUP_PERMISSIONS_ADDED = "Permission.Role.Group.Added";
+        public const string ROLE_GROUP_PERMISSIONS_EDITED = "Permission.Role.Group.Edited";
+        public const string ROLE_GROUP_PERMISSIONS_DELETED = "Permission.Role.Group.Deleted";
+        public const string ROLE_GROUP_PERMISSIONS_RETRIEVED = "Permission.Role.Group.Retrieve";
+        public const string ROLE_GROUP_PERMISSIONS_APPROVED = "Permission.Role.Group.Approved";
+        public const string ROLE_GROUP_PERMISSIONS_ASSIGNED_TO_ROLE = "Permission.Role.Group.AssignedToRole";
+        public const string ROLE_GROUP_PERMISSIONS_REMOVED_FROM_ROLE = "Permission.Role.Group.RemovedFromRole";
+
+        #endregion
+
         #region System Activities
 
         public const string USER_SETTINGS_CHANGED = "User.Settings.Changed";

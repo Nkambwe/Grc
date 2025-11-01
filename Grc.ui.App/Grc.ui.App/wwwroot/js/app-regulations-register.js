@@ -414,11 +414,13 @@ function saveAct(isEdit, payload) {
                 return;
             }
 
-            if (res && res.data) {
-                if (isEdit) {
+            if (policyRegisterTable) {
+                if (isEdit && res.data) {
                     policyRegisterTable.updateData([res.data]);
+                } else if (!isEdit && res.data) {
+                    policyRegisterTable.addRow(res.data, true);
                 } else {
-                    policyRegisterTable.addData([res.data], true);
+                    policyRegisterTable.replaceData();
                 }
             }
 

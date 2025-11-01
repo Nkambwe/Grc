@@ -1,11 +1,83 @@
 ﻿let permissionSetTable;
 function initPermissionSetTable() {
     permissionSetTable = new Tabulator("#adminPermissionSetTable", {
-        ajaxURL: "/admin/support/permission-sets-all",
-        ajaxConfig: "POST",
+        ajaxURL: "/admin/support/permission-sets/list",
+        paginationMode: "remote",
+        filterMode: "remote",
+        sortMode: "remote",
+        pagination: true,
+        paginationSize: 10,
+        paginationSizeSelector: [10, 20, 35, 40, 50],
+        paginationCounter: "rows",
+        ajaxConfig: {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+        },
         ajaxContentType: "json",
+        paginationDataSent: {
+            "page": "page",
+            "size": "size",
+            "sorters": "sort",
+            "filters": "filter"
+        },
+        paginationDataReceived: {
+            "last_page": "last_page",
+            "data": "data",
+            "total_records": "total_records"
+        },
+        ajaxRequestFunc: (url, config, params) => {
+            return new Promise((resolve, reject) => {
+                let requestBody = {
+                    pageIndex: params.page || 1,
+                    pageSize: params.size || 10,
+                    searchTerm: "",
+                    sortBy: "",
+                    sortDirection: "Ascending"
+                };
+
+                // Sorting
+                if (params.sort && params.sort.length > 0) {
+                    requestBody.sortBy = params.sort[0].field;
+                    requestBody.sortDirection = params.sort[0].dir === "asc" ? "Ascending" : "Descending";
+                }
+
+                // Filtering
+                if (params.filter && params.filter.length > 0) {
+                    let filter = params.filter.find(f =>
+                        ["setName", "setDescription"].includes(f.field)
+                    );
+                    if (filter) requestBody.searchTerm = filter.value;
+                }
+
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(requestBody),
+                    success: function (response) {
+                        resolve(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error:", error);
+                        reject(error);
+                    }
+                });
+            });
+        },
+        ajaxResponse: function (url, params, response) {
+            return {
+                data: response.data || [],
+                last_page: response.last_page || 1,
+                total_records: response.total_records || 0
+            };
+        },
+        ajaxError: function (error) {
+            console.error("Tabulator AJAX Error:", error);
+            alert("Failed to load permission sets. Please try again.");
+        },
         layout: "fitColumns",
-        dataTree: false, // no nested tree now
+        dataTree: false, 
+        responsiveLayout: "hide",
         columns: [
             {
                 title: "SET NAME",
@@ -59,32 +131,11 @@ function initPermissionSetTable() {
                 headerHozAlign: "center",
                 headerSort: false
             }
-        ],
-        ajaxRequestFunc: (url, config, params) => {
-            return new Promise((resolve, reject) => {
-                $.ajax({
-                    url: url,
-                    type: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify({
-                        searchTerm: $("#permissionSetSearchbox").val() || ""
-                    }),
-                    success: function (response) {
-                        resolve(response.data || []);
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Error loading permission sets:", error);
-                        reject(error);
-                    }
-                });
-            });
-        }
+        ]
     });
 
-    // Search box event
-    $("#permissionSetSearchbox").on("input", function () {
-        permissionSetTable.setData();
-    });
+    //..search permission sets
+    initSetSearch();
 }
 
 function findSetRecord(id) {
@@ -150,8 +201,6 @@ function openSetEditor(title, set, isEdit) {
     $("#setDescription").val(set?.setDescription || "");
     $('#isDeleted').prop('checked', set?.isDeleted || false);
 
-    console.log(`Opening ${isEdit ? "edit" : "new"} permission set editor for ID: ${set?.id || "(new)"}`);
-
     $("#permissionSetListContainer").html("<div class='text-muted p-2'>Loading permissions...</div>");
 
     if (isEdit) {
@@ -213,7 +262,6 @@ function openSetEditor(title, set, isEdit) {
     $('#setPanel').addClass('active');
 }
 
-
 function deleteSetRecord(id) {
     if (!id && id !== 0) {
         toastr.error("Invalid id for delete.");
@@ -233,26 +281,30 @@ function deleteSetRecord(id) {
 
         $.ajax({
             url: `/admin/support/permission-sets-delete/${encodeURIComponent(id)}`,
-            type: 'DELETE',
+            type: 'POST',
+            contentType: 'application/json',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': getActAntiForgeryToken()
+                'X-CSRF-TOKEN': getSetAntiForgeryToken()
             },
             success: function (res) {
                 if (res && res.success) {
                     toastr.success(res.message || "Permission set deleted successfully.");
-                    policyRegisterTable.setPage(1, true);
+                    if (permissionSetTable) {
+                        permissionSetTable.replaceData();
+                    }
                 } else {
                     toastr.error(res?.message || "Delete failed.");
                 }
             },
-            error: function () {
-                toastr.error("Request failed.");
+            error: function (xhr, status, error) {
+                console.error("Delete error:", error);
+                console.error("Response:", xhr.responseText);
+                toastr.error(xhr.responseJSON?.message || "Request failed.");
             }
         });
     });
 }
-
 function savePermissionSet(e) {
     if (e) e.preventDefault();
     let isEdit = $('#isEdit').val();
@@ -281,7 +333,7 @@ function savePermissionSet(e) {
     if (errors.length > 0) {
 
         highlightField("#setName", !recordData.setName);
-        highlightField("#set Description", !recordData.setDescription);
+        highlightField("#setDescription", !recordData.setDescription);
 
         Swal.fire({
             title: "Record Validation",
@@ -332,20 +384,15 @@ function persistPermissionSet(isEdit, payload) {
                 return;
             }
 
-            if (res && res.data) {
-                if (isEdit) {
-                    initPermissionSetTable.updateData([res.data]);
+            if (permissionSetTable) {
+                if (isEdit && res.data) {
+                    permissionSetTable.updateData([res.data]);
+                } else if (!isEdit && res.data) {
+                    permissionSetTable.addRow(res.data, true);
                 } else {
-                    initPermissionSetTable.addData([res.data], true);
+                    permissionSetTable.replaceData();
                 }
             }
-
-            Swal.fire({
-                title: isEdit ? "Updating permission set..." : "Saving permission set...",
-                text: res.message || "Saved successfully.",
-                timer: 2000,
-                showConfirmButton: false
-            });
 
             closeSetPanel();
         },
@@ -372,15 +419,43 @@ function closeSetPanel() {
     $('#setPanel').removeClass('active');
 }
 
+function initSetSearch() {
+    const searchInput = $('#permissionSetSearchbox');
+    let typingTimer;
+
+    searchInput.on('input', function () {
+        clearTimeout(typingTimer);
+        const searchTerm = $(this).val().trim();
+
+        typingTimer = setTimeout(function () {
+            if (searchTerm && searchTerm.length >= 2) {
+                permissionSetTable.setFilter([
+                    { field: "setDescription", type: "like", value: searchTerm }
+                ]);
+            } else {
+                permissionSetTable.clearFilter();
+            }
+        }, 300);
+    });
+}
+
 //..get antiforegery token from meta tag
 function getSetAntiForgeryToken() {
     return $('meta[name="csrf-token"]').attr('content');
 }
 
 $(document).ready(function () {
+
+    toastr.options = {
+        closeButton: true,
+        progressBar: true,
+        positionClass: "toast-top-right",
+        timeOut: "3000"
+    };
+
     initPermissionSetTable();
 
-    $('.action-btn-nome').on('click', function () {
+    $('.admin-home').on('click', function () {
         window.location.href = '/admin/support/permission/sets';
     });
 

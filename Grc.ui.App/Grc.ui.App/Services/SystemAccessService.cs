@@ -1200,6 +1200,37 @@ namespace Grc.ui.App.Services {
             }
         }
 
+        public async Task<GrcResponse<PagedResponse<GrcPermissionSetResponse>>> GetPagedPermissionSetAsync(TableListRequest request) {
+            if (request == null) {
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    "Invalid Request object",
+                    "Request object cannot be null"
+                );
+
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<PagedResponse<GrcPermissionSetResponse>>(error);
+            }
+
+            try
+            {
+                var endpoint = $"{EndpointProvider.Sam.Permissions}/pagedsets";
+                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<GrcPermissionSetResponse>>(endpoint, request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<PagedResponse<GrcPermissionSetResponse>>(error);
+            }
+        }
+
         public async Task<GrcResponse<ServiceResponse>> CreatePermissionSetAsync(GrcPermissionSetViewModel roleRecord, long userId, string ipAddress) {
             if (roleRecord == null) {
                 var error = new GrcResponseError(

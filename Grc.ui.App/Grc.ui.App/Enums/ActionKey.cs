@@ -125,6 +125,8 @@ namespace Grc.ui.App.Enums {
         [Description("edit-set")]
         EditSet,
         [Description("delete-set")]
-        DeleteSet
+        DeleteSet,
+        [Description("new-role-group")]
+        RoleGroupNew,
     }
 }
