@@ -469,8 +469,24 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "GetPagedPermissionSets",
+    "RelativePath": "grc/sam/permissions/pagedsets",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
     "Method": "GetPermissionSetId",
-    "RelativePath": "grc/sam/permissions/retrieve-permission",
+    "RelativePath": "grc/sam/permissions/retrieve-permission-set",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,

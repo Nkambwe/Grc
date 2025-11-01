@@ -1176,7 +1176,7 @@
         }
       }
     },
-    "/grc/sam/permissions/retrieve-permission": {
+    "/grc/sam/permissions/retrieve-permission-set": {
       "post": {
         "tags": [
           "Sam"
@@ -1227,6 +1227,37 @@
             "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/sam/permissions/pagedsets": {
+      "post": {
+        "tags": [
+          "Sam"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
               }
             }
           }
@@ -2227,16 +2258,6 @@
           "userId": {
             "type": "integer",
             "format": "int64"
-          },
-          "activityUserId": {
-            "type": "integer",
-            "format": "int64",
-            "nullable": true
-          },
-          "activityTypeId": {
-            "type": "integer",
-            "format": "int64",
-            "nullable": true
           },
           "action": {
             "type": "string",

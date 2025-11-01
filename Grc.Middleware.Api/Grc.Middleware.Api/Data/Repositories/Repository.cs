@@ -366,6 +366,20 @@ namespace Grc.Middleware.Api.Data.Repositories {
             return await query.ToListAsync();
         }
 
+        public async Task<IList<T>> GetAllAsync(Expression<Func<T, bool>> where, bool includeDeleted = false, params string[] includes) {
+            IQueryable<T> query = context.Set<T>();
+
+            if (!includeDeleted) {
+                query = query.Where(e => !EF.Property<bool>(e, "IsDeleted"));
+            }
+
+            foreach (var include in includes) {
+                query = query.Include(include);
+            }
+
+            return await query.Where(where).ToListAsync();
+        }
+
         public async Task<IList<T>> GetAllAsync(bool includeDeleted = false, params Expression<Func<T, object>>[] filters) {
             IQueryable<T> query = context.Set<T>();
 
@@ -380,6 +394,20 @@ namespace Grc.Middleware.Api.Data.Repositories {
             }
 
             return await query.ToListAsync();
+        }
+
+        public async Task<IList<T>> GetAllAsync(Expression<Func<T, bool>> where, bool includeDeleted = false, Func<IQueryable<T>, IQueryable<T>> includeFunc = null) {
+            IQueryable<T> query = context.Set<T>();
+
+            if (!includeDeleted) {
+                query = query.Where(e => !EF.Property<bool>(e, "IsDeleted"));
+            }
+
+            if (includeFunc != null) {
+                query = includeFunc(query);
+            }
+
+            return await query.Where(where).ToListAsync();
         }
 
         public async Task<IList<T>> GetTopAsync(Expression<Func<T, bool>> where, int top = 10, bool includeDeleted = false) {

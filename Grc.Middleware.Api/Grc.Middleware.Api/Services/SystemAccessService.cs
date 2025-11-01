@@ -10,6 +10,7 @@ using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Security;
 using System.Text.Json;
@@ -2758,8 +2759,10 @@ namespace Grc.Middleware.Api.Services {
             try {
                 var sets = await uow.PermissionSetRepository.GetAllAsync(
                     ps => ps.Id == request.RecordId,
-                    request.markAsDeleted,
-                    ps => ps.Permissions.Select(pps => pps.Permission)
+                    true,
+                    query => query
+                        .Include(ps => ps.Permissions)
+                            .ThenInclude(psp => psp.Permission)
                 );
 
                 var set = sets.FirstOrDefault();
@@ -2768,38 +2771,78 @@ namespace Grc.Middleware.Api.Services {
 
                 //..ensure permissions are distinct
                 set.Permissions = set.Permissions
-                    .GroupBy(p => p.PermissionId)
-                    .Select(g => g.First())
+                    .DistinctBy(p => p.PermissionId) 
                     .ToList();
 
                 return set;
-            } catch (Exception ex) {
-                Logger.LogActivity($"Failed to retrieve permission set: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new() {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+            }
+            catch (Exception ex)
+            {
+                await LogErrorAsync(uow, ex);
                 throw;
             }
-            
+        }
+
+        public async Task<PermissionSetResponse> GetPermissionSetWithAssignedPermissionsAsync(IdRequest request)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieving PermissionSet {request.RecordId} with all permissions", "INFO");
+
+            try
+            {
+                // Load the permission set with join table
+                var sets = await uow.PermissionSetRepository.GetAllAsync(
+                    ps => ps.Id == request.RecordId,
+                    request.markAsDeleted,
+                    ps => ps.Permissions
+                );
+
+                var set = sets.FirstOrDefault();
+
+                if (set == null)
+                    return null;
+
+                // Get IDs of permissions assigned to this set
+                var assignedPermissionIds = set.Permissions
+                    .Select(psp => psp.PermissionId)
+                    .Distinct()
+                    .ToHashSet(); // HashSet for O(1) lookup
+
+                // Load ALL permissions
+                var allPermissions = await uow.PermissionRepository.GetAllAsync(
+                    p => true,
+                    request.markAsDeleted
+                );
+
+                //..map to response
+                var response = new PermissionSetResponse
+                {
+                    Id = set.Id,
+                    SetName = set.SetName,
+                    CreatedOn = set.CreatedOn,
+                    CreatedBy = set.CreatedBy ?? string.Empty,
+                    ModifiedOn = set.LastModifiedOn,
+                    ModifiedBy = set.LastModifiedBy ?? string.Empty,
+                    Permissions = allPermissions
+                        .Select(p => new PermissionResponse
+                        {
+                            Id = p.Id,
+                            PermissionName = p.PermissionName,
+                            PermissionDescription = p.Description,
+                            IsAssigned = assignedPermissionIds.Contains(p.Id)
+                        })
+                        .OrderByDescending(p => p.IsAssigned) 
+                        .ThenBy(p => p.PermissionName) 
+                        .ToList()
+                };
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                await LogErrorAsync(uow, ex);
+                throw;
+            }
         }
 
         public async Task<bool> PermissionSetExistsAsync(Expression<Func<SystemPermissionSet, bool>> predicate)
@@ -2813,30 +2856,7 @@ namespace Grc.Middleware.Api.Services {
             }
             catch (Exception ex)
             {
-                Logger.LogActivity($"Failed to check for System User in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -2865,32 +2885,9 @@ namespace Grc.Middleware.Api.Services {
             }
             catch (Exception ex)
             {
-                Logger.LogActivity($"Failed to retrieve permission sets for RoleGroup : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
-
         }
 
         public async Task<bool> UpdateRoleGroupPermissionSetsAsync(long roleGroupId, List<long> newPermissionSetIds) {
@@ -2926,29 +2923,7 @@ namespace Grc.Middleware.Api.Services {
             }
             catch (Exception ex)
             {
-                Logger.LogActivity($"Failed to merge permission sets for RoleGroup : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -2959,9 +2934,15 @@ namespace Grc.Middleware.Api.Services {
             try
             {
                 //..map Permission Set request to Permission Set entity
-                var permissionSet = Mapper.Map<PermissionSetRequest, SystemPermissionSet>(request);
-                permissionSet.CreatedBy = $"{request.UserId}";
-                permissionSet.CreatedOn = DateTime.Now;
+                var permissionSet = new SystemPermissionSet
+                {
+                    SetName = (request.SetName ?? string.Empty).Trim(),
+                    Description = (request.Description ?? string.Empty).Trim(),
+                    IsDeleted = false,
+                    CreatedBy = $"{request.UserId}",
+                    CreatedOn = DateTime.Now,
+                    Permissions = new List<SystemPermissionPermissionSet>()
+                };
 
                 // Link permissions if provided
                 if (request.Permissions != null && request.Permissions.Any())
@@ -3001,32 +2982,7 @@ namespace Grc.Middleware.Api.Services {
             }
             catch (Exception ex)
             {
-                Logger.LogActivity($"Failed to insert Permission Set record: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -3098,15 +3054,31 @@ namespace Grc.Middleware.Api.Services {
 
             try
             {
-                var permissionSet = await uow.PermissionSetRepository.GetAsync(a => a.Id == request.Id);
-                if (permissionSet != null)
-                {
+                var permissionSet = await uow.PermissionSetRepository.GetAsync(a => a.Id == request.Id, true, s => s.Permissions) 
+                    ?? throw new Exception($"Permission Set with ID {request.Id} not found");
+                if (permissionSet != null) {
                     //..update Permission Set record
                     permissionSet.SetName = (request.SetName ?? string.Empty).Trim();
                     permissionSet.Description = (request.Description ?? string.Empty).Trim();
                     permissionSet.IsDeleted = request.IsDeleted;
                     permissionSet.LastModifiedOn = DateTime.Now;
                     permissionSet.LastModifiedBy = $"{request.UserId}";
+
+                    //..get permissions
+                    var newPermissionsIds = request.Permissions;
+                    var existingIds = permissionSet.Permissions.Select(p => p.PermissionId).ToList();
+                    var (toAdd, toRemove) = GetChanges(existingIds, newPermissionsIds);
+
+                    //..remove outdated permission-set-permission links
+                    permissionSet.Permissions = permissionSet.Permissions.Where(p => !toRemove.Contains(p.PermissionId)).ToList();
+
+                    //..add new links
+                    foreach (var permissionId in toAdd) {
+                        permissionSet.Permissions.Add(new SystemPermissionPermissionSet {
+                            PermissionId = permissionId, 
+                            PermissionSetId = permissionSet.Id
+                        });
+                    }
 
                     //..check entity state
                     _ = await uow.PermissionSetRepository.UpdateAsync(permissionSet, includeDeleted);
@@ -3338,7 +3310,7 @@ namespace Grc.Middleware.Api.Services {
 
             try
             {
-                return await uow.PermissionSetRepository.PageAllAsync(page, size, includeDeleted, p => p.Permissions);
+                return await uow.PermissionSetRepository.PageAllAsync(page, size, includeDeleted);
             }
             catch (Exception ex)
             {
@@ -3503,6 +3475,41 @@ namespace Grc.Middleware.Api.Services {
         #endregion
 
         #region private methods
+
+        private async Task LogErrorAsync(IUnitOfWork uow, Exception ex)
+        {
+            Logger.LogActivity($"Failed to retrieve permission set: {ex.Message}", "ERROR");
+
+            var currentEx = ex.InnerException;
+            while (currentEx != null)
+            {
+                Logger.LogActivity($"Service Inner Exception: {currentEx.Message}", "ERROR");
+                currentEx = currentEx.InnerException;
+            }
+
+            // Get company ID efficiently
+            var company = await uow.CompanyRepository.GetAllAsync(c => true, false);
+            long companyId = company.FirstOrDefault()?.Id ?? 1L;
+
+            // Get innermost exception
+            var innermostException = ex;
+            while (innermostException.InnerException != null)
+                innermostException = innermostException.InnerException;
+
+            var errorObj = new SystemError
+            {
+                ErrorMessage = innermostException.Message,
+                ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                StackTrace = ex.StackTrace,
+                Severity = "CRITICAL",
+                ReportedOn = DateTime.Now,
+                CompanyId = companyId
+            };
+
+            uow.SystemErrorRespository.Insert(errorObj);
+            await uow.SaveChangesAsync();
+        }
+
         private static (List<long> toAdd, List<long> toRemove) GetChanges(IEnumerable<long> existingIds, IEnumerable<long> newIds) {
             var existingSet = new HashSet<long>(existingIds);
             var newSet = new HashSet<long>(newIds);

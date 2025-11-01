@@ -179,6 +179,8 @@ namespace Grc.Middleware.Api.Data.Repositories {
         /// <returns>Task with a list of entitities that fits predicate</returns>
         Task<IList<T>> GetAllAsync(bool includeDeleted = false, params Expression<Func<T, object>>[] includes);
 
+        Task<IList<T>> GetAllAsync(Expression<Func<T, bool>> where, bool includeDeleted = false, Func<IQueryable<T>, IQueryable<T>> includeFunc = null);
+
         /// <summary>
         /// Get selected top count of a list of objects
         /// </summary>

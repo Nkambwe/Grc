@@ -575,6 +575,22 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(r => r.LastModifiedBy, reg => reg.MapFrom(o => o.ModifiedBy))
                 .ForMember(r => r.LastModifiedOn, reg => reg.MapFrom(o => o.ModifiedOn));
 
+            CreateMap<SystemPermissionSet, PermissionSetResponse>()
+                .ForMember(r => r.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(r => r.SetName, reg => reg.MapFrom(o => (o.SetName ?? string.Empty).Trim()))
+                .ForMember(r => r.SetDescription, reg => reg.MapFrom(o => (o.Description ?? string.Empty).Trim()))
+                .ForMember(r => r.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
+                .ForMember(r => r.CreatedBy, reg => reg.MapFrom(o => (o.CreatedBy ?? string.Empty).Trim()))
+                .ForMember(r => r.CreatedOn, reg => reg.MapFrom(o => o.CreatedOn))
+                .ForMember(r => r.ModifiedBy, reg => reg.MapFrom(o => o.LastModifiedBy))
+                .ForMember(r => r.ModifiedOn, reg => reg.MapFrom(o => o.LastModifiedOn)); 
+
+            CreateMap<SystemPermission, PermissionResponse>()
+                .ForMember(r => r.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(r => r.PermissionName, reg => reg.MapFrom(o => (o.PermissionName ?? string.Empty).Trim()))
+                .ForMember(r => r.PermissionDescription, reg => reg.MapFrom(o => (o.Description ?? string.Empty).Trim()))
+                .ForMember(r => r.IsAssigned, reg => reg.MapFrom(o => false));
+
             CreateMap<ActivityLog, SystemActivityResponse>()
                 .ForMember(a => a.Id, reg => reg.MapFrom(o => o.Id))
                 .ForMember(a => a.EntityName, reg => reg.MapFrom(o => (o.EntityName ?? string.Empty).Trim()))
@@ -584,16 +600,6 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(a => a.UserId, reg => reg.MapFrom(o => o.UserId))
                 .ForMember(a => a.AccessedBy, reg => reg.MapFrom(o => $"{(o.User.FirstName ?? string.Empty).Trim()} {(o.User.LastName ?? string.Empty).Trim()}".Trim()))
                 .ForMember(a => a.ActivityDate, reg => reg.MapFrom(o => o.CreatedOn));
-
-            CreateMap<SystemPermissionSet, PermissionSetResponse>()
-                .ForMember(r => r.Id, reg => reg.MapFrom(o => o.Id))
-                .ForMember(r => r.SetName, reg => reg.MapFrom(o => (o.SetName ?? string.Empty).Trim()))
-                .ForMember(r => r.SetDescription, reg => reg.MapFrom(o => (o.Description ?? string.Empty).Trim()))
-                .ForMember(r => r.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
-                .ForMember(r => r.CreatedBy, reg => reg.MapFrom(o => (o.CreatedBy ?? string.Empty).Trim()))
-                .ForMember(r => r.CreatedOn, reg => reg.MapFrom(o => o.CreatedOn))
-                .ForMember(r => r.ModifiedBy, reg => reg.MapFrom(o => o.LastModifiedBy))
-                .ForMember(r => r.ModifiedOn, reg => reg.MapFrom(o => o.LastModifiedOn));
 
         }
     }

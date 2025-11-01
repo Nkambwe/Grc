@@ -8,16 +8,6 @@ namespace Grc.Middleware.Api.Http.Requests {
         [JsonPropertyName("userId")]
         public long UserId { get; set; }
         /// <summary>
-        /// Get or Set ID of user activity is related to
-        /// </summary>
-        [JsonPropertyName("activityUserId")]
-        public long? ActivityUserId { get; set; }
-        /// <summary>
-        /// Get or Set ID of user activity is related to
-        /// </summary>
-        [JsonPropertyName("activityTypeId")]
-        public long? ActivityTypeId { get; set; }
-        /// <summary>
         /// Get or Set Intended action
         /// </summary>
         [JsonPropertyName("action")]
