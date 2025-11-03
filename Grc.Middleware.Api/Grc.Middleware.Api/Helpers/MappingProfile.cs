@@ -520,8 +520,8 @@ namespace Grc.Middleware.Api.Helpers {
                .ForMember(p => p.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
                .ForMember(p => p.CreatedBy, reg => reg.MapFrom(o => (o.CreatedBy ?? string.Empty).Trim()))
                .ForMember(p => p.CreatedOn, reg => reg.MapFrom(o => o.CreatedOn))
-               .ForMember(p => p.ModifiedBy, reg => reg.MapFrom(o => o.LastModifiedBy))
-               .ForMember(p => p.ModifiedOn, reg => reg.MapFrom(o => o.LastModifiedOn))
+               .ForMember(p => p.ModifiedBy, reg => reg.MapFrom(o => o.LastModifiedBy ?? string.Empty))
+               .ForMember(p => p.ModifiedOn, reg => reg.MapFrom(o => o.LastModifiedOn ?? o.CreatedOn))
                .ForMember(p => p.Roles, reg => reg.MapFrom(o => o.Roles));
 
             CreateMap<SystemRole, RoleResponse>()
@@ -536,8 +536,8 @@ namespace Grc.Middleware.Api.Helpers {
               .ForMember(p => p.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
               .ForMember(p => p.CreatedBy, reg => reg.MapFrom(o => (o.CreatedBy ?? string.Empty).Trim()))
               .ForMember(p => p.CreatedOn, reg => reg.MapFrom(o => o.CreatedOn))
-              .ForMember(p => p.ModifiedBy, reg => reg.MapFrom(o => o.LastModifiedBy))
-              .ForMember(p => p.ModifiedOn, reg => reg.MapFrom(o => o.LastModifiedOn));
+              .ForMember(p => p.ModifiedBy, reg => reg.MapFrom(o => o.LastModifiedBy?? string.Empty))
+              .ForMember(p => p.ModifiedOn, reg => reg.MapFrom(o => o.LastModifiedOn ?? o.CreatedOn));
 
             CreateMap<SystemUser, UserResponse>()
                .ForMember(u =>u.Id, reg => reg.MapFrom(o => o.Id))

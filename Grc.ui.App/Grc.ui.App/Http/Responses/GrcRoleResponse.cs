@@ -30,6 +30,9 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("approved")]
         public bool IsApproved { get; set; }
 
+        [JsonPropertyName("isAssigned")]
+        public bool IsAssigned { get; set; }
+
         [JsonPropertyName("createdBy")]
         public string CreatedBy { get; set; }
 

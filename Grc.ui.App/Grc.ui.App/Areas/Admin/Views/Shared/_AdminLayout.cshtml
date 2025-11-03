@@ -207,17 +207,6 @@
                                     </a>
                                 </li>
 
-                                <li class="sidebar-item with-submenu">
-                                    <a asp-controller="Support" asp-action="RoleDelegation" asp-area="Admin">
-                                        <span class="menu-icon">
-                                            <i class="mdi mdi-account-convert-outline"></i>
-                                        </span>
-                                        <span class="sidebar-text">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Settings.Delegation"))
-                                        </span>
-                                    </a>
-                                </li>
-
                             </ul>
                         </li>
 
@@ -238,17 +227,6 @@
                             <ul id="permissions-menu" class="sidebar-submenu">
 
                                 <li class="sidebar-item with-submenu">
-                                    <a asp-controller="Support" asp-action="RolePermissions" asp-area="Admin">
-                                        <span class="menu-icon">
-                                            <i class="mdi mdi-key-chain"></i>
-                                        </span>
-                                        <span class="sidebar-text">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Permissions.Roles"))
-                                        </span>
-                                    </a>
-                                </li>
-
-                                <li class="sidebar-item with-submenu">
                                     <a asp-controller="Support" asp-action="PermissionSets" asp-area="Admin">
                                         <span class="menu-icon">
                                             <i class="mdi mdi-key-change"></i>
@@ -259,66 +237,29 @@
                                     </a>
                                 </li>
 
-                            </ul>
-                        </li>
-
-                        <li class="sidebar-separator">
-                            <span class="separator-label">
-                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Configurations"))
-                            </span>
-                            <span class="separator-line"></span>
-                        </li>
-
-                        <li class="sidebar-item with-submenu">
-
-                            <a href="" class="toggle-submenu" data-id="other-menu">
-                                <span class="menu-icon">
-                                    <i class="mdi mdi-security-network"></i>
-                                </span>
-                                <span>
-                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Configurations.Security"))
-                                </span>
-                                <span class="drop-icon">
-                                    <i class="mdi mdi-chevron-down"></i>
-                                </span>
-                            </a>
-
-                            <ul id="other-menu" class="sidebar-submenu">
-
                                 <li class="sidebar-item with-submenu">
-                                    <a asp-controller="Configuration" asp-action="DataEncryptions" asp-area="Admin">
+                                    <a asp-controller="Support" asp-action="RoleGroupPermissions" asp-area="Admin">
                                         <span class="menu-icon">
-                                            <i class="mdi mdi-lock-outline"></i>
+                                            <i class="mdi mdi-key-link"></i>
                                         </span>
                                         <span class="sidebar-text">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Configurations.Encryption"))
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Permissions.Group"))
                                         </span>
                                     </a>
                                 </li>
 
                                 <li class="sidebar-item with-submenu">
-                                    <a asp-controller="Support" asp-action="PasswordPolicy" asp-area="Admin">
+                                    <a asp-controller="Support" asp-action="RolePermissions" asp-area="Admin">
                                         <span class="menu-icon">
-                                            <i class="mdi mdi-form-textbox-password"></i>
+                                            <i class="mdi mdi-key-chain"></i>
                                         </span>
                                         <span class="sidebar-text">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Configurations.Passwords"))
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Permissions.Roles"))
                                         </span>
                                     </a>
                                 </li>
 
                             </ul>
-                        </li>
-
-                        <li class="sidebar-item">
-                            <a asp-controller="Configuration" asp-action="BugReporter" asp-area="Admin">
-                                <span class="menu-icon">
-                                    <i class="mdi mdi-bug-outline"></i>
-                                </span>
-                                <span class="sidebar-text">
-                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Configurations.Errors"))
-                                </span>
-                            </a>
                         </li>
 
                     </ul>

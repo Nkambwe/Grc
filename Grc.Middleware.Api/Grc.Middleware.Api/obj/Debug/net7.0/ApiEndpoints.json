@@ -549,6 +549,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "CreateRoleGroupPermissionSets",
+    "RelativePath": "grc/sam/roles/create-rolegroup-permissionsets",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.RoleGroupRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
     "Method": "CreateRole",
     "RelativePath": "grc/sam/roles/createrole",
     "HttpMethod": "POST",
@@ -661,6 +677,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "GetRoleGroupWithPermissionSetById",
+    "RelativePath": "grc/sam/roles/getrolegroupwithpermissionsets",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
     "Method": "GetPagedRoles",
     "RelativePath": "grc/sam/roles/getroles",
     "HttpMethod": "POST",
@@ -693,6 +725,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "GetPagedRoleGroupWithPermissionSets",
+    "RelativePath": "grc/sam/roles/pagedrolegroupsWithPermissionsets",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
     "Method": "GetPagedRoles",
     "RelativePath": "grc/sam/roles/pagedroles",
     "HttpMethod": "POST",
@@ -702,6 +750,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "UpdateRoleGroupPermissionSet",
+    "RelativePath": "grc/sam/roles/update-rolegroup-permissionsets",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.RoleGroupRequest",
         "IsRequired": true
       }
     ],

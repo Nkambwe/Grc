@@ -305,6 +305,7 @@ function deleteSetRecord(id) {
         });
     });
 }
+
 function savePermissionSet(e) {
     if (e) e.preventDefault();
     let isEdit = $('#isEdit').val();
@@ -442,6 +443,22 @@ function initSetSearch() {
 //..get antiforegery token from meta tag
 function getSetAntiForgeryToken() {
     return $('meta[name="csrf-token"]').attr('content');
+}
+
+function highlightField(selector, hasError, message) {
+    const $field = $(selector);
+    const $formGroup = $field.closest('.form-group, .mb-3, .col-sm-8');
+
+    // Remove existing error
+    $field.removeClass('is-invalid');
+    $formGroup.find('.field-error').remove();
+
+    if (hasError) {
+        $field.addClass('is-invalid');
+        if (message) {
+            $formGroup.append(`<div class="field-error text-danger small mt-1">${message}</div>`);
+        }
+    }
 }
 
 $(document).ready(function () {

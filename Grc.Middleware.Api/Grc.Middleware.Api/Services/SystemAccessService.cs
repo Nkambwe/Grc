@@ -9,10 +9,7 @@ using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Security;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -1911,7 +1908,7 @@ namespace Grc.Middleware.Api.Services {
             {
                 Logger.LogActivity($"Role Group ID: {request.RecordId}", "DEBUG");
                 //..get role group
-                var role = await uow.RoleGroupRepository.GetAsync(r => r.Id == request.RecordId, true, r => r.Department);
+                var role = await uow.RoleGroupRepository.GetAsync(r => r.Id == request.RecordId, true, r => r.Roles);
 
                 //..log role group record
                 var roleJson = JsonSerializer.Serialize(role, new JsonSerializerOptions
@@ -2042,6 +2039,147 @@ namespace Grc.Middleware.Api.Services {
                 long companyId = company != null ? company.Id : 1;
                 SystemError errorObj = new()
                 {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<bool> InsertRoleGroupWithRolesAsync(RoleGroupRequest request) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Save role group record >>>>");
+            try
+            {
+                //..map Role Group request to Role Group entity
+                var roleGroup = Mapper.Map<RoleGroupRequest, SystemRoleGroup>(request);
+
+                //..log the Role Group data being saved
+                var groupJson = JsonSerializer.Serialize(roleGroup, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Role Group data: {groupJson}", "DEBUG");
+
+                if(request.Roles != null && request.Roles.Count > 0) {
+                    roleGroup.Roles = new List<SystemRole>();
+                    foreach (var roleId in request.Roles) {
+                        var role = await uow.RoleRepository.GetAsync(r => r.Id == roleId);
+                        if (role != null)
+                        {
+                            roleGroup.Roles.Add(role);
+                        }
+                    }
+                }
+
+                var added = await uow.RoleGroupRepository.InsertAsync(roleGroup);
+                if (added) {
+                    //..check object state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(roleGroup).State;
+                    Logger.LogActivity($"Entity state after insert: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to insert Role Group record: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<bool> InsertRoleGroupWithPermissionSetsAsync(RoleGroupRequest request) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Save role group record >>>>");
+            try {
+                //..map Role Group request to Role Group entity
+                var roleGroup = Mapper.Map<RoleGroupRequest, SystemRoleGroup>(request);
+
+                //..log the Role Group data being saved
+                var groupJson = JsonSerializer.Serialize(roleGroup, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Role Group data: {groupJson}", "DEBUG");
+
+                if (request.PermissionSets != null && request.PermissionSets.Count > 0) {
+                    roleGroup.PermissionSets = new List<SystemRoleGroupPermissionSet>();
+                    foreach (var psId in request.PermissionSets) {
+                        var permSet = await uow.PermissionSetRepository.GetAsync(r => r.Id == psId);
+                        if (permSet != null) {
+                            roleGroup.PermissionSets.Add(new SystemRoleGroupPermissionSet { 
+                                RoleGroup = roleGroup,
+                                PermissionSet = permSet
+                            });
+                        }
+                    }
+                }
+
+                var added = await uow.RoleGroupRepository.InsertAsync(roleGroup);
+                if (added) {
+                    //..check object state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(roleGroup).State;
+                    Logger.LogActivity($"Entity state after insert: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to insert Role Group record: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new() {
                     ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
                     ErrorSource = "SYSTEM-ACCESS-SERVICE",
                     StackTrace = ex.StackTrace,
@@ -2349,6 +2487,94 @@ namespace Grc.Middleware.Api.Services {
             try
             {
                 return await uow.RoleGroupRepository.PageAllAsync(token, page, size, predicate, includeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Role Group records : {ex.Message}", "ERROR");
+
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<SystemRoleGroup> GetRoleGroupWithPermissionSetsByIdAsync(IdRequest request) {
+
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve paged Role Group records", "INFO");
+
+            try
+            {
+                var roleGroup = await uow.RoleGroupRepository.GetAsync(ps => ps.Id == request.RecordId, request.markAsDeleted);
+
+                if (roleGroup == null)
+                    return null;
+
+                // Ensure unique permission sets
+                roleGroup.PermissionSets = roleGroup.PermissionSets
+                    .GroupBy(p => p.PermissionSetId)
+                    .Select(g => g.First())
+                    .ToList();
+
+                return roleGroup;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Role Group records : {ex.Message}", "ERROR");
+
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<SystemRoleGroup>> PagedRoleGroupWithPermissionSetsAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve paged Role Group records", "INFO");
+
+            try
+            {
+                return await uow.RoleGroupRepository.PageAllAsync(pageIndex, pageSize, includeDeleted);
             }
             catch (Exception ex)
             {

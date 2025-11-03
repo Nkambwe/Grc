@@ -139,9 +139,14 @@
                defaults: new { area = "Admin", controller = "Support", action = "RoleGroups" }
             );
             routeBuilder.MapControllerRoute(
-                name: "admin-role-groups-retrieve",
-                pattern: "admin/support/role-groups-retrieve/{id:long}",
-                defaults: new { area = "Admin", controller = "Support", action = "GetRoleGroup" }
+               name: "admin-role-groups-retrieve",
+               pattern: "admin/support/role-groups-retrieve/{id:long}",
+               defaults: new { area = "Admin", controller = "Support", action = "GetRoleGroupWithRoles" }
+            );
+            routeBuilder.MapControllerRoute(
+              name: "admin-role-group-sets",
+              pattern: "admin/support/system-roles-group-sets",
+              defaults: new { area = "Admin", controller = "Support", action = "RoleGroupPermissions" }
             );
             routeBuilder.MapControllerRoute(
                 name: "admin-role-groups-all",
@@ -151,6 +156,11 @@
             routeBuilder.MapControllerRoute(
                name: "admin-role-groups-list",
                pattern: "admin/support/system-role-groups/list",
+               defaults: new { area = "Admin", controller = "Support", action = "GetPagedRoleGroups" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-role-group-sets-list",
+               pattern: "admin/support/system-role-group-sets/list",
                defaults: new { area = "Admin", controller = "Support", action = "GetPagedRoleGroups" }
             );
             routeBuilder.MapControllerRoute(
@@ -186,6 +196,26 @@
               name: "admin-support-permission-role-groups",
               pattern: "admin/support/permission/role-groups",
               defaults: new { area = "Admin", controller = "Support", action = "RoleGroup" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-role-group-permissions-retrieve",
+               pattern: "admin/support/role-group-permissions-retrieve/{id:long}",
+               defaults: new { area = "Admin", controller = "Support", action = "GetRoleGroupWithPermissions" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-role-group-sets-permissions-all",
+                pattern: "admin/support/role-groups-permissions-all",
+                defaults: new { area = "Admin", controller = "Support", action = "GetPagedRoleGroupWithPermissionSets" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-role-group-permissions-create",
+                pattern: "admin/support/role-group-permissions-create",
+                defaults: new { area = "Admin", controller = "Support", action = "CreateRoleGroupPermissions" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-role-group-permissions-modify",
+                pattern: "admin/support/role-group-permissions-modify",
+                defaults: new { area = "Admin", controller = "Support", action = "UpdateRoleGroupPermissions" }
             );
 
             /*----------------------- Permission Sets routes*/

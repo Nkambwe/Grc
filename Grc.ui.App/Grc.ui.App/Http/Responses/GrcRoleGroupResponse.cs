@@ -48,5 +48,8 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("roles")]
         public List<GrcRoleResponse> Roles { get; set; } = new();
 
+        [JsonPropertyName("permissionSets")]
+        public List<GrcPermissionSetResponse> PermissionSets { get; set; } = new();
+
     }
 }

@@ -2,8 +2,7 @@
 
 namespace Grc.Middleware.Api.Http.Requests
 {
-    public class RoleGroupRequest
-    {
+    public class RoleGroupRequest {
 
         [JsonPropertyName("id")]
         public long Id { get; set; }
@@ -11,13 +10,13 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("groupName")]
         public string GroupName { get; set; }
 
-        [JsonPropertyName("description")]
+        [JsonPropertyName("groupDescription")]
         public string Description { get; set; }
 
-        [JsonPropertyName("description")]
+        [JsonPropertyName("groupCategory")]
         public string GroupCategory { get; set; }
 
-        [JsonPropertyName("scope")]
+        [JsonPropertyName("groupScope")]
         public int Scope { get; set; }
 
         [JsonPropertyName("department")]
@@ -55,6 +54,13 @@ namespace Grc.Middleware.Api.Http.Requests
 
         [JsonPropertyName("action")]
         public string Action { get; set; }
+
+        [JsonPropertyName("permissionSets")]
+        public List<long> PermissionSets { get; set; }
+
+        [JsonPropertyName("roles")]
+        public List<long> Roles { get; set; }
+
     }
 
 }

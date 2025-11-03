@@ -21,6 +21,12 @@
 	<LocaleResource Name="App.Label.New">
 		<Value>New</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Label.Role">
+		<Value>Role</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Role.Group">
+		<Value>Role Group</Value>
+	</LocaleResource>
 	<LocaleResource Name="App.Label.Lock">
 		<Value>Lock</Value>
 	</LocaleResource>

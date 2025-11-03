@@ -168,6 +168,26 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(e => e.Permissions, reg => reg.MapFrom(o => o.Permissions ?? new()))
                 .ForMember(e => e.RoleGroups, reg => reg.MapFrom(o => o.RoleGroups ?? new()));
 
+            CreateMap<GrcPermissionSetViewModel, GrcPermissionSetRequest>()
+                .ForMember(e => e.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(e => e.SetName, reg => reg.MapFrom(o => (o.SetName ?? string.Empty).Trim()))
+                .ForMember(e => e.Description, reg => reg.MapFrom(o => (o.Description ?? string.Empty).Trim()))
+                .ForMember(e => e.Roles, reg => reg.MapFrom(o => o.Roles ?? new()))
+                .ForMember(e => e.Permissions, reg => reg.MapFrom(o => o.Permissions ?? new()))
+                .ForMember(e => e.RoleGroups, reg => reg.MapFrom(o => o.RoleGroups ?? new()));
+
+
+            CreateMap<RoleGroupViewModel, GrcRoleGroupRequest>()
+                .ForMember(e => e.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(e => e.GroupName, reg => reg.MapFrom(o => (o.GroupName ?? string.Empty).Trim()))
+                .ForMember(e => e.GroupDescription, reg => reg.MapFrom(o => (o.GroupDescription ?? string.Empty).Trim()))
+                .ForMember(e => e.DepartmentName, reg => reg.MapFrom(o => (o.DepartmentName ?? string.Empty).Trim()))
+                .ForMember(e => e.GroupScope, reg => reg.MapFrom(o => 2))
+                .ForMember(q => q.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
+                .ForMember(q => q.IsVerified, reg => reg.MapFrom(o => o.IsVerified))
+                .ForMember(q => q.IsApproved, reg => reg.MapFrom(o => o.IsApproved))
+                .ForMember(e => e.PermissionSets, reg => reg.MapFrom(o => o.PermissionSets ?? new()))
+                .ForMember(e => e.Roles, reg => reg.MapFrom(o => o.Roles ?? new()));
         }
     }
 }

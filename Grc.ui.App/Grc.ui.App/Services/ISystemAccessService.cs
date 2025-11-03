@@ -184,7 +184,16 @@ namespace Grc.ui.App.Services {
         /// <param name="userId">User ID for user initiating action</param>
         /// <param name="ipAddress">Current login IP Address of the requesting user</param>
         /// <returns>Task containing system role with provided ID or null</returns>
-        Task<GrcResponse<GrcRoleGroupResponse>> GetRoleGroupByIdAsync(long recordId, long userId, string ipAddress);
+        Task<GrcResponse<GrcRoleGroupResponse>> GetRoleGroupWithRolesByIdAsync(long recordId, long userId, string ipAddress);
+
+        /// <summary>
+        /// Get System Role Group info by Database ID
+        /// </summary>
+        /// <param name="recordId">Record ID to look for</param>
+        /// <param name="userId">User ID for user initiating action</param>
+        /// <param name="ipAddress">Current login IP Address of the requesting user</param>
+        /// <returns>Task containing system role with provided ID or null</returns>
+        Task<GrcResponse<GrcRoleGroupResponse>> GetRoleGroupWithPermissionSetsByIdAsync(long recordId, long userId, string ipAddress);
         /// <summary>
         /// Get a list of role groups in the system
         /// </summary>
@@ -197,6 +206,12 @@ namespace Grc.ui.App.Services {
         /// <param name="request">Pagenated request</param>
         /// <returns>Task containing a list of system roles or empty list if none</returns>
         Task<GrcResponse<PagedResponse<GrcRoleGroupResponse>>> GetPagedRoleGroupsAsync(TableListRequest request);
+        /// <summary>
+        /// Get a list of pagednated system role groups records
+        /// </summary>
+        /// <param name="request">Pagenated request</param>
+        /// <returns>Task containing a list of system roles or empty list if none</returns>
+        Task<GrcResponse<PagedResponse<GrcRoleGroupResponse>>> GetPagedRoleGroupWithPermissionSetsAsync(TableListRequest request);
         /// <summary>
         /// Create a new system role in the system
         /// </summary>
@@ -220,6 +235,10 @@ namespace Grc.ui.App.Services {
         /// <returns>Task containing persistance status of this system role group</returns>
         Task<GrcResponse<ServiceResponse>> DeleteRoleGroupAsync(GrcIdRequest request);
 
+        Task<GrcResponse<ServiceResponse>> UpdateRoleGroupWithPermissionsAsync(RoleGroupViewModel request, long userId, string ipAddress);
+
+        Task<GrcResponse<ServiceResponse>> CreateRoleGroupWithPermissionsAsync(RoleGroupViewModel request, long userId, string ipAddress);
+
         #endregion
 
         #region System Permissions
@@ -241,7 +260,7 @@ namespace Grc.ui.App.Services {
         Task<GrcResponse<ServiceResponse>> UpdatePermissionSetAsync(GrcPermissionSetViewModel roleRecord, long userId, string ipAddress);
 
         Task<GrcResponse<ServiceResponse>> DeletePermissionSetAsync(GrcIdRequest request);
-
+       
         #endregion
 
     }

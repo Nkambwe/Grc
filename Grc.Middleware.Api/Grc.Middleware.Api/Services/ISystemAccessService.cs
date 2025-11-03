@@ -106,6 +106,10 @@ namespace Grc.Middleware.Api.Services {
 
         Task<bool> InsertRoleGroupAsync(RoleGroupRequest request);
 
+        Task<bool> InsertRoleGroupWithRolesAsync(RoleGroupRequest request);
+
+        Task<bool> InsertRoleGroupWithPermissionSetsAsync(RoleGroupRequest request);
+
         bool UpdateRoleGroup(RoleGroupRequest request, bool includeDeleted = false);
 
         Task<bool> UpdateRoleGroupAsync(RoleGroupRequest request, bool includeDeleted = false);
@@ -117,6 +121,10 @@ namespace Grc.Middleware.Api.Services {
         Task<PagedResult<SystemRoleGroup>> PagedRoleGroupsAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false);
 
         Task<PagedResult<SystemRoleGroup>> PageAllRoleGroupsAsync(CancellationToken token, int page, int size, Expression<Func<SystemRoleGroup, bool>> predicate = null, bool includeDeleted = false);
+
+        Task<SystemRoleGroup> GetRoleGroupWithPermissionSetsByIdAsync(IdRequest request);
+
+        Task<PagedResult<SystemRoleGroup>> PagedRoleGroupWithPermissionSetsAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false);
 
         #endregion
 

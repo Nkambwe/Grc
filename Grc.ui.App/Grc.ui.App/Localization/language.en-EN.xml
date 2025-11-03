@@ -21,6 +21,12 @@
 	<LocaleResource Name="App.Label.New">
 		<Value>New</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Label.Role">
+		<Value>Role</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Role.Group">
+		<Value>Role Group</Value>
+	</LocaleResource>
 	<LocaleResource Name="App.Label.Lock">
 		<Value>Lock</Value>
 	</LocaleResource>
@@ -234,12 +240,12 @@
 	<LocaleResource Name="Component.Key.ObligationRegister">
 		<Value>Compliance Obligations</Value>
 	</LocaleResource>
-	
-		
+
+
 	<LocaleResource Name="Component.Key.PolicyRegister">
 		<Value>Policies and Procedures</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Component.Key.PermissionSets">
 		<Value>Permission Sets</Value>
 	</LocaleResource>
@@ -754,8 +760,8 @@
 	<LocaleResource Name="Component.Table.Role.Group.Deleted">
 		<Value>Deactivated</Value>
 	</LocaleResource>
-	
-	
+
+
 	<LocaleResource Name="Component.Table.Policy.Select.Owner">
 		<Value>Select person to assign to</Value>
 	</LocaleResource>

@@ -15,6 +15,9 @@ namespace Grc.Middleware.Api.Http.Responses
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 
+        [JsonPropertyName("isAssigned")]
+        public bool IsAssigned { get; set; }
+
         [JsonPropertyName("createdOn")]
         public DateTime CreatedOn { get; set; }
 

@@ -224,6 +224,7 @@ function openGroupEditor(title, group, isEdit) {
     $("#groupId").val(group?.id || "");
     $('#isEdit').val(isEdit);
     $("#groupName").val(group?.groupName || "");
+    $("#groupDescription").val(group?.groupDescription || "");
     $("#groupScope").val(group?.groupScope || "");
     $("#groupCategory").val(group?.groupCategory || "");
     $("#groupType").val(group?.groupType || "");
@@ -348,9 +349,12 @@ function saveGroup(e) {
         groupScope: $('#groupScope').val()?.trim(),
         groupCategory: $('#groupCategory').val()?.trim(),
         department: $('#setName').val()?.trim(),
+        departmentId: 0,
+        attachedTo: "",
         isDeleted: $('#isDeleted').is(':checked') ? true : false,
         isVerified: $('#isVerified').is(':checked') ? true : false,
         isApproved: $('#isApproved').is(':checked') ? true : false,
+        permissionSets:[],
         roles: $(".perm-checkbox:checked").map((_, el) => parseInt(el.value, 10)).get()
     };
 

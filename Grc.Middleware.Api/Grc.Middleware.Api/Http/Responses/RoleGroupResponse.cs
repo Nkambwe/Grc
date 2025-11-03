@@ -43,10 +43,12 @@ namespace Grc.Middleware.Api.Http.Responses {
         public string ModifiedBy { get; set; }
 
         [JsonPropertyName("modifiedOn")]
-        public DateTime ModifiedOn { get; set; }
+        public DateTime? ModifiedOn { get; set; }
 
         [JsonPropertyName("roles")]
         public List<RoleResponse> Roles { get; set; } = new();
 
+        [JsonPropertyName("permissionSets")]
+        public List<PermissionSetResponse> PermissionSets { get; set; } = new ();
     }
 }

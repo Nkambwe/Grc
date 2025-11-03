@@ -1836,8 +1836,7 @@ namespace Grc.Middleware.Api.Controllers {
             {
                 Logger.LogActivity("Get role group by ID", "INFO");
 
-                if (request == null)
-                {
+                if (request == null) {
                     var error = new ResponseError(
                         ResponseCodes.BADREQUEST,
                         "Request record cannot be empty",
@@ -1847,8 +1846,7 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<RoleGroupResponse>(error));
                 }
 
-                if (request.RecordId == 0)
-                {
+                if (request.RecordId == 0) {
                     var error = new ResponseError(
                         ResponseCodes.BADREQUEST,
                         "Request Role Group ID is required",
@@ -1859,16 +1857,8 @@ namespace Grc.Middleware.Api.Controllers {
                 }
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
 
-                var response = await _accessService.GetRoleGroupByIdAsync(request);
-                if (response != null)
-                {
-                    //..map response
-                    var roleRecord = Mapper.Map<RoleGroupResponse>(response);
-                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
-                    return Ok(new GrcResponse<RoleGroupResponse>(roleRecord));
-                }
-                else
-                {
+                var roleGroup = await _accessService.GetRoleGroupByIdAsync(request);
+                if (roleGroup == null) {
                     var error = new ResponseError(
                         ResponseCodes.FAILED,
                         "Role Group not found",
@@ -1877,6 +1867,66 @@ namespace Grc.Middleware.Api.Controllers {
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<RoleGroupResponse>(error));
                 }
+                
+                //..map assigned roles for easy lookup
+                var assignedIds = roleGroup.Roles != null ?
+                                  roleGroup.Roles.Select(p => p.Id).ToHashSet(): 
+                                  new HashSet<long>();
+
+                //..get all system role
+                var roleData = await _accessService.GetAllRolesAsync();
+                var roleList = roleData ?? new List<SystemRole>();
+
+                //merge mark isAssigned = true if in assignedIds
+                var mergedRoles = roleList
+                    .Select(p => new RoleResponse
+                    {
+                        Id = p.Id,
+                        RoleName = p.RoleName,
+                        Description = p.Description,
+                        IsAssigned = assignedIds.Contains(p.Id)
+                    })
+                    .OrderBy(p => p.RoleName)
+                    .ToList();
+
+                //..return full role group data
+                var roleGroupRecord = new RoleGroupResponse
+                {
+                    Id = roleGroup.Id,
+                    GroupName = roleGroup.GroupName ?? string.Empty,
+                    Description = roleGroup.Description ?? string.Empty,
+                    GroupCategory = roleGroup.GroupCategory ?? string.Empty,
+                    GroupScope = roleGroup.Scope.Equals(GroupScope.SYSTEM) ? "System Role Group" : "Department Role Group",
+                    GroupType = roleGroup.Type.Equals(RoleGroup.SYSTEM) ? "System Group" : "Custom Group",
+                    DepartmentName = roleGroup.Department ?? string.Empty,
+                    IsApproved = roleGroup.IsApproved ?? true,
+                    IsVerified = roleGroup.IsVerified ?? true,
+                    IsDeleted = roleGroup.IsDeleted,
+                    CreatedOn = roleGroup.CreatedOn,
+                    CreatedBy = roleGroup.CreatedBy ?? string.Empty,
+                    ModifiedOn = roleGroup.LastModifiedOn ?? roleGroup.CreatedOn,
+                    ModifiedBy = roleGroup.LastModifiedBy ?? string.Empty,
+                    Roles = mergedRoles.Select(r => new RoleResponse()
+                    {
+                        Id = r.Id,
+                        RoleName = r.RoleName,
+                        Description = r.Description,
+                        IsAssigned = r.IsAssigned,
+                        GroupId = roleGroup.Id,
+                        IsApproved = r.IsApproved,
+                        IsVerified = r.IsVerified,
+                        IsDeleted = r.IsDeleted,
+                        GroupName = roleGroup.GroupName,
+                        GroupCategory = string.Empty,
+                        CreatedBy = string.Empty,
+                        ModifiedBy = string.Empty,
+                        CreatedOn = DateTime.Now,
+                        ModifiedOn = DateTime.Now
+
+                    }).ToList()
+                };
+
+                return Ok(new GrcResponse<RoleGroupResponse>(roleGroupRecord));
             }
             catch (Exception ex)
             {
@@ -2311,6 +2361,143 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 return StatusCode(500, "An error occurred while deleting unit.");
+            }
+        }
+
+        [HttpPost("sam/roles/create-rolegroup-permissionsets")]
+        public async Task<IActionResult> CreateRoleGroupPermissionSets([FromBody] RoleGroupRequest request)
+        {
+            try
+            {
+                Logger.LogActivity("Creating new role group", "INFO");
+                if (request == null)
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "The role group record cannot be null"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!string.IsNullOrWhiteSpace(request.GroupName))
+                {
+                    if (await _accessService.RoleGroupExistsAsync(r => r.GroupName == request.GroupName))
+                    {
+                        var error = new ResponseError(
+                            ResponseCodes.DUPLICATE,
+                            "Duplicate Record",
+                            "Another Role Group found with same group name"
+                        );
+
+                        Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<GeneralResponse>(error));
+                    }
+                }
+
+                //..create role group
+                var result = await _accessService.InsertRoleGroupAsync(request);
+                var response = new GeneralResponse();
+                if (result)
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Role Group saved successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+                else
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to save role group record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var error = new ResponseError(
+                    ResponseCodes.BADREQUEST,
+                    $"Oops! Something thing went wrong",
+                    $"System Error - {ex.Message}"
+                );
+
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("sam/roles/update-rolegroup-permissionsets")]
+        public async Task<IActionResult> UpdateRoleGroupPermissionSet([FromBody] RoleGroupRequest request)
+        {
+            try
+            {
+                Logger.LogActivity("Update role group", "INFO");
+                if (request == null)
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "The role group record cannot be null"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _accessService.RoleExistsAsync(r => r.Id == request.Id))
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.NOTFOUND,
+                        "Record Not Found",
+                        "Role Group record not found in the database"
+                    );
+
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..update role group
+                var result = await _accessService.UpdateRoleGroupAsync(request);
+                var response = new GeneralResponse();
+                if (result)
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Role Group updated successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+                else
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update role group record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var error = new ResponseError(
+                    ResponseCodes.BADREQUEST,
+                    $"Oops! Something thing went wrong",
+                    $"System Error - {ex.Message}"
+                );
+
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<GeneralResponse>(error));
             }
         }
 
@@ -3508,6 +3695,268 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 return StatusCode(500, "An error occurred while deleting unit.");
+            }
+        }
+
+        [HttpPost("sam/roles/getrolegroupwithpermissionsets")]
+        public async Task<IActionResult> GetRoleGroupWithPermissionSetById([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Get role group with permission sets by ID", "INFO");
+
+                if (request == null) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleGroupResponse>(error));
+                }
+
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request Role Group ID is required",
+                        "Invalid request Role Group ID"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleGroupResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var roleGroup = await _accessService.GetRoleGroupWithPermissionSetsByIdAsync(request);
+                if (roleGroup == null)
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.FAILED,
+                        "Role Group not found",
+                        "No role Group matched the provided ID"
+                    );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleGroupResponse>(error));
+                }
+
+
+                //..map assigned roles for easy lookup
+                var assignedIds = roleGroup.PermissionSets != null ?
+                                  roleGroup.PermissionSets.Select(p => p.PermissionSetId).ToHashSet() :
+                                  new HashSet<long>();
+
+                //..get all system permission sets
+                var setData = await _accessService.GetAllPermissionSetsAsync();
+                var setList = setData ?? new List<SystemPermissionSet>();
+
+                //merge mark isAssigned = true if in assignedIds
+                var mergedSets = setList
+                    .Select(ps => new PermissionSetResponse
+                    {
+                        Id = ps.Id,
+                        SetName = ps.SetName,
+                        SetDescription = ps.Description,
+                        IsAssigned = assignedIds.Contains(ps.Id),
+                        IsDeleted = ps.IsDeleted,
+                        CreatedBy = ps.CreatedBy,
+                        CreatedOn = ps.CreatedOn,
+                        ModifiedBy = ps.LastModifiedBy,
+                        ModifiedOn = ps.LastModifiedOn
+                    })
+                    .OrderBy(p => p.SetName)
+                    .ToList();
+
+                //..return full role group data
+                var roleGroupRecord = new RoleGroupResponse {
+                    Id = roleGroup.Id,
+                    GroupName = roleGroup.GroupName ?? string.Empty,
+                    Description = roleGroup.Description ?? string.Empty,
+                    GroupCategory = roleGroup.GroupCategory ?? string.Empty,
+                    GroupScope = roleGroup.Scope.Equals(GroupScope.SYSTEM) ? "System Role Group" : "Department Role Group",
+                    GroupType = roleGroup.Type.Equals(RoleGroup.SYSTEM) ? "System Group" : "Custom Group",
+                    DepartmentName = roleGroup.Department ?? string.Empty,
+                    IsApproved = roleGroup.IsApproved ?? true,
+                    IsVerified = roleGroup.IsVerified ?? true,
+                    IsDeleted = roleGroup.IsDeleted,
+                    CreatedOn = roleGroup.CreatedOn,
+                    CreatedBy = roleGroup.CreatedBy ?? string.Empty,
+                    ModifiedOn = roleGroup.LastModifiedOn ?? roleGroup.CreatedOn,
+                    ModifiedBy = roleGroup.LastModifiedBy ?? string.Empty,
+                    PermissionSets = mergedSets
+                };
+
+                return Ok(new GrcResponse<RoleGroupResponse>(roleGroupRecord));
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var conpany = await CompanyService.GetDefaultCompanyAsync();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "MIDDLEWARE-SAM-COTROLLER",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                var result = await SystemErrorService.SaveErrorAsync(errorObj);
+                var response = new GeneralResponse();
+                if (result)
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Error captured and saved successfully";
+                    Logger.LogActivity($"SAM-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+                else
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to capture error to database. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE-SAM-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                var error = new ResponseError(
+                    ResponseCodes.BADREQUEST,
+                    "Oops! Something went wrong",
+                    $"System Error - {ex.Message}"
+                );
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<RoleGroupResponse>(error));
+            }
+        }
+
+        [HttpPost("sam/roles/pagedrolegroupsWithPermissionsets")]
+
+        public async Task<IActionResult> GetPagedRoleGroupWithPermissionSets([FromBody] ListRequest request) {
+            try
+            {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null)
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<RoleGroupResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _accessService.PagedRoleGroupWithPermissionSetsAsync(request.PageIndex, request.PageSize, true);
+
+                if (pageResult.Entities == null || !pageResult.Entities.Any())
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.SUCCESS,
+                        "No data",
+                        "No role groups records found"
+                    );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+
+                    return Ok(new GrcResponse<PagedResponse<RoleGroupResponse>>(new PagedResponse<RoleGroupResponse>(
+                        new List<RoleGroupResponse>(),
+                        0,
+                        pageResult.Page,
+                        pageResult.Size
+                    )));
+                }
+
+                //..create final role group list
+                var groups = pageResult.Entities.Select( roleGroup => 
+                    new RoleGroupResponse
+                    {
+                        Id = roleGroup.Id,
+                        GroupName = roleGroup.GroupName ?? string.Empty,
+                        Description = roleGroup.Description ?? string.Empty,
+                        GroupCategory = roleGroup.GroupCategory ?? string.Empty,
+                        GroupScope = roleGroup.Scope == GroupScope.SYSTEM ? "System Role Group" : "Department Role Group",
+                        GroupType = roleGroup.Type == RoleGroup.SYSTEM ? "System Group" : "Custom Group",
+                        DepartmentName = roleGroup.Department ?? string.Empty,
+                        IsApproved = roleGroup.IsApproved ?? true,
+                        IsVerified = roleGroup.IsVerified ?? true,
+                        IsDeleted = roleGroup.IsDeleted,
+                        CreatedOn = roleGroup.CreatedOn,
+                        CreatedBy = roleGroup.CreatedBy ?? string.Empty,
+                        ModifiedOn = roleGroup.LastModifiedOn ?? roleGroup.CreatedOn,
+                        ModifiedBy = roleGroup.LastModifiedBy ?? string.Empty,
+                        Roles = new List<RoleResponse>(),
+                        PermissionSets = roleGroup.PermissionSets.Select(ps => new PermissionSetResponse
+                        {
+                            Id = ps.PermissionSet.Id,
+                            SetName = ps.PermissionSet.SetName,
+                            SetDescription = ps.PermissionSet.Description,
+                            IsDeleted = ps.PermissionSet.IsDeleted,
+                            CreatedBy = ps.PermissionSet.CreatedBy,
+                            CreatedOn = ps.PermissionSet.CreatedOn,
+                            ModifiedBy = ps.PermissionSet.LastModifiedBy,
+                            ModifiedOn = ps.PermissionSet.LastModifiedOn
+                        }).ToList()
+                    }
+                ).ToList();
+
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+                {
+                    var searchTerm = request.SearchTerm.ToLower();
+                    groups = groups.Where(u =>
+                        (u.GroupName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.Description?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                    ).ToList();
+                }
+
+                return Ok(new GrcResponse<PagedResponse<RoleGroupResponse>>(new PagedResponse<RoleGroupResponse>(
+                    groups,
+                    pageResult.Count,
+                    pageResult.Page,
+                    pageResult.Size
+                )));
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var conpany = await CompanyService.GetDefaultCompanyAsync();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "SUPPORT-MIDDLEWARE-COTROLLER",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                var result = await SystemErrorService.SaveErrorAsync(errorObj);
+                var response = new GeneralResponse();
+                if (result)
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Error captured and saved successfully";
+                    Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+                else
+                {
+                    response.Status = false;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to capture error to database. An error occurrred";
+                    Logger.LogActivity($"SUPPORT-MIDDLEWARE-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                var error = new ResponseError(
+                    ResponseCodes.BADREQUEST,
+                    "Oops! Something went wrong",
+                    $"System Error - {ex.Message}"
+                );
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<PagedResponse<RoleGroupResponse>>(error));
             }
         }
 
