@@ -17,13 +17,13 @@ namespace Grc.ui.App.Http.Requests
         public string DepartmentName { get; set; }
 
         [JsonPropertyName("groupCategory")]
-        public int GroupCategory { get; set; } = 2;
+        public string GroupCategory { get; set; } = "ADMINSUPPORT";
 
         [JsonPropertyName("groupScope")]
         public int GroupScope { get; set; }
 
-        [JsonPropertyName("attachedTo")]
-        public string AttachedTo { get; set; }
+        [JsonPropertyName("type")]
+        public int Type { get; set; }
 
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
@@ -42,6 +42,18 @@ namespace Grc.ui.App.Http.Requests
 
         [JsonPropertyName("ipAddress")]
         public string IpAddress { get; set; }
+
+        [JsonPropertyName("createdBy")]
+        public string CreatedBy { get; set; }
+
+        [JsonPropertyName("createdOn")]
+        public DateTime CreatedOn { get; set; }
+
+        [JsonPropertyName("modifiedBy")]
+        public string ModifiedBy { get; set; }
+
+        [JsonPropertyName("modifiedOn")]
+        public DateTime ModifiedOn { get; set; }
 
         [JsonPropertyName("permissionSets")]
         public List<long> PermissionSets { get; set; }

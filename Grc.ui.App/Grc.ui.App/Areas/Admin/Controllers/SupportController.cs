@@ -1714,6 +1714,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                         roleName = role.RoleName,
                         roleDescription = role.Description,
                         groupName = role.GroupName,
+                        groupId = role.GroupId,
                         isDeleted = role.IsDeleted,
                         isApproved = role.IsApproved,
                         isVerified = role.IsVerified,
@@ -1927,6 +1928,61 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 Logger.LogActivity($"Error retrieving role group: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
                 return Json(new { results = new List<object>() });
+            }
+        }
+
+        public async Task<IActionResult> GetRoleGroupLists() {
+            try
+            {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError)
+                {
+                    Logger.LogActivity($"ROLE LIST ERROR: Failed to retrieve current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
+                var currentUser = grcResponse.Data;
+                if (currentUser == null)
+                {
+                    //..session has expired
+                    return RedirectToAction("Login", "Application");
+                }
+                GrcRequest request = new()
+                {
+                    UserId = currentUser.UserId,
+                    Action = Activity.RETRIVEROLEGROUPS.GetDescription(),
+                    IPAddress = ipAddress,
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>()
+                };
+                //..get list of all role groups
+                var rolesData = await _accessService.GetRoleGroupsAsync(request);
+                List<GrcRoleGroupResponse> roleGroups;
+                if (rolesData.HasError)
+                {
+                    roleGroups = new();
+                    Logger.LogActivity($"ROLES DATA ERROR: Failed to retrieve system role groups - {JsonSerializer.Serialize(rolesData)}");
+                }
+                else
+                {
+                    roleGroups = rolesData.Data.Data;
+                    Logger.LogActivity($"ROLE GROUP DATA - {JsonSerializer.Serialize(roleGroups)}");
+                }
+
+                //..get ajax data - removed Cast<object>()
+                var listData = roleGroups.Select(roleGroup => new {
+                    id = roleGroup.Id,
+                    groupName = roleGroup.GroupName
+                }).ToList();
+
+                return Json(new { data = listData });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving roles: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { data = new List<object>() }); // Changed results to data for consistency
             }
         }
 
@@ -2362,8 +2418,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         [HttpPost]
         [LogActivityResult("Add System Role Group", "User added system role group permissions", ActivityTypeDefaults.ROLE_GROUP_ADDED, "SystemRoleGroup")]
-        public async Task<IActionResult> CreateRoleGroupPermissions([FromBody] RoleGroupViewModel request)
-        {
+        public async Task<IActionResult> CreateRoleGroupPermissions([FromBody] RoleGroupViewModel request) {
             try
             {
                 if (!ModelState.IsValid)

@@ -94,7 +94,7 @@ function initRoleTable() {
                 widthGrow: 4,
                 headerSort: true,
                 frozen: true,
-                formatter: (cell) => `<span class="clickable-title" onclick="viewRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`
+                formatter: (cell) => `<span class="clickable-title" onclick="editRole(${cell.getRow().getData().id})">${cell.getValue()}</span>`
             },
             {
                 title: "ROLE DESCRIPTION",
@@ -103,6 +103,15 @@ function initRoleTable() {
                 widthGrow: 4,
                 headerSort: true,
                 frozen: true
+            },
+            {
+                title: "ROLE GROUP",
+                field: "groupName",
+                minWidth: 200,
+                widthGrow: 4,
+                headerSort: true,
+                frozen: true,
+                formatter: (cell) => `<span class="clickable-title" onclick="viewGroup(${cell.getRow().getData().groupId})">${cell.getValue()}</span>`
             },
             {
                 title: "STATUS",
@@ -184,35 +193,326 @@ function initRoleTable() {
     initRoleSearch();
 }
 
-function initRoleSearch() {
-
+function initGroupListSelect2() {
+    $(".js-role-groups").each(function () {
+        console.log("Found element:", $(this)); // Debug log
+        if (!$(this).hasClass('select2-hidden-accessible')) {
+            console.log("Initializing Select2..."); // Debug log
+            initSelect2($(this), 'Select Group...', "No role group found");
+        }
+    });
 }
 
-function viewRecord(userId) {
-    alert("View record for role ID: " + userId);
+function findRole(id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/admin/support/roles-retrieve/${encodeURIComponent(id)}`,
+            type: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            success: function (res) {
+                if (res && res.success) {
+                    resolve(res.data);
+                } else {
+                    resolve(null);
+                }
+            },
+            error: function () {
+                reject();
+            }
+        });
+    });
+}
+
+function createRole() {
+    openRoleEditor('New Role', {
+        id: 0,
+        groupName: '',
+        groupDescription: '',
+        groupId: 0,
+        isDeleted: false,
+        isVerified: true,
+        isApproved: true,
+    }, false);
+}
+
+function openRoleEditor(title, group, isEdit) {
+    // Populate form fields
+    $("#roleId").val(group?.id || "");
+    $("#isEdit").val(isEdit);
+    $("#roleName").val(group?.groupName || "");
+    $("#roleDescription").val(group?.groupDescription || "");
+    $("#groupId").val(group?.groupId || 0);
+    $('#isRoleDeleted').prop('checked', group?.isDeleted || false);
+    $('#isVerified').prop('checked', group?.isVerified || true);
+    $('#isApproved').prop('checked', group?.isApproved || true);
+
+    if (isEdit) {
+        console.log("Edit Window");
+        $('#edit-pane').show();
+    } else {
+        console.log("New Window");
+        $('#parentInfo').hide();
+    }
+
+    // Show overlay panel
+    $('#rolePanelTitle').text(title);
+    $('.role-overlay').addClass('active');
+    $('#rolePanel').addClass('active');
+}
+
+function editRole(id) {
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving role...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    findRole(id)
+        .then(record => {
+            Swal.close();
+            if (record) {
+                openRoleEditor('Edit Role', record, true);
+            } else {
+                Swal.fire({ title: 'NOT FOUND', text: 'Role not found' });
+            }
+        })
+        .catch(() => {
+            Swal.close();
+            Swal.fire({ title: 'Error', text: 'Failed to load role details.' });
+        });
+}
+
+function viewGroup(groupId) {
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving role group...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    findRoleGroup(id)
+        .then(record => {
+            Swal.close();
+            if (record) {
+                openGroupEditor('Edit Role Group', record, true);
+            } else {
+                Swal.fire({ title: 'NOT FOUND', text: 'Role group not found' });
+            }
+        })
+        .catch(() => {
+            Swal.close();
+            Swal.fire({ title: 'Error', text: 'Failed to load role group details.' });
+        });
+}
+
+function findRoleGroup(id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/admin/support/role-groups-retrieve/${encodeURIComponent(id)}`,
+            type: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            success: function (res) {
+                if (res && res.success) {
+                    resolve(res.data);
+                } else {
+                    resolve(null);
+                }
+            },
+            error: function () {
+                reject();
+            }
+        });
+    });
+}
+
+function openGroupEditor(title, group, isEdit) {
+    $("#groupId").val(group?.id || "");
+    $('#isEdit').val(isEdit);
+    $("#groupName").val(group?.groupName || "");
+    $("#groupDescription").val(group?.groupDescription || "");
+    $("#groupScope").val(group?.groupScope || "");
+    $("#groupCategory").val(group?.groupCategory || "");
+    $("#groupType").val(group?.groupType || "");
+    $("#department").val(group?.department || "");
+    $('#isRoleDeleted').prop('checked', group?.isDeleted || false);
+
+    $("#groupListContainer").html("<div class='text-muted p-2'>Loading roles...</div>");
+
+    if (isEdit) {
+        $.ajax({
+            url: `/admin/support/role-groups-retrieve/${group.id}`,
+            type: "POST",
+            contentType: "application/json",
+            success: function (res) {
+                const roles = Array.isArray(res?.data?.roles)
+                    ? res.data.roles
+                    : [];
+
+                let html = "<div class='role-group-list'>";
+                roles.forEach(p => {
+                    const checked = p.isAssigned ? "checked" : "";
+                    html += `
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input perm-checkbox" id="perm-${p.id}" value="${p.id}" ${checked}>
+                            <label class="form-check-label" for="perm-${p.id}">
+                                ${p.roleDescription || p.roleName}
+                            </label>
+                        </div>`;
+                });
+                html += "</div>";
+                $("#groupListContainer").html(html);
+
+            },
+            error: function () {
+                $("#groupListContainer").html("<div class='text-danger'>Failed to load roles.</div>");
+            }
+        });
+    }
+    else {
+        console.log("load all roles");
+        // --- Creating new set: load all roles (unchecked) ---
+        $.get("/admin/support/roles-all", function (res) {
+            const roles = Array.isArray(res?.data) ? res.data : [];
+
+            let html = "<div class='role-group-list'>";
+            roles.forEach(p => {
+                const checked = p.isAssigned ? "checked" : "";
+                html += `
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input perm-checkbox" id="perm-${p.id}" value="${p.id}" ${checked}>
+                    <label class="form-check-label" for="perm-${p.id}">
+                        ${p.roleDescription || p.roleName}
+                    </label>
+                </div>`;
+            });
+            html += "</div>";
+            $("#groupListContainer").html(html);
+
+        }).fail(() => {
+            $("#groupListContainer").html("<div class='text-danger'>Failed to load roles.</div>");
+        });
+    }
+
+    $('#panelTitle').text(title);
+    $('.overlay').addClass('active');
+    $('#setPanel').addClass('active');
+}
+
+function highlightRoleErrorField(selector, hasError, message) {
+    const $field = $(selector);
+    const $formGroup = $field.closest('.form-group, .mb-3, .col-sm-8');
+
+    // Remove existing error
+    $field.removeClass('is-invalid');
+    $formGroup.find('.field-error').remove();
+
+    if (hasError) {
+        $field.addClass('is-invalid');
+        if (message) {
+            $formGroup.append(`<div class="field-error text-danger small mt-1">${message}</div>`);
+        }
+    }
+}
+
+function initRoleSearch() {
+    const searchInput = $('#roleSearchbox');
+    let typingTimer;
+
+    searchInput.on('input', function () {
+        clearTimeout(typingTimer);
+        const searchTerm = $(this).val().trim();
+
+        typingTimer = setTimeout(function () {
+            if (searchTerm && searchTerm.length >= 2) {
+                roleTable.setFilter([
+                    { field: "roleName", type: "like", value: searchTerm },
+                    { field: "roleDescription", type: "like", value: searchTerm },
+                    { field: "groupName", type: "like", value: searchTerm }
+                ]);
+            } else {
+                roleTable.clearFilter();
+            }
+        }, 300);
+    });
+}
+
+function closeRolePanel() {
+    $('.role-overlay').removeClass('active');
+    $('#rolePanel').removeClass('active');
+}
+
+function closeGroupPanel() {
+    $('.groupOverlay').removeClass('active');
+    $('#groupPanel').removeClass('active');
+}
+
+function initSelect2($element, placeholder, error) {
+    $element.select2({
+        width: 'resolve',
+        placeholder: placeholder,
+        allowClear: true,
+        ajax: {
+            url: '/admin/support/role-groups-droplist',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    search: params.term,
+                    page: params.page || 1
+                };
+            },
+            processResults: function (response) {
+                console.log("Raw API response:", response);
+                console.log("response.data:", response.data);
+                return {
+                    results: response.data.map(function (item) {
+                        return {
+                            id: item.id,
+                            text: item.groupName
+                        };
+                    })
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (markup) {
+            return markup;
+        },
+        language: {
+            noResults: function () {
+                return error;
+            }
+        }
+    });
+}
+
+function getRoleAntiForgeryToken() {
+    return $('meta[name="csrf-token"]').attr('content');
 }
 
 $(document).ready(function () {
     initRoleTable();
+    initGroupListSelect2();
 
-    $(".action-btn-admin-home").on("click", function () {
+    toastr.options = {
+        closeButton: true,
+        progressBar: true,
+        positionClass: "toast-top-right",
+        timeOut: "3000"
+    };
+
+    $(".action-btn-support-home").on("click", function () {
         window.location.href = '/admin/support';
     });
 
     $(".action-btn-new-role").on("click", function () {
-        alert("new role button clicked")
+        createRole();
     });
 
-    $(".action-btn-edit-role").on("click", function () {
-        alert("Edit role button clicked")
+    $('#roleForm').on('submit', function (e) {
+        e.preventDefault();
     });
-
-    $(".action-btn-delete-role").on("click", function () {
-        alert("Delete role button clicked")
-    });
-
-    $(".action-btn-approve-role").on("click", function () {
-        alert("Approve role button clicked")
-    });
-
 });

@@ -1741,17 +1741,13 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<PagedResult<SystemRole>> PagedRolesAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false)
-        {
+        public async Task<PagedResult<SystemRole>> PagedRolesAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve all System Role", "INFO");
 
-            try
-            {
+            try {
                 return await uow.RoleRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, r => r.Group);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve System Role records : {ex.Message}", "ERROR");
                 var innerEx = ex.InnerException;
                 while (innerEx != null)
@@ -2205,11 +2201,11 @@ namespace Grc.Middleware.Api.Services {
                 {
                     //..update Role Group record
                     roleGroup.GroupName = (request.GroupName ?? string.Empty).Trim();
-                    roleGroup.Description = (request.Description ?? string.Empty).Trim();
-                    roleGroup.GroupCategory = (request.GroupCategory ?? string.Empty).Trim();
-                    roleGroup.Scope = (GroupScope)request.Scope;
+                    roleGroup.Description = (request.GroupDescription ?? string.Empty).Trim();
+                    roleGroup.GroupCategory = (request.GroupCategory?? "ADMINSUPPORT").Trim();
+                    roleGroup.Scope = (GroupScope)request.GroupScope;
                     roleGroup.Type = (RoleGroup)request.Type;
-                    roleGroup.Department = (request.Department ?? string.Empty).Trim();
+                    roleGroup.Department = (request.DepartmentName ?? string.Empty).Trim();
                     roleGroup.IsVerified = request.IsVerified;
                     roleGroup.IsApproved = request.IsApproved;
                     roleGroup.IsDeleted = request.IsDeleted;
@@ -2272,11 +2268,11 @@ namespace Grc.Middleware.Api.Services {
                 {
                     //..update Role Group record
                     roleGroup.GroupName = (request.GroupName ?? string.Empty).Trim();
-                    roleGroup.Description = (request.Description ?? string.Empty).Trim();
+                    roleGroup.Description = (request.GroupDescription ?? string.Empty).Trim();
                     roleGroup.GroupCategory = (request.GroupCategory ?? string.Empty).Trim();
-                    roleGroup.Scope = (GroupScope)request.Scope;
+                    roleGroup.Scope = (GroupScope)request.GroupScope;
                     roleGroup.Type = (RoleGroup)request.Type;
-                    roleGroup.Department = (request.Department ?? string.Empty).Trim();
+                    roleGroup.Department = (request.DepartmentName ?? string.Empty).Trim();
                     roleGroup.IsVerified = request.IsVerified;
                     roleGroup.IsApproved = request.IsApproved;
                     roleGroup.IsDeleted = request.IsDeleted;
@@ -2525,7 +2521,7 @@ namespace Grc.Middleware.Api.Services {
 
             try
             {
-                var roleGroup = await uow.RoleGroupRepository.GetAsync(ps => ps.Id == request.RecordId, request.markAsDeleted);
+                var roleGroup = await uow.RoleGroupRepository.GetAsync(ps => ps.Id == request.RecordId, request.markAsDeleted, p => p.PermissionSets);
 
                 if (roleGroup == null)
                     return null;

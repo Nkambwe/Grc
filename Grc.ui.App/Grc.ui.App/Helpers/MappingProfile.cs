@@ -176,7 +176,6 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(e => e.Permissions, reg => reg.MapFrom(o => o.Permissions ?? new()))
                 .ForMember(e => e.RoleGroups, reg => reg.MapFrom(o => o.RoleGroups ?? new()));
 
-
             CreateMap<RoleGroupViewModel, GrcRoleGroupRequest>()
                 .ForMember(e => e.Id, reg => reg.MapFrom(o => o.Id))
                 .ForMember(e => e.GroupName, reg => reg.MapFrom(o => (o.GroupName ?? string.Empty).Trim()))

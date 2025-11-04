@@ -1021,7 +1021,7 @@
         }
       }
     },
-    "/grc/sam/roles/update-rolegroup-permissionsets": {
+    "/grc/sam/role_groups/update-rolegroup-permissionsets": {
       "post": {
         "tags": [
           "Sam"
@@ -2776,17 +2776,21 @@
             "type": "string",
             "nullable": true
           },
-          "description": {
+          "groupDescription": {
             "type": "string",
             "nullable": true
-          },
-          "scope": {
-            "type": "integer",
-            "format": "int32"
           },
           "department": {
             "type": "string",
             "nullable": true
+          },
+          "groupCategory": {
+            "type": "string",
+            "nullable": true
+          },
+          "groupScope": {
+            "type": "integer",
+            "format": "int32"
           },
           "type": {
             "type": "integer",
@@ -2807,7 +2811,7 @@
             "type": "string",
             "nullable": true
           },
-          "ceatedOn": {
+          "createdOn": {
             "type": "string",
             "format": "date-time"
           },

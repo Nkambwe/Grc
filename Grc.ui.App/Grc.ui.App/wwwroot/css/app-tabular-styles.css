@@ -245,22 +245,25 @@
     font-weight: bold;
 }   
 
-
 /****************************************** slide panel styles */
 .overlay,
+.role-overlay,
+.groupOverlay,
 .task-overlay {
     position: fixed;
-    top: 70px;
+    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     background: rgba(0,0,0,0.3);
     display: none;
-    z-index: 999;
+    z-index: 1100;
 }
 
     .overlay.active,
-    .task-overlay.active{
+    .role-overlay.active,
+    .groupOverlay.active,
+    .task-overlay.active {
         display: block;
     }
 

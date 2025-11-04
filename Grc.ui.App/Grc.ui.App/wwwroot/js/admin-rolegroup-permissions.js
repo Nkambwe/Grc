@@ -374,7 +374,7 @@ function saveGroupPermissions(e) {
     let isEdit = $('#isEdit').val();
 
     let recordData = {
-        id: parseInt($('#id').val()) || 0,
+        id: parseInt($('#groupId').val()) || 0,
         groupName: $('#groupName').val()?.trim(),
         groupDescription: $('#groupDescription').val()?.trim(),
         groupScope:"",
@@ -419,8 +419,8 @@ function saveGroupPermissions(e) {
 
 function persistGroupPermissions(isEdit, payload) {
     const url = (isEdit === true || isEdit === "true")
-        ? "/admin/support/role-group-permissions-create"
-        : "/admin/support/role-group-permissions-modify";
+        ? "/admin/support/role-group-permissions-modify"
+        : "/admin/support/role-group-permissions-create";
 
     Swal.fire({
         title: isEdit ? "Updating role group..." : "Saving role group...",

@@ -221,7 +221,7 @@ function initializeTypeStatusSelect2() {
 // Function to initialize a single Select2 element with proper accessibility
 function initializeTypeSelect2($element) {
     const elementId = $element.attr('id');
-    const labelText = $element.closest('.form-group').find('label').text().trim() || 'Select Select status';
+    const labelText = $element.closest('.form-group').find('label').text().trim() || 'Select status';
 
     $element.select2({
         width: 'resolve',

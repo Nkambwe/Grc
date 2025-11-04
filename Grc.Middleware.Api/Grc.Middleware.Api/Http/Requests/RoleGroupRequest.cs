@@ -11,16 +11,16 @@ namespace Grc.Middleware.Api.Http.Requests
         public string GroupName { get; set; }
 
         [JsonPropertyName("groupDescription")]
-        public string Description { get; set; }
+        public string GroupDescription { get; set; }
+
+        [JsonPropertyName("department")]
+        public string DepartmentName { get; set; }
 
         [JsonPropertyName("groupCategory")]
         public string GroupCategory { get; set; }
 
         [JsonPropertyName("groupScope")]
-        public int Scope { get; set; }
-
-        [JsonPropertyName("department")]
-        public string Department { get; set; }
+        public int GroupScope { get; set; }
 
         [JsonPropertyName("type")]
         public int Type { get; set; }
@@ -37,7 +37,7 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("createdBy")]
         public string CreatedBy { get; set; }
 
-        [JsonPropertyName("ceatedOn")]
+        [JsonPropertyName("createdOn")]
         public DateTime CreatedOn { get; set; }
 
         [JsonPropertyName("modifiedBy")]

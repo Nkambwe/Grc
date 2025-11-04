@@ -1228,7 +1228,7 @@ namespace Grc.ui.App.Services {
                 Logger.LogActivity($"UPDATE ROLE GROUP REQUEST : {JsonSerializer.Serialize(request)}");
 
                 //..build endpoint
-                var endpoint = $"{EndpointProvider.Sam.Permissions}/update-rolegroup-permissionsets";
+                var endpoint = $"{EndpointProvider.Sam.RoleGroups}/update-rolegroup-permissionsets";
                 Logger.LogActivity($"Endpoint: {endpoint}");
                 return await HttpHandler.PostAsync<GrcRoleGroupRequest, ServiceResponse>(endpoint, request);
             }

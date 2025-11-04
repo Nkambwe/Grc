@@ -1537,9 +1537,7 @@ namespace Grc.Middleware.Api.Controllers {
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
                 var pageResult = await _accessService.PagedRolesAsync(request.PageIndex, request.PageSize, true);
-
-                if (pageResult.Entities == null || !pageResult.Entities.Any())
-                {
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
                     var error = new ResponseError(
                         ResponseCodes.SUCCESS,
                         "No data",
@@ -2434,7 +2432,7 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
-        [HttpPost("sam/roles/update-rolegroup-permissionsets")]
+        [HttpPost("sam/role_groups/update-rolegroup-permissionsets")]
         public async Task<IActionResult> UpdateRoleGroupPermissionSet([FromBody] RoleGroupRequest request)
         {
             try
@@ -2466,7 +2464,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 //..update role group
-                var result = await _accessService.UpdateRoleGroupAsync(request);
+                var result = await _accessService.UpdateRoleGroupPermissionSetsAsync(request.Id, request.PermissionSets);
                 var response = new GeneralResponse();
                 if (result)
                 {

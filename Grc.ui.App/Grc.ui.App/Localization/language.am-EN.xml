@@ -467,7 +467,6 @@
 	<LocaleResource Name="Component.Table.Task.Header">
 		<Value>Task Assignment</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="Component.Table.Label.Users.DisplayName">
 		<Value>FULL NAME</Value>
 	</LocaleResource>
@@ -600,7 +599,6 @@
 	<LocaleResource Name="Component.Table.Search.Role.Permissions">
 		<Value>Search permissions..</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="Component.Table.Search.Entity">
 		<Value>Search entities.. </Value>
 	</LocaleResource>
@@ -761,6 +759,27 @@
 		<Value>Deactivated</Value>
 	</LocaleResource>
 
+	<LocaleResource Name="Component.Table.Role.Name">
+		<Value>Role Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Role.Description">
+		<Value>Role Description</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Role.Deleted">
+		<Value>Deactivated</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Role.Approved">
+		<Value>Approved</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Role.Verified">
+		<Value>Verified</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Role.List.Name">
+		<Value>Role Groups</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Role.List.Select">
+		<Value>Select Group...</Value>
+	</LocaleResource>
 
 	<LocaleResource Name="Component.Table.Policy.Select.Owner">
 		<Value>Select person to assign to</Value>

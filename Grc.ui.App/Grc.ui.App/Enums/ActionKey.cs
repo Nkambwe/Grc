@@ -128,6 +128,8 @@ namespace Grc.ui.App.Enums {
         DeleteSet,
         [Description("new-role-group")]
         RoleGroupNew,
+        [Description("support-home")]
+        SupportHome,
         [Description("new-role")]
         RoleNew,
     }
