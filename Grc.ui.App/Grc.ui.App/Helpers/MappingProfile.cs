@@ -187,6 +187,17 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(q => q.IsApproved, reg => reg.MapFrom(o => o.IsApproved))
                 .ForMember(e => e.PermissionSets, reg => reg.MapFrom(o => o.PermissionSets ?? new()))
                 .ForMember(e => e.Roles, reg => reg.MapFrom(o => o.Roles ?? new()));
+
+
+            CreateMap<RoleViewModel, GrcRoleRequest>()
+                .ForMember(e => e.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(e => e.RoleName, reg => reg.MapFrom(o => (o.RoleName ?? string.Empty).Trim()))
+                .ForMember(e => e.RoleDescription, reg => reg.MapFrom(o => (o.RoleDescription ?? string.Empty).Trim()))
+                .ForMember(q => q.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
+                .ForMember(q => q.IsVerified, reg => reg.MapFrom(o => o.IsVerified))
+                .ForMember(q => q.IsApproved, reg => reg.MapFrom(o => o.IsApproved))
+                .ForMember(e => e.Permissions, reg => reg.MapFrom(o => o.Permissions ?? new()))
+                .ForMember(e => e.Users, reg => reg.MapFrom(o => o.Users ?? new()));
         }
     }
 }

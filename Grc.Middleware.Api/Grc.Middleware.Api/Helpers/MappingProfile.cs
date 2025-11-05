@@ -497,7 +497,7 @@ namespace Grc.Middleware.Api.Helpers {
             CreateMap<RoleRequest, SystemRole>()
                .ForMember(p => p.Id, reg => reg.MapFrom(o => o.Id))
                .ForMember(p => p.RoleName, reg => reg.MapFrom(o => (o.RoleName ?? string.Empty).Trim()))
-               .ForMember(p => p.Description, reg => reg.MapFrom(o => (o.Description ?? string.Empty).Trim()))
+               .ForMember(p => p.Description, reg => reg.MapFrom(o => (o.RoleDescription ?? string.Empty).Trim()))
                .ForMember(p => p.GroupId, reg => reg.MapFrom(o => o.GroupId))
                .ForMember(p => p.IsApproved, reg => reg.MapFrom(o => o.IsApproved))
                .ForMember(p => p.IsVerified, reg => reg.MapFrom(o => o.IsVerified))

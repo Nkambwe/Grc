@@ -1372,7 +1372,7 @@ namespace Grc.Middleware.Api.Controllers {
                 {
                     //..map response
                     var roleRecord = Mapper.Map<RoleResponse>(response);
-                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(roleRecord)}");
                     return Ok(new GrcResponse<RoleResponse>(roleRecord));
                 }
                 else
@@ -1652,6 +1652,21 @@ namespace Grc.Middleware.Api.Controllers {
                     }
                 }
 
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if(currentUser != null)
+                {
+                    request.CreatedBy = currentUser.Username;
+                    request.ModifiedBy = currentUser.Username;
+                } else {
+                    request.CreatedBy = $"{request.UserId}";
+                    request.ModifiedBy = $"{request.UserId}";
+                }
+
+                //..update dates
+                request.CreatedOn = DateTime.Now;
+                request.ModifiedOn = DateTime.Now;
+
                 //..create role
                 var result = await _accessService.InsertRoleAsync(request);
                 var response = new GeneralResponse();
@@ -1689,13 +1704,12 @@ namespace Grc.Middleware.Api.Controllers {
         }
 
         [HttpPost("sam/roles/updaterole")]
-        public async Task<IActionResult> UpdateRole([FromBody] RoleRequest request)
-        {
-            try
-            {
+        public async Task<IActionResult> UpdateRole([FromBody] RoleRequest request) {
+
+            try {
+
                 Logger.LogActivity("Update system role", "INFO");
-                if (request == null)
-                {
+                if (request == null) {
                     var error = new ResponseError(
                         ResponseCodes.BADREQUEST,
                         "Request record cannot be empty",
@@ -1707,8 +1721,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
-                if (!await _accessService.RoleExistsAsync(r => r.Id == request.Id))
-                {
+                if (!await _accessService.RoleExistsAsync(r => r.Id == request.Id)) {
                     var error = new ResponseError(
                         ResponseCodes.NOTFOUND,
                         "Record Not Found",
@@ -1719,18 +1732,29 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser != null) {
+                    request.CreatedBy = currentUser.Username;
+                    request.ModifiedBy = currentUser.Username;
+                } else {
+                    request.CreatedBy = $"{request.UserId}";
+                    request.ModifiedBy = $"{request.UserId}";
+                }
+
+                //..update dates
+                request.CreatedOn = DateTime.Now;
+                request.ModifiedOn = DateTime.Now;
+
                 //..update role
                 var result = await _accessService.UpdateRoleAsync(request);
                 var response = new GeneralResponse();
-                if (result)
-                {
+                if (result) {
                     response.Status = true;
                     response.StatusCode = (int)ResponseCodes.SUCCESS;
                     response.Message = "System Role updated successfully";
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
-                }
-                else
-                {
+                } else {
                     response.Status = true;
                     response.StatusCode = (int)ResponseCodes.FAILED;
                     response.Message = "Failed to update system role record. An error occurrred";
@@ -3828,7 +3852,6 @@ namespace Grc.Middleware.Api.Controllers {
         }
 
         [HttpPost("sam/roles/pagedrolegroupsWithPermissionsets")]
-
         public async Task<IActionResult> GetPagedRoleGroupWithPermissionSets([FromBody] ListRequest request) {
             try
             {

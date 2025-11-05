@@ -5,10 +5,13 @@ using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
 using Grc.ui.App.Extensions.Http;
+using Grc.ui.App.Http.Requests;
+using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Grc.ui.App.Factories {
 
@@ -183,5 +186,42 @@ namespace Grc.ui.App.Factories {
                 Workspace = _sessionManager.GetWorkspace(),
             });
         }
+
+        public async Task<RoleGroupListModel> PrepareRoleGroupListModelAsync(UserModel currentUser) {
+            RoleGroupListModel roleGroupModel = new();
+            GrcRequest request = new()
+            {
+                UserId = currentUser.UserId,
+                Action = Activity.RETRIVEROLEGROUPS.GetDescription(),
+                IPAddress = currentUser.IPAddress,
+                EncryptFields = Array.Empty<string>(),
+                DecryptFields = Array.Empty<string>()
+            };
+            //..get list of all role groups
+            var rolesData = await _accessService.GetRoleGroupsAsync(request);
+            List<GrcRoleGroupResponse> roleGroups;
+
+            List<RoleGroupItem> items = new List<RoleGroupItem>();
+            if (!rolesData.HasError) {
+                roleGroups = rolesData.Data.Data;
+            } else {
+                roleGroups = new();
+            }
+
+            if(roleGroups.Any()){ 
+                foreach(var roleGroup in roleGroups){
+                    items.Add(new RoleGroupItem
+                    {
+                        Id = roleGroup.Id,
+                        GroupName = roleGroup.GroupName
+                    });
+                }
+
+                roleGroupModel.RoleGroups = items;
+            }
+
+            return roleGroupModel;
+        }
+
     }
 }

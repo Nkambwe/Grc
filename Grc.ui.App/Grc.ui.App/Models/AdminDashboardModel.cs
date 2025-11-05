@@ -14,6 +14,7 @@ namespace Grc.ui.App.Models {
         public List<QuickActionModel> QuickActions { get; set; } = new();
         public List<PinnedModel> PinnedItems { get; set; } = new();
         public List<RecentModel> Recents { get; set; } = new();
-       
+        public List<RoleGroupListModel> RoleGroups { get; set; } = new();
+
     }
 }

@@ -361,10 +361,10 @@ function saveGroup(e) {
     // --- validate required fields ---
     let errors = [];
 
-    if (!recordData.setName)
+    if (!recordData.groupName)
         errors.push("Role Group name is required.");
 
-    if (!recordData.setDescription)
+    if (!recordData.groupDescription)
         errors.push("Role Group description is required.");
 
     if (recordData.permissions.length == 0)

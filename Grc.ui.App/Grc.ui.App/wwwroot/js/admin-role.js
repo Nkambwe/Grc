@@ -185,6 +185,20 @@ function initRoleTable() {
                 headerHozAlign: "center",
                 minWidth: 250
             },
+            {
+                title: "ACTION",
+                formatter: function (cell) {
+                    let rowData = cell.getRow().getData();
+                    return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteRole(${rowData.id})">
+                        <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                        <span>DELETE</span>
+                    </button>`;
+                },
+                width: 200,
+                hozAlign: "center",
+                headerHozAlign: "center",
+                headerSort: false
+            },
             { title: "", field: "endTab", maxWidth: 50, headerSort: false, formatter: () => `<span class="record-tab"></span>` }
         ]
     });
@@ -194,12 +208,11 @@ function initRoleTable() {
 }
 
 function initGroupListSelect2() {
-    $(".js-role-groups").each(function () {
-        console.log("Found element:", $(this)); // Debug log
-        if (!$(this).hasClass('select2-hidden-accessible')) {
-            console.log("Initializing Select2..."); // Debug log
-            initSelect2($(this), 'Select Group...', "No role group found");
-        }
+    $(".js-role-groups").select2({
+        width: '100%',
+        placeholder: 'Select Group...',
+        allowClear: true,
+        dropdownParent: $('#dpRoleGroups').parent() 
     });
 }
 
@@ -226,8 +239,8 @@ function findRole(id) {
 function createRole() {
     openRoleEditor('New Role', {
         id: 0,
-        groupName: '',
-        groupDescription: '',
+        roleName: '',
+        roleDescription: '',
         groupId: 0,
         isDeleted: false,
         isVerified: true,
@@ -235,16 +248,72 @@ function createRole() {
     }, false);
 }
 
-function openRoleEditor(title, group, isEdit) {
+function saveRole(e) {
+    if (e) e.preventDefault();
+    let isEdit = $('#isEdit').val();
+
+    let recordData = {
+        id: parseInt($('#roleId').val()) || 0,
+        roleName: $('#roleName').val()?.trim(),
+        roleDescription: $('#roleDescription').val()?.trim(),
+        groupId: parseInt($('#dpRoleGroups').val()) || 0,
+        isDeleted: $('#isRoleDeleted').is(':checked') ? true : false,
+        isVerified: $('#isVerified').is(':checked') ? true : false,
+        isApproved: $('#isApproved').is(':checked') ? true : false
+    };
+
+    // --- validate required fields ---
+    let errors = [];
+
+    //..role name validation
+    if (!recordData.roleName) {
+        errors.push("Role name is required.");
+    } else if (/[^a-zA-Z0-9\s]/.test(recordData.roleName)) {
+        errors.push("Role name cannot contain special characters.");
+    }
+
+    //..role description validation
+    if (!recordData.roleDescription) {
+        errors.push("Role description is required.");
+    } else if (/[^a-zA-Z0-9\s]/.test(recordData.roleDescription)) {
+        errors.push("Role description cannot contain special characters.");
+    }
+
+    //..role group validation
+    if (recordData.groupId == 0) {
+        errors.push("Role Group is required.");
+    }
+
+    // --- stop if validation fails ---
+    if (errors.length > 0) {
+
+        // Use correct selectors and display errors
+        highlightRoleErrorField("#roleName", !recordData.roleName || /[^a-zA-Z0-9\s]/.test(recordData.roleName), "Role name cannot contain special characters.");
+        highlightRoleErrorField("#roleDescription", !recordData.roleDescription || /[^a-zA-Z0-9\s]/.test(recordData.roleDescription), "Role description cannot contain special characters.");
+        highlightRoleErrorField("#dpRoleGroups", recordData.groupId == 0, "Role Group is required.");
+
+        Swal.fire({
+            title: "Record Validation",
+            html: `<div style="text-align:left;">${errors.join("<br>")}</div>`,
+        });
+        return;
+    }
+
+    console.log("Valid Record:", recordData);
+    persistRole(isEdit, recordData);
+}
+
+function openRoleEditor(title, role, isEdit) {
     // Populate form fields
-    $("#roleId").val(group?.id || "");
+    $("#roleId").val(role?.id || "");
     $("#isEdit").val(isEdit);
-    $("#roleName").val(group?.groupName || "");
-    $("#roleDescription").val(group?.groupDescription || "");
-    $("#groupId").val(group?.groupId || 0);
-    $('#isRoleDeleted').prop('checked', group?.isDeleted || false);
-    $('#isVerified').prop('checked', group?.isVerified || true);
-    $('#isApproved').prop('checked', group?.isApproved || true);
+    $("#roleName").val(role?.roleName || "");
+    $("#roleDescription").val(role?.roleDescription || "");
+    $("#dpRoleGroups").val(role?.groupId || 0).trigger('change');
+    //$("#dpRoleGroups").val(role?.groupId || 0).trigger('change.select2');
+    $('#isRoleDeleted').prop('checked', role?.isDeleted || false);
+    $('#isVerified').prop('checked', role?.isVerified || true);
+    $('#isApproved').prop('checked', role?.isApproved || true);
 
     if (isEdit) {
         console.log("Edit Window");
@@ -284,7 +353,7 @@ function editRole(id) {
         });
 }
 
-function viewGroup(groupId) {
+function viewGroup(id) {
     Swal.fire({
         title: 'Loading...',
         text: 'Retrieving role group...',
@@ -297,7 +366,7 @@ function viewGroup(groupId) {
         .then(record => {
             Swal.close();
             if (record) {
-                openGroupEditor('Edit Role Group', record, true);
+                openRoleGroupEditor('Edit Role Group', record, true);
             } else {
                 Swal.fire({ title: 'NOT FOUND', text: 'Role group not found' });
             }
@@ -328,7 +397,7 @@ function findRoleGroup(id) {
     });
 }
 
-function openGroupEditor(title, group, isEdit) {
+function openRoleGroupEditor(title, group, isEdit) {
     $("#groupId").val(group?.id || "");
     $('#isEdit').val(isEdit);
     $("#groupName").val(group?.groupName || "");
@@ -401,10 +470,116 @@ function openGroupEditor(title, group, isEdit) {
     $('#setPanel').addClass('active');
 }
 
+function persistRole(isEdit, payload) {
+    const url = (isEdit === true || isEdit === "true")
+        ? "/admin/support/roles-modify"
+        : "/admin/support/roles-create";
+
+    Swal.fire({
+        title: isEdit ? "Updating system role..." : "Saving system role...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(payload),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getRoleAntiForgeryToken()
+        },
+        success: function (res) {
+            Swal.close();
+            if (!res.success) {
+                Swal.fire({
+                    title: "Invalid record",
+                    html: res.message.replaceAll("; ", "<br>")
+                });
+                return;
+            }
+
+            if (roleTable) {
+                if (isEdit && res.data) {
+                    roleTable.updateData([res.data]);
+                } else if (!isEdit && res.data) {
+                    roleTable.addRow(res.data, true);
+                } else {
+                    roleTable.replaceData();
+                }
+            }
+
+            closeGroupPanel();
+        },
+        error: function (xhr) {
+            Swal.close();
+
+            let errorMessage = "Unexpected error occurred.";
+            try {
+                let response = JSON.parse(xhr.responseText);
+                if (response.message) errorMessage = response.message;
+            } catch (e) { }
+
+            Swal.fire({
+                title: isEdit ? "Update Failed" : "Save Failed",
+                text: errorMessage
+            });
+        }
+    });
+}
+
+function deleteRole(id) {
+    if (!id && id !== 0) {
+        toastr.error("Invalid id for delete.");
+        return;
+    }
+
+    Swal.fire({
+        title: "Delete System Role",
+        text: "Are you sure you want to delete this system role?",
+        showCancelButton: true,
+        confirmButtonColor: "#450354",
+        confirmButtonText: "Delete",
+        cancelButtonColor: "#f41369",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        $.ajax({
+            url: `/admin/support/roles-delete/${encodeURIComponent(id)}`,
+            type: 'POST',
+            contentType: 'application/json',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getRoleAntiForgeryToken()
+            },
+            success: function (res) {
+                if (res && res.success) {
+                    toastr.success(res.message || "System Role successfully.");
+                    if (roleGroupTable) {
+                        roleGroupTable.replaceData();
+                    }
+                } else {
+                    toastr.error(res?.message || "Delete failed.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Delete error:", error);
+                console.error("Response:", xhr.responseText);
+                toastr.error(xhr.responseJSON?.message || "Request failed.");
+            }
+        });
+    });
+}
+
 function highlightRoleErrorField(selector, hasError, message) {
     const $field = $(selector);
-    const $formGroup = $field.closest('.form-group, .mb-3, .col-sm-8');
-
+    const $formGroup = $field.closest('.form-group');
     // Remove existing error
     $field.removeClass('is-invalid');
     $formGroup.find('.field-error').remove();
@@ -412,7 +587,7 @@ function highlightRoleErrorField(selector, hasError, message) {
     if (hasError) {
         $field.addClass('is-invalid');
         if (message) {
-            $formGroup.append(`<div class="field-error text-danger small mt-1">${message}</div>`);
+            $formGroup.append(`<div class="field-error text-danger small mt-1 text-end">${message}</div>`);
         }
     }
 }
@@ -447,46 +622,6 @@ function closeRolePanel() {
 function closeGroupPanel() {
     $('.groupOverlay').removeClass('active');
     $('#groupPanel').removeClass('active');
-}
-
-function initSelect2($element, placeholder, error) {
-    $element.select2({
-        width: 'resolve',
-        placeholder: placeholder,
-        allowClear: true,
-        ajax: {
-            url: '/admin/support/role-groups-droplist',
-            dataType: 'json',
-            delay: 250,
-            data: function (params) {
-                return {
-                    search: params.term,
-                    page: params.page || 1
-                };
-            },
-            processResults: function (response) {
-                console.log("Raw API response:", response);
-                console.log("response.data:", response.data);
-                return {
-                    results: response.data.map(function (item) {
-                        return {
-                            id: item.id,
-                            text: item.groupName
-                        };
-                    })
-                };
-            },
-            cache: true
-        },
-        escapeMarkup: function (markup) {
-            return markup;
-        },
-        language: {
-            noResults: function () {
-                return error;
-            }
-        }
-    });
 }
 
 function getRoleAntiForgeryToken() {

@@ -155,7 +155,7 @@
             routeBuilder.MapControllerRoute(
                 name: "admin-role-groups-droplist",
                 pattern: "admin/support/role-groups-droplist",
-                defaults: new { area = "Admin", controller = "Support", action = "GetRoleGroups" }
+                defaults: new { area = "Admin", controller = "Support", action = "GetRoleGroupLists" }
             );
             routeBuilder.MapControllerRoute(
                name: "admin-role-groups-list",

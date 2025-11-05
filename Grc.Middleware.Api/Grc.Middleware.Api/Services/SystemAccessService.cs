@@ -1512,7 +1512,7 @@ namespace Grc.Middleware.Api.Services {
                 {
                     //..update System Role record
                     role.RoleName = (request.RoleName ?? string.Empty).Trim();
-                    role.Description = (request.Description ?? string.Empty).Trim();
+                    role.Description = (request.RoleDescription ?? string.Empty).Trim();
                     role.GroupId = request.GroupId;
                     role.IsVerified = request.IsVerified;
                     role.IsApproved = request.IsApproved;
@@ -1572,11 +1572,10 @@ namespace Grc.Middleware.Api.Services {
             try
             {
                 var role = await uow.RoleRepository.GetAsync(a => a.Id == request.Id);
-                if (role != null)
-                {
+                if (role != null) {
                     //..update System Role record
                     role.RoleName = (request.RoleName ?? string.Empty).Trim();
-                    role.Description = (request.Description ?? string.Empty).Trim();
+                    role.Description = (request.RoleDescription ?? string.Empty).Trim();
                     role.GroupId = request.GroupId;
                     role.IsVerified = request.IsVerified;
                     role.IsApproved = request.IsApproved;

@@ -2897,13 +2897,16 @@
             "type": "string",
             "nullable": true
           },
-          "description": {
+          "roleDescription": {
             "type": "string",
             "nullable": true
           },
           "groupId": {
             "type": "integer",
             "format": "int64"
+          },
+          "isDeleted": {
+            "type": "boolean"
           },
           "isApproved": {
             "type": "boolean",
@@ -2913,22 +2916,7 @@
             "type": "boolean",
             "nullable": true
           },
-          "isDeleted": {
-            "type": "boolean"
-          },
           "createdBy": {
-            "type": "string",
-            "nullable": true
-          },
-          "userId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "ipAddress": {
-            "type": "string",
-            "nullable": true
-          },
-          "action": {
             "type": "string",
             "nullable": true
           },
@@ -2943,6 +2931,34 @@
           "modifiedOn": {
             "type": "string",
             "format": "date-time"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "nullable": true
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false

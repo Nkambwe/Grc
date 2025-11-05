@@ -1,4 +1,6 @@
-﻿<div class="grc-tabulator-container">
+﻿@model RoleGroupListModel
+
+<div class="grc-tabulator-container">
 
     <div class="grc-tabulator-search">
         <div class="field-search-group">
@@ -37,7 +39,7 @@
 
                     <div class="row">
 
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 form-group">
                             <!-- Role Name -->
                             <div class="row mb-3">
                                 <label for="roleName" class="col-sm-4 col-form-label text-sm-end">
@@ -50,19 +52,19 @@
                         </div>
 
                         <!-- role description-->
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 form-group">
                             <div class="row mb-3">
-                                <label for="groupDescription" class="col-sm-4 col-form-label text-sm-end">
+                                <label for="roleDescription" class="col-sm-4 col-form-label text-sm-end">
                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Role.Description"))
                                 </label>
                                 <div class="col-sm-8">
-                                    <input type="text" id="groupDescription" name="groupDescription" class="form-control" />
+                                    <input type="text" id="roleDescription" name="roleDescription" class="form-control" />
                                 </div>
                             </div>
                         </div>
 
                         <!-- role groups-->
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 form-group">
                             <div class="row mb-3">
                                 <label for="dpRoleGroups" class="col-sm-4 col-form-label text-sm-end">
                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Role.List.Name"))
@@ -73,8 +75,14 @@
                                             name="dpRoleGroups"
                                             aria-labelledby="dpRoleGroups-label"
                                             aria-describedby="dpRoleGroups-description">
-                                        <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Role.List.Select"))</option>
+                                        <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Role.List.Select"))</option>
+                                        @if (Model?.RoleGroups != null && Model.RoleGroups.Any()) {
+                                            foreach (var group in Model.RoleGroups) {
+                                                <option value="@group.Id">@group.GroupName</option>
+                                            }
+                                        }
                                     </select>
+
                                     <span id="dpRoleGroups-description" class="sr-only">
                                         @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
                                     </span>
@@ -236,8 +244,8 @@
     </div>
 
 </div>
-
 @{
     Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/lib/select-2/js/select2.min.js");
     Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-role.js");
 }

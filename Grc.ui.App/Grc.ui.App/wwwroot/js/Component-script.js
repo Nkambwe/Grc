@@ -361,7 +361,6 @@
     }
 
     function initializeDepartmentElement($element) {
-        const elementId = $element.attr('id');
         const labelText = $element.closest('.form-group').find('label').text().trim() || 'Select Department';
     
         $element.select2({

@@ -1565,6 +1565,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+                
             }
             catch (Exception ex)
             {
@@ -1594,7 +1595,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var currentUser = userResponse.Data;
-                var result = await _accessService.GetRoleByIdAsync(currentUser.UserId, id, ipAddress);
+                var result = await _accessService.GetRoleByIdAsync(id, currentUser.UserId, ipAddress);
                 if (result.HasError || result.Data == null)
                 {
                     var errMsg = result.Error?.Message ?? "Error occurred while retrieving role";
@@ -1603,19 +1604,19 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 }
 
                 var role = result.Data;
-                var userRecord = new {
+                var roleRecord = new {
                     id = role.Id,
                     roleName = role.RoleName,
                     roleDescription = role.Description,
                     groupName = role.GroupName,
-                    isActive = !role.IsDeleted,
+                    isDeleted = !role.IsDeleted,
                     createdOn = role.CreatedOn,
                     createdBy = role.CreatedBy,
                     modifiedOn = role.ModifiedOn,
                     modifiedBy = role.ModifiedBy
                 };
 
-                return Ok(new { success = true, data = userRecord });
+                return Ok(new { success = true, data = roleRecord });
             }
             catch (Exception ex)
             {
@@ -1976,6 +1977,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                     groupName = roleGroup.GroupName
                 }).ToList();
 
+                Logger.LogActivity($"ROLE GROUP DATA2 - {JsonSerializer.Serialize(listData)}");
                 return Json(new { data = listData });
             }
             catch (Exception ex)

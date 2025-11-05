@@ -740,7 +740,7 @@ namespace Grc.ui.App.Services {
             try
             {
                 //..build request object
-                var request = Mapper.Map<GrcPermissionSetRequest>(roleRecord);
+                var request = Mapper.Map<GrcRoleRequest>(roleRecord);
                 request.UserId = userId;
                 request.IpAddress = ipAddress;
                 request.Action = Activity.ROLE_ADDED.GetDescription();
@@ -749,10 +749,10 @@ namespace Grc.ui.App.Services {
                 Logger.LogActivity($"CREATE ROLE REQUEST : {JsonSerializer.Serialize(request)}");
 
                 //..build endpoint
-                var endpoint = $"{EndpointProvider.Sam.Roles}/createuser";
+                var endpoint = $"{EndpointProvider.Sam.Roles}/createrole";
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
-                return await HttpHandler.PostAsync<GrcPermissionSetRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcRoleRequest, ServiceResponse>(endpoint, request);
             }
             catch (HttpRequestException httpEx)
             {
@@ -798,7 +798,7 @@ namespace Grc.ui.App.Services {
             try
             {
                 //..build request object
-                var request = Mapper.Map<GrcPermissionSetRequest>(roleRecord);
+                var request = Mapper.Map<GrcRoleRequest>(roleRecord);
                 request.UserId = userId;
                 request.IpAddress = ipAddress;
                 request.Action = Activity.ROLE_EDITED.GetDescription();
@@ -810,7 +810,7 @@ namespace Grc.ui.App.Services {
                 var endpoint = $"{EndpointProvider.Sam.Roles}/updaterole";
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
-                return await HttpHandler.PostAsync<GrcPermissionSetRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcRoleRequest, ServiceResponse>(endpoint, request);
             }
             catch (HttpRequestException httpEx)
             {
