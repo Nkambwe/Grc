@@ -2,7 +2,7 @@
 let roleTable;
 function initRoleTable() {
 
-    roleGroupTable = new Tabulator("#adminRolesTable", {
+    roleTable = new Tabulator("#adminRolesTable", {
         ajaxURL: "/admin/support/system-roles/list",
         paginationMode: "remote",
         filterMode: "remote",
@@ -309,8 +309,8 @@ function openRoleEditor(title, role, isEdit) {
     $("#isEdit").val(isEdit);
     $("#roleName").val(role?.roleName || "");
     $("#roleDescription").val(role?.roleDescription || "");
-    $("#dpRoleGroups").val(role?.groupId || 0).trigger('change');
-    //$("#dpRoleGroups").val(role?.groupId || 0).trigger('change.select2');
+    //$("#dpRoleGroups").val(role?.groupId || 0).trigger('change');
+    $("#dpRoleGroups").val(role?.groupId || 0).trigger('change.select2');
     $('#isRoleDeleted').prop('checked', role?.isDeleted || false);
     $('#isVerified').prop('checked', role?.isVerified || true);
     $('#isApproved').prop('checked', role?.isApproved || true);
@@ -361,7 +361,6 @@ function viewGroup(id) {
         allowEscapeKey: false,
         didOpen: () => Swal.showLoading()
     });
-
     findRoleGroup(id)
         .then(record => {
             Swal.close();
@@ -407,7 +406,6 @@ function openRoleGroupEditor(title, group, isEdit) {
     $("#groupType").val(group?.groupType || "");
     $("#department").val(group?.department || "");
     $('#isRoleDeleted').prop('checked', group?.isDeleted || false);
-
     $("#groupListContainer").html("<div class='text-muted p-2'>Loading roles...</div>");
 
     if (isEdit) {
@@ -466,8 +464,8 @@ function openRoleGroupEditor(title, group, isEdit) {
     }
 
     $('#panelTitle').text(title);
-    $('.overlay').addClass('active');
-    $('#setPanel').addClass('active');
+    $('.groupOverlay').addClass('active');
+    $('#groupPanel').addClass('active');
 }
 
 function persistRole(isEdit, payload) {
@@ -648,6 +646,10 @@ $(document).ready(function () {
     });
 
     $('#roleForm').on('submit', function (e) {
+        e.preventDefault();
+    });
+
+    $('#groupInnerForm').on('submit', function (e) {
         e.preventDefault();
     });
 });

@@ -93,7 +93,9 @@ namespace Grc.Middleware.Api.Controllers {
                     StackTrace = ex.StackTrace,
                     Severity = "CRITICAL",
                     ReportedOn = DateTime.Now,
-                    CompanyId = companyId
+                    CompanyId = companyId,
+                    CreatedBy = "SYSTEM",
+                    CreatedOn = DateTime.Now
                 };
 
                 //..save error object to the database
@@ -180,7 +182,9 @@ namespace Grc.Middleware.Api.Controllers {
                     StackTrace = ex.StackTrace,
                     Severity = "CRITICAL",
                     ReportedOn = DateTime.Now,
-                    CompanyId = companyId
+                    CompanyId = companyId,
+                    CreatedBy = "SYSTEM",
+                    CreatedOn = DateTime.Now
                 };
 
                 //..save error object to the database

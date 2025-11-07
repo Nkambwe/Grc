@@ -139,6 +139,31 @@ namespace Grc.ui.App.Services {
         /// <returns>Task containing system role with provided ID or null</returns>
         Task<GrcResponse<GrcRoleResponse>> GetRoleByIdAsync(long recordId, long userId, string ipAddress);
         /// <summary>
+        /// Get System Role with assigned users info by Database ID
+        /// </summary>
+        /// <param name="id">Record ID to look for</param>
+        /// <param name="userId">User ID for user initiating action</param>
+        /// <param name="ipAddress">Current login IP Address of the requesting user</param>
+        /// <returns>Task containing system role with provided ID or null</returns>
+        Task<GrcResponse<GrcRoleResponse>> GetRoleWithUsersAsync(long id, long userId, string ipAddress);
+        /// <summary>
+        /// Get System Role with assigned permissions info by Database ID
+        /// </summary>
+        /// <param name="id">Record ID to look for</param>
+        /// <param name="userId">User ID for user initiating action</param>
+        /// <param name="ipAddress">Current login IP Address of the requesting user</param>
+        /// <returns>Task containing system role with provided ID or null</returns>
+        Task<GrcResponse<GrcRoleResponse>> GetRoleWithPermissionsAsync(long id, long userId, string ipAddress);
+        /// <summary>
+        /// Get System Role with assigned permission sets info by Database ID
+        /// </summary>
+        /// <param name="id">Record ID to look for</param>
+        /// <param name="userId">User ID for user initiating action</param>
+        /// <param name="ipAddress">Current login IP Address of the requesting user</param>
+        /// <returns>Task containing system role with provided ID or null</returns>
+        Task<GrcResponse<GrcRoleResponse>> GetRoleWithPermissionSetsAsync(long id, long userId, string ipAddress);
+
+        /// <summary>
         /// Get a list of roles in the system
         /// </summary>
         /// <param name="request">Role request object</param>

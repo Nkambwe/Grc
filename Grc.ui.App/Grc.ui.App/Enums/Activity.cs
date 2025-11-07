@@ -189,8 +189,17 @@ namespace Grc.ui.App.Enums {
         PERMISSION_SET_VERIFIED = 100,
         [Description("Get a list of all permission sets")]
         PERMISSION_SET_RETRIVED = 101,
-
         [Description("Get a list of all system permission")]
-        PERMISSIONS_RETRIVED = 102
+        PERMISSIONS_RETRIVED = 102,
+        [Description("Retrieve operations process, guide or procedure")]
+        PROCESSES_RETRIEVE_PROCESS,
+        [Description("Create operations process, guide or procedure")]
+        PROCESSES_CREATE_PROCESS,
+        [Description("Edit operations process, guide or procedure")]
+        PROCESSES_EDITED_PROCESS,
+        [Description("Delete operations process, guide or procedure")]
+        PROCESSES_DELETED_PROCESS,
+        [Description("Export operations process, guide or procedure to excel")]
+        PROCESSES_EXPORT_PROCESS
     }
 }

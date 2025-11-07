@@ -30,6 +30,6 @@ namespace Grc.Middleware.Api.Http.Requests {
         public string IPAddress { get; set; }
 
         [JsonPropertyName("permissions")]
-        public List<PermissionRequest> Permissions { get; set; } = new List<PermissionRequest>();
+        public List<PermissionRequest> Permissions { get; set; } = new();
     }
 }

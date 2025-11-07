@@ -7,6 +7,9 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
+        [JsonPropertyName("isNew")]
+        public bool IsNew { get; set; }
+
         [JsonPropertyName("processName")]
         public string ProcessName { get; set; }
 
@@ -16,7 +19,7 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("currentVersion")]
         public string CurrentVersion { get; set; }
 
-        [JsonPropertyName("filePath")]
+        [JsonPropertyName("fileName")]
         public string FilePath { get; set; }
 
         [JsonPropertyName("effectiveDate")]
@@ -37,25 +40,28 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("approvalComment")]
         public string ApprovalComment { get; set; }
 
-        [JsonPropertyName("reasonOnhold")]
-        public string ReasonOnhold { get; set; }
-
-        [JsonPropertyName("typeId")]
-        public long TypeId { get; set; }
-
-        [JsonPropertyName("responsibilityId")]
-        public long ResponsibilityId { get; set; }
-
-        [JsonPropertyName("unitId")]
-        public long UnitId { get; set; }
+        [JsonPropertyName("onholdReason")]
+        public string OnholdReason { get; set; }
 
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 
+        [JsonPropertyName("typeId")]
+        public long TypeId { get; set; }
+
+        [JsonPropertyName("unitId")]
+        public long UnitId { get; set; }
+
+        [JsonPropertyName("ownerId")]
+        public long OwnerId { get; set; }
+
+        [JsonPropertyName("responsibilityId")]
+        public long ResponsibilityId { get; set; }
+
         [JsonPropertyName("createdBy")]
         public string CreatedBy { get; set; }
 
-        [JsonPropertyName("ceatedOn")]
+        [JsonPropertyName("createdOn")]
         public DateTime CreatedOn { get; set; }
 
         [JsonPropertyName("modifiedBy")]

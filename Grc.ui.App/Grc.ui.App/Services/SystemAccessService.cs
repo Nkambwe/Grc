@@ -664,6 +664,117 @@ namespace Grc.ui.App.Services {
             }
         }
 
+        public async Task<GrcResponse<GrcRoleResponse>> GetRoleWithUsersAsync(long id, long userId, string ipAddress)
+        {
+            if (id == 0)
+            {
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    "Role ID is required",
+                    "Invalid Role request"
+                );
+
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<GrcRoleResponse>(error);
+            }
+
+            try
+            {
+                var request = new GrcIdRequest()
+                {
+                    UserId = userId,
+                    RecordId = id,
+                    IPAddress = ipAddress,
+                    Action = Activity.RETRIVEROLEBYID.GetDescription(),
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>(),
+                };
+
+                var endpoint = $"{EndpointProvider.Sam.Roles}/getrole-users";
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcRoleResponse>(endpoint, request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve role record for User ID {userId}: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "ACCESS-SERVICE", ex.StackTrace);
+                throw new GRCException("Uanble to retrieve role.", ex);
+            }
+        }
+
+        public async Task<GrcResponse<GrcRoleResponse>> GetRoleWithPermissionsAsync(long id, long userId, string ipAddress)
+        {
+            if (id == 0)
+            {
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    "Role ID is required",
+                    "Invalid Role request"
+                );
+
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<GrcRoleResponse>(error);
+            }
+
+            try
+            {
+                var request = new GrcIdRequest()
+                {
+                    UserId = userId,
+                    RecordId = id,
+                    IPAddress = ipAddress,
+                    Action = Activity.RETRIVEROLEBYID.GetDescription(),
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>(),
+                };
+
+                var endpoint = $"{EndpointProvider.Sam.Permissions}/getrole-permissions";
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcRoleResponse>(endpoint, request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve role record for User ID {userId}: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "ACCESS-SERVICE", ex.StackTrace);
+                throw new GRCException("Uanble to retrieve role.", ex);
+            }
+        }
+
+        public async Task<GrcResponse<GrcRoleResponse>> GetRoleWithPermissionSetsAsync(long id, long userId, string ipAddress)
+        {
+            if (id == 0)
+            {
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    "Role ID is required",
+                    "Invalid Role request"
+                );
+
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<GrcRoleResponse>(error);
+            }
+
+            try
+            {
+                var request = new GrcIdRequest()
+                {
+                    UserId = userId,
+                    RecordId = id,
+                    IPAddress = ipAddress,
+                    Action = Activity.RETRIVEROLEBYID.GetDescription(),
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>(),
+                };
+
+                var endpoint = $"{EndpointProvider.Sam.Permissions}/getrole-permissionsets";
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcRoleResponse>(endpoint, request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve role record for User ID {userId}: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "ACCESS-SERVICE", ex.StackTrace);
+                throw new GRCException("Uanble to retrieve role.", ex);
+            }
+        }
+
         public async Task<GrcResponse<ListResponse<GrcRoleResponse>>> GetRolesAsync(GrcRequest request) {
 
             if (request == null)

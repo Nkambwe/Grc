@@ -48,5 +48,14 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("modifiedOn")]
         public DateTime ModifiedOn { get; set; }
 
+        [JsonPropertyName("permissions")]
+        public List<PermissionResponse> Permissions { get; set; } = new();
+
+        [JsonPropertyName("permissionsets")]
+        public List<PermissionSetResponse> PermissionSets { get; set; } = new();
+
+        [JsonPropertyName("users")]
+        public List<UserResponse> Users { get; set; } = new();
+
     }
 }

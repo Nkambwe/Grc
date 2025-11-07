@@ -1,4 +1,5 @@
 ﻿using Grc.ui.App.Dtos;
+using Grc.ui.App.Helpers;
 using Grc.ui.App.Http.Responses;
 
 namespace Grc.ui.App.Services {
@@ -46,6 +47,8 @@ namespace Grc.ui.App.Services {
         /// <param name="ipAddress">Current user IP Address</param>
         /// <returns></returns>
         Task<UnitExtensionModel> UnitExtensionsCountAsync(string unit, long userId, string ipAddress);
+
+        Task<GrcResponse<PagedResponse<GrcProcessRegisterResponse>>> GetProcessRegistersActAsync(TableListRequest request);
     }
 
 }

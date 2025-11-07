@@ -976,8 +976,8 @@ namespace Grc.Middleware.Api.Services {
                     user.RoleId = request.RoleId;
                     user.DepartmentId = request.DepartmentId;
                     user.IsDeleted = request.IsDeleted;
-                    user.LastModifiedOn = DateTime.Now;
-                    user.LastModifiedBy = $"{request.UserId}";
+                    user.LastModifiedOn = request.ModifiedOn;
+                    user.LastModifiedBy = $"{request.ModifiedBy}";
 
                     //..check entity state
                     _ = await uow.UserRepository.UpdateAsync(user, includeDeleted);
@@ -1346,6 +1346,54 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
+        public async Task<SystemRole> GetRoleUsersAsync(IdRequest request) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieve system role with users by ID", "INFO");
+            try
+            {
+                Logger.LogActivity($"Role ID: {request.RecordId}", "DEBUG");
+                //..get role with users
+                var role = await uow.RoleRepository.GetAsync(r => r.Id == request.RecordId, true, r => r.Users);
+                //..log role record
+                var roleJson = JsonSerializer.Serialize(role, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
+                Logger.LogActivity($"Role record: {roleJson}", "DEBUG");
+                return role;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve system role: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
         public async Task<string> GetRoleNameAsync(long userId)
         {
             using var uow = UowFactory.Create();
@@ -1571,7 +1619,7 @@ namespace Grc.Middleware.Api.Services {
 
             try
             {
-                var role = await uow.RoleRepository.GetAsync(a => a.Id == request.Id);
+                var role = await uow.RoleRepository.GetAsync(a => a.Id == request.Id, includeDeleted);
                 if (role != null) {
                     //..update System Role record
                     role.RoleName = (request.RoleName ?? string.Empty).Trim();
@@ -2645,42 +2693,118 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<List<SystemPermission>> GetRolePermissionsAsync(RolePermissionRequest request) {
+        public async Task<List<SystemPermissionSet>> GetRolePermissionSetsAsync(IdRequest request) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieve list of Role permission sets", "INFO");
+
+            try {
+                //..load the Role with its Group and their PermissionSets
+                var roles = await uow.RoleRepository.GetAllAsync(
+                    r => r.Id == request.RecordId,
+                    request.markAsDeleted,
+                    r => r.Group,
+                    r => r.PermissionSets,
+                    r => r.Group.PermissionSets
+                );
+
+                var role = roles.FirstOrDefault();
+                if (role == null)
+                    return new List<SystemPermissionSet>();
+
+                //..collect role-specific permission sets
+                var rolePermissionSets = role.PermissionSets
+                    .Select(rp => rp.PermissionSet)
+                    .Where(ps => ps != null);
+
+                //..collect group-level inherited permission sets
+                var groupPermissionSets = role.Group?.PermissionSets?
+                    .Select(gp => gp.PermissionSet)
+                    .Where(ps => ps != null)
+                    ?? Enumerable.Empty<SystemPermissionSet>();
+
+                //..combine and remove duplicates
+                var allPermissionSets = rolePermissionSets
+                    .Concat(groupPermissionSets)
+                    .DistinctBy(ps => ps.Id)
+                    .ToList();
+
+                return allPermissionSets;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve role permission sets: {ex.Message}", "ERROR");
+
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company?.Id ?? 1;
+
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = ex.InnerException?.Message ?? ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<List<SystemPermission>> GetRolePermissionsAsync(IdRequest request) {
             using var uow = UowFactory.Create();
             Logger.LogActivity("Retrieve list of Role permissions", "INFO");
 
-            try
-            {
+            try {
                 var roles = await uow.RoleRepository.GetAllAsync(
-                    r => r.Id == request.RoleId,
-                    request.IsDeleted,
-                    r => r.PermissionSets,
-                    r => r.PermissionSets.Select(rp => rp.PermissionSet),
-                    r => r.PermissionSets.Select(rp => rp.PermissionSet.Permissions),
-                    r => r.PermissionSets.Select(rp => rp.PermissionSet.Permissions.Select(pps => pps.Permission)),
+                    r => r.Id == request.RecordId,
+                    request.markAsDeleted,
                     r => r.Group,
-                    r => r.Group.PermissionSets.Select(gp => gp.PermissionSet.Permissions.Select(pps => pps.Permission))
+                    r => r.PermissionSets,
+                    r => r.Group.PermissionSets
                 );
 
                 var role = roles.FirstOrDefault();
                 if (role == null)
                     return new List<SystemPermission>();
 
-                // --- Role-specific permissions ---
-                var rolePermissions = role.PermissionSets
-                    .SelectMany(rp => rp.PermissionSet.Permissions)
-                    .Select(pps => pps.Permission);
+                //..collect all permission sets
+                var rolePermissionSets = role.PermissionSets
+                    .Select(rp => rp.PermissionSet)
+                    .Where(ps => ps != null);
 
-                // --- Group-level permissions (inherited) ---
-                var groupPermissions = role.Group?.PermissionSets?
-                    .SelectMany(gp => gp.PermissionSet.Permissions)
-                    .Select(pps => pps.Permission)
-                    ?? Enumerable.Empty<SystemPermission>();
+                var groupPermissionSets = role.Group?.PermissionSets?
+                    .Select(gp => gp.PermissionSet)
+                    .Where(ps => ps != null)
+                    ?? Enumerable.Empty<SystemPermissionSet>();
 
-                // Combine and remove duplicates
-                var allPermissions = rolePermissions
-                    .Concat(groupPermissions)
-                    .DistinctBy(p => p.Id) 
+                var allPermissionSets = rolePermissionSets
+                    .Concat(groupPermissionSets)
+                    .DistinctBy(ps => ps.Id)
+                    .ToList();
+
+                foreach (var ps in allPermissionSets) {
+                    await uow.Context.Entry(ps)
+                        .Collection(p => p.Permissions)
+                        .Query()
+                        .Include(pp => pp.Permission)
+                        .LoadAsync();
+                }
+
+                var allPermissions = allPermissionSets
+                    .SelectMany(ps => ps.Permissions)
+                    .Select(pp => pp.Permission)
+                    .DistinctBy(p => p.Id)
                     .ToList();
 
                 return allPermissions;

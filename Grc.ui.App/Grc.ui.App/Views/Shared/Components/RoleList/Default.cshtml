@@ -174,7 +174,7 @@
             <button class="panel-close" onclick="closeGroupPanel()">&times;</button>
         </div>
         <div class="set-panel-body">
-            <form id="groupForm" class="grc-set-form">
+            <form id="groupInnerForm" class="grc-set-form">
                 <input type="hidden" id="groupId">
                 <input type="hidden" id="isEdit">
 
@@ -225,7 +225,7 @@
                     <div class="col-sm-12 button-section">
                         <div class="row mb-3">
                             <div class="col-sm-1">
-                                <button class="btn btn-grc-primary w-100" onclick="saveGroup(event)">
+                                <button class="btn btn-grc-primary w-100 disabled" disabled onclick="saveGroup(event)">
                                     @Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))
                                 </button>
                             </div>

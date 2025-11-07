@@ -48,17 +48,21 @@ namespace Grc.ui.App.Enums {
         Excel,
         [Description("opsHome")]
         OpsHome,
-        [Description("totalProposed")]
+        [Description("process-new")]
+        ProcessNew,
+        [Description("process-export")]
+        ProcessExport,
+        [Description("proposed-list")]
         TotalProposed,
-        [Description("totalUnchanged")]
+        [Description("unchanged-list")]
         TotalUnchanged,
-        [Description("totalDueReview")]
+        [Description("due-review-list")]
         TotalDueReview,
-        [Description("totalDormant")]
+        [Description("dormant-list")]
         TotalDormant,
-        [Description("totalCancelled")]
+        [Description("cancelled-list")]
         TotalCancelled,
-        [Description("totalCompleted")]
+        [Description("completed-list")]
         TotalCompleted,
         [Description("cashProcesses")]
         CashProcesses,

@@ -142,7 +142,7 @@
 		<Value>Completed</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Processes.TotalProcesses">
-		<Value>Total Processes</Value>
+		<Value>All Processes</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Processes.Cancelled">
 		<Value>Cancelled Processes</Value>
@@ -467,7 +467,6 @@
 	<LocaleResource Name="Component.Table.Task.Header">
 		<Value>Task Assignment</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="Component.Table.Label.Users.DisplayName">
 		<Value>FULL NAME</Value>
 	</LocaleResource>
@@ -561,6 +560,9 @@
 	<LocaleResource Name="Component.Table.Search.Acts">
 		<Value>Search laws.. </Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.Processes">
+		<Value>Search processes.. </Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Search.User">
 		<Value>Search users.. </Value>
 	</LocaleResource>
@@ -600,7 +602,6 @@
 	<LocaleResource Name="Component.Table.Search.Role.Permissions">
 		<Value>Search permissions..</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="Component.Table.Search.Entity">
 		<Value>Search entities.. </Value>
 	</LocaleResource>

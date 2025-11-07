@@ -45,5 +45,13 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("modifiedOn")]
         public DateTime ModifiedOn { get; set; }
 
+        [JsonPropertyName("permissions")]
+        public List<GrcPermissionResponse> Permissions { get; set; } = new();
+
+        [JsonPropertyName("permissionsets")]
+        public List<GrcPermissionSetResponse> PermissionSets { get; set; } = new();
+
+        [JsonPropertyName("users")]
+        public List<UserResponse> Users { get; set; } = new();
     }
 }

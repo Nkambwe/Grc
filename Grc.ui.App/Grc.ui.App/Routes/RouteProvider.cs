@@ -131,6 +131,23 @@
                 defaults: new { area = "Admin", controller = "Support", action = "DeleteRole" }
             );
 
+            /*----------------------- Role Permissions routes*/
+            routeBuilder.MapControllerRoute(
+                name: "admin-role-permissions",
+                pattern: "admin/support/system-roles-permissions",
+                defaults: new { area = "Admin", controller = "Support", action = "RolePermissions" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-role-permissions-retrieve",
+               pattern: "admin/support/role-permissions-retrieve/{id:long}",
+               defaults: new { area = "Admin", controller = "Support", action = "GetRoleWithPermissions" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-role-permissionsets-retrieve",
+               pattern: "admin/support/role-permission-sets-retrieve/{id:long}",
+               defaults: new { area = "Admin", controller = "Support", action = "GetRoleWithPermissionSets" }
+           );
+
             /*----------------------- Role Group routes*/
             routeBuilder.MapControllerRoute(
                name: "admin-role-groups",
@@ -413,6 +430,73 @@
                 name: "ops-dashboard-customerExperience",
                 pattern: "/operations/dashboard/customer-experience",
                 defaults: new { area = "Operations", controller = "OperationDashboard", action = "CustomerExperience" }
+            );
+
+            /*----------------------- Operations processes routes*/
+            routeBuilder.MapControllerRoute(
+               name: "app-operations-processes-register",
+               pattern: "/operations/workflow/processes/registers",
+               defaults: new { area = "Operations", controller = "OperationWorkflow", action = "RegisterProcess" }
+            );
+            routeBuilder.MapControllerRoute(
+              name: "app-operations-processes-groups",
+              pattern: "/operations/workflow/processes/groups",
+              defaults: new { area = "Operations", controller = "OperationWorkflow", action = "GroupProcesses" }
+            );
+            routeBuilder.MapControllerRoute(
+              name: "app-operations-processes-tags",
+              pattern: "/operations/workflow/processes/tags",
+              defaults: new { area = "Operations", controller = "OperationWorkflow", action = "TagProcesses" }
+            );
+            routeBuilder.MapControllerRoute(
+             name: "app-operations-processes-approvals",
+             pattern: "/operations/workflow/processes/approvals",
+             defaults: new { area = "Operations", controller = "OperationWorkflow", action = "Approvals" }
+            );
+            routeBuilder.MapControllerRoute(
+             name: "app-operations-processes-pending",
+             pattern: "/operations/workflow/processes/pending",
+             defaults: new { area = "Operations", controller = "OperationWorkflow", action = "Pending" }
+            );
+            routeBuilder.MapControllerRoute(
+             name: "app-operations-processes-revisions",
+             pattern: "/operations/workflow/processes/revisions",
+             defaults: new { area = "Operations", controller = "OperationWorkflow", action = "Revisions" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-operations-processes-register-all",
+               pattern: "/operations/processes/register/all",
+               defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ProcessRegisterList" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-operations-processes-register-retrieve",
+               pattern: "/operations/workflow/processes/registers/retrieve/{id:long}",
+               defaults: new { area = "Operations", controller = "OperationWorkflow", action = "GetProcessRegister" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-operations-processes-register-create",
+                pattern: "/operations/workflow/processes/registers/retrieve/create",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "CreateProcessRegister" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-operations-processes-register-update",
+                pattern: "/operations/workflow/processes/registers/retrieve/update",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "UpdateProcessRegister" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-operations-processes-register-delete",
+                pattern: "/operations/workflow/processes/registers/retrieve/delete/{id:long}",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "DeleteProcessRegister" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-operations-processes-register-export-register-table",
+                pattern: "/operations/workflow/processes/registers/retrieve/export",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ExportProcessRegisterTable" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-operations-processes-register-export-register-all",
+                pattern: "/operations/workflow/processes/registers/retrieve/export-all",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ExportProcessRegisterAll" }
             );
 
             /*----------------------- Compliance dashboard routes*/

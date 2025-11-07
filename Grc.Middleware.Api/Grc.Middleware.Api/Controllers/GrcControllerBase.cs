@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
+using Grc.Middleware.Api.Data.Entities.System;
+using Grc.Middleware.Api.Enums;
+using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Security;
 using Grc.Middleware.Api.Services;
 using Grc.Middleware.Api.Services.Organization;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace Grc.Middleware.Api.Controllers {
 
@@ -50,6 +54,52 @@ namespace Grc.Middleware.Api.Controllers {
 
         private static string FormatPeriod(int coundt, string period)
             => coundt == 1 ? $"1 {period} ago" : $"{coundt} {period}s ago";
-        
+
+
+        #region Private methods
+        protected async Task<ResponseError> HandleErrorAsync(Exception ex)
+        {
+            Logger.LogActivity($"{ex.Message}", "ERROR");
+            Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+            var conpany = await CompanyService.GetDefaultCompanyAsync();
+            long companyId = conpany != null ? conpany.Id : 1;
+            SystemError errorObj = new()
+            {
+                ErrorMessage = ex.Message,
+                ErrorSource = "SUPPORT-MIDDLEWARE-COTROLLER",
+                StackTrace = ex.StackTrace,
+                Severity = "CRITICAL",
+                ReportedOn = DateTime.Now,
+                CompanyId = companyId,
+                CreatedOn = DateTime.Now,
+                CreatedBy = "SYSTEM",
+            };
+
+            //..save error object to the database
+            var result = await SystemErrorService.SaveErrorAsync(errorObj);
+            var response = new GeneralResponse();
+            if (result)
+            {
+                response.Status = true;
+                response.StatusCode = (int)ResponseCodes.SUCCESS;
+                response.Message = "Error captured and saved successfully";
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+            }
+            else
+            {
+                response.Status = false;
+                response.StatusCode = (int)ResponseCodes.FAILED;
+                response.Message = "Failed to capture error to database. An error occurrred";
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
+            }
+
+            return new ResponseError(
+                ResponseCodes.BADREQUEST,
+                "Oops! Something went wrong",
+                $"System Error - {ex.Message}"
+            );
+        }
+        #endregion
     }
 }

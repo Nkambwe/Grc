@@ -1545,37 +1545,6 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         #region System Role
 
-        public async Task<IActionResult> RolePermissions() {
-            var model = new AdminDashboardModel();
-            try
-            {
-                //..get user IP address
-                var ipAddress = WebHelper.GetCurrentIpAddress();
-
-                //..get current authenticated user record
-                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (grcResponse.HasError)
-                {
-                    await ProcessErrorAsync(grcResponse.Error.Message, "SUPPORT-CONTROLLER", string.Empty);
-                    return View(model);
-                }
-
-                var currentUser = grcResponse.Data;
-                currentUser.IPAddress = ipAddress;
-
-                //..prepare user dashboard
-                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
-                
-            }
-            catch (Exception ex)
-            {
-                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
-                return View(model);
-            }
-
-            return View(model);
-        }
-
         [LogActivityResult("Retrieve Role", "User retrieved role record", ActivityTypeDefaults.ROLE_RETRIEVED, "SystemRole")]
         public async Task<IActionResult> GetRole(long id) {
             try
@@ -1609,7 +1578,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                     roleName = role.RoleName,
                     roleDescription = role.Description,
                     groupName = role.GroupName,
-                    isDeleted = !role.IsDeleted,
+                    isDeleted = role.IsDeleted,
                     createdOn = role.CreatedOn,
                     createdBy = role.CreatedBy,
                     modifiedOn = role.ModifiedOn,
@@ -1677,7 +1646,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                         roleName = role.RoleName,
                         roleDescription = role.Description,
                         groupName = role.GroupName,
-                        isActive = !role.IsDeleted,
+                        isDeleted = role.IsDeleted,
                         createdOn = role.CreatedOn,
                         createdBy = role.CreatedBy,
                         modifiedOn = role.ModifiedOn,
@@ -1865,6 +1834,217 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Error deleting system role record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        #endregion
+
+        #region System Role Permissions
+
+        public async Task<IActionResult> RolePermissions() {
+            var model = new AdminDashboardModel();
+            try
+            {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError)
+                {
+                    await ProcessErrorAsync(grcResponse.Error.Message, "SUPPORT-CONTROLLER", string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.IPAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+
+            }
+            catch (Exception ex)
+            {
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
+        }
+
+        [LogActivityResult("Retrieve Role Permissions", "User retrieved role record with related permissions", ActivityTypeDefaults.ROLE_RETRIEVED, "SystemRole")]
+        public async Task<IActionResult> GetRoleWithPermissions(long id)
+        {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0)
+                {
+                    return BadRequest(new { success = false, message = "Role Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                var result = await _accessService.GetRoleWithPermissionsAsync(id, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving role";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var role = result.Data;
+                var roleRecord = new {
+                    id = role.Id,
+                    roleName = role.RoleName,
+                    roleDescription = role.Description,
+                    groupName = role.GroupName,
+                    isDeleted = role.IsDeleted,
+                    createdOn = role.CreatedOn,
+                    createdBy = role.CreatedBy,
+                    modifiedOn = role.ModifiedOn,
+                    modifiedBy = role.ModifiedBy,
+                    permissions = role.Permissions.Select(permission => new {
+                        id = permission.Id,
+                        permissionName = permission.PermissionName,
+                        permissionDescription = permission.PermissionDescription,
+                        isAssigned = permission.IsAssigned
+                    }).ToList()
+                };
+
+                return Ok(new { success = true, data = roleRecord });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving role record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        [LogActivityResult("Retrieve Role Permission sets", "User retrieved role record with related permission set", ActivityTypeDefaults.ROLE_RETRIEVED, "SystemRole")]
+        public async Task<IActionResult> GetRoleWithPermissionSets(long id)
+        {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0)
+                {
+                    return BadRequest(new { success = false, message = "Role Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                var result = await _accessService.GetRoleWithPermissionSetsAsync(id, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving role";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var role = result.Data;
+                var roleRecord = new
+                {
+                    id = role.Id,
+                    roleName = role.RoleName,
+                    roleDescription = role.Description,
+                    groupName = role.GroupName,
+                    isDeleted = role.IsDeleted,
+                    createdOn = role.CreatedOn,
+                    createdBy = role.CreatedBy,
+                    modifiedOn = role.ModifiedOn,
+                    modifiedBy = role.ModifiedBy,
+                    permissionSets = role.PermissionSets.Select(set => new {
+                        id = set.Id,
+                        setName = set.SetName,
+                        setDescription = set.SetDescription,
+                        isAssigned = set.IsAssigned
+                    }).ToList()
+                };
+
+                return Ok(new { success = true, data = roleRecord });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving role record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        [LogActivityResult("Retrieve Role Users", "User retrieved role record with related users", ActivityTypeDefaults.ROLE_RETRIEVED, "SystemRole")]
+        public async Task<IActionResult> GetRoleWithUsers(long id)
+        {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0)
+                {
+                    return BadRequest(new { success = false, message = "Role Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                var result = await _accessService.GetRoleWithUsersAsync(id, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving role";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var role = result.Data;
+                var roleRecord = new
+                {
+                    id = role.Id,
+                    roleName = role.RoleName,
+                    roleDescription = role.Description,
+                    groupName = role.GroupName,
+                    isDeleted = role.IsDeleted,
+                    createdOn = role.CreatedOn,
+                    createdBy = role.CreatedBy,
+                    modifiedOn = role.ModifiedOn,
+                    modifiedBy = role.ModifiedBy,
+                    users = role.Users.Select(user => new {
+                        id = user.Id,
+                        userName = !string.IsNullOrWhiteSpace(user.MiddleName) ? $"{user.FirstName} {user.MiddleName} {user.LastName}": $"{user.FirstName} {user.LastName}",
+                        emailAddress = user.Email,
+                        pfNumber = user.PFNumber,
+                        userStatus = user.IsActive,
+                        userDepartment = user.DepartmentName,
+                        userUnit = user.UnitCode
+                    }).ToList()
+                };
+
+                return Ok(new { success = true, data = roleRecord });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving role record: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
                 return Json(new { results = new List<object>() });
             }

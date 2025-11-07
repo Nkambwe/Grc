@@ -1,12 +1,8 @@
-﻿using DocumentFormat.OpenXml.EMMA;
-using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
-using DocumentFormat.OpenXml.Spreadsheet;
-using Grc.ui.App.Factories;
+﻿using Grc.ui.App.Factories;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace Grc.ui.App.Components {
 

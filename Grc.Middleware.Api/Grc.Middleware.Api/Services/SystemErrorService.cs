@@ -43,6 +43,10 @@ namespace Grc.Middleware.Api.Services {
             Logger.LogActivity("Save system error record >>>>", "INFO");
     
             try {
+                errorObj.CreatedOn = DateTime.Now;
+                errorObj.IsDeleted = false;
+                errorObj.CreatedBy= "SYSTEM";
+
                 //..log the error data being saved
                 var errorJson = JsonSerializer.Serialize(errorObj, new JsonSerializerOptions { 
                     WriteIndented = true,

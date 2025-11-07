@@ -20,9 +20,10 @@
         Html.AddCssFileParts("~/lib/toastr/toastr.css");
         Html.AddCssFileParts("~/css/color-pallete.css");
         Html.AddCssFileParts("~/lib/sweet-alert/sweetalert2.css");
-        Html.AddCssFileParts("~/lib/datatables/datatables.css");
-        Html.AddCssFileParts("~/lib/datatables/datatables.min.css");
+        Html.AddCssFileParts("~/lib/tabulator/css/tabulator.min.css");
+        Html.AddCssFileParts("~/lib/tabulator/css/tabulator_bootstrap5.min.css");
         Html.AddCssFileParts("~/css/app-tables-styles.css");
+        Html.AddCssFileParts("~/css/app-tabular-styles.css");
         Html.AddCssFileParts("~/lib/chartjs/chart.min.css");
         Html.AddCssFileParts("~/css/app-styles.css");
         Html.AddCssFileParts("~/css/component-styles.css");
@@ -32,6 +33,9 @@
     <script src="~/lib/sweet-alert/sweetalert2.all.min.js"></script>
     <script src="~/lib/ckeditor5/ckeditor5.umd.js"></script>
     <script src="~/lib/chartjs/chart-4.4.1-min.js"></script>
+    <script src="~/lib/xlsx/xlsx.full.min.js"></script>
+    <script src="~/lib/flastpicker/flatpickr.js"></script>
+    <script src="~/lib/tabulator/js/tabulator.min.js"></script>
     @Html.GenerateCssFiles()
     @Html.GenerateHeadCustom()
 </head>
@@ -393,7 +397,7 @@
     }
     @Html.GenerateScripts(ResourceLocation.Footer)
     @await RenderSectionAsync("Scripts", required: false)
-
+    
     <script>
         window.ADMIN_LOGOUT_URL = '@Url.Action("Logout", "Support", new { area = "Admin" })';
     </script>

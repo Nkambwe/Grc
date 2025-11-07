@@ -450,6 +450,15 @@ button.action-btn.action-btn-separator {
     margin-top: 1rem;
 }
 
+div:where(.swal2-container).swal2-backdrop-show,
+div:where(.swal2-container).swal2-noanimation {
+    z-index: 2000 !important;
+}
+
+div:where(.swal2-container).swal2-center > .swal2-popup {
+    z-index: 2001!important;
+}
+
 @media (max-width: 992px) {
     .permissions-list {
         grid-template-columns: repeat(3, 1fr);

@@ -249,7 +249,8 @@
 .overlay,
 .role-overlay,
 .groupOverlay,
-.task-overlay {
+.task-overlay,
+.role-permission-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -263,13 +264,15 @@
     .overlay.active,
     .role-overlay.active,
     .groupOverlay.active,
-    .task-overlay.active {
+    .task-overlay.active,
+    .role-permission-overlay.active {
         display: block;
     }
 
 .slide-panel,
 .set-panel,
-.slide-task-panel {
+.slide-task-panel,
+.role-permission-panel {
     position: fixed;
     top: 70px;
     right: -100vw;
@@ -284,7 +287,8 @@
 
     .slide-panel.active,
     .set-panel.active,
-    .slide-task-panel.active {
+    .slide-task-panel.active,
+    .role-permission-panel.active {
         right: 2vw;
         overflow: hidden;
     }

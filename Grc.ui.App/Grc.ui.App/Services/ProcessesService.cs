@@ -3,9 +3,11 @@ using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
 using Grc.ui.App.Factories;
+using Grc.ui.App.Helpers;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Utils;
+using System.Text.Json;
 
 namespace Grc.ui.App.Services {
 
@@ -520,6 +522,36 @@ namespace Grc.ui.App.Services {
             };
             var obj = processes.FirstOrDefault(d => d.Banner.Trim().Equals(unit?.Trim(), StringComparison.CurrentCultureIgnoreCase));
             return await Task.FromResult(obj);
+        }
+
+        public async Task<GrcResponse<PagedResponse<GrcProcessRegisterResponse>>> GetProcessRegistersActAsync(TableListRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Invalid Request object",
+                        "Request object cannot be null"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<PagedResponse<GrcProcessRegisterResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/registers-all";
+                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<GrcProcessRegisterResponse>>(endpoint, request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<PagedResponse<GrcProcessRegisterResponse>>(error);
+            }
         }
     }
 

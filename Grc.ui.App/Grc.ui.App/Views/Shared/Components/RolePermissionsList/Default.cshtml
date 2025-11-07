@@ -1,3 +1,98 @@
 ﻿<div class="grc-tabulator-container">
-    <span class="display-1">Role Permissions</span>
+    <div class="grc-tabulator-search">
+        <div class="field-search-group">
+            <label class="form-searchbox-label text-right">
+                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.Role"))
+            </label>
+            <input id="rolePermissionSearchbox" type="text" class="form-control searchbox-field">
+        </div>
+    </div>
+
+    <div id="rolePermissionsTable"></div>
 </div>
+
+<!-- Overlay -->
+<div class="role-permission-overlay" onclick="closeRolePermPanel()">
+
+    <div id="rolePermissionPanel" class="role-permission-panel" onclick="event.stopPropagation()">
+
+        <div class="panel-header">
+            <h3 id="panelTitle">Role Permissions</h3>
+            <button class="panel-close" onclick="closeRolePermPanel()">&times;</button>
+        </div>
+
+        <div class="set-panel-body">
+            <form id="rolePermissionForm" class="grc-set-form">
+                <input type="hidden" id="setId">
+                <input type="hidden" id="isEdit">
+
+                <div class="row main-row">
+
+                    <!-- Top section - form fields -->
+                    <div class="col-sm-12 form-fields-section">
+
+                        <div class="row">
+
+                            <div class="col-sm-6 form-group">
+                                <!-- Role Name -->
+                                <div class="row mb-3">
+                                    <label for="roleName" class="col-sm-4 col-form-label text-sm-end">
+                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Role.Name"))
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" id="roleName" name="roleName" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- role description-->
+                            <div class="col-sm-6 form-group">
+                                <div class="row mb-3">
+                                    <label for="roleDescription" class="col-sm-4 col-form-label text-sm-end">
+                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Role.Description"))
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" id="roleDescription" name="roleDescription" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Middle section - permission -->
+                    <div class="col-sm-12 permission-list-section">
+                        <div id="rolePermissionListContainer" class="permission-setList-container"></div>
+                    </div>
+
+                    <!-- Bottom section - buttons -->
+                    <div class="col-sm-12 button-section">
+                        <div class="row mb-3">
+                            <div class="col-sm-1">
+                                <button class="btn btn-grc-primary w-100" onclick="saveRolePermissions(event)">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))
+                                </button>
+                            </div>
+                            <div class="col-sm-1">
+                                <button class="btn btn-grc-secondary w-100" onclick="closeRolePermPanel()">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))
+                                </button>
+                            </div>
+                            <div class="col-sm-10"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</div>
+
+@{
+    Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-role-permissions.js");
+}
+
+

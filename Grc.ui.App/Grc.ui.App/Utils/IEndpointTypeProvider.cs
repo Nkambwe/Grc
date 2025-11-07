@@ -3,6 +3,7 @@
 namespace Grc.ui.App.Utils {
     public interface IEndpointTypeProvider {
         SystemAccessEndpoints Sam { get;}
+        ProcessEndpoints Operations { get; }
         HealthEndpoint Health { get; }
         RegistrationEndpoints Registration { get; }
         ActivityLogEndpoints ActivityLog { get; }

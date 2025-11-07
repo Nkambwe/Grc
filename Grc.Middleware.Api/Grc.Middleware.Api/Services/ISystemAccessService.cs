@@ -77,6 +77,8 @@ namespace Grc.Middleware.Api.Services {
 
         Task<SystemRole> GetRoleByIdAsync(IdRequest id);
 
+        Task<SystemRole> GetRoleUsersAsync(IdRequest request);
+
         Task<IList<SystemRole>> GetAllRolesAsync(bool includeDeleted = false);
 
         Task<bool> InsertRoleAsync(RoleRequest request);
@@ -131,7 +133,9 @@ namespace Grc.Middleware.Api.Services {
         #region System Permissions
         Task<List<SystemPermission>> GetAllPermissionsAsync();
 
-        Task<List<SystemPermission>> GetRolePermissionsAsync(RolePermissionRequest request);
+        Task<List<SystemPermissionSet>> GetRolePermissionSetsAsync(IdRequest request);
+
+        Task<List<SystemPermission>> GetRolePermissionsAsync(IdRequest request);
 
         Task<bool> UpdateRolePermissionSetsAsync(long roleId, List<long> newPermissionSetIds);
 
