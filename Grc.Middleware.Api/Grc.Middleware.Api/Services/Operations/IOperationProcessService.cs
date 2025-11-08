@@ -1,6 +1,7 @@
 ﻿using Grc.Middleware.Api.Data.Entities.Operations.Processes;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
+using Grc.Middleware.Api.Http.Responses;
 using System.Linq.Expressions;
 
 namespace Grc.Middleware.Api.Services.Operations {
@@ -38,9 +39,11 @@ namespace Grc.Middleware.Api.Services.Operations {
         Task<bool> BulkyInsertAsync(ProcessRequest[] requestItems);
         Task<bool> BulkyUpdateAsync(ProcessRequest[] requestItems);
         Task<bool> BulkyUpdateAsync(ProcessRequest[] requestItems, params Expression<Func<OperationProcess, object>>[] propertySelectors);
+        Task<ProcessSupportResponse> GetSupportItemsAsync(bool includeDeleted);
         Task<PagedResult<OperationProcess>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<OperationProcess, object>>[] includes);
         Task<PagedResult<OperationProcess>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<OperationProcess, object>>[] includes);
         Task<PagedResult<OperationProcess>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<OperationProcess, bool>> predicate = null);
         Task<PagedResult<OperationProcess>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<OperationProcess, bool>> predicate = null, bool includeDeleted = false);
+        
     }
 }

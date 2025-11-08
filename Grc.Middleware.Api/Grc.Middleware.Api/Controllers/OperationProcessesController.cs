@@ -19,6 +19,9 @@ namespace Grc.Middleware.Api.Controllers {
     public class OperationProcessesController : GrcControllerBase {
 
         private readonly IOperationProcessService _processService;
+        private readonly IProcessTagService _tagService;
+        private readonly IProcessTypeService _typeService;
+        private readonly IDepartmentsService _departmentService;
 
         public OperationProcessesController(IObjectCypher cypher, 
                                             IServiceLoggerFactory loggerFactory, 
@@ -27,7 +30,11 @@ namespace Grc.Middleware.Api.Controllers {
                                             IEnvironmentProvider environment, 
                                             IErrorNotificationService errorService, 
                                             ISystemErrorService systemErrorService,
-                                            IOperationProcessService processService) 
+                                            IOperationProcessService processService,
+                                            IProcessTagService tagService,
+                                            IProcessTypeService typeService,
+                                            IDepartmentsService departmentService
+                                            ) 
                                             : base(cypher, 
                                                   loggerFactory, 
                                                   mapper, 
@@ -36,10 +43,43 @@ namespace Grc.Middleware.Api.Controllers {
                                                   errorService, 
                                                   systemErrorService) {
             _processService = processService;
+            _tagService = tagService;
+            _typeService = typeService;
+            _departmentService = departmentService;
 
         }
 
         #region Process Register Endpoints
+
+        [HttpPost("processes/support-items")]
+        public async Task<IActionResult> GetProcessSupportItems([FromBody] GeneralRequest request)
+        {
+            try
+            {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null)
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ProcessSupportResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+
+                //..get support data
+                var _supportItemsList = await _processService.GetSupportItemsAsync(false);
+                return Ok(new GrcResponse<ProcessSupportResponse>(_supportItemsList));
+            }
+            catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<ProcessSupportResponse>(error));
+            }
+        }
 
         [HttpPost("processes/register")]
         public async Task<IActionResult> GetProcessRegister([FromBody] IdRequest request) {

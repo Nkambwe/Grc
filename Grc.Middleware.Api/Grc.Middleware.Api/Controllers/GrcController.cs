@@ -65,6 +65,9 @@ namespace Grc.Middleware.Api.Controllers {
                 );
 
                 //..save error object to the database
+                errorObj.CreatedOn = DateTime.Now;
+                errorObj.CreatedBy = "SYSTEM";
+                errorObj.ReportedOn = DateTime.Now;
                 var result = await SystemErrorService.SaveErrorAsync(errorObj);
                 var response = new GeneralResponse();
                 if(result){

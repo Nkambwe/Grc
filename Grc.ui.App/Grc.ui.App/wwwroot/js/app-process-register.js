@@ -1,7 +1,7 @@
 ﻿let processRegisterTable;
 function initProcessRegisterTable() {
     processRegisterTable = new Tabulator("#processRegisterTable", {
-        ajaxURL: "/operations/processes/register/all",
+        ajaxURL: "/operations/workflow/processes/register/all",
         paginationMode: "remote",
         filterMode: "remote",
         sortMode: "remote",
@@ -93,9 +93,9 @@ function initProcessRegisterTable() {
             { title: "ATTACHED UNIT", field: "unitName", minWidth: 250 },
             { title: "PROCESS MANAGER", field: "assigneeName", minWidth: 400 },
             {
-                title: "PROCESS FILE",
+                title: "ON FILE",
                 field: "fileName",
-                minWidth: 200,
+                minWidth: 100,
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
                     return `<span class="clickable-title" onclick="viewFile(${rowData.fileName})">${rowData.fileName}</span>`
@@ -123,16 +123,122 @@ function initProcessRegisterTable() {
     initProcessSearch();
 }
 
-function viewProcess(){
+function createProcess() {
+    openProcessEditor('New Process', {
+        // Populate form fields
+        id:0,
+        isEdit:false,
+        processName:'',
+        description:'',
+        typeId: 0,
+        isDeleted: false,
 
+        //..process status
+        processStatus:0,
+        comment: '',
+        onholdReason:'',
+
+        //..file info
+        originalOnFile: true,
+        fileName:'',
+        CurrentVersion: '',
+
+        //..approval info
+        approvalStatus:'',
+        approvalComment: '',
+        effectiveDate:'',
+
+        //..responsibility
+        unitId: 0,
+        ownerId:0,
+        assigneedId:0
+    }, false);
 }
 
-function deleteProcess() {
-
+function findProcess(id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/operations/workflow/processes/registers/retrieve/${encodeURIComponent(id)}`,
+            type: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            success: function (res) {
+                if (res && res.success) {
+                    resolve(res.data);
+                } else {
+                    resolve(null);
+                }
+            },
+            error: function () {
+                reject();
+            }
+        });
+    });
 }
 
-function viewFile() {
+function openProcessEditor(title, process, isEdit) {
+    // Populate form fields
+    $("#processId").val(process?.id || "");
+    $("#isEdit").val(isEdit);
+    $("#processName").val(process?.processName || "");
+    $("#processDescription").val(process?.description || "");
+    $("#typeId").val(process?.typeId || 0).trigger('change.select2');
+    $('#isDeleted').prop('checked', process?.isDeleted || false);
 
+    //..process status
+    $("#processStatus").val(process?.processStatus || 0).trigger('change.select2');
+    $("#comment").val(process?.comment || "");
+    $("#onholdReason").val(process?.onholdReason || "");
+
+    $('#originalOnFile').prop('originalOnFile', process?.originalOnFile || true);
+    $("#fileName").val(process?.fileName || "");
+    $("#fileVersion").val(process?.CurrentVersion || "");
+
+    //..approval info
+    $("#approvalStatus").val(process?.approvalStatus || "");
+    $("#approvalComment").val(process?.approvalComment || "");
+    $("#effectiveDate").val(process?.effectiveDate);
+
+    //..responsibility
+    $("#unitId").val(process?.unitId || 0).trigger('change.select2');
+    $("#ownerId").val(process?.ownerId || 0).trigger('change.select2');
+    $("#assigneedId").val(process?.assigneedId || 0).trigger('change.select2');
+   
+    // Show overlay panel
+    $('#processPanelTitle').text(title);
+    $('.process-overlay').addClass('active');
+    $('#collapsePanel').addClass('active');
+}
+
+function viewProcess(id){
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving process record...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    findProcess(id)
+        .then(record => {
+            Swal.close();
+            if (record) {
+                openActPanel('Edit Process', record, true);
+            } else {
+                Swal.fire({ title: 'NOT FOUND', text: 'Process record found' });
+            }
+        })
+        .catch(() => {
+            Swal.close();
+            Swal.fire({ title: 'Error', text: 'Failed to load process details.' });
+        });
+}
+
+function deleteProcess(id) {
+    alert('Delete Process >>> ' + id);
+}
+
+function viewFile(fileName) {
+    alert(`View File >>> ${fileName}`);
 }
 
 function initProcessSearch() {
@@ -163,7 +269,83 @@ function initProcessSearch() {
     });
 }
 
+function closeProcessPanel() {
+    $('.process-overlay').removeClass('active');
+    $('#collapsePanel').removeClass('active');
+}
+
+function saveProcessRecord(e) {
+
+}
+
+
+//..toggle section collapse/expand
+function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const toggle = header.querySelector('.section-toggle');
+
+    content.classList.toggle('expanded');
+    toggle.classList.toggle('expanded');
+}
+
 
 $(document).ready(function () {
+
     initProcessRegisterTable();
+
+    $('#typeId, #processStatus, #unitId, #ownerId, #assigneedId, #complianceStatus, #branchManagerStatus, #hodApprovalStatus').select2({
+        width: '100%',
+        dropdownParent: $('#collapsePanel')
+    });
+
+    //..initialize Flatpickr
+    flatpickr("#effectiveDate", {
+        dateFormat: "Y-m-d",
+        allowInput: true
+    });
+
+    $('.action-btn-process-new').on('click', function () {
+        createProcess();
+    });
+
+    $('.action-btn-proposed-list').on('click', function () {
+        alert("Proposed Button clicked");
+    });
+
+    $('.action-btn-unchanged-list').on('click', function () {
+        alert("Unchanged Button clicked");
+    });
+
+    $('.action-btn-due-review-list').on('click', function () {
+        alert("Button clicked");
+    });
+
+    $('.action-btn-dorman-list').on('click', function () {
+        alert("Dormant Button clicked");
+    });
+
+    $('.action-btn-cancelled-list').on('click', function () {
+        alert("Cancelled Button clicked");
+    });
+
+    $('.action-btn-completed-list').on('click', function () {
+        alert("Complete Button clicked");
+    });
+
+    $('.action-btn-dormant-list').on('click', function () {
+        alert("Dormat Button clicked");
+    });
+
+    $('.action-btn-cancelled-list').on('click', function () {
+        alert("Complete Button clicked");
+    });
+
+    $('.action-btn-process-export').on('click', function () {
+        alert("Export Process Button clicked");
+    });
+
+    $('#processForm').on('submit', function (e) {
+        e.preventDefault();
+    });
+
 });

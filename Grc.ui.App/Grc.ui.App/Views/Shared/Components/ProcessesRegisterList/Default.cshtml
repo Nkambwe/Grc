@@ -1,4 +1,4 @@
-﻿@* @model TotalProcessesModel *@
+﻿@model OperationProcessViewModel
 
 <div class="grc-tabulator-container">
 
@@ -24,106 +24,476 @@
 </div>
 
 <!-- Overlay -->
-<div class="overlay" onclick="closeActPanel()">
+<div class="process-overlay" onclick="closeProcessPanel()">
 
     <!-- Slide Panel -->
-    <div id="slidePanel" class="slide-panel" onclick="event.stopPropagation()">
-        <div class="panel-header">
-            <h3 id="panelTitle">Record Details</h3>
-            <button class="panel-close" onclick="closeActPanel()">&times;</button>
+    <div id="collapsePanel" class="collapse-panel" onclick="event.stopPropagation()">
+        <div class="collapse-panel-header">
+            <h3 id="processPanelTitle">Process</h3>
+            <button class="collapse-panel-close" onclick="closeProcessPanel()">&times;</button>
         </div>
-        <div class="panel-body">
-            <form id="actForm" class="grc-form row g-3">
-                <input type="hidden" id="recordId">
-                <input type="hidden" id="parentId">
+        <div class="collapse-panel-body">
+            <form id="processForm" class="grc-form row g-3">
+                <input type="hidden" id="processId">
                 <input type="hidden" id="isEdit">
 
-                <!-- Task -->
-                <div class="col-sm-6">
+                <!-- Basic Information Section -->
+                <div class="form-section">
 
-                    <!-- regulatory Name -->
-                    <div class="row mb-3">
-                        <label for="regulatoryName" class="col-sm-4 col-form-label text-sm-end">
-                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Task.Document"))
-                        </label>
-                        <div class="col-sm-8">
-                            <input type="text" id="regulatoryName" name="regulatoryName" class="form-control" required />
-                        </div>
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Basic"))</h5>
+                        <span class="section-toggle">
+                            <i class="mdi mdi-menu-down"></i>
+                        </span>
                     </div>
 
-                    <div class="row mb-3">
-                        <label for="actComments" class="col-sm-4 col-form-label text-sm-end">
-                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Task.Description"))
-                        </label>
-                        <div class="col-sm-8">
-                            <textarea id="actComments" name="actComments" class="form-control" rows="3"></textarea>
-                        </div>
-                    </div>
+                    <div class="section-content expanded">
 
-                    <!-- Last review Date -->
-                    <div class="row mb-3">
-                        <label for="lastReviewDate" class="col-sm-4 col-form-label text-sm-end">
-                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Task.AssignedDate"))
-                        </label>
-                        <div class="col-sm-8">
-                            <input type="text" id="lastReviewDate" name="lastReviewDate" class="form-control datepicker" placeholder="MM/DD/YYYY" />
+                        <div class="section-body">
+
+                            <div class="row g-3">
+
+                                <div class="col-6">
+                                    
+                                    <div class="row mb-3">
+                                        <label for="processName" class="col-sm-12 form-label">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Name"))
+                                        </label>
+                                        <div class="col-sm-12">
+                                            <input type="text" id="processName" name="processName" class="form-control">
+                                       </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <label for="typeId" class="col-sm-12 form-label">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Type"))
+                                        </label>
+                                        <div class="col-sm-12">
+                                            <select class="form-select" id="typeId" name="typeId"
+                                                    aria-labelledby="typeId-label"
+                                                    aria-describedby="typeId-description">
+                                                <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Type.Select"))</option>
+                                                @if (Model?.ProcessTypes != null && Model.ProcessTypes.Any())
+                                                {
+                                                    foreach (var type in Model.ProcessTypes)
+                                                    {
+                                                        <option value="@type.Id">@type.TypeName</option>
+                                                    }
+                                                }
+                                            </select>
+
+                                            <span id="typeId-description" class="sr-only">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="row mb-3">
+                                        <label for="processDescription" class="col-sm-12 form-label">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Description"))
+                                        </label>
+                                        <div class="col-sm-12">
+                                            <textarea id="processDescription" name="processDescription" class="form-control" rows="3"></textarea>
+                                       </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <label for="processStatus" class="col-sm-12 form-label">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Status"))
+                                        </label>
+                                        <div class="col-sm-12">
+                                            <select class="form-select" id="processStatus" name="processStatus" aria-labelledby="processStatus-label" aria-describedby="processStatus-description">
+                                                <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Status.Select"))</option>
+                                                @if (Model?.ProcessStatuses != null && Model.ProcessStatuses.Any())
+                                                {
+                                                    foreach (var status in Model.ProcessStatuses)
+                                                    {
+                                                        <option value="@status.Id">@status.StatusName</option>
+                                                    }
+                                                }
+                                            </select>
+
+                                            <span id="processStatus-description" class="sr-only">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="isDeleted">
+                                        <label class="form-check-label" for="isDeleted">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.IsDeleted"))
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="col-6">
+
+                                    <div class="row mb-3">
+                                        <label for="effectiveDate" class="col-sm-12 form-label">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Effectivedate"))
+                                        </label>
+                                        <div class="col-sm-12">
+                                            <input type="text" id="effectiveDate" name="effectiveDate" class="form-control">
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-12" id="onHoldBox">
+                                    <div class="row mb-3">
+                                        <label for="onholdReason" class="col-sm-12 form-label">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.onholdReason"))
+                                        </label>
+                                        <div class="col-sm-12">
+                                            <textarea id="onholdReason" name="onholdReason" class="form-control" rows="3"></textarea>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
                         </div>
+
                     </div>
 
                 </div>
 
-                <!-- Assigne -->
-                <div class="col-sm-6">
+                <!-- Process File Section -->
+                <div class="form-section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.File"))</h5>
+                        <span class="section-toggle">
+                            <i class="mdi mdi-menu-down"></i>
+                        </span>
+                    </div>
+                    <div class="section-content">
 
-                    <div class="row mb-3">
-                        <label for="dpAuthority" class="col-sm-4 col-form-label text-sm-end">
-                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Task.Owner"))
-                        </label>
-                        <div class="col-sm-8">
-                            <select class="js-act-authority form-control" id="dpAuthority" name="dpAuthority">
-                                <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Owner"))</option>
-                            </select>
+                        <div class="section-body">
+
+                            <div class="row g-3">
+
+                                <div class="col-6">
+
+                                    <div class="row mb-3">
+                                        <label for="fileName" class="col-sm-12 form-label">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.FileName"))
+                                        </label>
+                                        <div class="col-sm-12">
+                                            <input type="text" id="fileName" name="fileName" class="form-control">
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-6">
+
+                                    <div class="row mb-3">
+                                        <label for="fileVersion" class="col-sm-12 form-label">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.FileVersion"))
+                                        </label>
+                                        <div class="col-sm-12">
+                                            <input type="text" id="fileVersion" name="fileVersion" class="form-control">
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="originalOnFile" checked>
+                                        <label class="form-check-label" for="originalOnFile">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.OrginalOnFile"))
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="row mb-3">
+                                        <label for="comment" class="col-sm-12 form-label">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Comments"))
+                                        </label>
+                                        <div class="col-sm-12">
+                                            <textarea id="comment" name="comment" class="form-control" rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="row mb-3">
-                        <label for="dpResponsibility" class="col-sm-4 col-form-label text-sm-end">
-                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Task.Owner"))
-                        </label>
-                        <div class="col-sm-8">
-                            <select class="js-act-respons form-control" id="dpResponsibility" name="dpResponsibility">
-                                <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Owner"))</option>
-                            </select>
-                        </div>
+                <!-- Responsibility Section -->
+                <div class="form-section">
+
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Owenership"))</h5>
+                        <span class="section-toggle">
+                            <i class="mdi mdi-menu-down"></i>
+                        </span>
                     </div>
 
-                    <div class="row mb-3">
-                        <label for="dpFrequency" class="col-sm-4 col-form-label text-sm-end">
-                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Task.Owner"))
-                        </label>
-                        <div class="col-sm-8">
-                            <select class="js-act-frequency form-control" id="dpFrequency" name="dpFrequency">
-                                <option value="UNKNOWN">Select frequency</option>
-                                <option value="Monthly">Monthly</option>
-                                <option value="Annually">Annually</option>
-                                <option value="Semi-Annually">Semi-Annually</option>
-                                <option value="Bi-Annually">Bi-Annually</option>
-                            </select>
+                    <div class="section-content">
+
+                        <div class="section-body">
+
+                            <div class="row g-3">
+
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <label for="unitId" class="col-sm-12 form-label">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Unit"))
+                                        </label>
+                                        <div class="col-sm-12">
+                                            <select class="form-select" id="unitId" name="unitId" aria-labelledby="unitId-label" aria-describedby="unitId-description">
+                                                <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Unit.Select"))</option>
+                                                @if (Model?.Units != null && Model.Units.Any())
+                                                {
+                                                    foreach (var unit in Model.Units)
+                                                    {
+                                                        <option value="@unit.Id">@unit.UnitName</option>
+                                                    }
+                                                }
+                                            </select>
+
+                                            <span id="unitId-description" class="sr-only">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-6"></div>
+
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <label for="ownerId" class="col-sm-12 form-label">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Owner"))
+                                        </label>
+                                        <div class="col-sm-12">
+                                            <select class="form-select" id="ownerId" name="ownerId" aria-labelledby="ownerId-label" aria-describedby="ownerId-description">
+                                                <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Owner.Select"))</option>
+                                                @if (Model?.Responsibilities != null && Model.Responsibilities.Any())
+                                                {
+                                                    foreach (var owmer in Model.Responsibilities)
+                                                    {
+                                                        <option value="@owmer.Id">@owmer.ResponsibleRole</option>
+                                                    }
+                                                }
+                                            </select>
+
+                                            <span id="ownerId-description" class="sr-only">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <label for="assigneedId" class="col-sm-12 form-label">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Responsible"))
+                                        </label>
+                                        <div class="col-sm-12">
+                                            <select class="form-select" id="assigneedId" name="assigneedId" aria-labelledby="assigneedId-label" aria-describedby="assigneedId-description">
+                                                <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Responsible.Select"))</option>
+                                                @if (Model?.Responsibilities != null && Model.Responsibilities.Any())
+                                                {
+                                                    foreach (var manager in Model.Responsibilities)
+                                                    {
+                                                        <option value="@manager.Id">@manager.ResponsibleRole</option>
+                                                    }
+                                                }
+                                            </select>
+
+                                            <span id="assigneedId-description" class="sr-only">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
                         </div>
+
                     </div>
 
+                </div>
+
+                <!-- Approval Information Section -->
+                <div class="form-section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Approvals"))</h5>
+                        <span class="section-toggle">
+                            <i class="mdi mdi-menu-down"></i>
+                        </span>
+                    </div>
+                    <div class="section-content">
+
+                        <div class="section-body">
+
+                            <div class="row g-3" id="hodSection">
+
+                                <div class="col-12">
+                                    <div class="row mb-3">
+                                        <h6>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.Approvals.DeadOfDepartment"))</h6>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="row mb-3">
+                                                <label for="hodApprovalStatus" class="col-sm-12 form-label">
+                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.Approvals.LevelApprovals"))
+                                                </label>
+                                                <div class="col-sm-12">
+                                                    <select class="form-select" id="hodApprovalStatus" name="hodApprovalStatus" aria-labelledby="hodApprovalStatus-label" aria-describedby="hodApprovalStatus-description">
+
+                                                        <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Status.Select"))</option>
+                                                        <option value="1">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.Approvals.LevelApprovals.Pending"))</option>
+                                                        <option value="2">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.Approvals.LevelApprovals.Approved"))</option>
+                                                        <option value="3">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.Approvals.LevelApprovals.Rejected"))</option>
+                                                    </select>
+
+                                                    <span id="hodApprovalStatus-description" class="sr-only">
+                                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div class="row mb-3">
+                                                <label for="hodComments" class="col-sm-12 form-label">
+                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Comments"))
+                                                </label>
+                                                <div class="col-sm-12">
+                                                    <textarea id="hodComments" name="hodComments" class="form-control" rows="3"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row g-3" id="branchManagerSection">
+
+                                <div class="col-12">
+                                    <div class="row mb-3">
+                                        <h6>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.Approvals.BranchManager"))</h6>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="row mb-3">
+                                                <label for="branchManagerStatus" class="col-sm-12 form-label">
+                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.Approvals.LevelApprovals"))
+                                                </label>
+                                                <div class="col-sm-12">
+                                                    <select class="form-select" id="branchManagerStatus" name="branchManagerStatus" aria-labelledby="branchManagerStatus-label" aria-describedby="branchManagerStatus-description">
+                                                        <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Status.Select"))</option>
+                                                        <option value="1">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.Approvals.LevelApprovals.Pending"))</option>
+                                                        <option value="2">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.Approvals.LevelApprovals.Approved"))</option>
+                                                        <option value="3">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.Approvals.LevelApprovals.Rejected"))</option>
+                                                    </select>
+
+                                                    <span id="branchManagerStatus-description" class="sr-only">
+                                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div class="row mb-3">
+                                                <label for="bmComments" class="col-sm-12 form-label">
+                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Comments"))
+                                                </label>
+                                                <div class="col-sm-12">
+                                                    <textarea id="bmComments" name="bmComments" class="form-control" rows="3"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row g-3" id="complianceSection">
+
+                                <div class="col-12">
+                                    <div class="row mb-3">
+                                        <h6>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.Approvals.Compliance"))</h6>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="row mb-3">
+                                                <label for="complianceStatus" class="col-sm-12 form-label">
+                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.Approvals.LevelApprovals"))
+                                                </label>
+                                                <div class="col-sm-12">
+                                                    <select class="form-select" id="complianceStatus" name="complianceStatus" aria-labelledby="complianceStatus-label" aria-describedby="complianceStatus-description">
+                                                        <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Status.Select"))</option>
+                                                        <option value="1">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.Approvals.LevelApprovals.Pending"))</option>
+                                                        <option value="2">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.Approvals.LevelApprovals.Approved"))</option>
+                                                        <option value="3">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.Approvals.LevelApprovals.Rejected"))</option>
+                                                    </select>
+
+                                                    <span id="complianceStatus-description" class="sr-only">
+                                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div class="row mb-3">
+                                                <label for="compComments" class="col-sm-12 form-label">
+                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Comments"))
+                                                </label>
+                                                <div class="col-sm-12">
+                                                    <textarea id="compComments" name="compComments" class="form-control" rows="3"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
                 </div>
 
                 <div class="col-sm-12">
                     <div class="row mb-3">
-                        <div class="col-sm-2"></div>
                         <div class="col-sm-1">
-                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveActRecord(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveProcessRecord(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
                         </div>
                         <div class="col-sm-1">
-                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeActPanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeProcessPanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
                         </div>
-                        <div class="col-sm-8"></div>
+                        <div class="col-sm-10"></div>
                     </div>
                 </div>
             </form>

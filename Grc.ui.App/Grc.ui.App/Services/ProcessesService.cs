@@ -4,6 +4,7 @@ using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Helpers;
+using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Utils;
@@ -524,7 +525,39 @@ namespace Grc.ui.App.Services {
             return await Task.FromResult(obj);
         }
 
-        public async Task<GrcResponse<PagedResponse<GrcProcessRegisterResponse>>> GetProcessRegistersActAsync(TableListRequest request) {
+        public async Task<GrcResponse<GrcProcessSupportResponse>> GetProcessSupportItemsAsync(GrcRequest request) {
+            try
+            {
+                if (request == null)
+                {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Invalid Request object",
+                        "Request object cannot be null"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<GrcProcessSupportResponse>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/support-items";
+                return await HttpHandler.PostAsync<GrcRequest, GrcProcessSupportResponse>(endpoint, request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<GrcProcessSupportResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<PagedResponse<GrcProcessRegisterResponse>>> GetProcessRegistersAsync(TableListRequest request) {
             try {
                 if (request == null) {
                     var error = new GrcResponseError(
@@ -553,6 +586,48 @@ namespace Grc.ui.App.Services {
                 return new GrcResponse<PagedResponse<GrcProcessRegisterResponse>>(error);
             }
         }
+
+        public async Task<GrcResponse<GrcProcessRegisterResponse>> GetProcessRegisterAsync(long recordId, long userId, string ipAddress) {
+
+            try {
+                if (recordId == 0) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Process ID is required",
+                        "Invalid Process request"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<GrcProcessRegisterResponse>(error);
+                }
+
+                var request = new GrcIdRequest() {
+                    UserId = userId,
+                    RecordId = recordId,
+                    IPAddress = ipAddress,
+                    Action = Activity.PROCESSES_RETRIEVE_PROCESS.GetDescription(),
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>(),
+                };
+
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/register";
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcProcessRegisterResponse>(endpoint, request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+
+                return new GrcResponse<GrcProcessRegisterResponse>(error);
+            }
+        }
+
     }
 
 }

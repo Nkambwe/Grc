@@ -752,6 +752,94 @@
 		<Value>Deactivated</Value>
 	</LocaleResource>
 
+	<LocaleResource Name="Component.Process.CollapsablePane.Basic">
+		<Value>Basic Information</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.CollapsablePane.File">
+		<Value>Process Files</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.CollapsablePane.Status">
+		<Value>Process Status</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.CollapsablePane.Owenership">
+		<Value>Process Ownership</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.CollapsablePane.Approvals">
+		<Value>Process Reviews</Value>
+	</LocaleResource>
+
+	<LocaleResource Name="Component.Table.Process.Name">
+		<Value>Process Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.Description">
+		<Value>Process Description</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.Owner">
+		<Value>Process Owner</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.Owner.Select">
+		<Value>Select owner...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.Responsible">
+		<Value>Process Manager</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.Responsible.Select">
+		<Value>Select manager...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.Unit">
+		<Value>Process Unit</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.Unit.Select">
+		<Value>Select unit...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.Type">
+		<Value>Process Type</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.Type.Select">
+		<Value>Select type...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.IsDeleted">
+		<Value>Deactive</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.Status">
+		<Value>Current Status</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.Approvals.DeadOfDepartment">
+		<Value>HOD Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.Approvals.BranchManager">
+		<Value>Branch Manager Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.Approvals.Compliance">
+		<Value>Compliance And Risk Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.Approvals.LevelApprovals">
+		<Value>Review Status</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.Approvals.LevelApprovals.Pending">
+		<Value>Pending</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.Approvals.LevelApprovals.Approved">
+		<Value>Approved</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.Approvals.LevelApprovals.Rejected">
+		<Value>Needs Attention</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.Status.Select">
+		<Value>Select status...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.OrginalOnFile">
+		<Value>Is orginal copy on File?</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.Comments">
+		<Value>Comments</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.FileName">
+		<Value>Current Process File</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.FileVersion">
+		<Value>Current File Version</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Role.Group.Name">
 		<Value>Group Name</Value>
 	</LocaleResource>
@@ -760,6 +848,18 @@
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Role.Group.Deleted">
 		<Value>Deactivated</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.ApprovalStatus">
+		<Value>Approval Status</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.Status.Select">
+		<Value>Select status...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.Effectivedate">
+		<Value>Effective Date</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.Status.onholdReason">
+		<Value>Reason For Holding Process</Value>
 	</LocaleResource>
 
 	<LocaleResource Name="Component.Table.Role.Name">

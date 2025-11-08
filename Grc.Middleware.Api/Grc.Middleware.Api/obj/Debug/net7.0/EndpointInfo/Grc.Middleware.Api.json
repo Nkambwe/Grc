@@ -91,6 +91,37 @@
         }
       }
     },
+    "/grc/processes/support-items": {
+      "post": {
+        "tags": [
+          "OperationProcesses"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/grc/processes/register": {
       "post": {
         "tags": [

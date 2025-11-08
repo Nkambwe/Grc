@@ -278,7 +278,7 @@
     right: -100vw;
     width: 96vw;
     height: 100vh;
-    background: white;
+    background: var(--white-base);
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
     transition: right 0.3s ease;
     z-index: 1000;

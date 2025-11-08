@@ -192,14 +192,16 @@ namespace Grc.ui.App.Enums {
         [Description("Get a list of all system permission")]
         PERMISSIONS_RETRIVED = 102,
         [Description("Retrieve operations process, guide or procedure")]
-        PROCESSES_RETRIEVE_PROCESS,
+        PROCESSES_RETRIEVE_PROCESS = 103,
         [Description("Create operations process, guide or procedure")]
-        PROCESSES_CREATE_PROCESS,
+        PROCESSES_CREATE_PROCESS = 104,
         [Description("Edit operations process, guide or procedure")]
-        PROCESSES_EDITED_PROCESS,
+        PROCESSES_EDITED_PROCESS = 105,
         [Description("Delete operations process, guide or procedure")]
-        PROCESSES_DELETED_PROCESS,
+        PROCESSES_DELETED_PROCESS = 106,
         [Description("Export operations process, guide or procedure to excel")]
-        PROCESSES_EXPORT_PROCESS
+        PROCESSES_EXPORT_PROCESS = 107,
+        [Description("Get process support lists")]
+        RETRIVEPROCESSUPPORTITEMS = 108,
     }
 }

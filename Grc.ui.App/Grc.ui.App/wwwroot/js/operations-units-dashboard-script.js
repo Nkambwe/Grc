@@ -1,6 +1,6 @@
 ﻿// category color mapping
 const cardColors = {
-    "Up to date": { bg: "#B759E3", class: `${cardColor}` },
+    "UpToDate": { bg: "#B759E3", class: `${cardColor}` },
     "Unclassified": { bg: "#858585", class: `${cardColor}` },
     "Cancelled": { bg: "#3E8DF6", class: `${cardColor}` },
     "Unchanged": { bg: "#EC007A", class: `${cardColor}` },

@@ -629,20 +629,22 @@ namespace Grc.ui.App.Services {
         #region Roles
 
         public async Task<GrcResponse<GrcRoleResponse>> GetRoleByIdAsync(long recordId, long userId, string ipAddress) {
-            if (recordId == 0)
-            {
-                var error = new GrcResponseError(
-                    GrcStatusCodes.BADREQUEST,
-                    "Role ID is required",
-                    "Invalid Role request"
-                );
-
-                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
-                return new GrcResponse<GrcRoleResponse>(error);
-            }
-
+           
             try
             {
+                if (recordId == 0)
+                {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Role ID is required",
+                        "Invalid Role request"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<GrcRoleResponse>(error);
+                }
+
+
                 var request = new GrcIdRequest()
                 {
                     UserId = userId,

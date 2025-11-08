@@ -465,7 +465,7 @@
             );
             routeBuilder.MapControllerRoute(
                name: "app-operations-processes-register-all",
-               pattern: "/operations/processes/register/all",
+               pattern: "/operations/workflow/processes/register/all",
                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ProcessRegisterList" }
             );
             routeBuilder.MapControllerRoute(

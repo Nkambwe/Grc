@@ -41,7 +41,6 @@ namespace Grc.ui.App.Services {
                 _logger.LogActivity($"REQUEST MODEL: {JsonSerializer.Serialize(model)}");
                 var request = _mapper.Map<ErrorRequest>(model);
                 request.IPAddress = ipAddress;
-                
                 //..build endpoint
                 var endpoint = $"{_endpointProvider.Error.CaptureError}";
                 _logger.LogActivity($"Endpoint: {endpoint}");

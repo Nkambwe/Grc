@@ -1,5 +1,6 @@
 ﻿using Grc.ui.App.Dtos;
 using Grc.ui.App.Helpers;
+using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
 
 namespace Grc.ui.App.Services {
@@ -48,7 +49,11 @@ namespace Grc.ui.App.Services {
         /// <returns></returns>
         Task<UnitExtensionModel> UnitExtensionsCountAsync(string unit, long userId, string ipAddress);
 
-        Task<GrcResponse<PagedResponse<GrcProcessRegisterResponse>>> GetProcessRegistersActAsync(TableListRequest request);
+        Task<GrcResponse<PagedResponse<GrcProcessRegisterResponse>>> GetProcessRegistersAsync(TableListRequest request);
+
+        Task<GrcResponse<GrcProcessRegisterResponse>> GetProcessRegisterAsync(long id, long userId, string ipAddress);
+
+        Task<GrcResponse<GrcProcessSupportResponse>> GetProcessSupportItemsAsync(GrcRequest request);
     }
 
 }

@@ -12,6 +12,7 @@ using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Linq;
 
 namespace Grc.ui.App.Factories {
 
@@ -19,6 +20,7 @@ namespace Grc.ui.App.Factories {
 
         private readonly ILocalizationService _localizationService;
         private readonly ISystemAccessService _accessService;
+        private readonly IProcessesService _processService;
         private readonly IPinnedService _pinnedService;
         private readonly IQuickActionService _quickActionService;
         private readonly IMapper _mapper;
@@ -31,13 +33,15 @@ namespace Grc.ui.App.Factories {
                                        ILocalizationService localizationService,
                                        IMapper mapper,
                                        SessionManager session,
-                                       IConfiguration configuration) {  
-            _pinnedService = pinnedService;
-            _quickActionService = quickActionService;
-            _mapper = mapper;
-            _sessionManager = session;
-            _configuration = configuration;
-            _accessService = accessService;
+                                       IProcessesService processService,
+                                        IConfiguration configuration) {  
+                _pinnedService = pinnedService;
+                _quickActionService = quickActionService;
+                _mapper = mapper;
+                _sessionManager = session;
+                _configuration = configuration;
+                _accessService = accessService;
+                _processService = processService;
             _localizationService = localizationService;
         }
 
@@ -201,7 +205,7 @@ namespace Grc.ui.App.Factories {
             var rolesData = await _accessService.GetRoleGroupsAsync(request);
             List<GrcRoleGroupResponse> roleGroups;
 
-            List<RoleGroupItem> items = new List<RoleGroupItem>();
+            List<RoleGroupItem> items = new();
             if (!rolesData.HasError) {
                 roleGroups = rolesData.Data.Data;
             } else {
@@ -221,6 +225,87 @@ namespace Grc.ui.App.Factories {
             }
 
             return roleGroupModel;
+        }
+
+        public async Task<OperationProcessViewModel> PrepareProcessViewModelAsync(UserModel currentUser) {
+            OperationProcessViewModel processModel = new()
+            {
+                ProcessStatuses = new List<ProcessStatusViewModel> {
+                    new() { Id=(int)ProcessCategories.Unknown, StatusName = ProcessCategories.Unknown.GetDescription()},
+                    new() { Id=(int)ProcessCategories.UpToDate, StatusName = ProcessCategories.UpToDate.GetDescription()},
+                    new() { Id=(int)ProcessCategories.Unchanged, StatusName = ProcessCategories.Unchanged.GetDescription()},
+                    new() { Id=(int)ProcessCategories.Proposed, StatusName = ProcessCategories.Proposed.GetDescription()},
+                    new() { Id=(int)ProcessCategories.Due, StatusName = ProcessCategories.Due.GetDescription()},
+                    new() { Id=(int)ProcessCategories.Dormant, StatusName = ProcessCategories.Dormant.GetDescription()},
+                    new() { Id=(int)ProcessCategories.Cancelled, StatusName = ProcessCategories.Cancelled.GetDescription()}
+                },
+                ProcessTypes = new List<ProcessTypeViewModel>(),
+                Units = new List<UnitViewModel>(),
+                Responsibilities = new List<ResponsibilityViewModel>()
+            };
+
+            GrcRequest request = new()
+            {
+                UserId = currentUser.UserId,
+                IPAddress = currentUser.IPAddress,
+                Action = Activity.RETRIVEPROCESSUPPORTITEMS.GetDescription(),
+                EncryptFields = Array.Empty<string>(),
+                DecryptFields = Array.Empty<string>()
+            };
+
+            //..get lists of process support items  
+            var response = await _processService.GetProcessSupportItemsAsync(request);
+            if (response.HasError) {
+                return processModel;
+                
+            }
+            
+            var supportItems = response.Data;
+            if(supportItems == null) {
+                return processModel;
+            }
+
+            //..get process types
+            if (supportItems.ProcessTypes != null && supportItems.ProcessTypes.Any())  {
+                processModel.ProcessTypes.AddRange(
+                    from type in supportItems.ProcessTypes
+                    select new ProcessTypeViewModel
+                    {
+                        Id = type.Id,
+                        TypeName = type.TypeName
+                    }
+                );
+            }
+
+
+            //..get process units
+            if (supportItems.Units != null && supportItems.Units.Any())
+            {
+                processModel.Units.AddRange(
+                    from unit in supportItems.Units
+                    select new UnitViewModel
+                    {
+                        Id = unit.Id,
+                        UnitName = unit.UnitName
+                    }
+                );
+            }
+
+            //..get responsibilities
+            if (supportItems.Responsibilities != null && supportItems.Responsibilities.Any())
+            {
+                processModel.Responsibilities.AddRange(
+                    from owner in supportItems.Responsibilities
+                    select new ResponsibilityViewModel
+                    {
+                        Id = owner.Id,
+                        DepartmentName = owner.DepartmentName,
+                        ResponsibleRole = owner.ResponsibilityRole
+                    }
+                );
+            }
+
+            return processModel;
         }
 
     }

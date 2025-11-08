@@ -75,7 +75,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 request.IPAddress = ipAddress;
                 request.Action = Activity.PROCESSES_RETRIEVE_PROCESS.GetDescription();
 
-                var result = await _processService.GetProcessRegistersActAsync(request);
+                var result = await _processService.GetProcessRegistersAsync(request);
                 PagedResponse<GrcProcessRegisterResponse> list = result.Data ?? new();
 
                 var pagedEntities = (list.Entities ?? new List<GrcProcessRegisterResponse>())
@@ -83,13 +83,14 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                         id = process.Id,
                         processName = process.ProcessName ?? string.Empty,
                         description = process.Description ?? string.Empty,
-                        CurrentVersion = process.CurrentVersion ?? "0.0.0",
+                        currentVersion = process.CurrentVersion ?? "0.0.0",
                         fileName = process.FileName,
                         originalOnFile = process.OriginalOnFile,
                         processStatus = process.ProcessStatus ?? "UNDEFINED",
                         approvalStatus = process.ApprovalStatus,
                         approvalComment = process.ApprovalComment ?? string.Empty,
                         onholdReason = process.OnholdReason ?? string.Empty,
+                        comment = process.Comments ?? string.Empty,
                         typeId = process.TypeId,
                         typeName = process.TypeName ?? string.Empty,
                         unitId = process.UnitId,
@@ -99,6 +100,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                         assigneedId = process.ResponsibilityId,
                         assigneeName = process.Responsible ?? string.Empty,
                         isDeleted = process.IsDeleted,
+                        effectiveDate = process.EffectiveDate,
                         createdOn = process.CreatedOn,
                         createdBy = process.CreatedBy ?? string.Empty,
                         modifiedOn = process.ModifiedOn ?? process.CreatedOn,
@@ -117,10 +119,71 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             }
         }
 
-        [HttpPost]
         [LogActivityResult("Retrieve Process Register", "User retrieved operations process register", ActivityTypeDefaults.PROCESSES_RETRIEVE_PROCESS, "OperationProcess")]
         public async Task<IActionResult> GetProcessRegister(long id) {
-            return Ok();
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0)
+                {
+                    return BadRequest(new { success = false, message = "Process Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                var result = await _processService.GetProcessRegisterAsync(id, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving process";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var process = result.Data;
+                var processRecord = new
+                {
+                    id = process.Id,
+                    processName = process.ProcessName ?? string.Empty,
+                    description = process.Description ?? string.Empty,
+                    currentVersion = process.CurrentVersion ?? "0.0.0",
+                    fileName = process.FileName,
+                    originalOnFile = process.OriginalOnFile,
+                    processStatus = process.ProcessStatus ?? "UNDEFINED",
+                    approvalStatus = process.ApprovalStatus,
+                    approvalComment = process.ApprovalComment ?? string.Empty,
+                    onholdReason = process.OnholdReason ?? string.Empty,
+                    comment = process.Comments ?? string.Empty,
+                    typeId = process.TypeId,
+                    typeName = process.TypeName ?? string.Empty,
+                    unitId = process.UnitId,
+                    unitName = process.UnitName ?? string.Empty,
+                    ownerId = process.OwnerId,
+                    ownerName = process.OwnerName ?? string.Empty,
+                    assigneedId = process.ResponsibilityId,
+                    assigneeName = process.Responsible ?? string.Empty,
+                    isDeleted = process.IsDeleted,
+                    effectiveDate = process.EffectiveDate,
+                    createdOn = process.CreatedOn,
+                    createdBy = process.CreatedBy ?? string.Empty,
+                    modifiedOn = process.ModifiedOn ?? process.CreatedOn,
+                    modifiedBy = process.ModifiedBy ?? string.Empty
+                };
+
+                return Ok(new { success = true, data = processRecord });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving role record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
         }
 
         [HttpPost]

@@ -4,10 +4,13 @@ using Grc.Middleware.Api.Data.Entities.Operations.Processes;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
+using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
+using NetTopologySuite.GeometriesGraph;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Linq;
 
 namespace Grc.Middleware.Api.Services.Operations {
 
@@ -29,29 +32,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to Processes in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -68,29 +50,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count Processes in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -107,29 +68,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count Processes in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -146,29 +86,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count Processes in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -185,29 +104,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count Processes in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -224,29 +122,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count Processes in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -263,29 +140,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to check for Processes in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -302,29 +158,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to check for Processes in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -341,29 +176,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to check for Processes in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -380,29 +194,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Operation Process: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -419,29 +212,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Operation Process : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -458,29 +230,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Processes : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -497,29 +248,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Processes : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -536,29 +266,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Processes : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -575,29 +284,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Processes : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -614,29 +302,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Processes : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -653,29 +320,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Processes : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -692,29 +338,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Processes : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -731,29 +356,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Processes : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -770,29 +374,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Operation Process : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -809,29 +392,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Operation Process : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -848,29 +410,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Operation Process : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -887,29 +428,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Processes : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -946,28 +466,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save Operation Process : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1005,27 +505,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save Operation Process : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new() {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1075,31 +556,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to update  OperationProcess record: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1149,31 +607,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to update Operation Process record: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1210,26 +645,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to delete Operation Process : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1266,27 +683,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to delete  OperationProcess : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1307,26 +705,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to delete Processes: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
 
@@ -1350,28 +730,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save Processes : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1394,28 +754,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save Processes : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1438,28 +778,85 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save Processes : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+        }
 
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
+        public async Task<ProcessSupportResponse> GetSupportItemsAsync(bool includeDeleted) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Admin Dashboard Statistics", "INFO");
+
+            try {
+
+                ProcessSupportResponse response = new() {
+                    Units = new(),
+                    ProcessTypes = new(),
+                    Responsibilities = new(),
                 };
 
+                // get process types
+                var types = await uow.ProcessTypeRepository.GetAllAsync(false);
+
+                //..get department details
+                var operationsDept = await uow.DepartmentRepository.GetAllAsync(d => 
+                    d.DepartmentName.Contains("Operations"),
+                    false, d => d.Units, d => d.Responsibilities);
+                
+
+                //..get operation department details
+                if (operationsDept !=null && operationsDept.Count > 0)
+                {
+                    //operation department
+                    var dept = operationsDept.FirstOrDefault();
+
+                    //..operations owners
+                    var owners = dept.Responsibilities;
+                    if(owners != null && owners.Count > 0) {
+                        response.Responsibilities.AddRange(
+                            from owner in owners
+                            select new ResponsibilityItemResponse
+                            {
+                                Id = owner.Id,
+                                DepartmentName = dept.DepartmentName,
+                                ResponsibilityRole = owner.ContactPosition
+                            });
+                        Logger.LogActivity($"Operations Department Responsibilities found: {owners.Count}", "DEBUG");
+                    }
+
+                    //operations units
+                    var opsDeptUnits = dept.Units;
+                    if(opsDeptUnits != null && opsDeptUnits.Count > 0) {
+                        response.Units.AddRange(
+                            from unit in opsDeptUnits
+                            select new UnitItemResponse
+                            {
+                                Id = unit.Id,
+                                UnitName = unit.UnitName
+                            });
+                        Logger.LogActivity($"Operations Department Units found: {opsDeptUnits.Count}", "DEBUG");
+                    }
+                }
+
+                if (types != null && types.Count > 0) {
+                    response.ProcessTypes.AddRange(
+                        from type in types
+                        select new ProcessTypeItemResponse
+                        {
+                            Id = type.Id,
+                            TypeName = type.TypeName
+                        });
+                    Logger.LogActivity($"Department units found: {types.Count}", "DEBUG");
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Process support items: {ex.Message}", "ERROR");
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1476,28 +873,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Processes: {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1514,28 +891,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Processes : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1552,28 +909,8 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Processes: {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1587,33 +924,38 @@ namespace Grc.Middleware.Api.Services.Operations {
             {
                 return await uow.OperationProcessRepository.PageAllAsync(token, page, size, predicate, includeDeleted);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve Processes : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "OPERATION-PROCESSES-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
+        }
+
+        private SystemError HandleError(IUnitOfWork uow, Exception ex)
+        {
+            var innerEx = ex.InnerException;
+            while (innerEx != null)
+            {
+                Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                innerEx = innerEx.InnerException;
+            }
+            Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+            var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+            long companyId = company != null ? company.Id : 1;
+            return new()
+            {
+                ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                ErrorSource = "OPERATION-PROCESSES-SERVICE",
+                StackTrace = ex.StackTrace,
+                Severity = "CRITICAL",
+                ReportedOn = DateTime.Now,
+                CompanyId = companyId,
+                CreatedBy = "SYSTEM",
+                CreatedOn = DateTime.Now
+            };
+
         }
 
     }
