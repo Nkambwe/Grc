@@ -3,42 +3,69 @@
   "WorkspaceRootPath": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\areas\\operations\\controllers\\operationworkflowcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\operations\\controllers\\operationworkflowcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\services\\operations\\operationprocessservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\services\\processesservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\services\\processesservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\data\\entities\\operations.processes\\operationprocess.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\js\\app-process-register.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\js\\app-process-register.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\services\\operations\\operationprocessservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\http\\responses\\grcprocessapproval.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\http\\responses\\grcprocessapproval.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\css\\app-collapsable-pane.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\css\\app-collapsable-pane.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\areas\\operations\\controllers\\operationworkflowcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\operations\\controllers\\operationworkflowcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\http\\responses\\grcprocessregisterresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\http\\responses\\grcprocessregisterresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\controllers\\operationprocessescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\services\\processesservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\services\\processesservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\localization\\language.en-en.xml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\localization\\language.en-en.xml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\localization\\language.am-en.xml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\localization\\language.am-en.xml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\views\\shared\\components\\processesregisterlist\\default.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\views\\shared\\components\\processesregisterlist\\default.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\css\\app-tabular-styles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\css\\app-tabular-styles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\controllers\\registercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\controllers\\registercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\controllers\\operationprocessescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\services\\systemaccessservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\services\\systemaccessservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\services\\iprocessesservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\services\\iprocessesservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\routes\\routeprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\routes\\routeprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\services\\iprocessesservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\services\\iprocessesservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\js\\admin-role-permissions.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\js\\admin-role-permissions.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\css\\app-tabular-styles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\css\\app-tabular-styles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\js\\app-other-script.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
@@ -52,7 +79,7 @@
       "DocumentGroups": [
         {
           "DockedHeight": 200,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -72,7 +99,85 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "OperationProcessService.cs",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Operations\\OperationProcessService.cs",
+              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Operations\\OperationProcessService.cs",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Operations\\OperationProcessService.cs",
+              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Operations\\OperationProcessService.cs",
+              "ViewState": "AgIAAD8CAAAAAAAAAAAAwEYCAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-10T15:46:11.694Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "OperationWorkflowController.cs",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Operations\\Controllers\\OperationWorkflowController.cs",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Operations\\Controllers\\OperationWorkflowController.cs",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Operations\\Controllers\\OperationWorkflowController.cs",
+              "RelativeToolTip": "Grc.ui.App\\Areas\\Operations\\Controllers\\OperationWorkflowController.cs",
+              "ViewState": "AgIAAKcAAAAAAAAAAAAlwLgAAABYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-07T05:41:16.721Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "RegisterController.cs",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Controllers\\RegisterController.cs",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Controllers\\RegisterController.cs",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Controllers\\RegisterController.cs",
+              "RelativeToolTip": "Grc.ui.App\\Controllers\\RegisterController.cs",
+              "ViewState": "AgIAAIkAAAAAAAAAAAAgwBQAAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-10T11:59:50.67Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 6,
+              "Title": "OperationProcessesController.cs",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\OperationProcessesController.cs",
+              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\OperationProcessesController.cs",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\OperationProcessesController.cs",
+              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\OperationProcessesController.cs",
+              "ViewState": "AgIAAHIAAAAAAAAAAADwv+YAAABJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-07T07:44:57.811Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ProcessesService.cs",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Services\\ProcessesService.cs",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Services\\ProcessesService.cs",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Services\\ProcessesService.cs",
+              "RelativeToolTip": "Grc.ui.App\\Services\\ProcessesService.cs",
+              "ViewState": "AgIAAHcCAAAAAAAAAIA3wIYCAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-08T13:18:52.237Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "admin-role-permissions.js",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-role-permissions.js",
+              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\js\\admin-role-permissions.js",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-role-permissions.js",
+              "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\admin-role-permissions.js",
+              "ViewState": "AgIAAJsAAAAAAAAAAAAQwKgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-11-10T06:46:37.391Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
               "Title": "app-tabular-styles.css",
               "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\app-tabular-styles.css",
               "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\css\\app-tabular-styles.css",
@@ -85,46 +190,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "OperationProcessService.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Operations\\OperationProcessService.cs",
-              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Operations\\OperationProcessService.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Operations\\OperationProcessService.cs",
-              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Operations\\OperationProcessService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFQDAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-08T14:50:26.329Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "OperationProcessesController.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\OperationProcessesController.cs",
-              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\OperationProcessesController.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\OperationProcessesController.cs",
-              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\OperationProcessesController.cs",
-              "ViewState": "AgIAADIAAAAAAAAAAAD4v1EAAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-07T07:44:57.811Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "OperationWorkflowController.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Operations\\Controllers\\OperationWorkflowController.cs",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Operations\\Controllers\\OperationWorkflowController.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Operations\\Controllers\\OperationWorkflowController.cs",
-              "RelativeToolTip": "Grc.ui.App\\Areas\\Operations\\Controllers\\OperationWorkflowController.cs",
-              "ViewState": "AgIAAJQAAAAAAAAAAAAkwJ4AAAA8AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-07T05:41:16.721Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 14,
               "Title": "RouteProvider.cs",
               "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Routes\\RouteProvider.cs",
               "RelativeDocumentMoniker": "Grc.ui.App\\Routes\\RouteProvider.cs",
@@ -137,13 +203,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 10,
               "Title": "Default.cshtml",
               "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\Shared\\Components\\ProcessesRegisterList\\Default.cshtml",
               "RelativeDocumentMoniker": "Grc.ui.App\\Views\\Shared\\Components\\ProcessesRegisterList\\Default.cshtml",
               "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\Shared\\Components\\ProcessesRegisterList\\Default.cshtml",
               "RelativeToolTip": "Grc.ui.App\\Views\\Shared\\Components\\ProcessesRegisterList\\Default.cshtml",
-              "ViewState": "AgIAABAAAAAAAAAAAAAIwEwBAAAWAAAAAAAAAA==",
+              "ViewState": "AgIAAG0BAAAAAAAAAAAAwJQBAABuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-11-07T05:15:02.103Z",
               "EditorCaption": ""
@@ -177,50 +243,102 @@
       "DocumentGroups": [
         {
           "DockedWidth": 123,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "OperationProcess.cs",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Entities\\Operations.Processes\\OperationProcess.cs",
+              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Entities\\Operations.Processes\\OperationProcess.cs",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Entities\\Operations.Processes\\OperationProcess.cs",
+              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Entities\\Operations.Processes\\OperationProcess.cs",
+              "ViewState": "AgIAADcAAAAAAAAAAIA/wEIAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-10T15:33:17.331Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "GrcProcessApproval.cs",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Http\\Responses\\GrcProcessApproval.cs",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Http\\Responses\\GrcProcessApproval.cs",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Http\\Responses\\GrcProcessApproval.cs",
+              "RelativeToolTip": "Grc.ui.App\\Http\\Responses\\GrcProcessApproval.cs",
+              "ViewState": "AgIAAE8AAAAAAAAAAADwv1oAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-10T15:30:58.652Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "GrcProcessRegisterResponse.cs",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Http\\Responses\\GrcProcessRegisterResponse.cs",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Http\\Responses\\GrcProcessRegisterResponse.cs",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Http\\Responses\\GrcProcessRegisterResponse.cs",
+              "RelativeToolTip": "Grc.ui.App\\Http\\Responses\\GrcProcessRegisterResponse.cs",
+              "ViewState": "AgIAADwAAAAAAAAAAAAlwCcAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-10T15:12:35.593Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 9,
+              "Title": "language.am-EN.xml",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Localization\\language.am-EN.xml",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Localization\\language.am-EN.xml",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Localization\\language.am-EN.xml",
+              "RelativeToolTip": "Grc.ui.App\\Localization\\language.am-EN.xml",
+              "ViewState": "AgIAAEoGAAAAAAAAAAAqwGsGAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003576|",
+              "WhenOpened": "2025-11-10T14:19:19.816Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "language.en-EN.xml",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Localization\\language.en-EN.xml",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Localization\\language.en-EN.xml",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Localization\\language.en-EN.xml",
+              "RelativeToolTip": "Grc.ui.App\\Localization\\language.en-EN.xml",
+              "ViewState": "AgIAAEoGAAAAAAAAAAAqwFgGAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003576|",
+              "WhenOpened": "2025-11-10T14:19:26.174Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "SystemAccessService.cs",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Services\\SystemAccessService.cs",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Services\\SystemAccessService.cs",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Services\\SystemAccessService.cs",
+              "RelativeToolTip": "Grc.ui.App\\Services\\SystemAccessService.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAkwBcAAABBAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-10T08:16:32.893Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
               "Title": "IProcessesService.cs",
               "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Services\\IProcessesService.cs",
               "RelativeDocumentMoniker": "Grc.ui.App\\Services\\IProcessesService.cs",
               "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Services\\IProcessesService.cs",
               "RelativeToolTip": "Grc.ui.App\\Services\\IProcessesService.cs",
-              "ViewState": "AgIAACUAAAAAAAAAAAAmwC8AAABDAAAAAAAAAA==",
+              "ViewState": "AgIAAC4AAAAAAAAAAAAvwDoAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-08T13:51:15.454Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ProcessesService.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Services\\ProcessesService.cs",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Services\\ProcessesService.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Services\\ProcessesService.cs",
-              "RelativeToolTip": "Grc.ui.App\\Services\\ProcessesService.cs",
-              "ViewState": "AgIAABACAAAAAAAAAAAEwBoCAABaAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-08T13:18:52.237Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "app-collapsable-pane.css",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\app-collapsable-pane.css",
-              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\css\\app-collapsable-pane.css",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\css\\app-collapsable-pane.css",
-              "RelativeToolTip": "Grc.ui.App\\wwwroot\\css\\app-collapsable-pane.css",
-              "ViewState": "AgIAAEUAAAAAAAAAAAAAAFgAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-11-08T08:25:54.898Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 17,
               "Title": "app-other-script.js",
               "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-other-script.js",
               "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\js\\app-other-script.js",
@@ -239,7 +357,7 @@
               "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\js\\app-process-register.js",
               "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-process-register.js",
               "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\app-process-register.js",
-              "ViewState": "AgIAAJ0AAAAAAAAAAADwv50AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAGsAAAAAAAAAAAAAwHwAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
               "WhenOpened": "2025-11-07T05:33:38.212Z",
               "EditorCaption": ""

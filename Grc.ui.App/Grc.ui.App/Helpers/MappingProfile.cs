@@ -38,7 +38,6 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(dest => dest.ModifiedOn, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => "1"));
 
-
             CreateMap<UserViewModel, UserModel>()
                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
@@ -188,7 +187,6 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(e => e.PermissionSets, reg => reg.MapFrom(o => o.PermissionSets ?? new()))
                 .ForMember(e => e.Roles, reg => reg.MapFrom(o => o.Roles ?? new()));
 
-
             CreateMap<RoleViewModel, GrcRoleRequest>()
                 .ForMember(e => e.Id, reg => reg.MapFrom(o => o.Id))
                 .ForMember(e => e.RoleName, reg => reg.MapFrom(o => (o.RoleName ?? string.Empty).Trim()))
@@ -198,6 +196,31 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(q => q.IsApproved, reg => reg.MapFrom(o => o.IsApproved))
                 .ForMember(e => e.Permissions, reg => reg.MapFrom(o => o.Permissions ?? new()))
                 .ForMember(e => e.Users, reg => reg.MapFrom(o => o.Users ?? new()));
+
+            CreateMap<ProcessViewModel, GrcProcessRegisterRequest>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.IsNew, opt => opt.MapFrom(src => src.Id == 0))
+                .ForMember(dest => dest.ProcessName, opt => opt.MapFrom(src => src.ProcessName))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+                .ForMember(dest => dest.CurrentVersion, opt => opt.MapFrom(src => src.CurrentVersion))
+                .ForMember(dest => dest.FileName, opt => opt.MapFrom(src => src.FileName))
+                .ForMember(dest => dest.EffectiveDate, opt => opt.MapFrom(src => src.EffectiveDate))
+                .ForMember(dest => dest.LastUpdated, opt => opt.MapFrom(src => src.LastUpdated))
+                .ForMember(dest => dest.OriginalOnFile, opt => opt.MapFrom(src => src.OnFile))
+                .ForMember(dest => dest.ProcessStatus, opt => opt.MapFrom(src => src.ProcessStatus))
+                .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments))
+                .ForMember(dest => dest.ApprovalStatus, opt => opt.MapFrom(src => src.ApprovalStatus))
+                .ForMember(dest => dest.ApprovalComment, opt => opt.MapFrom(src => src.ApprovalComment))
+                .ForMember(dest => dest.OnholdReason, opt => opt.MapFrom(src => src.OnholdReason))
+                .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IsDeleted))
+                .ForMember(dest => dest.TypeId, opt => opt.MapFrom(src => src.TypeId))
+                .ForMember(dest => dest.UnitId, opt => opt.MapFrom(src => src.UnitId))
+                .ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.OwnerId))
+                .ForMember(dest => dest.ResponsibilityId, opt => opt.MapFrom(src => src.ResponsibilityId))
+                .ForMember(dest => dest.CreatedOn, opt => opt.MapFrom(src => DateTime.Now))
+                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => "SYSTEM"))
+                .ForMember(dest => dest.ModifiedOn, opt => opt.MapFrom(src => DateTime.Now))
+                .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => "SYSTEM"));
         }
     }
 }

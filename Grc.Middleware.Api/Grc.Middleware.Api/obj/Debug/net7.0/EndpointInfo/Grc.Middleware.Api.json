@@ -184,7 +184,7 @@
         }
       }
     },
-    "/grc/processes/create-register": {
+    "/grc/processes/create-process": {
       "post": {
         "tags": [
           "OperationProcesses"
@@ -215,7 +215,7 @@
         }
       }
     },
-    "/grc/processes/update-register": {
+    "/grc/processes/update-process": {
       "post": {
         "tags": [
           "OperationProcesses"
@@ -246,7 +246,7 @@
         }
       }
     },
-    "/grc/processes/delete-register": {
+    "/grc/processes/delete-process": {
       "post": {
         "tags": [
           "OperationProcesses"
@@ -2898,10 +2898,6 @@
             "type": "string",
             "nullable": true
           },
-          "approvalComment": {
-            "type": "string",
-            "nullable": true
-          },
           "onholdReason": {
             "type": "string",
             "nullable": true
@@ -2924,6 +2920,30 @@
           "responsibilityId": {
             "type": "integer",
             "format": "int64"
+          },
+          "approvalStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "approvalComment": {
+            "type": "string",
+            "nullable": true
+          },
+          "branchManagerApproval": {
+            "type": "string",
+            "nullable": true
+          },
+          "branchManagerComment": {
+            "type": "string",
+            "nullable": true
+          },
+          "complianceApproval": {
+            "type": "string",
+            "nullable": true
+          },
+          "complianceComment": {
+            "type": "string",
+            "nullable": true
           },
           "createdBy": {
             "type": "string",

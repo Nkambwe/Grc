@@ -33,17 +33,11 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("comments")]
         public string Comments { get; set; }
 
-        [JsonPropertyName("approvalStatus")]
-        public string ApprovalStatus { get; set; }
-
-        [JsonPropertyName("approvalComment")]
-        public string ApprovalComment { get; set; }
-
-        [JsonPropertyName("onholdReason")]
-        public string OnholdReason { get; set; }
-
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
+
+        [JsonPropertyName("isLockProcess")]
+        public bool IsLockProcess { get; set; }
 
         [JsonPropertyName("typeId")]
         public long TypeId { get; set; }
@@ -69,6 +63,21 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("responsible")]
         public string Responsible { get; set; }
 
+        [JsonPropertyName("onholdReason")]
+        public string OnholdReason { get; set; }
+
+        [JsonPropertyName("needsBranchReview")]
+        public bool NeedsBranchReview { get; set; }
+
+        [JsonPropertyName("needsCreditReview")]
+        public bool NeedsCreditReview { get; set; }
+
+        [JsonPropertyName("needsTreasuryReview")]
+        public bool NeedsTreasuryReview { get; set; }
+
+        [JsonPropertyName("needsFintechReview")]
+        public bool NeedsFintechReview { get; set; }
+
         [JsonPropertyName("createdBy")]
         public string CreatedBy { get; set; }
 
@@ -80,6 +89,10 @@ namespace Grc.ui.App.Http.Responses {
 
         [JsonPropertyName("modifiedOn")]
         public DateTime? ModifiedOn { get; set; }
+
+        [JsonPropertyName("approvals")]
+        public GrcProcessApproval Approvals { get; set; }
+
     }
 
 }

@@ -101,7 +101,6 @@ function initProcessRegisterTable() {
                     return `<span class="clickable-title" onclick="viewFile(${rowData.fileName})">${rowData.fileName}</span>`
                 }
             },
-            { title: "STATUS", field: "processStatus", minWidth: 120 },
             {
                 title: "ACTION",
                 formatter: function (cell) {
@@ -111,7 +110,21 @@ function initProcessRegisterTable() {
                         <span>DELETE</span>
                     </button>`;
                 },
-                width: 100,
+                width: 50,
+                hozAlign: "center",
+                headerHozAlign: "center",
+                headerSort: false
+            },
+            {
+                title: "ACTION",
+                formatter: function (cell) {
+                    let rowData = cell.getRow().getData();
+                    return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="requestApproval(${rowData.id})">
+                        <span><i class="mdi mdi-share-all-outline" aria-hidden="true"></i></span>
+                        <span>REAQUEST REVIEW</span>
+                    </button>`;
+                },
+                width: 50,
                 hozAlign: "center",
                 headerHozAlign: "center",
                 headerSort: false
@@ -183,6 +196,8 @@ function openProcessEditor(title, process, isEdit) {
     $("#processDescription").val(process?.description || "");
     $("#typeId").val(process?.typeId || 0).trigger('change.select2');
     $('#isDeleted').prop('checked', process?.isDeleted || false);
+    $('#isLockProcess').prop('checked', process?.isLockProcess || false);
+    $("#effectiveDate").val(process?.effectiveDate);
 
     //..process status
     $("#processStatus").val(process?.processStatus || 0).trigger('change.select2');
@@ -193,16 +208,38 @@ function openProcessEditor(title, process, isEdit) {
     $("#fileName").val(process?.fileName || "");
     $("#fileVersion").val(process?.CurrentVersion || "");
 
-    //..approval info
-    $("#approvalStatus").val(process?.approvalStatus || "");
-    $("#approvalComment").val(process?.approvalComment || "");
-    $("#effectiveDate").val(process?.effectiveDate);
-
     //..responsibility
     $("#unitId").val(process?.unitId || 0).trigger('change.select2');
     $("#ownerId").val(process?.ownerId || 0).trigger('change.select2');
     $("#assigneedId").val(process?.assigneedId || 0).trigger('change.select2');
-   
+
+    //..approval info
+    $("#hodApprovalOn").val(process?.hodApprovalOn || "");
+    $("#hodApprovalStatus").val(process?.hodApprovalStatus || "PENDING").trigger('change.select2');
+    $("#hoApprovalComment").val(process?.hoApprovalComment || "");
+    $("#riskApprovalOn").val(process?.riskApprovalOn || "");
+    $("#riskApprovalStatus").val(process?.riskApprovalStatus || "PENDING").trigger('change.select2');
+    $("#riskApprovalComment").val(process?.riskApprovalComment || "");
+    $("#complianceApprovalOn").val(process?.complianceApprovalOn || "");
+    $("#complianceApprovalStatus").val(process?.complianceApprovalStatus || "PENDING").trigger('change.select2');
+    $("#complianceApprovalComment").val(process?.complianceApprovalComment || "");
+    $('#needsBranchOperations').prop('checked', process?.needsBranchOperations || false);
+    $("#branchOpsApprovalOn").val(process?.branchOpsApprovalOn || "");
+    $("#branchOpsApprovalStatus").val(process?.branchOpsApprovalStatus || "PENDING").trigger('change.select2');
+    $("#branchOpsApprovalComment").val(process?.branchOpsApprovalComment || "");
+    $('#needsCreditReview').prop('checked', process?.needsCreditReview || false);
+    $("#creditApprovalOn").val(process?.creditApprovalOn || "");
+    $("#creditApprovalStatus").val(process?.creditApprovalStatus || "PENDING").trigger('change.select2');
+    $("#creditApprovalComment").val(process?.creditApprovalComment || "");
+    $('#needsTreasuryReview').prop('checked', process?.needsTreasuryReview || false);
+    $("#treasuryApprovalOn").val(process?.treasuryApprovalOn || "");
+    $("#treasuryApprovalStatus").val(process?.treasuryApprovalStatus || "PENDING").trigger('change.select2');
+    $("#treasuryApprovalComment").val(process?.treasuryApprovalComment || "");
+    $('#needsFintechReview').prop('checked', process?.needsFintechReview || false);
+    $("#fintechApprovalOn").val(process?.fintechApprovalOn || "");
+    $("#fintechApprovalStatus").val(process?.fintechApprovalStatus || "PENDING").trigger('change.select2');
+    $("#fintechApprovalComment").val(process?.fintechApprovalComment || "");
+
     // Show overlay panel
     $('#processPanelTitle').text(title);
     $('.process-overlay').addClass('active');
@@ -222,7 +259,7 @@ function viewProcess(id){
         .then(record => {
             Swal.close();
             if (record) {
-                openActPanel('Edit Process', record, true);
+                openProcessEditor('Edit Process', record, true);
             } else {
                 Swal.fire({ title: 'NOT FOUND', text: 'Process record found' });
             }
@@ -293,7 +330,7 @@ $(document).ready(function () {
 
     initProcessRegisterTable();
 
-    $('#typeId, #processStatus, #unitId, #ownerId, #assigneedId, #complianceStatus, #branchManagerStatus, #hodApprovalStatus').select2({
+    $('#typeId, #processStatus, #unitId, #ownerId, #assigneedId, #complianceStatus, #branchManagerStatus, #approvalStatus').select2({
         width: '100%',
         dropdownParent: $('#collapsePanel')
     });

@@ -7,6 +7,7 @@ using Grc.ui.App.Helpers;
 using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
+using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
 using System.Text.Json;
 
@@ -628,6 +629,63 @@ namespace Grc.ui.App.Services {
             }
         }
 
+        public async Task<GrcResponse<ServiceResponse>> CreateProcessAsync(ProcessViewModel processModel, long userId, string ipAddress)
+        {
+            if (processModel == null)
+            {
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADREQUEST,
+                    "Process record cannot be null",
+                    "Invalid role record"
+                );
+
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+
+            try
+            {
+                //..build request object
+                var request = Mapper.Map<GrcProcessRegisterRequest>(processModel);
+                request.UserId = userId;
+                request.IpAddress = ipAddress;
+                request.Action = Activity.PROCESSES_CREATE_PROCESS.GetDescription();
+
+                //..map request
+                Logger.LogActivity($"CREATE Process REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/create-process";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcProcessRegisterRequest, ServiceResponse>(endpoint, request);
+            }
+            catch (HttpRequestException httpEx)
+            {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "PROCESSES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            }
+            catch (GRCException ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
     }
 
 }

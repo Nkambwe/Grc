@@ -37,9 +37,6 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("comments")]
         public string Comments { get; set; }
 
-        [JsonPropertyName("approvalComment")]
-        public string ApprovalComment { get; set; }
-
         [JsonPropertyName("onholdReason")]
         public string OnholdReason { get; set; }
 
@@ -57,6 +54,21 @@ namespace Grc.Middleware.Api.Http.Requests
 
         [JsonPropertyName("responsibilityId")]
         public long ResponsibilityId { get; set; }
+
+        [JsonPropertyName("isLockProcess")]
+        public bool IsLockProcess { get; set; }
+
+        [JsonPropertyName("needsBranchReview")]
+        public bool NeedsBranchReview { get; set; }
+
+        [JsonPropertyName("needsCreditReview")]
+        public bool NeedsCreditReview { get; set; }
+
+        [JsonPropertyName("needsTreasuryReview")]
+        public bool NeedsTreasuryReview { get; set; }
+
+        [JsonPropertyName("needsFintechReview")]
+        public bool NeedsFintechReview { get; set; }
 
         [JsonPropertyName("createdBy")]
         public string CreatedBy { get; set; }

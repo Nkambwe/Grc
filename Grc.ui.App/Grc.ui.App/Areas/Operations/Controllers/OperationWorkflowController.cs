@@ -87,8 +87,6 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                         fileName = process.FileName,
                         originalOnFile = process.OriginalOnFile,
                         processStatus = process.ProcessStatus ?? "UNDEFINED",
-                        approvalStatus = process.ApprovalStatus,
-                        approvalComment = process.ApprovalComment ?? string.Empty,
                         onholdReason = process.OnholdReason ?? string.Empty,
                         comment = process.Comments ?? string.Empty,
                         typeId = process.TypeId,
@@ -100,6 +98,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                         assigneedId = process.ResponsibilityId,
                         assigneeName = process.Responsible ?? string.Empty,
                         isDeleted = process.IsDeleted,
+                        isLockProcess = process.IsLockProcess,
                         effectiveDate = process.EffectiveDate,
                         createdOn = process.CreatedOn,
                         createdBy = process.CreatedBy ?? string.Empty,
@@ -156,8 +155,6 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                     fileName = process.FileName,
                     originalOnFile = process.OriginalOnFile,
                     processStatus = process.ProcessStatus ?? "UNDEFINED",
-                    approvalStatus = process.ApprovalStatus,
-                    approvalComment = process.ApprovalComment ?? string.Empty,
                     onholdReason = process.OnholdReason ?? string.Empty,
                     comment = process.Comments ?? string.Empty,
                     typeId = process.TypeId,
@@ -168,7 +165,33 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                     ownerName = process.OwnerName ?? string.Empty,
                     assigneedId = process.ResponsibilityId,
                     assigneeName = process.Responsible ?? string.Empty,
+                    needsBranchOperations = process.NeedsBranchReview,
+                    needsCreditReview = process.NeedsCreditReview,
+                    needsTreasuryReview = process.NeedsTreasuryReview,
+                    needsFintechReview = process.NeedsFintechReview,
+                    hodApprovalOn = process.Approvals?.HeadOfDepartmentEnd,
+                    hodApprovalStatus = process.Approvals?.HeadOfDepartmentStatus ?? "PENDING",
+                    hoApprovalComment = process.Approvals?.HeadOfDepartmentComment ?? string.Empty,
+                    riskApprovalOn = process.Approvals?.RiskEnd,
+                    riskApprovalStatus = process.Approvals?.RiskStatus ?? "PENDING",
+                    riskApprovalComment = process.Approvals?.RiskComment ?? string.Empty,
+                    complianceApprovalOn = process.Approvals?.ComplianceEnd,
+                    complianceApprovalStatus = process.Approvals?.ComplianceStatus ?? "PENDING",
+                    complianceApprovalComment = process.Approvals?.ComplianceComment ?? string.Empty,
+                    branchOpsApprovalOn = process.Approvals?.BranchOperationsStatusEnd,
+                    branchOpsApprovalStatus = process.Approvals?.BranchOperationsStatus ?? "PENDING",
+                    branchOpsApprovalComment = process.Approvals?.BranchManagerComment ?? string.Empty,
+                    creditApprovalOn = process.Approvals?.CreditEnd,
+                    creditApprovalStatus = process.Approvals?.CreditStatus ?? "PENDING",
+                    creditApprovalComment = process.Approvals?.CreditComment ?? string.Empty,
+                    treasuryApprovalOn = process.Approvals?.TreasuryEnd,
+                    treasuryApprovalStatus = process.Approvals?.TreasuryStatus ?? "PENDING",
+                    treasuryApprovalComment = process.Approvals?.TreasuryComment ?? string.Empty,
+                    fintechApprovalOn = process.Approvals?.FintechEnd,
+                    fintechApprovalStatus = process.Approvals?.FintechStatus ?? "PENDING",
+                    fintechApprovalComment = process.Approvals?.FintechComment ?? string.Empty,
                     isDeleted = process.IsDeleted,
+                    isLockProcess = process.IsLockProcess,
                     effectiveDate = process.EffectiveDate,
                     createdOn = process.CreatedOn,
                     createdBy = process.CreatedBy ?? string.Empty,
@@ -180,8 +203,8 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             }
             catch (Exception ex)
             {
-                Logger.LogActivity($"Error retrieving role record: {ex.Message}", "ERROR");
-                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                Logger.LogActivity($"Error retrieving process record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "PROCESS-REGISTER-CONTROLLER", ex.StackTrace);
                 return Json(new { results = new List<object>() });
             }
         }
@@ -189,7 +212,54 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         [HttpPost]
         [LogActivityResult("Create Process Register", "User created operations process register", ActivityTypeDefaults.PROCESSES_CREATE_PROCESS, "OperationProcess")]
         public async Task<IActionResult> CreateProcessRegister([FromBody] ProcessViewModel request) {
-            return Ok();
+            try {
+                if (!ModelState.IsValid) {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+
+                    string combinedErrors = string.Join("; ", errors);
+                    return Ok(new {
+                        success = false,
+                        message = $"Please correct these errors: {combinedErrors}",
+                        data = (object)null
+                    });
+                }
+
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                if (request == null)
+                {
+                    return Ok(new { success = false, message = "Invalid process data" });
+                }
+
+                var result = await _processService.CreateProcessAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create process record" });
+
+                var process = result.Data;
+                return Ok(new
+                {
+                    success = process.Status,
+                    message = process.Message,
+                    data = new
+                    {
+                        status = process.Status,
+                    }
+                });
+
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error create process record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "PROCESS-REGISTER-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
         }
 
         [HttpPost]

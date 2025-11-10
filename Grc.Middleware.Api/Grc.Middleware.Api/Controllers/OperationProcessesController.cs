@@ -134,8 +134,11 @@ namespace Grc.Middleware.Api.Controllers {
                     OriginalOnFile = register.OriginalOnFile,
                     ProcessStatus = register.ProcessStatus ?? string.Empty,
                     Comments = register.Comments ?? string.Empty,
-                    ApprovalStatus = register.ApprovalStatus ?? string.Empty,
-                    ApprovalComment = register.ApprovalComment ?? string.Empty,
+                    IsLockProcess = register.IsLockProcess,
+                    NeedsBranchReview = register.NeedsBranchReview,
+                    NeedsCreditReview = register.NeedsCreditReview,
+                    NeedsTreasuryReview = register.NeedsTreasuryReview,
+                    NeedsFintechReview = register.NeedsFintechReview,
                     OnholdReason = register.ReasonOnhold ?? string.Empty,
                     TypeId = register.TypeId,
                     TypeName = register.ProcessType != null ? register.ProcessType.TypeName : string.Empty,
@@ -212,8 +215,6 @@ namespace Grc.Middleware.Api.Controllers {
                         OriginalOnFile = register.OriginalOnFile,
                         ProcessStatus = register.ProcessStatus ?? string.Empty,
                         Comments = register.Comments ?? string.Empty,
-                        ApprovalStatus = register.ApprovalStatus ?? string.Empty,
-                        ApprovalComment = register.ApprovalComment ?? string.Empty,
                         OnholdReason = register.ReasonOnhold ?? string.Empty,
                         TypeId = register.TypeId,
                         TypeName = register.ProcessType != null ? register.ProcessType.TypeName : string.Empty,
@@ -223,6 +224,11 @@ namespace Grc.Middleware.Api.Controllers {
                         OwnerName = register.Owner != null ? register.Owner.ContactPosition : string.Empty,
                         ResponsibilityId = register.ResponsibilityId,
                         Responsibile = register.Responsible != null ? register.Responsible.ContactPosition : string.Empty,
+                        IsLockProcess = register.IsLockProcess,
+                        NeedsBranchReview = register.NeedsBranchReview,
+                        NeedsCreditReview = register.NeedsCreditReview,
+                        NeedsTreasuryReview = register.NeedsTreasuryReview,
+                        NeedsFintechReview = register.NeedsFintechReview,
                         IsDeleted = register.IsDeleted,
                         CreatedOn = register.CreatedOn,
                         CreatedBy = register.CreatedBy ?? string.Empty,
@@ -252,7 +258,7 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
-        [HttpPost("processes/create-register")]
+        [HttpPost("processes/create-process")]
         public async Task<IActionResult> CreateProcessRegister([FromBody] ProcessRequest request) {
             try
             {
@@ -319,7 +325,7 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
-        [HttpPost("processes/update-register")]
+        [HttpPost("processes/update-process")]
         public async Task<IActionResult> UpdateProcessRegister([FromBody] ProcessRequest request) {
             try {
                 Logger.LogActivity("Update operation process", "INFO");
@@ -374,7 +380,7 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
-        [HttpPost("processes/delete-register")]
+        [HttpPost("processes/delete-process")]
         public async Task<IActionResult> DeleteProcessRegister([FromBody] IdRequest request) {
             try
             {

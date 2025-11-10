@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Grc.Middleware.Api.Data.Entities.Compliance.Audits;
 using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
 using Grc.Middleware.Api.Data.Entities.Compliance.Returns;
@@ -10,6 +11,7 @@ using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
+using System.Diagnostics;
 
 namespace Grc.Middleware.Api.Helpers {
     public class MappingProfile : Profile {
@@ -426,7 +428,11 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(p => p.UnitId, reg => reg.MapFrom(o => o.UnitId))
                 .ForMember(p => p.ResponsibilityId, reg => reg.MapFrom(o => o.OwnerId))
                 .ForMember(p => p.ReasonOnhold, reg => reg.MapFrom(o => (o.OnholdReason ?? string.Empty).Trim()))
-                .ForMember(p => p.ApprovalComment, reg => reg.MapFrom(o => (o.ApprovalComment ?? string.Empty).Trim()))
+                .ForMember(p => p.NeedsBranchReview, reg => reg.MapFrom(o => o.NeedsBranchReview))
+                .ForMember(p => p.NeedsCreditReview, reg => reg.MapFrom(o => o.NeedsCreditReview))
+                .ForMember(p => p.NeedsTreasuryReview, reg => reg.MapFrom(o => o.NeedsTreasuryReview))
+                .ForMember(p => p.NeedsFintechReview, reg => reg.MapFrom(o => o.NeedsFintechReview))
+                .ForMember(p => p.IsLockProcess, reg => reg.MapFrom(o => o.IsLockProcess))
                 .ForMember(p => p.Comments, reg => reg.MapFrom(o => (o.Comments ?? string.Empty).Trim()))
                 .ForMember(p => p.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
                 .ForMember(p => p.CreatedBy, reg => reg.MapFrom(o => (o.CreatedBy ?? string.Empty).Trim()))

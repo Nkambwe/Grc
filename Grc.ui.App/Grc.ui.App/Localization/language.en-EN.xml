@@ -741,7 +741,7 @@
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Task.Owner">
 		<Value>Task Owner</Value>
-	</LocaleResource>	
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Set.Name">
 		<Value>Set Name</Value>
 	</LocaleResource>
@@ -751,7 +751,7 @@
 	<LocaleResource Name="Component.Table.Set.Deleted">
 		<Value>Deactivated</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Component.Process.CollapsablePane.Basic">
 		<Value>Basic Information</Value>
 	</LocaleResource>
@@ -764,10 +764,42 @@
 	<LocaleResource Name="Component.Process.CollapsablePane.Owenership">
 		<Value>Process Ownership</Value>
 	</LocaleResource>
-	<LocaleResource Name="Component.Process.CollapsablePane.Approvals">
-		<Value>Process Reviews</Value>
+	<LocaleResource Name="Component.Table.Process.onholdReason">
+		<Value>Holding Reason</Value>
 	</LocaleResource>
-	
+	<LocaleResource Name="Component.Process.Lock">
+		<Value>Lock Process</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.CollapsablePane.BranchOperationsApprovals">
+		<Value>Branch Operations Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.CollapsablePane.CreditApprovals">
+		<Value>Credit Department Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.CollapsablePane.TreasuryApprovals">
+		<Value>Treasury Department Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.CollapsablePane.FintechApprovals">
+		<Value>Fintech Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.CollapsablePane.AdditionalReview">
+		<Value>Additional Reviews</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.BranchOPerationsReview">
+		<Value>Requires Branch Operations Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.NeedsCreditReview">
+		<Value>Requires Credit Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.NeedsTreasuryReview">
+		<Value>Requires Treasury Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.NeedsTreasuryReview">
+		<Value>Requires Treasury Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.NeedsFintechReview">
+		<Value>Requires Fintech Review</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Process.Name">
 		<Value>Process Name</Value>
 	</LocaleResource>

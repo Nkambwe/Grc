@@ -18,6 +18,8 @@ namespace Grc.ui.App.Enums
         [Description("Cancelled")]
         Cancelled = 6,
         [Description("Totals")]
-        UnitTotal = 7
+        UnitTotal = 7,
+        [Description("On Hold")]
+        OnHold = 8
     }
 }

@@ -6,11 +6,9 @@ using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
-using NetTopologySuite.GeometriesGraph;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Linq;
 
 namespace Grc.Middleware.Api.Services.Operations {
 
@@ -534,8 +532,12 @@ namespace Grc.Middleware.Api.Services.Operations {
                     process.UnitId = request.UnitId;
                     process.OwnerId = request.OwnerId;
                     process.ResponsibilityId = request.ResponsibilityId;
-                    process.ReasonOnhold = (request.OnholdReason ?? string.Empty).Trim();
-                    process.ApprovalComment = (request.ApprovalComment ?? string.Empty).Trim();
+                    process.ReasonOnhold = (request.OnholdReason ?? string.Empty).Trim(); 
+                    process.IsLockProcess = request.IsLockProcess;
+                    process.NeedsBranchReview = request.NeedsBranchReview;
+                    process.NeedsCreditReview = request.NeedsCreditReview;
+                    process.NeedsTreasuryReview = request.NeedsTreasuryReview;
+                    process.NeedsFintechReview = request.NeedsFintechReview;
                     process.Comments = (request.Comments ?? string.Empty).Trim();
                     process.IsDeleted = request.IsDeleted;
                     process.LastModifiedOn = DateTime.Now;
@@ -586,7 +588,11 @@ namespace Grc.Middleware.Api.Services.Operations {
                     process.OwnerId = request.OwnerId;
                     process.ResponsibilityId = request.ResponsibilityId;
                     process.ReasonOnhold = (request.OnholdReason ?? string.Empty).Trim();
-                    process.ApprovalComment = (request.ApprovalComment ?? string.Empty).Trim();
+                    process.IsLockProcess = request.IsLockProcess;
+                    process.NeedsBranchReview = request.NeedsBranchReview;
+                    process.NeedsCreditReview = request.NeedsCreditReview;
+                    process.NeedsTreasuryReview = request.NeedsTreasuryReview;
+                    process.NeedsFintechReview = request.NeedsFintechReview;
                     process.Comments = (request.Comments ?? string.Empty).Trim();
                     process.IsDeleted = request.IsDeleted;
                     process.LastModifiedOn = DateTime.Now;

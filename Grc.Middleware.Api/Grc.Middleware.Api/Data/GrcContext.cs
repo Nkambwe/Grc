@@ -54,7 +54,8 @@ namespace Grc.Middleware.Api.Data {
         public DbSet<SystemConfiguration> SystemConfiguration { get; set; }
         public DbSet<SystemPermission> SystemPermissions { get; set; }
         public DbSet<SystemPermissionPermissionSet> SystemPermissionSets { get; set; }
-        
+        public DbSet<ProcessApprovals> ProcessApprovals { get; set; }
+
         public GrcContext(DbContextOptions<GrcContext> options)  
             : base(options){
         }
@@ -100,6 +101,7 @@ namespace Grc.Middleware.Api.Data {
             ProcessActivityEntityConfiguration.Configure(modelBuilder.Entity<ProcessActivity>());
             ProcessTaskEntityConfiguration.Configure(modelBuilder.Entity<ProcessTask>());
             OperationProcessEntityConfiguration.Configure(modelBuilder.Entity<OperationProcess>());
+            ProcessApprovalsEntityConfiguration.Configure(modelBuilder.Entity<ProcessApprovals>());
             ProcessProcessTagEntityConfiguration.Configure(modelBuilder.Entity<ProcessProcessTag>());
             ProcessProcessGroupEntityConfiguration.Configure(modelBuilder.Entity<ProcessProcessGroup>());
             SystemPermissionEntityConfiguration.Configure(modelBuilder.Entity<SystemPermission>());

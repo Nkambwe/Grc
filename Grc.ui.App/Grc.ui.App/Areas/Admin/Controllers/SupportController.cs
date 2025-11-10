@@ -1709,18 +1709,15 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         [HttpPost]
         [LogActivityResult("Add System Role", "User added system role record", ActivityTypeDefaults.ROLE_ADDED, "SystemRole")]
         public async Task<IActionResult> CreateRole([FromBody] RoleViewModel request) {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
+            try {
+                if (!ModelState.IsValid) {
                     var errors = ModelState.Values
                         .SelectMany(v => v.Errors)
                         .Select(e => e.ErrorMessage)
                         .ToList();
 
                     string combinedErrors = string.Join("; ", errors);
-                    return Ok(new
-                    {
+                    return Ok(new {
                         success = false,
                         message = $"Please correct these errors: {combinedErrors}",
                         data = (object)null
@@ -1733,8 +1730,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                     return Ok(new { success = false, message = "Unable to resolve current user" });
 
                 var currentUser = userResponse.Data;
-                if (request == null)
-                {
+                if (request == null) {
                     return Ok(new { success = false, message = "Invalid role data" });
                 }
 

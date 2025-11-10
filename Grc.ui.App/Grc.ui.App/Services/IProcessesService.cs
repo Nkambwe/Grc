@@ -2,6 +2,7 @@
 using Grc.ui.App.Helpers;
 using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
+using Grc.ui.App.Models;
 
 namespace Grc.ui.App.Services {
     public interface IProcessesService : IGrcBaseService  {
@@ -54,6 +55,8 @@ namespace Grc.ui.App.Services {
         Task<GrcResponse<GrcProcessRegisterResponse>> GetProcessRegisterAsync(long id, long userId, string ipAddress);
 
         Task<GrcResponse<GrcProcessSupportResponse>> GetProcessSupportItemsAsync(GrcRequest request);
+
+        Task<GrcResponse<ServiceResponse>> CreateProcessAsync(ProcessViewModel request, long userId, string ipAddress);
     }
 
 }

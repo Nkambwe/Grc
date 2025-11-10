@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Grc.Middleware.Api.Http.Responses
-{
+namespace Grc.Middleware.Api.Http.Responses {
+
     public class ProcessRegisterResponse {
+
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
@@ -32,12 +33,6 @@ namespace Grc.Middleware.Api.Http.Responses
 
         [JsonPropertyName("comments")]
         public string Comments { get; set; }
-
-        [JsonPropertyName("approvalStatus")]
-        public string ApprovalStatus { get; set; }
-
-        [JsonPropertyName("approvalComment")]
-        public string ApprovalComment { get; set; }
 
         [JsonPropertyName("onholdReason")]
         public string OnholdReason { get; set; }
@@ -69,6 +64,21 @@ namespace Grc.Middleware.Api.Http.Responses
         [JsonPropertyName("responsible")]
         public string Responsibile { get; set; }
 
+        [JsonPropertyName("isLockProcess")]
+        public bool IsLockProcess { get; set; }
+
+        [JsonPropertyName("needsBranchReview")]
+        public bool NeedsBranchReview { get; set; }
+
+        [JsonPropertyName("needsCreditReview")]
+        public bool NeedsCreditReview { get; set; }
+
+        [JsonPropertyName("needsTreasuryReview")]
+        public bool NeedsTreasuryReview { get; set; }
+
+        [JsonPropertyName("needsFintechReview")]
+        public bool NeedsFintechReview { get; set; }
+
         [JsonPropertyName("createdBy")]
         public string CreatedBy { get; set; }
 
@@ -80,5 +90,8 @@ namespace Grc.Middleware.Api.Http.Responses
 
         [JsonPropertyName("modifiedOn")]
         public DateTime ModifiedOn { get; set; }
+
+        [JsonPropertyName("approvals")]
+        public ProcessApprovalResponse Approvals { get; set; }
     }
 }

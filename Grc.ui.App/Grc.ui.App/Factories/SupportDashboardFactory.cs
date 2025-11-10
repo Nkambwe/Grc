@@ -237,7 +237,8 @@ namespace Grc.ui.App.Factories {
                     new() { Id=(int)ProcessCategories.Proposed, StatusName = ProcessCategories.Proposed.GetDescription()},
                     new() { Id=(int)ProcessCategories.Due, StatusName = ProcessCategories.Due.GetDescription()},
                     new() { Id=(int)ProcessCategories.Dormant, StatusName = ProcessCategories.Dormant.GetDescription()},
-                    new() { Id=(int)ProcessCategories.Cancelled, StatusName = ProcessCategories.Cancelled.GetDescription()}
+                    new() { Id=(int)ProcessCategories.Cancelled, StatusName = ProcessCategories.Cancelled.GetDescription()},
+                    new() { Id=(int)ProcessCategories.OnHold, StatusName = ProcessCategories.OnHold.GetDescription()}
                 },
                 ProcessTypes = new List<ProcessTypeViewModel>(),
                 Units = new List<UnitViewModel>(),

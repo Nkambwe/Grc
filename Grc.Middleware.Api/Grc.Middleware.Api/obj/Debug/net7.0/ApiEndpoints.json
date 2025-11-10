@@ -342,7 +342,7 @@
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
     "Method": "CreateProcessRegister",
-    "RelativePath": "grc/processes/create-register",
+    "RelativePath": "grc/processes/create-process",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -358,7 +358,7 @@
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
     "Method": "DeleteProcessRegister",
-    "RelativePath": "grc/processes/delete-register",
+    "RelativePath": "grc/processes/delete-process",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -422,7 +422,7 @@
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
     "Method": "UpdateProcessRegister",
-    "RelativePath": "grc/processes/update-register",
+    "RelativePath": "grc/processes/update-process",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,

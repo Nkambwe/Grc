@@ -19,8 +19,11 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
             builder.Property(p => p.OriginalOnFile).HasColumnName("on_file");
             builder.Property(p => p.FileName).HasColumnName("file_path").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
             builder.Property(p => p.ProcessStatus).HasColumnName("process_status").HasColumnType("NVARCHAR(50)").IsRequired().HasDefaultValue("Draft");
-            builder.Property(p => p.ApprovalStatus).HasColumnName("approval_status").HasColumnType("NVARCHAR(50)").IsRequired().HasDefaultValue("Draft");
-            builder.Property(p => p.ApprovalComment).HasColumnName("approval_comment").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
+            builder.Property(p => p.IsLockProcess).HasColumnName("is_lock").IsRequired(false);
+            builder.Property(p => p.NeedsBranchReview).HasColumnName("branch_ops_review").IsRequired(false);
+            builder.Property(p => p.NeedsCreditReview).HasColumnName("credit_review").IsRequired(false);
+            builder.Property(p => p.NeedsTreasuryReview).HasColumnName("treasury_review").IsRequired(false);
+            builder.Property(p => p.NeedsFintechReview).HasColumnName("fintech_review").IsRequired(false);
             builder.Property(p => p.Comments).HasColumnName("process_comment").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(p => p.ReasonOnhold).HasColumnName("onhold_reason").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(p => p.UnitId).HasColumnName("unit_id");
@@ -38,6 +41,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
             builder.HasOne(p => p.Responsible).WithMany(p => p.AssigneeProcesses).HasForeignKey(p => p.ResponsibilityId);
             builder.HasMany(p => p.Groups).WithOne(g => g.Process).HasForeignKey(a => a.ProcessId);
             builder.HasMany(p => p.Activities).WithOne(a => a.Process).HasForeignKey(a => a.ProcessId);
+            builder.HasMany(p => p.Approvals).WithOne(a => a.Process).HasForeignKey(a => a.ProcessId);
         }
 
     }

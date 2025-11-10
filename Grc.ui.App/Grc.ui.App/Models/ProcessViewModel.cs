@@ -52,6 +52,9 @@ namespace Grc.ui.App.Models {
         [JsonPropertyName("ownerId")]
         public long OwnerId { get; set; }
 
+        [JsonPropertyName("responsibilityId")]
+        public long ResponsibilityId { get; set; }
+
         [JsonPropertyName("typeId")]
         public long TypeId { get; set; }
     }
