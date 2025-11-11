@@ -1046,7 +1046,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                 {
                     //..update Process Tag record
                     tag.TagName = (request.TagName ?? string.Empty).Trim();
-                    tag.Description = (request.Description ?? string.Empty).Trim();
+                    tag.Description = (request.TagDescription ?? string.Empty).Trim();
                     tag.IsDeleted = request.IsDeleted;
                     tag.LastModifiedOn = DateTime.Now;
                     tag.LastModifiedBy = $"{request.UserId}";
@@ -1107,7 +1107,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                 {
                     //..update Process Tag record
                     tag.TagName = (request.TagName ?? string.Empty).Trim();
-                    tag.Description = (request.Description ?? string.Empty).Trim();
+                    tag.Description = (request.TagDescription ?? string.Empty).Trim();
                     tag.IsDeleted = request.IsDeleted;
                     tag.LastModifiedOn = DateTime.Now;
                     tag.LastModifiedBy = $"{request.UserId}";

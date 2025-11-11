@@ -143,6 +143,18 @@
         public const string PROCESSES_DELETED_PROCESS = "Operations.Processes.Delete";
         public const string PROCESSES_EXPORT_PROCESS = "Operations.Processes.Export";
 
+        public const string PROCESSES_RETRIEVE_GROUP = "Operations.Processes.Groups.Retrieve";
+        public const string PROCESSES_CREATE_GROUP = "Operations.Processes.Groups.Create";
+        public const string PROCESSES_EDITED_GROUP = "Operations.Processes.Groups.Edit";
+        public const string PROCESSES_DELETED_GROUP = "Operations.Processes.Groups.Delete";
+        public const string PROCESSES_EXPORT_GROUP = "Operations.Processes.Groups.Export";
+
+        public const string PROCESSES_RETRIEVE_TAG = "Operations.Processes.Tags.Retrieve";
+        public const string PROCESSES_CREATE_TAG = "Operations.Processes.Tags.Create";
+        public const string PROCESSES_EDITED_TAG = "Operations.Processes.Tags.Edit";
+        public const string PROCESSES_DELETED_TAG = "Operations.Processes.Tags.Delete";
+        public const string PROCESSES_EXPORT_TAG = "Operations.Processes.Tags.Export";
+
         #endregion
 
         #region Departments

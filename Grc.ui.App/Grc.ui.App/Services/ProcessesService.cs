@@ -9,7 +9,9 @@ using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
+using System.Diagnostics;
 using System.Text.Json;
+using Activity = Grc.ui.App.Enums.Activity;
 
 namespace Grc.ui.App.Services {
 
@@ -24,6 +26,7 @@ namespace Grc.ui.App.Services {
                   mapper, webHelper, sessionManager, errorFactory, errorService) {
         }
 
+        #region Statistics
         public async Task<OperationsUnitCountResponse> StatisticAsync(long userId, string ipAddress) {
 
             var stats = new OperationsUnitCountResponse()
@@ -526,6 +529,10 @@ namespace Grc.ui.App.Services {
             return await Task.FromResult(obj);
         }
 
+        #endregion
+
+        #region Process Registers
+
         public async Task<GrcResponse<GrcProcessSupportResponse>> GetProcessSupportItemsAsync(GrcRequest request) {
             try
             {
@@ -629,8 +636,7 @@ namespace Grc.ui.App.Services {
             }
         }
 
-        public async Task<GrcResponse<ServiceResponse>> CreateProcessAsync(ProcessViewModel processModel, long userId, string ipAddress)
-        {
+        public async Task<GrcResponse<ServiceResponse>> CreateProcessAsync(ProcessViewModel processModel, long userId, string ipAddress) {
             if (processModel == null)
             {
                 var error = new GrcResponseError(
@@ -686,6 +692,384 @@ namespace Grc.ui.App.Services {
                 return new GrcResponse<ServiceResponse>(error);
             }
         }
+
+        public async Task<GrcResponse<ServiceResponse>> UpdateProcessAsync(ProcessViewModel request, long userId, string ipAddress)
+        {
+            //var currentUser = userResponse.Data;
+            //request.UserId = currentUser.UserId;
+            //request.IPAddress = ipAddress;
+            //request.Action = Activity.PROCESSES_EDITED_PROCESS.GetDescription();
+            throw new NotImplementedException();
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> DeleteProcessAsync(GrcIdRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Process Groups
+
+        public async Task<GrcResponse<GrcProcessGroupResponse>> GetProcessGroupAsync(long recordId, long userId, string ipAddress) {
+
+            try {
+                if (recordId == 0) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Process Group ID is required",
+                        "Invalid Process request"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<GrcProcessGroupResponse>(error);
+                }
+
+                var request = new GrcIdRequest()
+                {
+                    UserId = userId,
+                    RecordId = recordId,
+                    IPAddress = ipAddress,
+                    Action = Activity.PROCESS_GROUP_RETRIVED.GetDescription(),
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>(),
+                };
+
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/group";
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcProcessGroupResponse>(endpoint, request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+
+                return new GrcResponse<GrcProcessGroupResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<PagedResponse<GrcProcessGroupResponse>>> GetProcessGroupsAsync(TableListRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Invalid Request object",
+                        "Request object cannot be null"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<PagedResponse<GrcProcessGroupResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/groups-all";
+                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<GrcProcessGroupResponse>>(endpoint, request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<PagedResponse<GrcProcessGroupResponse>>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> CreateProcessGroupAsync(ProcessGroupViewModel groupModel, long userId, string ipAddress) {
+
+            try {
+
+                if (groupModel == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Process record cannot be null", "Invalid role record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..build request object
+                var request = new GrcProcessGroupRequest {
+                    Id = groupModel.Id,
+                    GroupName = groupModel.GroupName,
+                    GroupDescription = groupModel.GroupDescription,
+                    CreatedBy = "SYSTEM",
+                    CreatedOn = DateTime.UtcNow,
+                    UserId = userId,
+                    IpAddress = ipAddress,
+                    Action = Activity.PROCESS_GROUP_CREATE.GetDescription(),
+                };
+
+                //..map request
+                Logger.LogActivity($"CREATE PROCESS GROUP REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/create-group";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcProcessGroupRequest, ServiceResponse>(endpoint, request);
+            }
+            catch (HttpRequestException httpEx)
+            {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "PROCESSES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            }
+            catch (GRCException ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
+
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> UpdateProcessGroupAsync(ProcessGroupViewModel request, long userId, string ipAddress) {
+            throw new NotImplementedException();
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> DeleteProcessGroupAsync(GrcIdRequest request) {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Process Tags
+
+        public async Task<GrcResponse<GrcProcessTagResponse>> GetProcessTagAsync(long recordId, long userId, string ipAddress) {
+
+            try
+            {
+                if (recordId == 0)
+                {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Process Group ID is required",
+                        "Invalid Process request"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<GrcProcessTagResponse>(error);
+                }
+
+                var request = new GrcIdRequest() {
+                    UserId = userId,
+                    RecordId = recordId,
+                    IPAddress = ipAddress,
+                    Action = Activity.PROCESS_TAG_RETRIVED.GetDescription(),
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>(),
+                };
+
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/tag";
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcProcessTagResponse>(endpoint, request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+
+                return new GrcResponse<GrcProcessTagResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<PagedResponse<GrcProcessTagResponse>>> GetProcessTagsAsync(TableListRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Invalid Request object",
+                        "Request object cannot be null"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<PagedResponse<GrcProcessTagResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/tags-all";
+                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<GrcProcessTagResponse>>(endpoint, request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<PagedResponse<GrcProcessTagResponse>>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> CreateProcessTagAsync(ProcessTagViewModel tagModel, long userId, string ipAddress) {
+            try {
+
+                if (tagModel == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Process record cannot be null", "Invalid role record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..build request object
+                var request = new GrcProcessTagRequest {
+                    Id = tagModel.Id,
+                    TagName = tagModel.TagName,
+                    TagDescription = tagModel.TagDescription,
+                    CreatedBy = "SYSTEM",
+                    CreatedOn = DateTime.UtcNow,
+                    UserId = userId,
+                    IpAddress = ipAddress,
+                    Action = Activity.PROCESS_TAG_CREATE.GetDescription(),
+                };
+
+                //..map request
+                Logger.LogActivity($"CREATE PROCESS TAG REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/create-tag";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+                return await HttpHandler.PostAsync<GrcProcessTagRequest, ServiceResponse>(endpoint, request);
+            }
+            catch (HttpRequestException httpEx)
+            {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "PROCESSES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            }
+            catch (GRCException ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> UpdateProcessTagAsync(ProcessTagViewModel request, long userId, string ipAddress)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> DeleteProcessTagAsync(GrcIdRequest request) {            
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Process TAT
+
+        public async Task<GrcResponse<GrcProcessTatResponse>> GetProcessTatAsync(long recordId, long userId, string ipAddress) {
+
+            try {
+                if (recordId == 0) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Process Tag ID is required",
+                        "Invalid Process request"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<GrcProcessTatResponse>(error);
+                }
+
+                var request = new GrcIdRequest()
+                {
+                    UserId = userId,
+                    RecordId = recordId,
+                    IPAddress = ipAddress,
+                    Action = Activity.PROCESS_TAG_RETRIVED.GetDescription(),
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>(),
+                };
+
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/tat";
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcProcessTatResponse>(endpoint, request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+
+                return new GrcResponse<GrcProcessTatResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<PagedResponse<GrcProcessTatResponse>>> GetProcessTatAsync(TableListRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Invalid Request object",
+                        "Request object cannot be null"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<PagedResponse<GrcProcessTatResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/tat-all";
+                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<GrcProcessTatResponse>>(endpoint, request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<PagedResponse<GrcProcessTatResponse>>(error);
+            }
+        }
+
+        #endregion
+
     }
 
 }

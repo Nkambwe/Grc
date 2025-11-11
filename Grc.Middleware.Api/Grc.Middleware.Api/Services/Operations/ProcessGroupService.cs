@@ -1044,7 +1044,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                 {
                     //..update Process Group record
                     group.GroupName = (request.GroupName ?? string.Empty).Trim();
-                    group.Description = (request.Description ?? string.Empty).Trim();
+                    group.Description = (request.GroupDescription ?? string.Empty).Trim();
                     group.IsDeleted = request.IsDeleted;
                     group.LastModifiedOn = DateTime.Now;
                     group.LastModifiedBy = $"{request.UserId}";
@@ -1105,7 +1105,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                 {
                     //..update Process Group record
                     group.GroupName = (request.GroupName ?? string.Empty).Trim();
-                    group.Description = (request.Description ?? string.Empty).Trim();
+                    group.Description = (request.GroupDescription ?? string.Empty).Trim();
                     group.IsDeleted = request.IsDeleted;
                     group.LastModifiedOn = DateTime.Now;
                     group.LastModifiedBy = $"{request.UserId}";

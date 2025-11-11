@@ -28,9 +28,6 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("lastUpdated")]
         public DateTime? LastUpdated { get; set; }
 
-        [JsonPropertyName("originalOnFile")]
-        public bool OriginalOnFile { get; set; }
-
         [JsonPropertyName("processStatus")]
         public string ProcessStatus { get; set; }
 
@@ -91,4 +88,5 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("action")]
         public string Action { get; set; }
     }
+
 }

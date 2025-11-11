@@ -1,0 +1,20 @@
+﻿@model OperationsDashboardModel
+@{
+    Layout = "_OperationLayout";
+    ViewData["Title"] = "TAT REPORT";
+}
+
+@{
+    var component = new PageComponentViewModel
+    {
+        ComponentId = $"0",
+        ComponentKey = "ProcesseTags",
+        LeftActions = new List<ComponentAction>
+        {
+            new ComponentAction { ActionKey = ActionKey.OpsHome.GetDescription(), Icon = "mdi mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home") },
+            new ComponentAction { ActionKey = ActionKey.ProcessTag.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") }
+        }
+    };
+}
+
+@await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("ProcessTagList") })

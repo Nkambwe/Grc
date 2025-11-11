@@ -84,6 +84,9 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("createdOn")]
         public DateTime CreatedOn { get; set; }
 
+        [JsonPropertyName("lastReviewDate")]
+        public DateTime LastReviewDate { get; set; }
+
         [JsonPropertyName("modifiedBy")]
         public string ModifiedBy { get; set; }
 

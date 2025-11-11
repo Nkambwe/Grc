@@ -264,6 +264,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcT3BlcmF0aW9uc1xWaWV3c1xPcGVyYXRpb25Xb3JrZmxvd1xUYWdQcm9jZXNzZXMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Areas/Operations/Views/OperationWorkflow/TATReport.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcT3BlcmF0aW9uc1xWaWV3c1xPcGVyYXRpb25Xb3JrZmxvd1xUQVRSZXBvcnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Areas/Operations/Views/Shared/_GuestLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcT3BlcmF0aW9uc1xWaWV3c1xTaGFyZWRcX0d1ZXN0TGF5b3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -578,6 +582,18 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/ProcessesRegisterList/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUHJvY2Vzc2VzUmVnaXN0ZXJMaXN0XERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/ProcessGroupList/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUHJvY2Vzc0dyb3VwTGlzdFxEZWZhdWx0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/ProcessTagList/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUHJvY2Vzc1RhZ0xpc3RcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/ProcessTATList/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUHJvY2Vzc1RBVExpc3RcRGVmYXVsdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/ProposedProcessesDashboard/Default.cshtml]

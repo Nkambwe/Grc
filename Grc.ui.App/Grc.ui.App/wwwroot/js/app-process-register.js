@@ -88,7 +88,6 @@ function initProcessRegisterTable() {
                 formatter: (cell) => `<span class="clickable-title" onclick="viewProcess(${cell.getRow().getData().id})">${cell.getValue()}</span>`
             },
             { title: "PROCESS DESCRIPTION", field: "description", widthGrow: 1, minWidth: 400, frozen: true, headerSort: false },
-            { title: "PROCESS TYPE", field: "typeName", headerSort: true, minWidth: 200 },
             { title: "PROCESS OWNER", field: "ownerName", headerSort: true, minWidth: 200 },
             { title: "ATTACHED UNIT", field: "unitName", minWidth: 250 },
             { title: "PROCESS MANAGER", field: "assigneeName", minWidth: 400 },
@@ -110,21 +109,7 @@ function initProcessRegisterTable() {
                         <span>DELETE</span>
                     </button>`;
                 },
-                width: 50,
-                hozAlign: "center",
-                headerHozAlign: "center",
-                headerSort: false
-            },
-            {
-                title: "ACTION",
-                formatter: function (cell) {
-                    let rowData = cell.getRow().getData();
-                    return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="requestApproval(${rowData.id})">
-                        <span><i class="mdi mdi-share-all-outline" aria-hidden="true"></i></span>
-                        <span>REAQUEST REVIEW</span>
-                    </button>`;
-                },
-                width: 50,
+                width: 150,
                 hozAlign: "center",
                 headerHozAlign: "center",
                 headerSort: false
@@ -189,6 +174,9 @@ function findProcess(id) {
 }
 
 function openProcessEditor(title, process, isEdit) {
+    var isLocked = process?.isLockProcess || false;
+    var status = process?.processStatus || 0;
+
     // Populate form fields
     $("#processId").val(process?.id || "");
     $("#isEdit").val(isEdit);
@@ -196,24 +184,19 @@ function openProcessEditor(title, process, isEdit) {
     $("#processDescription").val(process?.description || "");
     $("#typeId").val(process?.typeId || 0).trigger('change.select2');
     $('#isDeleted').prop('checked', process?.isDeleted || false);
-    $('#isLockProcess').prop('checked', process?.isLockProcess || false);
     $("#effectiveDate").val(process?.effectiveDate);
+    
 
-    //..process status
+    $('#isLockProcess').prop('checked', isLocked);
+    $("#onholdReason").val(status);
     $("#processStatus").val(process?.processStatus || 0).trigger('change.select2');
     $("#comment").val(process?.comment || "");
-    $("#onholdReason").val(process?.onholdReason || "");
-
-    $('#originalOnFile').prop('originalOnFile', process?.originalOnFile || true);
     $("#fileName").val(process?.fileName || "");
     $("#fileVersion").val(process?.CurrentVersion || "");
-
-    //..responsibility
     $("#unitId").val(process?.unitId || 0).trigger('change.select2');
     $("#ownerId").val(process?.ownerId || 0).trigger('change.select2');
     $("#assigneedId").val(process?.assigneedId || 0).trigger('change.select2');
 
-    //..approval info
     $("#hodApprovalOn").val(process?.hodApprovalOn || "");
     $("#hodApprovalStatus").val(process?.hodApprovalStatus || "PENDING").trigger('change.select2');
     $("#hoApprovalComment").val(process?.hoApprovalComment || "");
@@ -239,6 +222,32 @@ function openProcessEditor(title, process, isEdit) {
     $("#fintechApprovalOn").val(process?.fintechApprovalOn || "");
     $("#fintechApprovalStatus").val(process?.fintechApprovalStatus || "PENDING").trigger('change.select2');
     $("#fintechApprovalComment").val(process?.fintechApprovalComment || "");
+
+    // Hide "on-hold reason" if status = 3
+    if (status === 3) {
+        $("#onHoldBox").hide();
+    } else {
+        $("#onHoldBox").show();
+    }
+
+    //..hide lock process checkbox if not edit mode
+    if (!isEdit) {
+        $("#lockProcess").hide(); 
+    } else {
+        $("#lockProcess").show();
+    }
+
+    //..disable all fields if editing a locked process
+    if (isEdit && isLocked) {
+        //..disable all inputs inside form
+        $("#processForm :input").prop("disabled", true); 
+
+        //..allow cancel/close still usable
+        $("#closeButton, #cancelButton").prop("disabled", false); 
+    } else {
+        //..ensure fields are enabled when not locked
+        $("#processForm :input").prop("disabled", false); 
+    }
 
     // Show overlay panel
     $('#processPanelTitle').text(title);
@@ -312,9 +321,10 @@ function closeProcessPanel() {
 }
 
 function saveProcessRecord(e) {
-
+    let recordData = {
+        effectiveDate: dateList["effectiveDate"].input.value || null,
+    };
 }
-
 
 //..toggle section collapse/expand
 function toggleSection(header) {
@@ -325,10 +335,22 @@ function toggleSection(header) {
     toggle.classList.toggle('expanded');
 }
 
+let dateList = {};
+
+function initEffectiveDatePickers() {
+    dateList["effectiveDate"] = flatpickr("#effectiveDate", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y",
+        defaultDate: null
+    });
+}
 
 $(document).ready(function () {
 
     initProcessRegisterTable();
+    initEffectiveDatePickers();
 
     $('#typeId, #processStatus, #unitId, #ownerId, #assigneedId, #complianceStatus, #branchManagerStatus, #approvalStatus').select2({
         width: '100%',
@@ -345,41 +367,25 @@ $(document).ready(function () {
         createProcess();
     });
 
-    $('.action-btn-proposed-list').on('click', function () {
-        alert("Proposed Button clicked");
-    });
+    //$('#btnPolicyDocsExportFiltered').on('click', function () {
+    //    $.ajax({
+    //        url: '/grc/compliance/register/policies-export',
+    //        type: 'POST',
+    //        contentType: 'application/json',
+    //        data: JSON.stringify(policyRegisterTable.getData()),
+    //        xhrFields: { responseType: 'blob' },
+    //        success: function (blob) {
+    //            let link = document.createElement('a');
+    //            link.href = window.URL.createObjectURL(blob);
+    //            link.download = "Policy_Register.xlsx";
+    //            link.click();
+    //        },
+    //        error: function () {
+    //            toastr.error("Export failed. Please try again.");
+    //        }
+    //    });
+    //});
 
-    $('.action-btn-unchanged-list').on('click', function () {
-        alert("Unchanged Button clicked");
-    });
-
-    $('.action-btn-due-review-list').on('click', function () {
-        alert("Button clicked");
-    });
-
-    $('.action-btn-dorman-list').on('click', function () {
-        alert("Dormant Button clicked");
-    });
-
-    $('.action-btn-cancelled-list').on('click', function () {
-        alert("Cancelled Button clicked");
-    });
-
-    $('.action-btn-completed-list').on('click', function () {
-        alert("Complete Button clicked");
-    });
-
-    $('.action-btn-dormant-list').on('click', function () {
-        alert("Dormat Button clicked");
-    });
-
-    $('.action-btn-cancelled-list').on('click', function () {
-        alert("Complete Button clicked");
-    });
-
-    $('.action-btn-process-export').on('click', function () {
-        alert("Export Process Button clicked");
-    });
 
     $('#processForm').on('submit', function (e) {
         e.preventDefault();

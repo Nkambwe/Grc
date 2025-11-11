@@ -131,7 +131,6 @@ namespace Grc.Middleware.Api.Controllers {
                     EffectiveDate = register.EffectiveDate,
                     LastUpdated = register.LastUpdated,
                     FileName = register.FileName ?? string.Empty,
-                    OriginalOnFile = register.OriginalOnFile,
                     ProcessStatus = register.ProcessStatus ?? string.Empty,
                     Comments = register.Comments ?? string.Empty,
                     IsLockProcess = register.IsLockProcess,
@@ -212,7 +211,6 @@ namespace Grc.Middleware.Api.Controllers {
                         EffectiveDate = register.EffectiveDate,
                         LastUpdated = register.LastUpdated,
                         FileName = register.FileName ?? string.Empty,
-                        OriginalOnFile = register.OriginalOnFile,
                         ProcessStatus = register.ProcessStatus ?? string.Empty,
                         Comments = register.Comments ?? string.Empty,
                         OnholdReason = register.ReasonOnhold ?? string.Empty,
@@ -419,5 +417,58 @@ namespace Grc.Middleware.Api.Controllers {
 
         #endregion
 
+        #region Process Groups Endpoints
+
+        [HttpPost("processes/group")]
+        public async Task<IActionResult> GetProcessGroup([FromBody] IdRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("processes/groups-all")]
+        public async Task<IActionResult> GetProcessGroups([FromBody] ListRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("processes/create-group")]
+        public async Task<IActionResult> CreateProcessGroup([FromBody] ProcessGroupRequest request) {
+             return Ok();
+        }
+
+        #endregion
+
+        #region Process Tags Endpoints
+
+        [HttpPost("processes/tag")]
+        public async Task<IActionResult> GetProcessTag([FromBody] IdRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("processes/tags-all")]
+        public async Task<IActionResult> GetProcessTags([FromBody] ListRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("processes/create-tag")]
+        public async Task<IActionResult> CreateProcessTag([FromBody] ProcessTagRequest request) {
+            return Ok();
+        }
+
+        #endregion
+
+        #region Process TAT Endpoints
+
+        [HttpPost("processes/tat")]
+        public async Task<IActionResult> GetProcessTat([FromBody] IdRequest request)
+        {
+            return Ok();
+        }
+
+        [HttpPost("processes/tat-all")]
+        public async Task<IActionResult> GetProcessTat([FromBody] ListRequest request)
+        {
+            return Ok();
+        }
+
+        #endregion
     }
 }

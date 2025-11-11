@@ -10,13 +10,12 @@ namespace Grc.Middleware.Api.Data.Entities.Operations.Processes {
         public DateTime? EffectiveDate { get; set; }
         public DateTime? LastUpdated { get; set; }
         public string FileName { get; set; }
-        public bool OriginalOnFile { get; set; }
         public string ProcessStatus { get; set; }
-        public bool IsLockProcess { get; set; }
-        public bool NeedsBranchReview { get; set; }
-        public bool NeedsCreditReview { get; set; }
-        public bool NeedsTreasuryReview { get; set; }
-        public bool NeedsFintechReview { get; set; }
+        public bool? IsLockProcess { get; set; }
+        public bool? NeedsBranchReview { get; set; }
+        public bool? NeedsCreditReview { get; set; }
+        public bool? NeedsTreasuryReview { get; set; }
+        public bool? NeedsFintechReview { get; set; }
         public string Comments { get; set; }
         public string ReasonOnhold { get; set; }
         public long UnitId { get; set; }

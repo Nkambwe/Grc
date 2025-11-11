@@ -4,29 +4,17 @@
     ViewData["Title"] = "PROCESS GROUPS";
 }
 
-<div class="welcome-container">
-    <div class="welcome-container-message">
-        <span class="display-1">@Model.WelcomeMessage</span>
-    </div>
-    <div class="incon-container-expand">
-        <button id="expandBtn" type="button" class="icon-btn">
-            <span>
-                <i id="toggleIcon" class="mdi mdi-arrow-expand"></i>
-            </span>
-        </button>
-    </div>
+@{
+    var component = new PageComponentViewModel
+    {
+        ComponentId = $"0",
+        ComponentKey = "ProcesseGroups",
+        LeftActions = new List<ComponentAction>
+        {
+            new ComponentAction { ActionKey = ActionKey.OpsHome.GetDescription(), Icon = "mdi mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home") },
+            new ComponentAction { ActionKey = ActionKey.ProcessGroup.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") }
+        }
+    };
+}
 
-</div>
-
-<div class="action-box">
-    <div class="title-box">
-        <h3 class="display-1 action-box-title">Quick Actions</h3>
-        <span class="title-line"></span>
-    </div>
-
-    @await Component.InvokeAsync("QuickActions", new { model = Model.QuickActions })
-</div>
-
-<div class="col-sm-12">
-    <span class="display-1 text-success">Group Process</span>
-</div>
+@await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("ProcessGroupList") })

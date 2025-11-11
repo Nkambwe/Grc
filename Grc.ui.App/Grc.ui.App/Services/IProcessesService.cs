@@ -5,51 +5,23 @@ using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Models;
 
 namespace Grc.ui.App.Services {
+
     public interface IProcessesService : IGrcBaseService  {
 
-        /// <summary>
-        /// Get all process statistics
-        /// </summary>
-        /// <param name="ipAddress">Current login IP Address of the requesting user</param>
-        /// <param name="userId">User ID of the requesting user</param>
-        /// <returns>Task containing user dashboard statistics/returns>
+        #region Statistics
         Task<OperationsUnitCountResponse> StatisticAsync(long userId, string ipAddress);
 
-        /// <summary>
-        ///  Get count of count by unit for all processes
-        /// </summary>
-        /// <param name="ipAddress">Current login IP Address of the requesting user</param>
-        /// <param name="userId">User ID of the requesting user</param>
-        /// <param name="unit">name of unit to count for</param>
-        /// <returns>Task containing user dashboard statistics/returns>
         Task<CategoriesCountResponse> UnitCountAsync(long userId, string ipAddress, string unit);
 
-        /// <summary>
-        ///  Get count of process categories for all processes
-        /// </summary>
-        /// <param name="ipAddress">Current login IP Address of the requesting user</param>
-        /// <param name="userId">User ID of the requesting user</param>
-        /// <returns>Task containing user dashboard statistics/returns>
         Task<List<DashboardRecord>> TotalExtensionsCountAsync(long userId, string ipAddress);
 
-        /// <summary>
-        /// Get count of processes per category
-        /// </summary>
-        /// <param name="category">Process category</param>
-        /// <param name="userId">Current user id</param>
-        /// <param name="ipAddress">Current user IP Address</param>
-        /// <returns></returns>
         Task<CategoryExtensionModel> CategoryExtensionsCountAsync(string category, long userId, string ipAddress);
 
-        /// <summary>
-        /// Get count of processes per unit
-        /// </summary>
-        /// <param name="unit">Operations Unit</param>
-        /// <param name="userId">Current user id</param>
-        /// <param name="ipAddress">Current user IP Address</param>
-        /// <returns></returns>
         Task<UnitExtensionModel> UnitExtensionsCountAsync(string unit, long userId, string ipAddress);
 
+        #endregion
+
+        #region Process Registers
         Task<GrcResponse<PagedResponse<GrcProcessRegisterResponse>>> GetProcessRegistersAsync(TableListRequest request);
 
         Task<GrcResponse<GrcProcessRegisterResponse>> GetProcessRegisterAsync(long id, long userId, string ipAddress);
@@ -57,6 +29,48 @@ namespace Grc.ui.App.Services {
         Task<GrcResponse<GrcProcessSupportResponse>> GetProcessSupportItemsAsync(GrcRequest request);
 
         Task<GrcResponse<ServiceResponse>> CreateProcessAsync(ProcessViewModel request, long userId, string ipAddress);
+
+        Task<GrcResponse<ServiceResponse>> UpdateProcessAsync(ProcessViewModel request, long userId, string ipAddress);
+
+        Task<GrcResponse<ServiceResponse>> DeleteProcessAsync(GrcIdRequest request);
+
+        #endregion
+
+        #region Process Groups
+        Task<GrcResponse<GrcProcessGroupResponse>> GetProcessGroupAsync(long id, long userId, string ipAddress);
+
+        Task<GrcResponse<PagedResponse<GrcProcessGroupResponse>>> GetProcessGroupsAsync(TableListRequest request);
+
+        Task<GrcResponse<ServiceResponse>> CreateProcessGroupAsync(ProcessGroupViewModel request, long userId, string ipAddress);
+
+        Task<GrcResponse<ServiceResponse>> UpdateProcessGroupAsync(ProcessGroupViewModel request, long userId, string ipAddress);
+
+        Task<GrcResponse<ServiceResponse>> DeleteProcessGroupAsync(GrcIdRequest request);
+
+        #endregion
+
+        #region Process Tags
+
+        Task<GrcResponse<GrcProcessTagResponse>> GetProcessTagAsync(long id, long userId, string ipAddress);
+
+        Task<GrcResponse<PagedResponse<GrcProcessTagResponse>>> GetProcessTagsAsync(TableListRequest request);
+
+        Task<GrcResponse<ServiceResponse>> CreateProcessTagAsync(ProcessTagViewModel request, long userId, string ipAddress);
+
+        Task<GrcResponse<ServiceResponse>> UpdateProcessTagAsync(ProcessTagViewModel request, long userId, string ipAddress);
+
+        Task<GrcResponse<ServiceResponse>> DeleteProcessTagAsync(GrcIdRequest request);
+
+        #endregion
+
+        #region Process TAT
+
+        Task<GrcResponse<GrcProcessTatResponse>> GetProcessTatAsync(long id, long userId, string ipAddress);
+
+        Task<GrcResponse<PagedResponse<GrcProcessTatResponse>>> GetProcessTatAsync(TableListRequest request);
+        
+        #endregion
+
     }
 
 }

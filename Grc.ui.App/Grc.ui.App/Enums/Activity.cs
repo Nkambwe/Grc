@@ -203,5 +203,36 @@ namespace Grc.ui.App.Enums {
         PROCESSES_EXPORT_PROCESS = 107,
         [Description("Get process support lists")]
         RETRIVEPROCESSUPPORTITEMS = 108,
+
+        [Description("Get a list of all process groups")]
+        PROCESS_GROUPS_RETRIVED = 109,
+        [Description("Retrieve process groups")]
+        PROCESS_GROUP_RETRIVED = 110,
+        [Description("Create process group")]
+        PROCESS_GROUP_CREATE = 111,
+        [Description("Update process group")]
+        PROCESS_GROUP_UPDATE = 112,
+        [Description("Delete process group")]
+        PROCESS_GROUP_DELETE = 113,
+
+        [Description("Get a list of all process tags")]
+        PROCESS_TAGS_RETRIVED = 114,
+        [Description("Retrieve process tags")]
+        PROCESS_TAG_RETRIVED = 115,
+        [Description("Create process tag")]
+        PROCESS_TAG_CREATE = 116,
+        [Description("Update process tag")]
+        PROCESS_TAG_UPDATE = 117,
+        [Description("Delete process tags")]
+        PROCESS_TAG_DELETE = 118,
+
+        [Description("Get a list of all process TAT data")]
+        PROCESS_TATDATA_RETRIVED = 119,
+        [Description("Retrieve process TAT")]
+        PROCESS_TAT_RETRIVED = 120,
+        [Description("Export processes to excel")]
+        PROCESS_EXPORT = 121,
+
+
     }
 }

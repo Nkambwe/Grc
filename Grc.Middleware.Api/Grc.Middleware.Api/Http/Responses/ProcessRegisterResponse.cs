@@ -25,9 +25,6 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("fileName")]
         public string FileName { get; set; }
 
-        [JsonPropertyName("onFile")]
-        public bool OriginalOnFile { get; set; }
-
         [JsonPropertyName("processStatus")]
         public string ProcessStatus { get; set; }
 
@@ -65,19 +62,19 @@ namespace Grc.Middleware.Api.Http.Responses {
         public string Responsibile { get; set; }
 
         [JsonPropertyName("isLockProcess")]
-        public bool IsLockProcess { get; set; }
+        public bool? IsLockProcess { get; set; }
 
         [JsonPropertyName("needsBranchReview")]
-        public bool NeedsBranchReview { get; set; }
+        public bool? NeedsBranchReview { get; set; }
 
         [JsonPropertyName("needsCreditReview")]
-        public bool NeedsCreditReview { get; set; }
+        public bool? NeedsCreditReview { get; set; }
 
         [JsonPropertyName("needsTreasuryReview")]
-        public bool NeedsTreasuryReview { get; set; }
+        public bool? NeedsTreasuryReview { get; set; }
 
         [JsonPropertyName("needsFintechReview")]
-        public bool NeedsFintechReview { get; set; }
+        public bool? NeedsFintechReview { get; set; }
 
         [JsonPropertyName("createdBy")]
         public string CreatedBy { get; set; }

@@ -2887,9 +2887,6 @@
             "format": "date-time",
             "nullable": true
           },
-          "originalOnFile": {
-            "type": "boolean"
-          },
           "processStatus": {
             "type": "string",
             "nullable": true
@@ -2921,29 +2918,20 @@
             "type": "integer",
             "format": "int64"
           },
-          "approvalStatus": {
-            "type": "string",
-            "nullable": true
+          "isLockProcess": {
+            "type": "boolean"
           },
-          "approvalComment": {
-            "type": "string",
-            "nullable": true
+          "needsBranchReview": {
+            "type": "boolean"
           },
-          "branchManagerApproval": {
-            "type": "string",
-            "nullable": true
+          "needsCreditReview": {
+            "type": "boolean"
           },
-          "branchManagerComment": {
-            "type": "string",
-            "nullable": true
+          "needsTreasuryReview": {
+            "type": "boolean"
           },
-          "complianceApproval": {
-            "type": "string",
-            "nullable": true
-          },
-          "complianceComment": {
-            "type": "string",
-            "nullable": true
+          "needsFintechReview": {
+            "type": "boolean"
           },
           "createdBy": {
             "type": "string",

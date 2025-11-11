@@ -526,7 +526,6 @@ namespace Grc.Middleware.Api.Services.Operations {
                     process.FileName = (request.FilePath ?? string.Empty).Trim();
                     process.EffectiveDate = request.EffectiveDate;
                     process.LastUpdated = request.LastUpdated;
-                    process.OriginalOnFile = request.OriginalOnFile;
                     process.ProcessStatus = (request.ProcessStatus ?? string.Empty).Trim();
                     process.TypeId = request.TypeId;
                     process.UnitId = request.UnitId;
@@ -581,7 +580,6 @@ namespace Grc.Middleware.Api.Services.Operations {
                     process.FileName = (request.FilePath ?? string.Empty).Trim();
                     process.EffectiveDate = request.EffectiveDate;
                     process.LastUpdated = request.LastUpdated;
-                    process.OriginalOnFile = request.OriginalOnFile;
                     process.ProcessStatus = (request.ProcessStatus ?? string.Empty).Trim();
                     process.TypeId = request.TypeId;
                     process.UnitId = request.UnitId;

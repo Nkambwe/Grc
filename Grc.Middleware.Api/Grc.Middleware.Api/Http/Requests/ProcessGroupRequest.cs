@@ -10,8 +10,8 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("groupName")]
         public string GroupName { get; set; }
 
-        [JsonPropertyName("description")]
-        public string Description { get; set; }
+        [JsonPropertyName("groupDescription")]
+        public string GroupDescription { get; set; }
 
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
@@ -19,7 +19,7 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("createdBy")]
         public string CreatedBy { get; set; }
 
-        [JsonPropertyName("ceatedOn")]
+        [JsonPropertyName("createdOn")]
         public DateTime CreatedOn { get; set; }
 
         [JsonPropertyName("modifiedBy")]

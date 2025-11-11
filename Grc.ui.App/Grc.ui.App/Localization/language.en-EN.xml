@@ -560,6 +560,12 @@
 	<LocaleResource Name="Component.Table.Search.Acts">
 		<Value>Search laws.. </Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.ProcessGroups">
+		<Value>Search groups.. </Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.ProcessTags">
+		<Value>Search tags.. </Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Search.Processes">
 		<Value>Search processes.. </Value>
 	</LocaleResource>
@@ -1021,6 +1027,9 @@
 	<LocaleResource Name="App.Menu.Configurations.Passwords">
 		<Value>Passwords</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Menu.Reports">
+		<Value>Reports</Value>
+	</LocaleResource>
 	<LocaleResource Name="App.Menu.Permissions.Delegation">
 		<Value>Role Delegation</Value>
 	</LocaleResource>
@@ -1103,10 +1112,13 @@
 		<Value>Approvals</Value>
 	</LocaleResource>
 	<LocaleResource Name="Operations.Menu.Tasks.Pending">
-		<Value>Pending</Value>
+		<Value>New Processes</Value>
 	</LocaleResource>
 	<LocaleResource Name="Operations.Menu.Tasks.Revisions">
-		<Value>Revisions</Value>
+		<Value>Under Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="Operations.Menu.Tasks.TAT">
+		<Value>TAT</Value>
 	</LocaleResource>
 	<LocaleResource Name="Operations.Menu.Configurations.Access">
 		<Value>System Access</Value>
@@ -1371,6 +1383,20 @@
 	<LocaleResource Name="App.Menu.Dashboard.Labels.TotalProcesses">
 		<Value>Total Processes</Value>
 	</LocaleResource>
+
+	<LocaleResource Name="Component.Key.ProcesseGroups">
+		<Value>Process Groups</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.ProcesseTags">
+		<Value>Process Tags</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Universe">
+		<Value>Process Register</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.ProcesseTAT">
+		<Value>TAT REPORT</Value>
+	</LocaleResource>
+
 	<LocaleResource Name="App.Admin.Dashboard.Labels.PendingApproval">
 		<Value>PENDING APPROVAL</Value>
 	</LocaleResource>

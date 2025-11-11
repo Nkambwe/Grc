@@ -2,28 +2,18 @@
 @model OperationsDashboardModel
 @{
     Layout = "_OperationLayout";
-    ViewData["Title"] = "TOTAL POROCESSES";
+    ViewData["Title"] = "POROCESS REGISTER";
 }
 
 @{
     var component = new PageComponentViewModel
     {
         ComponentId = $"0",
-        ComponentKey = "TotalProcesses",
+        ComponentKey = "Universe",
         LeftActions = new List<ComponentAction>
         {
             new ComponentAction { ActionKey = ActionKey.OpsHome.GetDescription(), Icon = "mdi mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home") },
-            new ComponentAction { ActionKey = ActionKey.ProcessNew.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") },
-            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
-            new ComponentAction { ActionKey = ActionKey.TotalProposed.GetDescription(), Icon = "mdi mdi-application-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Processes.TotalProcesses.Proposed") },
-            new ComponentAction { ActionKey = ActionKey.TotalUnchanged.GetDescription(), Icon = "mdi mdi-application-settings-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Processes.TotalProcesses.Unchanged") },
-            new ComponentAction { ActionKey = ActionKey.TotalDueReview.GetDescription(), Icon = "mdi mdi-application-edit-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Processes.TotalProcesses.DueReview") },
-            new ComponentAction { ActionKey = ActionKey.TotalCompleted.GetDescription(), Icon = "mdi mdi-application-import", Tooltip = ILocalize.GetLocalizedLabel("App.Processes.TotalProcesses.Completed") },
-            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
-            new ComponentAction { ActionKey = ActionKey.TotalDormant.GetDescription(), Icon = "mdi mdi-application-cog-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Processes.TotalProcesses.Dormant") },
-            new ComponentAction { ActionKey = ActionKey.TotalCancelled.GetDescription(), Icon = "mdi mdi-application-variable-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Processes.TotalProcesses.Cancelled") },
-            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
-            new ComponentAction { ActionKey = ActionKey.ProcessExport.GetDescription(), Icon = "mdi mdi-file-excel-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Export") },
+            new ComponentAction { ActionKey = ActionKey.ProcessNew.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") }
         }
     };
 }

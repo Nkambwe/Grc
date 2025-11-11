@@ -439,34 +439,9 @@
                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "RegisterProcess" }
             );
             routeBuilder.MapControllerRoute(
-              name: "app-operations-processes-groups",
-              pattern: "/operations/workflow/processes/groups",
-              defaults: new { area = "Operations", controller = "OperationWorkflow", action = "GroupProcesses" }
-            );
-            routeBuilder.MapControllerRoute(
-              name: "app-operations-processes-tags",
-              pattern: "/operations/workflow/processes/tags",
-              defaults: new { area = "Operations", controller = "OperationWorkflow", action = "TagProcesses" }
-            );
-            routeBuilder.MapControllerRoute(
-             name: "app-operations-processes-approvals",
-             pattern: "/operations/workflow/processes/approvals",
-             defaults: new { area = "Operations", controller = "OperationWorkflow", action = "Approvals" }
-            );
-            routeBuilder.MapControllerRoute(
-             name: "app-operations-processes-pending",
-             pattern: "/operations/workflow/processes/pending",
-             defaults: new { area = "Operations", controller = "OperationWorkflow", action = "Pending" }
-            );
-            routeBuilder.MapControllerRoute(
-             name: "app-operations-processes-revisions",
-             pattern: "/operations/workflow/processes/revisions",
-             defaults: new { area = "Operations", controller = "OperationWorkflow", action = "Revisions" }
-            );
-            routeBuilder.MapControllerRoute(
-               name: "app-operations-processes-register-all",
-               pattern: "/operations/workflow/processes/register/all",
-               defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ProcessRegisterList" }
+              name: "app-operations-processes-register-all",
+              pattern: "/operations/workflow/processes/register/all",
+              defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ProcessRegisterList" }
             );
             routeBuilder.MapControllerRoute(
                name: "app-operations-processes-register-retrieve",
@@ -489,15 +464,82 @@
                 defaults: new { area = "Operations", controller = "OperationWorkflow", action = "DeleteProcessRegister" }
             );
             routeBuilder.MapControllerRoute(
-                name: "app-operations-processes-register-export-register-table",
-                pattern: "/operations/workflow/processes/registers/retrieve/export",
-                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ExportProcessRegisterTable" }
-            );
-            routeBuilder.MapControllerRoute(
                 name: "app-operations-processes-register-export-register-all",
                 pattern: "/operations/workflow/processes/registers/retrieve/export-all",
                 defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ExportProcessRegisterAll" }
             );
+
+            /*----------------------- Operations process groups routes*/
+            routeBuilder.MapControllerRoute(
+              name: "app-operations-processes-groups",
+              pattern: "/operations/workflow/processes/groups",
+              defaults: new { area = "Operations", controller = "OperationWorkflow", action = "GroupProcesses" }
+            );
+            routeBuilder.MapControllerRoute(
+              name: "app-operations-processes-groups-all",
+              pattern: "/operations/workflow/processes/groups/all",
+              defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ProcessGroupList" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-operations-processes-groups-retrieve",
+               pattern: "/operations/workflow/processes/groups/retrieve/{id:long}",
+               defaults: new { area = "Operations", controller = "OperationWorkflow", action = "GetProcessGroup" }
+            );
+
+            /*----------------------- Operations process tags routes*/
+            routeBuilder.MapControllerRoute(
+              name: "app-operations-processes-tags",
+              pattern: "/operations/workflow/processes/tags",
+              defaults: new { area = "Operations", controller = "OperationWorkflow", action = "TagProcesses" }
+            );
+            routeBuilder.MapControllerRoute(
+              name: "app-operations-processes-tags-all",
+              pattern: "/operations/workflow/processes/tags/all",
+              defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ProcessTagList" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-operations-processes-tags-retrieve",
+               pattern: "/operations/workflow/processes/tags/retrieve/{id:long}",
+               defaults: new { area = "Operations", controller = "OperationWorkflow", action = "GetProcessTag" }
+            );
+
+            /*----------------------- Operations process tat routes*/
+            routeBuilder.MapControllerRoute(
+              name: "app-operations-processes-reports",
+              pattern: "/operations/workflow/processes/reports",
+              defaults: new { area = "Operations", controller = "OperationWorkflow", action = "TATReport" }
+            );
+            routeBuilder.MapControllerRoute(
+              name: "app-operations-processes-tat-all",
+              pattern: "/operations/workflow/processes/tat/all",
+              defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ProcessTATList" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-operations-processes-tat-retrieve",
+               pattern: "/operations/workflow/processes/tat/retrieve/{id:long}",
+               defaults: new { area = "Operations", controller = "OperationWorkflow", action = "GetProcessTat" }
+            );
+
+            routeBuilder.MapControllerRoute(
+             name: "app-operations-processes-approvals",
+             pattern: "/operations/workflow/processes/approvals",
+             defaults: new { area = "Operations", controller = "OperationWorkflow", action = "Approvals" }
+            );
+            routeBuilder.MapControllerRoute(
+             name: "app-operations-processes-pending",
+             pattern: "/operations/workflow/processes/pending",
+             defaults: new { area = "Operations", controller = "OperationWorkflow", action = "Pending" }
+            );
+            routeBuilder.MapControllerRoute(
+             name: "app-operations-processes-revisions",
+             pattern: "/operations/workflow/processes/revisions",
+             defaults: new { area = "Operations", controller = "OperationWorkflow", action = "Revisions" }
+            );
+           
+
+
+
+
 
             /*----------------------- Compliance dashboard routes*/
             routeBuilder.MapControllerRoute(

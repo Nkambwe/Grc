@@ -1,0 +1,19 @@
+﻿<div class="grc-tabulator-container">
+
+    <div class="grc-tabulator-search">
+        <div class="field-search-group">
+            <label class="form-searchbox-label text-right">
+                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.ProcessGroups"))
+            </label>
+            <input id="groupSearchbox" type="text" class="form-control searchbox-field">
+        </div>
+    </div>
+
+    <div id="processGroupTable"></div>
+
+</div>
+
+@{
+    Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-processes-groups.js");
+}

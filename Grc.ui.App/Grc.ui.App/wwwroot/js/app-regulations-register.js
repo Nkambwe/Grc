@@ -220,14 +220,6 @@ function openActPanel(title, record, isEdit) {
     $('#dpResponsibility').val(record.reviewResponsibility).trigger('change');
     $('#actComments').val(record.comments || '');
 
-    //..use setDate
-    //const today = new Date();
-    //if (record.lastReviewDate) {
-    //    initReviewDatePickers["lastReviewDate"].setDate(record.lastReviewDate, true, "Y-m-d");
-    //} else {
-    //    initReviewDatePickers["lastReviewDate"].setDate(today, true, "Y-m-d");
-    //}
-
     $('#panelTitle').text(title);
     $('.overlay').addClass('active');
     $('#slidePanel').addClass('active');

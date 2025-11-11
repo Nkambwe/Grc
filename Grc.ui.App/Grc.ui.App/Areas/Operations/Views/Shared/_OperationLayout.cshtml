@@ -186,6 +186,22 @@
 
                         <li class="sidebar-separator">
                             <span class="separator-label">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Reports"))
+                            </span>
+                            <span class="separator-line"></span>
+                        </li>
+                        <li class="sidebar-item with-submenu">
+                            <a asp-controller="OperationWorkflow" asp-action="TATReport" asp-area="Operations">
+                                <span class="menu-icon">
+                                    <i class="mdi mdi-file-table-outline"></i>
+                                </span>
+                                <span class="sidebar-text">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Tasks.TAT"))
+                                </span>
+                            </a>
+                        </li>
+                        <li class="sidebar-separator">
+                            <span class="separator-label">
                                 @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Configurations"))
                             </span>
                             <span class="separator-line"></span>
