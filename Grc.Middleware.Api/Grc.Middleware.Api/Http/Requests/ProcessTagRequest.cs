@@ -36,5 +36,9 @@ namespace Grc.Middleware.Api.Http.Requests
 
         [JsonPropertyName("action")]
         public string Action { get; set; }
+
+        [JsonPropertyName("processes")]
+        public List<long> Processes { get; set; } = new();
+
     }
 }

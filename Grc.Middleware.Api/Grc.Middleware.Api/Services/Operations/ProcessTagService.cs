@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Grc.Middleware.Api.Data.Containers;
+using Grc.Middleware.Api.Data.Entities.Operations.Processes;
 using Grc.Middleware.Api.Data.Entities.Support;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Helpers;
@@ -11,12 +12,9 @@ using System.Text.Json.Serialization;
 
 namespace Grc.Middleware.Api.Services.Operations {
 
-    public class ProcessTagService : BaseService, IProcessTagService
-    {
+    public class ProcessTagService : BaseService, IProcessTagService {
 
-        public ProcessTagService(IServiceLoggerFactory loggerFactory, 
-                                 IUnitOfWorkFactory uowFactory, 
-                                 IMapper mapper) : base(loggerFactory, uowFactory, mapper) {
+        public ProcessTagService(IServiceLoggerFactory loggerFactory, IUnitOfWorkFactory uowFactory, IMapper mapper) : base(loggerFactory, uowFactory, mapper) {
         }
 
         public int Count()
@@ -31,29 +29,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to Process Tags in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -70,29 +46,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count Process Tags in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -109,29 +63,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count Process Tags in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -148,29 +80,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count Process Tags in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -187,29 +97,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count Process Tags in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -226,29 +114,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count Process Tags in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -265,29 +131,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to check for Process Tags in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -304,29 +148,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to check for Process Tags in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -343,29 +165,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to check for Process Tags in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -381,30 +181,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             }
             catch (Exception ex)
             {
-                Logger.LogActivity($"Failed to retrieve Process Tag: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -421,29 +198,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Tag : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -460,29 +215,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Tags : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -499,29 +232,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Tags : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -538,29 +249,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Tags : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -577,29 +266,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Tags : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -616,29 +283,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Tags : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -655,29 +300,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Tags : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -772,29 +395,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Tag : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -811,29 +412,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Tag : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -850,29 +429,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Tag : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -888,30 +445,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             }
             catch (Exception ex)
             {
-                Logger.LogActivity($"Failed to retrieve Process Tags : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -949,28 +483,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save Process Tag : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -1008,28 +521,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save Process Tag : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1039,17 +531,29 @@ namespace Grc.Middleware.Api.Services.Operations {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update Process Tag request", "INFO");
 
-            try
-            {
-                var tag = uow.ProcessTagRepository.Get(a => a.Id == request.Id);
-                if (tag != null)
-                {
+            try {
+                var tag = uow.ProcessTagRepository.Get(t => t.Id == request.Id, includeDeleted, t => t.Processes);
+                if (tag != null) {
+                    var existingIds = tag.Processes.Select(p => p.ProcessId).ToList();
+                    var (toAdd, toRemove) = GetChanges(existingIds, request.Processes);
+
+                    //..remove outdated links
+                    tag.Processes = tag.Processes.Where(p => !toRemove.Contains(p.ProcessId)).ToList();
+
+                    //..add new links
+                    foreach (var processId in toAdd) {
+                        tag.Processes.Add(new ProcessProcessTag {
+                            TagId = tag.Id,
+                            ProcessId = processId
+                        });
+                    }
+
                     //..update Process Tag record
                     tag.TagName = (request.TagName ?? string.Empty).Trim();
                     tag.Description = (request.TagDescription ?? string.Empty).Trim();
                     tag.IsDeleted = request.IsDeleted;
                     tag.LastModifiedOn = DateTime.Now;
-                    tag.LastModifiedBy = $"{request.UserId}";
+                    tag.LastModifiedBy = $"{(request.ModifiedBy ?? string.Empty).Trim() }";
 
                     //..check entity state
                     _ = uow.ProcessTagRepository.Update(tag, includeDeleted);
@@ -1066,31 +570,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to update Process Tag record: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -1102,15 +582,29 @@ namespace Grc.Middleware.Api.Services.Operations {
 
             try
             {
-                var tag = await uow.ProcessTagRepository.GetAsync(a => a.Id == request.Id);
-                if (tag != null)
-                {
-                    //..update Process Tag record
+                var tag = await uow.ProcessTagRepository.GetAsync(t => t.Id == request.Id, includeDeleted, t => t.Processes);
+                if (tag != null) {
+
+                    var existingIds = tag.Processes.Select(p => p.ProcessId).ToList();
+                    var (toAdd, toRemove) = GetChanges(existingIds, request.Processes);
+
+                    //..remove outdated links
+                    tag.Processes = tag.Processes.Where(p => !toRemove.Contains(p.ProcessId)).ToList();
+
+                    //..add new links
+                    foreach (var processId in toAdd) {
+                        tag.Processes.Add(new ProcessProcessTag {
+                            TagId = tag.Id,
+                            ProcessId = processId
+                        });
+                    }
+
+                    //..update Tag fields
                     tag.TagName = (request.TagName ?? string.Empty).Trim();
                     tag.Description = (request.TagDescription ?? string.Empty).Trim();
                     tag.IsDeleted = request.IsDeleted;
                     tag.LastModifiedOn = DateTime.Now;
-                    tag.LastModifiedBy = $"{request.UserId}";
+                    tag.LastModifiedBy = $"{(request.ModifiedBy ?? string.Empty).Trim()}";
 
                     //..check entity state
                     _ = await uow.ProcessTagRepository.UpdateAsync(tag, includeDeleted);
@@ -1127,31 +621,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to update Process Tag record: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1188,26 +658,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to delete Process Tag : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -1245,27 +696,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to delete Process Tag : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1286,26 +717,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to delete Process Tags: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
+                await LogErrorAsync(uow, ex);
                 throw;
             }
 
@@ -1329,28 +741,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save Process Tags : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1373,28 +764,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save Process Tags : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1417,28 +787,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save Process Tags : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1455,28 +804,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Tags: {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1493,107 +821,107 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Tags : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public async Task<PagedResult<ProcessTag>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<ProcessTag, bool>> predicate = null)
-        {
+        public async Task<PagedResult<ProcessTag>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<ProcessTag, bool>> predicate = null) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve paged Process Tags", "INFO");
-
-            try
-            {
+            try {
                 return await uow.ProcessTagRepository.PageAllAsync(page, size, includeDeleted, predicate);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve Process Tags: {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public async Task<PagedResult<ProcessTag>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<ProcessTag, bool>> predicate = null, bool includeDeleted = false)
-        {
+        public async Task<PagedResult<ProcessTag>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<ProcessTag, bool>> predicate = null, bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve paged Process Tags", "INFO");
 
-            try
-            {
+            try {
                 return await uow.ProcessTagRepository.PageAllAsync(token, page, size, predicate, includeDeleted);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve Process Tags : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-TAGS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
+        #region private methods
+
+        private void LogError(IUnitOfWork uow, Exception ex)
+        {
+            var currentEx = ex.InnerException;
+            while (currentEx != null)
+            {
+                Logger.LogActivity($"Service Inner Exception: {currentEx.Message}", "ERROR");
+                currentEx = currentEx.InnerException;
+            }
+
+            // Get company ID efficiently
+            var company = uow.CompanyRepository.GetAll(c => true, false);
+            long companyId = company.FirstOrDefault()?.Id ?? 1L;
+
+            // Get innermost exception
+            var innermostException = ex;
+            while (innermostException.InnerException != null)
+                innermostException = innermostException.InnerException;
+
+            var errorObj = new SystemError
+            {
+                ErrorMessage = innermostException.Message,
+                ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                StackTrace = ex.StackTrace,
+                Severity = "CRITICAL",
+                ReportedOn = DateTime.Now,
+                CompanyId = companyId
+            };
+
+            uow.SystemErrorRespository.Insert(errorObj);
+            uow.SaveChanges();
+        }
+
+        private async Task LogErrorAsync(IUnitOfWork uow, Exception ex)
+        {
+            var innerEx = ex.InnerException;
+            while (innerEx != null)
+            {
+                Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                innerEx = innerEx.InnerException;
+            }
+            Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+            var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+            long companyId = company != null ? company.Id : 1;
+            SystemError errorObj = new()
+            {
+                ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                ErrorSource = "PROCESS-TAGS-SERVICE",
+                StackTrace = ex.StackTrace,
+                Severity = "CRITICAL",
+                ReportedOn = DateTime.Now,
+                CompanyId = companyId
+            };
+
+            //..save error object to the database
+            _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+        }
+
+        private static (List<long> toAdd, List<long> toRemove) GetChanges(IEnumerable<long> existingIds, IEnumerable<long> newIds)
+        {
+            var existingSet = new HashSet<long>(existingIds);
+            var newSet = new HashSet<long>(newIds);
+
+            var toAdd = newSet.Except(existingSet).ToList();
+            var toRemove = existingSet.Except(newSet).ToList();
+
+            return (toAdd, toRemove);
+        }
+
+        #endregion
     }
 }

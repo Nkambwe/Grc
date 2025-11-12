@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Grc.Middleware.Api.Http.Responses;
+using System.Text.Json.Serialization;
 
 namespace Grc.Middleware.Api.Http.Requests
 {
@@ -36,5 +37,9 @@ namespace Grc.Middleware.Api.Http.Requests
 
         [JsonPropertyName("action")]
         public string Action { get; set; }
+
+        [JsonPropertyName("processes")]
+        public List<long> Processes { get; set; } = new();
+
     }
 }

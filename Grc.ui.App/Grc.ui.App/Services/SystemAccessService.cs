@@ -958,7 +958,7 @@ namespace Grc.ui.App.Services {
                 var error = new GrcResponseError(
                     GrcStatusCodes.BADREQUEST,
                     "Role record cannot be null",
-                    "Invalid user record"
+                    "Invalid Role record"
                 );
 
                 Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");

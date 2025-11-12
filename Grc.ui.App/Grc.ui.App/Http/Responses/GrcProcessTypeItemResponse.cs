@@ -8,5 +8,23 @@ namespace Grc.ui.App.Http.Responses {
 
         [JsonPropertyName("typeName")]
         public string TypeName { get; set; }
+
+        [JsonPropertyName("isDeleted")]
+        public bool IsDeleted { get; set; }
+
+        [JsonPropertyName("createdBy")]
+        public string CreatedBy { get; set; }
+
+        [JsonPropertyName("createdOn")]
+        public DateTime CreatedOn { get; set; }
+
+        [JsonPropertyName("modifiedBy")]
+        public string ModifiedBy { get; set; }
+
+        [JsonPropertyName("modifiedOn")]
+        public DateTime? ModifiedOn { get; set; }
+
+        [JsonPropertyName("processes")]
+        public List<GrcProcessRegisterResponse> Processes { get; set; } = new();
     }
 }

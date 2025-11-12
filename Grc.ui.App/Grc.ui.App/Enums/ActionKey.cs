@@ -50,6 +50,10 @@ namespace Grc.ui.App.Enums {
         OpsHome,
         [Description("process-new")]
         ProcessNew,
+        [Description("process-group-new")]
+        ProcessGroupNew,
+        [Description("process-tag-new")]
+        ProcessTagNew,
         [Description("process-group")]
         ProcessGroup,
         [Description("process-tag")]

@@ -6,4 +6,141 @@
     <History>True|2025-10-15T05:54:27.2445804Z||;</History>
     <LastFailureDetails />
   </PropertyGroup>
+  <ItemGroup>
+    <File Include="wwwroot/js/admin-permissionsets.js">
+      <publishTime>11/03/2025 18:33:14</publishTime>
+    </File>
+    <File Include="wwwroot/js/admin-role-groups.js">
+      <publishTime>11/05/2025 12:15:29</publishTime>
+    </File>
+    <File Include="wwwroot/js/admin-role-permissions.js">
+      <publishTime>11/06/2025 11:49:42</publishTime>
+    </File>
+    <File Include="wwwroot/js/admin-role.js">
+      <publishTime>11/06/2025 10:39:52</publishTime>
+    </File>
+    <File Include="wwwroot/js/admin-rolegroup-permissions.js">
+      <publishTime>11/04/2025 08:46:34</publishTime>
+    </File>
+    <File Include="wwwroot/js/admin-script-other.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/admin-script.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/admin-tables.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/admin-users-script.js">
+      <publishTime>11/03/2025 18:30:55</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-admin-bugs.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-admin-data-encryption.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-admin-passwords.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-obligation-register.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-other-script.js">
+      <publishTime>11/08/2025 13:25:31</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-policy-register.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-process-approval-list.js">
+      <publishTime>11/12/2025 17:19:05</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-process-new-list.js">
+      <publishTime>11/12/2025 17:19:23</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-process-register.js">
+      <publishTime>11/11/2025 11:38:42</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-processes-groups.js">
+      <publishTime>11/12/2025 16:33:01</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-processes-tags.js">
+      <publishTime>11/12/2025 16:48:43</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-processes-tat.js">
+      <publishTime>11/11/2025 13:07:36</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-regulation-authorities.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-regulation-categories.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-regulation-doctypes.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-regulation-obligations.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-regulation-PolRegister.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-regulation-tasks.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-regulation-types.js">
+      <publishTime>11/04/2025 11:11:06</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-regulations-register.js">
+      <publishTime>11/11/2025 10:44:25</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-returns-register.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-script.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/app-table-script.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/branch-script.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/bug-signalr-script.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/Component-script.js">
+      <publishTime>11/05/2025 09:03:24</publishTime>
+    </File>
+    <File Include="wwwroot/js/department-script.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/department-units-script.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/grc-sidebar.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/login-script.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/operations-category-dashboard-script.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/operations-dashboard-script.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/operations-totals-dashboard-script.js">
+      <publishTime>11/08/2025 16:47:02</publishTime>
+    </File>
+    <File Include="wwwroot/js/operations-units-dashboard-script.js">
+      <publishTime>11/08/2025 16:49:04</publishTime>
+    </File>
+    <File Include="wwwroot/js/register-script.js">
+      <publishTime>10/25/2025 15:37:54</publishTime>
+    </File>
+    <File Include="wwwroot/js/system-activities.js">
+      <publishTime>10/27/2025 18:19:32</publishTime>
+    </File>
+  </ItemGroup>
 </Project>

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Azure;
 using Grc.Middleware.Api.Data.Containers;
+using Grc.Middleware.Api.Data.Entities.Operations.Processes;
 using Grc.Middleware.Api.Data.Entities.Support;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Helpers;
@@ -29,29 +31,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to Process Groups in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -68,29 +48,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count Process Groups in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -107,29 +65,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count Process Groups in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -146,29 +82,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count Process Groups in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -185,29 +99,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count Process Groups in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -224,29 +116,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count Process Groups in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -263,29 +133,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to check for Process Groups in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -301,30 +149,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             }
             catch (Exception ex)
             {
-                Logger.LogActivity($"Failed to check for Process Groups in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -341,29 +166,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to check for Process Groups in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -380,29 +183,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Group: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -419,29 +200,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Group : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -458,29 +217,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -497,29 +234,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -536,29 +251,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -575,29 +268,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -614,29 +285,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -653,29 +302,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -692,29 +319,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -731,29 +336,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -770,29 +353,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Group : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -809,29 +370,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Group : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -848,29 +387,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Group : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -887,29 +404,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -947,28 +442,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save Process Group : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -1006,42 +480,36 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save Process Group : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public bool Update(ProcessGroupRequest request, bool includeDeleted = false)
-        {
+        public bool Update(ProcessGroupRequest request, bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update Process Group request", "INFO");
 
             try
             {
-                var group = uow.ProcessGroupRepository.Get(a => a.Id == request.Id);
+                var group = uow.ProcessGroupRepository.Get(a => a.Id == request.Id, includeDeleted, g => g.Processes);
                 if (group != null)
                 {
+                    var existingIds = group.Processes.Select(p => p.ProcessId).ToList();
+                    var (toAdd, toRemove) = GetChanges(existingIds, request.Processes);
+
+                    //..remove outdated links
+                    group.Processes = group.Processes.Where(p => !toRemove.Contains(p.ProcessId)).ToList();
+
+                    //..add new links
+                    foreach (var processId in toAdd)
+                    {
+                        group.Processes.Add(new ProcessProcessGroup
+                        {
+                            GroupId = group.Id,
+                            ProcessId = processId
+                        });
+                    }
+
                     //..update Process Group record
                     group.GroupName = (request.GroupName ?? string.Empty).Trim();
                     group.Description = (request.GroupDescription ?? string.Empty).Trim();
@@ -1064,31 +532,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to update Process Group record: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -1100,15 +544,28 @@ namespace Grc.Middleware.Api.Services.Operations {
 
             try
             {
-                var group = await uow.ProcessGroupRepository.GetAsync(a => a.Id == request.Id);
-                if (group != null)
-                {
+                var group = await uow.ProcessGroupRepository.GetAsync(a => a.Id == request.Id, includeDeleted, g => g.Processes);
+                if (group != null) {
+                    var existingIds = group.Processes.Select(p => p.ProcessId).ToList();
+                    var (toAdd, toRemove) = GetChanges(existingIds, request.Processes);
+
+                    //..remove outdated links
+                    group.Processes = group.Processes.Where(p => !toRemove.Contains(p.ProcessId)).ToList();
+
+                    //..add new links
+                    foreach (var processId in toAdd) {
+                        group.Processes.Add(new ProcessProcessGroup {
+                            GroupId = group.Id,
+                            ProcessId = processId
+                        });
+                    }
+
                     //..update Process Group record
                     group.GroupName = (request.GroupName ?? string.Empty).Trim();
                     group.Description = (request.GroupDescription ?? string.Empty).Trim();
                     group.IsDeleted = request.IsDeleted;
-                    group.LastModifiedOn = DateTime.Now;
-                    group.LastModifiedBy = $"{request.UserId}";
+                    group.LastModifiedOn = request.ModifiedOn;
+                    group.LastModifiedBy = $"{(request.ModifiedBy ?? string.Empty).Trim()}";
 
                     //..check entity state
                     _ = await uow.ProcessGroupRepository.UpdateAsync(group, includeDeleted);
@@ -1125,31 +582,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to update Process Group record: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1186,26 +619,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to delete Process Group : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -1243,27 +657,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to delete Process Group : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1284,26 +678,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to delete Process Groups: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
+                await LogErrorAsync(uow, ex);
                 throw;
             }
 
@@ -1327,28 +702,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save Process Groups : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1371,28 +725,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save Process Groups : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1415,28 +748,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save Process Groups : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1453,28 +765,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Groups: {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1491,28 +782,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1529,28 +799,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Groups: {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1567,31 +816,78 @@ namespace Grc.Middleware.Api.Services.Operations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve Process Groups : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "PROCESS-GROUPS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
+
+        #region private methods
+
+        private void LogError(IUnitOfWork uow, Exception ex)
+        {
+
+            //..log inner exceptions here too
+            var innerEx = ex.InnerException;
+            while (innerEx != null)
+            {
+                Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                innerEx = innerEx.InnerException;
+            }
+
+            var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+            long companyId = company != null ? company.Id : 1;
+            SystemError errorObj = new()
+            {
+                ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                ErrorSource = "PROCESS-GROUPS-SERVICE",
+                StackTrace = ex.StackTrace,
+                Severity = "CRITICAL",
+                ReportedOn = DateTime.Now,
+                CompanyId = companyId
+            };
+            uow.SystemErrorRespository.Insert(errorObj);
+            uow.SaveChanges();
+        }
+
+        private async Task LogErrorAsync(IUnitOfWork uow, Exception ex)
+        {
+            var innerEx = ex.InnerException;
+            while (innerEx != null)
+            {
+                Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                innerEx = innerEx.InnerException;
+            }
+            Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+            var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+            long companyId = company != null ? company.Id : 1;
+            SystemError errorObj = new()
+            {
+                ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                ErrorSource = "PROCESS-GROUPS-SERVICE",
+                StackTrace = ex.StackTrace,
+                Severity = "CRITICAL",
+                ReportedOn = DateTime.Now,
+                CompanyId = companyId
+            };
+
+            //..save error object to the database
+            uow.SystemErrorRespository.Insert(errorObj);
+            await uow.SaveChangesAsync();
+        }
+
+        private static (List<long> toAdd, List<long> toRemove) GetChanges(IEnumerable<long> existingIds, IEnumerable<long> newIds)
+        {
+            var existingSet = new HashSet<long>(existingIds);
+            var newSet = new HashSet<long>(newIds);
+
+            var toAdd = newSet.Except(existingSet).ToList();
+            var toRemove = existingSet.Except(newSet).ToList();
+
+            return (toAdd, toRemove);
+        }
+
+        #endregion
 
     }
 }

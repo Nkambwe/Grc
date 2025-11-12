@@ -295,7 +295,6 @@
                 defaults: new { area = "Admin", controller = "Settings", action = "Index" }
             );
 
-
             /*----------------------- Admin configuration*/
             routeBuilder.MapControllerRoute(
                 name: "admin-configuration",

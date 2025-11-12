@@ -12,9 +12,10 @@
         ComponentKey = "ProcesseTAT",
         LeftActions = new List<ComponentAction>
         {
-            new ComponentAction { ActionKey = ActionKey.OpsHome.GetDescription(), Icon = "mdi mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home") }
+            new ComponentAction { ActionKey = ActionKey.OpsHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home") },
+            new ComponentAction { ActionKey = ActionKey.ProcessTagNew.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") }
         }
     };
 }
 
-@await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("ProcessTATList") })
+@await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("ProcessTagList") })

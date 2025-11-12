@@ -76,6 +76,9 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("needsFintechReview")]
         public bool? NeedsFintechReview { get; set; }
 
+        [JsonPropertyName("isAssigned")]
+        public bool IsAssigned { get; set; }
+
         [JsonPropertyName("createdBy")]
         public string CreatedBy { get; set; }
 

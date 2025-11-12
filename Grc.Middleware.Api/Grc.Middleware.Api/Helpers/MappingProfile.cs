@@ -470,7 +470,7 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(r => r.CreatedBy, reg => reg.MapFrom(o => (o.CreatedBy ?? string.Empty).Trim()))
                 .ForMember(r => r.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
                 .ForMember(r => r.CreatedOn, reg => reg.MapFrom(o => o.CreatedOn))
-                .ForMember(r => r.LastModifiedBy, reg => reg.MapFrom(o => o.ModifiedBy))
+                .ForMember(r => r.LastModifiedBy, reg => reg.MapFrom(o => (o.ModifiedBy ?? string.Empty).Trim()))
                 .ForMember(r => r.LastModifiedOn, reg => reg.MapFrom(o => o.ModifiedOn));
 
             CreateMap<ProcessGroupRequest, ProcessGroup>()

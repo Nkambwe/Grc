@@ -341,6 +341,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
+    "Method": "CreateProcessGroup",
+    "RelativePath": "grc/processes/create-group",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ProcessGroupRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
     "Method": "CreateProcessRegister",
     "RelativePath": "grc/processes/create-process",
     "HttpMethod": "POST",
@@ -357,6 +373,38 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
+    "Method": "CreateProcessTag",
+    "RelativePath": "grc/processes/create-tag",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ProcessTagRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
+    "Method": "DeleteProcessGroup",
+    "RelativePath": "grc/processes/delete-group",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
     "Method": "DeleteProcessRegister",
     "RelativePath": "grc/processes/delete-process",
     "HttpMethod": "POST",
@@ -366,6 +414,54 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
+    "Method": "DeleteProcessTag",
+    "RelativePath": "grc/processes/delete-tag",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
+    "Method": "GetProcessGroup",
+    "RelativePath": "grc/processes/group",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
+    "Method": "GetProcessGroups",
+    "RelativePath": "grc/processes/groups-all",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
         "IsRequired": true
       }
     ],
@@ -421,6 +517,86 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
+    "Method": "GetProcessTag",
+    "RelativePath": "grc/processes/tag",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
+    "Method": "GetProcessTags",
+    "RelativePath": "grc/processes/tags-all",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
+    "Method": "GetProcessTat",
+    "RelativePath": "grc/processes/tat",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
+    "Method": "GetProcessTat",
+    "RelativePath": "grc/processes/tat-all",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
+    "Method": "UpdateProcessGroup",
+    "RelativePath": "grc/processes/update-group",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ProcessGroupRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
     "Method": "UpdateProcessRegister",
     "RelativePath": "grc/processes/update-process",
     "HttpMethod": "POST",
@@ -430,6 +606,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.ProcessRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
+    "Method": "UpdateProcessTag",
+    "RelativePath": "grc/processes/update-tag",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ProcessTagRequest",
         "IsRequired": true
       }
     ],

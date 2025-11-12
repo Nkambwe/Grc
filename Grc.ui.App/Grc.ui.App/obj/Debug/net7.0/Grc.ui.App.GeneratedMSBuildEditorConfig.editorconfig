@@ -580,12 +580,24 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUG9wdXBQYWdlXERlZmF1bHQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/ProcessApprovalsList/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUHJvY2Vzc0FwcHJvdmFsc0xpc3RcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/ProcessesRegisterList/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUHJvY2Vzc2VzUmVnaXN0ZXJMaXN0XERlZmF1bHQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/ProcessGroupList/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUHJvY2Vzc0dyb3VwTGlzdFxEZWZhdWx0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/ProcessNewList/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUHJvY2Vzc05ld0xpc3RcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/ProcessReviewList/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUHJvY2Vzc1Jldmlld0xpc3RcRGVmYXVsdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/ProcessTagList/Default.cshtml]

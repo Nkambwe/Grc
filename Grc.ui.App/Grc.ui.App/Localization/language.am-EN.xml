@@ -242,10 +242,18 @@
 	</LocaleResource>
 
 
+	<LocaleResource Name="Component.Key.ProcessApproval">
+		<Value>Process Approvals</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.NewProcesses">
+		<Value>New Processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.ProcessReviews">
+		<Value>Process Reviews</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Key.PolicyRegister">
 		<Value>Policies and Procedures</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="Component.Key.PermissionSets">
 		<Value>Permission Sets</Value>
 	</LocaleResource>

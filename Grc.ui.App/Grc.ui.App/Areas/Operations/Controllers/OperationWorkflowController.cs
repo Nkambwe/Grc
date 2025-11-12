@@ -1,6 +1,4 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Office2010.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Grc.ui.App.Defaults;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -173,6 +171,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                     needsCreditReview = process.NeedsCreditReview,
                     needsTreasuryReview = process.NeedsTreasuryReview,
                     needsFintechReview = process.NeedsFintechReview,
+                    isAssigned = process.IsAssigned,
                     hodApprovalOn = process.Approvals?.HeadOfDepartmentEnd,
                     hodApprovalStatus = process.Approvals?.HeadOfDepartmentStatus ?? "PENDING",
                     hoApprovalComment = process.Approvals?.HeadOfDepartmentComment ?? string.Empty,
