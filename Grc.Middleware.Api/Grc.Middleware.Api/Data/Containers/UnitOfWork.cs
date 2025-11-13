@@ -54,6 +54,7 @@ namespace Grc.Middleware.Api.Data.Containers {
         public IProcessGroupRepository ProcessGroupRepository { get; set; }
         public IProcessTypeRepository ProcessTypeRepository { get; set; }
         public IOperationProcessRepository OperationProcessRepository { get; set; }
+        public IProcessApprovalRepository ProcessApprovalRepository { get; set; }
         public IAuditExceptionRepository AuditExceptionRepository { get; set; }
         public IAuditReportRepository AuditReportRepository { get; set; }
         public IAuditRepository AuditRepository { get; set; }
@@ -114,6 +115,7 @@ namespace Grc.Middleware.Api.Data.Containers {
             ProcessGroupRepository = new ProcessGroupRepository(_loggerFactory, Context);
             ProcessTypeRepository = new ProcessTypeRepository(_loggerFactory, Context);
             OperationProcessRepository = new OperationProcessRepository(_loggerFactory, Context);
+            ProcessApprovalRepository = new ProcessApprovalRepository(_loggerFactory, Context);
             AuditExceptionRepository = new AuditExceptionRepository(_loggerFactory, Context);
             AuditReportRepository = new AuditReportRepository(_loggerFactory, Context);
             AuditRepository = new AuditRepository(_loggerFactory, Context);
@@ -270,6 +272,7 @@ namespace Grc.Middleware.Api.Data.Containers {
                     ProcessGroupRepository = null;
                     ProcessTypeRepository = null;
                     OperationProcessRepository = null;
+                    ProcessApprovalRepository = null;
                     AuditExceptionRepository = null;
                     AuditReportRepository = null;
                     AuditRepository = null;

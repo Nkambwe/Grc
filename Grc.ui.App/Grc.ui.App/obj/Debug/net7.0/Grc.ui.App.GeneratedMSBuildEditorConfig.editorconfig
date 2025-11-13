@@ -248,8 +248,8 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcT3BlcmF0aW9uc1xWaWV3c1xPcGVyYXRpb25Xb3JrZmxvd1xHcm91cFByb2Nlc3Nlcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Areas/Operations/Views/OperationWorkflow/Pending.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcT3BlcmF0aW9uc1xWaWV3c1xPcGVyYXRpb25Xb3JrZmxvd1xQZW5kaW5nLmNzaHRtbA==
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Areas/Operations/Views/OperationWorkflow/NewProcess.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcT3BlcmF0aW9uc1xWaWV3c1xPcGVyYXRpb25Xb3JrZmxvd1xOZXdQcm9jZXNzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Areas/Operations/Views/OperationWorkflow/RegisterProcess.cshtml]

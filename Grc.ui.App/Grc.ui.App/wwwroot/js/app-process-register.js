@@ -104,10 +104,19 @@ function initProcessRegisterTable() {
                 title: "ACTION",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                    return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteProcess(${rowData.id})">
-                        <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
-                        <span>DELETE</span>
-                    </button>`;
+                    let isLocked = rowData.isLockProcess ?? false;
+                    if (isLocked) {
+                        return `<button class="grc-table-btn disabled" disabled>
+                            <span><i class="mdi mdi-lock-outline" aria-hidden="true"></i></span>
+                            <span>LOCKED</span>
+                        </button>`;
+                    } else {
+                        return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteProcess(${rowData.id})">
+                            <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                            <span>DELETE</span>
+                        </button>`;
+                    }
+                   
                 },
                 width: 150,
                 hozAlign: "center",
@@ -185,8 +194,6 @@ function openProcessEditor(title, process, isEdit) {
     $("#typeId").val(process?.typeId || 0).trigger('change.select2');
     $('#isDeleted').prop('checked', process?.isDeleted || false);
     $("#effectiveDate").val(process?.effectiveDate);
-    
-
     $('#isLockProcess').prop('checked', isLocked);
     $("#onholdReason").val(status);
     $("#processStatus").val(process?.processStatus || 0).trigger('change.select2');
@@ -196,7 +203,6 @@ function openProcessEditor(title, process, isEdit) {
     $("#unitId").val(process?.unitId || 0).trigger('change.select2');
     $("#ownerId").val(process?.ownerId || 0).trigger('change.select2');
     $("#assigneedId").val(process?.assigneedId || 0).trigger('change.select2');
-
     $("#hodApprovalOn").val(process?.hodApprovalOn || "");
     $("#hodApprovalStatus").val(process?.hodApprovalStatus || "PENDING").trigger('change.select2');
     $("#hoApprovalComment").val(process?.hoApprovalComment || "");

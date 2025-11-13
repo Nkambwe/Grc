@@ -504,14 +504,14 @@
 
             /*----------------------- Operations process tat routes*/
             routeBuilder.MapControllerRoute(
-              name: "app-operations-processes-reports",
-              pattern: "/operations/workflow/processes/reports",
-              defaults: new { area = "Operations", controller = "OperationWorkflow", action = "TATReport" }
+               name: "app-operations-processes-reports",
+               pattern: "/operations/workflow/processes/reports",
+               defaults: new { area = "Operations", controller = "OperationWorkflow", action = "TATReport" }
             );
             routeBuilder.MapControllerRoute(
-              name: "app-operations-processes-tat-all",
-              pattern: "/operations/workflow/processes/tat/all",
-              defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ProcessTATList" }
+               name: "app-operations-processes-tat-all",
+               pattern: "/operations/workflow/processes/tat/all",
+               defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ProcessTATList" }
             );
             routeBuilder.MapControllerRoute(
                name: "app-operations-processes-tat-retrieve",
@@ -520,25 +520,31 @@
             );
 
             routeBuilder.MapControllerRoute(
-             name: "app-operations-processes-approvals",
-             pattern: "/operations/workflow/processes/approvals",
-             defaults: new { area = "Operations", controller = "OperationWorkflow", action = "Approvals" }
+                name: "app-operations-processes-approvals",
+                pattern: "/operations/workflow/processes/approvals",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "Approvals" }
             );
             routeBuilder.MapControllerRoute(
-             name: "app-operations-processes-pending",
-             pattern: "/operations/workflow/processes/pending",
-             defaults: new { area = "Operations", controller = "OperationWorkflow", action = "Pending" }
+                name: "app-operations-processes-new",
+                pattern: "/operations/workflow/processes/all-new",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "NewProcess" }
             );
             routeBuilder.MapControllerRoute(
-             name: "app-operations-processes-revisions",
-             pattern: "/operations/workflow/processes/revisions",
-             defaults: new { area = "Operations", controller = "OperationWorkflow", action = "Revisions" }
+                name: "app-operations-processes-new-list",
+                pattern: "/operations/workflow/processes/new-list",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ProcessNewList" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-operations-processes-review-list",
+                pattern: "/operations/workflow/processes/review-list",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ProcessReviewList" }
+            );
+            routeBuilder.MapControllerRoute(
+                 name: "app-operations-processes-revisions",
+                 pattern: "/operations/workflow/processes/revisions",
+                 defaults: new { area = "Operations", controller = "OperationWorkflow", action = "Revisions" }
             );
            
-
-
-
-
 
             /*----------------------- Compliance dashboard routes*/
             routeBuilder.MapControllerRoute(

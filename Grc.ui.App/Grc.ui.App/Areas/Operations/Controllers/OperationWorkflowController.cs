@@ -1071,9 +1071,9 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
 
         #endregion
 
-        #region Process Pending
+        #region New Process
 
-        public async Task<IActionResult> Pending() {
+        public async Task<IActionResult> NewProcess() {
             var model = new OperationsDashboardModel();
             try {
                 //..get user IP address
@@ -1097,6 +1097,62 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             }
 
             return View(model);
+        }
+
+        public async Task<IActionResult> ProcessNewList([FromBody] TableListRequest request)
+        {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError) Logger.LogActivity("NEW PROCESSES DATA ERROR: Failed to retrieve new processes");
+
+                var currentUser = userResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.PROCESSES_RETRIEVE_PROCESS.GetDescription();
+
+                var result = await _processService.GetNewProcessAsync(request);
+                PagedResponse<GrcProcessRegisterResponse> list = result.Data ?? new();
+
+                var pagedEntities = (list.Entities ?? new List<GrcProcessRegisterResponse>())
+                    .Select(process => new {
+                        id = process.Id,
+                        processName = process.ProcessName ?? string.Empty,
+                        description = process.Description ?? string.Empty,
+                        currentVersion = process.CurrentVersion ?? "0.0.0",
+                        fileName = process.FileName,
+                        originalOnFile = process.OriginalOnFile,
+                        processStatus = process.ProcessStatus ?? "UNDEFINED",
+                        onholdReason = process.OnholdReason ?? string.Empty,
+                        comment = process.Comments ?? string.Empty,
+                        typeId = process.TypeId,
+                        typeName = process.TypeName ?? string.Empty,
+                        unitId = process.UnitId,
+                        unitName = process.UnitName ?? string.Empty,
+                        ownerId = process.OwnerId,
+                        ownerName = process.OwnerName ?? string.Empty,
+                        assigneedId = process.ResponsibilityId,
+                        assigneeName = process.Responsible ?? string.Empty,
+                        isDeleted = process.IsDeleted,
+                        isLockProcess = process.IsLockProcess,
+                        effectiveDate = process.EffectiveDate,
+                        createdOn = process.CreatedOn,
+                        createdBy = process.CreatedBy ?? string.Empty,
+                        modifiedOn = process.ModifiedOn ?? process.CreatedOn,
+                        modifiedBy = process.ModifiedBy ?? string.Empty
+                    }).ToList();
+
+                var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
+
+                return Ok(new { last_page = totalPages, total_records = list.TotalCount, data = pagedEntities });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving Operation processes: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Ok(new { last_page = 0, data = new List<object>() });
+            }
         }
 
         #endregion
@@ -1127,6 +1183,113 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             }
 
             return View(model);
+        }
+
+        public async Task<IActionResult> ProcessReviewList([FromBody] TableListRequest request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError) Logger.LogActivity("REVIEW PROCESSES DATA ERROR: Failed to retrieve process reviews");
+
+                var currentUser = userResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.PROCESSES_RETRIEVE_PROCESS.GetDescription();
+
+                var result = await _processService.GetReviewProcessAsync(request);
+                PagedResponse<GrcProcessRegisterResponse> list = result.Data ?? new();
+                var pagedEntities = (list.Entities ?? new List<GrcProcessRegisterResponse>())
+                    .Select(process => new {
+                        id = process.Id,
+                        processName = process.ProcessName ?? string.Empty,
+                        description = process.Description ?? string.Empty,
+                        currentVersion = process.CurrentVersion ?? "0.0.0",
+                        fileName = process.FileName,
+                        originalOnFile = process.OriginalOnFile,
+                        processStatus = process.ProcessStatus ?? "UNDEFINED",
+                        onholdReason = process.OnholdReason ?? string.Empty,
+                        comment = process.Comments ?? string.Empty,
+                        typeId = process.TypeId,
+                        typeName = process.TypeName ?? string.Empty,
+                        unitId = process.UnitId,
+                        unitName = process.UnitName ?? string.Empty,
+                        ownerId = process.OwnerId,
+                        ownerName = process.OwnerName ?? string.Empty,
+                        assigneedId = process.ResponsibilityId,
+                        assigneeName = process.Responsible ?? string.Empty,
+                        isDeleted = process.IsDeleted,
+                        isLockProcess = process.IsLockProcess,
+                        effectiveDate = process.EffectiveDate,
+                        createdOn = process.CreatedOn,
+                        createdBy = process.CreatedBy ?? string.Empty,
+                        modifiedOn = process.ModifiedOn ?? process.CreatedOn,
+                        modifiedBy = process.ModifiedBy ?? string.Empty
+                    }).ToList();
+
+                var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
+                return Ok(new { last_page = totalPages, total_records = list.TotalCount, data = pagedEntities });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving Operation processes: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Ok(new { last_page = 0, data = new List<object>() });
+            }
+        }
+
+        #endregion
+
+        #region Process Approvals
+
+        public async Task<IActionResult> ProcessApprovalList([FromBody] TableListRequest request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError) Logger.LogActivity("PROCESS APPROVAL DATA ERROR: Failed to retrieve process approvals");
+
+                var currentUser = userResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.PROCESSES_RETRIEVE_PROCESS.GetDescription();
+
+                var result = await _processService.GetProcessApprovalStatusAsync(request);
+                PagedResponse<GrcProcessApprovalStatusResponse> list = result.Data ?? new();
+                var pagedEntities = (list.Entities ?? new List<GrcProcessApprovalStatusResponse>())
+                    .Select(approval => new {
+                        id = approval.Id,
+                        processName = approval.ProcessName ?? string.Empty,
+                        requestDate = approval.RequestDate,
+                        hodStatus = approval.HodStatus ?? "PENDING",
+                        riskStatus = (string.IsNullOrWhiteSpace(approval.HodStatus) || approval.HodStatus == "PENDING") ? string.Empty : approval.RiskStatus ?? "PENDING",
+                        complianceStatus = (string.IsNullOrWhiteSpace(approval.RiskStatus) || approval.RiskStatus == "PENDING") ? string.Empty : approval.ComplianceStatus ?? "PENDING",
+                        requiresBopApproval = approval.RequiresBopApproval,
+                        BopStatus = (approval.RequiresBopApproval && (string.IsNullOrWhiteSpace(approval.ComplianceStatus) || approval.ComplianceStatus == "PENDING")) ? string.Empty :
+                        (approval.RequiresBopApproval && (!string.IsNullOrWhiteSpace(approval.ComplianceStatus) || approval.ComplianceStatus != "PENDING")) ? approval.BopStatus ?? "PENDING":
+                        string.Empty,
+                        requiresCreditApproval = approval.RequiresCreditApproval,
+                        CreditStatus = (approval.RequiresCreditApproval && (string.IsNullOrWhiteSpace(approval.BopStatus) || approval.BopStatus == "PENDING")) ? string.Empty :
+                        (approval.RequiresCreditApproval && (!string.IsNullOrWhiteSpace(approval.BopStatus) || approval.BopStatus != "PENDING")) ? approval.CreditStatus ?? "PENDING" :
+                        string.Empty,
+                        requiresTreasuryApproval = approval.RequiresTreasuryApproval,
+                        treasuryStatus = (approval.RequiresTreasuryApproval && (string.IsNullOrWhiteSpace(approval.CreditStatus) || approval.CreditStatus == "PENDING")) ? string.Empty :
+                        (approval.RequiresTreasuryApproval && (!string.IsNullOrWhiteSpace(approval.CreditStatus) || approval.CreditStatus != "PENDING")) ? approval.TreasuryStatus ?? "PENDING" :
+                        string.Empty,
+                        requiresFintechApproval = approval.RequiresFintechApproval,
+                        FintechStatus = (approval.RequiresTreasuryApproval && (string.IsNullOrWhiteSpace(approval.TreasuryStatus) || approval.TreasuryStatus == "PENDING")) ? string.Empty :
+                        (approval.RequiresTreasuryApproval && (!string.IsNullOrWhiteSpace(approval.TreasuryStatus) || approval.TreasuryStatus != "PENDING")) ? approval.FintechStatus ?? "PENDING" :
+                        string.Empty,
+
+                    }).ToList();
+
+                var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
+                return Ok(new { last_page = totalPages, total_records = list.TotalCount, data = pagedEntities });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving Operation processes: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Ok(new { last_page = 0, data = new List<object>() });
+            }
         }
 
         #endregion

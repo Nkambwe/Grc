@@ -341,6 +341,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
+    "Method": "GetProcessApprovalStatus",
+    "RelativePath": "grc/processes/approval-status",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
     "Method": "CreateProcessGroup",
     "RelativePath": "grc/processes/create-group",
     "HttpMethod": "POST",
@@ -455,6 +471,38 @@
     "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
     "Method": "GetProcessGroups",
     "RelativePath": "grc/processes/groups-all",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
+    "Method": "GetNewProcess",
+    "RelativePath": "grc/processes/processes-new",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
+    "Method": "GetReviewProcess",
+    "RelativePath": "grc/processes/processes-reviews",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,

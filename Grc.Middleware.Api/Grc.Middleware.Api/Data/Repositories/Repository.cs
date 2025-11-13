@@ -662,24 +662,39 @@ namespace Grc.Middleware.Api.Data.Repositories {
             page = Math.Max(1, page);
             size = Math.Max(1, size);
 
+            //..get entity data set
             IQueryable<T> query = context.Set<T>();
 
             //..apply includes
             foreach (var include in includes)
                 query = query.Include(include);
 
+            //..exclude deleted entities
             if (!includeDeleted)
                 query = query.Where(m => !m.IsDeleted);
 
             var totalRecords = await query.CountAsync();
-            var entities = await query
-                .Skip((page - 1) * size)
-                .Take(size)
-                .ToListAsync();
+            var entities = await query.Skip((page - 1) * size).Take(size).ToListAsync();
+            return new PagedResult<T> { Entities = entities,Count = totalRecords,Page = page, Size = size };
+        }
 
+        public async Task<PagedResult<T>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<T, bool>> predicate = null, params Expression<Func<T, object>>[] includes) {
+            IQueryable<T> query = context.Set<T>();
+
+            if (!includeDeleted)
+                query = query.Where(m => !m.IsDeleted);
+
+            if (includes != null)
+                query = includes.Aggregate(query, (current, include) => current.Include(include));
+
+            if (predicate != null)
+                query = query.Where(predicate);
+
+            var totalCount = await query.CountAsync();
+            var entities = await query.Skip((page - 1) * size).Take(size).ToListAsync();
             return new PagedResult<T> {
                 Entities = entities,
-                Count = totalRecords,
+                Count = totalCount,
                 Page = page,
                 Size = size
             };

@@ -23,6 +23,7 @@ namespace Grc.Middleware.Api.Controllers {
         private readonly IProcessTypeService _typeService;
         private readonly IDepartmentsService _departmentService;
         private readonly ISystemAccessService _accessService;
+        private readonly IProcessApprovalService _approvalService;
 
         public OperationProcessesController(IObjectCypher cypher, 
                                             IServiceLoggerFactory loggerFactory, 
@@ -35,6 +36,7 @@ namespace Grc.Middleware.Api.Controllers {
                                             IProcessTagService tagService,
                                             IProcessGroupService groupService,
                                             IProcessTypeService typeService,
+                                            IProcessApprovalService approvalService,
                                             ISystemAccessService accessService,
                                             IDepartmentsService departmentService
                                             ) 
@@ -51,7 +53,7 @@ namespace Grc.Middleware.Api.Controllers {
             _typeService = typeService;
             _departmentService = departmentService;
             _accessService = accessService;
-
+            _approvalService = approvalService;
         }
 
         #region Process Register Endpoints
@@ -244,7 +246,11 @@ namespace Grc.Middleware.Api.Controllers {
                     var searchTerm = request.SearchTerm.ToLower();
                     processes = processes.Where(u =>
                         (u.ProcessName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (u.Description?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                        (u.Description?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.TypeName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.UnitName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.OwnerName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.Responsibile?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
                     ).ToList();
                 }
 
@@ -1143,5 +1149,314 @@ namespace Grc.Middleware.Api.Controllers {
         }
 
         #endregion
+
+        #region New Process Endpoints
+
+        [HttpPost("processes/processes-new")]
+        public async Task<IActionResult> GetNewProcess([FromBody] ListRequest request)
+        {
+
+            try
+            {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null)
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<ProcessRegisterResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _processService.PageNewProcessesAsync(request.PageIndex, 
+                    request.PageSize, true, p => p.Unit, p => p.Owner, p => p.Responsible, p => p.ProcessType);
+                if (pageResult.Entities == null || !pageResult.Entities.Any())
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.SUCCESS,
+                        "No data",
+                        "No new process records found"
+                    );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+
+                    return Ok(new GrcResponse<PagedResponse<ProcessRegisterResponse>>(new PagedResponse<ProcessRegisterResponse>(
+                        new List<ProcessRegisterResponse>(),
+                        0,
+                        pageResult.Page,
+                        pageResult.Size
+                    )));
+                }
+
+                List<ProcessRegisterResponse> processes = new();
+                var records = pageResult.Entities;
+                if (records != null && records.Any())
+                {
+                    records.ForEach(register => processes.Add(new()
+                    {
+                        Id = register.Id,
+                        ProcessName = register.ProcessName ?? string.Empty,
+                        Description = register.Description ?? string.Empty,
+                        CurrentVersion = register.CurrentVersion ?? string.Empty,
+                        EffectiveDate = register.EffectiveDate,
+                        LastUpdated = register.LastUpdated,
+                        FileName = register.FileName ?? string.Empty,
+                        ProcessStatus = register.ProcessStatus ?? string.Empty,
+                        Comments = register.Comments ?? string.Empty,
+                        OnholdReason = register.ReasonOnhold ?? string.Empty,
+                        TypeId = register.TypeId,
+                        TypeName = register.ProcessType != null ? register.ProcessType.TypeName : string.Empty,
+                        UnitId = register.UnitId,
+                        UnitName = register.Unit != null ? register.Unit.UnitName : string.Empty,
+                        OwnerId = register.OwnerId,
+                        OwnerName = register.Owner != null ? register.Owner.ContactPosition : string.Empty,
+                        ResponsibilityId = register.ResponsibilityId,
+                        Responsibile = register.Responsible != null ? register.Responsible.ContactPosition : string.Empty,
+                        IsLockProcess = register.IsLockProcess,
+                        NeedsBranchReview = register.NeedsBranchReview,
+                        NeedsCreditReview = register.NeedsCreditReview,
+                        NeedsTreasuryReview = register.NeedsTreasuryReview,
+                        NeedsFintechReview = register.NeedsFintechReview,
+                        IsDeleted = register.IsDeleted,
+                        CreatedOn = register.CreatedOn,
+                        CreatedBy = register.CreatedBy ?? string.Empty,
+                        ModifiedOn = register.LastModifiedOn ?? register.CreatedOn,
+                        ModifiedBy = register.LastModifiedBy ?? string.Empty
+                    }));
+                }
+
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+                {
+                    var searchTerm = request.SearchTerm.ToLower();
+                    processes = processes.Where(u =>
+                        (u.ProcessName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.Description?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.TypeName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.UnitName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.OwnerName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.Responsibile?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                    ).ToList();
+                }
+
+                return Ok(new GrcResponse<PagedResponse<ProcessRegisterResponse>>(
+                    new PagedResponse<ProcessRegisterResponse>(
+                    processes,
+                    pageResult.Count,
+                    pageResult.Page,
+                    pageResult.Size
+                )));
+            }
+            catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<ProcessRegisterResponse>>(error));
+            }
+        }
+
+        #endregion
+
+        #region Review Process Endpoints
+
+        [HttpPost("processes/processes-reviews")]
+        public async Task<IActionResult> GetReviewProcess([FromBody] ListRequest request) {
+
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<ProcessRegisterResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _processService.PageReviewProcessesAsync(request.PageIndex, 
+                    request.PageSize, true, p => p.Unit, p => p.Owner, p => p.Responsible,p => p.ProcessType);
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(
+                        ResponseCodes.SUCCESS,
+                        "No data",
+                        "No review process records found"
+                    );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+
+                    return Ok(new GrcResponse<PagedResponse<ProcessRegisterResponse>>(
+                        new PagedResponse<ProcessRegisterResponse>(
+                        new List<ProcessRegisterResponse>(),
+                        0,pageResult.Page, pageResult.Size)));
+                }
+
+                List<ProcessRegisterResponse> processes = new();
+                var records = pageResult.Entities;
+                if (records != null && records.Any()) {
+                    records.ForEach(register => processes.Add(new() {
+                        Id = register.Id,
+                        ProcessName = register.ProcessName ?? string.Empty,
+                        Description = register.Description ?? string.Empty,
+                        CurrentVersion = register.CurrentVersion ?? string.Empty,
+                        EffectiveDate = register.EffectiveDate,
+                        LastUpdated = register.LastUpdated,
+                        FileName = register.FileName ?? string.Empty,
+                        ProcessStatus = register.ProcessStatus ?? string.Empty,
+                        Comments = register.Comments ?? string.Empty,
+                        OnholdReason = register.ReasonOnhold ?? string.Empty,
+                        TypeId = register.TypeId,
+                        TypeName = register.ProcessType != null ? register.ProcessType.TypeName : string.Empty,
+                        UnitId = register.UnitId,
+                        UnitName = register.Unit != null ? register.Unit.UnitName : string.Empty,
+                        OwnerId = register.OwnerId,
+                        OwnerName = register.Owner != null ? register.Owner.ContactPosition : string.Empty,
+                        ResponsibilityId = register.ResponsibilityId,
+                        Responsibile = register.Responsible != null ? register.Responsible.ContactPosition : string.Empty,
+                        IsLockProcess = register.IsLockProcess,
+                        NeedsBranchReview = register.NeedsBranchReview,
+                        NeedsCreditReview = register.NeedsCreditReview,
+                        NeedsTreasuryReview = register.NeedsTreasuryReview,
+                        NeedsFintechReview = register.NeedsFintechReview,
+                        IsDeleted = register.IsDeleted,
+                        CreatedOn = register.CreatedOn,
+                        CreatedBy = register.CreatedBy ?? string.Empty,
+                        ModifiedOn = register.LastModifiedOn ?? register.CreatedOn,
+                        ModifiedBy = register.LastModifiedBy ?? string.Empty
+                    }));
+                }
+
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+                {
+                    var searchTerm = request.SearchTerm.ToLower();
+                    processes = processes.Where(u =>
+                        (u.ProcessName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.Description?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.TypeName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.UnitName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.OwnerName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.Responsibile?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                    ).ToList();
+                }
+
+                return Ok(new GrcResponse<PagedResponse<ProcessRegisterResponse>>(
+                    new PagedResponse<ProcessRegisterResponse>(
+                    processes,
+                    pageResult.Count,
+                    pageResult.Page,
+                    pageResult.Size
+                )));
+            }
+            catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<ProcessRegisterResponse>>(error));
+            }
+        }
+
+        #endregion
+
+        #region Process Approvals Endpoints
+
+        [HttpPost("processes/approval-status")]
+        public async Task<IActionResult> GetProcessApprovalStatus([FromBody] ListRequest request)
+        {
+
+            try
+            {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null)
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<ProcessApprovalResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _approvalService.PageProcessApprovalStatusAsync(request.PageIndex, request.PageSize, true, p => p.Process);
+                if (pageResult.Entities == null || !pageResult.Entities.Any())
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.SUCCESS,
+                        "No data",
+                        "No review process records found"
+                    );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+
+                    return Ok(new GrcResponse<PagedResponse<ProcessApprovalResponse>>(
+                        new PagedResponse<ProcessApprovalResponse>(
+                        new List<ProcessApprovalResponse>(),
+                        0, pageResult.Page, pageResult.Size)));
+                }
+
+                List<ProcessApprovalResponse> approvals = new();
+                var records = pageResult.Entities;
+                if (records != null && records.Any())
+                {
+                    records.ForEach(approval => approvals.Add(new ProcessApprovalResponse()
+                    {
+                        Id = approval.Id,
+                        ProcessName = approval.Process.ProcessName ?? string.Empty,
+                        HeadOfDepartmentStart = approval.HeadOfDepartmentStart,
+                        HeadOfDepartmentEnd = approval.HeadOfDepartmentEnd,
+                        HeadOfDepartmentStatus = approval.HeadOfDepartmentStatus ?? string.Empty,
+                        HeadOfDepartmentComment = approval.HeadOfDepartmentComment ?? string.Empty,
+                        RiskStart = approval.RiskStart,
+                        RiskEnd = approval.RiskEnd,
+                        RiskStatus = approval.RiskStatus ?? string.Empty,
+                        RiskComment = approval.RiskComment ?? string.Empty,
+                        ComplianceStart = approval.ComplianceStart,
+                        ComplianceEnd = approval.ComplianceEnd,
+                        ComplianceStatus = approval.ComplianceStatus ?? string.Empty,
+                        ComplianceComment = approval.ComplianceComment ?? string.Empty,
+                        BranchOperationsStatusStart = approval.BranchOperationsStatusStart,
+                        BranchOperationsStatusEnd = approval.BranchOperationsStatusEnd,
+                        BranchOperationsStatus = approval.BranchOperationsStatus ?? string.Empty,
+                        BranchManagerComment = approval.BranchManagerComment ?? string.Empty,
+                        CreditStart = approval.CreditStart,
+                        CreditEnd = approval.CreditEnd,
+                        CreditStatus = approval.CreditStatus ?? string.Empty,
+                        CreditComment = approval.CreditComment ?? string.Empty,
+                        TreasuryStart = approval.TreasuryStart,
+                        TreasuryEnd = approval.TreasuryEnd,
+                        TreasuryStatus = approval.TreasuryStatus ?? string.Empty,
+                        TreasuryComment = approval.TreasuryComment ?? string.Empty,
+                        FintechStart = approval.FintechStart,
+                        FintechEnd = approval.FintechEnd,
+                        FintechStatus = approval.FintechStatus ?? string.Empty,
+                        FintechComment = approval.FintechComment ?? string.Empty,
+                        IsDeleted = approval.IsDeleted
+                    }));
+                }
+
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+                {
+                    var searchTerm = request.SearchTerm.ToLower();
+                    approvals = approvals.Where(u =>
+                        (u.ProcessName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                    ).ToList();
+                }
+
+                return Ok(new GrcResponse<PagedResponse<ProcessApprovalResponse>>(
+                    new PagedResponse<ProcessApprovalResponse>(
+                    approvals,
+                    pageResult.Count,
+                    pageResult.Page,
+                    pageResult.Size
+                )));
+            }
+            catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<ProcessApprovalResponse>>(error));
+            }
+        }
+
+        #endregion
+
     }
 }

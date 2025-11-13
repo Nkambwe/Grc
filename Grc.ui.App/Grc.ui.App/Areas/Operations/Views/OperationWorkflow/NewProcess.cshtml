@@ -1,0 +1,20 @@
+﻿
+@model OperationsDashboardModel
+@{
+    Layout = "_OperationLayout";
+    ViewData["Title"] = "NEW PROCESSES";
+}
+
+@{
+    var component = new PageComponentViewModel
+    {
+        ComponentId = $"0",
+        ComponentKey = "NewProcesses",
+        LeftActions = new List<ComponentAction>
+        {
+            new ComponentAction { ActionKey = ActionKey.OpsHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home") }
+        }
+    };
+}
+
+@await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("ProcessNewList") })

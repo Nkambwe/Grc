@@ -7,6 +7,9 @@ namespace Grc.Middleware.Api.Http.Responses
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
+        [JsonPropertyName("processName")]
+        public string ProcessName { get; set; }
+
         [JsonPropertyName("headOfDepartmentStart")]
         public DateTime? HeadOfDepartmentStart { get; set; }
 
@@ -90,5 +93,8 @@ namespace Grc.Middleware.Api.Http.Responses
 
         [JsonPropertyName("fintechComment")]
         public string FintechComment { get; set; }
+
+        [JsonPropertyName("isDeleted")]
+        public bool IsDeleted { get; set; }
     }
 }

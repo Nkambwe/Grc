@@ -6,7 +6,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
 {
     public class ProcessApprovalsEntityConfiguration
     {
-        public static void Configure(EntityTypeBuilder<ProcessApprovals> builder)
+        public static void Configure(EntityTypeBuilder<ProcessApproval> builder)
         {
             builder.ToTable("TBL_GRC_PROCESS_APPROVAL");
             builder.HasKey(p => p.Id).HasName("id");

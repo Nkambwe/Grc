@@ -74,6 +74,17 @@
         transition: all .5s ease-in-out;
     }
 
+.grc-view-action {
+    color: var(--purple-dark-extra);
+    transition: all .5s ease-in-out;
+}
+
+    .grc-view-action:hover {
+        font-weight: 600;
+        color: var(--purple-dark-accent);
+        transition: all .5s ease-in-out;
+    }
+
 div.dt-processing > div:last-child > div {
     position: absolute;
     top: 0;

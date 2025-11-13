@@ -40,6 +40,7 @@ namespace Grc.Middleware.Api.Data.Containers {
         IProcessGroupRepository ProcessGroupRepository { get; set; }
         IProcessTypeRepository ProcessTypeRepository { get; set; }
         IOperationProcessRepository OperationProcessRepository { get; set; }
+        IProcessApprovalRepository ProcessApprovalRepository { get; set; }
         IAuditExceptionRepository AuditExceptionRepository { get; set; }
         IAuditReportRepository AuditReportRepository { get; set; }
         IAuditRepository AuditRepository { get; set; }

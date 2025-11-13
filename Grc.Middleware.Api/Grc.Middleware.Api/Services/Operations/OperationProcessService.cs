@@ -79,7 +79,7 @@ namespace Grc.Middleware.Api.Services.Operations {
 
             try
             {
-                return await uow.StatutoryArticleRepository.CountAsync(excludeDeleted, cancellationToken);
+                return await uow.OperationProcessRepository.CountAsync(excludeDeleted, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -599,7 +599,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                     //..check entity state
                     _ = await uow.OperationProcessRepository.UpdateAsync(process, includeDeleted);
                     var entityState = ((UnitOfWork)uow).Context.Entry(process).State;
-                    Logger.LogActivity($"Regulatory Operation Process state after Update: {entityState}", "DEBUG");
+                    Logger.LogActivity($"Operation Process state after Update: {entityState}", "DEBUG");
 
                     var result = uow.SaveChanges();
                     Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
@@ -878,6 +878,44 @@ namespace Grc.Middleware.Api.Services.Operations {
             {
                 Logger.LogActivity($"Failed to retrieve Processes: {ex.Message}", "ERROR");
                 //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<OperationProcess>> PageNewProcessesAsync(int page, int size, bool includeDeleted, params Expression<Func<OperationProcess, object>>[] includes) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieve paged Processes", "INFO");
+            try {
+                var result = await uow.OperationProcessRepository.PageAllAsync(page,
+                    size,includeDeleted, p => p.ProcessStatus == "DRAFT", 
+                    includes);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Processes: {ex.Message}", "ERROR");
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<OperationProcess>> PageReviewProcessesAsync(int page, int size, bool includeDeleted, params Expression<Func<OperationProcess, object>>[] includes)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieve paged Processes", "INFO");
+            try
+            {
+                var result = await uow.OperationProcessRepository.PageAllAsync(page,
+                    size, includeDeleted, p => p.ProcessStatus == "INREVIEW",
+                    includes);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Processes: {ex.Message}", "ERROR");
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }

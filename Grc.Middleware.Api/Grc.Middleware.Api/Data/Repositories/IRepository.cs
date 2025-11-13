@@ -276,6 +276,8 @@ namespace Grc.Middleware.Api.Data.Repositories {
         /// <returns></returns>
         Task<PagedResult<T>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<T, object>>[] includes);
 
+        Task<PagedResult<T>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<T, bool>> predicate = null, params Expression<Func<T, object>>[] includes);
+
         /// <summary>
         /// Page all entities selected in a query
         /// </summary>

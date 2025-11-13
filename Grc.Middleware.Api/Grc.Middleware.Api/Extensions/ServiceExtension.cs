@@ -59,6 +59,7 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IProcessActivityRepository, ProcessActivityRepository>();
             services.AddScoped<IProcessGroupRepository, ProcessGroupRepository>();
             services.AddScoped<IProcessTypeRepository, ProcessTypeRepository>();
+            services.AddScoped<IProcessApprovalRepository, ProcessApprovalRepository>();
             services.AddScoped<IOperationProcessRepository, OperationProcessRepository>();
             services.AddScoped<IPermissionRepository, PermissionRepository>();
             services.AddScoped<IPermissionSetRepository, PermissionSetRepository>();
@@ -117,6 +118,7 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IProcessGroupService, ProcessGroupService>();
             services.AddScoped<IProcessTypeService, ProcessTypeService>();
             services.AddScoped<IOperationProcessService, OperationProcessService>();
+            services.AddScoped<IProcessApprovalService, ProcessApprovalService>();
             services.AddScoped<IAuditExceptionService, AuditExceptionService>();
             services.AddScoped<IAuditReportService, AuditReportService>();
             services.AddScoped<IAuditService, AuditService>();
