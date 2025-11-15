@@ -544,7 +544,11 @@
                  pattern: "/operations/workflow/processes/revisions",
                  defaults: new { area = "Operations", controller = "OperationWorkflow", action = "Revisions" }
             );
-           
+            routeBuilder.MapControllerRoute(
+                 name: "app-operations-processes-approvals-all",
+                 pattern: "/operations/workflow/processes/approvals-all",
+                 defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ProcessApprovalList" }
+             );
 
             /*----------------------- Compliance dashboard routes*/
             routeBuilder.MapControllerRoute(

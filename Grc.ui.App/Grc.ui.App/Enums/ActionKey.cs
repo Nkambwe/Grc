@@ -58,6 +58,8 @@ namespace Grc.ui.App.Enums {
         ProcessGroup,
         [Description("process-tag")]
         ProcessTag,
+        [Description("process-tat")]
+        ProcessTat,
         [Description("process-export")]
         ProcessExport,
         [Description("proposed-list")]

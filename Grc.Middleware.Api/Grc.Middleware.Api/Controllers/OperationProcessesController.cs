@@ -1143,9 +1143,107 @@ namespace Grc.Middleware.Api.Controllers {
         }
 
         [HttpPost("processes/tat-all")]
-        public async Task<IActionResult> GetProcessTat([FromBody] ListRequest request)
-        {
-            return Ok();
+        public async Task<IActionResult> GetProcessTat([FromBody] ListRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null)
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<ProcessTATResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _approvalService.PageProcessApprovalStatusAsync(request.PageIndex, request.PageSize, true, p => p.Process);
+                if (pageResult.Entities == null || !pageResult.Entities.Any())
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.SUCCESS,
+                        "No data",
+                        "No review process records found"
+                    );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+
+                    return Ok(new GrcResponse<PagedResponse<ProcessTATResponse>>(
+                        new PagedResponse<ProcessTATResponse>(
+                        new List<ProcessTATResponse>(),
+                        0, pageResult.Page, pageResult.Size)));
+                }
+
+                List<ProcessTATResponse> approvals = new();
+                var records = pageResult.Entities;
+                if (records != null && records.Any()) {
+                    records.ForEach(approval => {
+                        var hod = CalculateDays(approval.HeadOfDepartmentStart, approval.HeadOfDepartmentEnd);
+                        var risk = CalculateDays(approval.RiskStart, approval.RiskEnd);
+                        var compliance = CalculateDays(approval.ComplianceStart, approval.ComplianceEnd);
+                        var bop = CalculateDays(approval.BranchOperationsStatusStart, approval.BranchOperationsStatusEnd);
+                        var credit = CalculateDays(approval.CreditStart, approval.CreditEnd);
+                        var treasury = CalculateDays(approval.TreasuryStart, approval.TreasuryEnd);
+                        var fintech = CalculateDays(approval.FintechStart, approval.FintechEnd);
+                        approvals.Add(new ProcessTATResponse {
+                            Id = approval.Id,
+                            ProcessId = approval.ProcessId,
+                            RequestDate = approval.RequestDate,
+                            ProcessName = approval.Process.ProcessName ?? string.Empty,
+                            ProcessStatus = GetStatus(approval),
+                            HodCount = hod,
+                            HodStatus = approval.HeadOfDepartmentStatus,
+                            HodComment = approval.HeadOfDepartmentComment ?? string.Empty,
+                            RiskCount = risk,
+                            RiskStatus = approval.RiskStatus ?? string.Empty,
+                            RiskComment = approval.RiskComment ?? string.Empty,
+                            ComplianceCount = compliance,
+                            ComplianceStatus = approval.ComplianceStatus ?? string.Empty,
+                            ComplianceComment = approval.ComplianceComment ?? string.Empty,
+                            BopCount = bop,
+                            BropStatus = approval.BranchOperationsStatus ?? string.Empty,
+                            BropComment = approval.BranchManagerComment ?? string.Empty,
+                            CreditCount = credit,
+                            CreditStatus = approval.CreditStatus ?? string.Empty,
+                            CreditComment = approval.CreditComment ?? string.Empty,
+                            TreasuryCount = treasury,
+                            TreasuryStatus = approval.TreasuryStatus ?? string.Empty,
+                            TreasuryComment = approval.TreasuryComment ?? string.Empty,
+                            FintechCount = fintech,
+                            FintechStatus = approval.FintechStatus ?? string.Empty,
+                            FintechComment = approval.FintechComment ?? string.Empty,
+                            TotalCount = hod + risk + compliance + bop + credit + treasury + fintech
+                        });
+                    });
+
+                }
+
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                    var searchTerm = request.SearchTerm.ToLower();
+                    approvals = approvals.Where(u =>
+                        (u.ProcessName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.RiskStatus?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.BropStatus?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.ComplianceStatus?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.CreditStatus?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.TreasuryStatus?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.FintechStatus?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                    ).ToList();
+                }
+
+                return Ok(new GrcResponse<PagedResponse<ProcessTATResponse>>(
+                    new PagedResponse<ProcessTATResponse>(
+                    approvals,
+                    pageResult.Count,
+                    pageResult.Page,
+                    pageResult.Size
+                )));
+            }
+            catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<ProcessTATResponse>>(error));
+            }
         }
 
         #endregion
@@ -1359,8 +1457,7 @@ namespace Grc.Middleware.Api.Controllers {
         #region Process Approvals Endpoints
 
         [HttpPost("processes/approval-status")]
-        public async Task<IActionResult> GetProcessApprovalStatus([FromBody] ListRequest request)
-        {
+        public async Task<IActionResult> GetProcessApprovalStatus([FromBody] ListRequest request) {
 
             try
             {
@@ -1395,11 +1492,11 @@ namespace Grc.Middleware.Api.Controllers {
 
                 List<ProcessApprovalResponse> approvals = new();
                 var records = pageResult.Entities;
-                if (records != null && records.Any())
-                {
-                    records.ForEach(approval => approvals.Add(new ProcessApprovalResponse()
-                    {
+                if (records != null && records.Any()) {
+                    records.ForEach(approval => approvals.Add(new ProcessApprovalResponse() {
                         Id = approval.Id,
+                        ProcessId = approval.ProcessId, 
+                        RequestDate = approval.RequestDate,
                         ProcessName = approval.Process.ProcessName ?? string.Empty,
                         HeadOfDepartmentStart = approval.HeadOfDepartmentStart,
                         HeadOfDepartmentEnd = approval.HeadOfDepartmentEnd,
@@ -1433,11 +1530,17 @@ namespace Grc.Middleware.Api.Controllers {
                     }));
                 }
 
-                if (!string.IsNullOrWhiteSpace(request.SearchTerm))
-                {
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
                     var searchTerm = request.SearchTerm.ToLower();
                     approvals = approvals.Where(u =>
-                        (u.ProcessName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                        (u.ProcessName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.HeadOfDepartmentStatus?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.RiskStatus?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)||
+                        (u.ComplianceStatus?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.BranchOperationsStatus?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.CreditStatus?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.TreasuryStatus?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.FintechStatus?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
                     ).ToList();
                 }
 
@@ -1454,6 +1557,52 @@ namespace Grc.Middleware.Api.Controllers {
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<PagedResponse<ProcessApprovalResponse>>(error));
             }
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private static string GetStatus(ProcessApproval approval) {
+            string status = "Pending";
+            if (approval.FintechStatus == "REJECTED" ||
+                approval.TreasuryStatus == "REJECTED" ||
+                approval.CreditStatus == "REJECTED" ||
+                approval.BranchOperationsStatus == "REJECTED" ||
+                approval.ComplianceStatus == "REJECTED" ||
+                approval.RiskStatus == "REJECTED" ||
+                approval.HeadOfDepartmentStatus == "REJECTED") {
+                status = "Rejected";
+            }
+            else if (approval.FintechStatus == "APPROVED" &&
+                     approval.TreasuryStatus == "APPROVED" &&
+                     approval.CreditStatus == "APPROVED" &&
+                     approval.BranchOperationsStatus == "APPROVED" &&
+                     approval.ComplianceStatus == "APPROVED" &&
+                     approval.RiskStatus == "APPROVED" &&
+                     approval.HeadOfDepartmentStatus == "APPROVED") {
+                status = "Approved";
+            }
+            else if (approval.FintechStatus == "ONHOLD" &&
+                     approval.TreasuryStatus == "ONHOLD" &&
+                     approval.CreditStatus == "ONHOLD" &&
+                     approval.BranchOperationsStatus == "ONHOLD" &&
+                     approval.ComplianceStatus == "ONHOLD" &&
+                     approval.RiskStatus == "ONHOLD" &&
+                     approval.HeadOfDepartmentStatus == "ONHOLD")
+            {
+                status = "Onhold";
+            }
+
+            return status;
+        }
+
+        private static int CalculateDays(DateTime? startDate, DateTime? endDate) {
+            if (startDate is null)
+                return 0;
+
+            DateTime finalDate = endDate ?? DateTime.Now;
+            return Math.Max(0, (finalDate - startDate.Value).Days);
         }
 
         #endregion

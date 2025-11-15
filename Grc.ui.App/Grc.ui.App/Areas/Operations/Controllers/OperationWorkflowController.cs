@@ -115,7 +115,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Error retrieving Operation processes: {ex.Message}", "ERROR");
-                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
                 return Ok(new { last_page = 0, data = new List<object>() });
             }
         }
@@ -501,7 +501,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Error retrieving process group: {ex.Message}", "ERROR");
-                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
                 return Ok(new { last_page = 0, data = new List<object>() });
             }
         }
@@ -795,7 +795,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Error retrieving process tags: {ex.Message}", "ERROR");
-                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
                 return Ok(new { last_page = 0, data = new List<object>() });
             }
         }
@@ -1016,9 +1016,13 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                         hodCount = tat.HodCount,
                         riskCount = tat.RiskCount,
                         complianceCount = tat.ComplianceCount,
+                        requireBop = tat.NeedBropsApproval,
                         bopCount = tat.BopCount,
+                        requireTreasury = tat.NeedTreasuryApproval,
                         treasuryCount = tat.TreasuryCount,
+                        requireFintech = tat.NeedFintechApproval,
                         fintechCount = tat.FintechCount,
+                        requireCredit = tat.NeedCreditApproval,
                         creditCount = tat.CreditCount,
                         totalCount = tat.TotalCount,
                         createdOn = tat.CreatedOn,
@@ -1034,7 +1038,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Error retrieving process tags: {ex.Message}", "ERROR");
-                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
                 return Ok(new { last_page = 0, data = new List<object>() });
             }
         }
@@ -1067,6 +1071,59 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             }
 
             return View(model);
+        }
+        public async Task<IActionResult> ProcessApprovalList([FromBody] TableListRequest request)
+        {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError) Logger.LogActivity("PROCESS APPROVAL DATA ERROR: Failed to retrieve process approvals");
+
+                var currentUser = userResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.PROCESSES_RETRIEVE_PROCESS.GetDescription();
+
+                var result = await _processService.GetProcessApprovalStatusAsync(request);
+                PagedResponse<GrcProcessApprovalStatusResponse> list = result.Data ?? new();
+                var pagedEntities = (list.Entities ?? new List<GrcProcessApprovalStatusResponse>())
+                    .Select(approval => new {
+                        id = approval.Id,
+                        processName = approval.ProcessName ?? string.Empty,
+                        requestDate = approval.RequestDate,
+                        hodStatus = string.IsNullOrWhiteSpace(approval.HodStatus) ? "PENDING": approval.HodStatus,
+                        riskStatus = (string.IsNullOrWhiteSpace(approval.HodStatus) || approval.HodStatus == "PENDING") ? "NOT STARTED" : (string.IsNullOrWhiteSpace(approval.RiskStatus) ? "PENDING" : approval.RiskStatus),
+                        complianceStatus = (string.IsNullOrWhiteSpace(approval.RiskStatus) || approval.RiskStatus == "PENDING") ? "NOT STARTED" : approval.ComplianceStatus ?? "PENDING",
+                        requiresBopApproval = approval.RequiresBopApproval,
+                        bopStatus = (approval.RequiresBopApproval && (string.IsNullOrWhiteSpace(approval.ComplianceStatus) || approval.ComplianceStatus == "PENDING")) ? "NOT STARTED" :
+                        (approval.RequiresBopApproval && (!string.IsNullOrWhiteSpace(approval.ComplianceStatus) || approval.ComplianceStatus != "PENDING")) ? (string.IsNullOrWhiteSpace(approval.BopStatus) ? "PENDING" : approval.BopStatus) :
+                        "NA",
+                        requiresCreditApproval = approval.RequiresCreditApproval,
+                        creditStatus = (approval.RequiresCreditApproval && (string.IsNullOrWhiteSpace(approval.BopStatus) || approval.BopStatus == "PENDING")) ? "NOT STARTED" :
+                        (approval.RequiresCreditApproval && (!string.IsNullOrWhiteSpace(approval.BopStatus) || approval.BopStatus != "PENDING")) ? (string.IsNullOrWhiteSpace(approval.CreditStatus) ? "PENDING" : approval.CreditStatus) :
+                        "NA",
+                        requiresTreasuryApproval = approval.RequiresTreasuryApproval,
+                        treasuryStatus = (approval.RequiresTreasuryApproval && (string.IsNullOrWhiteSpace(approval.CreditStatus) || approval.CreditStatus == "PENDING")) ? "NOT STARTED" :
+                        (approval.RequiresTreasuryApproval && (!string.IsNullOrWhiteSpace(approval.CreditStatus) || approval.CreditStatus != "PENDING")) ? (string.IsNullOrWhiteSpace(approval.TreasuryStatus) ? "PENDING" : approval.TreasuryStatus) :
+                        "NA",
+                        requiresFintechApproval = approval.RequiresFintechApproval,
+                        fintechStatus = (approval.RequiresTreasuryApproval && (string.IsNullOrWhiteSpace(approval.TreasuryStatus) || approval.TreasuryStatus == "PENDING")) ? "NOT STARTED" :
+                        (approval.RequiresTreasuryApproval && (!string.IsNullOrWhiteSpace(approval.TreasuryStatus) || approval.TreasuryStatus != "PENDING")) ? (string.IsNullOrWhiteSpace(approval.FintechStatus) ? "PENDING" : approval.FintechStatus) :
+                        "NA",
+                        processId = approval.ProcessId,
+
+                    }).ToList();
+
+                var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
+                return Ok(new { last_page = totalPages, total_records = list.TotalCount, data = pagedEntities });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving Operation processes: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
+                return Ok(new { last_page = 0, data = new List<object>() });
+            }
         }
 
         #endregion
@@ -1150,7 +1207,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Error retrieving Operation processes: {ex.Message}", "ERROR");
-                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
                 return Ok(new { last_page = 0, data = new List<object>() });
             }
         }
@@ -1177,8 +1234,8 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
 
                 //..prepare user dashboard
                 model = await _dDashboardFactory.PrepareDefaultOperationsModelAsync(currentUser);
-            } catch(Exception ex){ 
-                await ProcessErrorAsync(ex.Message,"OPERATION-WORKFLOW-CONTROLLER" , ex.StackTrace);
+            } catch(Exception ex){
+                await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
                 return View(model);
             }
 
@@ -1232,62 +1289,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Error retrieving Operation processes: {ex.Message}", "ERROR");
-                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
-                return Ok(new { last_page = 0, data = new List<object>() });
-            }
-        }
-
-        #endregion
-
-        #region Process Approvals
-
-        public async Task<IActionResult> ProcessApprovalList([FromBody] TableListRequest request) {
-            try {
-                var ipAddress = WebHelper.GetCurrentIpAddress();
-                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (userResponse.HasError) Logger.LogActivity("PROCESS APPROVAL DATA ERROR: Failed to retrieve process approvals");
-
-                var currentUser = userResponse.Data;
-                request.UserId = currentUser.UserId;
-                request.IPAddress = ipAddress;
-                request.Action = Activity.PROCESSES_RETRIEVE_PROCESS.GetDescription();
-
-                var result = await _processService.GetProcessApprovalStatusAsync(request);
-                PagedResponse<GrcProcessApprovalStatusResponse> list = result.Data ?? new();
-                var pagedEntities = (list.Entities ?? new List<GrcProcessApprovalStatusResponse>())
-                    .Select(approval => new {
-                        id = approval.Id,
-                        processName = approval.ProcessName ?? string.Empty,
-                        requestDate = approval.RequestDate,
-                        hodStatus = approval.HodStatus ?? "PENDING",
-                        riskStatus = (string.IsNullOrWhiteSpace(approval.HodStatus) || approval.HodStatus == "PENDING") ? string.Empty : approval.RiskStatus ?? "PENDING",
-                        complianceStatus = (string.IsNullOrWhiteSpace(approval.RiskStatus) || approval.RiskStatus == "PENDING") ? string.Empty : approval.ComplianceStatus ?? "PENDING",
-                        requiresBopApproval = approval.RequiresBopApproval,
-                        BopStatus = (approval.RequiresBopApproval && (string.IsNullOrWhiteSpace(approval.ComplianceStatus) || approval.ComplianceStatus == "PENDING")) ? string.Empty :
-                        (approval.RequiresBopApproval && (!string.IsNullOrWhiteSpace(approval.ComplianceStatus) || approval.ComplianceStatus != "PENDING")) ? approval.BopStatus ?? "PENDING":
-                        string.Empty,
-                        requiresCreditApproval = approval.RequiresCreditApproval,
-                        CreditStatus = (approval.RequiresCreditApproval && (string.IsNullOrWhiteSpace(approval.BopStatus) || approval.BopStatus == "PENDING")) ? string.Empty :
-                        (approval.RequiresCreditApproval && (!string.IsNullOrWhiteSpace(approval.BopStatus) || approval.BopStatus != "PENDING")) ? approval.CreditStatus ?? "PENDING" :
-                        string.Empty,
-                        requiresTreasuryApproval = approval.RequiresTreasuryApproval,
-                        treasuryStatus = (approval.RequiresTreasuryApproval && (string.IsNullOrWhiteSpace(approval.CreditStatus) || approval.CreditStatus == "PENDING")) ? string.Empty :
-                        (approval.RequiresTreasuryApproval && (!string.IsNullOrWhiteSpace(approval.CreditStatus) || approval.CreditStatus != "PENDING")) ? approval.TreasuryStatus ?? "PENDING" :
-                        string.Empty,
-                        requiresFintechApproval = approval.RequiresFintechApproval,
-                        FintechStatus = (approval.RequiresTreasuryApproval && (string.IsNullOrWhiteSpace(approval.TreasuryStatus) || approval.TreasuryStatus == "PENDING")) ? string.Empty :
-                        (approval.RequiresTreasuryApproval && (!string.IsNullOrWhiteSpace(approval.TreasuryStatus) || approval.TreasuryStatus != "PENDING")) ? approval.FintechStatus ?? "PENDING" :
-                        string.Empty,
-
-                    }).ToList();
-
-                var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
-                return Ok(new { last_page = totalPages, total_records = list.TotalCount, data = pagedEntities });
-            }
-            catch (Exception ex)
-            {
-                Logger.LogActivity($"Error retrieving Operation processes: {ex.Message}", "ERROR");
-                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
                 return Ok(new { last_page = 0, data = new List<object>() });
             }
         }

@@ -155,6 +155,8 @@ namespace Grc.Middleware.Api.Services
                 var approval = await uow.ProcessApprovalRepository.GetAsync(a => a.Id == request.Id);
                 if (approval != null) {
 
+                    approval.RequestDate = request.RequestDate;
+
                     if (request.HODStart.HasValue)
                         approval.HeadOfDepartmentStart = request.HODStart;
 

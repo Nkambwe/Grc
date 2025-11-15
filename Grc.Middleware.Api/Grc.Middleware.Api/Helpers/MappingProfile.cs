@@ -608,6 +608,7 @@ namespace Grc.Middleware.Api.Helpers {
 
             CreateMap<ProcessApprovalRequest, ProcessApproval>()
                 .ForMember(a => a.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(a => a.RequestDate, reg => reg.MapFrom(o => o.RequestDate))
                 .ForMember(a => a.HeadOfDepartmentStart, reg => reg.MapFrom(o => o.HODStart))
                 .ForMember(a => a.HeadOfDepartmentEnd, reg => reg.MapFrom(o => o.HODEnd))
                 .ForMember(a => a.HeadOfDepartmentStatus, reg => reg.MapFrom(o => o.HODStatus))

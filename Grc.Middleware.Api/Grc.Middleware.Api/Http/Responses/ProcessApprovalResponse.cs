@@ -7,8 +7,14 @@ namespace Grc.Middleware.Api.Http.Responses
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
+        [JsonPropertyName("processId")]
+        public long ProcessId { get; set; }
+
         [JsonPropertyName("processName")]
         public string ProcessName { get; set; }
+
+        [JsonPropertyName("requestDate")]
+        public DateTime RequestDate { get; set; }
 
         [JsonPropertyName("headOfDepartmentStart")]
         public DateTime? HeadOfDepartmentStart { get; set; }

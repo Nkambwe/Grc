@@ -7,6 +7,9 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
+        [JsonPropertyName("requestDate")]
+        public DateTime RequestDate { get; set; }
+
         [JsonPropertyName("hodStart")]
         public DateTime? HODStart { get; set; }
 
