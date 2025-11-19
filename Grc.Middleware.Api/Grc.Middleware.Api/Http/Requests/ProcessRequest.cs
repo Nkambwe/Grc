@@ -20,7 +20,7 @@ namespace Grc.Middleware.Api.Http.Requests
         public string CurrentVersion { get; set; }
 
         [JsonPropertyName("fileName")]
-        public string FilePath { get; set; }
+        public string FileName { get; set; }
 
         [JsonPropertyName("effectiveDate")]
         public DateTime? EffectiveDate { get; set; }

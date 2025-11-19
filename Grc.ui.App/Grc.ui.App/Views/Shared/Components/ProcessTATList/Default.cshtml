@@ -3,7 +3,7 @@
     <div class="grc-tabulator-search">
         <div class="field-search-group">
             <label class="form-searchbox-label text-right">
-                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.ProcessTags"))
+                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.TAT"))
             </label>
             <input id="tatSearchbox" type="text" class="form-control searchbox-field">
         </div>
@@ -17,6 +17,386 @@
     </div>
 
     <div id="processTatTable"></div>
+
+</div>
+
+<!-- Overlay -->
+<div class="process-overlay" onclick="closeProcessPanel()">
+
+    <div id="collapsePanel" class="collapse-panel" onclick="event.stopPropagation()">
+
+        <div class="collapse-panel-header">
+            <h3 id="processPanelTitle">@Html.Raw(ILocalize.GetLocalizedLabel("App.Processes.TAT.Title"))</h3>
+            <button class="collapse-panel-close" onclick="closeProcessPanel()">&times;</button>
+        </div>
+
+        <div class="collapse-panel-body">
+
+            <form id="processForm" class="grc-form row g-3">
+
+                <div class="col-12 process-top-block">
+
+                    <div class="row p-0">
+
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <label for="processStatus" class="col-sm-12 form-label">@Html.Raw(ILocalize.GetLocalizedLabel("App.Processes.TAT.ProcessName"))</label>
+                                <span id="processName" class="readonly-field"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <label for="processStatus" class="col-sm-12 form-label">@Html.Raw(ILocalize.GetLocalizedLabel("App.Processes.TAT.ProcessStatus"))</label>
+                                <span id="processStatus" class="readonly-field"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <label for="processStatus" class="col-sm-12 form-label">@Html.Raw(ILocalize.GetLocalizedLabel("App.Processes.TAT.RequestData"))</label>
+                                <span id="processRequest" class="readonly-field"></span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- HOD Section -->
+                <div class="form-section">
+
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h5>Head Of Department</h5>
+                        <span class="section-toggle">
+                            <i class="mdi mdi-menu-down"></i>
+                        </span>
+                    </div>
+
+                    <div class="section-content expanded">
+
+                        <div class="section-body">
+
+                            <div class="row">
+
+                                <div class="col-6">
+
+                                    <div class="row mt-2">
+                                        <label for="hodStatus" class="col-sm-12 form-label">HOD STATUS</label>
+                                        <div class="col-sm-12">
+                                            <span id="hodStatus" name="hodStatus" class="readonly-field"></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <label for="hodApprovalDate" class="col-sm-12 form-label">
+                                            STATUS DATE
+                                        </label>
+                                        <div class="col-sm-12">
+                                            <span id="hodApprovalDate" name="hodApprovalDate" class="readonly-field"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="row mt-2">
+                                        <label for="hodComment" class="col-sm-12 form-label">HOD COMMENTS</label>
+                                        <div class="col-sm-12">
+                                            <textarea id="hodComment" name="hodComment" class="form-control" rows="3" readonly></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- RISK Section -->
+                <div class="form-section">
+
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h5>Risk Department</h5>
+                        <span class="section-toggle">
+                            <i class="mdi mdi-menu-down"></i>
+                        </span>
+                    </div>
+
+                    <div class="section-content">
+
+                        <div class="section-body">
+
+                            <div class="row">
+
+                                <div class="col-6">
+
+                                    <div class="row mt-2">
+                                        <label for="riskStatus" class="col-sm-12 form-label">RISK STATUS</label>
+                                        <div class="col-sm-12">
+                                            <span id="riskStatus" name="riskStatus" class="readonly-field"></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <label for="riskApprovalDate" class="col-sm-12 form-label">
+                                            STATUS DATE
+                                        </label>
+                                        <div class="col-sm-12">
+                                            <span id="riskApprovalDate" name="riskApprovalDate" class="readonly-field"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="row mt-2">
+                                        <label for="riskComment" class="col-sm-12 form-label">RISK COMMENTS</label>
+                                        <div class="col-sm-12">
+                                            <textarea id="riskComment" name="riskComment" class="form-control" rows="3" readonly></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- COMPLIANCE Section -->
+                <div class="form-section">
+
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h5>Compliance Department</h5>
+                        <span class="section-toggle">
+                            <i class="mdi mdi-menu-down"></i>
+                        </span>
+                    </div>
+
+                    <div class="section-content">
+
+                        <div class="section-body">
+
+                            <div class="row">
+
+                                <div class="col-6">
+
+                                    <div class="row mt-2">
+                                        <label for="compStatus" class="col-sm-12 form-label">COMPLIANCE STATUS</label>
+                                        <div class="col-sm-12">
+                                            <span id="compStatus" name="compStatus" class="readonly-field"></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <label for="compApprovalDate" class="col-sm-12 form-label">
+                                            STATUS DATE
+                                        </label>
+                                        <div class="col-sm-12">
+                                            <span id="compApprovalDate" name="compApprovalDate" class="readonly-field"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="row mt-2">
+                                        <label for="compComment" class="col-sm-12 form-label">COMPLIANCE COMMENTS</label>
+                                        <div class="col-sm-12">
+                                            <textarea id="compComment" name="compComment" class="form-control" rows="3" readonly></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- BOP Section -->
+                <div class="form-section">
+
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h5>Branch Operations Manager</h5>
+                        <span class="section-toggle">
+                            <i class="mdi mdi-menu-down"></i>
+                        </span>
+                    </div>
+
+                    <div class="section-content">
+
+                        <div class="section-body">
+
+                            <div class="row">
+
+                                <div class="col-6">
+
+                                    <div class="row mt-2">
+                                        <label for="bropStatus" class="col-sm-12 form-label">BOP STATUS</label>
+                                        <div class="col-sm-12">
+                                            <span id="bropStatus" name="bropStatus" class="readonly-field"></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <label for="bropApprovalDate" class="col-sm-12 form-label">
+                                            STATUS DATE
+                                        </label>
+                                        <div class="col-sm-12">
+                                            <span id="bropApprovalDate" name="bropApprovalDate" class="readonly-field"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="row mt-2">
+                                        <label for="bropDescription" class="col-sm-12 form-label">BOP COMMENTS</label>
+                                        <div class="col-sm-12">
+                                            <textarea id="bropComment" name="bropDescription" class="form-control" rows="3" readonly></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Treasury Section -->
+                <div class="form-section">
+
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h5>Treasury Manager</h5>
+                        <span class="section-toggle">
+                            <i class="mdi mdi-menu-down"></i>
+                        </span>
+                    </div>
+
+                    <div class="section-content">
+
+                        <div class="section-body">
+
+                            <div class="row">
+
+                                <div class="col-6">
+
+                                    <div class="row mt-2">
+                                        <label for="treasStatus" class="col-sm-12 form-label">TREASURY STATUS</label>
+                                        <div class="col-sm-12">
+                                            <span id="treasStatus" name="treasStatus" class="readonly-field"></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <label for="treasApprovalDate" class="col-sm-12 form-label">
+                                            STATUS DATE
+                                        </label>
+                                        <div class="col-sm-12">
+                                            <span id="treasApprovalDate" name="treasApprovalDate" class="readonly-field"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="row mt-2">
+                                        <label for="treasuryComment" class="col-sm-12 form-label">TREASURY COMMENTS</label>
+                                        <div class="col-sm-12">
+                                            <textarea id="treasuryComment" name="treasuryComment" class="form-control" rows="3" readonly></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Fintech Section -->
+                <div class="form-section">
+
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h5>Fintech Approvals</h5>
+                        <span class="section-toggle">
+                            <i class="mdi mdi-menu-down"></i>
+                        </span>
+                    </div>
+
+                    <div class="section-content">
+
+                        <div class="section-body">
+
+                            <div class="row">
+
+                                <div class="col-6">
+
+                                    <div class="row mt-2">
+                                        <label for="treasStatus" class="col-sm-12 form-label">TREASURY STATUS</label>
+                                        <div class="col-sm-12">
+                                            <span id="treasStatus" name="treasStatus" class="readonly-field"></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <label for="finApprovalDate" class="col-sm-12 form-label">
+                                            STATUS DATE
+                                        </label>
+                                        <div class="col-sm-12">
+                                            <span id="finApprovalDate" name="finApprovalDate" class="readonly-field"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="row mt-2">
+                                        <label for="finComment" class="col-sm-12 form-label">TREASURY COMMENTS</label>
+                                        <div class="col-sm-12">
+                                            <textarea id="finComment" name="finComment" class="form-control" rows="3" readonly></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+           
+        </div>
+
+    </div>
 
 </div>
 

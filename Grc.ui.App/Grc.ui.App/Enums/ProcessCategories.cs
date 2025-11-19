@@ -3,8 +3,8 @@
 namespace Grc.ui.App.Enums
 {
     public enum  ProcessCategories {
-        [Description("Unknown")]
-        Unknown = 0,
+        [Description("Draft")]
+        Draft = 0,
         [Description("UpToDate")]
         UpToDate = 1,
         [Description("Unchanged")]

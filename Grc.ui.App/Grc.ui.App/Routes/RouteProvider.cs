@@ -518,7 +518,11 @@
                pattern: "/operations/workflow/processes/tat/retrieve/{id:long}",
                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "GetProcessTat" }
             );
-
+            routeBuilder.MapControllerRoute(
+               name: "app-operations-processes-tat-report",
+               pattern: "/operations/workflow/processes/tat/report",
+               defaults: new { area = "Operations", controller = "OperationWorkflow", action = "GetExportTATReport" }
+            );
             routeBuilder.MapControllerRoute(
                 name: "app-operations-processes-approvals",
                 pattern: "/operations/workflow/processes/approvals",

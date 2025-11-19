@@ -20,6 +20,61 @@
     border-bottom: solid 1px var(--grey-light-slightly);
 }
 
+.readonly-label, .readonly-field {
+    display: inline-block;
+    padding: 10px;
+    margin-bottom: 5px;
+    border: dashed 1px #cecece;
+}
+
+.readonly-field {
+    width: 100%;
+    min-height: 50px;
+    background: var(--grey-light);
+}
+
+.grc-file-drop {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--pearl-orange);
+    background-color: #f8f9fa;
+    cursor: pointer;
+    min-height: 50px;
+    text-align: center !important;
+    border-width: 2px !important;
+    border-radius: 0.25rem !important;
+    border: 1px dashed #dee2e6 !important;
+}
+
+    .grc-file-drop i {
+        color: var(--pearl-orange) !important;
+    }
+
+    .grc-file-drop:hover,
+    .grc-file-drop:hover i {
+        color: var(--pearl-orange-light-strong);
+        background-color: var(--red-light-extra);
+        border-color: var(--pearl-orange);
+        transition: all 5s ease-in-out;
+    }
+
+#dropZone.border-primary {
+    border: dashed 1px var(--pearl-orange) !important;
+}
+
+#fileList li {
+    background-color: #f8f9fa;
+    transition: background-color 0.2s;
+}
+
+    #fileList li:hover {
+        background-color: var(--red-light-extra);
+        transition: all 5s ease-in-out;
+    }
+
 /* Overlay styles */
 .pop-container {
     margin: 0;

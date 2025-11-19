@@ -533,6 +533,34 @@ namespace Grc.ui.App.Services {
 
         #region Process Registers
 
+        public async Task<GrcResponse<List<GrcProcessRegisterResponse>>> GetAllProcessesAsync(GrcRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Invalid Request object",
+                        "Request object cannot be null"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<List<GrcProcessRegisterResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/process-list";
+                return await HttpHandler.PostAsync<GrcRequest, List<GrcProcessRegisterResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<List<GrcProcessRegisterResponse>>(error);
+            }
+        }
+
         public async Task<GrcResponse<GrcProcessSupportResponse>> GetProcessSupportItemsAsync(GrcRequest request) {
             try
             {
@@ -1454,6 +1482,36 @@ namespace Grc.ui.App.Services {
                     "Cannot proceed! An error occurred, please try again later"
                 );
                 return new GrcResponse<PagedResponse<GrcProcessApprovalStatusResponse>>(error);
+            }
+        }
+
+        public async Task<GrcResponse<List<GrcProcessTatResponse>>> GetTATReportAsync(GrcRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Invalid Request object",
+                        "Request object cannot be null"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<List<GrcProcessTatResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/tat-report";
+                return await HttpHandler.PostAsync<GrcRequest, List<GrcProcessTatResponse>>(endpoint, request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<List<GrcProcessTatResponse>>(error);
             }
         }
 

@@ -939,7 +939,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                     requestDate = tat.RequestDate,
                     hodStartdate = tat.HodStartdate,
                     hodEnddate = tat.HodEnddate,
-                    HodStatus = tat.HodStatus ?? "PENDING",
+                    hodStatus = tat.HodStatus ?? "PENDING",
                     hodComment = tat.HodComment ?? string.Empty,
                     hodCount = tat.HodCount,
                     riskStartdate = tat.RiskStartdate,
@@ -1041,6 +1041,74 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
                 return Ok(new { last_page = 0, data = new List<object>() });
             }
+        }
+
+        [HttpPost]
+        [LogActivityResult("Export Process TAT", "User exported processes TAT to excel", ActivityTypeDefaults.PROCESSES_EXPORT_PROCESS, "ProcessApproval")]
+        public async Task<IActionResult> GetExportTATReport() {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+                return Ok(new { success = false, message = "Unable to resolve current user" });
+
+            var request = new GrcRequest
+            {
+                UserId = userResponse.Data.UserId,
+                IPAddress = ipAddress,
+                Action = Activity.PROCESS_EXPORT.GetDescription(),
+                EncryptFields = Array.Empty<string>(),
+                DecryptFields = Array.Empty<string>()
+            };
+
+            var result = await _processService.GetTATReportAsync(request);
+            if (result.HasError || result.Data == null)
+                return Ok(new { success = false, message = "Failed to retrieve processes" });
+
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("PROCESS UNIVERSE");
+
+            ws.Cell(1, 1).Value = "PROCESS NAME";
+            ws.Cell(1, 2).Value = "PROCESS STATUS";
+            ws.Cell(1, 3).Value = "REQUEST DATE";
+            ws.Cell(1, 4).Value = "HOD";
+            ws.Cell(1, 5).Value = "RISK";
+            ws.Cell(1, 6).Value = "COMP";
+            ws.Cell(1, 7).Value = "BOP NEEDED";
+            ws.Cell(1, 8).Value = "BOP";
+            ws.Cell(1, 9).Value = "TREASURY APP";
+            ws.Cell(1, 10).Value = "TREASURY";
+            ws.Cell(1, 11).Value = "FINTECH APP";
+            ws.Cell(1, 12).Value = "FINTECH";
+            ws.Cell(1, 13).Value = "CREDIT APP";
+            ws.Cell(1, 14).Value = "CREDIT";
+            ws.Cell(1, 15).Value = "TOTAL";
+
+            int row = 2;
+            foreach (var tat in result.Data) {
+                ws.Cell(row, 1).Value = tat.ProcessName;
+                ws.Cell(row, 2).Value = tat.ProcessStatus;
+                ws.Cell(row, 3).Value = tat.RequestDate.ToString("MM-dd-yyyy");
+                ws.Cell(row, 4).Value = tat.HodCount;
+                ws.Cell(row, 5).Value = tat.RiskCount;
+                ws.Cell(row, 6).Value = tat.ComplianceCount;
+                ws.Cell(row, 7).Value = tat.NeedBropsApproval ? "YES" : "NA";
+                ws.Cell(row, 8).Value = tat.BopCount;
+                ws.Cell(row, 9).Value = tat.NeedTreasuryApproval ? "YES" : "NA";
+                ws.Cell(row, 10).Value = tat.TreasuryCount;
+                ws.Cell(row, 11).Value = tat.NeedFintechApproval ? "YES" : "NA";
+                ws.Cell(row, 12).Value = tat.FintechCount;
+                ws.Cell(row, 13).Value = tat.NeedCreditApproval ? "YES" : "NA";
+                ws.Cell(row, 14).Value = tat.CreditCount;
+                ws.Cell(row, 15).Value = tat.TotalCount;
+                row++;
+            }
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "TAT_REPORT.xlsx");
         }
 
         #endregion

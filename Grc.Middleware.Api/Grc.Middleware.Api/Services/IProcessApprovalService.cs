@@ -13,10 +13,13 @@ namespace Grc.Middleware.Api.Services
         Task<int> CountAsync(CancellationToken cancellationToken = default);
         Task<int> CountAsync(bool excludeDeleted = true, CancellationToken cancellationToken = default);
         Task<ProcessApproval> GetAsync(long id, bool includeDeleted = false);
+        Task<ProcessApproval> GetAsync(Expression<Func<ProcessApproval, bool>> predicate, bool includeDeleted = false, params Expression<Func<ProcessApproval, object>>[] includes);
+        Task<IList<ProcessApproval>> GetAllAsync(bool includeDeleted = false, params Expression<Func<ProcessApproval, object>>[] includes);
         Task<bool> InsertAsync(ProcessApprovalRequest request);
         Task<bool> UpdateAsync(ProcessApprovalRequest request, bool includeDeleted = false);
         bool Delete(IdRequest request);
         Task<bool> DeleteAsync(IdRequest request);
         Task<PagedResult<ProcessApproval>> PageProcessApprovalStatusAsync(int pageIndex, int pageSize, bool includeDeleted, params Expression<Func<ProcessApproval, object>>[] includes);
+        
     }
 }

@@ -28,9 +28,6 @@ namespace Grc.ui.App.Http.Requests {
         [JsonPropertyName("lastUpdated")]
         public DateTime? LastUpdated { get; set; }
 
-        [JsonPropertyName("originalOnFile")]
-        public bool OriginalOnFile { get; set; }
-
         [JsonPropertyName("processStatus")]
         public string ProcessStatus { get; set; }
 
@@ -60,6 +57,18 @@ namespace Grc.ui.App.Http.Requests {
 
         [JsonPropertyName("responsibilityId")]
         public long ResponsibilityId { get; set; }
+
+        [JsonPropertyName("needsBranchReview")]
+        public bool NeedsBranchReview { get; set; }
+
+        [JsonPropertyName("needsCreditReview")]
+        public bool NeedsCreditReview { get; set; }
+
+        [JsonPropertyName("needsTreasuryReview")]
+        public bool NeedsTreasuryReview { get; set; }
+
+        [JsonPropertyName("needsFintechReview")]
+        public bool NeedsFintechReview { get; set; }
 
         [JsonPropertyName("createdBy")]
         public string CreatedBy { get; set; }

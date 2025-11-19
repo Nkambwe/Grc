@@ -203,7 +203,6 @@ namespace Grc.ui.App.Enums {
         PROCESSES_EXPORT_PROCESS = 107,
         [Description("Get process support lists")]
         RETRIVEPROCESSUPPORTITEMS = 108,
-
         [Description("Get a list of all process groups")]
         PROCESS_GROUPS_RETRIVED = 109,
         [Description("Retrieve process groups")]
@@ -214,7 +213,6 @@ namespace Grc.ui.App.Enums {
         PROCESS_GROUP_UPDATE = 112,
         [Description("Delete process group")]
         PROCESS_GROUP_DELETE = 113,
-
         [Description("Get a list of all process tags")]
         PROCESS_TAGS_RETRIVED = 114,
         [Description("Retrieve process tags")]
@@ -225,7 +223,6 @@ namespace Grc.ui.App.Enums {
         PROCESS_TAG_UPDATE = 117,
         [Description("Delete process tags")]
         PROCESS_TAG_DELETE = 118,
-
         [Description("Get a list of all process TAT data")]
         PROCESS_TATDATA_RETRIVED = 119,
         [Description("Retrieve process TAT")]

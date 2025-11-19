@@ -577,6 +577,9 @@
 	<LocaleResource Name="Component.Table.Search.Processes">
 		<Value>Search processes.. </Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.TAT">
+		<Value>Search processes.. </Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Search.User">
 		<Value>Search users.. </Value>
 	</LocaleResource>
@@ -885,6 +888,9 @@
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Process.FileVersion">
 		<Value>Current File Version</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.FileDrag">
+		<Value>Drag and drop files here or click to browse</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Role.Group.Name">
 		<Value>Group Name</Value>
@@ -1600,6 +1606,19 @@
 	<LocaleResource Name="User.Error.SystemRoleRequired">
 		<Value>User Role Field is required</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Processes.TAT.Title">
+		<Value>PROCESS TAT DETAILS</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.TAT.ProcessName">
+		<Value>PROCESS NAME</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.TAT.ProcessStatus">
+		<Value>PROCESS STATUS</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.TAT.RequestData">
+		<Value>REQUEST DATA</Value>
+	</LocaleResource>
+
 	<LocaleResource Name="Button.Previous">
 		<Value>Previous</Value>
 	</LocaleResource>

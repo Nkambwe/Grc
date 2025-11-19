@@ -22,9 +22,6 @@ namespace Grc.ui.App.Models {
         [JsonPropertyName("processStatus")]
         public string ProcessStatus { get; set; }
 
-        [JsonPropertyName("onFile")]
-        public bool OnFile { get; set; }
-
         [JsonPropertyName("effectiveDate")]
         public DateTime? EffectiveDate { get; set; }
 
@@ -57,6 +54,18 @@ namespace Grc.ui.App.Models {
 
         [JsonPropertyName("typeId")]
         public long TypeId { get; set; }
+
+        [JsonPropertyName("needsBranchReview")]
+        public bool NeedsBranchReview { get; set; }
+
+        [JsonPropertyName("needsCreditReview")]
+        public bool NeedsCreditReview { get; set; }
+
+        [JsonPropertyName("needsTreasuryReview")]
+        public bool NeedsTreasuryReview { get; set; }
+
+        [JsonPropertyName("needsFintechReview")]
+        public bool NeedsFintechReview { get; set; }
     }
 
 }

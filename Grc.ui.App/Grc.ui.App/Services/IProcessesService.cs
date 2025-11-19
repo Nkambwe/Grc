@@ -23,6 +23,8 @@ namespace Grc.ui.App.Services {
 
         #region Process Registers
 
+        Task<GrcResponse<List<GrcProcessRegisterResponse>>> GetAllProcessesAsync(GrcRequest request);
+
         Task<GrcResponse<PagedResponse<GrcProcessRegisterResponse>>> GetProcessRegistersAsync(TableListRequest request);
         
         Task<GrcResponse<PagedResponse<GrcProcessRegisterResponse>>> GetNewProcessAsync(TableListRequest request);
@@ -75,6 +77,8 @@ namespace Grc.ui.App.Services {
         Task<GrcResponse<PagedResponse<GrcProcessTatResponse>>> GetProcessTatAsync(TableListRequest request);
         
         Task<GrcResponse<PagedResponse<GrcProcessApprovalStatusResponse>>> GetProcessApprovalStatusAsync(TableListRequest request);
+
+        Task<GrcResponse<List<GrcProcessTatResponse>>> GetTATReportAsync(GrcRequest request);
 
         #endregion
 

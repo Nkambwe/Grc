@@ -12,7 +12,7 @@
         </div>
 
         <div class="field-search-buttons">
-            <button id="btnProcessExport" class="btn btn-primary">
+            <button id="btnExportProcess" class="btn btn-primary">
                 <i class="mdi mdi-file-excel-outline"></i> @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.ExportFiltered"))
             </button>
         </div>
@@ -130,20 +130,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-6">
-
-                                    <div class="row mt-2">
-                                        <label for="effectiveDate" class="col-sm-12 form-label">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Effectivedate"))
-                                        </label>
-                                        <div class="col-sm-12">
-                                            <input type="text" id="effectiveDate" name="effectiveDate" class="form-control datepicker" placeholder="MM/DD/YYYY">
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="col-6">
+                                <div id="IsDeletedBox" class="col-6">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="isDeleted">
                                         <label class="form-check-label" for="isDeleted">
@@ -171,6 +158,17 @@
                                         </div>
                                     </div>
 
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="row mb-3">
+                                        <label for="comment" class="col-sm-12 form-label">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Comments"))
+                                        </label>
+                                        <div class="col-sm-12">
+                                            <textarea id="comment" name="comment" class="form-control" rows="3"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
 
                             </div>
@@ -225,11 +223,15 @@
 
                                 <div class="col-12">
                                     <div class="row mb-3">
-                                        <label for="comment" class="col-sm-12 form-label">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Comments"))
-                                        </label>
-                                        <div class="col-sm-12">
-                                            <textarea id="comment" name="comment" class="form-control" rows="3"></textarea>
+                                        <div class="col-12">
+                                            <ul id="fileList" class="list-unstyled mt-3"></ul>
+                                            <div id="dropZone" class="grc-file-drop">
+                                                <i class="mdi mdi-cloud-arrow-up-outline fs-1 text-muted"></i>
+                                                <p class="mt-2 mb-0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.FileDrag"))</p>
+                                                <input type="file" id="fileInput" multiple style="position: absolute; left: -9999px;">
+                                            </div>
+
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -340,7 +342,7 @@
 
                 </div>
 
-                <!-- Credit Section -->
+                <!-- other approvers Section -->
                 <div class="form-section">
                     <div class="section-header" onclick="toggleSection(this)">
                         <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.AdditionalReview"))</h5>

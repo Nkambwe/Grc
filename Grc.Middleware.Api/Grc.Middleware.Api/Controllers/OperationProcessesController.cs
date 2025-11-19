@@ -88,6 +88,79 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
+        [HttpPost("processes/process-list")]
+        public async Task<IActionResult> GetAllProcesses([FromBody] GeneralRequest request) {
+            try
+            {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null)
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<ProcessRegisterResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var processes = await _processService.GetAllAsync(true,p => p.Unit, p => p.Owner, p => p.Responsible, p => p.ProcessType);
+
+                if (processes == null || !processes.Any())
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.SUCCESS,
+                        "No data",
+                        "No operation process records found"
+                    );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<ProcessRegisterResponse>>(new List<ProcessRegisterResponse>()));
+                }
+
+                List<ProcessRegisterResponse> processList = new();
+                var records = processes.ToList();
+                records.ForEach(register => processList.Add(new()
+                {
+                    Id = register.Id,
+                    ProcessName = register.ProcessName ?? string.Empty,
+                    Description = register.Description ?? string.Empty,
+                    CurrentVersion = register.CurrentVersion ?? string.Empty,
+                    EffectiveDate = register.EffectiveDate,
+                    LastUpdated = register.LastUpdated,
+                    FileName = register.FileName ?? string.Empty,
+                    ProcessStatus = register.ProcessStatus ?? string.Empty,
+                    Comments = register.Comments ?? string.Empty,
+                    OnholdReason = register.ReasonOnhold ?? string.Empty,
+                    TypeId = register.TypeId,
+                    TypeName = register.ProcessType != null ? register.ProcessType.TypeName : string.Empty,
+                    UnitId = register.UnitId,
+                    UnitName = register.Unit != null ? register.Unit.UnitName : string.Empty,
+                    OwnerId = register.OwnerId,
+                    OwnerName = register.Owner != null ? register.Owner.ContactPosition : string.Empty,
+                    ResponsibilityId = register.ResponsibilityId,
+                    Responsibile = register.Responsible != null ? register.Responsible.ContactPosition : string.Empty,
+                    IsLockProcess = register.IsLockProcess,
+                    NeedsBranchReview = register.NeedsBranchReview,
+                    NeedsCreditReview = register.NeedsCreditReview,
+                    NeedsTreasuryReview = register.NeedsTreasuryReview,
+                    NeedsFintechReview = register.NeedsFintechReview,
+                    IsDeleted = register.IsDeleted,
+                    CreatedOn = register.CreatedOn,
+                    CreatedBy = register.CreatedBy ?? string.Empty,
+                    ModifiedOn = register.LastModifiedOn ?? register.CreatedOn,
+                    ModifiedBy = register.LastModifiedBy ?? string.Empty
+                }));
+
+                return Ok(new GrcResponse<List<ProcessRegisterResponse>>(processList));
+            }
+            catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<List<ProcessRegisterResponse>>(error));
+            }
+        }
+
         [HttpPost("processes/register")]
         public async Task<IActionResult> GetProcessRegister([FromBody] IdRequest request) {
             try {
@@ -1137,9 +1210,94 @@ namespace Grc.Middleware.Api.Controllers {
         #region Process TAT Endpoints
 
         [HttpPost("processes/tat")]
-        public async Task<IActionResult> GetProcessTat([FromBody] IdRequest request)
-        {
-            return Ok();
+        public async Task<IActionResult> GetProcessTat([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Get process TAT by ID", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ProcessTATResponse>(error));
+                }
+
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request operations process ID is required",
+                        "Invalid request operations process ID"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ProcessTATResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var approval = await _approvalService.GetAsync(p => p.Id == request.RecordId, true, p => p.Process);
+                if (approval == null)
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.FAILED,
+                        "Operations process not found",
+                        "No operations process matched the provided ID"
+                    );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ProcessTATResponse>(error));
+                }
+
+                //..return process register data
+                var hod = CalculateDays(approval.HeadOfDepartmentStart, approval.HeadOfDepartmentEnd);
+                var risk = CalculateDays(approval.RiskStart, approval.RiskEnd);
+                var compliance = CalculateDays(approval.ComplianceStart, approval.ComplianceEnd);
+                var bop = CalculateDays(approval.BranchOperationsStatusStart, approval.BranchOperationsStatusEnd);
+                var credit = CalculateDays(approval.CreditStart, approval.CreditEnd);
+                var treasury = CalculateDays(approval.TreasuryStart, approval.TreasuryEnd);
+                var fintech = CalculateDays(approval.FintechStart, approval.FintechEnd);
+                var tatRecord = new ProcessTATResponse {
+                    Id = approval.Id,
+                    ProcessId = approval.ProcessId,
+                    RequestDate = approval.RequestDate,
+                    ProcessName = approval.Process.ProcessName ?? string.Empty,
+                    ProcessStatus = GetStatus(approval),
+                    HodCount = hod,
+                    HodStatus = approval.HeadOfDepartmentStatus,
+                    HodComment = approval.HeadOfDepartmentComment ?? string.Empty,
+                    HodEnddate = approval.HeadOfDepartmentEnd,
+                    RiskCount = risk,
+                    RiskStatus = approval.RiskStatus ?? string.Empty,
+                    RiskComment = approval.RiskComment ?? string.Empty,
+                    RiskEnddate = approval.RiskEnd,
+                    ComplianceCount = compliance,
+                    ComplianceStatus = approval.ComplianceStatus ?? string.Empty,
+                    ComplianceComment = approval.ComplianceComment ?? string.Empty,
+                    ComplianceEnddate = approval.ComplianceEnd,
+                    BopCount = bop,
+                    BropStatus = approval.BranchOperationsStatus ?? string.Empty,
+                    BropComment = approval.BranchManagerComment ?? string.Empty,
+                    BropEnddate = approval.BranchOperationsStatusEnd,
+                    CreditCount = credit,
+                    CreditStatus = approval.CreditStatus ?? string.Empty,
+                    CreditComment = approval.CreditComment ?? string.Empty,
+                    CreditEnddate = approval.CreditEnd,
+                    TreasuryCount = treasury,
+                    TreasuryStatus = approval.TreasuryStatus ?? string.Empty,
+                    TreasuryComment = approval.TreasuryComment ?? string.Empty,
+                    TreasuryEnddate = approval.TreasuryEnd,
+                    FintechCount = fintech,
+                    FintechStatus = approval.FintechStatus ?? string.Empty,
+                    FintechComment = approval.FintechComment ?? string.Empty,
+                    FintechEnddate = approval.FintechEnd,
+                    TotalCount = hod + risk + compliance + bop + credit + treasury + fintech
+                };
+
+                return Ok(new GrcResponse<ProcessTATResponse>(tatRecord));
+            }
+            catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<ProcessTATResponse>(error));
+            }
         }
 
         [HttpPost("processes/tat-all")]
@@ -1243,6 +1401,86 @@ namespace Grc.Middleware.Api.Controllers {
             {
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<PagedResponse<ProcessTATResponse>>(error));
+            }
+        }
+
+        [HttpPost("processes/tat-report")]
+        public async Task<IActionResult> GetTatReport([FromBody] GeneralRequest request)
+        {
+            try
+            {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null)
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<ProcessTATResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var approvals = await _approvalService.GetAllAsync(true, p => p.Process);
+                if (approvals == null || !approvals.Any())
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.SUCCESS,
+                        "No data",
+                        "No review process records found"
+                    );
+
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<ProcessTATResponse>>(new List<ProcessTATResponse>()));
+                }
+
+                List<ProcessTATResponse> tatApprovals = new();
+                var records = approvals.ToList();
+                records.ForEach(approval => {
+                    var hod = CalculateDays(approval.HeadOfDepartmentStart, approval.HeadOfDepartmentEnd);
+                    var risk = CalculateDays(approval.RiskStart, approval.RiskEnd);
+                    var compliance = CalculateDays(approval.ComplianceStart, approval.ComplianceEnd);
+                    var bop = CalculateDays(approval.BranchOperationsStatusStart, approval.BranchOperationsStatusEnd);
+                    var credit = CalculateDays(approval.CreditStart, approval.CreditEnd);
+                    var treasury = CalculateDays(approval.TreasuryStart, approval.TreasuryEnd);
+                    var fintech = CalculateDays(approval.FintechStart, approval.FintechEnd);
+                    tatApprovals.Add(new ProcessTATResponse {
+                        Id = approval.Id,
+                        ProcessId = approval.ProcessId,
+                        RequestDate = approval.RequestDate,
+                        ProcessName = approval.Process.ProcessName ?? string.Empty,
+                        ProcessStatus = GetStatus(approval),
+                        HodCount = hod,
+                        HodStatus = approval.HeadOfDepartmentStatus,
+                        HodComment = approval.HeadOfDepartmentComment ?? string.Empty,
+                        RiskCount = risk,
+                        RiskStatus = approval.RiskStatus ?? string.Empty,
+                        RiskComment = approval.RiskComment ?? string.Empty,
+                        ComplianceCount = compliance,
+                        ComplianceStatus = approval.ComplianceStatus ?? string.Empty,
+                        ComplianceComment = approval.ComplianceComment ?? string.Empty,
+                        BopCount = bop,
+                        BropStatus = approval.BranchOperationsStatus ?? string.Empty,
+                        BropComment = approval.BranchManagerComment ?? string.Empty,
+                        CreditCount = credit,
+                        CreditStatus = approval.CreditStatus ?? string.Empty,
+                        CreditComment = approval.CreditComment ?? string.Empty,
+                        TreasuryCount = treasury,
+                        TreasuryStatus = approval.TreasuryStatus ?? string.Empty,
+                        TreasuryComment = approval.TreasuryComment ?? string.Empty,
+                        FintechCount = fintech,
+                        FintechStatus = approval.FintechStatus ?? string.Empty,
+                        FintechComment = approval.FintechComment ?? string.Empty,
+                        TotalCount = hod + risk + compliance + bop + credit + treasury + fintech
+                    });
+                });
+
+                return Ok(new GrcResponse<List<ProcessTATResponse>>(tatApprovals));
+            }
+            catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<List<ProcessTATResponse>>(error));
             }
         }
 

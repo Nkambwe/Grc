@@ -396,22 +396,19 @@ namespace Grc.Middleware.Api.Services.Operations {
             }
         }
 
-        public async Task<OperationProcess> GetAsync(Expression<Func<OperationProcess, bool>> predicate, bool includeDeleted = false, params Expression<Func<OperationProcess, object>>[] includes)
-        {
+        public async Task<OperationProcess> GetAsync(Expression<Func<OperationProcess, bool>> predicate, bool includeDeleted = false, params Expression<Func<OperationProcess, object>>[] includes) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get Operation Process that fit predicate '{predicate}'", "INFO");
 
-            try
-            {
+            try {
                 return await uow.OperationProcessRepository.GetAsync(predicate, includeDeleted, includes);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogActivity($"Failed to retrieve Operation Process : {ex.Message}", "ERROR");
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve Process TAT : {ex.Message}", "ERROR");
                 //..save error object to the database
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
+
         }
 
         public async Task<IList<OperationProcess>> GetTopAsync(Expression<Func<OperationProcess, bool>> predicate, int top, bool includeDeleted = false)
@@ -523,7 +520,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                     process.ProcessName = (request.ProcessName ?? string.Empty).Trim();
                     process.Description = (request.Description ?? string.Empty).Trim();
                     process.CurrentVersion = (request.CurrentVersion ?? string.Empty).Trim();
-                    process.FileName = (request.FilePath ?? string.Empty).Trim();
+                    process.FileName = (request.FileName ?? string.Empty).Trim();
                     process.EffectiveDate = request.EffectiveDate;
                     process.LastUpdated = request.LastUpdated;
                     process.ProcessStatus = (request.ProcessStatus ?? string.Empty).Trim();
@@ -577,7 +574,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                     process.ProcessName = (request.ProcessName ?? string.Empty).Trim();
                     process.Description = (request.Description ?? string.Empty).Trim();
                     process.CurrentVersion = (request.CurrentVersion ?? string.Empty).Trim();
-                    process.FileName = (request.FilePath ?? string.Empty).Trim();
+                    process.FileName = (request.FileName ?? string.Empty).Trim();
                     process.EffectiveDate = request.EffectiveDate;
                     process.LastUpdated = request.LastUpdated;
                     process.ProcessStatus = (request.ProcessStatus ?? string.Empty).Trim();

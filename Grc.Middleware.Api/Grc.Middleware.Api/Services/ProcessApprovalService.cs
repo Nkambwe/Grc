@@ -5,6 +5,7 @@ using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Utils;
+using System;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -108,6 +109,40 @@ namespace Grc.Middleware.Api.Services
             }
         }
 
+        public async Task<ProcessApproval> GetAsync(Expression<Func<ProcessApproval, bool>> predicate, bool includeDeleted = false, params Expression<Func<ProcessApproval, object>>[] includes)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Get Process TAT that fit predicate '{predicate}'", "INFO");
+
+            try
+            {
+                return await uow.ProcessApprovalRepository.GetAsync(predicate, includeDeleted, includes);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Process TAT : {ex.Message}", "ERROR");
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+        }
+
+        public async Task<IList<ProcessApproval>> GetAllAsync(bool includeDeleted = false, params Expression<Func<ProcessApproval, object>>[] includes)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Get all Processes that fit predicate '{includes}'", "INFO");
+
+            try
+            {
+                return await uow.ProcessApprovalRepository.GetAllAsync(includeDeleted, includes);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve Processes : {ex.Message}", "ERROR");
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+        }
         public async Task<bool> InsertAsync(ProcessApprovalRequest request)
         {
             using var uow = UowFactory.Create();

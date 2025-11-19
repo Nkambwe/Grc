@@ -485,6 +485,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
+    "Method": "GetAllProcesses",
+    "RelativePath": "grc/processes/process-list",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
     "Method": "GetNewProcess",
     "RelativePath": "grc/processes/processes-new",
     "HttpMethod": "POST",
@@ -622,6 +638,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
+    "Method": "GetTatReport",
+    "RelativePath": "grc/processes/tat-report",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
         "IsRequired": true
       }
     ],

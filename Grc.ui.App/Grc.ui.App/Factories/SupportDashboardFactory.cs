@@ -231,7 +231,7 @@ namespace Grc.ui.App.Factories {
             OperationProcessViewModel processModel = new()
             {
                 ProcessStatuses = new List<ProcessStatusViewModel> {
-                    new() { Id=(int)ProcessCategories.Unknown, StatusName = ProcessCategories.Unknown.GetDescription()},
+                    new() { Id=(int)ProcessCategories.Draft, StatusName = ProcessCategories.Draft.GetDescription()},
                     new() { Id=(int)ProcessCategories.UpToDate, StatusName = ProcessCategories.UpToDate.GetDescription()},
                     new() { Id=(int)ProcessCategories.Unchanged, StatusName = ProcessCategories.Unchanged.GetDescription()},
                     new() { Id=(int)ProcessCategories.Proposed, StatusName = ProcessCategories.Proposed.GetDescription()},
