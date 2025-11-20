@@ -142,7 +142,7 @@
         public const string PROCESSES_EDITED_PROCESS = "Operations.Processes.Edit";
         public const string PROCESSES_DELETED_PROCESS = "Operations.Processes.Delete";
         public const string PROCESSES_EXPORT_PROCESS = "Operations.Processes.Export";
-
+        public const string PROCESSES_FILE_UPLOAD = "Operations.Processes.Fileupload";
         public const string PROCESSES_RETRIEVE_GROUP = "Operations.Processes.Groups.Retrieve";
         public const string PROCESSES_CREATE_GROUP = "Operations.Processes.Groups.Create";
         public const string PROCESSES_EDITED_GROUP = "Operations.Processes.Groups.Edit";

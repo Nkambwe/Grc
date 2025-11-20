@@ -458,8 +458,13 @@
                 defaults: new { area = "Operations", controller = "OperationWorkflow", action = "UpdateProcessRegister" }
             );
             routeBuilder.MapControllerRoute(
+                name: "app-operations-processes-files-upload",
+                pattern: "/operations/workflow/processes/registers/upload-files",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "UploadProcessFiles" }
+            );
+            routeBuilder.MapControllerRoute(
                 name: "app-operations-processes-register-delete",
-                pattern: "/operations/workflow/processes/registers/retrieve/delete/{id:long}",
+                pattern: "/operations/workflow/processes/registers/delete/{id:long}",
                 defaults: new { area = "Operations", controller = "OperationWorkflow", action = "DeleteProcessRegister" }
             );
             routeBuilder.MapControllerRoute(
@@ -480,9 +485,34 @@
               defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ProcessGroupList" }
             );
             routeBuilder.MapControllerRoute(
+              name: "app-operations-processes-groups-processes-min",
+              pattern: "/operations/workflow/processes/groups/processes-min",
+              defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ProcessMinProcessesList" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-operations-processes-groups-processes-retrieve",
+               pattern: "/operations/workflow/processes/group-processes/retrieve/{id:long}",
+               defaults: new { area = "Operations", controller = "OperationWorkflow", action = "GetGroupProcesses" }
+            );
+            routeBuilder.MapControllerRoute(
                name: "app-operations-processes-groups-retrieve",
                pattern: "/operations/workflow/processes/groups/retrieve/{id:long}",
                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "GetProcessGroup" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-operations-processes-groups-create",
+                pattern: "/operations/workflow/processes/groups/create",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "CreateProcessGroup" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-operations-processes-groups-update",
+                pattern: "/operations/workflow/processes/groups/update",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "UpdateProcessGroup" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-operations-processes-groups-delete",
+                pattern: "/operations/workflow/processes/groups/delete/{id:long}",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "DeleteProcessGroup" }
             );
 
             /*----------------------- Operations process tags routes*/

@@ -642,6 +642,16 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(a => a.CreatedBy, reg => reg.MapFrom(o => o.CreatedBy))
                 .ForMember(a => a.LastModifiedOn, reg => reg.MapFrom(o => DateTime.Now))
                 .ForMember(a => a.LastModifiedBy, reg => reg.MapFrom(o => o.CreatedBy));
+
+            CreateMap<ProcessGroupRequest, ProcessGroup>()
+               .ForMember(g => g.Id, reg => reg.MapFrom(o => o.Id))
+               .ForMember(g => g.GroupName, reg => reg.MapFrom(o => (o.GroupName ?? string.Empty).Trim()))
+               .ForMember(g => g.Description, reg => reg.MapFrom(o => (o.GroupDescription ?? string.Empty).Trim()))
+               .ForMember(g => g.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
+               .ForMember(g => g.CreatedOn, reg => reg.MapFrom(o => o.CreatedOn))
+               .ForMember(g => g.CreatedBy, reg => reg.MapFrom(o => o.CreatedBy))
+               .ForMember(g => g.LastModifiedOn, reg => reg.MapFrom(o => o.ModifiedOn))
+               .ForMember(g => g.LastModifiedBy, reg => reg.MapFrom(o => o.ModifiedBy));
         }
     }
 }

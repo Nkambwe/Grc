@@ -62,7 +62,6 @@ namespace Grc.ui.App.Helpers {
                .ForMember(dest => dest.ModifiedOn, opt => opt.MapFrom(src => DateTime.Now))
                .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => string.Empty));
 
-
             CreateMap<UsernameValidationModel, UsernameValidationRequest>()
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Username))
                 .ForMember(dest => dest.IPAddress, opt => opt.MapFrom(src => src.IPAddress))
@@ -212,6 +211,7 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(dest => dest.ApprovalComment, opt => opt.MapFrom(src => src.ApprovalComment))
                 .ForMember(dest => dest.OnholdReason, opt => opt.MapFrom(src => src.OnholdReason))
                 .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IsDeleted))
+                .ForMember(dest => dest.IsLockProcess, opt => opt.MapFrom(src => src.IsLocked))
                 .ForMember(dest => dest.TypeId, opt => opt.MapFrom(src => src.TypeId))
                 .ForMember(dest => dest.UnitId, opt => opt.MapFrom(src => src.UnitId))
                 .ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.OwnerId))
@@ -224,6 +224,13 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => "SYSTEM"))
                 .ForMember(dest => dest.ModifiedOn, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => "SYSTEM"));
+
+            CreateMap<ProcessGroupViewModel, GrcProcessGroupRequest>()
+                .ForMember(e => e.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(e => e.GroupName, reg => reg.MapFrom(o => (o.GroupName ?? string.Empty).Trim()))
+                .ForMember(e => e.GroupDescription, reg => reg.MapFrom(o => (o.GroupDescription ?? string.Empty).Trim()))
+                .ForMember(q => q.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
+                .ForMember(e => e.Processes, reg => reg.MapFrom(o => o.Processes ?? new()));
         }
     }
 }

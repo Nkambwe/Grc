@@ -28,7 +28,7 @@ namespace Grc.Middleware.Api.Http.Responses {
         public DateTime? ModifiedOn { get; set; }
 
         [JsonPropertyName("processes")]
-        public List<ProcessRegisterResponse> Processes { get; set; } = new();
+        public List<ProcessMinResponse> Processes { get; set; } = new();
 
     }
 }

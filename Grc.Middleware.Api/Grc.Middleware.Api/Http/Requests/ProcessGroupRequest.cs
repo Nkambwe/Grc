@@ -1,10 +1,8 @@
-﻿using Grc.Middleware.Api.Http.Responses;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace Grc.Middleware.Api.Http.Requests
-{
-    public class ProcessGroupRequest
-    {
+namespace Grc.Middleware.Api.Http.Requests {
+
+    public class ProcessGroupRequest {
         [JsonPropertyName("id")]
         public long Id { get; set; }
 

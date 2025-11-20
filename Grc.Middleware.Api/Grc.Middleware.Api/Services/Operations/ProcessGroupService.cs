@@ -4,10 +4,12 @@ using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Operations.Processes;
 using Grc.Middleware.Api.Data.Entities.Support;
 using Grc.Middleware.Api.Data.Entities.System;
+using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Utils;
 using System.Linq.Expressions;
+using System.Security;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -425,6 +427,20 @@ namespace Grc.Middleware.Api.Services.Operations {
                 });
                 Logger.LogActivity($"Process Group data: {groupJson}", "DEBUG");
 
+                //..link processes if provided
+                if (request.Processes != null && request.Processes.Any())
+                {
+                    var processes = uow.OperationProcessRepository.GetAll(false, p => request.Processes.Contains(p.Id));
+                    foreach (var process in processes)
+                    {
+                        group.Processes.Add(new ProcessProcessGroup
+                        {
+                            Process = process,
+                            Group = group
+                        });
+                    }
+                }
+
                 var added = uow.ProcessGroupRepository.Insert(group);
                 if (added)
                 {
@@ -452,8 +468,17 @@ namespace Grc.Middleware.Api.Services.Operations {
             using var uow = UowFactory.Create();
             try
             {
-                //..map Process Group request to Process Group entity
-                var group = Mapper.Map<ProcessGroupRequest, ProcessGroup>(request);
+                //..map process group request to group entity
+                var group = new ProcessGroup()
+                {
+                    GroupName = request.GroupName,
+                    Description = request.GroupDescription,
+                    IsDeleted = request.IsDeleted,
+                    CreatedOn = request.CreatedOn,
+                    CreatedBy = request.CreatedBy,
+                    LastModifiedOn = request.ModifiedOn,
+                    LastModifiedBy = request.ModifiedBy
+                };
 
                 //..log the Process Group data being saved
                 var groupJson = JsonSerializer.Serialize(group, new JsonSerializerOptions
@@ -463,9 +488,19 @@ namespace Grc.Middleware.Api.Services.Operations {
                 });
                 Logger.LogActivity($"Process Group data: {groupJson}", "DEBUG");
 
+                //..link processes if provided
+                if (request.Processes != null && request.Processes.Any()) {
+                    var processes = await uow.OperationProcessRepository.GetAllAsync(p => request.Processes.Contains(p.Id));
+                    foreach (var process in processes) {
+                        group.Processes.Add(new ProcessProcessGroup {
+                            Process = process,
+                            Group = group
+                        });
+                    }
+                }
+
                 var added = await uow.ProcessGroupRepository.InsertAsync(group);
-                if (added)
-                {
+                if (added) {
                     //..check object state
                     var entityState = ((UnitOfWork)uow).Context.Entry(group).State;
                     Logger.LogActivity($"Entity state after insert: {entityState}", "DEBUG");
@@ -503,8 +538,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                     //..add new links
                     foreach (var processId in toAdd)
                     {
-                        group.Processes.Add(new ProcessProcessGroup
-                        {
+                        group.Processes.Add(new ProcessProcessGroup {
                             GroupId = group.Id,
                             ProcessId = processId
                         });

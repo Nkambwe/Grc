@@ -105,7 +105,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                var processes = await _processService.GetAllAsync(true,p => p.Unit, p => p.Owner, p => p.Responsible, p => p.ProcessType);
+                var processes = await _processService.GetAllAsync(false,p => p.Unit, p => p.Owner, p => p.Responsible, p => p.ProcessType);
 
                 if (processes == null || !processes.Any())
                 {
@@ -225,6 +225,8 @@ namespace Grc.Middleware.Api.Controllers {
                     UnitName = register.Unit != null ? register.Unit.UnitName : string.Empty,
                     OwnerId = register.ResponsibilityId,
                     OwnerName = register.Owner != null ? register.Owner.ContactName : string.Empty,
+                    ResponsibilityId = register.ResponsibilityId,
+                    Responsibile = register.Responsible != null ? register.Responsible.ContactName : string.Empty,
                     IsDeleted = register.IsDeleted,
                     CreatedOn = register.CreatedOn,
                     CreatedBy = register.CreatedBy ?? "System",
@@ -258,7 +260,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                var pageResult = await _processService.PageAllAsync(request.PageIndex, request.PageSize, true, 
+                var pageResult = await _processService.PageAllAsync(request.PageIndex, request.PageSize, false, 
                                                                     p => p.Unit,
                                                                     p => p.Owner,
                                                                     p => p.Responsible,
@@ -559,7 +561,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
 
-                var group = await _groupService.GetAsync(p => p.Id == request.RecordId, true, p => p.Processes);
+                var group = await _groupService.GetAsync(p => p.Id == request.RecordId, false, p => p.Processes);
                 if (group == null) {
                     var error = new ResponseError(
                         ResponseCodes.FAILED,
@@ -581,7 +583,7 @@ namespace Grc.Middleware.Api.Controllers {
 
                 //merge processes isAssigned = true if in assignedIds
                 var allProcesses = processList
-                    .Select(p => new ProcessRegisterResponse
+                    .Select(p => new ProcessMinResponse
                     {
                         Id = p.Id,
                         ProcessName = p.ProcessName ?? string.Empty,
@@ -626,7 +628,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                var pageResult = await _groupService.PageAllAsync(request.PageIndex, request.PageSize, true);
+                var pageResult = await _groupService.PageAllAsync(request.PageIndex, request.PageSize, false);
                 if (pageResult.Entities == null || !pageResult.Entities.Any()) {
                     var error = new ResponseError(
                         ResponseCodes.SUCCESS,
@@ -655,7 +657,7 @@ namespace Grc.Middleware.Api.Controllers {
                         CreatedBy = group.CreatedBy ?? string.Empty,
                         ModifiedOn = group.LastModifiedOn ?? group.CreatedOn,
                         ModifiedBy = group.LastModifiedBy ?? string.Empty,
-                        Processes = new List<ProcessRegisterResponse>()
+                        Processes = new List<ProcessMinResponse>()
                     }));
                 }
 
@@ -1336,7 +1338,7 @@ namespace Grc.Middleware.Api.Controllers {
                 var records = pageResult.Entities;
                 if (records != null && records.Any()) {
                     records.ForEach(approval => {
-                        var hod = CalculateDays(approval.HeadOfDepartmentStart, approval.HeadOfDepartmentEnd);
+                        var hod = CalculateDays(approval.RequestDate, approval.HeadOfDepartmentEnd);
                         var risk = CalculateDays(approval.RiskStart, approval.RiskEnd);
                         var compliance = CalculateDays(approval.ComplianceStart, approval.ComplianceEnd);
                         var bop = CalculateDays(approval.BranchOperationsStatusStart, approval.BranchOperationsStatusEnd);

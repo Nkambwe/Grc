@@ -186,9 +186,8 @@ function findProcess(id) {
 }
 
 function openProcessEditor(title, process, isEdit) {
-    var isLocked = process?.isLockProcess || false;
-    var status = process?.processStatus || 0;
-
+    var isLocked = process?.isLockProcess;
+    var status = process?.processStatus;
     // Populate form fields
     $("#processId").val(process?.id || "");
     $("#isEdit").val(isEdit);
@@ -199,10 +198,10 @@ function openProcessEditor(title, process, isEdit) {
     $("#effectiveDate").val(process?.effectiveDate);
     $('#isLockProcess').prop('checked', isLocked);
     $("#onholdReason").val(process?.onholdReason || "");
-    $("#processStatus").val(status || 0).trigger('change.select2');
+    $("#processStatus").val(status).trigger('change.select2');
     $("#comment").val(process?.comment || "");
     $("#fileName").val(process?.fileName || "");
-    $("#fileVersion").val(process?.CurrentVersion || "");
+    $("#fileVersion").val(process?.currentVersion || "");
     $("#unitId").val(process?.unitId || 0).trigger('change.select2');
     $("#ownerId").val(process?.ownerId || 0).trigger('change.select2');
     $("#assigneedId").val(process?.assigneedId || 0).trigger('change.select2');
@@ -249,16 +248,16 @@ function openProcessEditor(title, process, isEdit) {
     }
 
     //..disable all fields if editing a locked process
-    //if (isEdit && isLocked) {
-    //    //..disable all inputs inside form
-    //    $("#processForm :input").prop("disabled", true); 
+    if (isLocked) {
+        //..disable all inputs inside form
+        $("#processForm :input").prop("disabled", true); 
 
-    //    //..allow cancel/close still usable
-    //    $("#closeButton, #cancelButton").prop("disabled", false); 
-    //} else {
-    //    //..ensure fields are enabled when not locked
-    //    $("#processForm :input").prop("disabled", false); 
-    //}
+        //..allow cancel/close still usable
+        $("#closeButton, #cancelButton").prop("disabled", false); 
+    } else {
+        //..ensure fields are enabled when not locked
+        $("#processForm :input").prop("disabled", false); 
+    }
 
     // Show overlay panel
     $('#processPanelTitle').text(title);
@@ -291,7 +290,47 @@ function viewProcess(id){
 }
 
 function deleteProcess(id) {
-    alert('Delete Process >>> ' + id);
+    if (!id && id !== 0) {
+        toastr.error("Invalid id for delete.");
+        return;
+    }
+
+    Swal.fire({
+        title: "Delete Process",
+        text: "Are you sure you want to delete this process?",
+        showCancelButton: true,
+        confirmButtonColor: "#450354",
+        confirmButtonText: "Delete",
+        cancelButtonColor: "#f41369",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        $.ajax({
+            url: `/operations/workflow/processes/registers/delete/${encodeURIComponent(id)}`,
+            type: 'POST',
+            contentType: 'application/json',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getProcessAntiForgeryToken()
+            },
+            success: function (res) {
+                if (res && res.success) {
+                    toastr.success(res.message || "Process deleted successfully.");
+                    if (roleGroupTable) {
+                        roleGroupTable.replaceData();
+                    }
+                } else {
+                    toastr.error(res?.message || "Delete failed.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Delete error:", error);
+                console.error("Response:", xhr.responseText);
+                toastr.error(xhr.responseJSON?.message || "Request failed.");
+            }
+        });
+    });
 }
 
 function viewFile(fileName) {
@@ -334,10 +373,6 @@ function closeProcessPanel() {
 function saveProcessRecord(e) {
     if (e) e.preventDefault();
     let isEdit = $('#isEdit').val();
-    console.log('needsBranchOperations:', $('#needsBranchOperations').is(':checked'));
-    console.log('needsCreditReview:', $('#needsCreditReview').is(':checked'));
-    console.log('needsTreasuryReview:', $('#needsTreasuryReview').is(':checked'));
-    console.log('needsFintechReview:', $('#needsFintechReview').is(':checked'));
     let recordData = {
         id: parseInt($('#processId').val()) || 0,
         processName: $('#processName').val()?.trim(),
@@ -347,8 +382,8 @@ function saveProcessRecord(e) {
         ownerId: parseInt($('#ownerId').val()) || 0,
         responsibilityId: parseInt($('#assigneedId').val()) || 0,
         processStatus: $('#processStatus').val()?.trim(),
-        isDeleted: $('#isDeleted').is(':checked') ? true : false,
-        isLockProcess: $('#isLockProcess').is(':checked') ? true : false,
+        isDeleted: $('#isDeleted').prop('checked'),
+        isLockProcess: $('#isLockProcess').prop('checked'),
         onholdReason: $('#onholdReason').val()?.trim(),
         fileName: $('#fileName').val()?.trim(),
         currentVersion: $('#fileVersion').val()?.trim(),
@@ -357,48 +392,26 @@ function saveProcessRecord(e) {
         needsCreditReview: $('#needsCreditReview').prop('checked'),
         needsTreasuryReview: $('#needsTreasuryReview').prop('checked'),
         needsFintechReview: $('#needsFintechReview').prop('checked')
-        //needsBranchReview: $('#needsBranchOperations').is(':checked') ? true : false,
-        //needsCreditReview: $('#needsCreditReview').is(':checked') ? true : false,
-        //needsTreasuryReview: $('#needsTreasuryReview').is(':checked') ? true : false,
-        //needsFintechReview: $('#needsFintechReview').is(':checked') ? true : false
-
     };
 
     // --- validate required fields ---
     let errors = [];
-
     if (!recordData.processName)
         errors.push("Process name is required.");
-
     if (!recordData.description)
         errors.push("Process description is required.");
-
     if (!recordData.processStatus)
         errors.push("Process status is required.");
-
-    if (typeId === 0)
+    if (recordData.typeId === 0)
         errors.push("Process type is required.");
-
-    if (unitId === 0)
+    if (recordData.unitId === 0)
         errors.push("Department unit is required.");
-
-    if (ownerId === 0)
+    if (recordData.ownerId === 0)
         errors.push("Process owner is required.");
-
-    if (assigneedId === 0)
+    if (recordData.responsibilityId === 0)
         errors.push("Responsible manager is required.");
-
     if (!recordData.comments)
         errors.push("Comment is required.");
-
-    //var formData = new FormData(this);
-    //var files = getUploadedFiles();
-
-    //$.each(files, function (i, fileData) {
-    //    formData.append('files[' + i + '].file', fileData.file);
-    //    formData.append('files[' + i + '].name', fileData.name);
-    //    formData.append('files[' + i + '].isCurrent', fileData.isCurrent);
-    //});
 
     // --- stop if validation fails ---
     if (errors.length > 0) {
@@ -406,12 +419,10 @@ function saveProcessRecord(e) {
         highlightProcessField("#processDescription", !recordData.description);
         highlightProcessField("#comment", !recordData.comments);
         highlightProcessField("#processStatus", !recordData.processStatus);
-        highlightProcessField("#typeId", !recordData.typeId);
-        highlightProcessField("#typeId", !recordData.typeId);
-        highlightProcessField("#unitId", !recordData.unitId);
-        highlightProcessField("#ownerId", !recordData.ownerId);
-        highlightProcessField("#assigneedId", !recordData.assigneedId);
-
+        highlightProcessField("#typeId", recordData.typeId === 0);
+        highlightProcessField("#unitId", recordData.unitId === 0);
+        highlightProcessField("#ownerId", recordData.ownerId === 0);
+        highlightProcessField("#assigneedId", recordData.responsibilityId === 0);
         Swal.fire({
             title: "Record Validation",
             html: `<div style="text-align:left;">${errors.join("<br>")}</div>`,
@@ -419,23 +430,16 @@ function saveProcessRecord(e) {
         return;
     }
 
+    // Get uploaded files
+    var files = getUploadedFiles();
     console.log('Record Data:', recordData);
-    saveProcess(isEdit, recordData);
+    console.log('Uploaded files:', files);
+
+    // Save process first, then upload files
+    saveProcessWithFiles(isEdit, recordData, files);
 }
 
-// Function to get all files data when saving
-window.getUploadedFiles = function () {
-    return uploadedFiles.map(function (f) {
-        return {
-            id: f.id,
-            name: f.name,
-            isCurrent: f.isCurrent,
-            file: f.file
-        };
-    });
-};
-
-function saveProcess(isEdit, payload) {
+function saveProcessWithFiles(isEdit, payload, files) {
     const url = (isEdit === true || isEdit === "true")
         ? "/operations/workflow/processes/registers/retrieve/update"
         : "/operations/workflow/processes/registers/retrieve/create";
@@ -450,7 +454,6 @@ function saveProcess(isEdit, payload) {
         }
     });
 
-    //..debugging
     $.ajax({
         url: url,
         type: "POST",
@@ -461,10 +464,8 @@ function saveProcess(isEdit, payload) {
             'X-CSRF-TOKEN': getProcessAntiForgeryToken()
         },
         success: function (res) {
-            //..lose loader and show success message
-            Swal.close();
             if (!res.success) {
-                //..error from the server
+                Swal.close();
                 Swal.fire({
                     title: "Invalid record",
                     html: res.message.replaceAll("; ", "<br>")
@@ -472,27 +473,21 @@ function saveProcess(isEdit, payload) {
                 return;
             }
 
-            if (processRegisterTable) {
-                if (isEdit && res.data) {
-                    processRegisterTable.updateData([res.data]);
-                } else if (!isEdit && res.data) {
-                    processRegisterTable.addRow(res.data, true);
-                } else {
-                    processRegisterTable.replaceData();
-                }
+            //..if there are files to upload, upload them now
+            if (files && files.length > 0) {
+                uploadProcessFiles(res.data.id, files, isEdit, res);
+            } else {
+                // No files, just finish
+                handleProcessSaveSuccess(isEdit, res);
             }
-
-            closeProcessPanel();
         },
         error: function (xhr) {
             Swal.close();
-
             let errorMessage = "Unexpected error occurred.";
             try {
                 let response = JSON.parse(xhr.responseText);
                 if (response.message) errorMessage = response.message;
             } catch (e) { }
-
             Swal.fire({
                 title: isEdit ? "Update Failed" : "Save Failed",
                 text: errorMessage
@@ -500,6 +495,91 @@ function saveProcess(isEdit, payload) {
         }
     });
 }
+
+function uploadProcessFiles(processId, files, isEdit, processResponse) {
+    var formData = new FormData();
+    formData.append('processId', processId);
+
+    //..append all files
+    $.each(files, function (i, fileData) {
+        formData.append('files', fileData.file);
+        formData.append('fileNames[' + i + ']', fileData.name);
+        formData.append('fileIsCurrent[' + i + ']', fileData.isCurrent);
+    });
+
+    Swal.fire({
+        title: "Uploading files...",
+        text: "Please wait while we upload your files.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    $.ajax({
+        url: "/operations/workflow/processes/registers/upload-files",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getProcessAntiForgeryToken()
+        },
+        success: function (fileRes) {
+            Swal.close();
+            if (!fileRes.success) {
+                Swal.fire({
+                    title: "File Upload Warning",
+                    html: "Process saved but files failed to upload: " + fileRes.message
+                });
+            }
+            handleProcessSaveSuccess(isEdit, processResponse);
+        },
+        error: function (xhr) {
+            Swal.close();
+            Swal.fire({
+                title: "File Upload Warning",
+                text: "Process saved but files failed to upload. Please try uploading them again."
+            });
+            handleProcessSaveSuccess(isEdit, processResponse);
+        }
+    });
+}
+
+function handleProcessSaveSuccess(isEdit, res) {
+    Swal.close();
+    if (processRegisterTable) {
+        if (isEdit && res.data) {
+            processRegisterTable.updateData([res.data]);
+        } else if (!isEdit && res.data) {
+            processRegisterTable.addRow(res.data, true);
+        } else {
+            processRegisterTable.replaceData();
+        }
+    }
+    closeProcessPanel();
+
+    Swal.fire({
+        title: "Success",
+        text: isEdit ? "Process updated successfully!" : "Process created successfully!",
+        icon: "success",
+        timer: 2000
+    });
+}
+
+// function to get all files data when saving
+window.getUploadedFiles = function () {
+    return uploadedFiles.map(function (f) {
+        return {
+            id: f.id,
+            name: f.name,
+            isCurrent: f.isCurrent,
+            file: f.file
+        };
+    });
+};
 
 function getProcessAntiForgeryToken() {
     return $('meta[name="csrf-token"]').attr('content');
@@ -612,6 +692,7 @@ $(document).ready(function () {
 
     initProcessRegisterTable();
     initEffectiveDatePickers();
+
     $("#onHoldBox").addClass("d-none");
 
     $('#typeId, #processStatus, #unitId, #ownerId, #assigneedId, #complianceStatus, #branchManagerStatus, #approvalStatus').select2({
@@ -629,24 +710,25 @@ $(document).ready(function () {
         createProcess();
     });
 
-    //$('#btnExportProcess').on('click', function () {
-    //    $.ajax({
-    //        url: '/grc/compliance/register/policies-export',
-    //        type: 'POST',
-    //        contentType: 'application/json',
-    //        data: JSON.stringify(policyRegisterTable.getData()),
-    //        xhrFields: { responseType: 'blob' },
-    //        success: function (blob) {
-    //            let link = document.createElement('a');
-    //            link.href = window.URL.createObjectURL(blob);
-    //            link.download = "Policy_Register.xlsx";
-    //            link.click();
-    //        },
-    //        error: function () {
-    //            toastr.error("Export failed. Please try again.");
-    //        }
-    //    });
-    //});
+    $('#btnExportProcess').on('click', function () {
+        console.log("Exporting Processes");
+        $.ajax({
+            url: '/operations/workflow/processes/registers/retrieve/export-all',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(processRegisterTable.getData()),
+            xhrFields: { responseType: 'blob' },
+            success: function (blob) {
+                let link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "Operations_processes.xlsx";
+                link.click();
+            },
+            error: function () {
+                toastr.error("Export failed. Please try again.");
+            }
+        });
+    });
 
     $("#processStatus").on("change", function () {
         const selectedValue = $(this).val();
@@ -657,26 +739,26 @@ $(document).ready(function () {
         }
     });
 
-    // Click to browse files
+    //..click to browse files
     $('#dropZone').on('click', function (e) {
         if (e.target === this || $(e.target).closest('#dropZone').length) {
             document.getElementById('fileInput').click();
         }
     });
 
-    // Handle file input change
+    //..handle file input change
     $('#fileInput').on('change', function (e) {
         handleFiles(e.target.files);
         $(this).val('');
     });
 
-    // Prevent default drag behaviors
+    //..prevent default drag behaviors
     $('#dropZone').on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
         e.preventDefault();
         e.stopPropagation();
     });
 
-    // Add hover effect
+    //..add hover effect
     $('#dropZone').on('dragover dragenter', function () {
         $(this).addClass('border-primary bg-light');
     });
@@ -685,13 +767,13 @@ $(document).ready(function () {
         $(this).removeClass('border-primary bg-light');
     });
 
-    // Handle drop
+    //..handle drop
     $('#dropZone').on('drop', function (e) {
         var files = e.originalEvent.dataTransfer.files;
         handleFiles(files);
     });
 
-    // Handle checkbox changes
+    //..handle checkbox changes
     $(document).on('change', '.file-current-checkbox', function () {
         var fileId = $(this).attr('id');
         var isChecked = $(this).is(':checked');
@@ -716,7 +798,7 @@ $(document).ready(function () {
         updateFileNameField();
     });
 
-    // Function to get all files data when saving
+    //..function to get all files data when saving
     window.getUploadedFiles = function () {
         return uploadedFiles.map(function (f) {
             return {

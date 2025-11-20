@@ -1,4 +1,5 @@
 ﻿let processGroupTable;
+
 function initProcessGroupListTable() {
     processGroupTable = new Tabulator("#processGroupTable", {
         ajaxURL: "/operations/workflow/processes/groups/all",
@@ -135,20 +136,304 @@ function initProcessGroupListTable() {
 };
 
 function initProcessGroupSearch() {
+    const searchInput = $('#groupSearchbox');
+    let typingTimer;
 
+    searchInput.on('input', function () {
+        clearTimeout(typingTimer);
+        const searchTerm = $(this).val();
+
+        typingTimer = setTimeout(function () {
+            if (searchTerm && searchTerm.length >= 2) {
+                processGroupTable.setFilter([
+                    [
+                        { field: "groupName", type: "like", value: searchTerm },
+                        { field: "groupDescription", type: "like", value: searchTerm }
+                    ]
+                ]);
+                processGroupTable.setPage(1, true);
+            } else {
+                processGroupTable.clearFilter();
+            }
+        }, 300);
+    });
 
 }
 
-function deleteProcessGroup(id) {
-    alert("Delete Process Group ID: " + id);
+function findProcessGroup(id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/operations/workflow/processes/groups/retrieve/${encodeURIComponent(id)}`,
+            type: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            success: function (res) {
+                if (res && res.success) {
+                    resolve(res.data);
+                } else {
+                    resolve(null);
+                }
+            },
+            error: function () {
+                reject();
+            }
+        });
+    });
 }
 
 function viewProcessGroup(id) {
-    alert("View Process Group ID: " + id);
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving group record...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    findProcessGroup(id)
+        .then(record => {
+            Swal.close();
+            if (record) {
+                openProcessGroupEditor('Edit Process Group', record, true);
+            } else {
+                Swal.fire({ title: 'NOT FOUND', text: 'Group record found' });
+            }
+        })
+        .catch(() => {
+            Swal.close();
+            Swal.fire({ title: 'Error', text: 'Failed to load group details.' });
+        });
+}
+
+function openProcessGroupEditor(title, group, isEdit) {
+    $("#groupId").val(group?.id || "");
+    $("#isEdit").val(isEdit);
+    $("#groupName").val(group?.groupName || "");
+    $("#groupDescription").val(group?.groupDescription || "");
+
+    $("#groupListContainer").html("<div class='text-muted p-2'>Loading process groups...</div>");
+
+    if (isEdit) {
+        const processes = Array.isArray(group.processes) ? group.processes : [];
+        let html = "<div class='role-group-list'>";
+        processes.forEach(p => {
+            const checked = p.isAssigned ? "checked" : "";
+            html += `<div class="form-check">
+                            <input type="checkbox" class="form-check-input perm-checkbox" id="perm-${p.id}" value="${p.id}" ${checked}>
+                            <label class="form-check-label" for="perm-${p.id}">${p.processName}</label>
+                        </div>`;
+        });
+        html += "</div>";
+        $("#groupListContainer").html(html);
+
+        //..show deactivation checkbox
+        $("#IsDeletedBox").show(); 
+    } else {
+        console.log("load all processes");
+        $.get("/operations/workflow/processes/groups/processes-min", function (res) {
+            const processes = Array.isArray(res?.processes) ? res.processes : [];
+
+            let html = "<div class='role-group-list'>";
+            processes.forEach(p => {
+                const checked = p.isAssigned ? "checked" : "";
+                html += `
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input perm-checkbox" id="perm-${p.id}" value="${p.id}" ${checked}>
+                    <label class="form-check-label" for="perm-${p.id}">
+                        ${p.processName}
+                    </label>
+                </div>`;
+            });
+            html += "</div>";
+            $("#groupListContainer").html(html);
+
+        }).fail(() => {
+            $("#groupListContainer").html("<div class='text-danger'>Failed to load processes.</div>");
+        });
+
+        //..hide deactivation checkbox
+        $("#IsDeletedBox").hide(); 
+    }
+    
+    //..show overlay panel
+    $('#groupPanelTitle').text(title);
+    $('.process-overlay').addClass('active');
+    $('#collapsePanel').addClass('active');
+}
+
+function saveProcessGroupRecord(e) {
+
+    e.preventDefault();
+
+    let isEdit = $('#isEdit').val();
+    let recordData = {
+        id: parseInt($('#groupId').val()) || 0,
+        groupName: $('#groupName').val()?.trim(),
+        groupDescription: $('#groupDescription').val()?.trim(),
+        isDeleted: $('#isDeleted').prop('checked'),
+        processes: $(".perm-checkbox:checked").map((_, el) => parseInt(el.value, 10)).get()
+    };
+
+    // --- validate required fields ---
+    let errors = [];
+    if (!recordData.groupName)
+        errors.push("Group name is required.");
+    if (!recordData.groupDescription)
+        errors.push("Group description is required.");
+
+    if (errors.length > 0) {
+        highlightProcessGroupField("#groupName", !recordData.groupName);
+        highlightProcessGroupField("#groupDescription", !recordData.groupDescription);
+        Swal.fire({
+            title: "Record Validation",
+            html: `<div style="text-align:left;">${errors.join("<br>")}</div>`,
+        });
+        return;
+    }
+
+    //..save group
+    saveGroup(isEdit, recordData);
+}
+
+function saveGroup(isEdit, payload) {
+    const url = (isEdit === true || isEdit === "true")
+        ? "/operations/workflow/processes/groups/update"
+        : "/operations/workflow/processes/groups/create";
+
+    Swal.fire({
+        title: isEdit ? "Updating group..." : "Saving group...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(payload),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getProcessGroupAntiForgeryToken()
+        },
+        success: function (res) {
+            Swal.close();
+            if (!res.success) {
+                Swal.fire({
+                    title: "Invalid record",
+                    html: res.message.replaceAll("; ", "<br>")
+                });
+                return;
+            }
+
+            if (processGroupTable) {
+                if (isEdit && res.data) {
+                    processGroupTable.updateData([res.data]);
+                } else if (!isEdit && res.data) {
+                    processGroupTable.addRow(res.data, true);
+                } else {
+                    processGroupTable.replaceData();
+                }
+            }
+
+            closeProcessGroupPanel()();
+        },
+        error: function (xhr) {
+            Swal.close();
+
+            let errorMessage = "Unexpected error occurred.";
+            try {
+                let response = JSON.parse(xhr.responseText);
+                if (response.message) errorMessage = response.message;
+            } catch (e) { }
+
+            Swal.fire({
+                title: isEdit ? "Update Failed" : "Save Failed",
+                text: errorMessage
+            });
+        }
+    });
+}
+
+function highlightProcessGroupField(selector, hasError, message) {
+    const $field = $(selector);
+    const $formGroup = $field.closest('.form-group, .mb-3, .col-sm-8');
+
+    // Remove existing error
+    $field.removeClass('is-invalid');
+    $formGroup.find('.field-error').remove();
+
+    if (hasError) {
+        $field.addClass('is-invalid');
+        if (message) {
+            $formGroup.append(`<div class="field-error text-danger small mt-1">${message}</div>`);
+        }
+    }
 }
 
 function createGroup() {
-    alert("Create Process Group");
+    openProcessGroupEditor('New Process Group', {
+        id: 0,
+        isEdit: false,
+        groupName: '',
+        groupDescription: ''
+    }, false);
+}
+
+function closeProcessGroupPanel() {
+    $('.process-overlay').removeClass('active');
+    $('#collapsePanel').removeClass('active');
+}
+
+function deleteProcessGroup(id) {
+    if (!id && id !== 0) {
+        toastr.error("Invalid id for delete.");
+        return;
+    }
+
+    Swal.fire({
+        title: "Delete Group",
+        text: "Are you sure you want to delete this group?",
+        showCancelButton: true,
+        confirmButtonColor: "#450354",
+        confirmButtonText: "Delete",
+        cancelButtonColor: "#f41369",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        $.ajax({
+            url: `/operations/workflow/processes/groups/delete/${encodeURIComponent(id)}`,
+            type: 'POST',
+            contentType: 'application/json',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getProcessGroupAntiForgeryToken()
+            },
+            success: function (res) {
+                if (res && res.success) {
+                    toastr.success(res.message || "Process deleted successfully.");
+                    if (roleGroupTable) {
+                        roleGroupTable.replaceData();
+                    }
+                } else {
+                    toastr.error(res?.message || "Delete failed.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Delete error:", error);
+                console.error("Response:", xhr.responseText);
+                toastr.error(xhr.responseJSON?.message || "Request failed.");
+            }
+        });
+    });
+}
+
+function getProcessGroupAntiForgeryToken() {
+    return $('meta[name="csrf-token"]').attr('content');
+
 }
 
 $(document).ready(function () {

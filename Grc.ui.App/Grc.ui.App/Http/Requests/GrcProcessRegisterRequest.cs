@@ -46,6 +46,9 @@ namespace Grc.ui.App.Http.Requests {
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 
+        [JsonPropertyName("isLockProcess")]
+        public bool IsLockProcess { get; set; }
+
         [JsonPropertyName("typeId")]
         public long TypeId { get; set; }
 
@@ -90,6 +93,9 @@ namespace Grc.ui.App.Http.Requests {
 
         [JsonPropertyName("action")]
         public string Action { get; set; }
+
+        [JsonPropertyName("processes")]
+        public List<long> Processes { get; set; } = new();
 
     }
 }

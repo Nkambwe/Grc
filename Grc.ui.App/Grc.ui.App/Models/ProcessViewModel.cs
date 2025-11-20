@@ -31,6 +31,9 @@ namespace Grc.ui.App.Models {
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 
+        [JsonPropertyName("isLockProcess")]
+        public bool IsLocked { get; set; }
+
         [JsonPropertyName("comments")]
         public string Comments { get; set; }
 

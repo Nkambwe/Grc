@@ -989,6 +989,7 @@ namespace Grc.ui.App.Services {
                     UserId = userId,
                     IpAddress = ipAddress,
                     Action = Activity.PROCESS_GROUP_CREATE.GetDescription(),
+                    Processes = groupModel.Processes,
                 };
 
                 //..map request
@@ -1044,7 +1045,7 @@ namespace Grc.ui.App.Services {
 
 
                 //..build request object
-                var request = Mapper.Map<GrcProcessRegisterRequest>(groupModel);
+                var request = Mapper.Map<GrcProcessGroupRequest>(groupModel);
                 request.UserId = userId;
                 request.IpAddress = ipAddress;
                 request.Action = Activity.PROCESS_GROUP_UPDATE.GetDescription();
@@ -1056,7 +1057,7 @@ namespace Grc.ui.App.Services {
                 var endpoint = $"{EndpointProvider.Operations.ProcessBase}/update-group";
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
-                return await HttpHandler.PostAsync<GrcProcessRegisterRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcProcessGroupRequest, ServiceResponse>(endpoint, request);
             }
             catch (HttpRequestException httpEx)
             {

@@ -241,7 +241,13 @@
 		<Value>Compliance Obligations</Value>
 	</LocaleResource>
 
-
+	<LocaleResource Name="Component.Table.Process.GroupName">
+		<Value>Group Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.GroupDescription">
+		<Value>Group Description</Value>
+	</LocaleResource>
+	
 	<LocaleResource Name="Component.Key.ProcessApproval">
 		<Value>Process Approvals</Value>
 	</LocaleResource>

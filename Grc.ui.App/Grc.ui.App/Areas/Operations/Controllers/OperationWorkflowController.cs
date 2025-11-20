@@ -12,6 +12,7 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace Grc.ui.App.Areas.Operations.Controllers {
 
@@ -63,6 +64,73 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             }
 
             return View(model);
+        }
+
+        public async Task<IActionResult> ProcessMinProcessesList()
+        {
+            try
+            {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError)
+                {
+                    Logger.LogActivity($"ROLE LIST ERROR: Failed to retrieve current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                var currentUser = grcResponse.Data;
+                if (currentUser == null)
+                {
+                    //..session has expired
+                    return RedirectToAction("Login", "Application");
+                }
+                GrcRequest request = new()
+                {
+                    UserId = currentUser.UserId,
+                    Action = Activity.RETRIVEROLEGROUPS.GetDescription(),
+                    IPAddress = ipAddress,
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>()
+                };
+
+                //..get list of all processes
+                var processList = await _processService.GetAllProcessesAsync(request);
+
+                List<GrcProcessRegisterResponse> processes;
+                if (processList.HasError)
+                {
+                    processes = new();
+                    Logger.LogActivity($"PROCESSES DATA ERROR: Failed to retrieve processes - {JsonSerializer.Serialize(processList)}");
+                }
+                else
+                {
+                    processes = processList.Data;
+                    Logger.LogActivity($"ROLE GROUP DATA - {JsonSerializer.Serialize(processes)}");
+                }
+
+                //..get ajax data
+                List<object> listData = new();
+                if (processes.Any())
+                {
+                    listData = processes.Select(p => new {
+                        id = p.Id,
+                        processName = p.ProcessName,
+                        description = p.Description,
+                        isDeleted = p.IsDeleted,
+                        isAssigned = p.IsAssigned
+                    }).Cast<object>().ToList();
+                }
+
+                return Json(new { processes = listData });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving roles: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
         }
 
         public async Task<IActionResult> ProcessRegisterList([FromBody] TableListRequest request) {
@@ -148,15 +216,24 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 }
 
                 var process = result.Data;
-                var processRecord = new
+
+                int status = 0;
+                if (!string.IsNullOrWhiteSpace(process.ProcessStatus))
                 {
+                    if (Enum.TryParse(process.ProcessStatus, out ProcessCategories appStatus))
+                    {
+                        status = (int)appStatus;
+                    }
+                }
+               
+                var processRecord = new {
                     id = process.Id,
                     processName = process.ProcessName ?? string.Empty,
                     description = process.Description ?? string.Empty,
                     currentVersion = process.CurrentVersion ?? "0.0.0",
                     fileName = process.FileName,
                     originalOnFile = process.OriginalOnFile,
-                    processStatus = process.ProcessStatus ?? "UNDEFINED",
+                    processStatus = status,
                     onholdReason = process.OnholdReason ?? string.Empty,
                     comment = process.Comments ?? string.Empty,
                     typeId = process.TypeId,
@@ -241,6 +318,18 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                     return Ok(new { success = false, message = "Invalid process data" });
                 }
 
+                if (!string.IsNullOrWhiteSpace(request.ProcessStatus)) {
+                    if(int.TryParse(request.ProcessStatus, out int status))
+                    {
+                        request.ProcessStatus = ((ProcessCategories)status).GetDescription();
+                    } else {
+                        request.ProcessStatus = ProcessCategories.Draft.GetDescription();
+                    }
+                } else
+                {
+                    request.ProcessStatus = ProcessCategories.Draft.GetDescription();
+                }
+
                 var result = await _processService.CreateProcessAsync(request, currentUser.UserId, ipAddress);
                 if (result.HasError || result.Data == null)
                     return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create process record" });
@@ -281,6 +370,13 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                     return Ok(new { success = false, message = "Invalid user data" });
                 }
 
+                if (!string.IsNullOrWhiteSpace(request.ProcessStatus)) {
+                    if (int.TryParse(request.ProcessStatus, out int status))
+                    {
+                        request.ProcessStatus = ((ProcessCategories)status).GetDescription();
+                    }
+                }
+
                 var result = await _processService.UpdateProcessAsync(request, currentUser.UserId, ipAddress);
                 if (result.HasError || result.Data == null)
                     return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update process record" });
@@ -301,6 +397,44 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 Logger.LogActivity($"Error update process record: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
                 return Json(new { results = new List<object>() });
+            }
+        }
+
+        [LogActivityResult("Upload process files", "User uploaded process files", ActivityTypeDefaults.PROCESSES_FILE_UPLOAD, "OperationProcess")]
+        public async Task<IActionResult> UploadProcessFiles(long processId, List<IFormFile> files, List<string> fileNames, List<bool> fileIsCurrent) {
+            try {
+
+                if (files == null || files.Count == 0) {
+                    return BadRequest(new { success = false, message = "No files provided" });
+                }
+
+                for (int i = 0; i < files.Count; i++) {
+                    var file = files[i];
+                    var fileName = fileNames != null && i < fileNames.Count ? fileNames[i] : file.FileName;
+                    var isCurrent = fileIsCurrent != null && i < fileIsCurrent.Count && fileIsCurrent[i];
+
+                    if (file.Length > 0) {
+                        //..save logic here
+                        //var filePath = Path.Combine("sharepoint-upload-path", processId.ToString(), fileName);
+                        //Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+
+                        //using var stream = new FileStream(filePath, FileMode.Create);
+                        //await file.CopyToAsync(stream);
+
+                        // Update database documents table
+                        // TODO...
+                        //var result = await _processService.SaveProcessDocumentAsync(processId, fileName, isCurrent, WebHelper.GetCurrentIpAddress());
+
+                        var msg = await Task.FromResult($"Simulated upload of file '{fileName}' for process ID {processId}, IsCurrent: {isCurrent}");
+                        Logger.LogActivity($"{msg}", "MSG");
+                    }
+                }
+
+                return Ok(new { success = true, message = "Files uploaded successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -454,7 +588,8 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                     createdOn = group.CreatedOn,
                     createdBy = group.CreatedBy ?? string.Empty,
                     modifiedOn = group.ModifiedOn ?? group.CreatedOn,
-                    modifiedBy = group.ModifiedBy ?? string.Empty
+                    modifiedBy = group.ModifiedBy ?? string.Empty,
+                    processes = group.Processes
                 };
 
                 return Ok(new { success = true, data = groupRecord });
@@ -491,7 +626,8 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                         createdOn = group.CreatedOn,
                         createdBy = group.CreatedBy ?? string.Empty,
                         modifiedOn = group.ModifiedOn ?? group.CreatedOn,
-                        modifiedBy = group.ModifiedBy ?? string.Empty
+                        modifiedBy = group.ModifiedBy ?? string.Empty,
+                        processes = group.Processes
                     }).ToList();
 
                 var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);

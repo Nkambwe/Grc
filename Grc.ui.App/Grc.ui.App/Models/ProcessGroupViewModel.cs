@@ -15,6 +15,9 @@ namespace Grc.ui.App.Models {
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 
+        [JsonPropertyName("processes")]
+        public List<long> Processes { get; set; } = new();
+
     }
 
 }
