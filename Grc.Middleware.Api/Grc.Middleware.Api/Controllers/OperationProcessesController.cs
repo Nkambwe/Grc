@@ -897,7 +897,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
 
-                var tag = await _tagService.GetAsync(p => p.Id == request.RecordId, true, p => p.Processes);
+                var tag = await _tagService.GetAsync(p => p.Id == request.RecordId, false, p => p.Processes);
                 if (tag == null)
                 {
                     var error = new ResponseError(
@@ -966,7 +966,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                var pageResult = await _tagService.PageAllAsync(request.PageIndex, request.PageSize, true);
+                var pageResult = await _tagService.PageAllAsync(request.PageIndex, request.PageSize, false);
                 if (pageResult.Entities == null || !pageResult.Entities.Any())
                 {
                     var error = new ResponseError(
@@ -1738,6 +1738,7 @@ namespace Grc.Middleware.Api.Controllers {
                         ProcessId = approval.ProcessId, 
                         RequestDate = approval.RequestDate,
                         ProcessName = approval.Process.ProcessName ?? string.Empty,
+                        ProcessDescription = approval.Process.Description ?? string.Empty,
                         HeadOfDepartmentStart = approval.HeadOfDepartmentStart,
                         HeadOfDepartmentEnd = approval.HeadOfDepartmentEnd,
                         HeadOfDepartmentStatus = approval.HeadOfDepartmentStatus ?? string.Empty,
@@ -1796,6 +1797,94 @@ namespace Grc.Middleware.Api.Controllers {
             {
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<PagedResponse<ProcessApprovalResponse>>(error));
+            }
+        }
+
+        [HttpPost("processes/approval-retrieve")]
+        public async Task<IActionResult> GetProcessApproval([FromBody] IdRequest request)
+        {
+            try
+            {
+                Logger.LogActivity("Get process approval by ID", "INFO");
+                if (request == null)
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ProcessApprovalResponse>(error));
+                }
+
+                if (request.RecordId == 0)
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request process approval ID is required",
+                        "Invalid request process approval ID"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ProcessApprovalResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var approval = await _approvalService.GetAsync(p => p.Id == request.RecordId, true, p => p.Process);
+                if (approval == null)
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.FAILED,
+                        "Operations process not found",
+                        "No operations process matched the provided ID"
+                    );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ProcessApprovalResponse>(error));
+                }
+
+                var tatRecord = new ProcessApprovalResponse
+                {
+                    Id = approval.Id,
+                    ProcessId = approval.ProcessId,
+                    RequestDate = approval.RequestDate,
+                    ProcessName = approval.Process.ProcessName ?? string.Empty,
+                    ProcessDescription = approval.Process.Description ?? string.Empty,
+                    HeadOfDepartmentStart = approval.HeadOfDepartmentStart,
+                    HeadOfDepartmentEnd = approval.HeadOfDepartmentEnd,
+                    HeadOfDepartmentStatus = approval.HeadOfDepartmentStatus ?? string.Empty,
+                    HeadOfDepartmentComment = approval.HeadOfDepartmentComment ?? string.Empty,
+                    RiskStart = approval.RiskStart,
+                    RiskEnd = approval.RiskEnd,
+                    RiskStatus = approval.RiskStatus ?? string.Empty,
+                    RiskComment = approval.RiskComment ?? string.Empty,
+                    ComplianceStart = approval.ComplianceStart,
+                    ComplianceEnd = approval.ComplianceEnd,
+                    ComplianceStatus = approval.ComplianceStatus ?? string.Empty,
+                    ComplianceComment = approval.ComplianceComment ?? string.Empty,
+                    BranchOperationsStatusStart = approval.BranchOperationsStatusStart,
+                    BranchOperationsStatusEnd = approval.BranchOperationsStatusEnd,
+                    BranchOperationsStatus = approval.BranchOperationsStatus ?? string.Empty,
+                    BranchManagerComment = approval.BranchManagerComment ?? string.Empty,
+                    CreditStart = approval.CreditStart,
+                    CreditEnd = approval.CreditEnd,
+                    CreditStatus = approval.CreditStatus ?? string.Empty,
+                    CreditComment = approval.CreditComment ?? string.Empty,
+                    TreasuryStart = approval.TreasuryStart,
+                    TreasuryEnd = approval.TreasuryEnd,
+                    TreasuryStatus = approval.TreasuryStatus ?? string.Empty,
+                    TreasuryComment = approval.TreasuryComment ?? string.Empty,
+                    FintechStart = approval.FintechStart,
+                    FintechEnd = approval.FintechEnd,
+                    FintechStatus = approval.FintechStatus ?? string.Empty,
+                    FintechComment = approval.FintechComment ?? string.Empty,
+                    IsDeleted = approval.IsDeleted
+                };
+
+                return Ok(new GrcResponse<ProcessApprovalResponse>(tatRecord));
+            }
+            catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<ProcessTATResponse>(error));
             }
         }
 

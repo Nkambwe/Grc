@@ -488,13 +488,19 @@ namespace Grc.Middleware.Api.Services.Operations {
             }
         }
 
-        public async Task<bool> InsertAsync(ProcessTagRequest request)
-        {
+        public async Task<bool> InsertAsync(ProcessTagRequest request) {
             using var uow = UowFactory.Create();
-            try
-            {
-                //..map Process Tag request to Process Tag entity
-                var tag = Mapper.Map<ProcessTagRequest, ProcessTag>(request);
+            try {
+
+                //..map process tag request to process tag entity
+                var tag = new ProcessTag() {
+                    TagName = request.TagName,
+                    Description = request.TagDescription,
+                    CreatedBy = request.CreatedBy,
+                    CreatedOn = request.CreatedOn,
+                    LastModifiedBy = request.ModifiedBy,
+                    LastModifiedOn = request.ModifiedOn
+                };
 
                 //..log the Process Tag data being saved
                 var tagJson = JsonSerializer.Serialize(tag, new JsonSerializerOptions
@@ -504,9 +510,21 @@ namespace Grc.Middleware.Api.Services.Operations {
                 });
                 Logger.LogActivity($"Process Tag data: {tagJson}", "DEBUG");
 
+                //..link processes if provided
+                if (request.Processes != null && request.Processes.Any()) {
+                    var processes = await uow.OperationProcessRepository.GetAllAsync(p => request.Processes.Contains(p.Id));
+                    foreach (var process in processes)
+                    {
+                        tag.Processes.Add(new ProcessProcessTag
+                        {
+                            Process = process,
+                            Tag = tag
+                        });
+                    }
+                }
+
                 var added = await uow.ProcessTagRepository.InsertAsync(tag);
-                if (added)
-                {
+                if (added) {
                     //..check object state
                     var entityState = ((UnitOfWork)uow).Context.Entry(tag).State;
                     Logger.LogActivity($"Entity state after insert: {entityState}", "DEBUG");

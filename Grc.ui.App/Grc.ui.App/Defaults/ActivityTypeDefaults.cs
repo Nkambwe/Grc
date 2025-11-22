@@ -155,6 +155,9 @@
         public const string PROCESSES_DELETED_TAG = "Operations.Processes.Tags.Delete";
         public const string PROCESSES_EXPORT_TAG = "Operations.Processes.Tags.Export";
 
+        public const string APPROVAL_RETRIEVE_APPLY = "Operations.Processes.Approvals.Retrieve";
+        public const string APPROVAL_RETRIEVE_RECORD = "Operations.Processes.Approvals.Record";
+
         #endregion
 
         #region Departments

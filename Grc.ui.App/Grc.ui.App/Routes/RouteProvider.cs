@@ -531,7 +531,21 @@
                pattern: "/operations/workflow/processes/tags/retrieve/{id:long}",
                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "GetProcessTag" }
             );
-
+            routeBuilder.MapControllerRoute(
+                name: "app-operations-processes-tags-create",
+                pattern: "/operations/workflow/processes/tags/create",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "CreateProcessTag" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-operations-processes-tags-update",
+                pattern: "/operations/workflow/processes/tags/update",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "UpdateProcessTag" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-operations-processes-tags-delete",
+                pattern: "/operations/workflow/processes/tags/delete/{id:long}",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "DeleteProcessTag" }
+            );
             /*----------------------- Operations process tat routes*/
             routeBuilder.MapControllerRoute(
                name: "app-operations-processes-reports",
@@ -578,12 +592,19 @@
                  pattern: "/operations/workflow/processes/revisions",
                  defaults: new { area = "Operations", controller = "OperationWorkflow", action = "Revisions" }
             );
+
+            /*----------------------- Process Approvals routes*/
             routeBuilder.MapControllerRoute(
                  name: "app-operations-processes-approvals-all",
                  pattern: "/operations/workflow/processes/approvals-all",
                  defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ProcessApprovalList" }
-             );
-
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-operations-processes-approvals-retrieve",
+                pattern: "/operations/workflow/processes/approvals-retrieve/{id:long}",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "GetApproval" }
+            );
+            
             /*----------------------- Compliance dashboard routes*/
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-dashboard",

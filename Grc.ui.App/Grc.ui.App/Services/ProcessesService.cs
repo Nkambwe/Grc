@@ -1232,6 +1232,7 @@ namespace Grc.ui.App.Services {
                     UserId = userId,
                     IpAddress = ipAddress,
                     Action = Activity.PROCESS_TAG_CREATE.GetDescription(),
+                    Processes = tagModel.Processes
                 };
 
                 //..map request
@@ -1287,19 +1288,26 @@ namespace Grc.ui.App.Services {
 
 
                 //..build request object
-                var request = Mapper.Map<GrcProcessRegisterRequest>(tagModel);
-                request.UserId = userId;
-                request.IpAddress = ipAddress;
-                request.Action = Activity.PROCESS_TAG_UPDATE.GetDescription();
+                var request = new GrcProcessTagRequest {
+                    Id = tagModel.Id,
+                    TagName = tagModel.TagName,
+                    TagDescription = tagModel.TagDescription,
+                    CreatedBy = "SYSTEM",
+                    CreatedOn = DateTime.UtcNow,
+                    UserId = userId,
+                    IpAddress = ipAddress,
+                    Action = Activity.PROCESS_TAG_UPDATE.GetDescription(),
+                    Processes = tagModel.Processes
+                };
 
                 //..map request
-                Logger.LogActivity($"UPDATE PROCESS GROUP REQUEST : {JsonSerializer.Serialize(request)}");
+                Logger.LogActivity($"UPDATE PROCESS TAG REQUEST : {JsonSerializer.Serialize(request)}");
 
                 //..build endpoint
                 var endpoint = $"{EndpointProvider.Operations.ProcessBase}/update-tag";
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
-                return await HttpHandler.PostAsync<GrcProcessRegisterRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcProcessTagRequest, ServiceResponse>(endpoint, request);
             }
             catch (HttpRequestException httpEx)
             {
@@ -1454,38 +1462,6 @@ namespace Grc.ui.App.Services {
             }
         }
 
-        public async Task<GrcResponse<PagedResponse<GrcProcessApprovalStatusResponse>>> GetProcessApprovalStatusAsync(TableListRequest request) {
-            try
-            {
-                if (request == null)
-                {
-                    var error = new GrcResponseError(
-                        GrcStatusCodes.BADREQUEST,
-                        "Invalid Request object",
-                        "Request object cannot be null"
-                    );
-
-                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
-                    return new GrcResponse<PagedResponse<GrcProcessApprovalStatusResponse>>(error);
-                }
-
-                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/approval-status";
-                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<GrcProcessApprovalStatusResponse>>(endpoint, request);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
-                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
-                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
-                var error = new GrcResponseError(
-                    GrcStatusCodes.SERVERERROR,
-                    "An unexpected error occurred",
-                    "Cannot proceed! An error occurred, please try again later"
-                );
-                return new GrcResponse<PagedResponse<GrcProcessApprovalStatusResponse>>(error);
-            }
-        }
-
         public async Task<GrcResponse<List<GrcProcessTatResponse>>> GetTATReportAsync(GrcRequest request) {
             try {
                 if (request == null) {
@@ -1518,6 +1494,80 @@ namespace Grc.ui.App.Services {
 
         #endregion
 
+        #region Approval Process
+
+        public async Task<GrcResponse<GrcProcessApprovalStatusResponse>> GetApprovalRecordAsync(long recordId, long userId, string ipAddress) {
+            try {
+                if (recordId == 0) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Approval ID is required",
+                        "Invalid Approval request"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<GrcProcessApprovalStatusResponse>(error);
+                }
+
+                var request = new GrcIdRequest() {
+                    UserId = userId,
+                    RecordId = recordId,
+                    IPAddress = ipAddress,
+                    Action = Activity.PROCESS_APPROVAL_RETRIVED.GetDescription(),
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>(),
+                };
+
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/approval-retrieve";
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcProcessApprovalStatusResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+
+                return new GrcResponse<GrcProcessApprovalStatusResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<PagedResponse<GrcProcessApprovalStatusResponse>>> GetProcessApprovalStatusAsync(TableListRequest request)
+        {
+            try
+            {
+                if (request == null)
+                {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Invalid Request object",
+                        "Request object cannot be null"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<PagedResponse<GrcProcessApprovalStatusResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/approval-status";
+                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<GrcProcessApprovalStatusResponse>>(endpoint, request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<PagedResponse<GrcProcessApprovalStatusResponse>>(error);
+            }
+        }
+
+        #endregion
     }
 
 }

@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Grc.ui.App.Defaults;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -831,7 +832,8 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                     createdOn = tag.CreatedOn,
                     createdBy = tag.CreatedBy ?? string.Empty,
                     modifiedOn = tag.ModifiedOn ?? tag.CreatedOn,
-                    modifiedBy = tag.ModifiedBy ?? string.Empty
+                    modifiedBy = tag.ModifiedBy ?? string.Empty,
+                    processes = tag.Processes
                 };
 
                 return Ok(new { success = true, data = tagRecord });
@@ -921,7 +923,8 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                         createdOn = tag.CreatedOn,
                         createdBy = tag.CreatedBy ?? string.Empty,
                         modifiedOn = tag.ModifiedOn ?? tag.CreatedOn,
-                        modifiedBy = tag.ModifiedBy ?? string.Empty
+                        modifiedBy = tag.ModifiedBy ?? string.Empty,
+                        processes = tag.Processes
                     }).ToList();
 
                 var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
@@ -1276,6 +1279,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
 
             return View(model);
         }
+
         public async Task<IActionResult> ProcessApprovalList([FromBody] TableListRequest request)
         {
             try
@@ -1327,6 +1331,78 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 Logger.LogActivity($"Error retrieving Operation processes: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
                 return Ok(new { last_page = 0, data = new List<object>() });
+            }
+        }
+
+        [LogActivityResult("Retrieve Approval record", "User retrieved process approval", ActivityTypeDefaults.APPROVAL_RETRIEVE_APPLY, "ProcessApproval")]
+        public async Task<IActionResult> GetApproval(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0)
+                {
+                    return BadRequest(new { success = false, message = "Approval Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                var result = await _processService.GetApprovalRecordAsync(id, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving process approval";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var approval = result.Data;
+                var approvalRecord = new {
+                    id = approval.Id,
+                    processId = approval.ProcessId,
+                    processName = approval.ProcessName ?? string.Empty,
+                    processDescription = approval.ProcessDescription ?? string.Empty,
+                    requestDate = approval.RequestDate,
+                    hodStatus = approval.HodStatus,
+                    hodComment = approval.HodComment ?? string.Empty,
+                    hodEnd = approval.HodEnd,
+                    riskStatus = approval.RiskStatus,
+                    riskComment = approval.RiskComment ?? string.Empty,
+                    riskEnd = approval.RiskEnd,
+                    complianceStatus = approval.ComplianceStatus,
+                    complianceComment = approval.ComplianceComment ?? string.Empty,
+                    complianceEnd = approval.ComplianceEnd,
+                    requiresBopApproval = approval.RequiresBopApproval,
+                    bopStatus = approval.BopStatus,
+                    bopComment = approval.BopComment ?? string.Empty,
+                    bopStatusEnd = approval.BopEnd,
+                    requiresCreditApproval = approval.RequiresCreditApproval,
+                    creditStatus = approval.CreditStatus,
+                    creditComment = approval.CreditComment ?? string.Empty,
+                    creditEnd = approval.CreditEnd,
+                    requiresTreasuryApproval = approval.RequiresTreasuryApproval,
+                    treasuryStatus = approval.TreasuryStatus,
+                    treasuryComment = approval.TreasuryComment ?? string.Empty,
+                    treasuryEnd = approval.TreasuryEnd,
+                    requiresFintechApproval = approval.RequiresFintechApproval,
+                    fintechStatus = approval.FintechStatus,
+                    fintechComment = approval.FintechComment ?? string.Empty,
+                    fintechEnd = approval.FintechEnd,
+                    isDeleted = approval.IsDeleted,
+
+                };
+
+                return Ok(new { success = true, data = approvalRecord });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error retrieving process approval: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
             }
         }
 

@@ -13,6 +13,78 @@
 
 </div>
 
+<!-- Overlay -->
+<div class="process-overlay" onclick="closeProcessTagPanel()">
+
+    <!-- Slide Panel -->
+    <div id="collapsePanel" class="collapse-panel" onclick="event.stopPropagation()">
+
+        <div class="collapse-panel-header">
+            <h3 id="tagPanelTitle">New Group</h3>
+            <button class="collapse-panel-close" onclick="closeProcessTagPanel()">&times;</button>
+        </div>
+
+        <div class="collapse-panel-body">
+
+            <form id="processTagForm" class="grc-form row g-3">
+                <input type="hidden" id="tagId">
+                <input type="hidden" id="isEdit">
+
+                <div class="col-sm-6">
+                    <div class="row mb-3">
+                        <label for="tagName" class="col-sm-12 col-form-label text-sm-start">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.TagName"))
+                        </label>
+                        <div class="col-sm-12">
+                            <input type="text" id="tagName" name="tagName" class="form-control" required />
+                        </div>
+                    </div>
+                </div>
+
+                <div id="IsDeletedBox" class="col-6 p-5">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="isDeleted">
+                        <label class="form-check-label" for="isDeleted">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.IsDeleted"))
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+                        <label for="tagDescription" class="col-sm-12 col-form-label text-sm-start">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.TagpDescription"))
+                        </label>
+                        <div class="col-sm-12">
+                            <textarea id="tagDescription" name="tagDescription" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 permission-list-section">
+                    <div id="tagListContainer" class="permission-setList-container"></div>
+                </div>
+
+                <!-- Button section -->
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveProcessTagRecord(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                        </div>
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeProcessTagPanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                        </div>
+                        <div class="col-sm-10"></div>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
 @{
     Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
     Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-processes-tags.js");

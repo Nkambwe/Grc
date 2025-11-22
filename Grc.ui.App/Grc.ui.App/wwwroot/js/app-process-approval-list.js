@@ -187,7 +187,7 @@ function initProcessApprovalListTable() {
                 headerSort: false
             },
             {
-                title: "COMPLIA.. STATUS",
+                title: "COMPLIANCE",
                 field: "complianceStatus",
                 formatter: function (cell) {
                     const value = cell.getValue();
@@ -291,7 +291,7 @@ function initProcessApprovalListTable() {
                 headerSort: false
             },
             {
-                title: "CREDIT STATUS",
+                title: "CREDIT",
                 field: "creditStatus",
                 formatter: function (cell) {
                     const value = cell.getValue();
@@ -343,7 +343,7 @@ function initProcessApprovalListTable() {
                 headerSort: false
             },
             {
-                title: "TREASURY STATUS",
+                title: "TREASURY",
                 field: "treasuryStatus",
                 formatter: function (cell) {
                     const value = cell.getValue();
@@ -395,7 +395,7 @@ function initProcessApprovalListTable() {
                 headerSort: false
             },
             {
-                title: "FINTECH STATUS",
+                title: "FINTECH",
                 field: "fintechStatus",
                 formatter: function (cell) {
                     const value = cell.getValue();
@@ -429,12 +429,26 @@ function initProcessApprovalListTable() {
                 headerSort: false
             },
             {
-                title: "VIEW",
+                title: "HOLD PROCESS",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
                     return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="holdApproval(${rowData.processId})">
-                        <span><i class="mdi mdi-eye-arrow-right-outline" aria-hidden="true"></i></span>
-                        <span>PROGRESS</span>
+                        <span><i class="mdi mdi-cog-pause-outline" aria-hidden="true"></i></span>
+                        <span>ON HOLD</span>
+                    </button>`;
+                },
+                width: 200,
+                hozAlign: "center",
+                headerHozAlign: "center",
+                headerSort: false
+            },
+            {
+                title: "APPROVE PROCESS",
+                formatter: function (cell) {
+                    let rowData = cell.getRow().getData();
+                    return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="approvalProcess(${rowData.id})">
+                        <span><i class="mdi mdi-cog-transfer-outline" aria-hidden="true"></i></span>
+                        <span>APPROVE</span>
                     </button>`;
                 },
                 width: 200,
@@ -481,15 +495,218 @@ function holdApproval(id) {
     alert("Put this process on hold " + id);
 }
 
+function findApplyRecord(id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/operations/workflow/processes/approvals-retrieve/${encodeURIComponent(id)}`,
+            type: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            success: function (res) {
+                if (res && res.success) {
+                    resolve(res.data);
+                } else {
+                    resolve(null);
+                }
+            },
+            error: function () {
+                reject();
+            }
+        });
+    });
+}
+
+function approvalProcess(id) {
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving approval record...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    findApplyRecord(id)
+        .then(record => {
+            Swal.close();
+            if (record) {
+                openApprovalEditor('Approve Process', record);
+            } else {
+                Swal.fire({ title: 'NOT FOUND', text: 'Approval record found' });
+            }
+        })
+        .catch(() => {
+            Swal.close();
+            Swal.fire({ title: 'Error', text: 'Failed to load approval details.' });
+        });
+}
+
 function viewApproval(id) {
-    alert("View Approval " + id);
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving process record...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    findApplyRecord(id)
+        .then(record => {
+            Swal.close();
+            if (record) {
+                openApprovalEditor('Approve Process', record);
+            } else {
+                Swal.fire({ title: 'NOT FOUND', text: 'Approval record found' });
+            }
+        })
+        .catch(() => {
+            Swal.close();
+            Swal.fire({ title: 'Error', text: 'Failed to load process details.' });
+        });
+}
+
+function openApprovalEditor(title, approval) {
+    var bopRequired = approval?.requiresBopApproval || false;
+    var creditRequired = approval?.requiresCreditApproval || false;
+    var treasuryRequired = approval?.requiresTreasuryApproval || false;
+    var fintechRequired = approval?.requiresFintechApproval || false;
+
+    var tStr = approval?.processName || "";
+    var hodStatus = approval?.hodStatus || "";
+    var riskStatus = approval?.riskStatus || "";
+    var compStatus = approval?.complianceStatus || "";
+    var bopStatus = approval?.bopStatus || "";
+    var creditStatus = approval?.creditStatus || "";
+    var treasuryStatus = approval?.treasuryStatus || "";
+    var fintechStatus = approval?.fintechStatus || "";
+
+    if (tStr)
+        title = tStr;
+
+    console.log("Process Name >> " + tStr);
+
+    const date = new Date(approval?.requestDate);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    const formattedDate = `${day}-${month}-${year}`;
+
+    console.log("Request Date >> " + formattedDate);
+    // Populate form fields
+    $("#approvalId").val(approval?.id || 0);
+    $("#processId").val(approval?.processId || 0);
+    $("#processName").val(tStr);
+    $("#processDescription").val(approval?.processDescription || "");
+    $('#isDeleted').prop('checked', approval?.isDeleted || false);
+    $("#requestDate").val(formattedDate);
+    $("#hodStatus").val(hodStatus).trigger('change.select2');
+    $("#hodComment").val(approval?.hodComment || "");
+    $("#hodEnd").val(approval?.hodEnd || "");
+    $("#riskStatus").val(riskStatus).trigger('change.select2');
+    $("#riskComment").val(approval?.riskComment || "");
+    $("#riskEnd").val(approval?.riskEnd || "");
+    $("#complianceStatus").val(compStatus).trigger('change.select2');
+    $("#complianceComment").val(approval?.complianceComment || "");
+    $("#complianceEnd").val(approval?.complianceEnd || "");
+    $('#requiresBopApproval').prop('checked', bopRequired );
+    $("#bopStatus").val(bopStatus).trigger('change.select2');
+    $("#bopComment").val(approval?.bopComment || "");
+    $("#bopStatusEnd").val(approval?.bopStatusEnd || "");
+    $('#requiresCreditApproval').prop('checked', creditRequired);
+    $("#creditStatus").val(creditStatus).trigger('change.select2');
+    $("#creditComment").val(approval?.creditComment || "");
+    $("#creditEnd").val(approval?.creditEnd || "");
+    $('#requiresTreasuryApproval').prop('checked', treasuryRequired);
+    $("#treasuryStatus").val(treasuryStatus).trigger('change.select2');
+    $("#treasuryComment").val(approval?.treasuryComment || "");
+    $("#treasuryEnd").val(approval?.treasuryEnd || "");
+    $('#requiresFintechApproval').prop('checked', fintechRequired);
+    $("#fintechStatus").val(fintechStatus).trigger('change.select2');
+    $("#fintechComment").val(approval?.fintechComment || "");
+    $("#fintechEnd").val(approval?.fintechEnd || "");
+
+    updateSectionExpansion(bopRequired, creditRequired, treasuryRequired, fintechRequired, hodStatus,
+        riskStatus, compStatus, bopStatus, creditStatus, treasuryStatus, fintechStatus);
+    $('#approvalPanelTitle').text(title);
+    $('.process-overlay').addClass('active');
+    $('#collapsePanel').addClass('active');
+}
+
+function applyApproval(e) {
+
+}
+
+function closeApprovalPanel() {
+    $('.process-overlay').removeClass('active');
+    $('#collapsePanel').removeClass('active');
+}
+
+function needsAttention(status) {
+    return status === "" || status === "REJECTED" || status === "PENDING";
+}
+
+function toggleSection(sectionId, shouldExpand) {
+    $('#' + sectionId + ' .section-content').toggleClass('expanded', shouldExpand);
+}
+
+function updateSectionExpansion(bopRequired, creditRequired, treasuryRequired, fintechRequired, hodStatus,
+    riskStatus, compStatus, bopStatus, creditStatus, treasuryStatus, fintechStatus) {
+    
+    // HOD Section - expand if needs attention
+    toggleSection('hodSection', needsAttention(hodStatus));
+
+    // Risk Section - expand if HOD approved but risk needs attention
+    toggleSection('riskSection',
+        hodStatus === "APPROVED" && needsAttention(riskStatus)
+    );
+
+    // Compliance Section - expand if risk approved but compliance needs attention
+    toggleSection('complianceSection',
+        riskStatus === "APPROVED" && needsAttention(compStatus)
+    );
+
+    // BOP Section - expand if compliance approved, BOP required, and needs attention
+    toggleSection('bopSection',
+        bopRequired && compStatus === "APPROVED" && needsAttention(bopStatus)
+    );
+
+    // Determine which section should expand next after BOP
+    var bopApprovedOrNotRequired = !bopRequired || bopStatus === "APPROVED";
+    var complianceComplete = compStatus === "APPROVED";
+
+    // Treasury Section - expand if all previous approved/not required and treasury needs attention
+    toggleSection('treasurySection',
+        treasuryRequired &&
+        complianceComplete &&
+        bopApprovedOrNotRequired &&
+        needsAttention(treasuryStatus)
+    );
+
+    // Credit Section - expand if all previous approved/not required and credit needs attention
+    var treasuryApprovedOrNotRequired = !treasuryRequired || treasuryStatus === "APPROVED";
+    toggleSection('creditSection',
+        creditRequired &&
+        complianceComplete &&
+        bopApprovedOrNotRequired &&
+        treasuryApprovedOrNotRequired &&
+        needsAttention(creditStatus)
+    );
+
+    // Fintech Section - expand if all previous approved/not required and fintech needs attention
+    var creditApprovedOrNotRequired = !creditRequired || creditStatus === "APPROVED";
+    toggleSection('fintechSection',
+        fintechRequired &&
+        complianceComplete &&
+        bopApprovedOrNotRequired &&
+        treasuryApprovedOrNotRequired &&
+        creditApprovedOrNotRequired &&
+        needsAttention(fintechStatus)
+    );
 }
 
 $(document).ready(function () {
 
     initProcessApprovalListTable();
 
-    $('#processReviewForm').on('submit', function (e) {
+    $('#approvalForm').on('submit', function (e) {
         e.preventDefault();
     });
 

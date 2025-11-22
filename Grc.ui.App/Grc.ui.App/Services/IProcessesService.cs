@@ -4,9 +4,11 @@ using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Models;
 
-namespace Grc.ui.App.Services {
+namespace Grc.ui.App.Services
+{
 
-    public interface IProcessesService : IGrcBaseService  {
+    public interface IProcessesService : IGrcBaseService
+    {
 
         #region Statistics
         Task<OperationsUnitCountResponse> StatisticAsync(long userId, string ipAddress);
@@ -26,7 +28,7 @@ namespace Grc.ui.App.Services {
         Task<GrcResponse<List<GrcProcessRegisterResponse>>> GetAllProcessesAsync(GrcRequest request);
 
         Task<GrcResponse<PagedResponse<GrcProcessRegisterResponse>>> GetProcessRegistersAsync(TableListRequest request);
-        
+
         Task<GrcResponse<PagedResponse<GrcProcessRegisterResponse>>> GetNewProcessAsync(TableListRequest request);
 
         Task<GrcResponse<PagedResponse<GrcProcessRegisterResponse>>> GetReviewProcessAsync(TableListRequest request);
@@ -75,13 +77,18 @@ namespace Grc.ui.App.Services {
         Task<GrcResponse<GrcProcessTatResponse>> GetProcessTatAsync(long id, long userId, string ipAddress);
 
         Task<GrcResponse<PagedResponse<GrcProcessTatResponse>>> GetProcessTatAsync(TableListRequest request);
-        
-        Task<GrcResponse<PagedResponse<GrcProcessApprovalStatusResponse>>> GetProcessApprovalStatusAsync(TableListRequest request);
 
         Task<GrcResponse<List<GrcProcessTatResponse>>> GetTATReportAsync(GrcRequest request);
 
         #endregion
 
+        #region Approvals
+
+        Task<GrcResponse<GrcProcessApprovalStatusResponse>> GetApprovalRecordAsync(long id, long userId, string ipAddress);
+
+        Task<GrcResponse<PagedResponse<GrcProcessApprovalStatusResponse>>> GetProcessApprovalStatusAsync(TableListRequest request);
+
+        #endregion
     }
 
 }

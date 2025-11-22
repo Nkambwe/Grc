@@ -240,14 +240,18 @@
 	<LocaleResource Name="Component.Key.ObligationRegister">
 		<Value>Compliance Obligations</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="Component.Table.Process.GroupName">
 		<Value>Group Name</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Process.GroupDescription">
 		<Value>Group Description</Value>
 	</LocaleResource>
-	
+	<LocaleResource Name="Component.Table.Process.TagName">
+		<Value>Tag Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.TagpDescription">
+		<Value>Tag Description</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Key.ProcessApproval">
 		<Value>Process Approvals</Value>
 	</LocaleResource>
@@ -775,6 +779,28 @@
 		<Value>Deactivated</Value>
 	</LocaleResource>
 
+	<LocaleResource Name="Component.Process.CollapsablePane.Hod">
+		<Value>Head Of Operations</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.CollapsablePane.Risk">
+		<Value>Head Risk</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.CollapsablePane.Compliance">
+		<Value>Head Compliance</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.CollapsablePane.Bop">
+		<Value>Branch Operations Manager</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.CollapsablePane.Treasury">
+		<Value>Head Treasury</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.CollapsablePane.Fintech">
+		<Value>Head Fintech</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Process.CollapsablePane.Credit">
+		<Value>Head Credit</Value>
+	</LocaleResource>
+
 	<LocaleResource Name="Component.Process.CollapsablePane.Basic">
 		<Value>Basic Information</Value>
 	</LocaleResource>
@@ -1251,11 +1277,9 @@
 	<LocaleResource Name="App.Menu.Compliance.Dashboard.Issues">
 		<Value>Issues</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="App.Menu.Support">
 		<Value>Support</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="App.Menu.Compliance.Regulatory.Support">
 		<Value>Regulatory Support</Value>
 	</LocaleResource>
@@ -1624,7 +1648,12 @@
 	<LocaleResource Name="App.Processes.TAT.RequestData">
 		<Value>REQUEST DATA</Value>
 	</LocaleResource>
-
+	<LocaleResource Name="App.Processes.Approval.ProcessName">
+		<Value>PROCESS NAME</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.Approval.RequestDate">
+		<Value>APPROVAL REQUEST DATE</Value>
+	</LocaleResource>
 	<LocaleResource Name="Button.Previous">
 		<Value>Previous</Value>
 	</LocaleResource>

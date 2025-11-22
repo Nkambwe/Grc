@@ -229,6 +229,8 @@ namespace Grc.ui.App.Enums {
         PROCESS_TAT_RETRIVED = 120,
         [Description("Export processes to excel")]
         PROCESS_EXPORT = 121,
+        [Description("Retrieve process approval record")]
+        PROCESS_APPROVAL_RETRIVED = 122
 
 
     }

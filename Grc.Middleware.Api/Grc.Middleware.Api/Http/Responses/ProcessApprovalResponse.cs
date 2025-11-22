@@ -13,6 +13,9 @@ namespace Grc.Middleware.Api.Http.Responses
         [JsonPropertyName("processName")]
         public string ProcessName { get; set; }
 
+        [JsonPropertyName("processDescription")]
+        public string ProcessDescription { get; set; }
+
         [JsonPropertyName("requestDate")]
         public DateTime RequestDate { get; set; }
 

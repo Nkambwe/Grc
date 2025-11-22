@@ -463,11 +463,9 @@ namespace Grc.Middleware.Api.Services.Operations {
             }
         }
 
-        public async Task<bool> InsertAsync(ProcessGroupRequest request)
-        {
+        public async Task<bool> InsertAsync(ProcessGroupRequest request) {
             using var uow = UowFactory.Create();
-            try
-            {
+            try {
                 //..map process group request to group entity
                 var group = new ProcessGroup()
                 {

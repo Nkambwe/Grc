@@ -1,4 +1,5 @@
 ﻿let processTagTable;
+
 function initProcessTagListTable() {
     processTagTable = new Tabulator("#processTagTable", {
         ajaxURL: "/operations/workflow/processes/tags/all",
@@ -134,26 +135,312 @@ function initProcessTagListTable() {
 }
 
 function initProcessTagSearch() {
+    const searchInput = $('#tagSearchbox');
+    let typingTimer;
 
+    searchInput.on('input', function () {
+        clearTimeout(typingTimer);
+        const searchTerm = $(this).val();
+
+        typingTimer = setTimeout(function () {
+            if (searchTerm && searchTerm.length >= 2) {
+                processTagTable.setFilter([
+                    [
+                        { field: "tagName", type: "like", value: searchTerm },
+                        { field: "tagDescription", type: "like", value: searchTerm }
+                    ]
+                ]);
+                processTagTable.setPage(1, true);
+            } else {
+                processTagTable.clearFilter();
+            }
+        }, 300);
+    });
 }
 
-function viewProcessTag() {
-
+function findProcessTag(id) {
+    console.log("Tag ID >>> " + id);
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/operations/workflow/processes/tags/retrieve/${encodeURIComponent(id)}`,
+            type: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            success: function (res) {
+                if (res && res.success) {
+                    resolve(res.data);
+                } else {
+                    resolve(null);
+                }
+            },
+            error: function () {
+                reject();
+            }
+        });
+    });
 }
 
-function deleteProcessTag() {
+function viewProcessTag(id) {
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving tag record...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => Swal.showLoading()
+    });
 
+    findProcessTag(id)
+        .then(record => {
+            Swal.close();
+            if (record) {
+                openProcessTagEditor('Edit Process Tag', record, true);
+            } else {
+                Swal.fire({ title: 'NOT FOUND', text: 'Tag record found' });
+            }
+        })
+        .catch(() => {
+            Swal.close();
+            Swal.fire({ title: 'Error', text: 'Failed to load tag details.' });
+        });
+}
+
+function openProcessTagEditor(title, tag, isEdit) {
+    $("#tagId").val(tag?.id || "");
+    $("#isEdit").val(isEdit);
+    $("#tagName").val(tag?.tagName || "");
+    $("#tagDescription").val(tag?.tagDescription || "");
+    $("#tagListContainer").html("<div class='text-muted p-2'>Loading process tags...</div>");
+
+    if (isEdit) {
+        const processes = Array.isArray(tag.processes) ? tag.processes : [];
+        let html = "<div class='role-group-list'>";
+        processes.forEach(p => {
+            const checked = p.isAssigned ? "checked" : "";
+            html += `<div class="form-check">
+                            <input type="checkbox" class="form-check-input perm-checkbox" id="perm-${p.id}" value="${p.id}" ${checked}>
+                            <label class="form-check-label" for="perm-${p.id}">${p.processName}</label>
+                        </div>`;
+        });
+        html += "</div>";
+        $("#tagListContainer").html(html);
+
+        //..show deactivation checkbox
+        $("#IsDeletedBox").show();
+    } else {
+        console.log("load all processes");
+        $.get("/operations/workflow/processes/groups/processes-min", function (res) {
+            const processes = Array.isArray(res?.processes) ? res.processes : [];
+
+            let html = "<div class='role-group-list'>";
+            processes.forEach(p => {
+                const checked = p.isAssigned ? "checked" : "";
+                html += `
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input perm-checkbox" id="perm-${p.id}" value="${p.id}" ${checked}>
+                    <label class="form-check-label" for="perm-${p.id}">
+                        ${p.processName}
+                    </label>
+                </div>`;
+            });
+            html += "</div>";
+            $("#tagListContainer").html(html);
+
+        }).fail(() => {
+            $("#tagListContainer").html("<div class='text-danger'>Failed to load processes.</div>");
+        });
+
+        //..hide deactivation checkbox
+        $("#IsDeletedBox").hide();
+    }
+
+    //..show overlay panel
+    $('#tagPanelTitle').text(title);
+    $('.process-overlay').addClass('active');
+    $('#collapsePanel').addClass('active');
+}
+
+function saveProcessTagRecord(e) {
+
+    e.preventDefault();
+
+    let isEdit = $('#isEdit').val();
+    let recordData = {
+        id: parseInt($('#tagId').val()) || 0,
+        tagName: $('#tagName').val()?.trim(),
+        tagDescription: $('#tagDescription').val()?.trim(),
+        isDeleted: $('#isDeleted').prop('checked'),
+        processes: $(".perm-checkbox:checked").map((_, el) => parseInt(el.value, 10)).get()
+    };
+
+    // --- validate required fields ---
+    let errors = [];
+    if (!recordData.tagName)
+        errors.push("Tag name is required.");
+    if (!recordData.tagDescription)
+        errors.push("Tag description is required.");
+
+    if (errors.length > 0) {
+        highlightProcessGroupField("#tagName", !recordData.tagName);
+        highlightProcessGroupField("#tagDescription", !recordData.tagDescription);
+        Swal.fire({
+            title: "Record Validation",
+            html: `<div style="text-align:left;">${errors.join("<br>")}</div>`,
+        });
+        return;
+    }
+
+    //..save group
+    saveTag(isEdit, recordData);
+}
+
+function saveTag(isEdit, payload) {
+    const url = (isEdit === true || isEdit === "true")
+        ? "/operations/workflow/processes/tags/update"
+        : "/operations/workflow/processes/tags/create";
+
+    Swal.fire({
+        title: isEdit ? "Updating tag..." : "Saving tag...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(payload),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getProcessTagAntiForgeryToken()
+        },
+        success: function (res) {
+            Swal.close();
+            if (!res.success) {
+                Swal.fire({
+                    title: "Invalid record",
+                    html: res.message.replaceAll("; ", "<br>")
+                });
+                return;
+            }
+
+            if (processTagTable) {
+                if (isEdit && res.data) {
+                    processTagTable.updateData([res.data]);
+                } else if (!isEdit && res.data) {
+                    processTagTable.addRow(res.data, true);
+                } else {
+                    processTagTable.replaceData();
+                }
+            }
+
+            closeProcessTagPanel();
+        },
+        error: function (xhr) {
+            Swal.close();
+
+            let errorMessage = "Unexpected error occurred.";
+            try {
+                let response = JSON.parse(xhr.responseText);
+                if (response.message) errorMessage = response.message;
+            } catch (e) { }
+
+            Swal.fire({
+                title: isEdit ? "Update Failed" : "Save Failed",
+                text: errorMessage
+            });
+        }
+    });
 }
 
 function createTag() {
-    alert("Create Process Tag");
+    openProcessTagEditor('New Process Tag', {
+        id: 0,
+        isEdit: false,
+        tagName: '',
+        tagDescription: ''
+    }, false);
 }   
+
+function deleteProcessTag(id) {
+    if (!id && id !== 0) {
+        toastr.error("Invalid id for delete.");
+        return;
+    }
+
+    Swal.fire({
+        title: "Delete Tag",
+        text: "Are you sure you want to delete this tag?",
+        showCancelButton: true,
+        confirmButtonColor: "#450354",
+        confirmButtonText: "Delete",
+        cancelButtonColor: "#f41369",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+
+        if (!result.isConfirmed)
+            return;
+
+        $.ajax({
+            url: `/operations/workflow/processes/tags/delete/${encodeURIComponent(id)}`,
+            type: 'POST',
+            contentType: 'application/json',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getProcessTagAntiForgeryToken()
+            },
+            success: function (res) {
+                if (res && res.success) {
+                    toastr.success(res.message || "Process deleted successfully.");
+                    if (roleGroupTable) {
+                        roleGroupTable.replaceData();
+                    }
+                } else {
+                    toastr.error(res?.message || "Delete failed.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Delete error:", error);
+                console.error("Response:", xhr.responseText);
+                toastr.error(xhr.responseJSON?.message || "Request failed.");
+            }
+        });
+    });
+}
+
+function closeProcessTagPanel() {
+    $('.process-overlay').removeClass('active');
+    $('#collapsePanel').removeClass('active');
+}
+
+function highlightProcessTagField(selector, hasError, message) {
+    const $field = $(selector);
+    const $formGroup = $field.closest('.form-group, .mb-3, .col-sm-8');
+
+    // Remove existing error
+    $field.removeClass('is-invalid');
+    $formGroup.find('.field-error').remove();
+
+    if (hasError) {
+        $field.addClass('is-invalid');
+        if (message) {
+            $formGroup.append(`<div class="field-error text-danger small mt-1">${message}</div>`);
+        }
+    }
+}
+
+function getProcessTagAntiForgeryToken() {
+    return $('meta[name="csrf-token"]').attr('content');
+
+}
 
 $(document).ready(function () {
 
     initProcessTagListTable();
 
-    $('.action-btn-process-tag').on('click', function () {
+    $('.action-btn-process-tag-new').on('click', function () {
         createTag();
     });
 

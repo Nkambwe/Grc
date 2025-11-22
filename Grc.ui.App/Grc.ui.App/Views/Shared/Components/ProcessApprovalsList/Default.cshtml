@@ -23,6 +23,243 @@
 
 </div>
 
+<!-- Overlay -->
+<div class="process-overlay" onclick="closeApprovalPanel()">
+
+    <!-- Slide Panel -->
+    <div id="collapsePanel" class="collapse-panel" onclick="event.stopPropagation()">
+
+        <div class="collapse-panel-header">
+            <h3 id="approvalPanelTitle">Process Approval</h3>
+            <button class="collapse-panel-close" onclick="closeApprovalPanel()">&times;</button>
+        </div>
+
+        <div class="collapse-panel-body">
+
+            <form id="approvalForm" class="grc-form row g-3">
+                <input type="hidden" id="processId">
+                <input type="hidden" id="approvalId">
+
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="row mb-3">
+                                <label for="processName" class="col-sm-12 col-form-label text-sm-start">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Processes.Approval.ProcessName"))
+                                </label>
+                                <div class="col-sm-12">
+                                    <input type="text" id="processName" name="processName" class="form-control" readonly />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="row mb-3">
+                                <label for="requestDate" class="col-sm-12 col-form-label text-sm-start">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Processes.Approval.RequestDate"))
+                                </label>
+                                <div class="col-sm-12">
+                                    <input type="text" id="requestDate" name="requestDate" class="form-control" readonly />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="row mt-2">
+                                <label for="processDescription" class="col-sm-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Description"))
+                                </label>
+                                <div class="col-sm-12">
+                                    <textarea id="processDescription" name="processDescription" class="form-control" rows="3" readonly></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- HOD Section -->
+                <div id="hodSection" class="form-section">
+
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Hod"))</h5>
+                        <span class="section-toggle">
+                            <i class="mdi mdi-menu-down"></i>
+                        </span>
+                    </div>
+
+                    <div class="section-content">
+
+                        <div class="section-body">
+
+                            <div class="row g-3">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Risk Section -->
+                <div id="riskSection" class="form-section">
+
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Risk"))</h5>
+                        <span class="section-toggle">
+                            <i class="mdi mdi-menu-down"></i>
+                        </span>
+                    </div>
+
+                    <div class="section-content">
+
+                        <div class="section-body">
+
+                            <div class="row g-3">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Compliance Section -->
+                <div id="complianceSection" class="form-section">
+
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Compliance"))</h5>
+                        <span class="section-toggle">
+                            <i class="mdi mdi-menu-down"></i>
+                        </span>
+                    </div>
+
+                    <div class="section-content">
+
+                        <div class="section-body">
+
+                            <div class="row g-3">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Branch Operations Section -->
+                <div id="bopSection" class="form-section">
+
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Bop"))</h5>
+                        <span class="section-toggle">
+                            <i class="mdi mdi-menu-down"></i>
+                        </span>
+                    </div>
+
+                    <div class="section-content">
+
+                        <div class="section-body">
+
+                            <div class="row g-3">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Treasury Section -->
+                <div id="treasurySection" class="form-section">
+
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Treasury"))</h5>
+                        <span class="section-toggle">
+                            <i class="mdi mdi-menu-down"></i>
+                        </span>
+                    </div>
+
+                    <div class="section-content">
+
+                        <div class="section-body">
+
+                            <div class="row g-3">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Credit Section -->
+                <div id="creditSection" class="form-section">
+
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Fintech"))</h5>
+                        <span class="section-toggle">
+                            <i class="mdi mdi-menu-down"></i>
+                        </span>
+                    </div>
+
+                    <div class="section-content">
+
+                        <div class="section-body">
+
+                            <div class="row g-3">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Fintech Section -->
+                <div id="fintechSection" class="form-section">
+
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Credit"))</h5>
+                        <span class="section-toggle">
+                            <i class="mdi mdi-menu-down"></i>
+                        </span>
+                    </div>
+
+                    <div class="section-content">
+
+                        <div class="section-body">
+
+                            <div class="row g-3">
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Button section -->
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="applyApproval(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                        </div>
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeApprovalPanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                        </div>
+                        <div class="col-sm-10"></div>
+                    </div>
+                </div>
+
+            </form>
+        
+        </div>
+
+    </div>
+
+</div>
+
 @{
     Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
     Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-process-approval-list.js");

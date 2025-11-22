@@ -12,6 +12,9 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("processName")]
         public string ProcessName { get; set; }
 
+        [JsonPropertyName("processDescription")]
+        public string ProcessDescription { get; set; }
+
         [JsonPropertyName("requestDate")]
         public DateTime RequestDate { get; set; }
 
@@ -36,8 +39,17 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("riskComment")]
         public string RiskComment { get; set; }
 
+        [JsonPropertyName("complianceStart")]
+        public DateTime? ComplianceStart { get; set; }
+
+        [JsonPropertyName("complianceEnd")]
+        public DateTime? ComplianceEnd { get; set; }
+
         [JsonPropertyName("complianceStatus")]
         public string ComplianceStatus { get; set; }
+
+        [JsonPropertyName("complianceComment")]
+        public string ComplianceComment { get; set; }
 
         [JsonPropertyName("requiresBopApproval")]
         public bool RequiresBopApproval { get; set; }
