@@ -565,9 +565,13 @@ function viewApproval(id) {
 
 function openApprovalEditor(title, approval) {
     var bopRequired = approval?.requiresBopApproval || false;
+    $("#bopRequired").val(bopRequired);
     var creditRequired = approval?.requiresCreditApproval || false;
+    $("#creditRequired").val(creditRequired);
     var treasuryRequired = approval?.requiresTreasuryApproval || false;
+    $("#treasuryRequired").val(treasuryRequired);
     var fintechRequired = approval?.requiresFintechApproval || false;
+    $("#fintechRequired").val(fintechRequired);
 
     var tStr = approval?.processName || "";
     var hodStatus = approval?.hodStatus || "";
@@ -631,6 +635,223 @@ function openApprovalEditor(title, approval) {
 }
 
 function applyApproval(e) {
+    e.preventDefault();
+
+    // Helper function to parse boolean from string
+    function parseBool(value) {
+        if (typeof value === 'boolean') return value;
+        if (typeof value === 'string') {
+            return value.toLowerCase() === 'true';
+        }
+        return false;
+    }
+
+    let recordData = {
+        id: parseInt($('#approvalId').val()) || 0,
+        processId: parseInt($('#processId').val()) || 0,
+        hodStatus: $('#hodStatus').val()?.trim() || "",
+        hodComment: $('#hodComment').val()?.trim() || "",
+        riskStatus: $('#riskStatus').val()?.trim() || "",
+        riskComment: $('#riskComment').val()?.trim() || "",
+        complianceStatus: $('#complianceStatus').val()?.trim() || "",
+        complianceComment: $('#complianceComment').val()?.trim() || "",
+        bopRequired: parseBool($("#bopRequired").val()),
+        bopStatus: $('#bopStatus').val()?.trim() || "",
+        bopComment: $('#bopComment').val()?.trim() || "",
+        creditRequired: parseBool($("#creditRequired").val()),
+        creditStatus: $('#creditStatus').val()?.trim() || "",
+        creditComment: $('#creditComment').val()?.trim() || "",
+        treasuryRequired: parseBool($("#treasuryRequired").val()),
+        treasuryStatus: $('#treasuryStatus').val()?.trim() || "",
+        treasuryComment: $('#treasuryComment').val()?.trim() || "",
+        fintechRequired: parseBool($("#fintechRequired").val()),
+        fintechStatus: $('#fintechStatus').val()?.trim() || "",
+        fintechComment: $('#fintechComment').val()?.trim() || "",
+    };
+
+    // Debug - check the data structure
+    console.log("Record data before validation:", recordData);
+
+    if (!validateApprovalData(recordData)) {
+        //..stop save process
+        return;
+    }
+    //..save approval
+    saveApproval(recordData);
+}
+
+function saveApproval(data) {
+    const url = "/operations/workflow/processes/approval-update";
+
+    Swal.fire({
+        title: "Update approval status...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    //..debugging
+    console.log("Sending data to server:", JSON.stringify(data));
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getApprovalAntiForgeryToken()
+        },
+        success: function (res) {
+            //..lose loader and show success message
+            Swal.close();
+            if (!res.success) {
+                //..error from the server
+                Swal.fire({
+                    title: "Invalid record",
+                    html: res.message.replaceAll("; ", "<br>")
+                });
+                return;
+            }
+
+            if (processApprovalsTable) {
+                processApprovalsTable.replaceData();
+            }
+
+            closeApprovalPanel();
+        },
+        error: function (xhr) {
+            Swal.close();
+
+            let errorMessage = "Unexpected error occurred.";
+            try {
+                let response = JSON.parse(xhr.responseText);
+                if (response.message) errorMessage = response.message;
+            } catch (e) { }
+
+            Swal.fire({
+                title: "Update Failed",
+                text: errorMessage
+            });
+        }
+    });
+}
+
+function validateApprovalData(recordData) {
+    let errors = [];
+
+    //..check if a field needs validation
+    function needsAttention(status) {
+        return status === "" || status === "undefined" || status === "UNDEFINED" || status === "PENDING";
+    }
+
+    //..validate a section
+    function validateSection(sectionName, status, comment, fieldId) {
+        // If status is set to APPROVED or REJECTED, comment is required
+        if ((status === "APPROVED" || status === "REJECTED") && (!comment || comment.trim() === "")) {
+            errors.push(`${sectionName} comment is required when ${status.toLowerCase()}.`);
+            highlightApprovalField(fieldId, true);
+            return false;
+        }
+        return true;
+    }
+
+    //..clear all highlights first
+    highlightApprovalField("#hodComment", false);
+    highlightApprovalField("#riskComment", false);
+    highlightApprovalField("#complianceComment", false);
+    highlightApprovalField("#bopComment", false);
+    highlightApprovalField("#creditComment", false);
+    highlightApprovalField("#treasuryComment", false);
+    highlightApprovalField("#fintechComment", false);
+
+    //..always validate HOD if it's being processed
+    console.log("HOD Status   >>> " + recordData.hodStatus);
+    console.log("HOD Comments >>> " + recordData.hodComment);
+    if (needsAttention(recordData.hodStatus)) {
+        //...HOD hasn't been processed yet - no validation needed
+    } else {
+        validateSection("HOD", recordData.hodStatus, recordData.hodComment, "#hodComment");
+    }
+
+    // Validate Risk only if HOD is approved
+    console.log("Risk Status   >>> " + recordData.riskStatus);
+    console.log("Risk Comments >>> " + recordData.riskComment);
+    if (recordData.hodStatus === "APPROVED") {
+        if (!needsAttention(recordData.riskStatus)) {
+            validateSection("Risk", recordData.riskStatus, recordData.riskComment, "#riskComment");
+        }
+    }
+
+    // Validate Compliance only if Risk is approved
+    if (recordData.hodStatus === "APPROVED" && recordData.riskStatus === "APPROVED") {
+        if (!needsAttention(recordData.complianceStatus)) {
+            validateSection("Compliance", recordData.complianceStatus, recordData.complianceComment, "#complianceComment");
+        }
+    }
+
+    // Validate BOP only if required and Compliance is approved
+    if (recordData.bopRequired &&
+        recordData.hodStatus === "APPROVED" &&
+        recordData.riskStatus === "APPROVED" &&
+        recordData.complianceStatus === "APPROVED") {
+        if (!needsAttention(recordData.bopStatus)) {
+            validateSection("Branch Operations", recordData.bopStatus, recordData.bopComment, "#bopComment");
+        }
+    }
+
+    // Check if BOP is complete or not required
+    var bopComplete = !recordData.bopRequired || recordData.bopStatus === "APPROVED";
+
+    // Validate Treasury only if required and all previous are approved
+    if (recordData.treasuryRequired &&
+        recordData.complianceStatus === "APPROVED" &&
+        bopComplete) {
+        if (!needsAttention(recordData.treasuryStatus)) {
+            validateSection("Treasury", recordData.treasuryStatus, recordData.treasuryComment, "#treasuryComment");
+        }
+    }
+
+    // Validate Credit only if required and all previous are approved
+    var treasuryComplete = !recordData.treasuryRequired || recordData.treasuryStatus === "APPROVED";
+    if (creditRequired &&
+        recordData.complianceStatus === "APPROVED" &&
+        bopComplete &&
+        treasuryComplete) {
+        if (!needsAttention(recordData.creditStatus)) {
+            validateSection("Credit", recordData.creditStatus, recordData.creditComment, "#creditComment");
+        }
+    }
+
+    // Validate Fintech only if required and all previous are approved
+    var creditComplete = !recordData.creditRequired || recordData.creditStatus === "APPROVED";
+    if (recordData.fintechRequired &&
+        recordData.complianceStatus === "APPROVED" &&
+        bopComplete &&
+        treasuryComplete &&
+        creditComplete) {
+        if (!needsAttention(recordData.fintechStatus)) {
+            validateSection("Fintech", recordData.fintechStatus, recordData.fintechComment, "#fintechComment");
+        }
+    }
+
+    //..show errors if any
+    if (errors.length > 0) {
+        Swal.fire({
+            title: "Record Validation",
+            html: `<div style="text-align:left;">${errors.join("<br>")}</div>`,
+            icon: "warning"
+        });
+        return false;
+    }
+
+    return true;
+}
+
+function getApprovalAntiForgeryToken() {
+    return $('meta[name="csrf-token"]').attr('content');
 
 }
 
@@ -639,72 +860,148 @@ function closeApprovalPanel() {
     $('#collapsePanel').removeClass('active');
 }
 
-function needsAttention(status) {
-    return status === "" || status === "REJECTED" || status === "PENDING";
-}
-
-function toggleSection(sectionId, shouldExpand) {
-    $('#' + sectionId + ' .section-content').toggleClass('expanded', shouldExpand);
+function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const toggle = header.querySelector('.section-toggle');
+    content.classList.toggle('expanded');
+    toggle.classList.toggle('expanded');
 }
 
 function updateSectionExpansion(bopRequired, creditRequired, treasuryRequired, fintechRequired, hodStatus,
     riskStatus, compStatus, bopStatus, creditStatus, treasuryStatus, fintechStatus) {
+
     
-    // HOD Section - expand if needs attention
-    toggleSection('hodSection', needsAttention(hodStatus));
+    //..check if status needs attention
+    function needsAttention(status) {
+        return status === "" || status === "REJECTED" || status === "PENDING";
+    }
 
-    // Risk Section - expand if HOD approved but risk needs attention
-    toggleSection('riskSection',
-        hodStatus === "APPROVED" && needsAttention(riskStatus)
-    );
+    //..toggle section
+    function setSectionExpanded(sectionId, shouldExpand) {
+        $('#' + sectionId + ' .section-content').toggleClass('expanded', shouldExpand);
+        $('#' + sectionId + ' .section-toggle').toggleClass('expanded', shouldExpand);
+    }
 
-    // Compliance Section - expand if risk approved but compliance needs attention
-    toggleSection('complianceSection',
-        riskStatus === "APPROVED" && needsAttention(compStatus)
-    );
+    //...expand HOD Section if needs attention
+    setSectionExpanded('hodSection', needsAttention(hodStatus));
+    if (hodStatus === "APPROVED") {
+        $("#hodStatus").prop("disabled", true);
+        $("#hodComment").prop("disabled", true);
+    } else {
+        $("#hodStatus").prop("disabled", false);
+        $("#hodComment").prop("disabled", false);
+    }
 
-    // BOP Section - expand if compliance approved, BOP required, and needs attention
-    toggleSection('bopSection',
-        bopRequired && compStatus === "APPROVED" && needsAttention(bopStatus)
-    );
+    //...expand Risk Section if HOD approved but risk needs attention
+    setSectionExpanded('riskSection', hodStatus === "APPROVED" && needsAttention(riskStatus));
+    if (hodStatus !== "APPROVED" || (hodStatus === "APPROVED" && riskStatus === "APPROVED")) {
+        $("#riskStatus").prop("disabled", true);
+        $("#riskComment").prop("disabled", true);
+    } else {
+        $("#riskStatus").prop("disabled", false);
+        $("#riskComment").prop("disabled", false);
+    }
 
-    // Determine which section should expand next after BOP
+    //...expand  Compliance Section if risk approved but compliance needs attention
+    setSectionExpanded('complianceSection', riskStatus === "APPROVED" && needsAttention(compStatus));
+    if (riskStatus !== "APPROVED" || (riskStatus === "APPROVED" && compStatus === "APPROVED")) {
+        $("#complianceStatus").prop("disabled", true);
+        $("#complianceComment").prop("disabled", true);
+    } else {
+        $("#complianceStatus").prop("disabled", false);
+        $("#complianceComment").prop("disabled", false);
+    }
+
+    //...expand  BOP Section if compliance approved, BOP required, and needs attention
+    if (bopRequired) {
+        setSectionExpanded('bopSection', compStatus === "APPROVED" && needsAttention(bopStatus));
+        if (!compStatus) {
+            $("#bopStatus").prop("disabled", true);
+            $("#bopComment").prop("disabled", true);
+        } else {
+            $("#bopStatus").prop("disabled", false);
+            $("#bopComment").prop("disabled", false);
+        }
+    } else {
+        $("#bopSection").hide();
+    }
+   
+    //..determine which section should expand next after BOP
     var bopApprovedOrNotRequired = !bopRequired || bopStatus === "APPROVED";
     var complianceComplete = compStatus === "APPROVED";
 
-    // Treasury Section - expand if all previous approved/not required and treasury needs attention
-    toggleSection('treasurySection',
-        treasuryRequired &&
-        complianceComplete &&
-        bopApprovedOrNotRequired &&
-        needsAttention(treasuryStatus)
-    );
+    //..treasury Section
+    if (treasuryRequired) {
+        setSectionExpanded('treasurySection', complianceComplete && bopApprovedOrNotRequired && needsAttention(treasuryStatus));
+        if (!complianceComplete || !bopApprovedOrNotRequired) {
+            $("#treasuryStatus").prop("disabled", true);
+            $("#treasuryComment").prop("disabled", true);
+        } else {
+            $("#treasuryStatus").prop("disabled", false);
+            $("#treasuryComment").prop("disabled", false);
+        }
+    } else {
+        $("#treasurySection").hide();
+    }
+    
 
-    // Credit Section - expand if all previous approved/not required and credit needs attention
+    // Credit Section
     var treasuryApprovedOrNotRequired = !treasuryRequired || treasuryStatus === "APPROVED";
-    toggleSection('creditSection',
-        creditRequired &&
-        complianceComplete &&
-        bopApprovedOrNotRequired &&
-        treasuryApprovedOrNotRequired &&
-        needsAttention(creditStatus)
-    );
+    if (creditRequired) {
+        setSectionExpanded('creditSection', complianceComplete && bopApprovedOrNotRequired && treasuryApprovedOrNotRequired && needsAttention(creditStatus));
+        if (!complianceComplete || !bopApprovedOrNotRequired || !treasuryApprovedOrNotRequired) {
+            $("#creditStatus").prop("disabled", true);
+            $("#creditComment").prop("disabled", true);
+        } else {
+            $("#creditStatus").prop("disabled", false);
+            $("#creditComment").prop("disabled", false);
+        }
+    } else {
+        $("#creditSection").hide();
+    }
+    
 
-    // Fintech Section - expand if all previous approved/not required and fintech needs attention
+    // Fintech Section
     var creditApprovedOrNotRequired = !creditRequired || creditStatus === "APPROVED";
-    toggleSection('fintechSection',
-        fintechRequired &&
-        complianceComplete &&
-        bopApprovedOrNotRequired &&
-        treasuryApprovedOrNotRequired &&
-        creditApprovedOrNotRequired &&
-        needsAttention(fintechStatus)
-    );
+    if (fintechRequired) {
+        setSectionExpanded('fintechSection', complianceComplete && bopApprovedOrNotRequired && treasuryApprovedOrNotRequired && creditApprovedOrNotRequired && needsAttention(fintechStatus));
+        if (!complianceComplete || !bopApprovedOrNotRequired || !treasuryApprovedOrNotRequired || !creditApprovedOrNotRequired) {
+            $("#fintechStatus").prop("disabled", true);
+            $("#fintechComment").prop("disabled", true);
+        } else {
+            $("#fintechStatus").prop("disabled", false);
+            $("#fintechComment").prop("disabled", false);
+        }
+    } else {
+        $("#fintechSection").hide();
+    }
+   
+}
+
+function highlightApprovalField(selector, hasError, message) {
+    const $field = $(selector);
+    const $formGroup = $field.closest('.form-group, .mb-3, .col-sm-8');
+
+    // Remove existing error
+    $field.removeClass('is-invalid');
+    $formGroup.find('.field-error').remove();
+
+    if (hasError) {
+        $field.addClass('is-invalid');
+        if (message) {
+            $formGroup.append(`<div class="field-error text-danger small mt-1">${message}</div>`);
+        }
+    }
 }
 
 $(document).ready(function () {
 
     initProcessApprovalListTable();
+
+    $('#hodStatus, #riskStatus, #complianceStatus, #bopStatus, #creditStatus, #treasuryStatus, #fintechStatus').select2({
+        width: '100%',
+        dropdownParent: $('#collapsePanel')
+    });
 
     $('#approvalForm').on('submit', function (e) {
         e.preventDefault();

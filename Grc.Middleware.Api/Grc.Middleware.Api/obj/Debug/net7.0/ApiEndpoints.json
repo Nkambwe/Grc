@@ -677,6 +677,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
+    "Method": "UpdateApproval",
+    "RelativePath": "grc/processes/update-approval",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ApprovalRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
     "Method": "UpdateProcessGroup",
     "RelativePath": "grc/processes/update-group",
     "HttpMethod": "POST",

@@ -879,6 +879,9 @@
 	<LocaleResource Name="Component.Table.Process.Type.Select">
 		<Value>Select type...</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Process.Status.Select">
+		<Value>Select status...</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Process.IsDeleted">
 		<Value>Deactive</Value>
 	</LocaleResource>

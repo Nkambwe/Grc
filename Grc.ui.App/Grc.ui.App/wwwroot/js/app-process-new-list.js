@@ -92,22 +92,35 @@ function initProcessNewListTable() {
             { title: "ATTACHED UNIT", field: "unitName", minWidth: 250 },
             { title: "PROCESS MANAGER", field: "assigneeName", minWidth: 400 },
             {
-                title: "VIEW",
+                title: "REQUEST",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                    return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="viewStatus(${rowData.id})">
+                    return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="requestApproval(${rowData.id})">
                         <span><i class="mdi mdi-eye-arrow-right-outline" aria-hidden="true"></i></span>
-                        <span>PROGRESS</span>
+                        <span>REQUEST</span>
                     </button>`;
                 },
                 width: 200,
                 hozAlign: "center",
                 headerHozAlign: "center",
                 headerSort: false
+            },
+            {
+                title: "DELETE",
+                formatter: function (cell) {
+                    let rowData = cell.getRow().getData();
+                    return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteProcess(${rowData.id})">
+                            <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                            <span>DELETE</span>
+                        </button>`;
+                },
+                width: 150,
+                hozAlign: "center",
+                headerHozAlign: "center",
+                headerSort: false
             }
         ]
     });
-
 
     // Search init
     initProcessNewSearch();
@@ -140,7 +153,51 @@ function initProcessNewSearch() {
     });
 }
 
-function viewStatus(id) {
+function deleteProcess(id) {
+    if (!id && id !== 0) {
+        toastr.error("Invalid id for delete.");
+        return;
+    }
+
+    Swal.fire({
+        title: "Delete Process",
+        text: "Are you sure you want to delete this process?",
+        showCancelButton: true,
+        confirmButtonColor: "#450354",
+        confirmButtonText: "Delete",
+        cancelButtonColor: "#f41369",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        $.ajax({
+            url: `/operations/workflow/processes/registers/delete/${encodeURIComponent(id)}`,
+            type: 'POST',
+            contentType: 'application/json',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getProcessAntiForgeryToken()
+            },
+            success: function (res) {
+                if (res && res.success) {
+                    toastr.success(res.message || "Process deleted successfully.");
+                    if (processNewTable) {
+                        processNewTable.replaceData();
+                    }
+                } else {
+                    toastr.error(res?.message || "Delete failed.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Delete error:", error);
+                console.error("Response:", xhr.responseText);
+                toastr.error(xhr.responseJSON?.message || "Request failed.");
+            }
+        });
+    });
+}
+
+function requestApproval(id) {
     alert("View status for record ID: " + id);
 }
 

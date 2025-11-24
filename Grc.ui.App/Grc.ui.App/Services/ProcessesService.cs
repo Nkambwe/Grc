@@ -1567,6 +1567,83 @@ namespace Grc.ui.App.Services {
             }
         }
 
+        public async Task<GrcResponse<ServiceResponse>> UpdateApprovalAsync(GrcProcessApprovalView approvalModel, long userId, string ipAddress) {
+            try {
+
+                if (approvalModel == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Approval record cannot be null",
+                        "Invalid approval record"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..build request object
+                var request = new GrcProcessApprovalRequest {
+                    Id = approvalModel.Id,
+                    ProcessId = approvalModel.ProcessId,
+                    HodStatus = approvalModel.HodStatus,
+                    HodComment = approvalModel.HodComment,
+                    RiskStatus = approvalModel.RiskStatus,
+                    RiskComment = approvalModel.RiskComment,
+                    ComplianceStatus = approvalModel.ComplianceStatus,
+                    ComplianceComment = approvalModel.ComplianceComment,
+                    BopRequired = approvalModel.BopRequired,
+                    BopStatus = approvalModel.BopStatus,
+                    BopComment = approvalModel.BopComment,
+                    CreditRequired = approvalModel.CreditRequired,
+                    CreditStatus = approvalModel.CreditStatus,
+                    CreditComment = approvalModel.CreditComment,
+                    TreasuryRequired = approvalModel.TreasuryRequired,
+                    TreasuryStatus = approvalModel.TreasuryStatus,
+                    TreasuryComment = approvalModel.TreasuryComment,
+                    FintechRequired = approvalModel.FintechRequired,
+                    FintechStatus = approvalModel.FintechStatus,
+                    FintechComment = approvalModel.FintechComment,
+                    UserId = userId,
+                    IpAddress = ipAddress,
+                    Action = Activity.PROCESS_APPROVAL_UPDATE.GetDescription(),
+                };
+
+                //..map request
+                Logger.LogActivity($"UPDATE PROCESS PROCESS REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/update-approval";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcProcessApprovalRequest, ServiceResponse>(endpoint, request);
+            }
+            catch (HttpRequestException httpEx)
+            {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "PROCESSES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            }
+            catch (GRCException ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
         #endregion
     }
 

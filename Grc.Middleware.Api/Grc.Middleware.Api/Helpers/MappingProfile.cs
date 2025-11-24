@@ -422,7 +422,7 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(p => p.FileName, reg => reg.MapFrom(o => (o.FileName ?? string.Empty).Trim()))
                 .ForMember(p => p.EffectiveDate, reg => reg.MapFrom(o => o.EffectiveDate))
                 .ForMember(p => p.LastUpdated, reg => reg.MapFrom(o => o.LastUpdated))
-                .ForMember(p => p.ProcessStatus, reg => reg.MapFrom(o => (o.ProcessStatus ?? string.Empty).Trim()))
+                .ForMember(p => p.ProcessStatus, reg => reg.MapFrom(o => (o.ProcessStatus ?? string.Empty).Trim().ToUpper()))
                 .ForMember(p => p.TypeId, reg => reg.MapFrom(o => o.TypeId))
                 .ForMember(p => p.UnitId, reg => reg.MapFrom(o => o.UnitId))
                 .ForMember(p => p.ResponsibilityId, reg => reg.MapFrom(o => o.OwnerId))

@@ -604,7 +604,11 @@
                 pattern: "/operations/workflow/processes/approvals-retrieve/{id:long}",
                 defaults: new { area = "Operations", controller = "OperationWorkflow", action = "GetApproval" }
             );
-            
+            routeBuilder.MapControllerRoute(
+               name: "app-operations-processes-tags-create",
+               pattern: "/operations/workflow/processes/approval-update",
+               defaults: new { area = "Operations", controller = "OperationWorkflow", action = "UpdateApproval" }
+           );
             /*----------------------- Compliance dashboard routes*/
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-dashboard",

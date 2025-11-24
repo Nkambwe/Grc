@@ -95,16 +95,21 @@ function initProcessRegisterTable() {
             { title: "ATTACHED UNIT", field: "unitName", minWidth: 250 },
             { title: "PROCESS MANAGER", field: "assigneeName", minWidth: 400 },
             {
-                title: "ON FILE",
-                field: "fileName",
-                minWidth: 100,
+                title: "REVIEW",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                    return `<span class="clickable-title" onclick="viewFile(${rowData.fileName})">${rowData.fileName}</span>`
-                }
+                    return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="initiateReview(${rowData.id})">
+                        <span><i class="mdi mdi-cog-play-outline" aria-hidden="true"></i></span>
+                        <span>INITIATE</span>
+                    </button>`;
+                },
+                width: 200,
+                hozAlign: "center",
+                headerHozAlign: "center",
+                headerSort: false
             },
             {
-                title: "ACTION",
+                title: "LOCK FILE",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
                     let isLocked = rowData.isLockProcess ?? false;
@@ -113,13 +118,7 @@ function initProcessRegisterTable() {
                             <span><i class="mdi mdi-lock-outline" aria-hidden="true"></i></span>
                             <span>LOCKED</span>
                         </button>`;
-                    } else {
-                        return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteProcess(${rowData.id})">
-                            <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
-                            <span>DELETE</span>
-                        </button>`;
                     }
-                   
                 },
                 width: 150,
                 hozAlign: "center",
@@ -259,10 +258,14 @@ function openProcessEditor(title, process, isEdit) {
         $("#processForm :input").prop("disabled", false); 
     }
 
-    // Show overlay panel
+    //..show overlay panel
     $('#processPanelTitle').text(title);
     $('.process-overlay').addClass('active');
     $('#collapsePanel').addClass('active');
+}
+
+function initiateReview(id) {
+    alert("Initiate Review >>> " + id);
 }
 
 function viewProcess(id){
@@ -287,50 +290,6 @@ function viewProcess(id){
             Swal.close();
             Swal.fire({ title: 'Error', text: 'Failed to load process details.' });
         });
-}
-
-function deleteProcess(id) {
-    if (!id && id !== 0) {
-        toastr.error("Invalid id for delete.");
-        return;
-    }
-
-    Swal.fire({
-        title: "Delete Process",
-        text: "Are you sure you want to delete this process?",
-        showCancelButton: true,
-        confirmButtonColor: "#450354",
-        confirmButtonText: "Delete",
-        cancelButtonColor: "#f41369",
-        cancelButtonText: "Cancel"
-    }).then((result) => {
-        if (!result.isConfirmed) return;
-
-        $.ajax({
-            url: `/operations/workflow/processes/registers/delete/${encodeURIComponent(id)}`,
-            type: 'POST',
-            contentType: 'application/json',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': getProcessAntiForgeryToken()
-            },
-            success: function (res) {
-                if (res && res.success) {
-                    toastr.success(res.message || "Process deleted successfully.");
-                    if (roleGroupTable) {
-                        roleGroupTable.replaceData();
-                    }
-                } else {
-                    toastr.error(res?.message || "Delete failed.");
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("Delete error:", error);
-                console.error("Response:", xhr.responseText);
-                toastr.error(xhr.responseJSON?.message || "Request failed.");
-            }
-        });
-    });
 }
 
 function viewFile(fileName) {
@@ -430,13 +389,11 @@ function saveProcessRecord(e) {
         return;
     }
 
-    // Get uploaded files
-    var files = getUploadedFiles();
-    console.log('Record Data:', recordData);
-    console.log('Uploaded files:', files);
+    // Get files from uploadedFiles array
+    let filesToUpload = uploadedFiles.map(f => f.file);
 
     // Save process first, then upload files
-    saveProcessWithFiles(isEdit, recordData, files);
+    saveProcessWithFiles(isEdit, recordData, filesToUpload);
 }
 
 function saveProcessWithFiles(isEdit, payload, files) {
@@ -586,7 +543,7 @@ function getProcessAntiForgeryToken() {
 
 }
 
-function highlightProcessField(selector, hasError, message) {
+function highlightApprovalField(selector, hasError, message) {
     const $field = $(selector);
     const $formGroup = $field.closest('.form-group, .mb-3, .col-sm-8');
 

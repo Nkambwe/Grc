@@ -157,6 +157,7 @@
 
         public const string APPROVAL_RETRIEVE_APPLY = "Operations.Processes.Approvals.Retrieve";
         public const string APPROVAL_RETRIEVE_RECORD = "Operations.Processes.Approvals.Record";
+        public const string PROCESSES_UPDATE_APPROVAL = "Operations.Processes.Approvals.Edit";
 
         #endregion
 

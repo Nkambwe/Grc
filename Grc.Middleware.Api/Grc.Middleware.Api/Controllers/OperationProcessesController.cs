@@ -119,7 +119,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 List<ProcessRegisterResponse> processList = new();
-                var records = processes.ToList();
+                var records = processes.Where(p => !p.ProcessStatus.Equals("DRAFT") && !p.ProcessStatus.Equals("INREVIEW")).ToList();
                 records.ForEach(register => processList.Add(new()
                 {
                     Id = register.Id,
@@ -246,7 +246,8 @@ namespace Grc.Middleware.Api.Controllers {
         [HttpPost("processes/registers-all")]
         public async Task<IActionResult> GetProcessRegisters([FromBody] ListRequest request) {
 
-            try {
+            try
+            {
                 Logger.LogActivity($"{request.Action}", "INFO");
                 if (request == null)
                 {
@@ -260,13 +261,14 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                var pageResult = await _processService.PageAllAsync(request.PageIndex, request.PageSize, false, 
+                var pageResult = await _processService.PageAllAsync(request.PageIndex, request.PageSize, false,
                                                                     p => p.Unit,
                                                                     p => p.Owner,
                                                                     p => p.Responsible,
                                                                     p => p.ProcessType);
 
-                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                if (pageResult.Entities == null || !pageResult.Entities.Any())
+                {
                     var error = new ResponseError(
                         ResponseCodes.SUCCESS,
                         "No data",
@@ -283,7 +285,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 List<ProcessRegisterResponse> processes = new();
-                var records = pageResult.Entities;
+                var records = pageResult.Entities.Where(p => !p.ProcessStatus.Equals("DRAFT") && !p.ProcessStatus.Equals("INREVIEW")).ToList(); 
                 if (records != null && records.Any()) {
                     records.ForEach(register => processes.Add(new() {
                         Id = register.Id,
@@ -1885,6 +1887,75 @@ namespace Grc.Middleware.Api.Controllers {
             {
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<ProcessTATResponse>(error));
+            }
+        }
+
+        [HttpPost("processes/update-approval")]
+        public async Task<IActionResult> UpdateApproval([FromBody] ApprovalRequest request)
+        {
+            try
+            {
+                Logger.LogActivity("Update process approval", "INFO");
+                if (request == null)
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "The process approval record cannot be null"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _approvalService.ExistsAsync(r => r.Id == request.Id))
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.NOTFOUND,
+                        "Record Not Found",
+                        "Process approval record not found in the database"
+                    );
+
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser != null)
+                {
+                    request.ModifiedBy = currentUser.Username;
+                }
+                else
+                {
+                    request.ModifiedBy = $"{request.UserId}";
+                }
+
+                //..update process approval
+                var result = await _approvalService.UpdateAsync(request, true);
+                var response = new GeneralResponse();
+                if (result)
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Process tag updated successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+                else
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update process tag record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            }
+            catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
             }
         }
 

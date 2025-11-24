@@ -88,6 +88,8 @@ namespace Grc.ui.App.Services
 
         Task<GrcResponse<PagedResponse<GrcProcessApprovalStatusResponse>>> GetProcessApprovalStatusAsync(TableListRequest request);
 
+        Task<GrcResponse<ServiceResponse>> UpdateApprovalAsync(GrcProcessApprovalView request, long userId, string ipAddress);
+
         #endregion
     }
 
