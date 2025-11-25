@@ -91,6 +91,7 @@ namespace Grc.ui.App.Enums {
         COMPLIANCE_EXPORT_DOCTYPES = 42,
         [Description("Get document type details")]
         COMPLIANCE_GET_DOCTYPE = 43,
+
         [Description("Get a list of document owners available")]
         COMPLIANCE_RETRIEVE_DOCOWNERS = 44,
         [Description("Add document owner")]
@@ -233,6 +234,8 @@ namespace Grc.ui.App.Enums {
         PROCESS_APPROVAL_RETRIVED = 122,
         [Description("Update process approval")]
         PROCESS_APPROVAL_UPDATE = 123,
+        [Description("Unlock process for review")]
+        PROCESS_REVIEW = 124,
 
 
     }

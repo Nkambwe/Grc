@@ -98,10 +98,12 @@ function initProcessRegisterTable() {
                 title: "REVIEW",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                    return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="initiateReview(${rowData.id})">
-                        <span><i class="mdi mdi-cog-play-outline" aria-hidden="true"></i></span>
-                        <span>INITIATE</span>
-                    </button>`;
+                    return `<button 
+                                class="grc-table-btn grc-btn-view grc-view-action" 
+                                onclick='initiateReview(${JSON.stringify(rowData)})'>
+                                <span><i class="mdi mdi-cog-play-outline" aria-hidden="true"></i></span>
+                                <span>INITIATE</span>
+                            </button>`;
                 },
                 width: 200,
                 hozAlign: "center",
@@ -264,8 +266,107 @@ function openProcessEditor(title, process, isEdit) {
     $('#collapsePanel').addClass('active');
 }
 
-function initiateReview(id) {
-    alert("Initiate Review >>> " + id);
+function initiateReview(data) {
+    $("#initiateId").val(data.id || 0);
+    $("#initiateName").val(data.processName || "");
+    $("#initiateDescription").val(data.description || "");
+
+    //..show overlay panel
+    $('.initiate-overlay').addClass('active');
+    $('#initiatePanel').addClass('active');
+}
+
+function initiateProcessReview(e) {
+    if (e) e.preventDefault();
+    let recordData = {
+        id: parseInt($('#initiateId').val()) || 0,
+        processStatus: 'INREVIEW',
+        unlockReason: $('#unlockReason').val()?.trim(),
+    };
+
+    // --- validate required fields ---
+    let errors = [];
+    if (!recordData.unlockReason)
+        errors.push("You must provide reason for unlocking process.");
+    
+    if (errors.length > 0) {
+        highlightProcessField("#unlockReason", !recordData.unlockReason);
+        
+        Swal.fire({
+            title: "Validate Record",
+            html: `<div style="text-align:left;">${errors.join("<br>")}</div>`,
+        });
+        return;
+    }
+
+    //..save review
+    saveInitiateReview(recordData);
+}
+
+function saveInitiateReview(payload) {
+    const url = "/operations/workflow/processes/registers/initiate-review";
+
+    Swal.fire({
+        title: "Initiate Review...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(payload),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getProcessAntiForgeryToken()
+        },
+        success: function (res) {
+            Swal.close();
+            if (!res.success) {
+                Swal.fire({
+                    title: "Invalid record",
+                    html: res.message.replaceAll("; ", "<br>")
+                });
+                return;
+            }
+
+            if (processRegisterTable) {
+                if (isEdit && res.data) {
+                    processRegisterTable.updateData([res.data]);
+                } else if (!isEdit && res.data) {
+                    processRegisterTable.addRow(res.data, true);
+                } else {
+                    processRegisterTable.replaceData();
+                }
+            }
+
+            closeInitiatePanel();
+        },
+        error: function (xhr) {
+            Swal.close();
+
+            let errorMessage = "Unexpected error occurred.";
+            try {
+                let response = JSON.parse(xhr.responseText);
+                if (response.message) errorMessage = response.message;
+            } catch (e) { }
+
+            Swal.fire({
+                title: "Initiation Failed",
+                text: errorMessage
+            });
+        }
+    });
+}
+
+function closeInitiatePanel() {
+    $('.initiate-overlay').removeClass('active');
+    $('#initiatePanel').removeClass('active');
 }
 
 function viewProcess(id){

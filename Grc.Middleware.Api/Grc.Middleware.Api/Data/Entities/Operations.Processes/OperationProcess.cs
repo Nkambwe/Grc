@@ -12,6 +12,7 @@ namespace Grc.Middleware.Api.Data.Entities.Operations.Processes {
         public string FileName { get; set; }
         public string ProcessStatus { get; set; }
         public bool? IsLockProcess { get; set; }
+        public string UnlockReason { get; set; }
         public bool? NeedsBranchReview { get; set; }
         public bool? NeedsCreditReview { get; set; }
         public bool? NeedsTreasuryReview { get; set; }

@@ -432,6 +432,7 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(p => p.NeedsTreasuryReview, reg => reg.MapFrom(o => o.NeedsTreasuryReview))
                 .ForMember(p => p.NeedsFintechReview, reg => reg.MapFrom(o => o.NeedsFintechReview))
                 .ForMember(p => p.IsLockProcess, reg => reg.MapFrom(o => o.IsLockProcess))
+                .ForMember(p => p.UnlockReason, reg => reg.MapFrom(o => (o.UnlockReason ?? string.Empty).Trim()))
                 .ForMember(p => p.Comments, reg => reg.MapFrom(o => (o.Comments ?? string.Empty).Trim()))
                 .ForMember(p => p.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
                 .ForMember(p => p.CreatedBy, reg => reg.MapFrom(o => (o.CreatedBy ?? string.Empty).Trim()))

@@ -55,6 +55,9 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("isLockProcess")]
         public bool IsLockProcess { get; set; }
 
+        [JsonPropertyName("unlockReason")]
+        public string UnlockReason { get; set; }
+
         [JsonPropertyName("needsBranchReview")]
         public bool NeedsBranchReview { get; set; }
 

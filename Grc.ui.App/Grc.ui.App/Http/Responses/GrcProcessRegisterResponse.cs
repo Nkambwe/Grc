@@ -39,6 +39,9 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("isLockProcess")]
         public bool IsLockProcess { get; set; }
 
+        [JsonPropertyName("unlockReason")]
+        public string UnlockReason { get; set; }
+
         [JsonPropertyName("typeId")]
         public long TypeId { get; set; }
 

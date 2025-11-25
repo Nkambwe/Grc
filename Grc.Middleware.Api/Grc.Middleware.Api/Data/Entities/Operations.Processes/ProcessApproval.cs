@@ -1,4 +1,6 @@
-﻿namespace Grc.Middleware.Api.Data.Entities.Operations.Processes {
+﻿using Grc.Middleware.Api.Data.Entities.System;
+
+namespace Grc.Middleware.Api.Data.Entities.Operations.Processes {
     public class ProcessApproval: BaseEntity {
         public DateTime RequestDate { get; set; }
         public DateTime? HeadOfDepartmentStart { get; set; }
@@ -31,6 +33,8 @@
         public string FintechComment { get; set; }
         public long ProcessId { get; set; }
         public virtual OperationProcess Process { get; set; }
+
+        public virtual ICollection<MailRecord> MailRecords { get; set; }
     }
 
 }

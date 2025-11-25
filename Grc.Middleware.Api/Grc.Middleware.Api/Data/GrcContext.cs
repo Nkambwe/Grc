@@ -55,6 +55,8 @@ namespace Grc.Middleware.Api.Data {
         public DbSet<SystemPermission> SystemPermissions { get; set; }
         public DbSet<SystemPermissionPermissionSet> SystemPermissionSets { get; set; }
         public DbSet<ProcessApproval> ProcessApprovals { get; set; }
+        public DbSet<MailSettings> MailSettings { get; set; }
+        public DbSet<MailRecord> MailRecords { get; set; }
 
         public GrcContext(DbContextOptions<GrcContext> options)  
             : base(options){
@@ -109,6 +111,9 @@ namespace Grc.Middleware.Api.Data {
             SystemPermissionPermissionSetEntityConfiguration.Configure(modelBuilder.Entity<SystemPermissionPermissionSet>());
             SystemRolePermissionSetEntityConfiguration.Configure(modelBuilder.Entity<SystemRolePermissionSet>());
             SystemRoleGroupPermissionSetEntityConfiguration.Configure(modelBuilder.Entity<SystemRoleGroupPermissionSet>());
+            MailSettingEntityConfiguration.Configure(modelBuilder.Entity<MailSettings>());
+            MailRecordEntityConfiguration.Configure(modelBuilder.Entity<MailRecord>());
+
             base.OnModelCreating(modelBuilder);
         }
     }

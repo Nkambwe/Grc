@@ -72,4 +72,5 @@ namespace Grc.ui.App.Http.Requests {
         [JsonPropertyName("action")]
         public string Action { get; set; }
     }
+
 }

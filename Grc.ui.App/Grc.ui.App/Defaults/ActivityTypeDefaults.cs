@@ -9,6 +9,17 @@
 
         #endregion
 
+        #region Departments
+
+        public const string COMPLIACE_CREATE_DEPARTMENT = "Regulatory.Department.Added";
+        public const string COMPLIANCE_EDITED_DEPARTMENT = "Regulatory.Department.Edited";
+        public const string COMPLIANCE_DELETED_DEPARTMENT = "Regulatory.Department.Deleted";
+        public const string COMPLIACE_CREATE_DEPARTMENT_TYPE = "Regulatory.Department.Type.Added";
+        public const string COMPLIANCE_EDITED_DEPARTMENT_TYPE = "Regulatory.Department.Type.Edited";
+        public const string COMPLIANCE_DELETED_DEPARTMENT_TYPE = "Regulatory.Department.Type.Deleted";
+
+        #endregion
+
         #region User Activities
 
         public const string USER_ADDED = "User.Added";
@@ -33,16 +44,21 @@
         public const string ROLE_REMOVED_FROM_USER = "Role.Revoked";
         public const string ROLE_RETRIEVED = "Role.Retrieve";
         public const string ROLE_APPROVED = "Role.Approved";
+        public const string ROLE_PERMISSIONS_RETRIEVED = "Role.Permissions.Retrieve";
+        public const string ROLE_PERMISSION_SETS_RETRIEVED = "Role.Permissions.PermissionSet.Retrieved";
+        public const string ROLE_USERS_RETRIEVED = "Role.Users.Retrieved";
         #endregion
 
         #region Role Group Activities
 
         public const string ROLE_GROUP_ADDED = "Role.Group.Added";
+        public const string ROLE_GROUP_ADDED_WITH_PERMISSIONS = "Role.Group.Permissions.Added";
         public const string ROLE_GROUP_EDITED = "Role.Group.Edited";
+        public const string ROLE_GROUP_EDITED_WITH_PERMISSIONS = "Role.Group.Permissions.Edited";
         public const string ROLE_GROUP_DELETED = "Role.Group.Deleted";
         public const string ROLE_GROUP_ASSIGNED_TO_ROLE = "Role.Group.Assigned";
         public const string ROLE_GROUP_REMOVED_FROM_ROLE = "Role.Group.Revoked";
-        public const string ROLE_GROUP_RETRIEVED = "Role.Group.Retrieve";
+        public const string ROLE_GROUP_RETRIEVED = "Role.Group.Retrieved";
         public const string ROLE_GROUP_APPROVED = "Role.Group.Approved";
 
         #endregion
@@ -148,27 +164,17 @@
         public const string PROCESSES_EDITED_GROUP = "Operations.Processes.Groups.Edit";
         public const string PROCESSES_DELETED_GROUP = "Operations.Processes.Groups.Delete";
         public const string PROCESSES_EXPORT_GROUP = "Operations.Processes.Groups.Export";
-
         public const string PROCESSES_RETRIEVE_TAG = "Operations.Processes.Tags.Retrieve";
         public const string PROCESSES_CREATE_TAG = "Operations.Processes.Tags.Create";
         public const string PROCESSES_EDITED_TAG = "Operations.Processes.Tags.Edit";
         public const string PROCESSES_DELETED_TAG = "Operations.Processes.Tags.Delete";
         public const string PROCESSES_EXPORT_TAG = "Operations.Processes.Tags.Export";
-
+        public const string PROCESSES_RETRIEVE_TAT = "Operations.Processes.TAT.Retrieve";
+        public const string PROCESSES_EXPORT_TAT = "Operations.Processes.TAT.Export";
         public const string APPROVAL_RETRIEVE_APPLY = "Operations.Processes.Approvals.Retrieve";
         public const string APPROVAL_RETRIEVE_RECORD = "Operations.Processes.Approvals.Record";
-        public const string PROCESSES_UPDATE_APPROVAL = "Operations.Processes.Approvals.Edit";
-
-        #endregion
-
-        #region Departments
-
-        public const string COMPLIACE_CREATE_DEPARTMENT = "Regulatory.Department.Added";
-        public const string COMPLIANCE_EDITED_DEPARTMENT = "Regulatory.Department.Edited";
-        public const string COMPLIANCE_DELETED_DEPARTMENT = "Regulatory.Department.Deleted";
-        public const string COMPLIACE_CREATE_DEPARTMENT_TYPE = "Regulatory.Department.Type.Added";
-        public const string COMPLIANCE_EDITED_DEPARTMENT_TYPE = "Regulatory.Department.Type.Edited";
-        public const string COMPLIANCE_DELETED_DEPARTMENT_TYPE = "Regulatory.Department.Type.Deleted";
+        public const string PROCESSES_UPDATE_APPROVAL = "Operations.Processes.Approvals.Update";
+        public const string PROCESSES_INITIATE_REVIEW = "Operations.Processes.Initiate.Review";
 
         #endregion
 

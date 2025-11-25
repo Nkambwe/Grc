@@ -6,6 +6,7 @@ using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -506,16 +507,14 @@ namespace Grc.Middleware.Api.Services.Operations {
             }
         }
 
-        public bool Update(ProcessRequest request, bool includeDeleted = false)
-        {
+        public bool Update(ProcessRequest request, bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update Operation Process request", "INFO");
 
             try
             {
                 var process = uow.OperationProcessRepository.Get(a => a.Id == request.Id);
-                if (process != null)
-                {
+                if (process != null) {
                     //..update  Operation Process record
                     process.ProcessName = (request.ProcessName ?? string.Empty).Trim();
                     process.Description = (request.Description ?? string.Empty).Trim();
@@ -965,6 +964,53 @@ namespace Grc.Middleware.Api.Services.Operations {
             }
             catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve Processes : {ex.Message}", "ERROR");
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+        }
+
+        public async Task<bool> InitiateReviewAsync(InitiateRequest request) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Initiate Process review", "INFO");
+            try {
+                var process = await uow.OperationProcessRepository.GetAsync(a => a.Id == request.Id);
+                if (process != null) {
+                    process.ProcessStatus = (request.ProcessStatus ?? string.Empty).Trim();
+                    process.UnlockReason = (request.UnlockReason ?? string.Empty).Trim();
+                    process.Comments = "Process review initiated";
+                    process.IsLockProcess = false;
+                    process.IsDeleted = false;
+                    process.LastModifiedOn = request.ModifiedOn;
+                    process.LastModifiedBy = (request.ModifiedBy ?? string.Empty).Trim();
+
+                    //..add new approval record
+                    process.Approvals.Add(new ProcessApproval() {
+                        ProcessId = request.Id,
+                        RequestDate = DateTime.Now,
+                        HeadOfDepartmentStart = DateTime.Now,
+                        HeadOfDepartmentStatus = "PENDING",
+                        CreatedBy = request.ModifiedBy,
+                        CreatedOn = request.ModifiedOn,
+                        LastModifiedBy = request.ModifiedBy,
+                        LastModifiedOn = request.ModifiedOn,
+                    });
+
+                    //..check entity state
+                    _ = await uow.OperationProcessRepository.UpdateAsync(process, true);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(process).State;
+                    Logger.LogActivity($"Operation Process state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to update Operation Process record: {ex.Message}", "ERROR");
                 //..save error object to the database
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;

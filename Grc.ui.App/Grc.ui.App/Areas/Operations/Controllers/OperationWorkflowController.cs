@@ -170,6 +170,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                         assigneeName = process.Responsible ?? string.Empty,
                         isDeleted = process.IsDeleted,
                         isLockProcess = process.IsLockProcess,
+                        unlockReason = process.UnlockReason,
                         effectiveDate = process.EffectiveDate,
                         createdOn = process.CreatedOn,
                         createdBy = process.CreatedBy ?? string.Empty,
@@ -189,7 +190,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             }
         }
 
-        [LogActivityResult("Retrieve Process Register", "User retrieved operations process register", ActivityTypeDefaults.PROCESSES_RETRIEVE_PROCESS, "OperationProcess")]
+        [LogActivityResult("Process Register Retrieve", "User retrieved operations process register", ActivityTypeDefaults.PROCESSES_RETRIEVE_PROCESS, "OperationProcess")]
         public async Task<IActionResult> GetProcessRegister(long id) {
             try
             {
@@ -273,6 +274,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                     fintechApprovalComment = process.Approvals?.FintechComment ?? string.Empty,
                     isDeleted = process.IsDeleted,
                     isLockProcess = process.IsLockProcess,
+                    unlockReason = process.UnlockReason,
                     effectiveDate = process.EffectiveDate,
                     createdOn = process.CreatedOn,
                     createdBy = process.CreatedBy ?? string.Empty,
@@ -291,7 +293,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Create Process Register", "User created operations process register", ActivityTypeDefaults.PROCESSES_CREATE_PROCESS, "OperationProcess")]
+        [LogActivityResult("Process Register Added", "User created operations process register", ActivityTypeDefaults.PROCESSES_CREATE_PROCESS, "OperationProcess")]
         public async Task<IActionResult> CreateProcessRegister([FromBody] ProcessViewModel request) {
             try {
                 if (!ModelState.IsValid) {
@@ -356,7 +358,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Update Process Register", "User update operations process register", ActivityTypeDefaults.PROCESSES_EDITED_PROCESS, "OperationProcess")]
+        [LogActivityResult("Process Register Edited", "User update operations process register", ActivityTypeDefaults.PROCESSES_EDITED_PROCESS, "OperationProcess")]
         public async Task<IActionResult> UpdateProcessRegister([FromBody] ProcessViewModel request) {
             try
             {
@@ -401,7 +403,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             }
         }
 
-        [LogActivityResult("Upload process files", "User uploaded process files", ActivityTypeDefaults.PROCESSES_FILE_UPLOAD, "OperationProcess")]
+        [LogActivityResult("Process files Upload", "User uploaded process files", ActivityTypeDefaults.PROCESSES_FILE_UPLOAD, "OperationProcess")]
         public async Task<IActionResult> UploadProcessFiles(long processId, List<IFormFile> files, List<string> fileNames, List<bool> fileIsCurrent) {
             try {
 
@@ -527,6 +529,49 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 "PROCESS_UNIVERSE.xlsx");
         }
 
+        [HttpPost]
+        [LogActivityResult("Initiate Process Review", "User initiated operations process review", ActivityTypeDefaults.PROCESSES_INITIATE_REVIEW, "OperationProcess")]
+        public async Task<IActionResult> InitiateReview([FromBody] ProcessReviewModel request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                if (request == null) {
+                    return Ok(new { success = false, message = "Invalid user data" });
+                }
+
+                if (!string.IsNullOrWhiteSpace(request.ProcessStatus)) {
+                    if (int.TryParse(request.ProcessStatus, out int status)) {
+                        request.ProcessStatus = ((ProcessCategories)status).GetDescription();
+                    }
+                }
+
+                var result = await _processService.InitiateProcessReviewAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update process record" });
+
+                var data = result.Data;
+                return Ok(new
+                {
+                    success = data.Status,
+                    message = data.Message,
+                    data = new
+                    {
+                        status = data.Status,
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error update process record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
         #endregion
 
         #region Process Groups
@@ -557,7 +602,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             return View(model);
         }
 
-        [LogActivityResult("Retrieve Process Group", "User retrieved operations process group", ActivityTypeDefaults.PROCESSES_RETRIEVE_GROUP, "ProcessGroup")]
+        [LogActivityResult("Process Group Retrieve", "User retrieved operations process group", ActivityTypeDefaults.PROCESSES_RETRIEVE_GROUP, "ProcessGroup")]
         public async Task<IActionResult> GetProcessGroup(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -644,7 +689,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Create Process group", "User created operations process group", ActivityTypeDefaults.PROCESSES_CREATE_GROUP, "ProcessGroup")]
+        [LogActivityResult("Process Group Add", "User created operations process group", ActivityTypeDefaults.PROCESSES_CREATE_GROUP, "ProcessGroup")]
         public async Task<IActionResult> CreateProcessGroup([FromBody] ProcessGroupViewModel request) {
             try {
                 if (!ModelState.IsValid) {
@@ -696,7 +741,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Update Process group", "User update operations process group", ActivityTypeDefaults.PROCESSES_EDITED_GROUP, "ProcessGroup")]
+        [LogActivityResult("Process Group Edit", "User update operations process group", ActivityTypeDefaults.PROCESSES_EDITED_GROUP, "ProcessGroup")]
         public async Task<IActionResult> UpdateProcessGroup([FromBody] ProcessGroupViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -731,7 +776,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Delete Process Group", "User deleted operations process group", ActivityTypeDefaults.PROCESSES_DELETED_GROUP, "ProcessGroup")]
+        [LogActivityResult("Process Group Deleted", "User deleted operations process group", ActivityTypeDefaults.PROCESSES_DELETED_GROUP, "ProcessGroup")]
         public async Task<IActionResult> DeleteProcessGroup(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -795,7 +840,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             return View(model);
         }
 
-        [LogActivityResult("Retrieve Process Tag", "User retrieved operations process tag", ActivityTypeDefaults.PROCESSES_RETRIEVE_TAG, "ProcessTag")]
+        [LogActivityResult("Process Tag Retrieve", "User retrieved operations process tag", ActivityTypeDefaults.PROCESSES_RETRIEVE_TAG, "ProcessTag")]
         public async Task<IActionResult> GetProcessTag(long id) {
             try
             {
@@ -847,7 +892,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Create Process Tag", "User created operations process tag", ActivityTypeDefaults.PROCESSES_CREATE_TAG, "ProcessTag")]
+        [LogActivityResult("Process Tag Add", "User created operations process tag", ActivityTypeDefaults.PROCESSES_CREATE_TAG, "ProcessTag")]
         public async Task<IActionResult> CreateProcessTag([FromBody] ProcessTagViewModel request) {
             try {
                 if (!ModelState.IsValid) {
@@ -940,7 +985,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Update Process tag", "User update operations process tag", ActivityTypeDefaults.PROCESSES_EDITED_TAG, "ProcessTag")]
+        [LogActivityResult("Process Tag Edited", "User update operations process tag", ActivityTypeDefaults.PROCESSES_EDITED_TAG, "ProcessTag")]
         public async Task<IActionResult> UpdateProcessTag([FromBody] ProcessTagViewModel request) {
             try
             {
@@ -979,7 +1024,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Delete Process tag", "User deleted operations process tag", ActivityTypeDefaults.PROCESSES_DELETED_TAG, "ProcessTag")]
+        [LogActivityResult("Process Tag Deleted", "User deleted operations process tag", ActivityTypeDefaults.PROCESSES_DELETED_TAG, "ProcessTag")]
         public async Task<IActionResult> DeleteProcessTag(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1047,7 +1092,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             return View(model);
         }
 
-        [LogActivityResult("Retrieve Process TAT", "User retrieved operations process TAT", ActivityTypeDefaults.PROCESSES_RETRIEVE_GROUP, "ProcessApproval")]
+        [LogActivityResult("Process TAT Retrieve", "User retrieved operations process TAT", ActivityTypeDefaults.PROCESSES_RETRIEVE_TAT, "ProcessTATReport")]
         public async Task<IActionResult> GetProcessTat(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1183,7 +1228,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Export Process TAT", "User exported processes TAT to excel", ActivityTypeDefaults.PROCESSES_EXPORT_PROCESS, "ProcessApproval")]
+        [LogActivityResult("Process TAT Export", "User exported processes TAT to excel", ActivityTypeDefaults.PROCESSES_EXPORT_PROCESS, "ProcessTATReport")]
         public async Task<IActionResult> GetExportTATReport() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -1334,7 +1379,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             }
         }
 
-        [LogActivityResult("Retrieve Approval record", "User retrieved process approval", ActivityTypeDefaults.APPROVAL_RETRIEVE_APPLY, "ProcessApproval")]
+        [LogActivityResult("Proces Approval Retrieve", "User retrieved process approval", ActivityTypeDefaults.APPROVAL_RETRIEVE_APPLY, "ProcessApproval")]
         public async Task<IActionResult> GetApproval(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1407,7 +1452,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Update Process Approval", "User update process approval", ActivityTypeDefaults.PROCESSES_UPDATE_APPROVAL, "ProcessTag")]
+        [LogActivityResult("Process Approval Update", "User update process approval", ActivityTypeDefaults.PROCESSES_UPDATE_APPROVAL, "ProcessTag")]
         public async Task<IActionResult> UpdateApproval([FromBody] GrcProcessApprovalView request)
         {
             try
@@ -1513,6 +1558,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                         assigneeName = process.Responsible ?? string.Empty,
                         isDeleted = process.IsDeleted,
                         isLockProcess = process.IsLockProcess,
+                        unlockReason = process.UnlockReason,
                         effectiveDate = process.EffectiveDate,
                         createdOn = process.CreatedOn,
                         createdBy = process.CreatedBy ?? string.Empty,
@@ -1596,6 +1642,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                         assigneeName = process.Responsible ?? string.Empty,
                         isDeleted = process.IsDeleted,
                         isLockProcess = process.IsLockProcess,
+                        unlockReason = process.UnlockReason,
                         effectiveDate = process.EffectiveDate,
                         createdOn = process.CreatedOn,
                         createdBy = process.CreatedBy ?? string.Empty,

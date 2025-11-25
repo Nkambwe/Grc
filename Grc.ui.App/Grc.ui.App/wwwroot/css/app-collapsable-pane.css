@@ -1,4 +1,5 @@
-﻿.collapse-panel {
+﻿.collapse-panel,
+.initiate-panel {
     position: fixed;
     top: 0;
     right: -100vw;
@@ -11,12 +12,14 @@
     overflow-y: auto;
 }
 
-    .collapse-panel.active {
+    .collapse-panel.active,
+    .initiate-panel.active {
         right: 2vw;
         overflow: hidden;
     }
 
-.collapse-panel-header {
+.collapse-panel-header,
+.initiate-panel-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -30,7 +33,8 @@
     text-shadow: 2px 4px 3px rgba(0, 0, 0, 0.3);
 }
 
-.process-overlay {
+.process-overlay,
+.initiate-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -41,16 +45,19 @@
     z-index: 1100;
 }
 
-.process-overlay.active{
-    display:block;
-}
-
-    .collapse-panel-header h3 {
-        margin: 0;
-        font-size: 1.25rem;
+    .process-overlay.active,
+    .initiate-overlay.active {
+        display: block;
     }
 
-.collapse-panel-close {
+.collapse-panel-header h3,
+.initiate-panel-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+.collapse-panel-close,
+.initiate-panel-close {
     background: none;
     border: none;
     font-size: 24px;
@@ -65,20 +72,33 @@
     transition: all .5s ease-in-out;
 }
 
-    .collapse-panel-close:hover {
+    .collapse-panel-close:hover,
+    .initiate-panel-close:hover {
         color: var(--pearl-purple-dark-30);
         transition: all .5s ease-in-out;
     }
 
-.collapse-panel-body {
-/*    padding: 20px;*/
+.collapse-panel-body,
+.initiate-panel-body {
     min-height: 500px;
     height: 100%;
     overflow: auto;
 }
 
-#processForm.grc_form {
-    padding:0;
+.alert-warning {
+    border: solid 1px var(--amber-dark-accent);
+}
+
+.alert-msg {
+    display: flex;
+    width: 100%;
+    font-weight:600;
+    color: var(--yellow-dark-extra);
+}
+
+#processForm.grc_form,
+#initiateForm.grc_form {
+    padding: 0;
 }
 
 .form-section {

@@ -141,6 +141,7 @@ namespace Grc.Middleware.Api.Controllers {
                     ResponsibilityId = register.ResponsibilityId,
                     Responsibile = register.Responsible != null ? register.Responsible.ContactPosition : string.Empty,
                     IsLockProcess = register.IsLockProcess,
+                    UnlockReason = register.UnlockReason,
                     NeedsBranchReview = register.NeedsBranchReview,
                     NeedsCreditReview = register.NeedsCreditReview,
                     NeedsTreasuryReview = register.NeedsTreasuryReview,
@@ -214,6 +215,7 @@ namespace Grc.Middleware.Api.Controllers {
                     ProcessStatus = register.ProcessStatus ?? string.Empty,
                     Comments = register.Comments ?? string.Empty,
                     IsLockProcess = register.IsLockProcess,
+                    UnlockReason = register.UnlockReason,
                     NeedsBranchReview = register.NeedsBranchReview,
                     NeedsCreditReview = register.NeedsCreditReview,
                     NeedsTreasuryReview = register.NeedsTreasuryReview,
@@ -307,6 +309,7 @@ namespace Grc.Middleware.Api.Controllers {
                         ResponsibilityId = register.ResponsibilityId,
                         Responsibile = register.Responsible != null ? register.Responsible.ContactPosition : string.Empty,
                         IsLockProcess = register.IsLockProcess,
+                        UnlockReason = register.UnlockReason,
                         NeedsBranchReview = register.NeedsBranchReview,
                         NeedsCreditReview = register.NeedsCreditReview,
                         NeedsTreasuryReview = register.NeedsTreasuryReview,
@@ -1555,6 +1558,7 @@ namespace Grc.Middleware.Api.Controllers {
                         ResponsibilityId = register.ResponsibilityId,
                         Responsibile = register.Responsible != null ? register.Responsible.ContactPosition : string.Empty,
                         IsLockProcess = register.IsLockProcess,
+                        UnlockReason = register.UnlockReason,
                         NeedsBranchReview = register.NeedsBranchReview,
                         NeedsCreditReview = register.NeedsCreditReview,
                         NeedsTreasuryReview = register.NeedsTreasuryReview,
@@ -1654,6 +1658,7 @@ namespace Grc.Middleware.Api.Controllers {
                         ResponsibilityId = register.ResponsibilityId,
                         Responsibile = register.Responsible != null ? register.Responsible.ContactPosition : string.Empty,
                         IsLockProcess = register.IsLockProcess,
+                        UnlockReason = register.UnlockReason,
                         NeedsBranchReview = register.NeedsBranchReview,
                         NeedsCreditReview = register.NeedsCreditReview,
                         NeedsTreasuryReview = register.NeedsTreasuryReview,
@@ -1691,6 +1696,83 @@ namespace Grc.Middleware.Api.Controllers {
             {
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<PagedResponse<ProcessRegisterResponse>>(error));
+            }
+        }
+
+        [HttpPost("processes/initiate-review")]
+        public async Task<IActionResult> InitiateReview([FromBody] InitiateReviewRequest request) {
+            try {
+                Logger.LogActivity("Update operation process", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "The operations process record cannot be null"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _processService.ExistsAsync(r => r.Id == request.Id))
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.NOTFOUND,
+                        "Record Not Found",
+                        "Operations Process record not found in the database"
+                    );
+
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                var initiate = new InitiateRequest() {
+                    Id = request.Id,
+                    ProcessStatus = request.ProcessStatus,
+                    UnlockReason = request.UnlockReason,
+                };
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser != null)
+                {
+                    initiate.ModifiedBy = currentUser.Username;
+                }
+                else
+                {
+                    initiate.ModifiedBy = $"{request.UserId}";
+                }
+
+                //..add dates
+                initiate.ModifiedOn = DateTime.Now;
+
+                //..initiate operations process review
+                var isInitiated = await _processService.InitiateReviewAsync(initiate);
+                var response = new GeneralResponse();
+                if (isInitiated) {
+
+                    //TODO -- Send Mail to responsible person for review
+
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Processes unlocked and sent for review";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+                else
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update operations process record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            }
+            catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
             }
         }
 
@@ -1933,10 +2015,13 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 //..update process approval
-                var result = await _approvalService.UpdateAsync(request, true);
+                var (isApproved, stage) = await _approvalService.ApproveProcessAsync(request, true);
                 var response = new GeneralResponse();
-                if (result)
-                {
+                if (isApproved) {
+
+                    //TODO send mail
+
+
                     response.Status = true;
                     response.StatusCode = (int)ResponseCodes.SUCCESS;
                     response.Message = "Process tag updated successfully";

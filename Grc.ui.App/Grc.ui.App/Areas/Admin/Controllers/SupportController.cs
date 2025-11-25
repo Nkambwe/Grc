@@ -1121,7 +1121,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         #region System Activity
 
-        [LogActivityResult("Retrieve System Activity", "User retrieved system activity", ActivityTypeDefaults.ACTIVITY_RETRIEVED, "SystemActivity")]
+        [LogActivityResult("System Activity Retrieve", "User retrieved system activity", ActivityTypeDefaults.ACTIVITY_RETRIEVED, "SystemActivity")]
         public async Task<IActionResult> GetSystemActivity(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1410,7 +1410,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Add User", "User added user record", ActivityTypeDefaults.USER_ADDED, "SystemUser")]
+        [LogActivityResult("User Added", "User added user record", ActivityTypeDefaults.USER_ADDED, "SystemUser")]
         public async Task<IActionResult> CreateUser([FromBody] UserViewModel request)
         {
             try
@@ -1467,7 +1467,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Update User", "User updated user record", ActivityTypeDefaults.USER_EDITED, "SystemUser")]
+        [LogActivityResult("User Edited", "User updated user record", ActivityTypeDefaults.USER_EDITED, "SystemUser")]
         public async Task<IActionResult> UpdateUser([FromBody] UserViewModel request) {
             try
             {
@@ -1506,7 +1506,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Delete User", "User deleted User record", ActivityTypeDefaults.USER_DELETED, "SystemUser")]
+        [LogActivityResult("User Deleted", "User deleted User record", ActivityTypeDefaults.USER_DELETED, "SystemUser")]
         public async Task<IActionResult> DeleteUser(long id) {
             try
             {
@@ -1707,7 +1707,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Add System Role", "User added system role record", ActivityTypeDefaults.ROLE_ADDED, "SystemRole")]
+        [LogActivityResult("Role Added", "User added system role record", ActivityTypeDefaults.ROLE_ADDED, "SystemRole")]
         public async Task<IActionResult> CreateRole([FromBody] RoleViewModel request) {
             try {
                 if (!ModelState.IsValid) {
@@ -1759,7 +1759,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Update System Role", "User updated system role", ActivityTypeDefaults.ROLE_EDITED, "SystemRole")]
+        [LogActivityResult("Role Edited", "User updated system role", ActivityTypeDefaults.ROLE_EDITED, "SystemRole")]
         public async Task<IActionResult> UpdateRole([FromBody] RoleViewModel request)
         {
             try
@@ -1799,7 +1799,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Delete System Role", "User deleted System Role record", ActivityTypeDefaults.ROLE_DELETED, "SystemRole")]
+        [LogActivityResult("Role Deleted", "User deleted System Role record", ActivityTypeDefaults.ROLE_DELETED, "SystemRole")]
         public async Task<IActionResult> DeleteRole(long id)
         {
             try
@@ -1870,7 +1870,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             return View(model);
         }
 
-        [LogActivityResult("Retrieve Role Permissions", "User retrieved role record with related permissions", ActivityTypeDefaults.ROLE_RETRIEVED, "SystemRole")]
+        [LogActivityResult("Role Permissions", "User retrieved role record with related permissions", ActivityTypeDefaults.ROLE_PERMISSIONS_RETRIEVED, "SystemRole")]
         public async Task<IActionResult> GetRoleWithPermissions(long id)
         {
             try
@@ -1927,7 +1927,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             }
         }
 
-        [LogActivityResult("Retrieve Role Permission sets", "User retrieved role record with related permission set", ActivityTypeDefaults.ROLE_RETRIEVED, "SystemRole")]
+        [LogActivityResult("Role Permission sets", "User retrieved role record with related permission set", ActivityTypeDefaults.ROLE_PERMISSION_SETS_RETRIEVED, "SystemRole")]
         public async Task<IActionResult> GetRoleWithPermissionSets(long id)
         {
             try
@@ -1985,7 +1985,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             }
         }
 
-        [LogActivityResult("Retrieve Role Users", "User retrieved role record with related users", ActivityTypeDefaults.ROLE_RETRIEVED, "SystemRole")]
+        [LogActivityResult("Role Users", "User retrieved role record with related users", ActivityTypeDefaults.ROLE_USERS_RETRIEVED, "SystemRole")]
         public async Task<IActionResult> GetRoleWithUsers(long id)
         {
             try
@@ -2050,7 +2050,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         #region System Role Groups
 
-        [LogActivityResult("Retrieve Role Group", "User retrieved role group", ActivityTypeDefaults.ROLE_GROUP_RETRIEVED, "SystemRoleGroup")]
+        [LogActivityResult("Role Group", "User retrieved role group", ActivityTypeDefaults.ROLE_GROUP_RETRIEVED, "SystemRoleGroup")]
         public async Task<IActionResult> GetRoleGroupWithRoles(long id)
         {
             try
@@ -2307,7 +2307,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Add System Role Group", "User added system role group", ActivityTypeDefaults.ROLE_GROUP_ADDED, "SystemRoleGroup")]
+        [LogActivityResult("Role Group Added", "User added system role group", ActivityTypeDefaults.ROLE_GROUP_ADDED, "SystemRoleGroup")]
         public async Task<IActionResult> CreateRoleGroup([FromBody] RoleGroupViewModel request) {
             try {
                 if (!ModelState.IsValid) {
@@ -2361,7 +2361,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Update System Role Group", "User updated system role group", ActivityTypeDefaults.ROLE_GROUP_EDITED, "SystemRoleGroup")]
+        [LogActivityResult("Role Group Edited", "User updated system role group", ActivityTypeDefaults.ROLE_GROUP_EDITED, "SystemRoleGroup")]
         public async Task<IActionResult> UpdateRoleGroup([FromBody] RoleGroupViewModel request)
         {
             try
@@ -2401,7 +2401,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Delete System Role Group", "User deleted System Role Group", ActivityTypeDefaults.ROLE_GROUP_DELETED, "SystemRoleGroup")]
+        [LogActivityResult("Role Group Deleted", "User deleted System Role Group", ActivityTypeDefaults.ROLE_GROUP_DELETED, "SystemRoleGroup")]
         public async Task<IActionResult> DeleteRoleGroup(long id)
         {
             try
@@ -2472,7 +2472,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             return View(model);
         }
 
-        [LogActivityResult("Retrieve Role Group with sets", "User retrieved role group", ActivityTypeDefaults.ROLE_GROUP_RETRIEVED, "SystemRoleGroup")]
+        [LogActivityResult("Role Group Retrieved", "User retrieved role group", ActivityTypeDefaults.ROLE_GROUP_RETRIEVED, "SystemRoleGroup")]
         public async Task<IActionResult> GetRoleGroupWithPermissions(long id)
         {
             try
@@ -2595,7 +2595,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Add System Role Group", "User added system role group permissions", ActivityTypeDefaults.ROLE_GROUP_ADDED, "SystemRoleGroup")]
+        [LogActivityResult("Role Group Permissions Added", "User added system role group permissions", ActivityTypeDefaults.ROLE_GROUP_ADDED_WITH_PERMISSIONS, "SystemRoleGroup")]
         public async Task<IActionResult> CreateRoleGroupPermissions([FromBody] RoleGroupViewModel request) {
             try
             {
@@ -2648,7 +2648,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Update System Role Group", "User updated system role group permissions", ActivityTypeDefaults.ROLE_GROUP_EDITED, "SystemRoleGroup")]
+        [LogActivityResult("Role Group Permissions Edited", "User updated system role group permissions", ActivityTypeDefaults.ROLE_GROUP_EDITED, "SystemRoleGroup")]
         public async Task<IActionResult> UpdateRoleGroupPermissions([FromBody] RoleGroupViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2752,7 +2752,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         #region System Permission Sets
 
-        [LogActivityResult("Retrieve Permission Set", "User retrieved Permission Set", ActivityTypeDefaults.PERMISSION_SET_RETRIEVED, "SystemPermissionSet")]
+        [LogActivityResult("Permission Set Retrieved", "User retrieved Permission Set", ActivityTypeDefaults.PERMISSION_SET_RETRIEVED, "SystemPermissionSet")]
         public async Task<IActionResult> GetPermissionSet(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2908,7 +2908,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Add Permission Set", "User added Permission Set", ActivityTypeDefaults.PERMISSION_SET_ADDED, "SystemPermissionSet")]
+        [LogActivityResult("Permission set Added", "User added Permission Set", ActivityTypeDefaults.PERMISSION_SET_ADDED, "SystemPermissionSet")]
         public async Task<IActionResult> CreatePermissionSet([FromBody] GrcPermissionSetViewModel request)
         {
             try
@@ -2965,7 +2965,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Update Permission Set", "User updated Permission Set", ActivityTypeDefaults.PERMISSION_SET_EDITED, "SystemPermissionSet")]
+        [LogActivityResult("Permission set Edited", "User updated Permission Set", ActivityTypeDefaults.PERMISSION_SET_EDITED, "SystemPermissionSet")]
         public async Task<IActionResult> UpdatePermissionSet([FromBody] GrcPermissionSetViewModel request) {
             try
             {
@@ -3004,7 +3004,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Delete Permission Set", "User deleted Permission Set", ActivityTypeDefaults.PERMISSION_SET_DELETED, "SystemPermissionSet")]
+        [LogActivityResult("Permission set Deleted", "User deleted Permission Set", ActivityTypeDefaults.PERMISSION_SET_DELETED, "SystemPermissionSet")]
         public async Task<IActionResult> DeletePermissionSet(long id)
         {
             try

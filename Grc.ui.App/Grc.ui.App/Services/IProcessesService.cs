@@ -91,6 +91,10 @@ namespace Grc.ui.App.Services
         Task<GrcResponse<ServiceResponse>> UpdateApprovalAsync(GrcProcessApprovalView request, long userId, string ipAddress);
 
         #endregion
+
+        #region Process Review
+        Task<GrcResponse<ServiceResponse>> InitiateProcessReviewAsync(ProcessReviewModel request, long userId, string ipAddress);
+        #endregion
     }
 
 }

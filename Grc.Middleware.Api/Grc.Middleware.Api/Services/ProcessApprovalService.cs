@@ -2,6 +2,7 @@
 using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Operations.Processes;
 using Grc.Middleware.Api.Data.Entities.System;
+using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Utils;
@@ -9,15 +10,12 @@ using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Grc.Middleware.Api.Services
-{
-    public class ProcessApprovalService : BaseService, IProcessApprovalService
-    {
-        public ProcessApprovalService(IServiceLoggerFactory loggerFactory,
-                                      IUnitOfWorkFactory uowFactory,
-                                      IMapper mapper) : base(loggerFactory, uowFactory, mapper)
-        {
-        }
+namespace Grc.Middleware.Api.Services {
+
+    public class ProcessApprovalService : BaseService, IProcessApprovalService {
+
+        public ProcessApprovalService(IServiceLoggerFactory loggerFactory, IUnitOfWorkFactory uowFactory, IMapper mapper) 
+            : base(loggerFactory, uowFactory, mapper) { }
 
         public int Count() {
             using var uow = UowFactory.Create();
@@ -160,6 +158,7 @@ namespace Grc.Middleware.Api.Services
                 throw;
             }
         }
+       
         public async Task<bool> InsertAsync(ProcessApprovalRequest request)
         {
             using var uow = UowFactory.Create();
@@ -198,17 +197,21 @@ namespace Grc.Middleware.Api.Services
             }
         }
 
-        public async Task<bool> UpdateAsync(ApprovalRequest request, bool includeDeleted = false) {
+        public async Task<(bool, ApprovalStage)> ApproveProcessAsync(ApprovalRequest request, bool includeDeleted = false) {
+            
             using var uow = UowFactory.Create();
+           
             Logger.LogActivity($"Update Process Approval", "INFO");
+            var stage = ApprovalStage.NONE;
 
             try {
                 var approval = await uow.ProcessApprovalRepository.GetAsync(a => a.Id == request.Id);
                 if (approval == null) {
                     Logger.LogActivity($"Record not found: ID={request.Id}", "DEBUG");
-                    return false;
+                    return (false, stage);
                 }
-                // Update HOD section
+
+                //..update HOD section
                 if (!string.IsNullOrEmpty(request.HodStatus)) {
                     if (request.HodStatus == "APPROVED" || request.HodStatus == "REJECTED") {
 
@@ -218,6 +221,7 @@ namespace Grc.Middleware.Api.Services
                         approval.HeadOfDepartmentStatus = request.HodStatus;
                         approval.HeadOfDepartmentComment = request.HodComment;
                         if (!approval.HeadOfDepartmentEnd.HasValue) {
+                            stage = ApprovalStage.HOD;
                             approval.HeadOfDepartmentEnd = DateTime.Now;
                             approval.RiskStart = DateTime.Now;
                             approval.RiskStatus = "PENDING";
@@ -232,6 +236,7 @@ namespace Grc.Middleware.Api.Services
                         approval.RiskStatus = request.RiskStatus;
                         approval.RiskComment = request.RiskComment;
                         if (!approval.RiskEnd.HasValue) {
+                            stage = ApprovalStage.RISK;
                             approval.RiskEnd = DateTime.Now;
                             approval.ComplianceStart = DateTime.Now;
                             approval.ComplianceStatus = "PENDING";
@@ -249,6 +254,7 @@ namespace Grc.Middleware.Api.Services
                         if (!approval.ComplianceEnd.HasValue)
                         {
                             approval.ComplianceEnd = DateTime.Now;
+                            stage = ApprovalStage.COMP;
                             if (request.BopRequired) {
                                 approval.BranchOperationsStatusStart = DateTime.Now;
                                 approval.BranchOperationsStatus = "PENDING";
@@ -264,6 +270,7 @@ namespace Grc.Middleware.Api.Services
                     {
                         approval.BranchOperationsStatus = request.BopStatus;
                         approval.BranchManagerComment = request.BopComment;
+                        stage = ApprovalStage.BOM;
                         if (!approval.BranchOperationsStatusEnd.HasValue) {
                             approval.BranchOperationsStatusEnd = DateTime.Now;
                             if (request.TreasuryRequired) {
@@ -275,6 +282,7 @@ namespace Grc.Middleware.Api.Services
                 } else {
                     if (request.TreasuryRequired)
                     {
+                        stage = ApprovalStage.TREA;
                         approval.TreasuryStart = DateTime.Now;
                         approval.TreasuryStatus = "PENDING";
                     }
@@ -288,6 +296,7 @@ namespace Grc.Middleware.Api.Services
                     if (request.TreasuryStatus == "APPROVED" || request.TreasuryStatus == "REJECTED") {
                         approval.TreasuryStatus = request.TreasuryStatus;
                         approval.TreasuryComment = request.TreasuryComment;
+                        stage = ApprovalStage.TREA;
                         if (request.CreditRequired) {
                             approval.CreditStart = DateTime.Now;
                             approval.CreditStatus = "PENDING";
@@ -298,6 +307,7 @@ namespace Grc.Middleware.Api.Services
                 {
                     if (request.CreditRequired)
                     {
+                        stage = ApprovalStage.CRT;
                         approval.CreditStart = DateTime.Now;
                         approval.CreditStatus = "PENDING";
                     }
@@ -311,6 +321,7 @@ namespace Grc.Middleware.Api.Services
                     if (request.CreditStatus == "APPROVED" || request.CreditStatus == "REJECTED") {
                         approval.CreditStatus = request.CreditStatus;
                         approval.CreditComment = request.CreditComment;
+                        stage = ApprovalStage.CRT;
                         if (request.FintechRequired) {
                             approval.FintechStart = DateTime.Now;
                             approval.FintechStatus = "PENDING";
@@ -321,6 +332,7 @@ namespace Grc.Middleware.Api.Services
                 {
                     if (request.FintechRequired)
                     {
+                        stage = ApprovalStage.FIN;
                         approval.FintechStart = DateTime.Now;
                         approval.FintechStatus = "PENDING";
                     }
@@ -348,7 +360,7 @@ namespace Grc.Middleware.Api.Services
 
                 var result = uow.SaveChanges();
                 Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
-                return result > 0;
+                return (result > 0, stage);
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to update process approval record: {ex.Message}", "ERROR");
                 //..save error object to the database
@@ -446,6 +458,7 @@ namespace Grc.Middleware.Api.Services
         }
 
         #region Private Methods
+
         private SystemError HandleError(IUnitOfWork uow, Exception ex)
         {
             var innerEx = ex.InnerException;
@@ -470,32 +483,6 @@ namespace Grc.Middleware.Api.Services
                 CreatedOn = DateTime.Now
             };
 
-        }
-
-        private static string DetermineOverallStatus(ApprovalRequest approval) {
-            //..check for any rejections
-            if (approval.HodStatus == "REJECTED") return "REJECTED";
-            if (approval.RiskStatus == "REJECTED") return "REJECTED";
-            if (approval.ComplianceStatus == "REJECTED") return "REJECTED";
-            if (approval.BopRequired && approval.BopStatus == "REJECTED") return "REJECTED";
-            if (approval.TreasuryRequired && approval.TreasuryStatus == "REJECTED") return "REJECTED";
-            if (approval.CreditRequired && approval.CreditStatus == "REJECTED") return "REJECTED";
-            if (approval.FintechRequired && approval.FintechStatus == "REJECTED") return "REJECTED";
-
-            //..check if all required approvals are complete
-            bool hodComplete = approval.HodStatus == "APPROVED";
-            bool riskComplete = approval.RiskStatus == "APPROVED";
-            bool complianceComplete = approval.ComplianceStatus == "APPROVED";
-            bool bopComplete = !approval.BopRequired || approval.BopStatus == "APPROVED";
-            bool treasuryComplete = !approval.TreasuryRequired || approval.TreasuryStatus == "APPROVED";
-            bool creditComplete = !approval.CreditRequired || approval.CreditStatus == "APPROVED";
-            bool fintechComplete = !approval.FintechRequired || approval.FintechStatus == "APPROVED";
-
-            if (hodComplete && riskComplete && complianceComplete && bopComplete && treasuryComplete && creditComplete && fintechComplete) {
-                return "APPROVED";
-            }
-
-            return "PENDING";
         }
 
         #endregion

@@ -189,6 +189,15 @@
 	<LocaleResource Name="App.Processes.CustomerExperience">
 		<Value>Customer Experience Processes</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Processes.Initiate.Title">
+		<Value>Initiate Process Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.Initiate.Warning">
+		<Value>WARNING ! Initiating a review will unlock this process and sets it up for approval process</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Initiate.Process">
+		<Value>Initiate Comments</Value>
+	</LocaleResource>
 	<LocaleResource Name="App.Label.Home">
 		<Value>Home</Value>
 	</LocaleResource>

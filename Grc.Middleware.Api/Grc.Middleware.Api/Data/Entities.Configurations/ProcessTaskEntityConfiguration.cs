@@ -24,5 +24,6 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
             builder.HasOne(t => t.TaskOwner).WithMany(t => t.ProcessTasks).HasForeignKey(p => p.ProcessId);
             builder.HasOne(t => t.Process).WithMany(p => p.Tasks).HasForeignKey(t => t.ProcessId);
         }
+
     }
 }

@@ -15,4 +15,5 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
             builder.HasOne(pt => pt.PermissionSet).WithMany(g => g.RoleGroups).HasForeignKey(pt => pt.PermissionSetId).OnDelete(DeleteBehavior.Cascade);
         }
     }
+
 }

@@ -773,6 +773,37 @@
         }
       }
     },
+    "/grc/processes/initiate-review": {
+      "post": {
+        "tags": [
+          "OperationProcesses"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.InitiateReviewRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.InitiateReviewRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.InitiateReviewRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/grc/processes/approval-status": {
       "post": {
         "tags": [
@@ -3315,6 +3346,36 @@
         },
         "additionalProperties": false
       },
+      "Grc.Middleware.Api.Http.Requests.InitiateReviewRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "processStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "unlockReason": {
+            "type": "string",
+            "nullable": true
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "Grc.Middleware.Api.Http.Requests.ListRequest": {
         "type": "object",
         "properties": {
@@ -3668,6 +3729,10 @@
           },
           "isLockProcess": {
             "type": "boolean"
+          },
+          "unlockReason": {
+            "type": "string",
+            "nullable": true
           },
           "needsBranchReview": {
             "type": "boolean"

@@ -473,6 +473,12 @@
                 defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ExportProcessRegisterAll" }
             );
 
+            routeBuilder.MapControllerRoute(
+                name: "app-operations-processes-register-initiate-review",
+                pattern: "/operations/workflow/processes/registers/initiate-review",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "InitiateReview" }
+            );
+
             /*----------------------- Operations process groups routes*/
             routeBuilder.MapControllerRoute(
               name: "app-operations-processes-groups",
