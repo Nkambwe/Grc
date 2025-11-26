@@ -6,6 +6,9 @@ namespace Grc.ui.App.Http.Requests {
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
+        [JsonPropertyName("processName")]
+        public string ProcessName { get; set; }
+
         [JsonPropertyName("processStatus")]
         public string ProcessStatus { get; set; }
 

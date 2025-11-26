@@ -63,11 +63,13 @@ namespace Grc.Middleware.Api.Data.Containers {
         public ISystemConfigurationRepository SystemConfigurationRepository { get; set; }
         public IPermissionRepository PermissionRepository { get; set; }
         public IPermissionSetRepository PermissionSetRepository { get; set; }
+        public IMailSettingsRepository MailSettingsRepository { get; set; }
+        public IMailRecordRepository MailRecordRepository { get; set; }
 
         #endregion
 
         public UnitOfWork(IServiceLoggerFactory loggerFactory,
-                          IDbContextFactory<GrcContext> contextFactory,
+                          IDbContextFactory<GrcContext> contextFactory, 
                           IServiceProvider serviceProvider) {
             _loggerFactory = loggerFactory;
             _logger = _loggerFactory.CreateLogger("middleware_log");
@@ -123,6 +125,8 @@ namespace Grc.Middleware.Api.Data.Containers {
             NotificationRepository = new NotificationRepository(_loggerFactory, Context);
             PermissionRepository = new PermissionRepository(_loggerFactory, Context);
             PermissionSetRepository = new PermissionSetRepository(_loggerFactory, Context);
+            MailSettingsRepository = new MailSettingsRepository(_loggerFactory, Context);
+            MailRecordRepository = new MailRecordRepository(_loggerFactory, Context);
         }
 
         /// <summary>
@@ -281,6 +285,8 @@ namespace Grc.Middleware.Api.Data.Containers {
                     SystemConfigurationRepository = null;
                     PermissionRepository = null;
                     PermissionSetRepository = null;
+                    MailSettingsRepository = null;
+                    MailRecordRepository = null;
                 }
             }
             _disposed = true;

@@ -117,8 +117,13 @@ function initProcessRegisterTable() {
                     let isLocked = rowData.isLockProcess ?? false;
                     if (isLocked) {
                         return `<button class="grc-table-btn disabled" disabled>
-                            <span><i class="mdi mdi-lock-outline" aria-hidden="true"></i></span>
+                            <span><i class="mdi mdi-file-lock-outline" aria-hidden="true"></i></span>
                             <span>LOCKED</span>
+                        </button>`;
+                    } else {
+                        return `<button class="grc-table-btn grc-table-btn-open disabled" disabled>
+                            <span><i class="mdi mdi-file-lock-open-outline" aria-hidden="true"></i></span>
+                            <span>UNLOCKED</span>
                         </button>`;
                     }
                 },
@@ -280,6 +285,7 @@ function initiateProcessReview(e) {
     if (e) e.preventDefault();
     let recordData = {
         id: parseInt($('#initiateId').val()) || 0,
+        processName: $('#initiateName').val()?.trim(),
         processStatus: 'INREVIEW',
         unlockReason: $('#unlockReason').val()?.trim(),
     };
@@ -473,7 +479,6 @@ function saveProcessRecord(e) {
     if (!recordData.comments)
         errors.push("Comment is required.");
 
-    // --- stop if validation fails ---
     if (errors.length > 0) {
         highlightProcessField("#processName", !recordData.processName);
         highlightProcessField("#processDescription", !recordData.description);
@@ -644,7 +649,7 @@ function getProcessAntiForgeryToken() {
 
 }
 
-function highlightApprovalField(selector, hasError, message) {
+function highlightProcessField(selector, hasError, message) {
     const $field = $(selector);
     const $formGroup = $field.closest('.form-group, .mb-3, .col-sm-8');
 

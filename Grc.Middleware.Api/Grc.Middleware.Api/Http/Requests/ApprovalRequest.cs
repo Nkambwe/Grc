@@ -10,6 +10,9 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("processId")]
         public long ProcessId { get; set; }
 
+        [JsonPropertyName("processName")]
+        public string ProcessName { get; set; }
+
         [JsonPropertyName("hodStatus")]
         public string HodStatus { get; set; }
 

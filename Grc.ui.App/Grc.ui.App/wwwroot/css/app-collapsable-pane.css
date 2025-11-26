@@ -1,5 +1,6 @@
 ﻿.collapse-panel,
-.initiate-panel {
+.initiate-panel,
+.hold-panel {
     position: fixed;
     top: 0;
     right: -100vw;
@@ -13,13 +14,15 @@
 }
 
     .collapse-panel.active,
-    .initiate-panel.active {
+    .initiate-panel.active,
+    .hold-panel.active {
         right: 2vw;
         overflow: hidden;
     }
 
 .collapse-panel-header,
-.initiate-panel-header {
+.initiate-panel-header,
+.hold-panel-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -34,7 +37,8 @@
 }
 
 .process-overlay,
-.initiate-overlay {
+.initiate-overlay,
+.hold-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -46,18 +50,21 @@
 }
 
     .process-overlay.active,
-    .initiate-overlay.active {
+    .initiate-overlay.active,
+    .hold-overlay.active {
         display: block;
     }
 
 .collapse-panel-header h3,
-.initiate-panel-header h3 {
+.initiate-panel-header h3,
+.hold-panel-header h3 {
     margin: 0;
     font-size: 1.25rem;
 }
 
 .collapse-panel-close,
-.initiate-panel-close {
+.initiate-panel-close,
+.hold-panel-close {
     background: none;
     border: none;
     font-size: 24px;
@@ -73,13 +80,15 @@
 }
 
     .collapse-panel-close:hover,
-    .initiate-panel-close:hover {
+    .initiate-panel-close:hover,
+    .hold-panel-close:hover {
         color: var(--pearl-purple-dark-30);
         transition: all .5s ease-in-out;
     }
 
 .collapse-panel-body,
-.initiate-panel-body {
+.initiate-panel-body,
+.hold-panel-body {
     min-height: 500px;
     height: 100%;
     overflow: auto;
@@ -96,8 +105,21 @@
     color: var(--yellow-dark-extra);
 }
 
+
+.alert-info {
+    border: solid 1px var(--blue-light-medium);
+}
+
+.alert-info-msg {
+    display: flex;
+    width: 100%;
+    font-weight: 600;
+    color: var(--blue-light-strong);
+}
+
 #processForm.grc_form,
-#initiateForm.grc_form {
+#initiateForm.grc_form,
+#holdForm.grc_form {
     padding: 0;
 }
 

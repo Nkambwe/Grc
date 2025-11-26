@@ -68,6 +68,8 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IAuditRepository, AuditRepository>(); 
             services.AddScoped<IAuditTaskRepository, AuditTaskRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<IMailSettingsRepository, MailSettingsRepository>();
+            services.AddScoped<IMailRecordRepository, MailRecordRepository>();
         }
 
         /// <summary>
@@ -124,7 +126,8 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IAuditService, AuditService>();
             services.AddScoped<IAuditTaskService, AuditTaskService>();
             services.AddScoped<ISystemConfigurationService, SystemConfigurationService>();
-            
+            services.AddScoped<IMailService, MailService>();
+
             //allow html helpers to acces current action context
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         }

@@ -2,21 +2,21 @@
 
 namespace Grc.Middleware.Api.Enums {
     public enum ApprovalStage {
-        [Description("NONE")]
+        [Description("Unspecified")]
         NONE = 0,
-        [Description("HEADOFDEPT")]
+        [Description("Head Of Department Operations")]
         HOD = 1,
-        [Description("RISK")]
+        [Description("Head Of Department Risk")]
         RISK = 2,
-        [Description("COMPLIANCE")]
+        [Description("Head Of Department Compliance")]
         COMP = 3,
-        [Description("BRANCHOPERATIONSMGR")]
+        [Description("Branch Operations Manager")]
         BOM = 4,
-        [Description("TREASURY")]
+        [Description("Head Of Department Treasury")]
         TREA = 5,
-        [Description("CREDIT")]
+        [Description("Head Of Department Credit")]
         CRT = 6,
-        [Description("FINTECH")]
+        [Description("Head Of Department Fintech")]
         FIN = 7
     }
 }

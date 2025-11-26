@@ -94,6 +94,7 @@ namespace Grc.ui.App.Services
 
         #region Process Review
         Task<GrcResponse<ServiceResponse>> InitiateProcessReviewAsync(ProcessReviewModel request, long userId, string ipAddress);
+        Task<GrcResponse<ServiceResponse>> HoldProcessReviewAsync(ProcessHoldModel request, long userId, string ipAddress);
         #endregion
     }
 

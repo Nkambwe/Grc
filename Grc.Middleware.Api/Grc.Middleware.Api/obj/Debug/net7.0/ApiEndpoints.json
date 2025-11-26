@@ -501,6 +501,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
+    "Method": "HoldProcessReview",
+    "RelativePath": "grc/processes/hold-review",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.HoldProcessRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.OperationProcessesController",
     "Method": "InitiateReview",
     "RelativePath": "grc/processes/initiate-review",
     "HttpMethod": "POST",

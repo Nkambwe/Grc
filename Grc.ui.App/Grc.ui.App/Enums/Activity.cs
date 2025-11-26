@@ -236,7 +236,8 @@ namespace Grc.ui.App.Enums {
         PROCESS_APPROVAL_UPDATE = 123,
         [Description("Unlock process for review")]
         PROCESS_REVIEW = 124,
-
+        [Description("Hold process review")]
+        PROCESS_HOLD = 125,
 
     }
 }

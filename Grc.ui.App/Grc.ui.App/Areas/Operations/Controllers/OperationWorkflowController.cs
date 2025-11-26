@@ -1661,6 +1661,39 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             }
         }
 
+        [HttpPost]
+        [LogActivityResult("Hold Process Review", "User put process review on hold", ActivityTypeDefaults.PROCESSES_INITIATE_REVIEW, "OperationProcess")]
+        public async Task<IActionResult> HoldApproval([FromBody] ProcessHoldModel request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                if (request == null) {
+                    return Ok(new { success = false, message = "Invalid user data" });
+                }
+
+                var result = await _processService.HoldProcessReviewAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update process record" });
+
+                var data = result.Data;
+                return Ok(new {
+                    success = data.Status,
+                    message = data.Message,
+                    data = new {
+                        status = data.Status,
+                    }
+                });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error holding process record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
         #endregion
 
     }

@@ -1585,6 +1585,7 @@ namespace Grc.ui.App.Services {
                 var request = new GrcProcessApprovalRequest {
                     Id = approvalModel.Id,
                     ProcessId = approvalModel.ProcessId,
+                    ProcessName = approvalModel.ProcessName,
                     HodStatus = approvalModel.HodStatus,
                     HodComment = approvalModel.HodComment,
                     RiskStatus = approvalModel.RiskStatus,
@@ -1665,6 +1666,7 @@ namespace Grc.ui.App.Services {
                 //..build request object
                 var request = new ProcessReviewRequest {
                     Id = reviewModel.Id,
+                    ProcessName = reviewModel.ProcessName,
                     ProcessStatus = reviewModel.ProcessStatus,
                     UnlockReason = reviewModel.UnlockReason,
                     UserId = userId,
@@ -1696,6 +1698,64 @@ namespace Grc.ui.App.Services {
             }
             catch (GRCException ex)
             {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> HoldProcessReviewAsync(ProcessHoldModel holdModel, long userId, string ipAddress) {
+            try {
+
+                if (holdModel == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Hold Process record cannot be null",
+                        "Invalid Hold record"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..build request object
+                var request = new ProcessHoldRequest {
+                    Id = holdModel.Id,
+                    ProcessId = holdModel.ProcessId,
+                    ProcessName = holdModel.ProcessName,
+                    ProcessStatus = holdModel.ProcessStatus,
+                    HoldReason = holdModel.HoldReason,
+                    UserId = userId,
+                    IpAddress = ipAddress,
+                    Action = Activity.PROCESS_HOLD.GetDescription(),
+                };
+
+                //..map request
+                Logger.LogActivity($"HOLD PROCESS REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/hold-review";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<ProcessHoldRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "PROCESSES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
                 await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);

@@ -88,35 +88,6 @@ function initProcessApprovalListTable() {
                 formatter: (cell) => `<span class="clickable-title" onclick="viewApproval(${cell.getRow().getData().id})">${cell.getValue()}</span>`
             },
             {
-                title: "REQUESTED ON",
-                formatter: function (cell) {
-                    const value = cell.getRow().getData().requestDate;
-
-                    if (!value)
-                        return "";
-
-                    const date = new Date(value);
-                    const day = String(date.getDate()).padStart(2, "0");
-                    const month = String(date.getMonth() + 1).padStart(2, "0");
-                    const year = date.getFullYear();
-                    const formattedDate = `${day}-${month}-${year}`;
-
-                    return `
-                            <div style="
-                                display:flex;
-                                align-items:center;
-                                justify-content:center;
-                                font-weight:bold;">
-                                <span>${formattedDate}</span>
-                            </div>`;
-                },
-                width: 200,
-                hozAlign: "center",
-                headerHozAlign: "center",
-                frozen: true, 
-                headerSort: true
-            },
-            {
                 title: "HOD STATUS",
                 field: "hodStatus",
                 formatter: function (cell) {
@@ -432,7 +403,7 @@ function initProcessApprovalListTable() {
                 title: "HOLD PROCESS",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                    return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="holdApproval(${rowData.processId})">
+                    return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="viewHold(${rowData.id})">
                         <span><i class="mdi mdi-cog-pause-outline" aria-hidden="true"></i></span>
                         <span>ON HOLD</span>
                     </button>`;
@@ -489,10 +460,6 @@ function initProcessApprovalsSearch() {
             }
         }, 300);
     });
-}
-
-function holdApproval(id) {
-    alert("Put this process on hold " + id);
 }
 
 function findApplyRecord(id) {
@@ -649,6 +616,7 @@ function applyApproval(e) {
     let recordData = {
         id: parseInt($('#approvalId').val()) || 0,
         processId: parseInt($('#processId').val()) || 0,
+        processName: $('#processName').val()?.trim() || "",
         hodStatus: $('#hodStatus').val()?.trim() || "",
         hodComment: $('#hodComment').val()?.trim() || "",
         riskStatus: $('#riskStatus').val()?.trim() || "",
@@ -858,6 +826,139 @@ function getApprovalAntiForgeryToken() {
 function closeApprovalPanel() {
     $('.process-overlay').removeClass('active');
     $('#collapsePanel').removeClass('active');
+}
+
+function viewHold(id) {
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving process record...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    findApplyRecord(id)
+        .then(record => {
+            Swal.close();
+            if (record) {
+                openHoldEditor('Hold Process', record);
+            } else {
+                Swal.fire({ title: 'NOT FOUND', text: 'Hold record found' });
+            }
+        })
+        .catch(() => {
+            Swal.close();
+            Swal.fire({ title: 'Error', text: 'Failed to load process details.' });
+        });
+}
+
+function openHoldEditor(title, approval) {
+
+    console.log("Approval ID >> " + approval?.id);
+    console.log("Process ID >> " + approval?.processId);
+    $("#holdId").val(approval?.id || 0);
+    $("#holdProcessId").val(approval?.processId || 0);
+    $("#holdName").val(approval.processName);
+    $("#holdDescription").val(approval?.processDescription || "");
+    
+    $('#holdPanelTitle').text(title);
+    $('.hold-overlay').addClass('active');
+    $('#holdePanel').addClass('active');
+}
+
+function holdProcessReview(e) {
+    e.preventDefault();
+
+    let recordData = {
+        id: parseInt($('#holdId').val()) || 0,
+        processId: parseInt($('#holdProcessId').val()) || 0,
+        processName: $('#holdName').val()?.trim() || "",
+        processStatus: "OnHold",
+        holdReason: $('#holdReason').val()?.trim() || ""
+    };
+
+    //..check the data structure
+    console.log("Record data before validation:", recordData);
+
+    let errors = [];
+    if (!recordData.holdReason)
+        errors.push("Reason for holding thie process is required.");
+
+    if (errors.length > 0) {
+        highlightApprovalField("#holdReason", !recordData.holdReason);
+        Swal.fire({
+            title: "Record Validation",
+            html: `<div style="text-align:left;">${errors.join("<br>")}</div>`,
+        });
+        return;
+    }
+
+    //..save process hold
+    saveProcessHold(recordData);
+}
+
+function saveProcessHold(data) {
+    const url = "/operations/workflow/processes/approval-hold";
+
+    Swal.fire({
+        title: "Hold process approvals...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    //..debugging
+    console.log("Sending data to server:", JSON.stringify(data));
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getApprovalAntiForgeryToken()
+        },
+        success: function (res) {
+            //..lose loader and show success message
+            Swal.close();
+            if (!res.success) {
+                //..error from the server
+                Swal.fire({
+                    title: "Invalid record",
+                    html: res.message.replaceAll("; ", "<br>")
+                });
+                return;
+            }
+
+            if (processApprovalsTable) {
+                processApprovalsTable.replaceData();
+            }
+
+            closeHoldPanel();
+        },
+        error: function (xhr) {
+            Swal.close();
+
+            let errorMessage = "Unexpected error occurred.";
+            try {
+                let response = JSON.parse(xhr.responseText);
+                if (response.message) errorMessage = response.message;
+            } catch (e) { }
+
+            Swal.fire({
+                title: "Hold Process Failed",
+                text: errorMessage
+            });
+        }
+    });
+}
+
+function closeHoldPanel() {
+    $('.hold-overlay').removeClass('active');
+    $('#holdePanel').removeClass('active');
 }
 
 function toggleSection(header) {

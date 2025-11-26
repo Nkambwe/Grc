@@ -175,7 +175,7 @@
         public const string APPROVAL_RETRIEVE_RECORD = "Operations.Processes.Approvals.Record";
         public const string PROCESSES_UPDATE_APPROVAL = "Operations.Processes.Approvals.Update";
         public const string PROCESSES_INITIATE_REVIEW = "Operations.Processes.Initiate.Review";
-
+        public const string PROCESSES_HOLD_REVIEW = "Operations.Processes.Hold.Review";
         #endregion
 
     }

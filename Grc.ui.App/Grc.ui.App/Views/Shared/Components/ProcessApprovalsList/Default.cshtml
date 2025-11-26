@@ -473,6 +473,94 @@
 
 </div>
 
+<!-- Overlay -->
+<div class="hold-overlay" onclick="closeHoldPanel()">
+
+    <!-- Slide Panel -->
+    <div id="holdePanel" class="hold-panel" onclick="event.stopPropagation()">
+
+        <div class="hold-panel-header">
+            <h3 id="holdPanelTitle">@Html.Raw(ILocalize.GetLocalizedLabel("App.Processes.Hold.Title"))</h3>
+            <button class="hold-panel-close" onclick="closeHoldPanel()">&times;</button>
+        </div>
+
+        <div class="hold-panel-body">
+
+            <form id="holdForm" class="grc-form row g-3">
+                <input type="hidden" id="holdId">
+                <input type="hidden" id="holdProcessId">
+
+                <div class="alert alert-info">
+                    <span class="alert-info-msg">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Processes.Hold.Warning"))
+                    </span>
+                </div>
+
+                <div class="col-12">
+
+                    <div class="row">
+
+                        <div class="col-12">
+
+                            <div class="row mb-3">
+                                <label for="holdName" class="col-sm-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Name"))
+                                </label>
+                                <div class="col-sm-12">
+                                    <input type="text" id="holdName" name="holdName" class="form-control" readonly>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-12">
+
+                            <div class="row mt-2">
+                                <label for="holdDescription" class="col-sm-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Description"))
+                                </label>
+                                <div class="col-sm-12">
+                                    <textarea id="holdDescription" name="holdDescription" class="form-control" rows="3" readonly></textarea>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-12">
+                            <div class="row mt-2">
+                                <label for="holdReason" class="col-sm-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Hold.Reason"))
+                                </label>
+                                <div class="col-sm-12">
+                                    <textarea id="holdReason" name="holdReason" class="form-control" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Button section -->
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="holdProcessReview(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                        </div>
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeHoldPanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                        </div>
+                        <div class="col-sm-10"></div>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
 @{
     Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
     Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-process-approval-list.js");

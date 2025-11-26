@@ -47,5 +47,6 @@ namespace Grc.Middleware.Api.Services.Operations {
         Task<PagedResult<OperationProcess>> PageNewProcessesAsync(int page, int size, bool includeDeleted, params Expression<Func<OperationProcess, object>>[] includes);
         Task<PagedResult<OperationProcess>> PageReviewProcessesAsync(int page, int size, bool includeDeleted, params Expression<Func<OperationProcess, object>>[] includes);
         Task<bool> InitiateReviewAsync(InitiateRequest request);
+        Task<bool> HoldProcessReviewAsync(HoldRequest request);
     }
 }

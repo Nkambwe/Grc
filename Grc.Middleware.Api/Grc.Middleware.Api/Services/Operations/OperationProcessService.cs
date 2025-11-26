@@ -1017,6 +1017,54 @@ namespace Grc.Middleware.Api.Services.Operations {
             }
         }
 
+        public async Task<bool> HoldProcessReviewAsync(HoldRequest request) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Hold Process review", "INFO");
+            try {
+                var approval = await uow.ProcessApprovalRepository.GetAsync(p => p.Id == request.Id, false, p => p.Process );
+                if (approval != null) {
+                    approval.HeadOfDepartmentStatus = (request.ProcessStatus ?? string.Empty).Trim();
+                    approval.HeadOfDepartmentStart = DateTime.Now;
+                    approval.HeadOfDepartmentEnd = DateTime.Now;
+                    approval.HeadOfDepartmentComment = (request.HoldReason ?? string.Empty).Trim();
+                    approval.ComplianceStatus = (request.ProcessStatus ?? string.Empty).Trim();
+                    approval.ComplianceStart = DateTime.Now;
+                    approval.ComplianceEnd = DateTime.Now;
+                    approval.ComplianceComment = (request.HoldReason ?? string.Empty).Trim();
+                    approval.RiskStatus = (request.ProcessStatus ?? string.Empty).Trim();
+                    approval.RiskStart = DateTime.Now;
+                    approval.RiskEnd = DateTime.Now;
+                    approval.RiskComment = (request.HoldReason ?? string.Empty).Trim();
+                    approval.IsDeleted = false;
+                    approval.LastModifiedOn = request.ModifiedOn;
+                    approval.LastModifiedBy = (request.ModifiedBy ?? string.Empty).Trim();
+
+                    if(approval.Process != null) {
+                        approval.Process.ProcessStatus = (request.HoldReason ?? string.Empty).Trim();
+                        approval.Process.ReasonOnhold = (request.HoldReason ?? string.Empty).Trim();
+                        approval.Process.LastModifiedOn = request.ModifiedOn;
+                        approval.Process.LastModifiedBy = (request.ModifiedBy ?? string.Empty).Trim();
+                    }
+
+                    //..check entity state
+                    _ = await uow.ProcessApprovalRepository.UpdateAsync(approval, true);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(approval).State;
+                    Logger.LogActivity($"Approval Process state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to update Operation Process record: {ex.Message}", "ERROR");
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+        }
+
         private SystemError HandleError(IUnitOfWork uow, Exception ex)
         {
             var innerEx = ex.InnerException;

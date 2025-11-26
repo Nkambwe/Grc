@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Operations.Processes;
 using Grc.Middleware.Api.Data.Entities.System;
@@ -205,7 +206,7 @@ namespace Grc.Middleware.Api.Services {
             var stage = ApprovalStage.NONE;
 
             try {
-                var approval = await uow.ProcessApprovalRepository.GetAsync(a => a.Id == request.Id);
+                var approval = await uow.ProcessApprovalRepository.GetAsync(a => a.Id == request.Id, false, a => a.Process);
                 if (approval == null) {
                     Logger.LogActivity($"Record not found: ID={request.Id}", "DEBUG");
                     return (false, stage);
@@ -236,12 +237,11 @@ namespace Grc.Middleware.Api.Services {
                         approval.RiskStatus = request.RiskStatus;
                         approval.RiskComment = request.RiskComment;
                         if (!approval.RiskEnd.HasValue) {
-                            stage = ApprovalStage.RISK;
                             approval.RiskEnd = DateTime.Now;
-                            approval.ComplianceStart = DateTime.Now;
-                            approval.ComplianceStatus = "PENDING";
                         }
-                            
+                        stage = ApprovalStage.RISK;
+                        approval.ComplianceStart = DateTime.Now;
+                        approval.ComplianceStatus = "PENDING";
                     }
                 }
 
@@ -250,17 +250,21 @@ namespace Grc.Middleware.Api.Services {
                     if (request.ComplianceStatus == "APPROVED" || request.ComplianceStatus == "REJECTED") {
                         approval.ComplianceStatus = request.ComplianceStatus;
                         approval.ComplianceComment = request.ComplianceComment;
-
-                        if (!approval.ComplianceEnd.HasValue)
-                        {
+                        stage = ApprovalStage.COMP;
+                        if (!approval.ComplianceEnd.HasValue) {
                             approval.ComplianceEnd = DateTime.Now;
-                            stage = ApprovalStage.COMP;
-                            if (request.BopRequired) {
-                                approval.BranchOperationsStatusStart = DateTime.Now;
-                                approval.BranchOperationsStatus = "PENDING";
-                            }
                         }
-                            
+
+                        //..approval stages completed, set process to uptodate stage
+                        if (!request.BopRequired && !request.TreasuryRequired && !request.CreditRequired && !request.FintechRequired) {
+                            approval.Process.ProcessStatus = "UPTODATE";
+                            approval.Process.EffectiveDate = DateTime.Now;
+                            approval.Process.LastUpdated = DateTime.Now;
+                        } else if (request.BopRequired) {
+                            approval.BranchOperationsStatusStart = DateTime.Now;
+                            approval.BranchOperationsStatus = "PENDING";
+                        }
+
                     }
                 }
 
@@ -272,11 +276,17 @@ namespace Grc.Middleware.Api.Services {
                         approval.BranchManagerComment = request.BopComment;
                         stage = ApprovalStage.BOM;
                         if (!approval.BranchOperationsStatusEnd.HasValue) {
-                            approval.BranchOperationsStatusEnd = DateTime.Now;
-                            if (request.TreasuryRequired) {
-                                approval.TreasuryStart = DateTime.Now;
-                                approval.TreasuryStatus = "PENDING";
-                            }
+                            approval.BranchOperationsStatusEnd = DateTime.Now;  
+                        }
+
+                        //..approval stages completed, set process to uptodate stage
+                        if (!request.TreasuryRequired && !request.CreditRequired && !request.FintechRequired) {
+                            approval.Process.ProcessStatus = "UPTODATE";
+                            approval.Process.EffectiveDate = DateTime.Now;
+                            approval.Process.LastUpdated = DateTime.Now;
+                        } else if (request.TreasuryRequired) {
+                            approval.TreasuryStart = DateTime.Now;
+                            approval.TreasuryStatus = "PENDING";
                         }
                     }
                 } else {
@@ -297,7 +307,16 @@ namespace Grc.Middleware.Api.Services {
                         approval.TreasuryStatus = request.TreasuryStatus;
                         approval.TreasuryComment = request.TreasuryComment;
                         stage = ApprovalStage.TREA;
-                        if (request.CreditRequired) {
+                        if (!approval.TreasuryEnd.HasValue) {
+                            approval.TreasuryEnd = DateTime.Now;
+                        }
+
+                        //..approval stages completed, set process to uptodate stage
+                        if (!request.CreditRequired && !request.FintechRequired) {
+                            approval.Process.ProcessStatus = "UPTODATE";
+                            approval.Process.EffectiveDate = DateTime.Now;
+                            approval.Process.LastUpdated = DateTime.Now;
+                        } else if (request.CreditRequired) {
                             approval.CreditStart = DateTime.Now;
                             approval.CreditStatus = "PENDING";
                         }
@@ -316,13 +335,22 @@ namespace Grc.Middleware.Api.Services {
                 //..check if Treasury is complete or not required
                 bool treasuryComplete = !request.TreasuryRequired || approval.TreasuryStatus == "APPROVED";
 
-                // Update Credit section - only if required and all previous are approved
+                //..update Credit section if required and all previous are approved
                 if (request.CreditRequired && approval.ComplianceStatus == "APPROVED" && bopComplete && treasuryComplete && !string.IsNullOrEmpty(request.CreditStatus)) {
                     if (request.CreditStatus == "APPROVED" || request.CreditStatus == "REJECTED") {
                         approval.CreditStatus = request.CreditStatus;
                         approval.CreditComment = request.CreditComment;
                         stage = ApprovalStage.CRT;
-                        if (request.FintechRequired) {
+                        if (!approval.CreditEnd.HasValue) {
+                            approval.CreditEnd = DateTime.Now;
+                        }
+
+                        //..approval stages completed, set process to uptodate stage
+                        if (!request.FintechRequired) {
+                            approval.Process.ProcessStatus = "UPTODATE";
+                            approval.Process.EffectiveDate = DateTime.Now;
+                            approval.Process.LastUpdated = DateTime.Now;
+                        } else if (request.FintechRequired) {
                             approval.FintechStart = DateTime.Now;
                             approval.FintechStatus = "PENDING";
                         }
@@ -345,8 +373,11 @@ namespace Grc.Middleware.Api.Services {
                 if (request.FintechRequired && approval.ComplianceStatus == "APPROVED" && bopComplete && treasuryComplete && creditComplete && !string.IsNullOrEmpty(request.FintechStatus)) {
                     if (request.FintechStatus == "APPROVED" || request.FintechStatus == "REJECTED") {
                         approval.FintechStatus = request.FintechStatus;
-                        approval.FintechComment = request.FintechComment;
                         approval.FintechEnd = DateTime.Now;
+                        approval.FintechComment = request.FintechComment;
+                        approval.Process.ProcessStatus = "UPTODATE";
+                        approval.Process.EffectiveDate = DateTime.Now;
+                        approval.Process.LastUpdated = DateTime.Now;
                     }
                 }
 

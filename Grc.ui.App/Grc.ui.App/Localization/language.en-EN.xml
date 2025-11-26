@@ -198,6 +198,15 @@
 	<LocaleResource Name="Component.Table.Initiate.Process">
 		<Value>Initiate Comments</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Processes.Hold.Title">
+		<Value>Hold Process Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Processes.Hold.Warning">
+		<Value>Holding a process will change the status to 'HOLD' and remove it from active processes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Hold.Reason">
+		<Value>Reason for Putting Process on hold</Value>
+	</LocaleResource>
 	<LocaleResource Name="App.Label.Home">
 		<Value>Home</Value>
 	</LocaleResource>

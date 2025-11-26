@@ -58,6 +58,10 @@
     padding:5px;
 }
 
+.grc-table-btn-open {
+    color: var(--pearl-orange)!important;
+}
+
 .grc-btn-default:hover {
     color: var(--pearl-purple-dark-light-extra);
     transition: all .5s ease-in-out;
