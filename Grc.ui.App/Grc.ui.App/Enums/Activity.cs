@@ -238,6 +238,8 @@ namespace Grc.ui.App.Enums {
         PROCESS_REVIEW = 124,
         [Description("Hold process review")]
         PROCESS_HOLD = 125,
+        [Description("Request process approval")]
+        PROCESSES_REQUEST_APPROVAL = 126
 
     }
 }

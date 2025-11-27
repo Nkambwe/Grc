@@ -1520,7 +1520,7 @@ namespace Grc.Middleware.Api.Controllers {
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
                 var pageResult = await _processService.PageNewProcessesAsync(request.PageIndex, 
-                    request.PageSize, true, p => p.Unit, p => p.Owner, p => p.Responsible, p => p.ProcessType);
+                    request.PageSize, false, p => p.Unit, p => p.Owner, p => p.Responsible, p => p.ProcessType);
                 if (pageResult.Entities == null || !pageResult.Entities.Any())
                 {
                     var error = new ResponseError(
@@ -1601,6 +1601,127 @@ namespace Grc.Middleware.Api.Controllers {
             {
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<PagedResponse<ProcessRegisterResponse>>(error));
+            }
+        }
+
+        [HttpPost("processes/new-approval-retrieve")]
+        public async Task<IActionResult> GetNewProcessApproval([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Get new process approval by ID", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ProcessApprovalResponse>(error));
+                }
+
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request new process approval ID is required",
+                        "Invalid request process approval ID"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ProcessApprovalResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var process = await _processService.GetAsync(p => p.Id == request.RecordId, false);
+                if (process == null) {
+                    var error = new ResponseError(
+                        ResponseCodes.FAILED,
+                        "Operations process not found",
+                        "No operations process matched the provided ID"
+                    );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ProcessApprovalResponse>(error));
+                }
+
+                var approval = await _approvalService.GetAsync(a => a.ProcessId == request.RecordId, false);
+                ProcessApprovalResponse approvalRecord;
+                if (approval == null) {
+                    approvalRecord = new ProcessApprovalResponse {
+                        Id = 0,
+                        ProcessId = process.Id,
+                        RequestDate = DateTime.Now,
+                        ProcessName = process.ProcessName ?? string.Empty,
+                        ProcessDescription = process.Description ?? string.Empty,
+                        HeadOfDepartmentStart = DateTime.Now,
+                        HeadOfDepartmentEnd = null,
+                        HeadOfDepartmentStatus = null,
+                        HeadOfDepartmentComment = "Approval record not found",
+                        RiskStart = null,
+                        RiskEnd = null,
+                        RiskStatus = "UNCLASSIFIED",
+                        RiskComment = "Approval record not found",
+                        ComplianceStart = null,
+                        ComplianceEnd = null,
+                        ComplianceStatus = "UNCLASSIFIED",
+                        ComplianceComment = "Approval record not found",
+                        BranchOperationsStatusStart = null,
+                        BranchOperationsStatusEnd = null,
+                        BranchOperationsStatus = "UNCLASSIFIED",
+                        BranchManagerComment = "Approval record not found",
+                        CreditStart = null,
+                        CreditEnd = null,
+                        CreditStatus = "UNCLASSIFIED",
+                        CreditComment = "Approval record not found",
+                        TreasuryStart = null,
+                        TreasuryEnd = null,
+                        TreasuryStatus = "UNCLASSIFIED",
+                        TreasuryComment = "Approval record not found",
+                        FintechStart = null,
+                        FintechEnd = null,
+                        FintechStatus = "UNCLASSIFIED",
+                        FintechComment = "Approval record not found",
+                        IsDeleted = false
+                    };
+                } else {
+                    approvalRecord = new ProcessApprovalResponse {
+                        Id = approval.Id,
+                        ProcessId = process.Id,
+                        RequestDate = approval.RequestDate,
+                        ProcessName = process.ProcessName ?? string.Empty,
+                        ProcessDescription = process.Description ?? string.Empty,
+                        HeadOfDepartmentStart = approval.HeadOfDepartmentStart,
+                        HeadOfDepartmentEnd = approval.HeadOfDepartmentEnd,
+                        HeadOfDepartmentStatus = approval.HeadOfDepartmentStatus ?? string.Empty,
+                        HeadOfDepartmentComment = approval.HeadOfDepartmentComment ?? string.Empty,
+                        RiskStart = approval.RiskStart,
+                        RiskEnd = approval.RiskEnd,
+                        RiskStatus = approval.RiskStatus ?? string.Empty,
+                        RiskComment = approval.RiskComment ?? string.Empty,
+                        ComplianceStart = approval.ComplianceStart,
+                        ComplianceEnd = approval.ComplianceEnd,
+                        ComplianceStatus = approval.ComplianceStatus ?? string.Empty,
+                        ComplianceComment = approval.ComplianceComment ?? string.Empty,
+                        BranchOperationsStatusStart = approval.BranchOperationsStatusStart,
+                        BranchOperationsStatusEnd = approval.BranchOperationsStatusEnd,
+                        BranchOperationsStatus = approval.BranchOperationsStatus ?? string.Empty,
+                        BranchManagerComment = approval.BranchManagerComment ?? string.Empty,
+                        CreditStart = approval.CreditStart,
+                        CreditEnd = approval.CreditEnd,
+                        CreditStatus = approval.CreditStatus ?? string.Empty,
+                        CreditComment = approval.CreditComment ?? string.Empty,
+                        TreasuryStart = approval.TreasuryStart,
+                        TreasuryEnd = approval.TreasuryEnd,
+                        TreasuryStatus = approval.TreasuryStatus ?? string.Empty,
+                        TreasuryComment = approval.TreasuryComment ?? string.Empty,
+                        FintechStart = approval.FintechStart,
+                        FintechEnd = approval.FintechEnd,
+                        FintechStatus = approval.FintechStatus ?? string.Empty,
+                        FintechComment = approval.FintechComment ?? string.Empty,
+                        IsDeleted = approval.IsDeleted
+                    };
+                }
+
+                return Ok(new GrcResponse<ProcessApprovalResponse>(approvalRecord));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<ProcessTATResponse>(error));
             }
         }
 
@@ -1873,6 +1994,84 @@ namespace Grc.Middleware.Api.Controllers {
                 Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
                 return Ok(new GrcResponse<GeneralResponse>(response));
             } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("processes/approval-request")]
+        public async Task<IActionResult> RequestProcessApproval([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
+
+                //..check if record exists
+                var response = new GeneralResponse();
+                if (!await _processService.ExistsAsync(r => r.Id == request.RecordId && !r.IsDeleted)) {
+                    response.Status = false;
+                    response.StatusCode = (int)ResponseCodes.NOTFOUND;
+                    response.Message = $"Process Not Found!! No Process record found";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    return Ok(new GrcResponse<GeneralResponse>(response));
+                }
+
+                //..get username
+                string requestedBy;
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser != null) {
+                    requestedBy = currentUser.Username;
+                } else {
+                    requestedBy = $"{request.UserId}";
+                }
+
+                //..request process approval
+                var (status, processName, processId) = await _processService.RequestApprovalAsync(request.RecordId, requestedBy);
+                if (!status) {
+                    var error = new ResponseError(
+                        ResponseCodes.FAILED,
+                        "Failed to submit process approval",
+                        "An error occurred! could not submit process approval");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..send mail to HOD
+                string msg = "Processes sent for approval";
+                var mailSettings = await _mailService.GetMailSettingsAsync();
+                if (mailSettings is null) {
+                    msg += ". Mail settings not found. No mail sent";
+                } else {
+
+                    //..get Head of operations details
+                    var hod = await _officersService.GetAsync(o => o.ContactPosition == "Head of Operation & Services");
+                    if (hod is null) {
+                        msg += ". Head Of Operations Contacts not found. Mail not sent";
+                    } else {
+                        var hodName = (hod.ContactEmail ?? string.Empty).Trim();
+                        var hodEmail = (hod.ContactEmail ?? string.Empty).Trim();
+                        if (!string.IsNullOrEmpty(hodName) && !string.IsNullOrEmpty(hodEmail)) {
+                            var (sent, subject, mail) = MailHandler.GenerateMail(Logger, mailSettings.MailSender, hodName, hodEmail, mailSettings.CopyTo, processName, mailSettings.NetworkPort, mailSettings.SystemPassword);
+                            if (sent) {
+                                await _mailService.InsertMailAsync(new MailRecord() {
+                                    SentToEmail = hodEmail,
+                                    CCMail = mailSettings.CopyTo,
+                                    Subject = subject,
+                                    Mail = mail,
+                                    ApprovalId = request.RecordId,
+                                    IsDeleted = false,
+                                    CreatedBy = "SYSTEM",
+                                    CreatedOn = DateTime.Now,
+                                    LastModifiedBy = "SYSTEM",
+                                    LastModifiedOn = DateTime.Now,
+                                });
+                            }
+                        } else {
+                            msg += ". Head Of Operations Contacts not found. Mail not sent";
+                        }
+                    }
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse() { Status = status, Message=msg }));
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error submitting process approval by user {request.UserId}: {ex.Message}", "ERROR");
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<GeneralResponse>(error));
             }

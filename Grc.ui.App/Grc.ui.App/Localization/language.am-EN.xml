@@ -1193,6 +1193,15 @@
 	<LocaleResource Name="Operations.Menu.Configurations.Teams">
 		<Value>Teams</Value>
 	</LocaleResource>
+	<LocaleResource Name="Operations.Menu.Configurations.Departments">
+		<Value>Departments</Value>
+	</LocaleResource>
+	<LocaleResource Name="Operations.Menu.Configurations.Units">
+		<Value>Department Units</Value>
+	</LocaleResource>
+	<LocaleResource Name="Operations.Menu.Configurations.Users">
+		<Value>Users</Value>
+	</LocaleResource>
 	<LocaleResource Name="Operations.Menu.Configurations.Guests">
 		<Value>Guests</Value>
 	</LocaleResource>

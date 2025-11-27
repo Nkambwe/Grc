@@ -222,20 +222,41 @@
                             <ul id="access-menu" class="sidebar-submenu">
 
                                 <li class="sidebar-item with-submenu">
-                                    <a asp-controller="OperationsConfiguration" asp-action="Teams" asp-area="Operations">
+                                    <a asp-controller="OperationsConfiguration" asp-action="Departments" asp-area="Operations">
                                         <span class="menu-icon">
-                                            <i class="material-icons">groups_2</i>
+                                            <i class="mdi mdi-brightness-1"></i>
                                         </span>
                                         <span class="sidebar-text">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Configurations.Teams"))
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Configurations.Departments"))
                                         </span>
                                     </a>
                                 </li>
 
                                 <li class="sidebar-item with-submenu">
+                                    <a asp-controller="OperationsConfiguration" asp-action="Teams" asp-area="Operations">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-dots-hexagon"></i>
+                                        </span>
+                                        <span class="sidebar-text">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Configurations.Units"))
+                                        </span>
+                                    </a>
+                                </li>
+
+                                <li class="sidebar-item with-submenu">
+                                    <a asp-controller="OperationsConfiguration" asp-action="Users" asp-area="Operations">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-account-box-multiple-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Configurations.Users"))
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item with-submenu">
                                     <a asp-controller="OperationsConfiguration" asp-action="Guests" asp-area="Operations">
                                         <span class="menu-icon">
-                                            <i class="material-icons-outlined">group</i>
+                                            <i class="mdi mdi-account-switch-outline"></i>
                                         </span>
                                         <span class="sidebar-text">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Configurations.Guests"))
@@ -243,21 +264,10 @@
                                     </a>
                                 </li>
 
-                                <li class="sidebar-item with-submenu">
-                                    <a asp-controller="OperationsConfiguration" asp-action="Delegation" asp-area="Operations">
-                                        <span class="menu-icon">
-                                            <i class="mdi mdi-account-switch-outline"></i>
-                                        </span>
-                                        <span class="sidebar-text">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Configurations.Delegation"))
-                                        </span>
-                                    </a>
-                                </li>
-
                             </ul>
                         </li>
 
-                        <li class="sidebar-item with-submenu">
+                      @*   <li class="sidebar-item with-submenu">
                             <a href="" class="toggle-submenu" data-id="settings-menu">
                                 <span class="menu-icon">
                                     <i class="mif-equalizer"></i>
@@ -272,7 +282,7 @@
                             <ul id="settings-menu" class="sidebar-submenu">
 
                                 <li class="sidebar-item with-submenu">
-                                    <a asp-controller="OperationsConfiguration" asp-action="General" asp-area="Operations">
+                                    <a asp-controller="OperationsConfiguration" class="disabled" disabled asp-action="General" asp-area="Operations">
                                         <span class="menu-icon">
                                             <i class="mdi mdi-shuffle-disabled"></i>
                                         </span>
@@ -281,9 +291,9 @@
                                         </span>
                                     </a>
                                 </li>
-
+                                 
                                 <li class="sidebar-item with-submenu">
-                                    <a asp-controller="OperationsConfiguration" asp-action="Additional" asp-area="Operations">
+                                    <a asp-controller="OperationsConfiguration" class="disabled" disabled asp-action="Additional" asp-area="Operations">
                                         <span class="menu-icon">
                                             <i class="mdi mdi-shuffle-variant"></i>
                                         </span>
@@ -293,7 +303,7 @@
                                     </a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> *@
 
                     </ul>
 

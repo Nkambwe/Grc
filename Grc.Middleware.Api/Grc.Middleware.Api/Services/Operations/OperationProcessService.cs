@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Operations.Processes;
 using Grc.Middleware.Api.Data.Entities.System;
@@ -663,14 +664,14 @@ namespace Grc.Middleware.Api.Services.Operations {
                 });
                 Logger.LogActivity($"Operation Process data: {processJson}", "DEBUG");
 
-                var responsebilitytask = await uow.OperationProcessRepository.GetAsync(t => t.Id == request.RecordId);
-                if (responsebilitytask != null)
+                var process = await uow.OperationProcessRepository.GetAsync(t => t.Id == request.RecordId);
+                if (process != null)
                 {
                     //..mark as delete this OperationProcess
-                    _ = await uow.OperationProcessRepository.DeleteAsync(responsebilitytask, request.markAsDeleted);
+                    _ = await uow.OperationProcessRepository.DeleteAsync(process, request.markAsDeleted);
 
                     //..check entity state
-                    var entityState = ((UnitOfWork)uow).Context.Entry(responsebilitytask).State;
+                    var entityState = ((UnitOfWork)uow).Context.Entry(process).State;
                     Logger.LogActivity($"Entity state after deletion: {entityState}", "DEBUG");
 
                     var result = await uow.SaveChangesAsync();
@@ -1057,6 +1058,50 @@ namespace Grc.Middleware.Api.Services.Operations {
                 }
 
                 return false;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to update Operation Process record: {ex.Message}", "ERROR");
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+        }
+
+        public async Task<(bool, string, long)> RequestApprovalAsync(long recordId, string requestedBy) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Initiate Process review", "INFO");
+            try {
+                var process = await uow.OperationProcessRepository.GetAsync(a => a.Id == recordId, false, a => a.Unit);
+                if (process != null) {
+                    process.ProcessStatus = "PROPOSED";
+                    process.Comments = $"Newly proposed process for {process.Unit?.UnitName??string.Empty} unit";
+                    process.IsLockProcess = false;
+                    process.IsDeleted = false;
+                    process.LastModifiedOn = DateTime.Now;
+                    process.LastModifiedBy = (requestedBy??string.Empty).Trim();
+
+                    //..add new approval record
+                    process.Approvals.Add(new ProcessApproval() {
+                        ProcessId = recordId,
+                        RequestDate = DateTime.Now,
+                        HeadOfDepartmentStart = DateTime.Now,
+                        HeadOfDepartmentStatus = "PENDING",
+                        CreatedBy = (requestedBy ?? string.Empty).Trim(),
+                        CreatedOn = DateTime.Now,
+                        LastModifiedBy = (requestedBy ?? string.Empty).Trim(),
+                        LastModifiedOn = DateTime.Now,
+                    });
+
+                    //..check entity state
+                    _ = await uow.OperationProcessRepository.UpdateAsync(process, true);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(process).State;
+                    Logger.LogActivity($"Operation Process state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return (result > 0, process.ProcessName, process.Id);
+                }
+
+                return (false, string.Empty, recordId);
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to update Operation Process record: {ex.Message}", "ERROR");
                 //..save error object to the database

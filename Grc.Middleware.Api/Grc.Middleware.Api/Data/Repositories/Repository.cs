@@ -201,13 +201,12 @@ namespace Grc.Middleware.Api.Data.Repositories {
             T entity = null;
             var entities = context.Set<T>();
             try {
-                var query = entities.AsQueryable();
-                if (!includeDeleted) {
-                    query = query.Where(e => EF.Property<bool>(e, "IsDeleted") == false);
+                var result = await entities.FirstOrDefaultAsync(e => e.Id == id);
+                if (!includeDeleted && result != null && result.IsDeleted) {
+                    result = null;
                 }
 
-                entity = await query.FirstOrDefaultAsync(e => e.Id == id);
-
+                entity = result;
             } catch (Exception ex) {
                 Logger.LogActivity($"Get operation failed: {ex.Message}", "DBOPS");
                 Logger.LogActivity("STACKTRACE ::", "DBOPS");
@@ -221,14 +220,14 @@ namespace Grc.Middleware.Api.Data.Repositories {
             T entity = null;
             var entities = context.Set<T>();
             try {
-                var query = entities.AsQueryable();
+                var result = entities.FirstOrDefault(where);
 
-                // Apply soft-delete filter if includeDeleted is false
-                if (!includeDeleted) {
-                    query = query.Where(e => EF.Property<bool>(e, "IsDeleted") == false);
+                //..apply soft-delete filter if includeDeleted is false
+                if (!includeDeleted && result != null && result.IsDeleted) {
+                    result = null;
                 }
 
-                entity = query.FirstOrDefault(where);
+                entity = result;
 
             } catch (Exception ex) {
                 Logger.LogActivity($"Get operation failed: {ex.Message}", "DBOPS");
@@ -251,12 +250,13 @@ namespace Grc.Middleware.Api.Data.Repositories {
                             (current, next) => current.Include(next));
                 }
 
-                // Apply soft-delete filter if includeDeleted is false
-                if (!includeDeleted) {
-                    query = query.Where(e => EF.Property<bool>(e, "IsDeleted") == false);
+                //..apply soft-delete filter if includeDeleted is false
+                var result = query.FirstOrDefault(where);
+                if (!includeDeleted && result != null && result.IsDeleted) {
+                    result = null;
                 }
 
-                entity = query.FirstOrDefault(where);
+                entity = result;
 
             } catch (Exception ex) {
                 Logger.LogActivity($"Get operation failed: {ex.Message}", "DBOPS");
@@ -271,12 +271,11 @@ namespace Grc.Middleware.Api.Data.Repositories {
 
             var entities = context.Set<T>();
             try {
-                var query = entities.AsQueryable();
-                if (!includeDeleted) {
-                    query = query.Where(e => EF.Property<bool>(e, "IsDeleted") == false);
+                var result = await entities.FirstOrDefaultAsync(where);
+                if (!includeDeleted && result != null && result.IsDeleted) {
+                    result = null;
                 }
-
-                return await query.FirstOrDefaultAsync(where);
+                return result;
             } catch (Exception ex) {
                 Logger.LogActivity($"Get operation failed: {ex.Message}", "DBOPS");
                 Logger.LogActivity("STACKTRACE ::", "DBOPS");

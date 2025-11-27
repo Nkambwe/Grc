@@ -79,15 +79,7 @@ function initProcessNewListTable() {
         layout: "fitColumns",
         responsiveLayout: "hide",
         columns: [
-            {
-                title: "PROCESS NAME",
-                field: "processName",
-                minWidth: 200,
-                widthGrow: 2,
-                headerSort: true,
-                frozen: true,
-                formatter: (cell) => `<span class="clickable-title" onclick="viewRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`
-            },
+            { title: "PROCESS NAME", field: "processName", minWidth: 200, widthGrow: 2, headerSort: true, frozen: true, headerSort: true },
             { title: "PROCESS DESCRIPTION", field: "description", widthGrow: 2, minWidth: 400, frozen: true, headerSort: false },
             { title: "ATTACHED UNIT", field: "unitName", minWidth: 250 },
             { title: "PROCESS MANAGER", field: "assigneeName", minWidth: 400 },
@@ -153,9 +145,69 @@ function initProcessNewSearch() {
     });
 }
 
+function requestApproval(id) {
+    if (!id && id !== 0) {
+        toastr.error("Invalid Process ID.");
+        return;
+    }
+
+    Swal.fire({
+        title: "REQUEST APPROVAL",
+        text: "Send Process For Approval. Do you want to proceed?",
+        showCancelButton: true,
+        confirmButtonColor: "#5E2A5E",
+        confirmButtonText: "Request Approval",
+        cancelButtonColor: "#f41369",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        $.ajax({
+            url: `/operations/workflow/processes/approval/request/${encodeURIComponent(id)}`,
+            type: 'POST',
+            contentType: 'application/json',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getAntiForgeryToken()
+            },
+            success: function (res) {
+
+                if (!res || typeof res !== "object") {
+                    Swal.fire("System Error", "Unexpected server response.");
+                    return;
+                }
+
+                if (res.success) {
+
+                    Swal.fire({
+                        title: "REQUEST APPROVAL",
+                        text: res.message || "Request has been submitted to the Head Of Department Operations for review."
+                    });
+
+                    if (processNewTable?.replaceData) {
+                        processNewTable.replaceData();
+                    }
+
+                } else {
+                    Swal.fire("REQUEST APPROVAL", res.message || "Submission Failed.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Submission error:", error);
+                console.error("Response:", xhr.responseText);
+                let msg = "Submission failed.";
+                if (xhr.responseJSON && typeof xhr.responseJSON.message === "string") {
+                    msg = xhr.responseJSON.message;
+                }
+                Swal.fire("REQUEST APPROVAL", msg);
+            }
+        });
+    });
+}
+
 function deleteProcess(id) {
     if (!id && id !== 0) {
-        toastr.error("Invalid id for delete.");
+        Swal.fire("Error", "Invalid id for delete.", "error");
         return;
     }
 
@@ -176,33 +228,49 @@ function deleteProcess(id) {
             contentType: 'application/json',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': getProcessAntiForgeryToken()
+                'X-CSRF-TOKEN': getAntiForgeryToken()
             },
             success: function (res) {
-                if (res && res.success) {
-                    toastr.success(res.message || "Process deleted successfully.");
-                    if (processNewTable) {
+
+                //...avoid crashing if server returns HTML or non-JSON
+                if (!res || typeof res !== "object") {
+                    console.warn("Unexpected server response:", res);
+
+                    Swal.fire("Deleted Process", "Unexpected server response.");
+                    return;
+                }
+
+                if (res.success) {
+
+                    Swal.fire({
+                        title: "Deleted Process",
+                        text: res.message || "Process deleted successfully."
+                    });
+
+                    if (processNewTable?.replaceData) {
                         processNewTable.replaceData();
                     }
+
                 } else {
-                    toastr.error(res?.message || "Delete failed.");
+                    Swal.fire("Delete Record", res.message || "Failed to delete process");
                 }
             },
-            error: function (xhr, status, error) {
-                console.error("Delete error:", error);
-                console.error("Response:", xhr.responseText);
-                toastr.error(xhr.responseJSON?.message || "Request failed.");
+            error: function (xhr) {
+
+                let msg = "Failed to delete process";
+                if (xhr.responseJSON && typeof xhr.responseJSON.message === "string") {
+                    msg = xhr.responseJSON.message;
+                }
+
+                Swal.fire("Delete Record", msg);
             }
         });
     });
 }
 
-function requestApproval(id) {
-    alert("View status for record ID: " + id);
-}
+function getAntiForgeryToken() {
+    return $('meta[name="csrf-token"]').attr('content');
 
-function viewRecord(id) {
-    alert("View record details for ID: " + id);
 }
 
 $(document).ready(function () {

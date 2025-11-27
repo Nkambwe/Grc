@@ -156,6 +156,7 @@
         public const string PROCESSES_RETRIEVE_PROCESS = "Operations.Processes.Retrieve";
         public const string PROCESSES_CREATE_PROCESS = "Operations.Processes.Create";
         public const string PROCESSES_EDITED_PROCESS = "Operations.Processes.Edit";
+        public const string PROCESSES_REQUEST_APPROVAL = "Operations.Processes.Request.Approval";
         public const string PROCESSES_DELETED_PROCESS = "Operations.Processes.Delete";
         public const string PROCESSES_EXPORT_PROCESS = "Operations.Processes.Export";
         public const string PROCESSES_FILE_UPLOAD = "Operations.Processes.Fileupload";

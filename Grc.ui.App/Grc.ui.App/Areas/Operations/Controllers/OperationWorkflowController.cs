@@ -130,7 +130,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             {
                 Logger.LogActivity($"Error retrieving roles: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
-                return Json(new { results = new List<object>() });
+                return Json(new { processes = new List<object>() });
             }
         }
 
@@ -288,7 +288,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             {
                 Logger.LogActivity($"Error retrieving process record: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "PROCESS-REGISTER-CONTROLLER", ex.StackTrace);
-                return Json(new { results = new List<object>() });
+                return Json(new { success = true, data = new List<object>() });
             }
         }
 
@@ -353,7 +353,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             {
                 Logger.LogActivity($"Error create process record: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
-                return Json(new { results = new List<object>() });
+                return Json(new { success = false, message = "System Error! Unable to complete request" });
             }
         }
 
@@ -399,7 +399,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             {
                 Logger.LogActivity($"Error update process record: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
-                return Json(new { results = new List<object>() });
+                return Json(new { success = false, message = "System Error! Unable to complete request" });
             }
         }
 
@@ -471,7 +471,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             {
                 Logger.LogActivity($"Error deleting process record: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
-                return Json(new { results = new List<object>() });
+                return Json(new { success = false, message= "System Error! Unable to complete process" });
             }
         }
 
@@ -568,7 +568,39 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             {
                 Logger.LogActivity($"Error update process record: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
-                return Json(new { results = new List<object>() });
+                return Json(new { success = false, message = "System Error! Unable to complete initiation" });
+            }
+        }
+
+        [HttpPost]
+        [LogActivityResult("Request Process Approval", "User requested for process approval", ActivityTypeDefaults.PROCESSES_REQUEST_APPROVAL, "OperationProcess")]
+        public async Task<IActionResult> RequestApproval(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                if (id == 0) return BadRequest(new { success = false, message = "Process Id is required" });
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.PROCESSES_REQUEST_APPROVAL.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = true
+                };
+
+                var result = await _processService.RequestProcessApprovalAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to forward process approval request" });
+
+                return Ok(new { success = result.Data.Status, message = result.Data.Message });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error requesting for process approval: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
+                return Json(new { success = false, message = "System Error! Unable to complete approval" });
             }
         }
 
@@ -638,13 +670,16 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                     processes = group.Processes
                 };
 
+               
                 return Ok(new { success = true, data = groupRecord });
             }
             catch (Exception ex)
             {
                 Logger.LogActivity($"Error retrieving process group: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "PROCESS-REGISTER-CONTROLLER", ex.StackTrace);
-                return Json(new { results = new List<object>() });
+
+                GrcProcessGroupResponse data = null;
+                return Json(new { success = false, data });
             }
         }
 
@@ -718,7 +753,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
 
                 var result = await _processService.CreateProcessGroupAsync(request, currentUser.UserId, ipAddress);
                 if (result.HasError || result.Data == null)
-                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create process group" });
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create process creation" });
 
                 var process = result.Data;
                 return Ok(new
@@ -736,7 +771,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             {
                 Logger.LogActivity($"Error create process group: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
-                return Json(new { results = new List<object>() });
+                return Json(new { success = false, message = "System Error! Unable to complete initiation" });
             }
         }
 
@@ -771,7 +806,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             {
                 Logger.LogActivity($"Error update process group: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
-                return Json(new { results = new List<object>() });
+                return Json(new { success = false, message = "System Error! Unable to complete group update" });
             }
         }
 
@@ -806,7 +841,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             {
                 Logger.LogActivity($"Error deleting process group record: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
-                return Json(new { results = new List<object>() });
+                return Json(new { success = false, message = "System Error! Unable to complete deletion" });
             }
         }
 
@@ -887,7 +922,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             {
                 Logger.LogActivity($"Error retrieving process tag: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "PROCESS-REGISTER-CONTROLLER", ex.StackTrace);
-                return Json(new { results = new List<object>() });
+                return Json(new { success = false, message = "System Error! Unable to complete request" });
             }
         }
 
@@ -940,7 +975,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             {
                 Logger.LogActivity($"Error create process tag: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
-                return Json(new { results = new List<object>() });
+                return Json(new { success = false, message = "System Error! Unable to complete request" });
             }
         }
 
@@ -1019,7 +1054,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             {
                 Logger.LogActivity($"Error update process group record: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
-                return Json(new { results = new List<object>() });
+                return Json(new { success = false, message = "System Error! Unable to complete request" });
             }
         }
 
@@ -1053,7 +1088,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             {
                 Logger.LogActivity($"Error deleting process tag record: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
-                return Json(new { results = new List<object>() });
+                return Json(new { success = false, message = "System Error! Unable to complete request" });
             }
         }
 
@@ -1172,7 +1207,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             {
                 Logger.LogActivity($"Error retrieving process tat: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
-                return Json(new { results = new List<object>() });
+                return Json(new { success = false, message = "System Error! Unable to complete request" });
             }
         }
 
@@ -1487,7 +1522,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             {
                 Logger.LogActivity($"Error update process group record: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
-                return Json(new { results = new List<object>() });
+                return Json(new { success = false, message = "System Error! Unable to complete request" });
             }
         }
 
@@ -1519,6 +1554,73 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             }
 
             return View(model);
+        }
+
+        [LogActivityResult("Proces Approval Retrieve", "User retrieved process approval", ActivityTypeDefaults.APPROVAL_RETRIEVE_APPLY, "ProcessApproval")]
+        public async Task<IActionResult> NewProcessApproval(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0) {
+                    return BadRequest(new { success = false, message = "Approval Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                var result = await _processService.GetNewApprovalRecordAsync(id, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null) {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving process approval";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var approval = result.Data;
+                var approvalRecord = new {
+                    id = approval.Id,
+                    processId = approval.ProcessId,
+                    processName = approval.ProcessName ?? string.Empty,
+                    processDescription = approval.ProcessDescription ?? string.Empty,
+                    requestDate = approval.RequestDate,
+                    hodStatus = approval.HodStatus,
+                    hodComment = approval.HodComment ?? string.Empty,
+                    hodEnd = approval.HodEnd,
+                    riskStatus = approval.RiskStatus,
+                    riskComment = approval.RiskComment ?? string.Empty,
+                    riskEnd = approval.RiskEnd,
+                    complianceStatus = approval.ComplianceStatus,
+                    complianceComment = approval.ComplianceComment ?? string.Empty,
+                    complianceEnd = approval.ComplianceEnd,
+                    requiresBopApproval = approval.RequiresBopApproval,
+                    bopStatus = approval.BopStatus,
+                    bopComment = approval.BopComment ?? string.Empty,
+                    bopStatusEnd = approval.BopEnd,
+                    requiresCreditApproval = approval.RequiresCreditApproval,
+                    creditStatus = approval.CreditStatus,
+                    creditComment = approval.CreditComment ?? string.Empty,
+                    creditEnd = approval.CreditEnd,
+                    requiresTreasuryApproval = approval.RequiresTreasuryApproval,
+                    treasuryStatus = approval.TreasuryStatus,
+                    treasuryComment = approval.TreasuryComment ?? string.Empty,
+                    treasuryEnd = approval.TreasuryEnd,
+                    requiresFintechApproval = approval.RequiresFintechApproval,
+                    fintechStatus = approval.FintechStatus,
+                    fintechComment = approval.FintechComment ?? string.Empty,
+                    fintechEnd = approval.FintechEnd,
+                    isDeleted = approval.IsDeleted,
+
+                };
+
+                return Ok(new { success = true, data = approvalRecord });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving process approval: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
         }
 
         public async Task<IActionResult> ProcessNewList([FromBody] TableListRequest request)
@@ -1690,7 +1792,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             } catch (Exception ex) {
                 Logger.LogActivity($"Error holding process record: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
-                return Json(new { results = new List<object>() });
+                return Json(new { success = false, message = "System Error! Unable to complete request" });
             }
         }
 

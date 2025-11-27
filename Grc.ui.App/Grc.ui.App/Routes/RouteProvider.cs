@@ -620,6 +620,16 @@
                pattern: "/operations/workflow/processes/approval-hold",
                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "HoldApproval" }
             );
+            routeBuilder.MapControllerRoute(
+                name: "app-operations-processes-approval-request",
+                pattern: "/operations/workflow/processes/approval/request/{id:long}",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "RequestApproval" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-operations-processes-approval-new-request",
+                pattern: "/operations/workflow/processes/approval/new-request/{id:long}",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "NewProcessApproval" }
+            );
             /*----------------------- Compliance dashboard routes*/
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-dashboard",
