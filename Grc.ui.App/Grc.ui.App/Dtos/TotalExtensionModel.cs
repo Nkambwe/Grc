@@ -8,7 +8,7 @@ namespace Grc.ui.App.Dtos {
         public string WelcomeMessage { get; set; } = string.Empty;
         public string Initials { get; set; }
         public WorkspaceModel Workspace { get; set; }
-        public List<DashboardRecord> Charts { get; set; } = new();
+        public List<StatisticTotalResponse> Charts { get; set; } = new();
         public List<QuickActionModel> QuickActions { get; set; } = new();
 
     }

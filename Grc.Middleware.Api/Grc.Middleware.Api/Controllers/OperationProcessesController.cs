@@ -61,6 +61,162 @@ namespace Grc.Middleware.Api.Controllers {
             _officersService = officersService;
         }
 
+        #region Statistics Endpoints
+
+        [HttpPost("processes/unit-statistics")]
+        public async Task<IActionResult> GetUnitStatistics([FromBody] StatisticRequest request) {
+            try {
+                Logger.LogActivity("Retrieve Operations unit statistics", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ServiceOperationUnitCountResponse>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IPAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var result = await _processService.GetOperationUnitStatisticsAsync(false);
+                return Ok(new GrcResponse<ServiceOperationUnitCountResponse>(result));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<ProcessRegisterResponse>(error));
+            }
+        }
+
+        [HttpPost("processes/unit-extensions-statistics")]
+        public async Task<IActionResult> GetUnitStatisticExtensions([FromBody] UnitStatisticRequest request) {
+            try {
+                Logger.LogActivity("Retrieve Operations unit statistics", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ServiceUnitExtensionCountResponse> (error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IPAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                if (string.IsNullOrWhiteSpace(request.UnitName)) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Unit name cannot be null or empty",
+                        "Invalid request body! Unit name is required"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ServiceUnitExtensionCountResponse>(error));
+                }
+
+                var statistic = await _processService.GetUnitStatisticExtensionsAsync(request.UnitName, false);
+                return Ok(new GrcResponse<ServiceUnitExtensionCountResponse>(statistic));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<ServiceUnitExtensionCountResponse>(error));
+            }
+        }
+
+        [HttpPost("processes/category-statistics")]
+        public async Task<IActionResult> GetCategoryStatistics([FromBody] StatisticRequest request) {
+            try {
+                Logger.LogActivity("Retrieve Operations unit statistics", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ServiceCategoriesCountResponse>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IPAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var result = await _processService.GetProcessCategoryStatisticsAsync();
+                return Ok(new GrcResponse<ServiceCategoriesCountResponse>(result));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<ServiceCategoriesCountResponse>(error));
+            }
+        }
+
+        [HttpPost("processes/category-extensions-statistics")]
+        public async Task<IActionResult> GetCategoryStatisticExtensions([FromBody] CategoryStatisticRequest request) {
+            try {
+                Logger.LogActivity("Retrieve Operations unit statistics", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ServiceCategoryExtensionCountResponse>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IPAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                if (string.IsNullOrWhiteSpace(request.Category)) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Process category is required",
+                        "Invalid request body. Process category is not provided"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ServiceCategoryExtensionCountResponse>(error));
+
+                }
+                var categories = await _processService.GetCategoryStatisticExtensionsAsync(request.Category, false);
+               return Ok(new GrcResponse<ServiceCategoryExtensionCountResponse>(categories));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<ServiceCategoryExtensionCountResponse>(error));
+            }
+        }
+
+        [HttpPost("processes/total-process-statistics")]
+        public async Task<IActionResult> GetProcessTotalStatistics([FromBody] GeneralRequest request) {
+
+            try {
+                Logger.LogActivity("Retrieve Operations unit statistics", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<ServiceStatisticTotalResponse>>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IPAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var totalStats = await _processService.GetProcessTotalStatisticsAsync(false);
+                if (totalStats == null) {
+                    var error = new ResponseError(
+                        ResponseCodes.FAILED,
+                        "An error occurred",
+                        "Could not retrieve statistics. A system error occurred"
+                    );
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+
+                    return Ok(new GrcResponse<List<ServiceStatisticTotalResponse>>(error));
+                }
+
+                return Ok(new GrcResponse<List<ServiceStatisticTotalResponse>>(totalStats));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<List<ServiceStatisticTotalResponse>>(error));
+            }
+        }
+
+        #endregion
+
         #region Process Register Endpoints
 
         [HttpPost("processes/support-items")]
@@ -2482,7 +2638,7 @@ namespace Grc.Middleware.Api.Controllers {
                 IsDeleted = approval.IsDeleted
             };
         }
-
+        
         #endregion
 
     }

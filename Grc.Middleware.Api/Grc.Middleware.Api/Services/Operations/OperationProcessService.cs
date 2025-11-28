@@ -1,25 +1,24 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Operations.Processes;
 using Grc.Middleware.Api.Data.Entities.System;
+using Grc.Middleware.Api.Enums;
+using Grc.Middleware.Api.Extensions;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
-using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Grc.Middleware.Api.Services.Operations {
 
-    public class OperationProcessService : BaseService, IOperationProcessService
-    {
-        public OperationProcessService(IServiceLoggerFactory loggerFactory, 
-                                       IUnitOfWorkFactory uowFactory, 
-                                       IMapper mapper) : base(loggerFactory, uowFactory, mapper) {
-        }
+    public class OperationProcessService : BaseService, IOperationProcessService {
+
+        public OperationProcessService(IServiceLoggerFactory loggerFactory, IUnitOfWorkFactory uowFactory, IMapper mapper) : base(loggerFactory, uowFactory, mapper) { }
+
+        #region Count Methods
         public int Count()
         {
             using var uow = UowFactory.Create();
@@ -128,6 +127,280 @@ namespace Grc.Middleware.Api.Services.Operations {
             }
         }
 
+        #endregion
+
+        #region Statistics Methods
+
+        public async Task<ServiceOperationUnitCountResponse> GetOperationUnitStatisticsAsync(bool includeDeleted = false) {
+            using var uow = UowFactory.Create();
+            var processes = await uow.OperationProcessRepository.GetAllAsync(p => includeDeleted || !p.IsDeleted, false, p => p.Unit);
+
+            //..initialize all units
+            var allUnits = new[] {
+                ServiceOperationUnit.Cash,
+                ServiceOperationUnit.AccountServices,
+                ServiceOperationUnit.Channels,
+                ServiceOperationUnit.Payments,
+                ServiceOperationUnit.Wallets,
+                ServiceOperationUnit.RecordsMgt,
+                ServiceOperationUnit.CustomerExp,
+                ServiceOperationUnit.Reconciliation
+            };
+
+            //..initialize all categories
+            var allCategories = new[] {
+                ServiceProcessCategories.Draft,
+                ServiceProcessCategories.UpToDate,
+                ServiceProcessCategories.Unchanged,
+                ServiceProcessCategories.Proposed,
+                ServiceProcessCategories.Due,
+                ServiceProcessCategories.Review,
+                ServiceProcessCategories.Dormant,
+                ServiceProcessCategories.Cancelled
+            };
+
+            //..map processes to units and categories
+            var processData = processes
+                .Select(p => new { Unit = AdjustedUnitName(p.Unit.UnitName), Category = AdjustedStatus(p.ProcessStatus) })
+                .Where(p => p.Unit != ServiceOperationUnit.Unknown).ToList();
+
+            //..helper method to count by unit and optional category filter
+            ServiceUnitCountResponse CountByUnit(Func<ServiceProcessCategories, bool> categoryFilter = null) {
+                var filtered = categoryFilter != null ? processData.Where(p => categoryFilter(p.Category)): processData;
+                var counts = filtered.GroupBy(p => p.Unit).ToDictionary(g => g.Key, g => g.Count());
+
+                return new ServiceUnitCountResponse {
+                    CashProcesses = counts.GetValueOrDefault(ServiceOperationUnit.Cash, 0),
+                    AccountServiceProcesses = counts.GetValueOrDefault(ServiceOperationUnit.AccountServices, 0),
+                    ChannelProcesses = counts.GetValueOrDefault(ServiceOperationUnit.Channels, 0),
+                    PaymentProcesses = counts.GetValueOrDefault(ServiceOperationUnit.Payments, 0),
+                    WalletProcesses = counts.GetValueOrDefault(ServiceOperationUnit.Wallets, 0),
+                    RecordsManagementProcesses = counts.GetValueOrDefault(ServiceOperationUnit.RecordsMgt, 0),
+                    CustomerExperienceProcesses = counts.GetValueOrDefault(ServiceOperationUnit.CustomerExp, 0),
+                    ReconciliationProcesses = counts.GetValueOrDefault(ServiceOperationUnit.Reconciliation, 0),
+                    TotalProcesses = counts.Values.Sum()
+                };
+            }
+
+            //..helper method to count by category for a specific unit
+            ServiceCategoriesCountResponse CountByCategory(ServiceOperationUnit unit) {
+                var unitProcesses = processData.Where(p => p.Unit == unit).ToList();
+                var counts = unitProcesses.GroupBy(p => p.Category).ToDictionary(g => g.Key, g => g.Count());
+
+                return new ServiceCategoriesCountResponse {
+                    Unclassified = counts.GetValueOrDefault(ServiceProcessCategories.Draft, 0),
+                    UpToDate = counts.GetValueOrDefault(ServiceProcessCategories.UpToDate, 0),
+                    Unchanged = counts.GetValueOrDefault(ServiceProcessCategories.Unchanged, 0),
+                    Proposed = counts.GetValueOrDefault(ServiceProcessCategories.Proposed, 0),
+                    Due = counts.GetValueOrDefault(ServiceProcessCategories.Due, 0),
+                    InReview = counts.GetValueOrDefault(ServiceProcessCategories.Review, 0),
+                    Dormant = counts.GetValueOrDefault(ServiceProcessCategories.Dormant, 0),
+                    Cancelled = counts.GetValueOrDefault(ServiceProcessCategories.Cancelled, 0),
+                    Total = counts.Values.Sum()
+                };
+            }
+
+            //..helper method to count totals by category across all units
+            ServiceCategoriesCountResponse CountTotalsByCategory() {
+                var counts = processData.GroupBy(p => p.Category).ToDictionary(g => g.Key, g => g.Count());
+
+                return new ServiceCategoriesCountResponse {
+                    Unclassified = counts.GetValueOrDefault(ServiceProcessCategories.Draft, 0),
+                    UpToDate = counts.GetValueOrDefault(ServiceProcessCategories.UpToDate, 0),
+                    Unchanged = counts.GetValueOrDefault(ServiceProcessCategories.Unchanged, 0),
+                    Proposed = counts.GetValueOrDefault(ServiceProcessCategories.Proposed, 0),
+                    Due = counts.GetValueOrDefault(ServiceProcessCategories.Due, 0),
+                    InReview = counts.GetValueOrDefault(ServiceProcessCategories.Review, 0),
+                    Dormant = counts.GetValueOrDefault(ServiceProcessCategories.Dormant, 0),
+                    Cancelled = counts.GetValueOrDefault(ServiceProcessCategories.Cancelled, 0),
+                    Total = counts.Values.Sum()
+                };
+            }
+
+            //..build the response
+            var response = new ServiceOperationUnitCountResponse {
+                UnitProcesses = new ServiceOperationUnitStatisticsResponse {
+                    TotalUnitProcess = CountByUnit(),
+                    CompletedProcesses = CountByUnit(c => c == ServiceProcessCategories.UpToDate),
+                    ProposedProcesses = CountByUnit(c => c == ServiceProcessCategories.Proposed),
+                    UnchangedProcesses = CountByUnit(c => c == ServiceProcessCategories.Unchanged),
+                    ProcessesDueForReview = CountByUnit(c => c == ServiceProcessCategories.Due),
+                    DormantProcesses = CountByUnit(c => c == ServiceProcessCategories.Dormant),
+                    CancelledProcesses = CountByUnit(c => c == ServiceProcessCategories.Cancelled),
+                    UnclassifiedProcesses = CountByUnit(c => c == ServiceProcessCategories.Draft)
+                },
+                ProcessCategories = new ServiceProcessCategoryStatisticsResponse {
+                    CashProcesses = CountByCategory(ServiceOperationUnit.Cash),
+                    AccountServiceProcesses = CountByCategory(ServiceOperationUnit.AccountServices),
+                    ChannelProcesses = CountByCategory(ServiceOperationUnit.Channels),
+                    PaymentProcesses = CountByCategory(ServiceOperationUnit.Payments),
+                    WalletProcesses = CountByCategory(ServiceOperationUnit.Wallets),
+                    RecordsMgtProcesses = CountByCategory(ServiceOperationUnit.RecordsMgt),
+                    CustomerExperienceProcesses = CountByCategory(ServiceOperationUnit.CustomerExp),
+                    ReconciliationProcesses = CountByCategory(ServiceOperationUnit.Reconciliation),
+                    TotalCategoryProcesses = CountTotalsByCategory()
+                }
+            };
+
+            return response;
+        }
+
+        public async Task<ServiceCategoriesCountResponse> GetProcessCategoryStatisticsAsync(bool includeDeleted = false) {
+            using var uow = UowFactory.Create();
+            var processes = await uow.OperationProcessRepository.GetAllAsync(p => includeDeleted || !p.IsDeleted, false);
+
+            //..group and count by mapped category
+            var categoryCounts = processes.Where(p => !string.IsNullOrEmpty(p.ProcessStatus))
+                                .GroupBy(p => AdjustedStatus(p.ProcessStatus))
+                                .ToDictionary(g => g.Key, g => g.Count());
+
+            //..helper inner function to get count safely
+            int GetCount(ServiceProcessCategories category) 
+                => categoryCounts.TryGetValue(category, out var count) ? count : 0;
+
+            var response = new ServiceCategoriesCountResponse {
+                Unclassified = GetCount(ServiceProcessCategories.Draft),
+                UpToDate = GetCount(ServiceProcessCategories.UpToDate),
+                Unchanged = GetCount(ServiceProcessCategories.Unchanged),
+                Proposed = GetCount(ServiceProcessCategories.Proposed),
+                Due = GetCount(ServiceProcessCategories.Due),
+                InReview = GetCount(ServiceProcessCategories.Review),
+                Dormant = GetCount(ServiceProcessCategories.Dormant),
+                Cancelled = GetCount(ServiceProcessCategories.Cancelled),
+                Total = categoryCounts.Values.Sum()
+            };
+
+            return response;
+        }
+
+
+        public async Task<ServiceUnitExtensionCountResponse> GetUnitStatisticExtensionsAsync(string unitName, bool includeDeleted) {
+            using var uow = UowFactory.Create();
+            var processes = await uow.OperationProcessRepository.GetAllAsync(p => includeDeleted || !p.IsDeleted, false,p => p.Unit);
+
+            //..map the unit name to the enum
+            var targetUnit = AdjustedUnitName(unitName);
+
+            //..filter processes by the target unit
+            var filteredProcesses = processes.Where(p => AdjustedUnitName(p.Unit.UnitName) == targetUnit);
+
+            //..initialize all categories with 0
+            var results = new Dictionary<string, int> {
+                { ServiceProcessCategories.Draft.GetDescription(), 0 },
+                { ServiceProcessCategories.UpToDate.GetDescription(), 0 },
+                { ServiceProcessCategories.Proposed.GetDescription(), 0 },
+                { ServiceProcessCategories.Unchanged.GetDescription(), 0 },
+                { ServiceProcessCategories.Due.GetDescription(), 0 },
+                { ServiceProcessCategories.Dormant.GetDescription(), 0 },
+                { ServiceProcessCategories.Cancelled.GetDescription(), 0 },
+                { ServiceProcessCategories.OnHold.GetDescription(), 0 }
+            };
+
+            //..create a mapping helper to convert ProcessStatus to category description
+            var categoryMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
+                [ServiceProcessCategories.Draft.ToString()] = ServiceProcessCategories.Draft.GetDescription(),
+                [ServiceProcessCategories.UpToDate.ToString()] = ServiceProcessCategories.UpToDate.GetDescription(),
+                [ServiceProcessCategories.Proposed.ToString()] = ServiceProcessCategories.Proposed.GetDescription(),
+                [ServiceProcessCategories.Unchanged.ToString()] = ServiceProcessCategories.Unchanged.GetDescription(),
+                [ServiceProcessCategories.Due.ToString()] = ServiceProcessCategories.Due.GetDescription(),
+                [ServiceProcessCategories.Dormant.ToString()] = ServiceProcessCategories.Dormant.GetDescription(),
+                [ServiceProcessCategories.Cancelled.ToString()] = ServiceProcessCategories.Cancelled.GetDescription(),
+                [ServiceProcessCategories.OnHold.ToString()] = ServiceProcessCategories.OnHold.GetDescription()
+            };
+
+            //..count processes by category
+            foreach (var process in filteredProcesses) {
+                if (!string.IsNullOrEmpty(process.ProcessStatus) &&
+                    categoryMap.TryGetValue(process.ProcessStatus, out var categoryDescription)) {
+                    results[categoryDescription]++;
+                }
+            }
+
+            var response = new ServiceUnitExtensionCountResponse {
+                Banner = targetUnit.GetDescription(),
+                UnitProcesses = results
+            };
+
+            return response;
+        }
+
+        public async Task<ServiceCategoryExtensionCountResponse> GetCategoryStatisticExtensionsAsync(string category, bool includeDeleted) {
+            using var uow = UowFactory.Create();
+            var processes = await uow.OperationProcessRepository.GetAllAsync(p => includeDeleted || !p.IsDeleted, false, p => p.Unit);
+
+            //..get the filter value for the category
+            var filter = GetDescriptionFromCategory(category);
+
+            //..initialize the results dictionary for counting occurrences
+            var allUnits = new[] {
+                ServiceOperationUnit.AccountServices,
+                ServiceOperationUnit.Cash,
+                ServiceOperationUnit.Channels,
+                ServiceOperationUnit.CustomerExp,
+                ServiceOperationUnit.Reconciliation,
+                ServiceOperationUnit.RecordsMgt,
+                ServiceOperationUnit.Payments,
+                ServiceOperationUnit.Wallets
+            };
+
+            //..create dictionary from it
+            var results = allUnits.ToDictionary(u => u.GetDescription(), u => 0);
+
+            //..count filtered processes by unit
+            var counts = processes.Where(p => p.ProcessStatus?.ToUpper() == filter.ToUpper())
+                .Select(p => AdjustedUnitName(p.Unit.UnitName))
+                .Where(unit => unit != ServiceOperationUnit.Unknown)
+                .GroupBy(unit => unit).ToDictionary(g => g.Key.GetDescription(), g => g.Count());
+
+            //..merge counts into results
+            foreach (var kvp in counts) {
+                results[kvp.Key] = kvp.Value;
+            }
+
+            return new ServiceCategoryExtensionCountResponse { Banner = category,
+                CategoryProcesses = results.ToDictionary(r => r.Key.ToString(), r => r.Value)
+            };
+        }
+
+        public async Task<List<ServiceStatisticTotalResponse>> GetProcessTotalStatisticsAsync(bool includeDeleted) {
+            using var uow = UowFactory.Create();
+
+            var processes = await uow.OperationProcessRepository.GetAllAsync(p => includeDeleted || !p.IsDeleted, false, p => p.Unit);
+            var results = new Dictionary<ServiceProcessCategories, Dictionary<ServiceOperationUnit, int>>();
+
+            //..initialize all categories & all units to zero
+            foreach (var category in Enum.GetValues<ServiceProcessCategories>()) {
+                results[category] = Enum.GetValues<ServiceOperationUnit>().ToDictionary(u => u, u => 0);
+            }
+
+            //..count processes
+            foreach (var p in processes) {
+                var status = AdjustedStatus(p.ProcessStatus);       
+                var unit = AdjustedUnitName(p.Unit.UnitName);        
+
+                results[status][unit]++;
+            }
+
+            //..compute category totals
+            foreach (var cat in results.Keys.ToList()) {
+                int total = results[cat].Where(x => x.Key != ServiceOperationUnit.CategoryTotal).Sum(x => x.Value);
+                results[cat][ServiceOperationUnit.CategoryTotal] = total;
+            }
+
+            //..convert to response model
+            var response = results.Where(x => x.Key != ServiceProcessCategories.UnitTotal) 
+                .Select(kvp => new ServiceStatisticTotalResponse {
+                    Banner = kvp.Key.GetDescription(),
+                    Categories = kvp.Value.Where(u => u.Key != ServiceOperationUnit.Unknown) 
+                        .ToDictionary(u => u.Key.GetDescription(), u => u.Value)
+                }).ToList();
+
+            return response;
+        }
+
+        #endregion
+
+        #region General Operations
         public bool Exists(Expression<Func<OperationProcess, bool>> predicate, bool excludeDeleted = false)
         {
             using var uow = UowFactory.Create();
@@ -1110,6 +1383,10 @@ namespace Grc.Middleware.Api.Services.Operations {
             }
         }
 
+        #endregion
+
+        #region Private Methods
+
         private SystemError HandleError(IUnitOfWork uow, Exception ex)
         {
             var innerEx = ex.InnerException;
@@ -1135,6 +1412,64 @@ namespace Grc.Middleware.Api.Services.Operations {
             };
 
         }
+
+        private static ServiceOperationUnit AdjustedUnitName(string unitName) {
+            unitName = unitName?.ToLower() ?? "";
+
+            if (unitName.Contains("account")) return ServiceOperationUnit.AccountServices;
+            if (unitName.Contains("cash")) return ServiceOperationUnit.Cash;
+            if (unitName.Contains("channel")) return ServiceOperationUnit.Channels;
+            if (unitName.Contains("customer")) return ServiceOperationUnit.CustomerExp;
+            if (unitName.Contains("reconciliation")) return ServiceOperationUnit.Reconciliation;
+            if (unitName.Contains("records")) return ServiceOperationUnit.RecordsMgt;
+            if (unitName.Contains("payment")) return ServiceOperationUnit.Payments;
+            if (unitName.Contains("wallet")) return ServiceOperationUnit.Wallets;
+
+            return ServiceOperationUnit.Unknown;
+        }
+
+        private static ServiceProcessCategories AdjustedStatus(string status) {
+
+            if (string.IsNullOrWhiteSpace(status))
+                return ServiceProcessCategories.Proposed;
+
+            //..review special case first
+            if (status.Equals("INREVIEW", StringComparison.OrdinalIgnoreCase))
+                return ServiceProcessCategories.Review;
+
+            //..try to match by description
+            foreach (var value in Enum.GetValues<ServiceProcessCategories>()) {
+                if (value.GetDescription().Equals(status, StringComparison.OrdinalIgnoreCase))
+                    return value;
+            }
+
+            //..try to match by enum name as fallback
+            if (Enum.TryParse<ServiceProcessCategories>(status, true, out var result))
+                return result;
+
+            //..default to Proposed if no match
+            return ServiceProcessCategories.Proposed;
+        }
+
+        private static readonly Lazy<Dictionary<string, string>> CategoryMap = new(() =>
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
+                ["Draft"] = ServiceProcessCategories.Draft.ToString().ToUpper(),
+                ["UpToDate"] = ServiceProcessCategories.UpToDate.ToString().ToUpper(),
+                ["Unchanged"] = ServiceProcessCategories.Unchanged.ToString().ToUpper(),
+                ["Unclassified"] = ServiceProcessCategories.Proposed.ToString().ToUpper(),
+                ["Obsolete"] = ServiceProcessCategories.Due.ToString().ToUpper(),
+                ["Cancelled"] = ServiceProcessCategories.Cancelled.ToString().ToUpper(),
+                ["Dormant"] = ServiceProcessCategories.Dormant.ToString().ToUpper(),
+                ["On Hold"] = ServiceProcessCategories.OnHold.ToString().ToUpper(),
+                ["Review"] = "INREVIEW"
+            });
+
+        private static string GetDescriptionFromCategory(string category) {
+            return CategoryMap.Value.TryGetValue(category, out var result) ? result : "Unknown";
+        }
+
+
+        #endregion
 
     }
 }

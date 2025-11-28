@@ -11,15 +11,15 @@ namespace Grc.ui.App.Services
     {
 
         #region Statistics
-        Task<OperationsUnitCountResponse> StatisticAsync(long userId, string ipAddress);
+        Task<GrcResponse<OperationsUnitCountResponse>> UnitStatisticAsync(long userId, string ipAddress);
 
-        Task<CategoriesCountResponse> UnitCountAsync(long userId, string ipAddress, string unit);
+        Task<GrcResponse<UnitExtensionCountResponse>> UnitExtensionsCountAsync(string unit, long userId, string ipAddress);
 
-        Task<List<DashboardRecord>> TotalExtensionsCountAsync(long userId, string ipAddress);
+        Task<GrcResponse<CategoriesCountResponse>> CategoryCountAsync(long userId, string ipAddress, string unit);
 
-        Task<CategoryExtensionModel> CategoryExtensionsCountAsync(string category, long userId, string ipAddress);
+        Task<GrcResponse<CategoryExtensionResponse>> CategoryExtensionsCountAsync(string category, long userId, string ipAddress);
 
-        Task<UnitExtensionModel> UnitExtensionsCountAsync(string unit, long userId, string ipAddress);
+        Task<GrcResponse<List<StatisticTotalResponse>>> TotalExtensionsCountAsync(long userId, string ipAddress);
 
         #endregion
 

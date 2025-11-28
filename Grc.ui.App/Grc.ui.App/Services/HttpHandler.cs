@@ -356,7 +356,6 @@ namespace Grc.ui.App.Services {
                     }
     
                     Logger.LogActivity($"Deserialization successful. HasError: {result.HasError}");
-                    //Logger.LogActivity($"SERVICE RESULT: {JsonSerializer.Serialize(result, options)}");
                     return result;
                 } catch (JsonException jex) {
                     Logger.LogActivity($"Deserialization Failed: {jex.Message}", "ERROR");

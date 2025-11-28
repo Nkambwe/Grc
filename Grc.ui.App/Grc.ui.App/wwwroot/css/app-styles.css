@@ -1328,7 +1328,7 @@ div.input-group.date {
 }
 
 .card-due {
-    border-top: 4px solid #f59e0b;
+    border-top: 4px solid #9E1D08;
 }
 
 .card-dormant {
@@ -1336,7 +1336,18 @@ div.input-group.date {
 }
 
 .card-cancelled {
-    border-top: 4px solid #ef4444;
+    border-top: 4px solid #EF4444;
+}
+.card-review {
+    border-top: 4px solid #7CF0AC;
+}
+
+.card-draft {
+    border-top: 4px solid #72319E;
+}
+
+.card-onhold {
+    border-top: 4px solid #F59E0B;
 }
 
 

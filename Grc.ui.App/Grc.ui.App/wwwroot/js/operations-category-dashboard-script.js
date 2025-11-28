@@ -21,8 +21,8 @@ function generateUnitCards(record) {
     unitCardsContainer.innerHTML = '';
 
     //..create cards
-    Object.keys(record.CategoryProcesses).forEach(unit => {
-        const total = record.CategoryProcesses[unit];
+    Object.keys(record.categoryProcesses).forEach(unit => {
+        const total = record.categoryProcesses[unit];
         const card = document.createElement('div');
         card.className = `stats-category-card  ${cardColors[unit].class}`;
         card.innerHTML = `
@@ -70,7 +70,7 @@ function renderPiechart(record) {
         unitChart.destroy();
     }
 
-    const units = record.CategoryProcesses;
+    const units = record.categoryProcesses;
     const unitLabels = Object.keys(units);
     const unitData = Object.values(units);
     const unitColors = unitLabels.map((label, i) => {
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Table of processes
     const tableBody = document.querySelector('#processTable tbody');
     tableBody.innerHTML = '';
-    Object.entries(dashboardRecord.CategoryProcesses).forEach(([label, value]) => {
+    Object.entries(dashboardRecord.categoryProcesses).forEach(([label, value]) => {
         const tr = document.createElement('tr');
         let disabled = value === 0 ? "disabled" : "";
         tr.innerHTML = `<td>${label}</td>
@@ -123,7 +123,7 @@ document.querySelectorAll('.action-btn-home').forEach(button => {
             window.location.href = '/grc/compliance';
         } catch (error) {
             console.error('Navigation failed:', error);
-            showToast(error, 'error'); // assuming showToast(message, type)
+            showToast(error, 'error'); 
         }
     });
 });

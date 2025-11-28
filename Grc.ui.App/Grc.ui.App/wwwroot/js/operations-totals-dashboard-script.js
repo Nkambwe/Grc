@@ -3,10 +3,13 @@
 const cardColors = {
     "UpToDate": { bg: "#10B981", class: "card-uptodate" },
     "Unclassified": { bg: "#3B82F6", class: "card-proposed" },
-    "Cancelled": { bg: "#3E8DF6", class: "card-cancelled" },
+    "Cancelled": { bg: "#5CC8C9", class: "card-cancelled" },
     "Unchanged": { bg: "#8B5CF6", class: "card-unchanged" },
-    "Need Review": { bg: "#F59E0B", class: "card-due" },
-    "Dormant": { bg: "#EF4444", class: "card-dormant" }
+    "Obsolete": { bg: "#9E1D08", class: "card-due" },
+    "Review": { bg: "#7CF0AC", class: "card-review" },
+    "Dormant": { bg: "#EF4444", class: "card-dormant" },
+    "Draft": { bg: "#72319E", class: "card-draft" },
+    "On Hold": { bg: "#F59E0B", class: "card-onhold" }
 };
 
 //..generate status total cards
@@ -24,9 +27,11 @@ function generateCategoryCards() {
         }
     });
 
+    console.log(categoryTotals);
     //..create cards
     Object.keys(categoryTotals).forEach(status => {
         const card = document.createElement('div');
+        console.log("STATUS:", `"${status}"`, "COLOR:", cardColors[status]);
         card.className = `stats-category-card ${cardColors[status].class}`;
         card.innerHTML = `
                     <div class="stats-card-title">${status}</div>
@@ -42,6 +47,7 @@ function generateCharts() {
 
     //..get all operation units
     const operationUnits = Object.keys(chartData[0].Categories).filter(unit => unit !== "Total");
+    console.log("Units >>> " + operationUnits);
     operationUnits.forEach(unit => {
         // Create chart card
         const chartCard = document.createElement('div');

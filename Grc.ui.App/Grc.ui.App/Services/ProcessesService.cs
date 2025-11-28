@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -9,7 +10,7 @@ using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
-using System.Diagnostics;
+using System.Net;
 using System.Text.Json;
 using Activity = Grc.ui.App.Enums.Activity;
 
@@ -27,506 +28,218 @@ namespace Grc.ui.App.Services {
         }
 
         #region Statistics
-        public async Task<OperationsUnitCountResponse> StatisticAsync(long userId, string ipAddress) {
 
-            var stats = new OperationsUnitCountResponse()
-            {
-                UnitProcesses = new OperationsUnitStatisticsResponse
-                {
-                    TotalUnitProcess = new()
-                    {
-                        CashProcesses = 36,
-                        AccountServiceProcesses = 23,
-                        ChannelProcesses = 33,
-                        PaymentProcesses = 17,
-                        WalletProcesses = 18,
-                        RecordsManagementProcesses = 3,
-                        CustomerExperienceProcesses = 17,
-                        ReconciliationProcesses = 12,
-                        TotalProcesses = 159
-                    },
-                    CompletedProcesses = new UnitCountResponse()
-                    {
-                        AccountServiceProcesses = 9,
-                        CashProcesses = 3,
-                        ChannelProcesses = 9,
-                        CustomerExperienceProcesses = 12,
-                        ReconciliationProcesses = 4,
-                        RecordsManagementProcesses = 3,
-                        PaymentProcesses = 9,
-                        WalletProcesses = 15,
-                        TotalProcesses = 62
+        public async Task<GrcResponse<OperationsUnitCountResponse>> UnitStatisticAsync(long userId, string ipAddress) {
+            try {
 
-                    },
-                    ProposedProcesses = new UnitCountResponse()
-                    {
-                        AccountServiceProcesses = 0,
-                        CashProcesses = 0,
-                        ChannelProcesses = 3,
-                        CustomerExperienceProcesses = 0,
-                        ReconciliationProcesses = 0,
-                        RecordsManagementProcesses = 0,
-                        PaymentProcesses = 5,
-                        WalletProcesses = 2,
-                        TotalProcesses = 10
-                    },
-                    UnchangedProcesses = new UnitCountResponse()
-                    {
-                        AccountServiceProcesses = 0,
-                        CashProcesses = 9,
-                        ChannelProcesses = 14,
-                        CustomerExperienceProcesses = 2,
-                        ReconciliationProcesses = 8,
-                        RecordsManagementProcesses = 0,
-                        PaymentProcesses = 6,
-                        WalletProcesses = 0,
-                        TotalProcesses = 30
-                    },
-                    ProcessesDueForReview = new UnitCountResponse()
-                    {
-                        AccountServiceProcesses = 0,
-                        CashProcesses = 1,
-                        ChannelProcesses = 7,
-                        CustomerExperienceProcesses = 3,
-                        ReconciliationProcesses = 0,
-                        RecordsManagementProcesses = 0,
-                        PaymentProcesses = 5,
-                        WalletProcesses = 1,
-                        TotalProcesses = 17
-                    },
-                    DormantProcesses = new UnitCountResponse()
-                    {
-                        AccountServiceProcesses = 0,
-                        CashProcesses = 0,
-                        ChannelProcesses = 1,
-                        CustomerExperienceProcesses = 0,
-                        ReconciliationProcesses = 0,
-                        RecordsManagementProcesses = 0,
-                        PaymentProcesses = 2,
-                        WalletProcesses = 1,
-                        TotalProcesses = 4
+                var request = new GrcStatisticRequest() {
+                    UserId = userId,
+                    IPAddress = ipAddress,
+                    Action = Activity.PROCESSES_UNIT_STATISTIC.GetDescription()
+                };
 
-                    },
-                    CancelledProcesses = new UnitCountResponse()
-                    {
-                        AccountServiceProcesses = 4,
-                        CashProcesses = 0,
-                        ChannelProcesses = 6,
-                        CustomerExperienceProcesses = 0,
-                        ReconciliationProcesses = 0,
-                        RecordsManagementProcesses = 1,
-                        PaymentProcesses = 0,
-                        WalletProcesses = 0,
-                        TotalProcesses = 11
-                    }
+                //..map request
+                Logger.LogActivity($"STATISTIC REQUEST : {JsonSerializer.Serialize(request)}");
 
-                },
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/unit-statistics";
+                Logger.LogActivity($"Endpoint: {endpoint}");
 
-                ProcessCategories = new ProcessCategoryStatisticsResponse() {
+                return await HttpHandler.PostAsync<GrcStatisticRequest, OperationsUnitCountResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "PROCESSES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<OperationsUnitCountResponse>(error);
 
-                    CashProcesses = new CategoriesCountResponse() {
-                        Unclassified = 0,
-                        UpToDate = 9,
-                        Unchanged = 6,
-                        Proposed = 3,
-                        Due = 0,
-                        Dormant = 1,
-                        Cancelled = 2,
-                        Total = 21
-                    },
-                    AccountServiceProcesses = new CategoriesCountResponse() {
-                        Unclassified = 0,
-                        UpToDate = 9,
-                        Unchanged = 0,
-                        Proposed = 0,
-                        Due = 0,
-                        Dormant = 1,
-                        Cancelled = 3,
-                        Total = 13
-                    },
-                    RecordsMgtProcesses = new CategoriesCountResponse() {
-                        Unclassified = 5,
-                        UpToDate = 3,
-                        Unchanged = 0,
-                        Proposed = 0,
-                        Due = 0,
-                        Dormant = 1,
-                        Cancelled = 0,
-                        Total = 9
-                    },
-                    ChannelProcesses = new CategoriesCountResponse() {
-                        Unclassified = 0,
-                        UpToDate = 9,
-                        Unchanged = 14,
-                        Proposed = 7,
-                        Due = 2,
-                        Dormant = 5,
-                        Cancelled = 12,
-                        Total = 49
-                    },
-                    PaymentProcesses = new CategoriesCountResponse() {
-                        Unclassified = 2,
-                        UpToDate = 9,
-                        Unchanged = 5,
-                        Proposed = 39,
-                        Due = 17,
-                        Dormant = 8,
-                        Cancelled = 4,
-                        Total = 84
-                    },
-                    WalletProcesses = new CategoriesCountResponse() {
-                        Unclassified = 3,
-                        UpToDate = 15,
-                        Unchanged = 2,
-                        Proposed = 0,
-                        Due = 1,
-                        Dormant = 6,
-                        Cancelled = 7,
-                        Total = 35
-                    },
-                    CustomerExperienceProcesses = new CategoriesCountResponse() {
-                        Unclassified = 2,
-                        UpToDate = 12,
-                        Unchanged = 2,
-                        Proposed = 3,
-                        Due = 3,
-                        Dormant = 6,
-                        Cancelled = 0,
-                        Total = 28
-                    },
-                    ReconciliationProcesses = new CategoriesCountResponse() {
-                        Unclassified = 5,
-                        UpToDate = 4,
-                        Unchanged = 0,
-                        Proposed = 0,
-                        Due = 0,
-                        Dormant = 8,
-                        Cancelled = 0,
-                        Total = 12
-                    },
-                    TotalCategoryProcesses = new CategoriesCountResponse() {
-                        Unclassified = 40,
-                        UpToDate = 64,
-                        Unchanged = 39,
-                        Proposed = 10,
-                        Due = 17,
-                        Dormant = 2,
-                        Cancelled = 4,
-                        Total = 172
-                    },
-                }
-            };
-
-            return await Task.FromResult(stats);
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<OperationsUnitCountResponse>(error);
+            }
+           
         }
 
-        public async Task<CategoriesCountResponse> UnitCountAsync(long userId, string ipAddress, string unit)
-        {
-            var categories = new CategoriesCountResponse()
-            {
-                Unclassified = 9,
-                UpToDate = 5,
-                Unchanged = 12,
-                Proposed = 7,
-                Due = 3,
-                Dormant = 8,
-                Cancelled = 15,
-                Total = 59
-            };
+        public async Task<GrcResponse<UnitExtensionCountResponse>> UnitExtensionsCountAsync(string unit, long userId, string ipAddress) {
+            try {
 
-            return await Task.FromResult(categories);
+                var request = new GrcUnitStatisticRequest() {
+                    UserId = userId,
+                    UnitName = (unit ?? string.Empty).Trim(),
+                    IPAddress = ipAddress,
+                    Action = Activity.PROCESSES_UNIT_STATISTIC.GetDescription()
+                };
+
+                //..map request
+                Logger.LogActivity($"UNIT STATISTIC REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/unit-extensions-statistics";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcUnitStatisticRequest, UnitExtensionCountResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "PROCESSES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<UnitExtensionCountResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<UnitExtensionCountResponse>(error);
+            }
+
         }
 
-        public async Task<List<DashboardRecord>> TotalExtensionsCountAsync(long userId, string ipAddress)
-        {
-            return await Task.FromResult(new List<DashboardRecord>()
-            {
-                new(){
-                    Banner = ProcessCategories.UpToDate.GetDescription(),
-                    Categories = new Dictionary<string, int> {
-                        { OperationUnit.AccountServices.GetDescription(),9 },
-                        { OperationUnit.Cash.GetDescription(), 3 },
-                        { OperationUnit.Channels.GetDescription(), 9 },
-                        { OperationUnit.CustomerExp.GetDescription(), 12 },
-                        { OperationUnit.Reconciliation.GetDescription(), 4 },
-                        { OperationUnit.RecordsMgt.GetDescription(), 3 },
-                        { OperationUnit.Payments.GetDescription(), 9 },
-                        { OperationUnit.Wallets.GetDescription(), 15 },
-                        { OperationUnit.CategoryTotal.GetDescription(), 62 }
-                    }
-                },
-                new()
-                {
-                    Banner = ProcessCategories.Proposed.GetDescription(),
-                    Categories = new Dictionary<string, int> {
-                        { OperationUnit.AccountServices.GetDescription(),0 },
-                        { OperationUnit.Cash.GetDescription(), 0 },
-                        { OperationUnit.Channels.GetDescription(), 3 },
-                        { OperationUnit.CustomerExp.GetDescription(), 0 },
-                        { OperationUnit.Reconciliation.GetDescription(), 0 },
-                        { OperationUnit.RecordsMgt.GetDescription(), 0 },
-                        { OperationUnit.Payments.GetDescription(), 5 },
-                        { OperationUnit.Wallets.GetDescription(), 2 },
-                        { OperationUnit.CategoryTotal.GetDescription(), 10 }
-                    }
-                },
-                new()
-                {
-                    Banner = ProcessCategories.Unchanged.GetDescription(),
-                    Categories = new Dictionary<string, int> {
-                        { OperationUnit.AccountServices.GetDescription(),0 },
-                        { OperationUnit.Cash.GetDescription(), 9 },
-                        { OperationUnit.Channels.GetDescription(), 14 },
-                        { OperationUnit.CustomerExp.GetDescription(), 2 },
-                        { OperationUnit.Reconciliation.GetDescription(), 8 },
-                        { OperationUnit.RecordsMgt.GetDescription(), 0 },
-                        { OperationUnit.Payments.GetDescription(), 6 },
-                        { OperationUnit.Wallets.GetDescription(), 0 },
-                        { OperationUnit.CategoryTotal.GetDescription(), 30 }
-                    },
-                },
-                new()
-                {
-                    Banner = ProcessCategories.Due.GetDescription(),
-                    Categories = new Dictionary<string, int> {
-                        { OperationUnit.AccountServices.GetDescription(),0 },
-                        { OperationUnit.Cash.GetDescription(), 1 },
-                        { OperationUnit.Channels.GetDescription(), 7 },
-                        { OperationUnit.CustomerExp.GetDescription(), 3 },
-                        { OperationUnit.Reconciliation.GetDescription(), 0 },
-                        { OperationUnit.RecordsMgt.GetDescription(), 0 },
-                        { OperationUnit.Payments.GetDescription(), 5 },
-                        { OperationUnit.Wallets.GetDescription(), 1 },
-                        { OperationUnit.CategoryTotal.GetDescription(), 17 }
-                    },
-                },
-                new()
-                {
-                    Banner = ProcessCategories.Dormant.GetDescription(),
-                    Categories = new Dictionary<string, int> {
-                        { OperationUnit.AccountServices.GetDescription(),0 },
-                        { OperationUnit.Cash.GetDescription(), 0 },
-                        { OperationUnit.Channels.GetDescription(), 1 },
-                        { OperationUnit.CustomerExp.GetDescription(), 0 },
-                        { OperationUnit.Reconciliation.GetDescription(), 0 },
-                        { OperationUnit.RecordsMgt.GetDescription(), 0 },
-                        { OperationUnit.Payments.GetDescription(), 2 },
-                        { OperationUnit.Wallets.GetDescription(), 1 },
-                        { OperationUnit.CategoryTotal.GetDescription(), 4 }
-                    },
-                },
-                new()
-                {
-                    Banner = ProcessCategories.Cancelled.GetDescription(),
-                    Categories = new Dictionary<string, int> {
-                        { OperationUnit.AccountServices.GetDescription(),4 },
-                        { OperationUnit.Cash.GetDescription(), 0 },
-                        { OperationUnit.Channels.GetDescription(), 6 },
-                        { OperationUnit.CustomerExp.GetDescription(), 0 },
-                        { OperationUnit.Reconciliation.GetDescription(), 0 },
-                        { OperationUnit.RecordsMgt.GetDescription(), 1 },
-                        { OperationUnit.Payments.GetDescription(), 0 },
-                        { OperationUnit.Wallets.GetDescription(), 0 },
-                        { OperationUnit.CategoryTotal.GetDescription(), 11 }
-                    },
-                }
-            });
+        public async Task<GrcResponse<CategoriesCountResponse>> CategoryCountAsync(long userId, string ipAddress, string unit) {
+            try {
+
+                var request = new GrcUnitStatisticRequest() {
+                    UserId = userId,
+                    UnitName = (unit ?? string.Empty).Trim(),
+                    IPAddress = ipAddress,
+                    Action = Activity.PROCESSES_UNIT_STATISTIC.GetDescription()
+                };
+
+                //..map request
+                Logger.LogActivity($"UNIT STATISTIC REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/category-statistics";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcUnitStatisticRequest, CategoriesCountResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "PROCESSES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<CategoriesCountResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<CategoriesCountResponse>(error);
+            }
         }
 
-        public async Task<CategoryExtensionModel> CategoryExtensionsCountAsync(string category, long userId, string lastLoginIpAddress)
+        public async Task<GrcResponse<CategoryExtensionResponse>> CategoryExtensionsCountAsync(string category, long userId, string ipAddress)
         {
-            var processes = new List<CategoryExtensionModel>()
-            {
-                new(){
-                    Banner = ProcessCategories.UpToDate.GetDescription(),
-                    CategoryProcesses = new Dictionary<string, int> {
-                        { OperationUnit.AccountServices.GetDescription(),9 },
-                        { OperationUnit.Cash.GetDescription(), 3 },
-                        { OperationUnit.Channels.GetDescription(), 9 },
-                        { OperationUnit.CustomerExp.GetDescription(), 12 },
-                        { OperationUnit.Reconciliation.GetDescription(), 4 },
-                        { OperationUnit.RecordsMgt.GetDescription(), 3 },
-                        { OperationUnit.Payments.GetDescription(), 9 },
-                        { OperationUnit.Wallets.GetDescription(), 15 }
-                    }
-                },
-                new()
-                {
-                    Banner = ProcessCategories.Proposed.GetDescription(),
-                    CategoryProcesses = new Dictionary<string, int> {
-                        { OperationUnit.AccountServices.GetDescription(),0 },
-                        { OperationUnit.Cash.GetDescription(), 0 },
-                        { OperationUnit.Channels.GetDescription(), 3 },
-                        { OperationUnit.CustomerExp.GetDescription(), 0 },
-                        { OperationUnit.Reconciliation.GetDescription(), 0 },
-                        { OperationUnit.RecordsMgt.GetDescription(), 0 },
-                        { OperationUnit.Payments.GetDescription(), 5 },
-                        { OperationUnit.Wallets.GetDescription(), 2 }
-                    }
-                },
-                new()
-                {
-                    Banner = ProcessCategories.Unchanged.GetDescription(),
-                    CategoryProcesses = new Dictionary<string, int> {
-                        { OperationUnit.AccountServices.GetDescription(),0 },
-                        { OperationUnit.Cash.GetDescription(), 9 },
-                        { OperationUnit.Channels.GetDescription(), 14 },
-                        { OperationUnit.CustomerExp.GetDescription(), 2 },
-                        { OperationUnit.Reconciliation.GetDescription(), 8 },
-                        { OperationUnit.RecordsMgt.GetDescription(), 0 },
-                        { OperationUnit.Payments.GetDescription(), 6 },
-                        { OperationUnit.Wallets.GetDescription(), 0 }
-                    },
-                },
-                new()
-                {
-                    Banner = ProcessCategories.Due.GetDescription(),
-                    CategoryProcesses = new Dictionary<string, int> {
-                        { OperationUnit.AccountServices.GetDescription(),0 },
-                        { OperationUnit.Cash.GetDescription(), 1 },
-                        { OperationUnit.Channels.GetDescription(), 7 },
-                        { OperationUnit.CustomerExp.GetDescription(), 3 },
-                        { OperationUnit.Reconciliation.GetDescription(), 0 },
-                        { OperationUnit.RecordsMgt.GetDescription(), 0 },
-                        { OperationUnit.Payments.GetDescription(), 5 },
-                        { OperationUnit.Wallets.GetDescription(), 1 }
-                    },
-                },
-                new()
-                {
-                    Banner = ProcessCategories.Dormant.GetDescription(),
-                    CategoryProcesses = new Dictionary<string, int> {
-                        { OperationUnit.AccountServices.GetDescription(),0 },
-                        { OperationUnit.Cash.GetDescription(), 0 },
-                        { OperationUnit.Channels.GetDescription(), 1 },
-                        { OperationUnit.CustomerExp.GetDescription(), 0 },
-                        { OperationUnit.Reconciliation.GetDescription(), 0 },
-                        { OperationUnit.RecordsMgt.GetDescription(), 0 },
-                        { OperationUnit.Payments.GetDescription(), 2 },
-                        { OperationUnit.Wallets.GetDescription(), 1 }
-                    },
-                },
-                new()
-                {
-                    Banner = ProcessCategories.Cancelled.GetDescription(),
-                    CategoryProcesses = new Dictionary<string, int> {
-                        { OperationUnit.AccountServices.GetDescription(),4 },
-                        { OperationUnit.Cash.GetDescription(), 0 },
-                        { OperationUnit.Channels.GetDescription(), 6 },
-                        { OperationUnit.CustomerExp.GetDescription(), 0 },
-                        { OperationUnit.Reconciliation.GetDescription(), 0 },
-                        { OperationUnit.RecordsMgt.GetDescription(), 1 },
-                        { OperationUnit.Payments.GetDescription(), 0 },
-                        { OperationUnit.Wallets.GetDescription(), 0 }
-                    },
-                }
-            };
-            var obj = processes.FirstOrDefault(d => d.Banner.Trim().Equals(category?.Trim(), StringComparison.CurrentCultureIgnoreCase));
-            return await Task.FromResult(obj);
+            try {
+
+                var request = new GrcCategoryStatisticRequest() {
+                    UserId = userId,
+                    Category = (category ?? string.Empty).Trim(),
+                    IPAddress = ipAddress,
+                    Action = Activity.PROCESSES_CATEGORY_STATISTIC.GetDescription()
+                };
+
+                //..map request
+                Logger.LogActivity($"CATEGORY STATISTIC REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/category-extensions-statistics";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcCategoryStatisticRequest, CategoryExtensionResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "PROCESSES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<CategoryExtensionResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<CategoryExtensionResponse>(error);
+            }
         }
 
-        public async Task<UnitExtensionModel> UnitExtensionsCountAsync(string unit, long userId, string ipAddress)
-        {
-            var processes = new List<UnitExtensionModel>()
-            {
-                new(){
-                    Banner =  OperationUnit.AccountServices.GetDescription(),
-                    UnitProcesses = new Dictionary<string, int> {
-                        { ProcessCategories.UpToDate.GetDescription(), 9 },
-                        { ProcessCategories.Proposed.GetDescription(),0 },
-                        { ProcessCategories.Unchanged.GetDescription(), 0 },
-                        { ProcessCategories.Due.GetDescription(), 0 },
-                        { ProcessCategories.Dormant.GetDescription(), 0 },
-                        { ProcessCategories.Cancelled.GetDescription(), 4 }
-                    }
-                },
-                new()
-                {
-                    Banner = OperationUnit.Cash.GetDescription(),
-                    UnitProcesses = new Dictionary<string, int> {
-                        { ProcessCategories.UpToDate.GetDescription(), 3 },
-                        { ProcessCategories.Proposed.GetDescription(),0 },
-                        { ProcessCategories.Unchanged.GetDescription(), 9 },
-                        { ProcessCategories.Due.GetDescription(), 1 },
-                        { ProcessCategories.Dormant.GetDescription(), 0 },
-                        { ProcessCategories.Cancelled.GetDescription(), 0 }
-                    }
-                },
-                new()
-                {
-                    Banner = OperationUnit.Channels.GetDescription(),
-                    UnitProcesses = new Dictionary<string, int> {
-                        { ProcessCategories.UpToDate.GetDescription(), 9 },
-                        { ProcessCategories.Proposed.GetDescription(),3 },
-                        { ProcessCategories.Unchanged.GetDescription(), 14 },
-                        { ProcessCategories.Due.GetDescription(), 7 },
-                        { ProcessCategories.Dormant.GetDescription(), 1 },
-                        { ProcessCategories.Cancelled.GetDescription(), 6 }
-                    }
-                },
-                new()
-                {
-                    Banner = OperationUnit.CustomerExp.GetDescription(),
-                    UnitProcesses = new Dictionary<string, int> {
-                        { ProcessCategories.UpToDate.GetDescription(), 12 },
-                        { ProcessCategories.Proposed.GetDescription(),0 },
-                        { ProcessCategories.Unchanged.GetDescription(), 2 },
-                        { ProcessCategories.Due.GetDescription(), 3 },
-                        { ProcessCategories.Dormant.GetDescription(), 0 },
-                        { ProcessCategories.Cancelled.GetDescription(), 0 }
-                    }
-                },
-                new()
-                {
-                    Banner = OperationUnit.Reconciliation.GetDescription(),
-                    UnitProcesses = new Dictionary<string, int> {
-                        { ProcessCategories.UpToDate.GetDescription(), 4 },
-                        { ProcessCategories.Proposed.GetDescription(),0 },
-                        { ProcessCategories.Unchanged.GetDescription(), 8 },
-                        { ProcessCategories.Due.GetDescription(), 0 },
-                        { ProcessCategories.Dormant.GetDescription(), 0 },
-                        { ProcessCategories.Cancelled.GetDescription(), 0 }
-                    }
-                },
-                new()
-                {
-                    Banner = OperationUnit.RecordsMgt.GetDescription(),
-                    UnitProcesses = new Dictionary<string, int> {
-                        { ProcessCategories.UpToDate.GetDescription(), 3 },
-                        { ProcessCategories.Proposed.GetDescription(),0 },
-                        { ProcessCategories.Unchanged.GetDescription(), 0 },
-                        { ProcessCategories.Due.GetDescription(), 0 },
-                        { ProcessCategories.Dormant.GetDescription(), 0 },
-                        { ProcessCategories.Cancelled.GetDescription(), 1 }
-                    }
-                },
-                new()
-                {
-                    Banner = OperationUnit.Payments.GetDescription(),
-                    UnitProcesses = new Dictionary<string, int> {
-                        { ProcessCategories.UpToDate.GetDescription(), 9 },
-                        { ProcessCategories.Proposed.GetDescription(),5 },
-                        { ProcessCategories.Unchanged.GetDescription(), 6 },
-                        { ProcessCategories.Due.GetDescription(), 5 },
-                        { ProcessCategories.Dormant.GetDescription(), 2 },
-                        { ProcessCategories.Cancelled.GetDescription(), 0 }
-                    }
-                },
-                new()
-                {
-                    Banner = OperationUnit.Wallets.GetDescription(),
-                    UnitProcesses = new Dictionary<string, int> {
-                        { ProcessCategories.UpToDate.GetDescription(), 15 },
-                        { ProcessCategories.Proposed.GetDescription(),2 },
-                        { ProcessCategories.Unchanged.GetDescription(), 0 },
-                        { ProcessCategories.Due.GetDescription(), 1 },
-                        { ProcessCategories.Dormant.GetDescription(), 1 },
-                        { ProcessCategories.Cancelled.GetDescription(), 0 }
-                    },
-                }
-            };
-            var obj = processes.FirstOrDefault(d => d.Banner.Trim().Equals(unit?.Trim(), StringComparison.CurrentCultureIgnoreCase));
-            return await Task.FromResult(obj);
+        public async Task<GrcResponse<List<StatisticTotalResponse>>> TotalExtensionsCountAsync(long userId, string ipAddress) {
+            try {
+
+                var request = new GrcRequest() {
+                    UserId = userId,
+                    IPAddress = ipAddress,
+                    Action = Activity.PROCESSES_CATEGORY_STATISTIC.GetDescription(),
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>(),
+                };
+
+                //..map request
+                Logger.LogActivity($"CATEGORY TOTALS REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/total-process-statistics";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcRequest, List<StatisticTotalResponse>>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "PROCESSES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<List<StatisticTotalResponse>>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<List<StatisticTotalResponse>>(error);
+            }
         }
 
         #endregion

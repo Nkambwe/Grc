@@ -114,7 +114,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         public async Task<IActionResult> Completed() {
-            CategoryExtensionModel model;
+            CategoryExtensionResponse model;
             UserModel currentUser = null;
             try {
                 //..get user IP address
@@ -141,7 +141,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         public async Task<IActionResult> Proposed() {
-            CategoryExtensionModel model;
+            CategoryExtensionResponse model;
             UserModel currentUser = null;
             try
             {
@@ -172,7 +172,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         public async Task<IActionResult> Dormant() {
-            CategoryExtensionModel model;
+            CategoryExtensionResponse model;
             UserModel currentUser = null;
             try
             {
@@ -203,7 +203,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         public async Task<IActionResult> Cancelled() {
-            CategoryExtensionModel model;
+            CategoryExtensionResponse model;
             UserModel currentUser = null;
             try
             {
@@ -234,7 +234,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         public async Task<IActionResult> Unchanged() {
-            CategoryExtensionModel model;
+            CategoryExtensionResponse model;
             UserModel currentUser = null;
             try
             {
@@ -265,7 +265,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         public async Task<IActionResult> Due() {
-            CategoryExtensionModel model;
+            CategoryExtensionResponse model;
             UserModel currentUser = null;
             try
             {
@@ -296,7 +296,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         public async Task<IActionResult> AccountServices() {
-            UnitExtensionModel model;
+            UnitExtensionCountResponse model;
             UserModel currentUser = null;
             try
             {
@@ -327,7 +327,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         public async Task<IActionResult> Reconciliation() {
-            UnitExtensionModel model;
+            UnitExtensionCountResponse model;
             UserModel currentUser = null;
             try
             {
@@ -358,7 +358,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         public async Task<IActionResult> RecordsManagement() {
-            UnitExtensionModel model;
+            UnitExtensionCountResponse model;
             UserModel currentUser = null;
             try
             {
@@ -389,7 +389,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         public async Task<IActionResult> Wallets() {
-            UnitExtensionModel model;
+            UnitExtensionCountResponse model;
             UserModel currentUser = null;
             try
             {
@@ -421,7 +421,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         public async Task<IActionResult> Cash() {
-            UnitExtensionModel model;
+            UnitExtensionCountResponse model;
             UserModel currentUser = null;
             try
             {
@@ -453,7 +453,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         public async Task<IActionResult> Payments() {
-            UnitExtensionModel model;
+            UnitExtensionCountResponse model;
             UserModel currentUser = null;
             try
             {
@@ -485,7 +485,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
 
         public async Task<IActionResult> Channels()
         {
-            UnitExtensionModel model;
+            UnitExtensionCountResponse model;
             UserModel currentUser = null;
             try
             {
@@ -516,7 +516,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         public async Task<IActionResult> CustomerExperience() {
-            UnitExtensionModel model;
+            UnitExtensionCountResponse model;
             UserModel currentUser = null;
             try
             {

@@ -5,13 +5,28 @@ using Grc.Middleware.Api.Http.Responses;
 using System.Linq.Expressions;
 
 namespace Grc.Middleware.Api.Services.Operations {
+
     public interface IOperationProcessService {
+
+        #region Count Methods
         int Count();
         int Count(Expression<Func<OperationProcess, bool>> predicate);
         Task<int> CountAsync(CancellationToken cancellationToken = default);
         Task<int> CountAsync(bool excludeDeleted = true, CancellationToken cancellationToken = default);
         Task<int> CountAsync(Expression<Func<OperationProcess, bool>> predicate, CancellationToken cancellationToken = default);
         Task<int> CountAsync(Expression<Func<OperationProcess, bool>> predicate, bool excludeDeleted = true, CancellationToken cancellationToken = default);
+        #endregion
+
+        #region Statistics Methods
+        Task<ServiceOperationUnitCountResponse> GetOperationUnitStatisticsAsync(bool includeDeleted = false);
+        Task<ServiceCategoriesCountResponse> GetProcessCategoryStatisticsAsync(bool includeDeleted = false);
+        Task<ServiceUnitExtensionCountResponse> GetUnitStatisticExtensionsAsync(string unitName, bool includeDeleted);
+        Task<ServiceCategoryExtensionCountResponse> GetCategoryStatisticExtensionsAsync(string category, bool includeDeleted);
+        Task<List<ServiceStatisticTotalResponse>> GetProcessTotalStatisticsAsync(bool includeDeleted);
+
+        #endregion
+
+        #region Operation Methods
         bool Exists(Expression<Func<OperationProcess, bool>> predicate, bool excludeDeleted = false);
         Task<bool> ExistsAsync(Expression<Func<OperationProcess, bool>> predicate, bool excludeDeleted = false, CancellationToken token = default);
         Task<Dictionary<string, bool>> ExistsBatchAsync(Dictionary<string, Expression<Func<OperationProcess, bool>>> predicates, bool excludeDeleted = true, CancellationToken cancellationToken = default);
@@ -49,5 +64,9 @@ namespace Grc.Middleware.Api.Services.Operations {
         Task<bool> InitiateReviewAsync(InitiateRequest request);
         Task<bool> HoldProcessReviewAsync(HoldRequest request);
         Task<(bool, string, long)> RequestApprovalAsync(long recordId, string requestedBy);
+
+        #endregion
+
     }
+
 }

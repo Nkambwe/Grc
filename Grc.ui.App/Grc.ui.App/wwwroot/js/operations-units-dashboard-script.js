@@ -1,11 +1,14 @@
 ﻿// category color mapping
 const cardColors = {
-    "UpToDate": { bg: "#B759E3", class: `${cardColor}` },
-    "Unclassified": { bg: "#858585", class: `${cardColor}` },
-    "Cancelled": { bg: "#3E8DF6", class: `${cardColor}` },
-    "Unchanged": { bg: "#EC007A", class: `${cardColor}` },
-    "Need Review": { bg: "#FFA000", class: `${cardColor}` },
-    "Dormant": { bg: "#CF5C22", class: `${cardColor}` }
+    "UpToDate": { bg: "#10B981", class: "card-uptodate" },
+    "Unclassified": { bg: "#3B82F6", class: "card-proposed" },
+    "Cancelled": { bg: "#5CC8C9", class: "card-cancelled" },
+    "Unchanged": { bg: "#8B5CF6", class: "card-unchanged" },
+    "Obsolete": { bg: "#9E1D08", class: "card-due" },
+    "Review": { bg: "#7CF0AC", class: "card-review" },
+    "Dormant": { bg: "#EF4444", class: "card-dormant" },
+    "Draft": { bg: "#72319E", class: "card-draft" },
+    "On Hold": { bg: "#F59E0B", class: "card-onhold" }
 };
 
 //..generate unit cards
@@ -19,8 +22,8 @@ function generateUnitCards(record) {
     unitCardsContainer.innerHTML = '';
 
     //..create cards
-    Object.keys(record.UnitProcesses).forEach(unit => {
-        const total = record.UnitProcesses[unit];
+    Object.keys(record.unitProcesses).forEach(unit => {
+        const total = record.unitProcesses[unit];
         const card = document.createElement('div');
         card.className = `stats-category-card  ${cardColors[unit].class}`;
         card.innerHTML = `
@@ -68,7 +71,7 @@ function renderPiechart(record) {
         unitChart.destroy();
     }
 
-    const units = record.UnitProcesses;
+    const units = record.unitProcesses;
     const unitLabels = Object.keys(units);
     const unitData = Object.values(units);
     const unitColors = unitLabels.map((label, i) => {
@@ -100,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Table of processes
     const tableBody = document.querySelector('#processTable tbody');
     tableBody.innerHTML = '';
-    Object.entries(unitStatistics.UnitProcesses).forEach(([label, value]) => {
+    Object.entries(unitStatistics.unitProcesses).forEach(([label, value]) => {
         const tr = document.createElement('tr');
         let disabled = value === 0 ? "disabled" : "";
         tr.innerHTML = `<td>${label}</td>
