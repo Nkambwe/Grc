@@ -496,6 +496,128 @@ namespace Grc.Middleware.Api.Controllers {
         #endregion
 
         #region Regulatory Types
+        [HttpPost("registers/regulatory-types-retrieve")]
+        public async Task<IActionResult> GetRegulatoryType([FromBody] IdRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/paged-regulatory-type-list")]
+        public async Task<IActionResult> GetPagedRegulatoryTypeList([FromBody] ListRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/create-regulatory-type")]
+        public async Task<IActionResult> CreateRegulatoryType([FromBody] PolicyDocumentRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/update-regulatory-type")]
+        public async Task<IActionResult> UpdateRegulatoryType([FromBody] PolicyDocumentRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/delete-regulatory-type")]
+        public async Task<IActionResult> DeleteRegulatoryType([FromBody] IdRequest request) {
+            return Ok();
+        }
+
+        #endregion
+
+        #region Document Types
+
+        [HttpPost("registers/document-type-retrieve")]
+        public async Task<IActionResult> GetDocumentType([FromBody] IdRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/document-type-list")]
+        public async Task<IActionResult> GetDocumentTypeList([FromBody] GeneralRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/paged-document-type-list")]
+        public async Task<IActionResult> GetPagedDocumentTypeList([FromBody] ListRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/create-document-type")]
+        public async Task<IActionResult> CreateDocumentType([FromBody] PolicyDocumentRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/update-document-type")]
+        public async Task<IActionResult> UpdateDocumentType([FromBody] PolicyDocumentRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/delete-document-type")]
+        public async Task<IActionResult> DeleteDocumentType([FromBody] IdRequest request) {
+            return Ok();
+        }
+
+        #endregion
+
+        #region Categories
+
+        [HttpPost("registers/regulatory-categories-retrieve")]
+        public async Task<IActionResult> GetCategory([FromBody] IdRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/category-list")]
+        public async Task<IActionResult> GetCategoryList([FromBody] GeneralRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/paged-categories-list")]
+        public async Task<IActionResult> GetPagedCategoryList([FromBody] ListRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/create-category")]
+        public async Task<IActionResult> CreateCategory([FromBody] PolicyDocumentRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/update-category")]
+        public async Task<IActionResult> UpdateCategory([FromBody] PolicyDocumentRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/delete-category")]
+        public async Task<IActionResult> DeleteCategory([FromBody] IdRequest request) {
+            return Ok();
+        }
+
+        #endregion
+
+        #region Authorities
+
+        [HttpPost("registers/authorities-retrieve")]
+        public async Task<IActionResult> GetAuthority([FromBody] IdRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/paged-authorities-list")]
+        public async Task<IActionResult> GetPagedAuthorityList([FromBody] ListRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/create-authority")]
+        public async Task<IActionResult> CreateAuthority([FromBody] PolicyDocumentRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/update-authority")]
+        public async Task<IActionResult> UpdateAuthority([FromBody] PolicyDocumentRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/delete-authority")]
+        public async Task<IActionResult> DeleteAuthority([FromBody] IdRequest request) {
+            return Ok();
+        }
+
         #endregion
 
         #region Articles
@@ -504,8 +626,6 @@ namespace Grc.Middleware.Api.Controllers {
         #region Statutories
         #endregion
 
-        #region Categories
-        #endregion
 
     }
 }

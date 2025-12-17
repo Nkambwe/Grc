@@ -1,4 +1,8 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Grc.ui.App.Enums;
+using Grc.ui.App.Extensions;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Helpers;
 using Grc.ui.App.Http.Requests;
@@ -6,21 +10,10 @@ using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
-using System.Linq.Dynamic.Core;
+using System.Text.Json;
 
 namespace Grc.ui.App.Services {
-    public class DocumentTypeService : GrcBaseService, IDocumentTypeService
-    {
-        private IQueryable<DocumentTypeResponse> query = new List<DocumentTypeResponse> {
-                new() { Id = 1, TypeName = "Catalogue", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 2, TypeName = "Framework", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 3, TypeName = "Manual", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 4, TypeName = "Plan", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 5, TypeName = "Ploicy", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 6, TypeName = "Procedure", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 7, TypeName = "SLA", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 8, TypeName = "Blank", CreatedAt = DateTime.Now,IsDeleted = true}
-            }.AsQueryable();
+    public class DocumentTypeService : GrcBaseService, IDocumentTypeService {
 
         public DocumentTypeService(IApplicationLoggerFactory loggerFactory, 
             IHttpHandler httpHandler, IEnvironmentProvider environment, 
@@ -31,91 +24,212 @@ namespace Grc.ui.App.Services {
                   webHelper, sessionManager, errorFactory, errorService) {
         }
 
-        public async Task<GrcResponse<DocumentTypeResponse>> GetTypeAsync(GrcIdRequest getRequest)
-        {
-            return await Task.FromResult(new GrcResponse<DocumentTypeResponse>(query.FirstOrDefault()));
-        }
-
-        public async Task<GrcResponse<List<DocumentTypeResponse>>> GetAllAsync(GrcRequest getRequest) {
-            return await Task.FromResult(new GrcResponse<List<DocumentTypeResponse>>(query.ToList()));
-        }
-
-        public async Task<GrcResponse<PagedResponse<DocumentTypeResponse>>> GetAllDocumentTypes(TableListRequest request)
-        {
-            //..filter data
-            if (!string.IsNullOrWhiteSpace(request.SearchTerm))
-            {
-                var lookUp = request.SearchTerm.ToLower();
-                query = query.Where(a =>
-                    (a.TypeName != null && a.TypeName.ToLower().Contains(lookUp))
+        public async Task<GrcResponse<DocumentTypeResponse>> GetDocumentTypeAsync(GrcIdRequest request) {
+            try {
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/document-type-retrieve";
+                return await HttpHandler.PostAsync<GrcIdRequest, DocumentTypeResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "DOCUMENT-TYPE-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
                 );
-            }
 
-            //..apply sorting
-            if (!string.IsNullOrEmpty(request.SortBy))
-            {
-                var sortExpr = $"{request.SortBy} {(request.SortDirection == "Ascending" ? "asc" : "desc")}";
-                query = query.OrderBy(sortExpr);
+                return new GrcResponse<DocumentTypeResponse>(error);
             }
-
-            var page = new PagedResponse<DocumentTypeResponse>()
-            {
-                TotalCount = 20,
-                Page = request.PageIndex,
-                Size = request.PageSize,
-                Entities = query.ToList(),
-                TotalPages = 2
-            };
-            return await Task.FromResult(new GrcResponse<PagedResponse<DocumentTypeResponse>>(page));
         }
 
-        public async Task<GrcResponse<DocumentTypeResponse>> CreateTypeAsync(DocumentTypeViewModel request)
-        {
-            var record = new DocumentTypeResponse
-            {
-                TypeName = request.TypeName,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
-                IsDeleted = false,
-                Id = query.Max(r => r.Id) + 1
-            };
-            return await Task.FromResult(new GrcResponse<DocumentTypeResponse>(record));
+        public async Task<GrcResponse<List<DocumentTypeResponse>>> GetDocumentListAsync(GrcRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object", "Request object cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<List<DocumentTypeResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/document-type-list";
+                return await HttpHandler.PostAsync<GrcRequest, List<DocumentTypeResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "DOCUMENT-TYPE-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<List<DocumentTypeResponse>>(error);
+            }
         }
 
-        public async Task<GrcResponse<DocumentTypeResponse>> UpdateTypeAsync(DocumentTypeViewModel request)
-        {
-            var record = query.FirstOrDefault(r => r.Id == request.Id);
+        public async Task<GrcResponse<PagedResponse<DocumentTypeResponse>>> GetPagedDocumentTypesAsync(TableListRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object","Request object cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<PagedResponse<DocumentTypeResponse>>(error);
+                }
 
-            if (record == null)
-            {
-                return await Task.FromResult(new GrcResponse<DocumentTypeResponse>(record));
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/paged-document-type-list";
+                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<DocumentTypeResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "DOCUMENT-TYPE-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<PagedResponse<DocumentTypeResponse>>(error);
             }
-
-            record.TypeName = request.TypeName;
-            record.IsDeleted = request.Status == "Inactive";
-            record.UpdatedAt = DateTime.Now.AddDays(-2);
-
-            return await Task.FromResult(new GrcResponse<DocumentTypeResponse>(record));
         }
 
-        public async Task<GrcResponse<ServiceResponse>> DeleteTypeAsync(GrcIdRequest deleteRequest)
-        {
-            var record = query.FirstOrDefault(r => r.Id == deleteRequest.RecordId);
-            if (record == null)
-            {
-                return await Task.FromResult(new GrcResponse<ServiceResponse>(new ServiceResponse
-                {
-                    Status = false,
-                    StatusCode = 404,
-                    Message = "Document type not found"
-                }));
+        public async Task<GrcResponse<ServiceResponse>> CreateTypeAsync(DocumentTypeViewModel model, long userId, string ipAddress) {
+            try {
+                if (model == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Document type record cannot be null",
+                        "Invalid Document type record"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                var request = new DocumentTypeRequest {
+                    TypeName = model.TypeName,
+                    IsDeleted = model.IsDeleted,
+                    UserId = userId,
+                    IPAddress = ipAddress,
+                    Action = Activity.COMPLIANCE_CREATE_DOCTYPE.GetDescription()
+                };
+
+                //..map request
+                Logger.LogActivity($"CREATE DOCUMENT TYPE REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/create-document-type";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<DocumentTypeRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "DOCUMENT-TYPES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "DOCUMENT-TYPES-SERVICE");
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
             }
-            return await Task.FromResult(new GrcResponse<ServiceResponse>(new ServiceResponse
-            {
-                Status = true,
-                StatusCode = 200,
-                Message = "Document type deleted successfully"
-            }));
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> UpdateTypeAsync(DocumentTypeViewModel model, long userId, string ipAddress) {
+            try {
+                if (model == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Document type cannot be null", "Invalid document type record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..build request object
+                var request = Mapper.Map<GrcPolicyDocumentRequest>(model);
+                request.UserId = userId;
+                request.IpAddress = ipAddress;
+                request.Action = Activity.COMPLIANCE_EDITED_DOCTYPE.GetDescription();
+
+                //..map request
+                Logger.LogActivity($"UPDATE DOCUMENT TYPE REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/update-document-type";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcPolicyDocumentRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "DOCUMENT-TYPES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "DOCUMENT-TYPES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> DeleteTypeAsync(GrcIdRequest request) {
+            try {
+
+                if (request == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Document type record cannot be null",
+                        "Invalid document type document record"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..map request
+                Logger.LogActivity($"DELETE DOCUMENT TYPE REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/delete-document-type";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcIdRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "DOCUMENT-TYPES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "DOCUMENT-TYPES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
         }
     }
 }

@@ -133,7 +133,7 @@ namespace Grc.ui.App.Controllers {
                     DecryptFields = Array.Empty<string>()
                 };
 
-                GrcResponse<RegulatoryCategoryResponse> result = await _regulatoryCategoryService.GetCategoryAsync(getRequest);
+                GrcResponse<GrcRegulatoryCategoryResponse> result = await _regulatoryCategoryService.GetCategoryAsync(getRequest);
                 if (result.HasError || result.Data == null) {
                     var errMsg = result.Error?.Message ?? "Unerror occurred while deleting category";
                     Logger.LogActivity(errMsg);
@@ -144,14 +144,12 @@ namespace Grc.ui.App.Controllers {
                     });
                 }
 
-                RegulatoryCategoryResponse response = result.Data;
+                GrcRegulatoryCategoryResponse response = result.Data;
                 var categoryRecord = new {
                     id = response.Id,
-                    startTab = "",
                     category = response.CategoryName,
                     status = response.IsDeleted ? "Inactive" : "Active",
                     addedon = response.CreatedAt.ToString("dd-MM-yyyy"),
-                    endTab = ""
                 };
 
                 return Ok(new {
@@ -201,7 +199,7 @@ namespace Grc.ui.App.Controllers {
                 request.IPAddress = ipAddress;
                 request.Action = Activity.CREATEREGULATORYCATEGORY.GetDescription();
 
-                GrcResponse<RegulatoryCategoryResponse> result = await _regulatoryCategoryService.CreateCategoryAsync(request);
+                var result = await _regulatoryCategoryService.CreateCategoryAsync(request);
                 if (result.HasError || result.Data == null) {
                     var errMsg = result.Error?.Message ?? "Failed to create category";
                     Logger.LogActivity(errMsg);
@@ -213,19 +211,10 @@ namespace Grc.ui.App.Controllers {
                 }
                 
                 var created = result.Data;
-                var categoryRecord = new {
-                    id = created.Id,
-                    startTab = "",
-                    category = created.CategoryName,
-                    status = created.IsDeleted ? "Inactive" : "Active",
-                    addedon = created.CreatedAt.ToString("dd-MM-yyyy"),
-                    endTab = ""
-                };
-
                 return Ok(new {
                     success = true,
                     message = "Category created successfully",
-                    data = categoryRecord
+                    data = new { }
                 });
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected error creating category: {ex.Message}", "ERROR");
@@ -267,7 +256,7 @@ namespace Grc.ui.App.Controllers {
                 request.IPAddress = ipAddress;
                 request.Action = Activity.COMPLIANCE_EDITED_CATEGORY.GetDescription();
 
-                GrcResponse<RegulatoryCategoryResponse> result = await _regulatoryCategoryService.UpdateCategoryAsync(request);
+                var result = await _regulatoryCategoryService.UpdateCategoryAsync(request);
                 if (result.HasError || result.Data == null) {
                     var errMsg = result.Error?.Message ?? "Failed to update category";
                     Logger.LogActivity(errMsg);
@@ -279,17 +268,10 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 var updated = result.Data;
-                var categoryRecord = new {
-                    id = updated.Id,
-                    category = updated.CategoryName,
-                    status = updated.IsDeleted ? "Inactive" : "Active",
-                    addedon = updated.CreatedAt.ToString("dd-MM-yyyy")
-                };
-
                 return Ok(new {
                     success = true,
                     message = "Category updated successfully",
-                    data = categoryRecord
+                    data = new {}
                 });
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected error updating category: {ex.Message}", "ERROR");
@@ -358,7 +340,7 @@ namespace Grc.ui.App.Controllers {
         
         [HttpPost]
         [LogActivityResult("Export Categories", "User exported regulatory categories to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_CATEGORY, "Category")]
-        public IActionResult ExportToExcel([FromBody] List<RegulatoryCategoryResponse> data) {
+        public IActionResult ExportToExcel([FromBody] List<GrcRegulatoryCategoryResponse> data) {
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Regulation Categories");
 
@@ -411,7 +393,7 @@ namespace Grc.ui.App.Controllers {
                 Action = Activity.COMPLIANCE_EXPORT_CATEGORY.GetDescription()
             };
 
-            var categoryData = await _regulatoryCategoryService.GetAllRegulatoryCategories(request);
+            var categoryData = await _regulatoryCategoryService.GetPagedCategoriesAsync(request);
             if (categoryData.HasError || categoryData.Data == null) {
                 var errMsg = categoryData.Error?.Message ?? "Failed to retrieve categories";
                 Logger.LogActivity(errMsg);
@@ -477,7 +459,7 @@ namespace Grc.ui.App.Controllers {
                 //..get list of all regulatory categories
                 var categoryData = await _regulatoryCategoryService.GetRegulatoryCategories(request);
 
-                List<RegulatoryCategoryResponse> categories;
+                List<GrcRegulatoryCategoryResponse> categories;
                 if (categoryData.HasError)
                 {
                     categories = new();
@@ -530,8 +512,8 @@ namespace Grc.ui.App.Controllers {
                 request.Action = Activity.RETRIEVEREGULATORYCATEGORIES.GetDescription();
 
                 //..get regulatory category data
-                var categoryData = await _regulatoryCategoryService.GetAllRegulatoryCategories(request);
-                PagedResponse<RegulatoryCategoryResponse> categoryList = new();
+                var categoryData = await _regulatoryCategoryService.GetPagedCategoriesAsync(request);
+                PagedResponse<GrcRegulatoryCategoryResponse> categoryList = new();
 
                 if (categoryData.HasError)
                 {
@@ -548,11 +530,9 @@ namespace Grc.ui.App.Controllers {
                     .Take(request.PageSize)
                     .Select(cat => new {
                         id = cat.Id,
-                        startTab = "",
                         category = cat.CategoryName,
                         status = cat.IsDeleted ? "Inactive" : "Active",
                         addedon = cat.CreatedAt.ToString("dd-MM-yyyy"),
-                        endTab = ""
                     }).ToList();
 
                 if (!string.IsNullOrEmpty(request.SearchTerm)) {
@@ -672,7 +652,7 @@ namespace Grc.ui.App.Controllers {
                     });
                 }
 
-                RegulatoryTypeResponse response = result.Data;
+                GrcRegulatoryTypeResponse response = result.Data;
                 var categoryRecord = new {
                     id = response.Id,
                     startTab = "",
@@ -725,11 +705,7 @@ namespace Grc.ui.App.Controllers {
 
                 //..set system fields
                 var currentUser = userResponse.Data;
-                request.UserId = currentUser.UserId;
-                request.IPAddress = ipAddress;
-                request.Action = Activity.CREATEREGULATORYTYPE.GetDescription();
-
-               var result = await _regulatoryTypeService.CreateTypeAsync(request);
+               var result = await _regulatoryTypeService.CreateTypeAsync(request, currentUser.UserId, ipAddress);
                 if (result.HasError || result.Data == null) {
                     var errMsg = result.Error?.Message ?? "Failed to create type";
                     Logger.LogActivity(errMsg);
@@ -741,19 +717,10 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 var created = result.Data;
-                var categoryRecord = new {
-                    id = created.Id,
-                    startTab = "",
-                    typeName = created.TypeName,
-                    status = created.IsDeleted ? "Inactive" : "Active",
-                    addedon = created.CreatedAt.ToString("dd-MM-yyyy"),
-                    endTab = ""
-                };
-
                 return Ok(new {
                     success = true,
                     message = "Type created successfully",
-                    data = categoryRecord
+                    data = new { }
                 });
             }
             catch (Exception ex) {
@@ -794,11 +761,7 @@ namespace Grc.ui.App.Controllers {
 
                 //..set system fields
                 var currentUser = userResponse.Data;
-                request.UserId = currentUser.UserId;
-                request.IPAddress = ipAddress;
-                request.Action = Activity.COMPLIANCE_EDITED_TYPE.GetDescription();
-
-                var result = await _regulatoryTypeService.UpdateTypeAsync(request);
+                var result = await _regulatoryTypeService.UpdateTypeAsync(request, currentUser.UserId, ipAddress);
                 if (result.HasError || result.Data == null) {
                     var errMsg = result.Error?.Message ?? "Failed to update type";
                     Logger.LogActivity(errMsg);
@@ -810,18 +773,11 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 var updated = result.Data;
-                var typeRecord = new {
-                    id = updated.Id,
-                    typeName = updated.TypeName,
-                    status = updated.IsDeleted ? "Inactive" : "Active",
-                    addedon = updated.CreatedAt.ToString("dd-MM-yyyy")
-                };
-
                 return Ok(new
                 {
                     success = true,
                     message = "Type updated successfully",
-                    data = typeRecord
+                    data = new { }
                 });
             }
             catch (Exception ex)
@@ -889,7 +845,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Export types", "User exported regulatory types to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_TYPE, "Regulatory_Type")]
-        public IActionResult ExcelExportTypes([FromBody] List<RegulatoryTypeResponse> data) {
+        public IActionResult ExcelExportTypes([FromBody] List<GrcRegulatoryTypeResponse> data) {
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Regulation Types");
 
@@ -943,7 +899,7 @@ namespace Grc.ui.App.Controllers {
                 Action = Activity.COMPLIANCE_EXPORT_TYPES.GetDescription()
             };
 
-            GrcResponse<PagedResponse<RegulatoryTypeResponse>> typeData = await _regulatoryTypeService.GetAllRegulatoryTypes(request);
+            GrcResponse<PagedResponse<GrcRegulatoryTypeResponse>> typeData = await _regulatoryTypeService.GetPagedTypesAsync(request);
             if (typeData.HasError || typeData.Data == null)
             {
                 var errMsg = typeData.Error?.Message ?? "Failed to retrieve types";
@@ -1004,8 +960,8 @@ namespace Grc.ui.App.Controllers {
                 request.Action = Activity.RETRIEVEREGULATORYTYPES.GetDescription();
 
                 //..get regulatory type data
-                var typeData = await _regulatoryTypeService.GetAllRegulatoryTypes(request);
-                PagedResponse<RegulatoryTypeResponse> typeList = new();
+                var typeData = await _regulatoryTypeService.GetPagedTypesAsync(request);
+                PagedResponse<GrcRegulatoryTypeResponse> typeList = new();
 
                 if (typeData.HasError)
                 {
@@ -1022,11 +978,9 @@ namespace Grc.ui.App.Controllers {
                     .Take(request.PageSize)
                     .Select(t => new {
                         id = t.Id,
-                        startTab = "",
                         typeName = t.TypeName,
                         status = t.IsDeleted ? "Inactive" : "Active",
                         addedon = t.CreatedAt.ToString("dd-MM-yyyy"),
-                        endTab = ""
                     }).ToList();
 
                 var totalPages = (int)Math.Ceiling((double)typeList.TotalCount / typeList.Size);
@@ -1185,7 +1139,7 @@ namespace Grc.ui.App.Controllers {
                 request.Action = Activity.COMPLIANCE_RETRIEVE_AUTHORITY.GetDescription();
 
                 //..get regulatory authorities data
-                var authoritiesData = await _regulatoryAuthorityService.GetAllRegulatoryAuthorities(request);
+                var authoritiesData = await _regulatoryAuthorityService.GetPagedAuthoritiesAsync(request);
                 PagedResponse<GrcRegulatoryAuthorityResponse> authoritiesList = new();
 
                 if (authoritiesData.HasError) {
@@ -1281,21 +1235,10 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 var created = result.Data;
-                var categoryRecord = new
-                {
-                    id = created.Id,
-                    startTab = "",
-                    authorityName = created.AuthorityName,
-                    authorityAlias = created.AuthorityAlias,
-                    status = created.IsDeleted ? "Inactive" : "Active",
-                    addedon = created.CreatedAt.ToString("dd-MM-yyyy"),
-                    endTab = ""
-                };
-
                 return Ok(new {
                     success = true,
                     message = "Authority created successfully",
-                    data = categoryRecord
+                    data = new { }
                 });
             }
             catch (Exception ex)
@@ -1357,20 +1300,11 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 var updated = result.Data;
-                var authRecord = new
-                {
-                    id = updated.Id,
-                    authorityName = updated.AuthorityName,
-                    authorityAlias = updated.AuthorityAlias,
-                    status = updated.IsDeleted ? "Inactive" : "Active",
-                    addedon = updated.CreatedAt.ToString("dd-MM-yyyy")
-                };
-
                 return Ok(new
                 {
                     success = true,
                     message = "Authority updated successfully",
-                    data = authRecord
+                    data = new { }
                 });
             }
             catch (Exception ex)
@@ -1513,7 +1447,7 @@ namespace Grc.ui.App.Controllers {
                 Action = Activity.COMPLIANCE_EXPORT_AUTHORITIES.GetDescription()
             };
 
-            var typeData = await _regulatoryAuthorityService.GetAllRegulatoryAuthorities(request);
+            var typeData = await _regulatoryAuthorityService.GetPagedAuthoritiesAsync(request);
             if (typeData.HasError || typeData.Data == null)
             {
                 var errMsg = typeData.Error?.Message ?? "Failed to retrieve authorities";
@@ -1629,7 +1563,7 @@ namespace Grc.ui.App.Controllers {
                 };
 
                 //..get list of all document types
-                var doctypeData = await _documentTypeService.GetAllAsync(request);
+                var doctypeData = await _documentTypeService.GetDocumentListAsync(request);
 
                 List<DocumentTypeResponse> documentTypes;
                 if (doctypeData.HasError)
@@ -1687,7 +1621,7 @@ namespace Grc.ui.App.Controllers {
                     IsDeleted = false
                 };
 
-                var result = await _documentTypeService.GetTypeAsync(request);
+                var result = await _documentTypeService.GetDocumentTypeAsync(request);
                 if (result.HasError || result.Data == null)
                     return Ok(new { success = false, message = result.Error?.Message ?? "Failed to retrieve document type" });
 
@@ -1711,10 +1645,8 @@ namespace Grc.ui.App.Controllers {
         [HttpPost]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
         [LogActivityResult("Add document type", "User added document type", ActivityTypeDefaults.COMPLIANCE_CREATE_DOCTYPE, "Document")]
-        public async Task<IActionResult> CreateDocumentType([FromBody] DocumentTypeViewModel request)
-        {
-            try
-            {
+        public async Task<IActionResult> CreateDocumentType([FromBody] DocumentTypeViewModel request) {
+            try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
                 var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (userResponse.HasError || userResponse.Data == null)
@@ -1724,24 +1656,12 @@ namespace Grc.ui.App.Controllers {
                     return BadRequest(new { success = false, message = "Invalid request" });
 
                 var currentUser = userResponse.Data;
-                request.UserId = currentUser.UserId;
-                request.IPAddress = ipAddress;
-                request.Action = Activity.COMPLIANCE_CREATE_DOCTYPE.GetDescription();
-
-                var result = await _documentTypeService.CreateTypeAsync(request);
+                var result = await _documentTypeService.CreateTypeAsync(request, currentUser.UserId, ipAddress);
                 if (result.HasError || result.Data == null)
                     return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create document type" });
 
                 var created = result.Data;
-                var record = new
-                {
-                    id = created.Id,
-                    typeName = created.TypeName,
-                    status = created.IsDeleted ? "Inactive" : "Active",
-                    addedon = created.CreatedAt.ToString("dd-MM-yyyy")
-                };
-
-                return Ok(new { success = true, message = "Document type created successfully", data = record });
+                return Ok(new { success = true, message = "Document type created successfully", data = new { } });
             }
             catch (Exception ex)
             {
@@ -1766,24 +1686,12 @@ namespace Grc.ui.App.Controllers {
                     return BadRequest(new { success = false, message = "Invalid request" });
 
                 var currentUser = userResponse.Data;
-                request.UserId = currentUser.UserId;
-                request.IPAddress = ipAddress;
-                request.Action = Activity.COMPLIANCE_EDITED_DOCTYPE.GetDescription();
-
-                var result = await _documentTypeService.UpdateTypeAsync(request);
+                var result = await _documentTypeService.UpdateTypeAsync(request, currentUser.UserId, ipAddress);
                 if (result.HasError || result.Data == null)
                     return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update document type" });
 
                 var updated = result.Data;
-                var record = new
-                {
-                    id = updated.Id,
-                    typeName = updated.TypeName,
-                    status = updated.IsDeleted ? "Inactive" : "Active",
-                    addedon = updated.CreatedAt.ToString("dd-MM-yyyy")
-                };
-
-                return Ok(new { success = true, message = "Document type updated successfully", data = record });
+                return Ok(new { success = true, message = "Document type updated successfully", data = new { } });
             }
             catch (Exception ex)
             {
@@ -1854,7 +1762,7 @@ namespace Grc.ui.App.Controllers {
                 request.IPAddress = ipAddress;
                 request.Action = Activity.COMPLIANCE_RETRIEVE_DOCTYPE.GetDescription();
 
-                var typeData = await _documentTypeService.GetAllDocumentTypes(request);
+                var typeData = await _documentTypeService.GetPagedDocumentTypesAsync(request);
                 PagedResponse<DocumentTypeResponse> docList = new();
 
                 if (typeData.HasError)
@@ -1954,7 +1862,7 @@ namespace Grc.ui.App.Controllers {
                 Action = Activity.COMPLIANCE_EXPORT_DOCTYPES.GetDescription()
             };
 
-            var typeData = await _documentTypeService.GetAllDocumentTypes(request);
+            var typeData = await _documentTypeService.GetPagedDocumentTypesAsync(request);
             if (typeData.HasError || typeData.Data == null)
             {
                 var errMsg = typeData.Error?.Message ?? "Failed to retrieve document types";

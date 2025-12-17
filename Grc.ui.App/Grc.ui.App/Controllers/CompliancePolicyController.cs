@@ -1,5 +1,4 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Grc.ui.App.Defaults;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -998,7 +997,7 @@ namespace Grc.ui.App.Controllers {
 
         #endregion
 
-        #region Policy Documnets
+        #region Policy Documents
         public async Task<IActionResult> PoliciesDocuments()
         {
             try

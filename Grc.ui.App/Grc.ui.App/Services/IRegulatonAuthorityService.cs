@@ -3,12 +3,13 @@ using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
 
 namespace Grc.ui.App.Services {
-    public interface IRegulatonAuthorityService : IGrcBaseService
-    {
-        Task<GrcResponse<GrcRegulatoryAuthorityResponse>> CreateAuthorityAsync(RegulatoryAuthorityRequest request);
-        Task<GrcResponse<ServiceResponse>> DeleteAuthorityAsync(GrcIdRequest deleteRequest);
-        Task<GrcResponse<PagedResponse<GrcRegulatoryAuthorityResponse>>> GetAllRegulatoryAuthorities(TableListRequest request);
+
+    public interface IRegulatonAuthorityService : IGrcBaseService {
+        Task<GrcResponse<PagedResponse<GrcRegulatoryAuthorityResponse>>> GetPagedAuthoritiesAsync(TableListRequest request);
         Task<GrcResponse<GrcRegulatoryAuthorityResponse>> GetAuthorityAsync(GrcIdRequest getRequest);
-        Task<GrcResponse<GrcRegulatoryAuthorityResponse>> UpdateAuthorityAsync(RegulatoryAuthorityRequest request);
+        Task<GrcResponse<ServiceResponse>> CreateAuthorityAsync(RegulatoryAuthorityRequest request);
+        Task<GrcResponse<ServiceResponse>> UpdateAuthorityAsync(RegulatoryAuthorityRequest request);
+        Task<GrcResponse<ServiceResponse>> DeleteAuthorityAsync(GrcIdRequest request);
     }
+
 }

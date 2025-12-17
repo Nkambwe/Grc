@@ -1,39 +1,17 @@
 ﻿using AutoMapper;
+using Grc.ui.App.Enums;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Helpers;
 using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Utils;
-using System.Linq.Dynamic.Core;
+using System.Text.Json;
 
 namespace Grc.ui.App.Services {
-    public class RegulatonAuthorityService : GrcBaseService, IRegulatonAuthorityService
-    {
-        private IQueryable<GrcRegulatoryAuthorityResponse> query = new List<GrcRegulatoryAuthorityResponse> {
-                new() { Id = 1, AuthorityName = "First Type",  AuthorityAlias="T-01",CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 2, AuthorityName = "Second Type", AuthorityAlias="T-02",CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 3, AuthorityName = "Third Type",  AuthorityAlias="T-03",CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 4, AuthorityName = "Fourth Type", AuthorityAlias="T-04",CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 5, AuthorityName = "Fifth Type",  AuthorityAlias="T-05",CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 6, AuthorityName = "Sixth Type",  AuthorityAlias="T-06",CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 7, AuthorityName = "Seventh Type",AuthorityAlias="T-07",CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 8, AuthorityName = "Eighth Type", AuthorityAlias="T-08",CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 9, AuthorityName = "Nineth Type", AuthorityAlias="T-09",CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 10, AuthorityName = "Tenth Type",       AuthorityAlias="T-10",CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 11, AuthorityName = "Eleventh Type",    AuthorityAlias="T-11",CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 12, AuthorityName = "Twelveth Type",    AuthorityAlias="T-12",CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 13, AuthorityName = "Thirteenth Type",  AuthorityAlias="T-13",CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 14, AuthorityName = "Fourteenth Type",  AuthorityAlias="T-14",CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 15, AuthorityName = "Fifteenth Type",   AuthorityAlias="T-15",CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 16, AuthorityName = "Seventeenth Type", AuthorityAlias="T-16",CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 17, AuthorityName = "Mobile Type",      AuthorityAlias="T-17",CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 18, AuthorityName = "Investment Type",  AuthorityAlias="T-18",CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 19, AuthorityName = "Business Type",    AuthorityAlias="T-19",CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 20, AuthorityName = "Trade Type",       AuthorityAlias="T-20",CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 21, AuthorityName = "Banking Type",     AuthorityAlias="T-21",CreatedAt = DateTime.Now,IsDeleted = true }
-            }.AsQueryable();
 
+    public class RegulatonAuthorityService : GrcBaseService, IRegulatonAuthorityService {
+       
         public RegulatonAuthorityService(IApplicationLoggerFactory loggerFactory, 
             IHttpHandler httpHandler, 
             IEnvironmentProvider environment, 
@@ -48,84 +26,186 @@ namespace Grc.ui.App.Services {
                 errorFactory, errorService) {
         }
 
-        public async Task<GrcResponse<GrcRegulatoryAuthorityResponse>> GetAuthorityAsync(GrcIdRequest getRequest) {
-            return await Task.FromResult(new GrcResponse<GrcRegulatoryAuthorityResponse>(query.FirstOrDefault()));
-        }
-
-        public async Task<GrcResponse<PagedResponse<GrcRegulatoryAuthorityResponse>>> GetAllRegulatoryAuthorities(TableListRequest request)
-        {
-            //..filter data
-            if (!string.IsNullOrWhiteSpace(request.SearchTerm))
-            {
-                var lookUp = request.SearchTerm.ToLower();
-                query = query.Where(a =>
-                    (a.AuthorityName != null && a.AuthorityName.ToLower().Contains(lookUp)) ||
-                    (a.AuthorityAlias != null && a.AuthorityAlias.ToLower().Contains(lookUp))
+        public async Task<GrcResponse<GrcRegulatoryAuthorityResponse>> GetAuthorityAsync(GrcIdRequest request) {
+            try {
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/authorities-retrieve";
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcRegulatoryAuthorityResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "REGULATORY-AUTHORITY-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
                 );
-            }
 
-            //..apply sorting
-            if (!string.IsNullOrEmpty(request.SortBy)) {
-                var sortExpr = $"{request.SortBy} {(request.SortDirection == "Ascending" ? "asc" : "desc")}";
-                query = query.OrderBy(sortExpr);
+                return new GrcResponse<GrcRegulatoryAuthorityResponse>(error);
             }
-
-            var page = new PagedResponse<GrcRegulatoryAuthorityResponse>() {
-                TotalCount = 20,
-                Page = request.PageIndex,
-                Size = request.PageSize,
-                Entities = query.ToList(),
-                TotalPages = 2
-            };
-            return await Task.FromResult(new GrcResponse<PagedResponse<GrcRegulatoryAuthorityResponse>>(page));
         }
 
-        public async Task<GrcResponse<GrcRegulatoryAuthorityResponse>> CreateAuthorityAsync(RegulatoryAuthorityRequest request)
-        {
-            var record = new GrcRegulatoryAuthorityResponse
-            {
-                AuthorityAlias = request.AuthorityAlias,
-                AuthorityName = request.AuthorityName,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
-                IsDeleted = false,
-                Id = query.Max(r => r.Id) + 1
-            };
-            return await Task.FromResult(new GrcResponse<GrcRegulatoryAuthorityResponse>(record));
+        public async Task<GrcResponse<PagedResponse<GrcRegulatoryAuthorityResponse>>> GetPagedAuthoritiesAsync(TableListRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Invalid Request object",
+                        "Request object cannot be null"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<PagedResponse<GrcRegulatoryAuthorityResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/paged-authorities-list";
+                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<GrcRegulatoryAuthorityResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "REGULATORY-AUTHORITIES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<PagedResponse<GrcRegulatoryAuthorityResponse>>(error);
+            }
         }
 
-        public async Task<GrcResponse<GrcRegulatoryAuthorityResponse>> UpdateAuthorityAsync(RegulatoryAuthorityRequest request) {
+        public async Task<GrcResponse<ServiceResponse>> CreateAuthorityAsync(RegulatoryAuthorityRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Authority record cannot be null",
+                        "Invalid Authority record"
+                    );
 
-            var record = query.FirstOrDefault(r => r.Id == request.Id);
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
 
-            if (record == null)
-            {
-                return await Task.FromResult(new GrcResponse<GrcRegulatoryAuthorityResponse>(record));
+                //..map request
+                Logger.LogActivity($"CREATE REGULATORY AUTHORITY REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/create-authority";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<RegulatoryAuthorityRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "REGULATORY-AUTHORITIES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "REGULATORY-AUTHORITIES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
             }
-
-            record.AuthorityAlias = request.AuthorityAlias;
-            record.AuthorityName = request.AuthorityName;
-            record.IsDeleted = request.Status == "Inactive";
-            record.UpdatedAt = DateTime.Now.AddDays(-2);
-
-            return await Task.FromResult(new GrcResponse<GrcRegulatoryAuthorityResponse>(record));
         }
 
-        public async Task<GrcResponse<ServiceResponse>> DeleteAuthorityAsync(GrcIdRequest deleteRequest) {
-            var record = query.FirstOrDefault(r => r.Id == deleteRequest.RecordId);
-            if (record == null) {
-                return await Task.FromResult(new GrcResponse<ServiceResponse>(new ServiceResponse {
-                    Status = false,
-                    StatusCode = 404,
-                    Message = "Authority not found"
-                }));
+        public async Task<GrcResponse<ServiceResponse>> UpdateAuthorityAsync(RegulatoryAuthorityRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Authority cannot be null",
+                        "Invalid authority record"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..map request
+                Logger.LogActivity($"UPDATE AUTHORITY REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/update-authority";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<RegulatoryAuthorityRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "REGULATORY-AUTHORITIES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "REGULATORY-AUTHORITIES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
             }
-            return await Task.FromResult(new GrcResponse<ServiceResponse>(new ServiceResponse
-            {
-                Status = true,
-                StatusCode = 200,
-                Message = "Authority deleted successfully"
-            }));
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> DeleteAuthorityAsync(GrcIdRequest request) {
+            try {
+
+                if (request == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Authority record cannot be null",
+                        "Invalid authority document record"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..map request
+                Logger.LogActivity($"DELETE AUTHORITY REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/delete-authority";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcIdRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "REGULATORY-AUTHORITIES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "REGULATORY-AUTHORITIES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
         }
 
     }

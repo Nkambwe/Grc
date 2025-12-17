@@ -8,5 +8,14 @@ namespace Grc.ui.App.Http.Responses {
 
         [JsonPropertyName("typeName")]
         public string TypeName { get; set; }
+
+        [JsonPropertyName("isDeleted")]
+        public bool IsDeleted { get; set; }
+
+        [JsonPropertyName("createdOn")]
+        public DateTime CreatedAt { get; set; }
+
+        [JsonPropertyName("updatedOn")]
+        public DateTime UpdatedAt { get; set; }
     }
 }

@@ -4,12 +4,12 @@ using Grc.ui.App.Http.Responses;
 
 namespace Grc.ui.App.Services {
     public interface IRegulatonCategoryService : IGrcBaseService {
-        Task<GrcResponse<RegulatoryCategoryResponse>> GetCategoryAsync(GrcIdRequest deleteRequest);
-        Task<GrcResponse<PagedResponse<RegulatoryCategoryResponse>>> GetAllRegulatoryCategories(TableListRequest request);
-        Task<GrcResponse<List<RegulatoryCategoryResponse>>> GetRegulatoryCategories(GrcRequest request);
-        Task<GrcResponse<RegulatoryCategoryResponse>> CreateCategoryAsync(RegulatoryCategoryRequest request);
-        Task<GrcResponse<RegulatoryCategoryResponse>> UpdateCategoryAsync(RegulatoryCategoryRequest request);
-        Task<GrcResponse<ServiceResponse>> DeleteCategoryAsync(GrcIdRequest deleteRequest);
+        Task<GrcResponse<GrcRegulatoryCategoryResponse>> GetCategoryAsync(GrcIdRequest request);
+        Task<GrcResponse<PagedResponse<GrcRegulatoryCategoryResponse>>> GetPagedCategoriesAsync(TableListRequest request);
+        Task<GrcResponse<List<GrcRegulatoryCategoryResponse>>> GetRegulatoryCategories(GrcRequest request);
+        Task<GrcResponse<ServiceResponse>> CreateCategoryAsync(RegulatoryCategoryRequest request);
+        Task<GrcResponse<ServiceResponse>> UpdateCategoryAsync(RegulatoryCategoryRequest request);
+        Task<GrcResponse<ServiceResponse>> DeleteCategoryAsync(GrcIdRequest request);
         
     }
 }

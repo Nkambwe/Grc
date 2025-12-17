@@ -10,10 +10,7 @@ namespace Grc.ui.App.Models
         [JsonPropertyName("typeName")]
         public string TypeName { get; set; }
 
-        [JsonPropertyName("status")]
-        public string Status { get; set; }
-        public long UserId { get; set; }
-        public string IPAddress { get; set; }
-        public string Action { get; set; }
+        [JsonPropertyName("isDeleted")]
+        public bool IsDeleted { get; set; }
     }
 }

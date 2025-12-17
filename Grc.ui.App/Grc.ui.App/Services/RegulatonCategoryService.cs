@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
+using Grc.ui.App.Enums;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Helpers;
 using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Utils;
-using System.Linq.Dynamic.Core;
+using System.Text.Json;
 
 namespace Grc.ui.App.Services
 {
@@ -25,122 +26,210 @@ namespace Grc.ui.App.Services
                   errorFactory, errorService) {
         }
 
-        public async Task<GrcResponse<RegulatoryCategoryResponse>> GetCategoryAsync(GrcIdRequest deleteRequest) {
-            var result = new RegulatoryCategoryResponse {
-                Id = 31,
-                CategoryName = "Sample Regulation",
-                CreatedAt = DateTime.Now.AddDays(-10),
-                UpdatedAt = DateTime.Now.AddDays(-2),
-                IsDeleted = false
-            };
-            return await Task.FromResult(new GrcResponse<RegulatoryCategoryResponse>(result));
-        }
+        public async Task<GrcResponse<GrcRegulatoryCategoryResponse>> GetCategoryAsync(GrcIdRequest request) {
+            try {
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/regulatory-categories-retrieve";
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcRegulatoryCategoryResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "REGULATORY-CATEGORY-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
 
-        public async Task<GrcResponse<PagedResponse<RegulatoryCategoryResponse>>> GetAllRegulatoryCategories(TableListRequest request) {
-            var query = new List<RegulatoryCategoryResponse> {
-                new() { Id = 1, CategoryName = "First Regulation", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 2, CategoryName = "Second Regulation", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 3, CategoryName = "Third Regulation", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 4, CategoryName = "Fourth Regulation", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 5, CategoryName = "Fifth Regulation", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 6, CategoryName = "Sixth Regulation", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 7, CategoryName = "Seventh Regulation", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 8, CategoryName = "Eighth Regulation", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 9, CategoryName = "Nineth Regulation", CreatedAt = DateTime.Now,IsDeleted = true},
-                new() { Id = 10, CategoryName = "Tenth Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                new() { Id = 11, CategoryName = "Eleventh Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                new() { Id = 12, CategoryName = "Twelveth Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                new() { Id = 13, CategoryName = "Thirteenth Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                new() { Id = 14, CategoryName = "Fourteenth Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                new() { Id = 15, CategoryName = "Fifteenth Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                new() { Id = 16, CategoryName = "Seventeenth Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                new() { Id = 17, CategoryName = "Mobile Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                new() { Id = 18, CategoryName = "Investment Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                new() { Id = 19, CategoryName = "Business Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                new() { Id = 20, CategoryName = "Trade Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                new() { Id = 21, CategoryName = "Banking Regulation", CreatedAt = DateTime.Now,IsDeleted =true }
-            }.AsQueryable();
-            
-            //..filter data
-            if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
-                var lookUp = request.SearchTerm.ToLower();
-                query = query.Where(a => a.CategoryName != null && a.CategoryName.ToLower().Contains(lookUp));
+                return new GrcResponse<GrcRegulatoryCategoryResponse>(error);
             }
+        }
 
-            //..apply sorting
-            if (!string.IsNullOrEmpty(request.SortBy))  {
-                var sortExpr = $"{request.SortBy} {(request.SortDirection == "Ascending" ? "asc" : "desc")}";
-                query = query.OrderBy(sortExpr);
+        public async Task<GrcResponse<PagedResponse<GrcRegulatoryCategoryResponse>>> GetPagedCategoriesAsync(TableListRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Invalid Request object",
+                        "Request object cannot be null"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<PagedResponse<GrcRegulatoryCategoryResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/paged-categories-list";
+                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<GrcRegulatoryCategoryResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "REGULATORY-CATEGORY-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<PagedResponse<GrcRegulatoryCategoryResponse>>(error);
             }
-
-
-            var page = new PagedResponse<RegulatoryCategoryResponse>() {
-                TotalCount = 20,
-                Page = request.PageIndex,
-                Size = request.PageSize,
-                Entities = query.ToList(),
-                TotalPages = 2
-            };
-            return await Task.FromResult(new GrcResponse<PagedResponse<RegulatoryCategoryResponse>>(page));
         }
 
-        public async Task<GrcResponse<List<RegulatoryCategoryResponse>>> GetRegulatoryCategories(GrcRequest request)
+        public async Task<GrcResponse<List<GrcRegulatoryCategoryResponse>>> GetRegulatoryCategories(GrcRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Invalid Request object",
+                        "Request object cannot be null"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<List<GrcRegulatoryCategoryResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/category-list";
+                return await HttpHandler.PostAsync<GrcRequest, List<GrcRegulatoryCategoryResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "REGULATORY-CATEGORY-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<List<GrcRegulatoryCategoryResponse>>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> CreateCategoryAsync(RegulatoryCategoryRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Regulatory Category record cannot be null",
+                        "Invalid Regulatory category record"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..map request
+                Logger.LogActivity($"CREATE REGULATORY CATEGORY REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/create-category";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<RegulatoryCategoryRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "REGULATORY-TYPES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "REGULATORY-CATEGORY-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> UpdateCategoryAsync(RegulatoryCategoryRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Category cannot be null", "Invalid category record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..map request
+                Logger.LogActivity($"UPDATE CATEGORY REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/update-category";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<RegulatoryCategoryRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "REGULATORY-CATEGORIES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "REGULATORY-CATEGORIES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> DeleteCategoryAsync(GrcIdRequest request)
         {
-            //Page = request.PageIndex,
-            //Size = request.PageSize,
-            var data = new List<RegulatoryCategoryResponse> {
-                    new() { Id = 1, CategoryName = "First Regulation", CreatedAt = DateTime.Now,IsDeleted = true},
-                    new() { Id = 2, CategoryName = "Second Regulation", CreatedAt = DateTime.Now,IsDeleted = true},
-                    new() { Id = 3, CategoryName = "Third Regulation", CreatedAt = DateTime.Now,IsDeleted = true},
-                    new() { Id = 4, CategoryName = "Fourth Regulation", CreatedAt = DateTime.Now,IsDeleted = true},
-                    new() { Id = 5, CategoryName = "Fifth Regulation", CreatedAt = DateTime.Now,IsDeleted = true},
-                    new() { Id = 6, CategoryName = "Sixth Regulation", CreatedAt = DateTime.Now,IsDeleted = true},
-                    new() { Id = 7, CategoryName = "Seventh Regulation", CreatedAt = DateTime.Now,IsDeleted = true},
-                    new() { Id = 8, CategoryName = "Eighth Regulation", CreatedAt = DateTime.Now,IsDeleted = true},
-                    new() { Id = 9, CategoryName = "Nineth Regulation", CreatedAt = DateTime.Now,IsDeleted = true},
-                    new() { Id = 10, CategoryName = "Tenth Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                    new() { Id = 11, CategoryName = "Eleventh Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                    new() { Id = 12, CategoryName = "Twelveth Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                    new() { Id = 13, CategoryName = "Thirteenth Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                    new() { Id = 14, CategoryName = "Fourteenth Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                    new() { Id = 15, CategoryName = "Fifteenth Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                    new() { Id = 16, CategoryName = "Seventeenth Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                    new() { Id = 17, CategoryName = "Mobile Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                    new() { Id = 18, CategoryName = "Investment Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                    new() { Id = 19, CategoryName = "Business Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                    new() { Id = 20, CategoryName = "Trade Regulation", CreatedAt = DateTime.Now,IsDeleted =true},
-                    new() { Id = 21, CategoryName = "Banking Regulation", CreatedAt = DateTime.Now,IsDeleted =true }
-                };
-            return await Task.FromResult(new GrcResponse<List<RegulatoryCategoryResponse>>(data));
-        }
+            try {
 
-        public async Task<GrcResponse<RegulatoryCategoryResponse>> CreateCategoryAsync(RegulatoryCategoryRequest request) {
-            return await Task.FromResult(new GrcResponse<RegulatoryCategoryResponse>(new RegulatoryCategoryResponse {
-                Id = 1,
-                CategoryName = request.Category ,
-                CreatedAt = DateTime.Now,
-                IsDeleted = false
-            }));
-        }
+                if (request == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Regulatory category record cannot be null",
+                        "Invalid regulatory category document record"
+                    );
 
-        public async Task<GrcResponse<RegulatoryCategoryResponse>> UpdateCategoryAsync(RegulatoryCategoryRequest request) {
-            return await Task.FromResult(new GrcResponse<RegulatoryCategoryResponse>(new RegulatoryCategoryResponse {
-                Id = request.Id,
-                CategoryName = request.Category ,
-                CreatedAt = DateTime.Now.AddDays(-2),
-                UpdatedAt = DateTime.Now,
-                IsDeleted = request.Status == "Inactive"
-            }));
-        }
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
 
-        public async Task<GrcResponse<ServiceResponse>> DeleteCategoryAsync(GrcIdRequest deleteRequest)
-        {
-            return await Task.FromResult(new GrcResponse<ServiceResponse>(new ServiceResponse
-            {
-                Status = true,
-                StatusCode = 200,
-                Message = "Record deleted successfully"
-            }));
+                //..map request
+                Logger.LogActivity($"DELETE REGULATORY CATEGORIES REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/delete-category";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcIdRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "REGULATORY-CATEGORIES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "REGULATORY-CATEGORIES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
         }
 
     }
