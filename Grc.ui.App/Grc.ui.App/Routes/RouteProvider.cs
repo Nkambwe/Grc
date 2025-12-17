@@ -907,6 +907,11 @@
                 name: "app-compliance-register-policies-delete",
                 pattern: "/grc/compliance/register/policies-delete/{id:long}",
                 defaults: new { controller = "CompliancePolicy", action = "DeletePolicy" }
+            ); 
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-policies-lock",
+                pattern: "/grc/compliance/register/policies-lock/{id:long}",
+                defaults: new { controller = "CompliancePolicy", action = "LockPolicy" }
             );
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-register-policies-export",

@@ -10,7 +10,7 @@ using System.Linq.Dynamic.Core;
 namespace Grc.ui.App.Services {
     public class RegulatonAuthorityService : GrcBaseService, IRegulatonAuthorityService
     {
-        private IQueryable<RegulatoryAuthorityResponse> query = new List<RegulatoryAuthorityResponse> {
+        private IQueryable<GrcRegulatoryAuthorityResponse> query = new List<GrcRegulatoryAuthorityResponse> {
                 new() { Id = 1, AuthorityName = "First Type",  AuthorityAlias="T-01",CreatedAt = DateTime.Now,IsDeleted = true},
                 new() { Id = 2, AuthorityName = "Second Type", AuthorityAlias="T-02",CreatedAt = DateTime.Now,IsDeleted = true},
                 new() { Id = 3, AuthorityName = "Third Type",  AuthorityAlias="T-03",CreatedAt = DateTime.Now,IsDeleted = true},
@@ -48,11 +48,11 @@ namespace Grc.ui.App.Services {
                 errorFactory, errorService) {
         }
 
-        public async Task<GrcResponse<RegulatoryAuthorityResponse>> GetAuthorityAsync(GrcIdRequest getRequest) {
-            return await Task.FromResult(new GrcResponse<RegulatoryAuthorityResponse>(query.FirstOrDefault()));
+        public async Task<GrcResponse<GrcRegulatoryAuthorityResponse>> GetAuthorityAsync(GrcIdRequest getRequest) {
+            return await Task.FromResult(new GrcResponse<GrcRegulatoryAuthorityResponse>(query.FirstOrDefault()));
         }
 
-        public async Task<GrcResponse<PagedResponse<RegulatoryAuthorityResponse>>> GetAllRegulatoryAuthorities(TableListRequest request)
+        public async Task<GrcResponse<PagedResponse<GrcRegulatoryAuthorityResponse>>> GetAllRegulatoryAuthorities(TableListRequest request)
         {
             //..filter data
             if (!string.IsNullOrWhiteSpace(request.SearchTerm))
@@ -70,19 +70,19 @@ namespace Grc.ui.App.Services {
                 query = query.OrderBy(sortExpr);
             }
 
-            var page = new PagedResponse<RegulatoryAuthorityResponse>() {
+            var page = new PagedResponse<GrcRegulatoryAuthorityResponse>() {
                 TotalCount = 20,
                 Page = request.PageIndex,
                 Size = request.PageSize,
                 Entities = query.ToList(),
                 TotalPages = 2
             };
-            return await Task.FromResult(new GrcResponse<PagedResponse<RegulatoryAuthorityResponse>>(page));
+            return await Task.FromResult(new GrcResponse<PagedResponse<GrcRegulatoryAuthorityResponse>>(page));
         }
 
-        public async Task<GrcResponse<RegulatoryAuthorityResponse>> CreateAuthorityAsync(RegulatoryAuthorityRequest request)
+        public async Task<GrcResponse<GrcRegulatoryAuthorityResponse>> CreateAuthorityAsync(RegulatoryAuthorityRequest request)
         {
-            var record = new RegulatoryAuthorityResponse
+            var record = new GrcRegulatoryAuthorityResponse
             {
                 AuthorityAlias = request.AuthorityAlias,
                 AuthorityName = request.AuthorityName,
@@ -91,16 +91,16 @@ namespace Grc.ui.App.Services {
                 IsDeleted = false,
                 Id = query.Max(r => r.Id) + 1
             };
-            return await Task.FromResult(new GrcResponse<RegulatoryAuthorityResponse>(record));
+            return await Task.FromResult(new GrcResponse<GrcRegulatoryAuthorityResponse>(record));
         }
 
-        public async Task<GrcResponse<RegulatoryAuthorityResponse>> UpdateAuthorityAsync(RegulatoryAuthorityRequest request) {
+        public async Task<GrcResponse<GrcRegulatoryAuthorityResponse>> UpdateAuthorityAsync(RegulatoryAuthorityRequest request) {
 
             var record = query.FirstOrDefault(r => r.Id == request.Id);
 
             if (record == null)
             {
-                return await Task.FromResult(new GrcResponse<RegulatoryAuthorityResponse>(record));
+                return await Task.FromResult(new GrcResponse<GrcRegulatoryAuthorityResponse>(record));
             }
 
             record.AuthorityAlias = request.AuthorityAlias;
@@ -108,7 +108,7 @@ namespace Grc.ui.App.Services {
             record.IsDeleted = request.Status == "Inactive";
             record.UpdatedAt = DateTime.Now.AddDays(-2);
 
-            return await Task.FromResult(new GrcResponse<RegulatoryAuthorityResponse>(record));
+            return await Task.FromResult(new GrcResponse<GrcRegulatoryAuthorityResponse>(record));
         }
 
         public async Task<GrcResponse<ServiceResponse>> DeleteAuthorityAsync(GrcIdRequest deleteRequest) {

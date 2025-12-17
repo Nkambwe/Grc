@@ -10,11 +10,20 @@ namespace Grc.ui.App.Models
         [JsonPropertyName("documentName")]
         public string DocumentName { get; set; }
 
-        [JsonPropertyName("documentType")]
+        [JsonPropertyName("comments")]
+        public string Comments { get; set; }
+
+        [JsonPropertyName("documentTypeId")]
         public long DocumentTypeId { get; set; }
 
         [JsonPropertyName("documentStatus")]
         public string DocumentStatus { get; set; }
+
+        [JsonPropertyName("responsibilityId")]
+        public long ResponsibilityId { get; set; }
+
+        [JsonPropertyName("departmentId")]
+        public long DepartmentId { get; set; }
 
         [JsonPropertyName("aligned")]
         public bool IsAligned { get; set; }
@@ -25,11 +34,14 @@ namespace Grc.ui.App.Models
         [JsonPropertyName("locked")]
         public bool IsLocked { get; set; }
 
-        [JsonPropertyName("reviewPeriod")]
-        public int ReviewPeriod { get; set; }
+        [JsonPropertyName("approvedBy")]
+        public string ApprovedBy { get; set; }
 
-        [JsonPropertyName("reviewStatus")]
-        public string ReviewStatus { get; set; }
+        [JsonPropertyName("approvalDate")]
+        public DateTime? ApprovalDate { get; set; }
+
+        [JsonPropertyName("frequencyId")]
+        public long FrequencyId { get; set; }
 
         [JsonPropertyName("lastReview")]
         public DateTime LastRevisionDate { get; set; }
@@ -37,15 +49,6 @@ namespace Grc.ui.App.Models
         [JsonPropertyName("nextReview")]
         public DateTime? NextRevisionDate { get; set; }
 
-        [JsonPropertyName("documentOwner")]
-        public long OwnerId { get; set; }
-
-        [JsonPropertyName("comments")]
-        public string Comments { get; set; }
-
-        public long UserId { get; set; }
-        public string IPAddress { get; set; }
-        public string Action { get; set; }
     }
 
 }

@@ -217,7 +217,7 @@ namespace Grc.Middleware.Api.Controllers {
 
         #endregion
 
-        #region Process Register Endpoints
+        #region Process Register
 
         [HttpPost("processes/support-items")]
         public async Task<IActionResult> GetProcessSupportItems([FromBody] GeneralRequest request)

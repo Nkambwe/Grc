@@ -29,7 +29,8 @@
             Html.AddCssFileParts("~/lib/tabulator/css/tabulator.min.css");
             Html.AddCssFileParts("~/lib/tabulator/css/tabulator_bootstrap5.min.css");
             Html.AddCssFileParts("~/css/component-styles.css");
-            Html.AddCssFileParts("~/css/app-tables-styles.css"); 
+            Html.AddCssFileParts("~/css/app-tables-styles.css");
+            Html.AddCssFileParts("~/css/app-collapsable-pane.css");
             Html.AddCssFileParts("~/css/app-styles.css");
             Html.AddCssFileParts("~/css/app-tabular-styles.css");
         }
@@ -88,6 +89,7 @@
                             </li>
 
                             <li class="sidebar-item with-submenu">
+
                                 <a href="" class="toggle-submenu" data-id="regiters-menu">
                                     <span class="menu-icon">
                                     <i class="material-icons-outlined">rule_folder</i>
@@ -103,23 +105,23 @@
                                 <ul id="regiters-menu" class="sidebar-submenu">
 
                                     <li class="sidebar-item">
+                                        <a asp-controller="CompliancePolicy" asp-action="PoliciesRegisters">
+                                            <span class="menu-icon">
+                                                <i class="mdi mdi-pencil-ruler-outline"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Policies"))
+                                            </span>
+                                        </a>
+                                    </li>
+
+                                    <li class="sidebar-item">
                                         <a asp-controller="Register" asp-action="RegulationList">
                                             <span class="menu-icon">
                                                 <i class="mdi mdi-chart-multiple"></i>
                                             </span>
                                             <span class="sidebar-text">
                                                 @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.List"))
-                                            </span>
-                                        </a>
-                                    </li>
-
-                                    <li class="sidebar-item">
-                                        <a asp-controller="Register" asp-action="RegulationObligations">
-                                            <span class="menu-icon">
-                                                <i class="mdi mdi-gavel"></i>
-                                            </span>
-                                            <span class="sidebar-text">
-                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Obligations"))
                                             </span>
                                         </a>
                                     </li>
@@ -135,7 +137,7 @@
                                         <i class="mdi mdi-ruler-square-compass"></i>
                                     </span>
                                     <span>
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Registers.Policies"))
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Regulatory.Obligations"))
                                     </span>
                                     <span class="drop-icon">
                                         <i class="mdi mdi-chevron-down"></i>
@@ -145,16 +147,16 @@
                                 <ul id="policies-menu" class="sidebar-submenu">
 
                                     <li class="sidebar-item">
-                                        <a asp-controller="CompliancePolicy" asp-action="PoliciesRegisters">
+                                        <a asp-controller="Register" asp-action="RegulationObligations">
                                             <span class="menu-icon">
-                                                <i class="mdi mdi-pencil-ruler-outline"></i>
+                                                <i class="mdi mdi-gavel"></i>
                                             </span>
                                             <span class="sidebar-text">
-                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Policies.Compliance.Manage"))
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Obligations.Register"))
                                             </span>
                                         </a>
                                     </li>
-
+                                   
                                     <li class="sidebar-item">
                                         <a asp-controller="CompliancePolicy" asp-action="PoliciesTasks">
                                             <span class="menu-icon">

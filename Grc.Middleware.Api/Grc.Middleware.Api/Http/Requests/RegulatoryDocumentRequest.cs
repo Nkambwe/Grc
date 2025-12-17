@@ -22,8 +22,8 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("lastRevisionDate")]
         public DateTime LastRevisionDate { get; set; }
 
-        [JsonPropertyName("reviewPeriod")]
-        public int? ReviewPeriod { get; set; }
+        [JsonPropertyName("frequencyId")]
+        public long FrequencyId { get; set; }
 
         [JsonPropertyName("nextRevisionDate")]
         public DateTime? NextRevisionDate { get; set; }

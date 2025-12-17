@@ -1141,7 +1141,7 @@ namespace Grc.ui.App.Controllers {
                     });
                 }
 
-                RegulatoryAuthorityResponse response = result.Data;
+                GrcRegulatoryAuthorityResponse response = result.Data;
                 var categoryRecord = new {
                     id = response.Id,
                     startTab = "",
@@ -1186,7 +1186,7 @@ namespace Grc.ui.App.Controllers {
 
                 //..get regulatory authorities data
                 var authoritiesData = await _regulatoryAuthorityService.GetAllRegulatoryAuthorities(request);
-                PagedResponse<RegulatoryAuthorityResponse> authoritiesList = new();
+                PagedResponse<GrcRegulatoryAuthorityResponse> authoritiesList = new();
 
                 if (authoritiesData.HasError) {
                     Logger.LogActivity($"REGULATORY AUTHORITY DATA ERROR: Failed to retrieve authority items - {JsonSerializer.Serialize(authoritiesData)}");
@@ -1455,7 +1455,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Export authorities", "User exported regulatory authorities to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_AUTHORITY, "Authorities")]
-        public IActionResult ExcelExportAuthorities([FromBody] List<RegulatoryAuthorityResponse> data)
+        public IActionResult ExcelExportAuthorities([FromBody] List<GrcRegulatoryAuthorityResponse> data)
         {
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Regulation Authorities");

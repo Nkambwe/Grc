@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using Grc.Middleware.Api.Data.Entities.Compliance.Audits;
 using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
 using Grc.Middleware.Api.Data.Entities.Compliance.Returns;
@@ -11,9 +10,9 @@ using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
-using System.Diagnostics;
 
 namespace Grc.Middleware.Api.Helpers {
+
     public class MappingProfile : Profile {
 
         public MappingProfile() {
@@ -386,14 +385,15 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(r => r.LastModifiedBy, reg => reg.MapFrom(o => o.ModifiedBy))
                 .ForMember(r => r.LastModifiedOn, reg => reg.MapFrom(o => o.ModifiedOn));
 
-            CreateMap<RegulatoryDocumentRequest, RegulatoryDocument>()
+            CreateMap<PolicyDocumentRequest, RegulatoryDocument>()
                 .ForMember(r => r.Id, reg => reg.MapFrom(o => o.Id))
                 .ForMember(r => r.DocumentName, reg => reg.MapFrom(o => (o.DocumentName ?? string.Empty).Trim()))
-                .ForMember(r => r.Status, reg => reg.MapFrom(o => (o.Status ?? string.Empty).Trim()))
+                .ForMember(r => r.Status, reg => reg.MapFrom(o => (o.DocumentStatus ?? string.Empty).Trim()))
                 .ForMember(r => r.ApprovedBy, reg => reg.MapFrom(o => (o.ApprovedBy ?? string.Empty).Trim()))
-                .ForMember(r => r.PolicyAligned, reg => reg.MapFrom(o => o.PolicyAligned))
+                .ForMember(r => r.ApprovalDate, reg => reg.MapFrom(o => o.ApprovalDate))
+                .ForMember(r => r.PolicyAligned, reg => reg.MapFrom(o => o.IsLocked))
                 .ForMember(r => r.LastRevisionDate, reg => reg.MapFrom(o => o.LastRevisionDate))
-                .ForMember(r => r.ReviewPeriod, reg => reg.MapFrom(o => o.ReviewPeriod))
+                .ForMember(r => r.FrequencyId, reg => reg.MapFrom(o => o.FrequencyId))
                 .ForMember(r => r.NextRevisionDate, reg => reg.MapFrom(o => o.NextRevisionDate))
                 .ForMember(r => r.DocumentTypeId, reg => reg.MapFrom(o => o.DocumentTypeId))
                 .ForMember(r => r.ResponsibilityId, reg => reg.MapFrom(o => o.ResponsibilityId))

@@ -4,17 +4,17 @@ using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
+using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
-using System;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Grc.Middleware.Api.Services.Compliance.Regulations {
-    public class StatutoryRegulationService : BaseService, IStatutoryRegulationService
-    {
-        public StatutoryRegulationService(IServiceLoggerFactory loggerFactory,
-            IUnitOfWorkFactory uowFactory,
+
+    public class StatutoryRegulationService : BaseService, IStatutoryRegulationService {
+        
+        public StatutoryRegulationService(IServiceLoggerFactory loggerFactory, IUnitOfWorkFactory uowFactory,
             IMapper mapper) : base(loggerFactory, uowFactory, mapper) {
         }
 
@@ -30,29 +30,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to regulations in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -69,29 +48,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count statutory regulationsin the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -108,29 +66,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count statutory regulations in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -147,29 +84,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count statutory regulations in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -186,29 +102,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count statutory regulations in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -225,29 +120,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to countstatutory regulations in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -264,29 +138,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to check for statutory regulation in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -303,29 +156,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to check for statutory regulation in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -342,29 +174,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to check for statutory regulations in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -381,29 +192,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve statutory regulation: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -420,29 +210,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve statutory regulation : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -459,29 +228,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve statutory regulation : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -498,29 +246,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve statutory regulations : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -537,29 +264,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve statutory regulations : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -576,29 +282,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve statutory regulation : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -615,29 +300,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve statutory regulations : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -654,29 +318,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve statutory regulations : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -693,29 +336,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve statutory regulations : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -732,29 +354,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve statutory regulations : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -771,29 +372,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve statutory regulation : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -810,29 +390,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve statutory regulation : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -849,29 +408,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve statutory regulation : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -888,29 +426,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve statutory regulation : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -948,28 +465,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save statutory regulation : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1007,28 +504,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save statutory regulation : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1068,31 +545,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to update statutory Regulation record: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1132,31 +586,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to update statutory Regulation record: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASk-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1193,26 +624,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to delete Statutory Regulation : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1249,27 +662,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to delete statutory Regulation : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1290,26 +684,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to delete sStatutory Regulation: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1332,28 +708,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save statuitory regulation : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1376,28 +732,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save statuitory regulation : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1420,28 +756,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save statutory regulations : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1458,28 +774,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve statutory regulations: {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1496,28 +792,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieves statutory regulations : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1534,28 +810,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve statutory regulations: {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
@@ -1572,31 +828,135 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve statutory regulations : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "STATUTORY-REGULATIONS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
                 //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
 
+        public async Task<PolicySupportResponse> GetSupportItemsAsync(bool includeDeleted) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve support items for compliance policies", "INFO");
+
+            try {
+
+                PolicySupportResponse response = new() {
+                    Frequencies = new(),
+                    Authorities = new(),
+                    Responsibilities = new(),
+                    RegulatoryTypes = new(),
+                    Departments = new()
+                };
+
+                
+                // get policy types
+                var types = await uow.RegulatoryDocumentTypeRepository.GetAllAsync(false);
+
+                //..get frequencies
+                var frequencies = await uow.FrequencyRepository.GetAllAsync(false);
+
+                // get authorities
+                var authorities = await uow.AuthoritiesRepository.GetAllAsync(false);
+
+                //..get department details
+                var departments = await uow.DepartmentRepository.GetAllAsync(false, d => d.Responsibilities);
+
+                //..populate frequencies    
+                if (frequencies != null && frequencies.Count > 0) {
+                    response.Frequencies.AddRange(
+                        from frequency in frequencies
+                        select new FrequencyResponse {
+                            Id = frequency.Id,
+                            FrequencyName = frequency.FrequencyName
+                        });
+                    Logger.LogActivity($"Return Frequency found: {frequencies.Count}", "DEBUG");
+                }
+
+                //..populate departments
+                if (departments != null && departments.Count > 0) {
+
+                    foreach(var dept in departments) {
+                        //..add department
+                        response.Departments.Add(new PolicyDepartmentResponse {
+                            Id = dept.Id,
+                            DepartmentName = dept.DepartmentName
+                        });
+
+                        //..add responsibilities
+                        var owners = dept.Responsibilities;
+                        if (owners != null && owners.Count > 0) {
+                            response.Responsibilities.AddRange(
+                                from owner in owners
+                                select new ResponsibilityItemResponse {
+                                    Id = owner.Id,
+                                    DepartmentName = dept.DepartmentName,
+                                    ResponsibilityRole = owner.ContactPosition
+                                });
+                            Logger.LogActivity($"Department Responsibilities found: {owners.Count}", "DEBUG");
+                        }
+                    }
+                    
+                }
+
+                //..authorities
+                if (authorities != null && authorities.Count > 0) {
+                    response.Authorities.AddRange(
+                        from authority in authorities
+                        select new RegulatoryAuthorityResponse {
+                            Id = authority.Id,
+                            AuthorityAlias = authority.AuthorityAlias,
+                            AuthorityName = authority.AuthorityName,
+                            IsDeleted = authority.IsDeleted,
+                            CreatedOn = authority.CreatedOn,
+                            UpdatedOn = authority.LastModifiedOn ?? DateTime.Now
+                        });
+                    Logger.LogActivity($"Regulatory Authorities found: {authorities.Count}", "DEBUG");
+                }
+
+                //..regulatory types
+                if (types != null && types.Count > 0) {
+                    response.RegulatoryTypes.AddRange(
+                        from type in types
+                        select new RegulatoryTypeResponse {
+                            Id = type.Id,
+                            TypeName = type.DocumentType
+                        });
+                    Logger.LogActivity($"Regulatory types found: {types.Count}", "DEBUG");
+                }
+
+                return response;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve policy support items: {ex.Message}", "ERROR");
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+        }
+
+        #region Private Methods
+        private SystemError HandleError(IUnitOfWork uow, Exception ex) {
+            var innerEx = ex.InnerException;
+            while (innerEx != null) {
+                Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                innerEx = innerEx.InnerException;
+            }
+            Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+            var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+            long companyId = company != null ? company.Id : 1;
+            return new() {
+                ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                ErrorSource = "STATUTORY-REGISTER-SERVICE",
+                StackTrace = ex.StackTrace,
+                Severity = "CRITICAL",
+                ReportedOn = DateTime.Now,
+                CompanyId = companyId,
+                CreatedBy = "SYSTEM",
+                CreatedOn = DateTime.Now
+            };
+
+        }
+
+        #endregion
     }
 }

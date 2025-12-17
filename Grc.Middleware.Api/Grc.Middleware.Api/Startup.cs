@@ -114,11 +114,8 @@ namespace Grc.Middleware.Api {
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
-
             //..map SignalR Hubs
             app.MapHub<SystemBugHub>("/bughub");
-            //app.MapHub<ChatHub>("/chathub");
-            app.Run();
 
         }
     }

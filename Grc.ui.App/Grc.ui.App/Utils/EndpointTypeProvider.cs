@@ -7,6 +7,7 @@ namespace Grc.ui.App.Utils {
         private readonly EndpointTypeOptions _options;
         public SystemAccessEndpoints Sam => _options.Sam;
         public ProcessEndpoints Operations => _options.Operations;
+        public ComplianceEndpoints Compliance => _options.Compliance;
         public HealthEndpoint Health => _options.Health;
         public RegistrationEndpoints Registration => _options.Registration;
         public ActivityLogEndpoints ActivityLog => _options.ActivityLog;

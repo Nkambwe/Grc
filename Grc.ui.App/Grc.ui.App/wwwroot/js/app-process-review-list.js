@@ -372,7 +372,6 @@ function closeApprovalPanel() {
 $(document).ready(function () {
 
     initProcessReviewListTable();
-
     $('#processReviewForm').on('submit', function (e) {
         e.preventDefault();
     });

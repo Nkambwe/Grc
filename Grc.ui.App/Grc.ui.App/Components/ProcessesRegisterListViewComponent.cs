@@ -12,15 +12,13 @@ namespace Grc.ui.App.Components
         private readonly IWebHelper _webHelper;
         private readonly IAuthenticationService _authService;
 
-        public ProcessesRegisterListViewComponent(ISupportDashboardFactory dDashboardFactory, IWebHelper webHelper, IAuthenticationService authService)
-        {
+        public ProcessesRegisterListViewComponent(ISupportDashboardFactory dDashboardFactory, IWebHelper webHelper, IAuthenticationService authService) {
             _dDashboardFactory = dDashboardFactory;
             _webHelper = webHelper;
             _authService = authService;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()
-        {
+        public async Task<IViewComponentResult> InvokeAsync() {
             OperationProcessViewModel model = new();
             //..get user IP address
             var ipAddress = _webHelper.GetCurrentIpAddress();

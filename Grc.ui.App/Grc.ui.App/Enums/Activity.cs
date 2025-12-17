@@ -243,6 +243,14 @@ namespace Grc.ui.App.Enums {
         [Description("Retrieve unit statistics")]
         PROCESSES_UNIT_STATISTIC = 127,
         [Description("Retrieve process category statistics")]
-        PROCESSES_CATEGORY_STATISTIC = 128
+        PROCESSES_CATEGORY_STATISTIC = 128,
+        [Description("Retrieve policy register support")]
+        RETRIEVEPOLICYSUPPORT = 129,
+        [Description("Create policy document")]
+        PROCESSES_CREATE_POLICY = 130,
+        [Description("Edit policy document")]
+        PROCESSES_EDITED_POLICY = 131,
+        [Description("Lock policy/procedure")]
+        COMPLIANCE_LOCK_POLCIY = 132
     }
 }

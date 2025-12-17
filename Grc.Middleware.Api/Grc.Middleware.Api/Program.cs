@@ -8,8 +8,7 @@ namespace Grc.Middleware.Api {
 
             var builder = WebApplication.CreateBuilder(new WebApplicationOptions() {
                 Args = args,
-                ContentRootPath = AppContext.BaseDirectory,
-                ApplicationName = Process.GetCurrentProcess().ProcessName
+                ContentRootPath = AppContext.BaseDirectory
             });
 
             //enable logging
@@ -22,14 +21,15 @@ namespace Grc.Middleware.Api {
             // calling ConfigureServices method
             startup.ConfigureServices(builder.Services);
 
-            //run API as windows service
-            builder.Host.UseWindowsService(options => {
-                options.ServiceName = "GRCMiddleware";
-            });
+            ////run API as windows service
+            //builder.Host.UseWindowsService(options => {
+            //    options.ServiceName = "GRCMiddleware";
+            //});
 
             // calling Configure method
             var app = builder.Build();
             startup.Configure(app);
+            app.Run();
         }
     }
 }

@@ -5,5 +5,4 @@
         public string DepartmentName { get; set; }
         public string ResponsibleRole { get; set; }
     }
-
 }

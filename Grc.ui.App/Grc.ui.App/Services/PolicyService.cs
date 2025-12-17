@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Grc.ui.App.Enums;
+using Grc.ui.App.Extensions;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Helpers;
 using Grc.ui.App.Http.Requests;
@@ -6,147 +8,12 @@ using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
-using System.Linq.Dynamic.Core;
+using System.Text.Json;
 
 namespace Grc.ui.App.Services {
-    public class PolicyService : GrcBaseService, IPolicyService {
-        private IQueryable<PolicyRegisterResponse> query = new List<PolicyRegisterResponse>()
-                {
-                    new ()
-                    {
-                        Id=1,
-                        DocumentName = "Occupational Health and Safety Policy",
-                        DocumentTypeId = 5,
-                        DocumentType = "Policy",
-                        DocumentStatus = "NOT-APP",
-                        IsAligned = true,
-                        IsLocked = false,
-                        ReviewStatus = "UNKNOWN",
-                        OwnerId = 1,
-                        ReviewPeriod = 365,
-                        Department = "Digitization and Innovation",
-                        Owner = "Chief IT Officer",
-                        ApprovalDate = DateTime.Now.AddMonths(-9).ToString("dd-MM-yyyy"),
-                        LastRevisionDate = DateTime.Now.AddMonths(-8).ToString("dd-MM-yyyy"),
-                        NextRevisionDate = DateTime.Now.AddMonths(-3).ToString("dd-MM-yyyy"),
-                        Comments = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                    },
-                    new ()
-                    {
-                        Id=2,
-                        DocumentName = "Administration Policy ",
-                        DocumentTypeId = 5,
-                        DocumentType = "Policy",
-                        DocumentStatus = "UPTODATE",
-                        IsAligned = true,
-                        IsLocked = true,
-                        ReviewStatus = "UPTODATE",
-                        OwnerId = 1,
-                        ReviewPeriod = 365,
-                        Department = "Board Of Directors",
-                        Owner = "BOD",
-                        ApprovalDate = DateTime.Now.AddMonths(-9).ToString("dd-MM-yyyy"),
-                        LastRevisionDate = DateTime.Now.AddMonths(-2).ToString("dd-MM-yyyy"),
-                        NextRevisionDate = DateTime.Now.AddMonths(12).ToString("dd-MM-yyyy"),
-                        Comments = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                    },
-                    new()
-                    {
-                        Id=3,
-                        DocumentName = "Agent Banking Policy",
-                        DocumentTypeId = 5,
-                        DocumentType = "Policy",
-                        DocumentStatus = "DUE-REV",
-                        IsAligned = false,
-                        IsLocked = false,
-                        ReviewStatus = "DUE",
-                        OwnerId = 1,
-                        ReviewPeriod = 365,
-                        Department = "Operations and Services",
-                        Owner = "Head Operations",
-                        ApprovalDate = DateTime.Now.AddMonths(-9).ToString("dd-MM-yyyy"),
-                        LastRevisionDate = DateTime.Now.AddMonths(-11).ToString("dd-MM-yyyy"),
-                        NextRevisionDate = DateTime.Now.AddMonths(-12).ToString("dd-MM-yyyy"),
-                        Comments = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                    },
-                    new()
-                    {
-                        Id=4,
-                        DocumentName = "Projects Management Policy",
-                        DocumentTypeId = 5,
-                        DocumentType = "Policy",
-                        DocumentStatus = "DUE-REV",
-                        IsAligned = false,
-                        IsLocked = false,
-                        OwnerId = 1,
-                        ReviewPeriod = 365,
-                        ReviewStatus = "OVERDUE",
-                        Department = "Products Department",
-                        Owner = "Head Products",
-                        ApprovalDate = DateTime.Now.AddMonths(-9).ToString("dd-MM-yyyy"),
-                        LastRevisionDate = DateTime.Now.AddMonths(-9).ToString("dd-MM-yyyy"),
-                        NextRevisionDate = DateTime.Now.AddMonths(-12).ToString("dd-MM-yyyy"),
-                        Comments = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                    },
-                    new()
-                    {
-                        Id=5,
-                        DocumentName = "AML/CFT Policy",
-                        DocumentTypeId = 5,
-                        DocumentType = "Policy",
-                        DocumentStatus = "UPTODATE",
-                        IsAligned = true,
-                        IsLocked = true,
-                        ReviewStatus = "UPTODATE",
-                        OwnerId = 1,
-                        ReviewPeriod = 365,
-                        Department = "IT Security",
-                        Owner = "Chief Security Officer",
-                        ApprovalDate = DateTime.Now.AddMonths(-9).ToString("dd-MM-yyyy"),
-                        LastRevisionDate = DateTime.Now.AddMonths(-12).ToString("dd-MM-yyyy"),
-                        NextRevisionDate = DateTime.Now.AddMonths(12).ToString("dd-MM-yyyy"),
-                        Comments = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                    },
-                    new()
-                    {
-                        Id=6,
-                        DocumentName = "Strategic Planning Procedures",
-                        DocumentTypeId = 6,
-                        DocumentType = "Procedure",
-                        DocumentStatus = "DUE-REV",
-                        IsAligned = true,
-                        IsLocked = false,
-                        ReviewStatus = "DUE",
-                        OwnerId = 1,
-                        ReviewPeriod = 365,
-                        Department = "Board OF Directors",
-                        Owner = "BOD",
-                        ApprovalDate = DateTime.Now.AddMonths(-9).ToString("dd-MM-yyyy"),
-                        LastRevisionDate = DateTime.Now.AddMonths(-4).ToString("dd-MM-yyyy"),
-                        NextRevisionDate = DateTime.Now.AddMonths(-16).ToString("dd-MM-yyyy"),
-                        Comments = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                    },
-                    new()
-                    {
-                        Id=7,
-                        DocumentName = "Capacity Management Procedure",
-                        DocumentTypeId = 2,
-                        DocumentType = "Framework",
-                        DocumentStatus = "DEPT-REV",
-                        IsAligned = true,
-                        IsLocked = true,
-                        OwnerId = 1,
-                        ReviewPeriod = 365,
-                        ReviewStatus = "OVERDUE",
-                        Department = "Operations and Services",
-                        Owner = "Head Operations",
-                        ApprovalDate = DateTime.Now.AddMonths(-9).ToString("dd-MM-yyyy"),
-                        LastRevisionDate = DateTime.Now.AddMonths(6).ToString("dd-MM-yyyy"),
-                        NextRevisionDate = DateTime.Now.AddMonths(-13).ToString("dd-MM-yyyy"),
-                        Comments = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                    },
-                }.AsQueryable();
 
+    public class PolicyService : GrcBaseService, IPolicyService {
+        
         public PolicyService(IApplicationLoggerFactory loggerFactory, 
             IHttpHandler httpHandler, 
             IEnvironmentProvider environment, 
@@ -160,107 +27,302 @@ namespace Grc.ui.App.Services {
                   mapper, webHelper, sessionManager, errorFactory, errorService) {
         }
 
-        public async Task<GrcResponse<PolicyRegisterResponse>> GetPolicyAsync(GrcIdRequest getRequest) {
-            return await Task.FromResult(new GrcResponse<PolicyRegisterResponse>(query.FirstOrDefault(q => q.Id == getRequest.RecordId)));
-        }
+        public async Task<GrcResponse<PolicyDocumentResponse>> GetPolicyDocumentAsync(GrcIdRequest request) {
 
-        public async Task<GrcResponse<List<PolicyRegisterResponse>>> GetAllAsync(GrcRequest request)
-        {
-            return await Task.FromResult(new GrcResponse<List<PolicyRegisterResponse>>(query.ToList()));
-        }
-
-        public async Task<GrcResponse<PagedResponse<PolicyRegisterResponse>>> GetAllPolicies(TableListRequest request) {
-            //..filter data
-            if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
-                var lookUp = request.SearchTerm.ToLower();
-                query = query.Where(a =>
-                    (a.DocumentName != null && a.DocumentName.ToLower().Contains(lookUp)) ||
-                    (a.DocumentStatus != null && a.DocumentStatus.ToLower().Contains(lookUp)) ||
-                    (a.ReviewStatus != null && a.ReviewStatus.ToLower().Contains(lookUp))
+            try {
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/document-retrieve";
+                return await HttpHandler.PostAsync<GrcIdRequest, PolicyDocumentResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "POLICY-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
                 );
-            }
 
-            //..apply sorting
-            if (!string.IsNullOrEmpty(request.SortBy)) {
-                var sortExpr = $"{request.SortBy} {(request.SortDirection == "Ascending" ? "asc" : "desc")}";
-                query = query.OrderBy(sortExpr);
+                return new GrcResponse<PolicyDocumentResponse>(error);
             }
-
-            //..get paged data
-            var page = new PagedResponse<PolicyRegisterResponse>() {
-                TotalCount = 20,
-                Page = request.PageIndex,
-                Size = request.PageSize,
-                Entities = query.ToList(),
-                TotalPages = 2
-            };
-            return await Task.FromResult(new GrcResponse<PagedResponse<PolicyRegisterResponse>>(page));
         }
 
-        public async Task<GrcResponse<PolicyRegisterResponse>> CreatePolicyAsync(PolicyViewModel request)
-        {
-            var record = new PolicyRegisterResponse
-            {
-                DocumentName = request.DocumentName,
-                DocumentTypeId = request.DocumentTypeId,
-                DocumentStatus = request.DocumentStatus,
-                IsAligned = request.IsAligned,
-                IsLocked = request.IsLocked,
-                ReviewPeriod = request.ReviewPeriod,
-                ReviewStatus = request.ReviewStatus,
-                OwnerId = request.OwnerId,
-                Comments = request.Comments,
-                Approver = "",
-                LastRevisionDate = request.LastRevisionDate.ToString("dd-MM-yyyy"),
-                NextRevisionDate = request.NextRevisionDate?.ToString("dd-MM-yyyy"),
-                Id = query.Max(r => r.Id) + 1
-            };
-            return await Task.FromResult(new GrcResponse<PolicyRegisterResponse>(record));
-        }
+        public async Task<GrcResponse<List<PolicyDocumentResponse>>> GetDocumentListAsync(GrcRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Invalid Request object",
+                        "Request object cannot be null"
+                    );
 
-        public async Task<GrcResponse<PolicyRegisterResponse>> UpdatePolicyAsync(PolicyViewModel request)
-        {
-            var record = query.FirstOrDefault(r => r.Id == request.Id);
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<List<PolicyDocumentResponse>>(error);
+                }
 
-            if (record == null)
-            {
-                return await Task.FromResult(new GrcResponse<PolicyRegisterResponse>(record));
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/document-list";
+                return await HttpHandler.PostAsync<GrcRequest, List<PolicyDocumentResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "POLICY-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<List<PolicyDocumentResponse>>(error);
             }
-
-            record.DocumentName = request.DocumentName;
-            record.DocumentTypeId = request.DocumentTypeId;
-            record.DocumentStatus = request.DocumentStatus;
-            record.IsAligned = request.IsAligned;
-            record.IsLocked = request.IsLocked;
-            record.ReviewPeriod = request.ReviewPeriod;
-            record.ReviewStatus = request.ReviewStatus;
-            record.OwnerId = request.OwnerId;
-            record.Comments = request.Comments;
-            record.Approver = "";
-            record.LastRevisionDate = request.LastRevisionDate.ToString("dd-MM-yyyy");
-            record.NextRevisionDate = request.NextRevisionDate?.ToString("dd-MM-yyyy");
-            return await Task.FromResult(new GrcResponse<PolicyRegisterResponse>(record));
         }
 
-        public async Task<GrcResponse<ServiceResponse>> DeletePolicyAsync(GrcIdRequest deleteRequest)
-        {
-            var record = query.FirstOrDefault(r => r.Id == deleteRequest.RecordId);
-            if (record == null)
-            {
-                return await Task.FromResult(new GrcResponse<ServiceResponse>(new ServiceResponse
-                {
-                    Status = false,
-                    StatusCode = 404,
-                    Message = "Policy not found"
-                }));
+        public async Task<GrcResponse<PagedResponse<PolicyDocumentResponse>>> GetPagedDocumentsAsync(TableListRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Invalid Request object",
+                        "Request object cannot be null"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<PagedResponse<PolicyDocumentResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/paged-document-list";
+                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<PolicyDocumentResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<PagedResponse<PolicyDocumentResponse>>(error);
             }
-            return await Task.FromResult(new GrcResponse<ServiceResponse>(new ServiceResponse
-            {
-                Status = true,
-                StatusCode = 200,
-                Message = "Policy deleted successfully"
-            }));
         }
 
+        public async Task<GrcResponse<GrcPolicySupportResponse>> GetPolicySupportItemsAsync(GrcRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Invalid Request object",
+                        "Request object cannot be null"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<GrcPolicySupportResponse>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/support-items";
+                return await HttpHandler.PostAsync<GrcRequest, GrcPolicySupportResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "POLICY-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<GrcPolicySupportResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> CreateDocumentAsync(PolicyViewModel model, long userId, string ipAddress) {
+            try {
+                if (model == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Policy document record cannot be null",
+                        "Invalid Policy document  record"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..build request object
+                var request = Mapper.Map<GrcPolicyDocumentRequest>(model);
+                request.UserId = userId;
+                request.IpAddress = ipAddress;
+                request.Action = Activity.PROCESSES_CREATE_POLICY.GetDescription();
+
+                //..map request
+                Logger.LogActivity($"CREATE POLICY DOCUMENT REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/create-document";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcPolicyDocumentRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "POLICY-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "POLICY-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> UpdateDocumentAsync(PolicyViewModel model, long userId, string ipAddress) {
+            try {
+                if (model == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Process record cannot be null",
+                        "Invalid process record"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+
+                //..build request object
+                var request = Mapper.Map<GrcPolicyDocumentRequest>(model);
+                request.UserId = userId;
+                request.IpAddress = ipAddress;
+                request.Action = Activity.PROCESSES_EDITED_POLICY.GetDescription();
+
+                //..map request
+                Logger.LogActivity($"UPDATE POLICY DOCUMENT REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/update-document";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcPolicyDocumentRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "PROCESSES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> DeletePolicyAsync(GrcIdRequest request) {
+            try {
+
+                if (request == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Policy document record cannot be null",
+                        "Invalid Policy document record"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..map request
+                Logger.LogActivity($"DELETE POLICY DOCUMENT REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/delete-document";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcIdRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "POLICY-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "POLICY-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> LockPolicyAsync(GrcIdRequest request) {
+            try {
+
+                if (request == null) {
+                    var error = new GrcResponseError(
+                        GrcStatusCodes.BADREQUEST,
+                        "Policy document record cannot be null",
+                        "Invalid Policy document record"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..map request
+                Logger.LogActivity($"LOCK POLICY DOCUMENT REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/lock-document";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcIdRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "POLICY-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "POLICY-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
     }
 }

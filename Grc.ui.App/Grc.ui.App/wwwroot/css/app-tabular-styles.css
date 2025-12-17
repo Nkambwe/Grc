@@ -274,7 +274,7 @@
 .slide-task-panel,
 .role-permission-panel {
     position: fixed;
-    top: 70px;
+    top: 0;
     right: -100vw;
     width: 96vw;
     height: 100vh;

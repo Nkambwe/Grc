@@ -30,12 +30,13 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations
         Task<IList<RegulatoryDocument>> GetAllAsync(Expression<Func<RegulatoryDocument, bool>> where, bool includeDeleted = false, params Expression<Func<RegulatoryDocument, object>>[] includes);
         Task<IList<RegulatoryDocument>> GetAllAsync(bool includeDeleted = false, params Expression<Func<RegulatoryDocument, object>>[] includes);
         Task<IList<RegulatoryDocument>> GetTopAsync(Expression<Func<RegulatoryDocument, bool>> where, int top, bool includeDeleted = false);
-        bool Insert(RegulatoryDocumentRequest document);
-        Task<bool> InsertAsync(RegulatoryDocumentRequest document);
-        bool Update(RegulatoryDocumentRequest document, bool includeDeleted = false);
-        Task<bool> UpdateAsync(RegulatoryDocumentRequest document, bool includeDeleted = false);
+        bool Insert(PolicyDocumentRequest document);
+        Task<bool> InsertAsync(PolicyDocumentRequest document);
+        bool Update(PolicyDocumentRequest document, bool includeDeleted = false);
+        Task<bool> UpdateAsync(PolicyDocumentRequest document, bool includeDeleted = false);
         bool Delete(IdRequest request);
         Task<bool> DeleteAsync(IdRequest request);
+        Task<bool> LockAsync(IdRequest request);
         Task<bool> DeleteAllAsync(IList<long> requestIds, bool markAsDeleted = false);
         Task<bool> BulkyInsertAsync(RegulatoryDocumentRequest[] request);
         Task<bool> BulkyUpdateAsync(RegulatoryDocumentRequest[] request);

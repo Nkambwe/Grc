@@ -21,6 +21,22 @@ namespace Grc.Middleware.Api.Controllers
             : base(cypher, loggerFactory, mapper, companyService, environment, errorService, systemErrorService)
         {
         }
+
+        #region Returns
+        #endregion
+
+        #region Authorities
+        #endregion
+
+        #region Frequencies
+        #endregion
+
+        #region Responsibilities
+        #endregion
+
+        #region Return types
+        #endregion
+
     }
 
 }

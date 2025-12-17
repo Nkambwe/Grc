@@ -695,9 +695,35 @@
 	<LocaleResource Name="Component.Table.Policy.Revision.NextDate">
 		<Value>Next Revision Date</Value>
 	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Task.AssignedDate">
-		<Value>Assigned Date</Value>
+
+	<LocaleResource Name="Component.Table.Policy.Name">
+		<Value>Policy/Procedure Name</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Description">
+		<Value>Policy/Procedure Notes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Type">
+		<Value>Policy/Procedure Category</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Type.Select">
+		<Value>Select category...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Department">
+		<Value>Department Responsible</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Department.Select">
+		<Value>Select department...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Responsible">
+		<Value>Contact Designation</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Responsible.Select">
+		<Value>Select designation...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Deactivate">
+		<Value>Mark as deleted?</Value>
+	</LocaleResource>
+
 	<LocaleResource Name="Component.Table.Policy.Task.DueDate">
 		<Value>Due Date</Value>
 	</LocaleResource>
@@ -795,6 +821,93 @@
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Set.Deleted">
 		<Value>Deactivated</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Set.Deleted">
+		<Value>Deactivated</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Select.Placeholder">
+		<Value>Select Frequency...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Procedure.Description">
+		<Value>Procedure Description</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Procedure.Authority">
+		<Value>Issuer Authority</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Select.Authority">
+		<Value>Select Authority..</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Procedure.Responsible">
+		<Value>Responsible Person</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Select.Responsible">
+		<Value>Select Responsible..</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Select.Frequency">
+		<Value>Report Frequency</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.ApprovedBy">
+		<Value>Approved By</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.ApprovedBy.Select">
+		<Value>Select approver</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Details">
+		<Value>Policy/Regulation Info</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Review">
+		<Value>Policy Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Task.LastDate">
+		<Value>Last Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Task.NextDate">
+		<Value>Next Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Procedure.Department">
+		<Value>Responsible Department</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Select.Department">
+		<Value>Select department...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Procedure.Status">
+		<Value>Policy Status</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Select.Status">
+		<Value>Select status...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Procedure.Type">
+		<Value>Regulatory Type</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Select.Type">
+		<Value>Select type...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Procedure.IsApproved">
+		<Value>Board Approval</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Select.Approval">
+		<Value>Select approval...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Select.Yes">
+		<Value>YES</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Select.No">
+		<Value>NO</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.ApprovalDate">
+		<Value>Approval Date</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Review">
+		<Value>Board Approval</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Aligned">
+		<Value>Is Policy Aligned? </Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.MRC">
+		<Value>MRC Approval</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Board">
+		<Value>Board Approval</Value>
 	</LocaleResource>
 
 	<LocaleResource Name="Component.Process.CollapsablePane.Hod">
@@ -1218,10 +1331,10 @@
 		<Value>Other Settings</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Registers">
-		<Value>Regulations/Guidelines</Value>
+		<Value>Registers</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Registers.List">
-		<Value>Regulations</Value>
+		<Value>Statutes/Regulations</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Registers.Regulations">
 		<Value>Regulatory Returns</Value>
@@ -1231,6 +1344,12 @@
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Registers.Policies">
 		<Value>Policies and Procedures</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Regulatory.Obligations">
+		<Value>Regulatory Obligations</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Obligations.Register">
+		<Value>Obligations Register</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Registers.Circular">
 		<Value>Circular Returns</Value>

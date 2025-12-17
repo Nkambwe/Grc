@@ -1,5 +1,5 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Grc.ui.App.Defaults;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -42,6 +42,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         #region Policy Registers
+
         public async Task<IActionResult> PoliciesRegisters() {
             try
             {
@@ -107,7 +108,7 @@ namespace Grc.ui.App.Controllers {
                     IsDeleted = false
                 };
 
-                var result = await _policyService.GetPolicyAsync(request);
+                var result = await _policyService.GetPolicyDocumentAsync(request);
                 if (result.HasError || result.Data == null)
                 {
                     var errMsg = result.Error?.Message ?? "Error occurred while retrieving policy";
@@ -120,16 +121,20 @@ namespace Grc.ui.App.Controllers {
                 {
                     id = response.Id,
                     documentName = response.DocumentName,
-                    documentType = response.DocumentTypeId,
-                    documentStatus = response.DocumentStatus,
-                    aligned = response.IsAligned,
-                    locked = response.IsLocked,
-                    documentOwner = response.OwnerId,
-                    reviewPeriod = response.ReviewPeriod,
-                    reviewStatus = response.ReviewStatus,
-                    lastReview = response.LastRevisionDate,
-                    nextReview = response.NextRevisionDate,
-                    comments = response.Comments
+                    comments = response.Comments,
+                    documentTypeId = response.DocumentTypeId,
+                    ownerId = response.ResponsibilityId,
+                    departmentId = response.DepartmentId,
+                    isDeleted = response.IsDeleted,
+                    lastReviewDate = response.LastRevisionDate,
+                    nextReviewDate = response.NextRevisionDate,
+                    frequencyId = response.FrequencyId,
+                    documentStatus = response.Status ?? string.Empty,
+                    isAligned = response.IsAligned,
+                    isLocked = response.IsLocked,
+                    isApproved = string.IsNullOrWhiteSpace(response.ApprovedBy) ? 2 : 1,
+                    approvalDate = response.ApprovalDate,
+                    approvedBy = response.ApprovedBy ?? string.Empty
                 };
 
                 return Ok(new { success = true, data = policyRecord });
@@ -167,36 +172,21 @@ namespace Grc.ui.App.Controllers {
                     return Ok(new { success = false, message = "Unable to resolve current user" });
 
                 var currentUser = userResponse.Data;
-                request.UserId = currentUser.UserId;
-                request.IPAddress = ipAddress;
-                request.Action = Activity.COMPLIANCE_CREATE_POLICY.GetDescription();
-
                 if (request == null)
                 {
                     return Ok(new { success = false, message = "Invalid Policy/Procedure data" });
                 }
 
 
-                var result = await _policyService.CreatePolicyAsync(request);
+                var result = await _policyService.CreateDocumentAsync(request, currentUser.UserId, ipAddress);
                 if (result.HasError || result.Data == null)
                     return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create policy" });
 
                 var created = result.Data;
-                return Ok(new
-                {
+                return Ok(new {
                     success = true,
                     message = "Policy created successfully",
-                    data = new
-                    {
-                        id = created.Id,
-                        documentName = created.DocumentName,
-                        documentType = created.DocumentTypeId,
-                        aligned = created.IsAligned,
-                        locked = created.IsLocked,
-                        reviewStatus = created.ReviewStatus,
-                        lastReview = created.LastRevisionDate,
-                        nextReview = created.NextRevisionDate,
-                    }
+                    data = new { }
                 });
 
             }
@@ -220,11 +210,7 @@ namespace Grc.ui.App.Controllers {
                     return Ok(new { success = false, message = "Unable to resolve current user" });
 
                 var currentUser = userResponse.Data;
-                request.UserId = currentUser.UserId;
-                request.IPAddress = ipAddress;
-                request.Action = Activity.COMPLIANCE_EDITED_POLICY.GetDescription();
-
-                var result = await _policyService.UpdatePolicyAsync(request);
+                var result = await _policyService.UpdateDocumentAsync(request, currentUser.UserId, ipAddress);
                 if (result.HasError || result.Data == null)
                     return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update policy" });
 
@@ -233,17 +219,7 @@ namespace Grc.ui.App.Controllers {
                 {
                     success = true,
                     message = "Policy updated successfully",
-                    data = new
-                    {
-                        id = updated.Id,
-                        documentName = updated.DocumentName,
-                        documentType = updated.DocumentTypeId,
-                        aligned = updated.IsAligned,
-                        locked = updated.IsLocked,
-                        reviewStatus = updated.ReviewStatus,
-                        lastReview = updated.LastRevisionDate,
-                        nextReview = updated.NextRevisionDate,
-                    }
+                    data = new { }
                 });
             }
             catch (Exception ex)
@@ -255,11 +231,9 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Delete Policy", "User delete policy", ActivityTypeDefaults.COMPLIANCE_DELETED_POLICY, "Policy")]
-        public async Task<IActionResult> DeletePolicy(long id)
-        {
-            try
-            {
+        [LogActivityResult("Lock Policy", "User locked policy document", ActivityTypeDefaults.COMPLIANCE_LOCK_POLICY, "Policy")]
+        public async Task<IActionResult> LockPolicy(long id) {
+            try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
                 var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (userResponse.HasError || userResponse.Data == null)
@@ -268,8 +242,41 @@ namespace Grc.ui.App.Controllers {
                 if (id == 0) return BadRequest(new { success = false, message = "Policy Id is required" });
 
                 var currentUser = userResponse.Data;
-                GrcIdRequest request = new()
-                {
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.COMPLIANCE_LOCK_POLCIY.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = true
+                };
+
+                var result = await _policyService.LockPolicyAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to lock policy document" });
+
+                return Ok(new { success = result.Data.Status, message = result.Data.Message });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Unexpected error lock policy document: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "POLICY-REGISTER", ex.StackTrace);
+                return Redirect(Url.Action("PoliciesRegisters", "ComplianceSettings"));
+            }
+        }
+
+        [HttpPost]
+        [LogActivityResult("Delete Policy", "User delete policy", ActivityTypeDefaults.COMPLIANCE_DELETED_POLICY, "Policy")]
+        public async Task<IActionResult> DeletePolicy(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                if (id == 0) return BadRequest(new { success = false, message = "Policy Id is required" });
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
                     RecordId = id,
                     UserId = currentUser.UserId,
                     Action = Activity.COMPLIANCE_DELETED_POLCIY.GetDescription(),
@@ -282,9 +289,7 @@ namespace Grc.ui.App.Controllers {
                     return Ok(new { success = false, message = result.Error?.Message ?? "Failed to delete policy" });
 
                 return Ok(new { success = result.Data.Status, message = result.Data.Message });
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected error deleting policy: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "POLICY-REGISTER", ex.StackTrace);
                 return Redirect(Url.Action("PoliciesRegisters", "ComplianceSettings"));
@@ -293,7 +298,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Export Policy", "User exported policies to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_POLICY, "Policy")]
-        public IActionResult ExcelExportPolicies([FromBody] List<PolicyRegisterResponse> data)
+        public IActionResult ExcelExportPolicies([FromBody] List<PolicyDocumentResponse> data)
         {
             using var workbook = new XLWorkbook();
             var ws = workbook.Worksheets.Add("Policies");
@@ -301,27 +306,28 @@ namespace Grc.ui.App.Controllers {
             ws.Cell(1, 1).Value = "POLICY/PROCEDURE NAME";
             ws.Cell(1, 2).Value = "DOCUMENT TYPE";
             ws.Cell(1, 3).Value = "REVIEW STATUS";
-            ws.Cell(1, 4).Value = "APPROVAL DATE";
-            ws.Cell(1, 5).Value = "LAST REVISION";
-            ws.Cell(1, 6).Value = "NEXT REVISION";
-            ws.Cell(1, 7).Value = "DEPARTMENT/FUNCTION";
-            ws.Cell(1, 8).Value = "POLICY OWNER";
-            ws.Cell(1, 9).Value = "POLICY ALIGNED";
-            ws.Cell(1, 10).Value = "COMMENTS";
+            ws.Cell(1, 4).Value = "APPROVED BY";
+            ws.Cell(1, 5).Value = "APPROVAL DATE";
+            ws.Cell(1, 6).Value = "LAST REVISION";
+            ws.Cell(1, 7).Value = "NEXT REVISION";
+            ws.Cell(1, 8).Value = "DEPARTMENT/FUNCTION";
+            ws.Cell(1, 9).Value = "POLICY OWNER";
+            ws.Cell(1, 10).Value = "POLICY ALIGNED";
+            ws.Cell(1, 11).Value = "COMMENTS";
 
             int row = 2;
             foreach (var p in data) {
                 ws.Cell(row, 1).Value = p.DocumentName;
-                ws.Cell(row, 2).Value = p.DocumentType;
-                ws.Cell(row, 3).Value = p.ReviewStatus == "OVERDUE" ? "PASSED DUE" : (p.ReviewStatus == "DUE" ? "DUE" : "UPTODATE");
-                ws.Cell(row, 4).Value = p.ApprovalDate;
-                ws.Cell(row, 5).Value = p.LastRevisionDate;
-                ws.Cell(row, 6).Value = p.NextRevisionDate;
-                ws.Cell(row, 7).Value = p.Department;
-                ws.Cell(row, 8).Value = p.Owner;
-                ws.Cell(row, 9).Value = p.IsAligned ? "YES" : "NO";
-                ws.Cell(row, 10).Value = p.Comments;
-
+                ws.Cell(row, 2).Value = p.DocumentTypeName;
+                ws.Cell(row, 3).Value = p.Status;
+                ws.Cell(row, 4).Value = p.ApprovedBy;
+                ws.Cell(row, 5).Value = p.ApprovalDate;
+                ws.Cell(row, 6).Value = p.LastRevisionDate;
+                ws.Cell(row, 7).Value = p.NextRevisionDate;
+                ws.Cell(row, 8).Value = p.ResponsibilityName ?? string.Empty;
+                ws.Cell(row, 9).Value = p.DepartmentName ?? string.Empty;
+                ws.Cell(row, 10).Value = p.IsAligned ? "YES" : "NO";
+                ws.Cell(row, 11).Value = p.Comments;
                 row++;
             }
 
@@ -351,7 +357,7 @@ namespace Grc.ui.App.Controllers {
                 Action = Activity.COMPLIANCE_EXPORT_POLICIES.GetDescription()
             };
 
-            var result = await _policyService.GetAllPolicies(request);
+            var result = await _policyService.GetPagedDocumentsAsync(request);
             if (result.HasError || result.Data == null)
                 return Ok(new { success = false, message = "Failed to retrieve policies" });
 
@@ -361,26 +367,28 @@ namespace Grc.ui.App.Controllers {
             ws.Cell(1, 1).Value = "POLICY/PROCEDURE NAME";
             ws.Cell(1, 2).Value = "DOCUMENT TYPE";
             ws.Cell(1, 3).Value = "REVIEW STATUS";
-            ws.Cell(1, 4).Value = "APPROVAL DATE";
-            ws.Cell(1, 5).Value = "LAST REVISION";
-            ws.Cell(1, 6).Value = "NEXT REVISION";
-            ws.Cell(1, 7).Value = "DEPARTMENT/FUNCTION";
-            ws.Cell(1, 8).Value = "POLICY OWNER";
-            ws.Cell(1, 9).Value = "POLICY ALIGNED";
-            ws.Cell(1, 10).Value = "COMMENTS";
+            ws.Cell(1, 4).Value = "APPROVED BY";
+            ws.Cell(1, 5).Value = "APPROVAL DATE";
+            ws.Cell(1, 6).Value = "LAST REVISION";
+            ws.Cell(1, 7).Value = "NEXT REVISION";
+            ws.Cell(1, 8).Value = "DEPARTMENT/FUNCTION";
+            ws.Cell(1, 9).Value = "POLICY OWNER";
+            ws.Cell(1, 10).Value = "POLICY ALIGNED";
+            ws.Cell(1, 11).Value = "COMMENTS";
 
             int row = 2;
             foreach (var p in result.Data.Entities) {
                 ws.Cell(row, 1).Value = p.DocumentName;
-                ws.Cell(row, 2).Value = p.DocumentType;
-                ws.Cell(row, 3).Value = p.ReviewStatus == "OVERDUE" ? "PASSED DUE" : (p.ReviewStatus == "DUE" ? "DUE" : "UPTODATE");
-                ws.Cell(row, 4).Value = p.ApprovalDate;
-                ws.Cell(row, 5).Value = p.LastRevisionDate;
-                ws.Cell(row, 6).Value = p.NextRevisionDate;
-                ws.Cell(row, 7).Value = p.Department;
-                ws.Cell(row, 8).Value = p.Owner;
-                ws.Cell(row, 9).Value = p.IsAligned ? "YES" : "NO";
-                ws.Cell(row, 10).Value = p.Comments;
+                ws.Cell(row, 2).Value = p.DocumentTypeName;
+                ws.Cell(row, 3).Value = p.Status;
+                ws.Cell(row, 4).Value = p.ApprovedBy;
+                ws.Cell(row, 5).Value = p.ApprovalDate;
+                ws.Cell(row, 6).Value = p.LastRevisionDate;
+                ws.Cell(row, 7).Value = p.NextRevisionDate;
+                ws.Cell(row, 8).Value = p.ResponsibilityName ?? string.Empty;
+                ws.Cell(row, 9).Value = p.DepartmentName ?? string.Empty;
+                ws.Cell(row, 10).Value = p.IsAligned ? "YES" : "NO";
+                ws.Cell(row, 11).Value = p.Comments;
 
                 row++;
             }
@@ -420,9 +428,9 @@ namespace Grc.ui.App.Controllers {
                 };
 
                 //..get list of all document types
-                var doctypeData = await _policyService.GetAllAsync(request);
+                var doctypeData = await _policyService.GetDocumentListAsync(request);
 
-                List<PolicyRegisterResponse> policies;
+                List<PolicyDocumentResponse> policies;
                 if (doctypeData.HasError)
                 {
                     policies = new();
@@ -464,29 +472,33 @@ namespace Grc.ui.App.Controllers {
                 request.IPAddress = ipAddress;
                 request.Action = Activity.COMPLIANCE_RETRIEVE_POLICY.GetDescription();
 
-                var result = await _policyService.GetAllPolicies(request);
-                PagedResponse<PolicyRegisterResponse> list = result.Data ?? new();
+                var result = await _policyService.GetPagedDocumentsAsync(request);
+                PagedResponse<PolicyDocumentResponse> list = result.Data ?? new();
 
-                var pagedEntities = (list.Entities ?? new List<PolicyRegisterResponse>())
-                    .Skip((request.PageIndex - 1) * request.PageSize)
-                    .Take(request.PageSize)
+                var pagedEntities = (list.Entities ?? new List<PolicyDocumentResponse>())
                     .Select(p => new {
                         id = p.Id,
                         documentName = p.DocumentName,
-                        documentType = p.DocumentType,
-                        approvedBy = p.Approver,
-                        policyOwner = p.Owner,
-                        department = p.Department,
-                        documentStatus = p.DocumentStatus,
-                        aligned = p.IsAligned,
-                        locked = p.IsLocked,
-                        reviewStatus = p.ReviewStatus,
+                        comments = p.Comments,
+                        documentTypeId = p.DocumentTypeId,
+                        documentType = p.DocumentTypeName,
+                        ownerId = p.ResponsibilityId,
+                        documentOwner = p.ResponsibilityName,
+                        departmentId = p.DepartmentId,
+                        department = p.DepartmentName,
+                        isDeleted = p.IsDeleted,
                         lastReview = p.LastRevisionDate,
                         nextReview = p.NextRevisionDate,
+                        frequencyId = p.FrequencyId,
+                        documentStatus = p.Status ?? string.Empty,
+                        isAligned = p.IsAligned,
+                        isLocked = p.IsLocked,
+                        isApproved = !string.IsNullOrWhiteSpace(p.ApprovedBy) && p.ApprovedBy.ToUpper() != "NONE",
+                        approvalDate = p.ApprovalDate,
+                        approvedBy = p.ApprovedBy ?? string.Empty
                     }).ToList();
 
                 var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
-
                 return Ok(new { last_page = totalPages, total_records = list.TotalCount, data = pagedEntities });
             }
             catch (Exception ex)

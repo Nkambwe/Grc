@@ -1,9 +1,6 @@
 ﻿
 $(document).ready(function () {
     initActTable();
-    initFrequencySelect2();
-    initResponseSelect2();
-    initAuthoritySelect2();
 });
 
 let actTable;
@@ -82,7 +79,7 @@ function initActTable() {
         },
         ajaxError: function (error) {
             console.error("Tabulator AJAX Error:", error);
-            alert("Failed to load tasks. Please try again.");
+            alert("Failed to load regulatory registers. Please try again.");
         },
         layout: "fitColumns",
         responsiveLayout: "hide",
@@ -130,9 +127,6 @@ function initActTable() {
     initActSearch();
 }
 
-/*------------------------------------------
-    Navigation / Buttons
--------------------------------------------*/
 $('.action-btn-complianceHome').on('click', function () {
     window.location.href = '/grc/compliance';
 });
@@ -185,7 +179,7 @@ $('#actForm').on('submit', function (e) {
 });
 
 function addActRecord() {
-    openActPanel('New Law/Regulation', {
+    openActPanel('New Policy Regulation', {
         id: 0,
         regulatoryName: '',
         authorityId: 0,
@@ -199,8 +193,28 @@ function addActRecord() {
 
 let flatpickrInstances = {};
 
-function initReviewDatePickers() {
+function initLastReviewDatePickers() {
     flatpickrInstances["lastReviewDate"] = flatpickr("#lastReviewDate", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y",
+        defaultDate: null
+    });
+}
+
+function initNextReviewDatePickers() {
+    flatpickrInstances["nextReviewDate"] = flatpickr("#nextReviewDate", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y",
+        defaultDate: null
+    });
+}
+
+function initApprovalDatePickers() {
+    flatpickrInstances["approvalDate"] = flatpickr("#approvalDate", {
         dateFormat: "Y-m-d",
         allowInput: true,
         altInput: true,
@@ -219,49 +233,9 @@ function openActPanel(title, record, isEdit) {
     $('#dpFrequency').val(record.reviewFrequency);
     $('#dpResponsibility').val(record.reviewResponsibility).trigger('change');
     $('#actComments').val(record.comments || '');
-
     $('#panelTitle').text(title);
     $('.overlay').addClass('active');
     $('#slidePanel').addClass('active');
-}
-
-function deleteActRecord(id) {
-    if (!id && id !== 0) {
-        toastr.error("Invalid id for delete.");
-        return;
-    }
-
-    Swal.fire({
-        title: "Delete Law/regulation/Guide",
-        text: "Are you sure you want to delete this law/act?",
-        showCancelButton: true,
-        confirmButtonColor: "#450354",
-        confirmButtonText: "Delete",
-        cancelButtonColor: "#f41369",
-        cancelButtonText: "Cancel"
-    }).then((result) => {
-        if (!result.isConfirmed) return;
-
-        $.ajax({
-            url: `/grc/compliance/register/acts-delete/${encodeURIComponent(id)}`,
-            type: 'DELETE',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': getActAntiForgeryToken()
-            },
-            success: function (res) {
-                if (res && res.success) {
-                    toastr.success(res.message || "Law/regulation/Guide deleted successfully.");
-                    policyRegisterTable.setPage(1, true);
-                } else {
-                    toastr.error(res?.message || "Delete failed.");
-                }
-            },
-            error: function () {
-                toastr.error("Request failed.");
-            }
-        });
-    });
 }
 
 function viewActRecord(id) {
@@ -278,7 +252,7 @@ function viewActRecord(id) {
         .then(record => {
             Swal.close();
             if (record) {
-                openActPanel('Edit Regulatory Law/Act', record, true);
+                openActPanel('Edit Policy Regulation', record, true);
             } else {
                 Swal.fire({ title: 'NOT FOUND', text: 'Law/Act not found' });
             }
@@ -442,6 +416,45 @@ function saveAct(isEdit, payload) {
     });
 }
 
+function deleteActRecord(id) {
+    if (!id && id !== 0) {
+        toastr.error("Invalid id for delete.");
+        return;
+    }
+
+    Swal.fire({
+        title: "Delete Law/regulation/Guide",
+        text: "Are you sure you want to delete this law/act?",
+        showCancelButton: true,
+        confirmButtonColor: "#450354",
+        confirmButtonText: "Delete",
+        cancelButtonColor: "#f41369",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        $.ajax({
+            url: `/grc/compliance/register/acts-delete/${encodeURIComponent(id)}`,
+            type: 'DELETE',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getActAntiForgeryToken()
+            },
+            success: function (res) {
+                if (res && res.success) {
+                    toastr.success(res.message || "Law/regulation/Guide deleted successfully.");
+                    policyRegisterTable.setPage(1, true);
+                } else {
+                    toastr.error(res?.message || "Delete failed.");
+                }
+            },
+            error: function () {
+                toastr.error("Request failed.");
+            }
+        });
+    });
+}
+
 function initActSearch() {
     const searchInput = $('#actSearchbox');
     let typingTimer;
@@ -467,154 +480,6 @@ function initActSearch() {
     });
 }
 
-function initAuthoritySelect2() {
-    $(".js-act-authority").each(function () {
-        if (!$(this).hasClass('select2-hidden-accessible')) {
-            initAuthorityElement($(this));
-        }
-    });
-}
-
-function initAuthorityElement($element) {
-    const labelText = $element.closest('.form-group').find('label').text().trim() || 'Select authority';
-
-    $element.select2({
-        width: 'resolve',
-        placeholder: 'Select an authority...',
-        allowClear: true,
-        escapeMarkup: function (markup) {
-            return markup;
-        },
-        language: {
-            noResults: function () {
-                return "No authority found";
-            }
-        }
-    });
-    setTimeout(() => {
-        fixSelect5Accessibility($element, labelText);
-    }, 100);
-}
-
-function initResponseSelect2() {
-    $(".js-act-respons").each(function () {
-        if (!$(this).hasClass('select2-hidden-accessible')) {
-            initResponseElement($(this));
-        }
-    });
-}
-
-function initResponseElement($element) {
-    const labelText = $element.closest('.form-group').find('label').text().trim() || 'Select responsibility';
-
-    $element.select2({
-        width: 'resolve',
-        placeholder: 'Select an responsibility...',
-        allowClear: true,
-        escapeMarkup: function (markup) {
-            return markup;
-        },
-        language: {
-            noResults: function () {
-                return "No responsibility found";
-            }
-        }
-    });
-    setTimeout(() => {
-        fixSelect5Accessibility($element, labelText);
-    }, 100);
-}
-
-function initFrequencySelect2() {
-    $(".js-act-frequency").each(function () {
-        if (!$(this).hasClass('select2-hidden-accessible')) {
-            initFrequencyElement($(this));
-        }
-    });
-}
-
-function initFrequencyElement($element) {
-    const labelText = $element.closest('.form-group').find('label').text().trim() || 'Select frequency';
-
-    $element.select2({
-        width: 'resolve',
-        placeholder: 'Select an frequency...',
-        allowClear: true,
-        escapeMarkup: function (markup) {
-            return markup;
-        },
-        language: {
-            noResults: function () {
-                return "No frequency found";
-            }
-        }
-    });
-    setTimeout(() => {
-        fixSelect5Accessibility($element, labelText);
-    }, 100);
-}
-
-function fixSelect5Accessibility($originalSelect, labelText) {
-    const selectId = $originalSelect.attr('id');
-    if (!selectId) return;
-
-    const $select2Container = $originalSelect.next('.select2-container');
-    const $select2Selection = $select2Container.find('.select2-selection');
-    const $select2Arrow = $select2Container.find('.select2-selection__arrow');
-
-    // Remove problematic aria-hidden from the original select
-    $originalSelect.removeAttr('aria-hidden');
-
-    // Add proper ARIA attributes to Select2 elements
-    $select2Selection.attr({
-        'role': 'combobox',
-        'aria-expanded': 'false',
-        'aria-haspopup': 'listbox',
-        'aria-labelledby': selectId + '-label',
-        'aria-describedby': selectId + '-description'
-    });
-
-    // Create or update label
-    let $label = $(`label[for="${selectId}"]`);
-    if ($label.length === 0) {
-        $label = $originalSelect.closest('.form-group').find('label').first();
-        $label.attr('for', selectId);
-    }
-    $label.attr('id', selectId + '-label');
-
-    // Add description for screen readers
-    if ($(`#${selectId}-description`).length === 0) {
-        $('<span>', {
-            id: selectId + '-description',
-            class: 'sr-only',
-            text: 'Use arrow keys to navigate options'
-        }).insertAfter($select2Container);
-    }
-
-    // Handle Select2 events for accessibility
-    $originalSelect.on('select2:open', function () {
-        $select2Selection.attr('aria-expanded', 'true');
-
-        // Focus the search input when dropdown opens
-        setTimeout(() => {
-            const $searchInput = $('.select2-search__field');
-            if ($searchInput.length) {
-                $searchInput.attr('aria-label', `Search ${labelText}`);
-            }
-        }, 50);
-    });
-
-    $originalSelect.on('select2:close', function () {
-        $select2Selection.attr('aria-expanded', 'false');
-    });
-
-    // Remove aria-hidden when element gains focus
-    $select2Selection.on('focus', function () {
-        $originalSelect.removeAttr('aria-hidden');
-        $(this).removeAttr('aria-hidden');
-    });
-}
-
 //..get antiforegery token from meta tag
 function getActAntiForgeryToken() {
     return $('meta[name="csrf-token"]').attr('content');
@@ -626,7 +491,22 @@ function closeActPanel() {
     $('#slidePanel').removeClass('active');
 }
 
+function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const toggle = header.querySelector('.section-toggle');
+    content.classList.toggle('expanded');
+    toggle.classList.toggle('expanded');
+}
+
 $(document).ready(function () {
-    initReviewDatePickers();
+    initLastReviewDatePickers();
+    initNextReviewDatePickers();
+    initApprovalDatePickers();
+
+    $('#dpAuthority, #dpResponsibility, #dpFrequency, #dpStatus ,#dpApproved, #dpDepartments').select2({
+        width: '100%',
+        dropdownParent: $('#slidePanel')
+    });
+
 });
 

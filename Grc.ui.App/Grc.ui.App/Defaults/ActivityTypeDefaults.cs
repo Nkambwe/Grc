@@ -137,6 +137,7 @@
         public const string COMPLIANCE_CREATE_POLICY = "Regulatory.Policy.Create";
         public const string COMPLIANCE_EDITED_POLICY = "Regulatory.Policy.Edited";
         public const string COMPLIANCE_DELETED_POLICY = "Regulatory.Policy.Deleted";
+        public const string COMPLIANCE_LOCK_POLICY = "Regulatory.Policy.Lock";
         public const string COMPLIANCE_EXPORT_POLICY = "Regulatory.Policy.Export";
         public const string COMPLIANCE_RETRIEVE_DOCOWNER = "Regulatory.Document.Owners.Retrieve";
         public const string COMPLIANCE_CREATE_DOCOWNER = "Regulatory.Document.Owners.Create";

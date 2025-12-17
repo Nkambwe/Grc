@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -10,9 +8,6 @@ using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Linq;
 
 namespace Grc.ui.App.Factories {
 
@@ -34,7 +29,7 @@ namespace Grc.ui.App.Factories {
                                        IMapper mapper,
                                        SessionManager session,
                                        IProcessesService processService,
-                                        IConfiguration configuration) {  
+                                       IConfiguration configuration) {  
                 _pinnedService = pinnedService;
                 _quickActionService = quickActionService;
                 _mapper = mapper;

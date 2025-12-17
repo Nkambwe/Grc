@@ -10,7 +10,6 @@ using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
-using System.Net;
 using System.Text.Json;
 using Activity = Grc.ui.App.Enums.Activity;
 
@@ -452,7 +451,6 @@ namespace Grc.ui.App.Services {
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return new GrcResponse<ServiceResponse>(error);
                 }
-
 
                 //..build request object
                 var request = Mapper.Map<GrcProcessRegisterRequest>(processModel);

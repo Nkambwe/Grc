@@ -1,22 +1,8 @@
-﻿/*------------------------------------------
-    Initialize on document ready
--------------------------------------------*/
-$(document).ready(function () {
+﻿$(document).ready(function () {
     initPolicyGuidTable();
-    initializePolicyDocTypeSelect2();
-    initializePolicyDocsStatusSelect2();
-    initializeDocsOwnerSelect2();
-
-    //..load data to dropdowns
-    loadDocumentTypes();
-    loadOwners();
 });
 
-/*------------------------------------------
-    Tabulator Table
--------------------------------------------*/
 let policyRegisterTable;
-
 function initPolicyGuidTable() {
     policyRegisterTable = new Tabulator("#regulatory-policy-register-table", {
         ajaxURL: "/grc/compliance/register/policies-all",
@@ -91,17 +77,11 @@ function initPolicyGuidTable() {
         },
         ajaxError: function (error) {
             console.error("Tabulator AJAX Error:", error);
-            alert("Failed to load policies. Please try again.");
+            alert("Failed to load policy documents. Please try again.");
         },
         layout: "fitColumns",
         responsiveLayout: "hide",
         columns: [
-            {
-                title: "", field: "startTab",
-                maxWidth: 50,
-                headerSort: false,
-                frozen: true,
-                frozen: true, formatter: () => `<span class="record-tab"></span>` },
             {
                 title: "POLICY/PROCEDURE NAME",
                 field: "documentName",
@@ -111,68 +91,119 @@ function initPolicyGuidTable() {
                 frozen: true,
                 formatter: (cell) => `<span class="clickable-title" onclick="viewPolicyRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`
             },
-            { title: "DOCUMENT TYPE", field: "documentType", widthGrow: 1, minWidth: 300, frozen: true, headerSort: true },
-            { title: "DOCUMENT STATUS", field: "documentStatus", minWidth: 300 },
-            { title: "DOCUMENT OWNER", field: "policyOwner", minWidth: 280 },
-            { title: "DEPARTMENT", field: "department", minWidth: 280 },
-            { title: "LAST REVIEW", field: "lastReview", minWidth: 100 },
+            { title: "DOCUMENT TYPE", field: "documentType", widthGrow: 1, minWidth: 200, frozen: true, headerSort: true },
             {
-                title: "REVIEW STATUS",
-                field: "reviewStatus",
+                title: "STATUS",
+                field: "documentStatus",
                 formatter: function (cell) {
-                    let rowData = cell.getRow().getData();
-                    let value = rowData.reviewStatus;
-                    let color = value === "OVERDUE" ? "#FF3E0A" : (value === "DUE" ? "#FF9704" : "#08A11C");
-                    let text = value === "OVERDUE" ? "PASSED DUE" : (value === "DUE" ? "DUE" : "UPTODATE");
-                    return `<div style="
-                                display:flex;
-                                align-items:center;
-                                justify-content:center;
-                                width:100%;
-                                height:100%;
-                                border-radius:50px;
-                                color:${color || "#D6D6D6"};
-                                font-weight:bold;">
-                                ${text}
-                            </div>`;
+                    const value = cell.getValue();
+                    const cellEl = cell.getElement();
+
+                    // Default color
+                    let bg = "#DCF5DB";
+                    let clr = "#FFFFFF";
+                    if (value === "UPTODATE") {
+                        bg = "#28C232";
+                    }
+                    else if (value === "ON-HOLD") {
+                        bg = "#C2B70B";
+                    }
+                    else if (value === "PENDING-BOARD") {
+                        bg = "#F5BA0B";
+                    }
+                    else if (value === "DEPT-REVIEW") {
+                        bg = "#F57809";
+                    }
+                    else if (value === "DUE") {
+                        bg = "#F50C0C";
+                    }
+                    else{
+                        bg = "#DCF5DB";
+                        clr = "#191C19";
+                    }
+                    cellEl.style.backgroundColor = bg;
+                    cellEl.style.color = clr;
+                    cellEl.style.fontWeight = "bold";
+                    cellEl.style.textAlign = "center";
+
+                    return value;
                 },
+                widthGrow: 1,
                 hozAlign: "center",
                 headerHozAlign: "center",
-                maxWidth: 150
+                minWidth: 200,
+                headerSort: true
             },
-            { title: "NEXT REVIEW", field: "nextReview", minWidth: 100 },
+            { title: "DOCUMENT OWNER", field: "documentOwner", minWidth: 280 },
+            { title: "DEPARTMENT", field: "department", minWidth: 200 },
+            {
+                title: "LAST REVIEW",
+                field: "lastReview",
+                minWidth: 200,
+                formatter: function (cell) {
+                    const value = cell.getValue();
+                    if (!value) return "";
+
+                    const d = new Date(value);
+                    const day = String(d.getDate()).padStart(2, "0");
+                    const month = String(d.getMonth() + 1).padStart(2, "0");
+                    const year = d.getFullYear();
+
+                    return `${day}-${month}-${year}`;
+                }
+            },
+            {
+                title: "NEXT REVIEW",
+                field: "nextReview",
+                minWidth: 200,
+                formatter: function (cell) {
+                    const value = cell.getValue();
+                    if (!value) return "";
+
+                    const d = new Date(value);
+                    const day = String(d.getDate()).padStart(2, "0");
+                    const month = String(d.getMonth() + 1).padStart(2, "0");
+                    const year = d.getFullYear();
+
+                    return `${day}-${month}-${year}`;
+                }
+            },
+            { title: "APPROVED BY", field: "approvedBy", minWidth: 200 },
             {
                 title: "ALIGNED",
-                field: "aligned",
+                field: "isAligned",
                 formatter: function (cell) {
-                    let rowData = cell.getRow().getData();
-                    let color = rowData.aligned === true ? "#28a745" : "#dc3545";
-                    let text = rowData.aligned === true ? "YES" : "NO";
+                    const cellEl = cell.getElement();
 
-                    return `<div style="
-                            display:flex;
-                            align-items:center;
-                            justify-content:center;
-                            width:100%;
-                            height:100%;
-                            border-radius:50px;
-                            color:${color};
-                            font-weight:bold;
-                        ">
-                ${text}
-            </div>`;
+                    let rowData = cell.getRow().getData();
+                    let text = rowData.isAligned === true ? "YES" : "NO";
+
+                    let bg = "#DCF5DB";
+                    let clr = "#FFFFFF";
+                    if (rowData.isAligned === true) {
+                        bg = "#28C232";
+                    } else {
+                        bg = "#F50C0C";
+                    }
+                    cellEl.style.backgroundColor = bg;
+                    cellEl.style.color = clr;
+                    cellEl.style.fontWeight = "bold";
+                    cellEl.style.textAlign = "center";
+
+                    return text;
                 },
                 hozAlign: "center",
                 headerHozAlign: "center",
-                maxWidth: 400
+                maxWidth: 200
             },
             {
                 title: "LOCK",
+                field: "isLocked",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                    let value = rowData.reviewStatus;
-                    let locked = value === true ? "diabled" : "";
-                    return `<button class="grc-table-btn grc-btn-default grc-task-action ${locked}" ${locked} onclick="deletePolicyRecord(${rowData.id})">
+                    let value = rowData.isLocked;
+                    let locked = value === true ? "disabled" : "";
+                    return `<button class="grc-table-btn grc-btn-default grc-task-action ${locked}" ${locked} onclick="lockPolicy(${rowData.id})">
                             <span><i class="mdi mdi-link-lock" aria-hidden="true"></i></span>
                             <span>LOCKED</span>
                         </button>`;
@@ -186,7 +217,7 @@ function initPolicyGuidTable() {
                 title: "ACTION",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                    return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deletePolicyRecord(${rowData.id})">
+                    return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deletePolicy(${rowData.id})">
                         <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
                         <span>DELETE</span>
                     </button>`;
@@ -195,8 +226,7 @@ function initPolicyGuidTable() {
                 hozAlign: "center",
                 headerHozAlign: "center",
                 headerSort: false
-            },
-            { title: "", field: "endTab", maxWidth: 50, headerSort: false, formatter: () => `<span class="record-tab"></span>` }
+            }
         ]
     });
 
@@ -204,21 +234,15 @@ function initPolicyGuidTable() {
     initPolicyDocSearch();
 }
 
-/*------------------------------------------
-    Navigation / Buttons
--------------------------------------------*/
 $('.action-btn-complianceHome').on('click', function () {
     window.location.href = '/grc/compliance';
 });
 
 $('.action-btn-policy-new').on('click', function () {
-    addPolicyDocsRootRecord();
+    addPolicyDocument();
 });
 
-/*------------------------------------------
-    Export to Excel
--------------------------------------------*/
-$('#btnPolicyDocsExportFiltered').on('click', function () {
+$('#btnExportPolicy').on('click', function () {
     $.ajax({
         url: '/grc/compliance/register/policies-export',
         type: 'POST',
@@ -256,162 +280,107 @@ $('.action-btn-policy-export').on('click', function () {
     });
 });
 
-/*------------------------------------------
-    Select2 Initialization
--------------------------------------------*/
-function initializePolicyDocTypeSelect2() {
-    $(".js-record-doctype").each(function () {
-        if (!$(this).hasClass('select2-hidden-accessible')) {
-            initializeTypeElement($(this));
-        }
+let flatpickrInstances = {};
+
+function initLastReviewDatePickers() {
+    flatpickrInstances["lastReviewDate"] = flatpickr("#lastReviewDate", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y",
+        defaultDate: null
     });
 }
 
-function initializeTypeElement($element) {
-    const labelText = $element.closest('.form-group').find('label').text().trim() || 'Select document type';
-
-    $element.select2({
-        width: 'resolve',
-        placeholder: 'Select a document type...',
-        allowClear: true,
-        escapeMarkup: function (markup) {
-            return markup;
-        },
-        language: {
-            noResults: function () {
-                return "No document types found";
-            }
-        }
-    });
-    setTimeout(() => {
-        fixSelect3Accessibility($element, labelText);
-    }, 100);
-}
-
-function initializePolicyDocsStatusSelect2() {
-    $(".js-record-docstatus").each(function () {
-        if (!$(this).hasClass('select2-hidden-accessible')) {
-            initializeStatusElement($(this));
-        }
+function initNextReviewDatePickers() {
+    flatpickrInstances["nextReviewDate"] = flatpickr("#nextReviewDate", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y",
+        defaultDate: null
     });
 }
 
-function initializeStatusElement($element) {
-    const labelText = $element.closest('.form-group').find('label').text().trim() || 'Select document status';
-
-    $element.select2({
-        width: 'resolve',
-        placeholder: 'Select a document status...',
-        allowClear: true,
-        escapeMarkup: function (markup) {
-            return markup;
-        },
-        language: {
-            noResults: function () {
-                return "No document status found";
-            }
-        }
-    });
-
-    setTimeout(() => {
-        fixSelect3Accessibility($element, labelText);
-    }, 100);
-}
-
-function initializeDocsOwnerSelect2() {
-    $(".js-record-docowner").each(function () {
-        if (!$(this).hasClass('select2-hidden-accessible')) {
-            initializeDocsOwnerElement($(this));
-        }
+function initApprovalDatePickers() {
+    flatpickrInstances["approvalDate"] = flatpickr("#approvalDate", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y",
+        defaultDate: null
     });
 }
 
-function initializeDocsOwnerElement($element) {
-    const labelText = $element.closest('.form-group').find('label').text().trim() || 'Select document owner';
-
-    $element.select2({
-        width: 'resolve',
-        placeholder: 'Select a document owner...',
-        allowClear: true,
-        escapeMarkup: function (markup) {
-            return markup;
-        },
-        language: {
-            noResults: function () {
-                return "No document owner found";
-            }
-        }
-    });
-
-    setTimeout(() => {
-        fixSelect3Accessibility($element, labelText);
-    }, 100);
-}
-
-/*------------------------------------------
-    Add New Record
--------------------------------------------*/
-function addPolicyDocsRootRecord() {
+function addPolicyDocument() {
     openPolicyDocPanel('New Policy/Procedure', {
         id: 0,
         documentName: '',
-        documentType: '',
-        documentOwner: '',
-        department: '',
-        status: 'Active',
-        aligned: 'NO',
-        lastReview: "",
-        nextReview: "",
-        comments: ''
+        comments: '',
+        documentTypeId: 0,
+        ownerId: 0,
+        departmentId: 0,
+        isDeleted: false,
+        lastReviewDate: "",
+        nextReviewDate: "",
+        frequencyId: 0,
+        documentStatus: 'NONE',
+        isAligned: false,
+        isLocked: false,
+        isApproved: 0,
+        approvalDate: "",
+        approvedBy: "NONE"
     }, false);
 }
 
-/*------------------------------------------
-    OpenSlide Panel
--------------------------------------------*/
 function openPolicyDocPanel(title, record, isEdit) {
     
     $('#isEdit').val(isEdit);
     $('#recordId').val(record.id);
     $('#documentName').val(record.documentName || '');
-    $('#dpDocumentStatus').val(record.documentStatus).trigger('change');
-    $('#dpDocumentType').val(record.documentType).trigger('change');
-    $('#isAligned').prop('checked', record.aligned);
+    $('#comments').val(record.comments || '');
+    $('#documentStatus').val(record.documentStatus).trigger('change');
+    $('#documentTypeId').val(record.documentTypeId).trigger('change');
+    $('#departmentId').val(record.departmentId).trigger('change');
+    $('#frequencyId').val(record.frequencyId).trigger('change');
+    $('#ownerId').val(record.ownerId).trigger('change');
     $('#isDeleted').prop('checked', record.isDeleted);
-    $('#isLocked').prop('checked', record.locked);
-    $('#reviewPeriod').val(record.reviewPeriod || 0);
-    $('#dpOwner').val(record.documentOwner).trigger('change');
-    $('#comments').val(record.comments || ''); 
 
     //..use setDate
     const today = new Date();
-    if (record.lastReview) {
-        flatpickrInstances["lastRevisionDate"].setDate(record.lastReview, true, "Y-m-d");
+    if (record.lastReviewDate) {
+        flatpickrInstances["lastReviewDate"].setDate(record.lastReviewDate, true, "Y-m-d");
     } else {
-        flatpickrInstances["lastRevisionDate"].setDate(today, true, "Y-m-d");
+        flatpickrInstances["lastReviewDate"].setDate(today, true, "Y-m-d");
     }
 
-    if (record.nextReview) {
-        flatpickrInstances["nextRevisionDate"].setDate(record.nextReview, true, "Y-m-d");
+    if (record.nextReviewDate) {
+        flatpickrInstances["nextReviewDate"].setDate(record.nextReviewDate, true, "Y-m-d");
     } else {
-        flatpickrInstances["nextRevisionDate"].setDate(today, true, "Y-m-d");
+        flatpickrInstances["nextReviewDate"].setDate(today, true, "Y-m-d");
     }
 
+    $('#documentStatus').val(record.documentStatus).trigger('change');
+    $('#isAligned').prop('checked', record.isAligned);
+    $('#isApproved').val(record.isApproved).trigger('change');
+
+    if (record.approvalDate) {
+        flatpickrInstances["approvalDate"].setDate(record.approvalDate, true, "Y-m-d");
+    } else {
+        flatpickrInstances["approvalDate"].setDate(today, true, "Y-m-d");
+    }
+    $('#approvedBy').val(record.approvedBy).trigger('change');
+
+    //..lock fields is document is locked
+    setPolicyPanelReadOnly(record.isLocked === true);
+
+    //load dialog window
     $('#panelTitle').text(title);
     $('.overlay').addClass('active');
     $('#slidePanel').addClass('active');
 }
 
-/*------------------------------------------
-    Save Record
--------------------------------------------*/
-
-$('#recordForm').on('submit', function (e) {
-    //..prevent full postback
-    e.preventDefault(); 
-});
-
-function savePolRegisterRecord(e) {
+function savePolicyDocument(e) {
     if (e) e.preventDefault();
     let isEdit = $('#isEdit').val();
 
@@ -419,15 +388,20 @@ function savePolRegisterRecord(e) {
     let recordData = {
         id: parseInt($('#recordId').val()) || 0,
         documentName: $('#documentName').val()?.trim(),
-        documentStatus: $('#dpDocumentStatus').val(),
-        documentType: Number($('#dpDocumentType').val()),
+        comments: $('#comments').val()?.trim(),
+        documentTypeId: Number($('#documentTypeId').val()),
+        departmentId: Number($('#departmentId').val()),
+        frequencyId: Number($('#frequencyId').val()),
+        responsibilityId: Number($('#ownerId').val()),
+        documentStatus: $('#documentStatus').val()?.trim(),
         isDeleted: $('#isDeleted').is(':checked') ? true : false,
+        lastReview: flatpickrInstances["lastReviewDate"].input.value || null,
+        nextReview: flatpickrInstances["nextReviewDate"].input.value || null,
+        isAligned: $('#isAligned').val(),
         aligned: $('#isAligned').is(':checked') ? true : false,
-        documentOwner: Number($('#dpOwner').val()) || 0,
-        reviewPeriod: Number($('#reviewPeriod').val()),
-        lastReview: flatpickrInstances["lastRevisionDate"].input.value || null,
-        nextReview: flatpickrInstances["nextRevisionDate"].input.value || null,
-        comments: $('#comments').val()?.trim()
+        isApproved: Number($('#isApproved').val()),
+        approvalDate: flatpickrInstances["approvalDate"].input.value || null,
+        approvedBy: $('#approvedBy').val()?.trim()
     };
    
     // --- validate required fields ---
@@ -436,32 +410,44 @@ function savePolRegisterRecord(e) {
     if (!recordData.documentName)
         errors.push("Document name is required.");
 
+    if (!recordData.comments)
+        errors.push("Document notes is required.");
+
     if (!recordData.documentStatus)
         errors.push("Document status is required");
 
-    if (!recordData.documentType)
+    if (!recordData.documentTypeId || recordData.documentTypeId === 0)
         errors.push("Document type is require");
 
-    if (!recordData.documentOwner)
-        errors.push("Document owner is required.");
+    if (!recordData.responsibilityId || recordData.responsibilityId === 0)
+        errors.push("Designation of person responsible is required.");
 
-    if (!recordData.reviewPeriod)
+    if (!recordData.frequencyId || recordData.frequencyId === 0)
         errors.push("Review Period is required.");
 
     //..date validation
-    if (!recordData.lastReview)
+    if (!recordData.lastReview || recordData.lastReview === null)
         errors.push("Last review date is required.");
+
+
+    //..date validation
+    if (!recordData.nextReview || recordData.nextReview === null)
+        errors.push("Next review date is required.");
 
     // --- stop if validation fails ---
     if (errors.length > 0) {
 
         highlightField("#documentName", !recordData.documentName);
-        highlightField("#dpDocumentStatus", !recordData.documentStatus);
-        highlightField("#dpDocumentType", !recordData.documentType);
-        highlightField("#dpOwner", !recordData.documentOwner);
+        highlightField("#documentStatus", !recordData.documentStatus);
+        highlightField("#comments", !recordData.comments);
+        highlightField("#documentTypeId", !recordData.documentTypeId || recordData.documentTypeId === 0);
+        highlightField("#frequencyId", !recordData.frequencyId || recordData.frequencyId === 0);
+        highlightField("#ownerId", !recordData.ownerId || recordData.ownerId === 0);
+        highlightField("#lastReviewDate", !recordData.lastReview || recordData.lastReview === null);
+        highlightField("#nextReviewDate", !recordData.nextReview || recordData.nextReview === null);
 
         Swal.fire({
-            title: "Record Validation",
+            title: "Document Record Validation",
             html: `<div style="text-align:left;">${errors.join("<br>")}</div>`,
         });
         return;
@@ -477,7 +463,7 @@ function savePolicy(isEdit, payload) {
         : "/grc/compliance/register/policies-create";
 
     Swal.fire({
-        title: isEdit ? "Updating Policy..." : "Saving Policy...",
+        title: isEdit ? "Updating Policy document..." : "Saving Policy document...",
         text: "Please wait while we process your request.",
         allowOutsideClick: false,
         allowEscapeKey: false,
@@ -486,7 +472,8 @@ function savePolicy(isEdit, payload) {
         }
     });
 
-    console.log("Sending data to server:", JSON.stringify(payload));  // Debugging
+    //..debugging
+    console.log("Sending data to server:", JSON.stringify(payload));  
     $.ajax({
         url: url,
         type: "POST",
@@ -523,7 +510,7 @@ function savePolicy(isEdit, payload) {
                 showConfirmButton: false
             });
 
-            closePolicyDocumentPanel();
+            closePolicyPanel();
         },
         error: function (xhr) {
             Swal.close();
@@ -547,21 +534,19 @@ function highlightField(selector, isError) {
     else $(selector).removeClass("input-error");
 }
 
-/*------------------------------------------
-   Close Slide Panel
--------------------------------------------*/
-
-function closePolicyDocumentPanel() {
+function closePolicyPanel() {
     $('.overlay').removeClass('active');
     $('#slidePanel').removeClass('active');
 }
 
-/*------------------------------------------
-    Delete Record
--------------------------------------------*/
-function deletePolicyRecord(id) {
+function deletePolicy(id) {
     if (!id && id !== 0) {
-        toastr.error("Invalid id for delete.");
+        Swal.fire({
+            title: "Delete Policy",
+            text: "Policy document id is required",
+            showCancelButton: false,
+            okButtonText: "Ok"
+        })
         return;
     }
 
@@ -598,13 +583,49 @@ function deletePolicyRecord(id) {
     });
 }
 
-/*------------------------------------------
-    View Record
--------------------------------------------*/
+function lockPolicy(id) {
+    if (!id && id !== 0) {
+        toastr.error("Policy document ID is required.");
+        return;
+    }
+
+    Swal.fire({
+        title: "Lock Policy",
+        text: "Locking document makes it uneditable. Do you want to lock the document?",
+        showCancelButton: true,
+        confirmButtonColor: "#A10E7B",
+        confirmButtonText: "Lock",
+        cancelButtonColor: "#f41369",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        $.ajax({
+            url: `/grc/compliance/register/policies-lock/${encodeURIComponent(id)}`,
+            type: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getPolicyAntiForgeryToken()
+            },
+            success: function (res) {
+                if (res && res.success) {
+                    toastr.success(res.message || "Policy/Procedure locked successfully.");
+                    policyRegisterTable.setPage(1, true);
+                } else {
+                    toastr.error(res?.message || "Failed to lock document.");
+                }
+            },
+            error: function () {
+                toastr.error("Request failed.");
+            }
+        });
+    });
+}
+
 function viewPolicyRecord(id) {
     Swal.fire({
         title: 'Loading...',
-        text: 'Retrieving policy...',
+        text: 'Retrieving policy document...',
         allowOutsideClick: false,
         allowEscapeKey: false,
         didOpen: () => Swal.showLoading()
@@ -615,19 +636,19 @@ function viewPolicyRecord(id) {
         .then(record => {
             Swal.close();
             if (record) {
-                openPolicyDocPanel('Edit Regulatory Policy/Procedure', record, true);
+                openPolicyDocPanel('Edit Policy document', record, true);
             } else {
-                Swal.fire({ title: 'NOT FOUND', text: 'Policy/Procedure not found' });
+                Swal.fire({ title: 'NOT FOUND', text: 'Policy document not found' });
             }
         })
         .catch(() => {
             Swal.close();
-            Swal.fire({ title: 'Error', text: 'Failed to load policy/procedure details.' });
+            Swal.fire({ title: 'Error', text: 'Failed to load policy document details.' });
         });
 }
 
 function findPolicyRecord(id) {
-    console.log("Retriev record for id >> " + id);
+    console.log("Retrieve  document record with id >> " + id);
     return new Promise((resolve, reject) => {
         $.ajax({
             url: `/grc/compliance/register/policies-retrieve/${id}`,
@@ -647,9 +668,6 @@ function findPolicyRecord(id) {
     });
 }
 
-/*------------------------------------------
-    Search Functionality
--------------------------------------------*/
 function initPolicyDocSearch() {
     const searchInput = $('#policySearchbox'); // fixed ID
     let typingTimer;
@@ -665,8 +683,7 @@ function initPolicyDocSearch() {
                         { field: "documentName", type: "like", value: searchTerm },
                         { field: "documentType", type: "like", value: searchTerm },
                         { field: "documentOwner", type: "like", value: searchTerm },
-                        { field: "lastReview", type: "like", value: searchTerm },
-                        { field: "nextReview", type: "like", value: searchTerm },
+                        { field: "approvedBy", type: "like", value: searchTerm }
                     ]
                 ]);
                 policyRegisterTable.setPage(1, true);
@@ -677,350 +694,60 @@ function initPolicyDocSearch() {
     });
 }
 
-/*------------------------------------------
-    Date Pickers with global instances
--------------------------------------------*/
-let flatpickrInstances = {};
-
-function initializeDatePickers() {
-    flatpickrInstances["lastRevisionDate"] = flatpickr("#lastRevisionDate", {
-        dateFormat: "Y-m-d",
-        allowInput: true,
-        altInput: true,
-        altFormat: "d M Y",
-        defaultDate: null
-    });
-
-    flatpickrInstances["nextRevisionDate"] = flatpickr("#nextRevisionDate", {
-        dateFormat: "Y-m-d",
-        allowInput: true,
-        altInput: true,
-        altFormat: "d M Y",
-        defaultDate: null
-    });
-}
-
-$(document).ready(function () {
-    initializeDatePickers();
-});
-
-function fixSelect3Accessibility($originalSelect, labelText) {
-    const selectId = $originalSelect.attr('id');
-    if (!selectId) return;
-
-    const $select2Container = $originalSelect.next('.select2-container');
-    const $select2Selection = $select2Container.find('.select2-selection');
-    const $select2Arrow = $select2Container.find('.select2-selection__arrow');
-
-    // Remove problematic aria-hidden from the original select
-    $originalSelect.removeAttr('aria-hidden');
-
-    // Add proper ARIA attributes to Select2 elements
-    $select2Selection.attr({
-        'role': 'combobox',
-        'aria-expanded': 'false',
-        'aria-haspopup': 'listbox',
-        'aria-labelledby': selectId + '-label',
-        'aria-describedby': selectId + '-description'
-    });
-
-    // Create or update label
-    let $label = $(`label[for="${selectId}"]`);
-    if ($label.length === 0) {
-        $label = $originalSelect.closest('.form-group').find('label').first();
-        $label.attr('for', selectId);
-    }
-    $label.attr('id', selectId + '-label');
-
-    // Add description for screen readers
-    if ($(`#${selectId}-description`).length === 0) {
-        $('<span>', {
-            id: selectId + '-description',
-            class: 'sr-only',
-            text: 'Use arrow keys to navigate options'
-        }).insertAfter($select2Container);
-    }
-
-    // Handle Select2 events for accessibility
-    $originalSelect.on('select2:open', function () {
-        $select2Selection.attr('aria-expanded', 'true');
-
-        // Focus the search input when dropdown opens
-        setTimeout(() => {
-            const $searchInput = $('.select2-search__field');
-            if ($searchInput.length) {
-                $searchInput.attr('aria-label', `Search ${labelText}`);
-            }
-        }, 50);
-    });
-
-    $originalSelect.on('select2:close', function () {
-        $select2Selection.attr('aria-expanded', 'false');
-    });
-
-    // Remove aria-hidden when element gains focus
-    $select2Selection.on('focus', function () {
-        $originalSelect.removeAttr('aria-hidden');
-        $(this).removeAttr('aria-hidden');
-    });
-}
-
-//..get antiforegery token from meta tag
 function getPolicyAntiForgeryToken() {
     return $('meta[name="csrf-token"]').attr('content');
 }
 
-function loadDocumentTypes() {
-    const $typeSelect = $('#recordForm').find('.js-record-doctype');
-    $.ajax({
-        url: '/grc/compliance/settings/document-types-list',
-        type: 'GET',
-        dataType: 'json',
-        success: function (data) {
-            $typeSelect.each(function () {
-                const $select = $(this);
-                const currentValue = $select.val();
+function setPolicyPanelReadOnly(isLocked) {
 
-                // Destroy existing Select2 if it exists
-                if ($select.hasClass('select2-hidden-accessible')) {
-                    $select.select2('destroy');
-                }
+    const $form = $("#recordForm");
 
-                // Clear existing options
-                $select.empty();
+    // Disable all standard inputs
+    $form.find("input, textarea, select").prop("disabled", isLocked);
 
-                // Add placeholder option
-                $select.append('<option value="">Select a document type...</option>');
+    // Allow hidden fields
+    $form.find("input[type='hidden']").prop("disabled", false);
 
-                // Add type options
-                if (data.results && data.results.length > 0) {
-                    $.each(data.results, function (index, type) {
-                        $select.append(`<option value="${type.id}">${type.text}</option>`);
-                    });
-                }
-
-                // Restore previous value if it exists
-                if (currentValue) {
-                    $select.val(currentValue);
-                }
-
-                // Initialize Select2 with accessibility fixes
-                initializeTypeElement($select);
-            });
-        },
-        error: function (xhr, status, error) {
-            console.error('Error loading document types:', error);
-
-            // Initialize empty Select2 even on error
-            $typeSelect.each(function () {
-                const $select = $(this);
-                if (!$select.hasClass('select2-hidden-accessible')) {
-                    initializeTypeElement($select);
-                }
-            });
-        }
-    });
-}
-
-function loadOwners() {
-    const $ownerSelect = $('#recordForm').find('.js-record-docowner');
-    $.ajax({
-        url: '/grc/compliance/settings/responsibilities-list',
-        type: 'GET',
-        dataType: 'json',
-        success: function (data) {
-            $ownerSelect.each(function () {
-                const $select = $(this);
-                const currentValue = $select.val();
-
-                // Destroy existing Select2 if it exists
-                if ($select.hasClass('select2-hidden-accessible')) {
-                    $select.select2('destroy');
-                }
-
-                // Clear existing options
-                $select.empty();
-
-                // Add placeholder option
-                $select.append('<option value="">Select a owner...</option>');
-
-                // Add owners options
-                if (data.results && data.results.length > 0) {
-                    $.each(data.results, function (index, owner) {
-                        $select.append(`<option value="${owner.id}">${owner.ownerName}</option>`);
-                    });
-                }
-
-                // Restore previous value if it exists
-                if (currentValue) {
-                    $select.val(currentValue);
-                }
-
-                // Initialize Select2 with accessibility fixes
-                initializeOwnerElement($select);
-            });
-        },
-        error: function (xhr, status, error) {
-            console.error('Error loading owners:', error);
-
-            // Initialize empty Select2 even on error
-            $ownerSelect.each(function () {
-                const $select = $(this);
-                if (!$select.hasClass('select2-hidden-accessible')) {
-                    initializeOwnerElement($select);
-                }
-            });
-        }
-    });
-}
-
-function initializeTaskDocumentsSelect2() {
-    $(".js-task-document").each(function () {
-        if (!$(this).hasClass('select2-hidden-accessible')) {
-            initializeTaskDocElement($(this));
-        }
-    });
-}
-
-function initializeTaskOwnerSelect2() {
-    $(".js-task-owners").each(function () {
-        if (!$(this).hasClass('select2-hidden-accessible')) {
-            initializeOwnerElement($(this));
-        }
-    });
-}
-
-function loadTaskDocuments() {
-    const $docSelect = $('.js-task-document');
-    return $.ajax({
-        url: '/grc/compliance/register/policies-list',
-        type: 'GET',
-        dataType: 'json',
-        success: function (data) {
-            $docSelect.each(function () {
-                const $select = $(this);
-                const currentValue = $select.val();
-
-                if ($select.hasClass('select2-hidden-accessible')) {
-                    $select.select2('destroy');
-                }
-
-                $select.empty();
-                $select.append('<option value="">Select a document...</option>');
-
-                if (data.results?.length > 0) {
-                    data.results.forEach(doc => {
-                        $select.append(`<option value="${doc.id}">${doc.documentName}</option>`);
-                    });
-                }
-
-                if (currentValue) $select.val(currentValue);
-                initializeTaskDocElement($select);
-            });
-        },
-        error: function (xhr, status, error) {
-            console.error('Error loading documents:', error);
-            $docSelect.each(function () {
-                const $select = $(this);
-                if (!$select.hasClass('select2-hidden-accessible')) {
-                    initializeTaskDocElement($select);
-                }
-            });
-        }
-    });
-}
-
-function loadTaskOwners() {
-    const $ownerSelect = $('.js-task-owners');
-    return $.ajax({
-        url: '/grc/compliance/settings/responsibilities-list',
-        type: 'GET',
-        dataType: 'json',
-        success: function (data) {
-            $ownerSelect.each(function () {
-                const $select = $(this);
-                const currentValue = $select.val();
-
-                if ($select.hasClass('select2-hidden-accessible')) {
-                    $select.select2('destroy');
-                }
-
-                $select.empty();
-                $select.append('<option value="">Select an owner...</option>');
-
-                if (data.results?.length > 0) {
-                    data.results.forEach(owner => {
-                        $select.append(`<option value="${owner.id}">${owner.ownerName}</option>`);
-                    });
-                }
-
-                if (currentValue) $select.val(currentValue);
-                initializeOwnerElement($select);
-            });
-        },
-        error: function (xhr, status, error) {
-            console.error('Error loading owners:', error);
-            $ownerSelect.each(function () {
-                const $select = $(this);
-                if (!$select.hasClass('select2-hidden-accessible')) {
-                    initializeOwnerElement($select);
-                }
-            });
-        }
-    });
-}
-
-function initializeTaskDocElement($element) {
-    const labelText = $element.closest('.form-group').find('label').text().trim() || 'Select documents';
-
-    $element.select2({
-        width: 'resolve',
-        placeholder: 'Select an document...',
-        allowClear: true,
-        escapeMarkup: function (markup) {
-            return markup;
-        },
-        language: {
-            noResults: function () {
-                return "No documents found";
-            }
-        }
+    // Flatpickr (important!)
+    Object.values(flatpickrInstances).forEach(fp => {
+        if (!fp) return;
+        fp.set("clickOpens", !isLocked);
+        fp.input.disabled = isLocked;
     });
 
-    setTimeout(() => {
-        fixSelect3Accessibility($element, labelText);
-    }, 100);
+    // Disable switches explicitly
+    $("#isDeleted, #isAligned").prop("disabled", isLocked);
+
+    // Disable Save button
+    $form.find("button[onclick='savePolicyDocument()']")
+        .prop("disabled", isLocked)
+        .toggleClass("disabled", isLocked);
+
+    // Optional: visual lock state
+    $("#slidePanel").toggleClass("locked", isLocked);
 }
 
-function initializeOwnerElement($element) {
-    const labelText = $element.closest('.form-group').find('label').text().trim() || 'Select owner';
+function toggleSection(header) {
+    const content = header.nextElementSibling;
+    const toggle = header.querySelector('.section-toggle');
+    content.classList.toggle('expanded');
+    toggle.classList.toggle('expanded');
+}
 
-    $element.select2({
-        width: 'resolve',
-        placeholder: 'Select an owner...',
-        allowClear: true,
-        escapeMarkup: function (markup) {
-            return markup;
-        },
-        language: {
-            noResults: function () {
-                return "No owners found";
-            }
-        }
+$(document).ready(function () {
+    initLastReviewDatePickers();
+    initNextReviewDatePickers();
+    initApprovalDatePickers();
+
+    $('#documentTypeId, #departmentId, #ownerId, #frequencyId ,#documentStatus, #isApproved, #approvedBy').select2({
+        width: '100%',
+        dropdownParent: $('#slidePanel')
     });
 
-    setTimeout(() => {
-        fixSelect3Accessibility($element, labelText);
-    }, 100);
-}
+    $('#recordForm').on('submit', function (e) {
+        e.preventDefault();
+    });
 
-function savePolTaskRecord(e) {
-
-}
-
-function closePolicyTaskPanel() {
-    $('.task-overlay').removeClass('active');
-    $('#slideTaskPanel').removeClass('active');
-}
+});
 
 

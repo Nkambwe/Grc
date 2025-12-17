@@ -225,6 +225,23 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(dest => dest.ModifiedOn, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => "SYSTEM"));
 
+            CreateMap<PolicyViewModel, GrcPolicyDocumentRequest>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.DocumentName, opt => opt.MapFrom(src => src.DocumentName))
+                .ForMember(dest => dest.DocumentTypeId, opt => opt.MapFrom(src => src.DocumentTypeId))
+                .ForMember(dest => dest.DocumentStatus, opt => opt.MapFrom(src => src.DocumentStatus))
+                .ForMember(dest => dest.IsAligned, opt => opt.MapFrom(src => src.IsAligned))
+                .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IsDeleted))
+                .ForMember(dest => dest.IsLocked, opt => opt.MapFrom(src => src.IsLocked))
+                .ForMember(dest => dest.ApprovedBy, opt => opt.MapFrom(src => src.ApprovedBy))
+                .ForMember(dest => dest.ApprovalDate, opt => opt.MapFrom(src => src.ApprovalDate))
+                .ForMember(dest => dest.FrequencyId, opt => opt.MapFrom(src => src.FrequencyId))
+                .ForMember(dest => dest.ResponsibilityId, opt => opt.MapFrom(src => src.ResponsibilityId))
+                .ForMember(dest => dest.DepartmentId, opt => opt.MapFrom(src => src.DepartmentId))
+                .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments))
+                .ForMember(dest => dest.LastRevisionDate, opt => opt.MapFrom(src => src.LastRevisionDate))
+                .ForMember(dest => dest.NextRevisionDate, opt => opt.MapFrom(src => src.NextRevisionDate));
+
             CreateMap<ProcessGroupViewModel, GrcProcessGroupRequest>()
                 .ForMember(e => e.Id, reg => reg.MapFrom(o => o.Id))
                 .ForMember(e => e.GroupName, reg => reg.MapFrom(o => (o.GroupName ?? string.Empty).Trim()))
