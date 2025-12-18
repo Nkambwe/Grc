@@ -1,6 +1,4 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Office2016.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Grc.ui.App.Defaults;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -14,7 +12,6 @@ using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -133,7 +130,7 @@ namespace Grc.ui.App.Controllers {
                     DecryptFields = Array.Empty<string>()
                 };
 
-                GrcResponse<GrcRegulatoryCategoryResponse> result = await _regulatoryCategoryService.GetCategoryAsync(getRequest);
+                var result = await _regulatoryCategoryService.GetCategoryAsync(getRequest);
                 if (result.HasError || result.Data == null) {
                     var errMsg = result.Error?.Message ?? "Unerror occurred while deleting category";
                     Logger.LogActivity(errMsg);
@@ -147,9 +144,9 @@ namespace Grc.ui.App.Controllers {
                 GrcRegulatoryCategoryResponse response = result.Data;
                 var categoryRecord = new {
                     id = response.Id,
-                    category = response.CategoryName,
+                    categoryName = response.CategoryName,
                     status = response.IsDeleted ? "Inactive" : "Active",
-                    addedon = response.CreatedAt.ToString("dd-MM-yyyy"),
+                    addedon = response.CreatedOn.ToString("dd-MM-yyyy"),
                 };
 
                 return Ok(new {
@@ -162,7 +159,10 @@ namespace Grc.ui.App.Controllers {
             {
                 Logger.LogActivity($"Unexpected error deleting category: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "COMPLIANCE-SETTINGS", ex.StackTrace);
-                return Redirect(Url.Action("ComplianceRegulatoryCategories", "ComplianceSettings"));
+                return StatusCode(500, new {
+                    success = false,
+                    message = "An unexpected error occurred. Please try again later."
+                });
             }
         }
 
@@ -219,7 +219,10 @@ namespace Grc.ui.App.Controllers {
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected error creating category: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "COMPLIANCE-SETTINGS", ex.StackTrace);
-                return Redirect(Url.Action("ComplianceRegulatoryCategories", "ComplianceSettings"));
+                return StatusCode(500, new {
+                    success = false,
+                    message = "An unexpected error occurred. Please try again later."
+                });
             }
         }
 
@@ -276,7 +279,10 @@ namespace Grc.ui.App.Controllers {
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected error updating category: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "COMPLIANCE-SETTINGS", ex.StackTrace);
-                return Redirect(Url.Action("ComplianceRegulatoryCategories", "ComplianceSettings"));
+                return StatusCode(500, new {
+                    success = false,
+                    message = "An unexpected error occurred. Please try again later."
+                });
             }
         }
 
@@ -334,7 +340,10 @@ namespace Grc.ui.App.Controllers {
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected error deleting category: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "COMPLIANCE-SETTINGS", ex.StackTrace);
-                return Redirect(Url.Action("ComplianceRegulatoryCategories", "ComplianceSettings"));
+                return StatusCode(500, new {
+                    success = false,
+                    message = "An unexpected error occurred. Please try again later."
+                });
             }
         }
         
@@ -355,7 +364,7 @@ namespace Grc.ui.App.Controllers {
                 worksheet.Cell(row, 1).Value = item.Id;
                 worksheet.Cell(row, 2).Value = item.CategoryName;
                 worksheet.Cell(row, 3).Value = item.IsDeleted ? "Inactive" : "Active";
-                worksheet.Cell(row, 4).Value = item.CreatedAt.ToString("dd-MM-yyyy");
+                worksheet.Cell(row, 4).Value = item.CreatedOn.ToString("dd-MM-yyyy");
                 row++;
             }
 
@@ -418,7 +427,7 @@ namespace Grc.ui.App.Controllers {
                 ws.Cell(row, 1).Value = cat.Id;
                 ws.Cell(row, 2).Value = cat.CategoryName;
                 ws.Cell(row, 3).Value = cat.IsDeleted ? "Inactive" : "Active";
-                ws.Cell(row, 4).Value = cat.CreatedAt.ToString("dd-MM-yyyy");
+                ws.Cell(row, 4).Value = cat.CreatedOn.ToString("dd-MM-yyyy");
                 row++;
             }
 
@@ -477,7 +486,7 @@ namespace Grc.ui.App.Controllers {
                     startTab = "",
                     category = cat.CategoryName,
                     status = cat.IsDeleted,
-                    addedon = cat.CreatedAt.ToString("dd-MM-yyyy"),
+                    addedon = cat.CreatedOn.ToString("dd-MM-yyyy"),
                     endTab = ""
                 }).ToList();
 
@@ -495,57 +504,92 @@ namespace Grc.ui.App.Controllers {
         {
             try
             {
-                //..get user IP address
-                var ipAddress = WebHelper.GetCurrentIpAddress();
+                ////..get user IP address
+                //var ipAddress = WebHelper.GetCurrentIpAddress();
 
-                //..get current authenticated user record
-                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (grcResponse.HasError)
+                ////..get current authenticated user record
+                //var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                //if (grcResponse.HasError)
+                //{
+                //    Logger.LogActivity($"REGULATORY CATEGORY DATA ERROR: Failed to get current user record - {JsonSerializer.Serialize(grcResponse)}");
+                //}
+
+                ////..update with user data
+                //var currentUser = grcResponse.Data;
+                //request.UserId = currentUser.UserId;
+                //request.IPAddress = ipAddress;
+                //request.Action = Activity.RETRIEVEREGULATORYCATEGORIES.GetDescription();
+
+                ////..get regulatory category data
+                //var categoryData = await _regulatoryCategoryService.GetPagedCategoriesAsync(request);
+                //PagedResponse<GrcRegulatoryCategoryResponse> categoryList = new();
+
+                //if (categoryData.HasError)
+                //{
+                //    Logger.LogActivity($"REGULATORY CATEGORY DATA ERROR: Failed to retrieve category items - {JsonSerializer.Serialize(categoryData)}");
+                //}
+                //else
+                //{
+                //    categoryList = categoryData.Data;
+                //    Logger.LogActivity($"REGULATORY CATEGORY DATA - {JsonSerializer.Serialize(categoryList)}");
+                //}
+                //categoryList.Entities ??= new();
+                //var pagedEntities = categoryList.Entities
+                //    .Select(cat => new {
+                //        id = cat.Id,
+                //        category = cat.CategoryName,
+                //        status = cat.IsDeleted ? "Inactive" : "Active",
+                //        addedon = cat.CreatedOn.ToString("dd-MM-yyyy"),
+                //    }).ToList();
+
+                //if (!string.IsNullOrEmpty(request.SearchTerm)) {
+                //    pagedEntities = pagedEntities.Where(c => c.category.ToLower().Contains(request.SearchTerm.ToLower())).ToList();
+                //}
+
+                //var totalPages = (int)Math.Ceiling((double)categoryList.TotalCount / categoryList.Size);
+                //return Ok(new
+                //{
+                //    last_page = totalPages,
+                //    total_records = categoryList.TotalCount,
+                //    data = pagedEntities
+                //});
+
+                var tree = new[]
                 {
-                    Logger.LogActivity($"REGULATORY CATEGORY DATA ERROR: Failed to get current user record - {JsonSerializer.Serialize(grcResponse)}");
-                }
+                    new {
+                        id = "C_1",
+                        text = "Banking & Finance Laws",
+                        type = "category",
+                        children = new[]
+                        {
+                            new {
+                                id = "L_101",
+                                text = "Financial Institutions Act",
+                                type = "law"
+                            },
+                            new {
+                                id = "L_102",
+                                text = "Anti-Money Laundering Act",
+                                type = "law"
+                            }
+                        }
+                    },
+                    new {
+                        id = "C_2",
+                        text = "Consumer Protection",
+                        type = "category",
+                        children = new[]
+                        {
+                            new {
+                                id = "L_201",
+                                text = "Consumer Protection Act",
+                                type = "law"
+                            }
+                        }
+                    }
+                };
 
-                //..update with user data
-                var currentUser = grcResponse.Data;
-                request.UserId = currentUser.UserId;
-                request.IPAddress = ipAddress;
-                request.Action = Activity.RETRIEVEREGULATORYCATEGORIES.GetDescription();
-
-                //..get regulatory category data
-                var categoryData = await _regulatoryCategoryService.GetPagedCategoriesAsync(request);
-                PagedResponse<GrcRegulatoryCategoryResponse> categoryList = new();
-
-                if (categoryData.HasError)
-                {
-                    Logger.LogActivity($"REGULATORY CATEGORY DATA ERROR: Failed to retrieve category items - {JsonSerializer.Serialize(categoryData)}");
-                }
-                else
-                {
-                    categoryList = categoryData.Data;
-                    Logger.LogActivity($"REGULATORY CATEGORY DATA - {JsonSerializer.Serialize(categoryList)}");
-                }
-                categoryList.Entities ??= new();
-                var pagedEntities = categoryList.Entities
-                    .Skip((request.PageIndex - 1) * request.PageSize)
-                    .Take(request.PageSize)
-                    .Select(cat => new {
-                        id = cat.Id,
-                        category = cat.CategoryName,
-                        status = cat.IsDeleted ? "Inactive" : "Active",
-                        addedon = cat.CreatedAt.ToString("dd-MM-yyyy"),
-                    }).ToList();
-
-                if (!string.IsNullOrEmpty(request.SearchTerm)) {
-                    pagedEntities = pagedEntities.Where(c => c.category.ToLower().Contains(request.SearchTerm.ToLower())).ToList();
-                }
-
-                var totalPages = (int)Math.Ceiling((double)categoryList.TotalCount / categoryList.Size);
-                return Ok(new
-                {
-                    last_page = totalPages,
-                    total_records = categoryList.TotalCount,
-                    data = pagedEntities
-                });
+                return Ok(tree);
             }
             catch (Exception ex)
             {
@@ -553,8 +597,7 @@ namespace Grc.ui.App.Controllers {
                 await ProcessErrorAsync(ex.Message, "REGULATORY-CATEGORY-CONTROLLER", ex.StackTrace);
                 return Ok(new
                 {
-                    last_page = 0,
-                    data = new List<object>()
+                    data = new { }
                 });
             }
         }
@@ -653,26 +696,28 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 GrcRegulatoryTypeResponse response = result.Data;
-                var categoryRecord = new {
+                var type = new {
                     id = response.Id,
-                    startTab = "",
                     typeName = response.TypeName,
                     status = response.IsDeleted ? "Inactive" : "Active",
-                    addedon = response.CreatedAt.ToString("dd-MM-yyyy"),
-                    endTab = ""
+                    addedBy = response.CreatedBy ?? string.Empty,
+                    addedon = response.CreatedOn.ToString("dd-MM-yyyy"),
                 };
 
                 return Ok(new {
                     success = true,
                     message = "Type created successfully",
-                    data = categoryRecord
+                    data = type
                 });
             }
             catch (Exception ex)
             {
                 Logger.LogActivity($"Unexpected error retrieving type: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "COMPLIANCE-SETTINGS", ex.StackTrace);
-                return Redirect(Url.Action("ComplianceRegulatoryTypes", "ComplianceSettings"));
+                return StatusCode(500, new {
+                    success = false,
+                    message = "An unexpected error occurred. Please try again later."
+                });
             }
         }
 
@@ -726,7 +771,10 @@ namespace Grc.ui.App.Controllers {
             catch (Exception ex) {
                 Logger.LogActivity($"Unexpected error creating type: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "COMPLIANCE-SETTINGS", ex.StackTrace);
-                return Redirect(Url.Action("ComplianceRegulatoryTypes", "ComplianceSettings"));
+                return StatusCode(500, new {
+                    success = false,
+                    message = "An unexpected error occurred. Please try again later."
+                });
             }
         }
 
@@ -784,7 +832,10 @@ namespace Grc.ui.App.Controllers {
             {
                 Logger.LogActivity($"Unexpected error updating type: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "COMPLIANCE-SETTINGS", ex.StackTrace);
-                return Redirect(Url.Action("ComplianceRegulatoryTypes", "ComplianceSettings"));
+                return StatusCode(500, new {
+                    success = false,
+                    message = "An unexpected error occurred. Please try again later."
+                });
             }
         }
 
@@ -839,7 +890,10 @@ namespace Grc.ui.App.Controllers {
             {
                 Logger.LogActivity($"Unexpected error deleting type: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "COMPLIANCE-SETTINGS", ex.StackTrace);
-                return Redirect(Url.Action("ComplianceRegulatoryTypes", "ComplianceSettings"));
+                return StatusCode(500, new {
+                    success = false,
+                    message = "An unexpected error occurred. Please try again later."
+                });
             }
         }
 
@@ -858,7 +912,7 @@ namespace Grc.ui.App.Controllers {
             foreach (var item in data) {
                 worksheet.Cell(row, 2).Value = item.TypeName;
                 worksheet.Cell(row, 3).Value = item.IsDeleted ? "Inactive" : "Active";
-                worksheet.Cell(row, 4).Value = item.CreatedAt.ToString("dd-MM-yyyy");
+                worksheet.Cell(row, 4).Value = item.CreatedOn.ToString("dd-MM-yyyy");
                 row++;
             }
 
@@ -925,7 +979,7 @@ namespace Grc.ui.App.Controllers {
             {
                 ws.Cell(row, 2).Value = cat.TypeName;
                 ws.Cell(row, 3).Value = cat.IsDeleted ? "Inactive" : "Active";
-                ws.Cell(row, 4).Value = cat.CreatedAt.ToString("dd-MM-yyyy");
+                ws.Cell(row, 4).Value = cat.CreatedOn.ToString("dd-MM-yyyy");
                 row++;
             }
 
@@ -939,10 +993,8 @@ namespace Grc.ui.App.Controllers {
             );
         }
 
-        public async Task<IActionResult> AllRegulatoryTypes([FromBody] TableListRequest request)
-        {
-            try
-            {
+        public async Task<IActionResult> AllRegulatoryTypes([FromBody] TableListRequest request) {
+            try {
                 //..get user IP address
                 var ipAddress = WebHelper.GetCurrentIpAddress();
 
@@ -974,13 +1026,12 @@ namespace Grc.ui.App.Controllers {
                 }
                 typeList.Entities ??= new();
                 var pagedEntities = typeList.Entities
-                    .Skip((request.PageIndex - 1) * request.PageSize)
-                    .Take(request.PageSize)
                     .Select(t => new {
                         id = t.Id,
                         typeName = t.TypeName,
                         status = t.IsDeleted ? "Inactive" : "Active",
-                        addedon = t.CreatedAt.ToString("dd-MM-yyyy"),
+                        addedBy = t.CreatedBy ?? string.Empty,
+                        addedon = t.CreatedOn.ToString("dd-MM-yyyy"),
                     }).ToList();
 
                 var totalPages = (int)Math.Ceiling((double)typeList.TotalCount / typeList.Size);
@@ -1095,29 +1146,31 @@ namespace Grc.ui.App.Controllers {
                     });
                 }
 
-                GrcRegulatoryAuthorityResponse response = result.Data;
-                var categoryRecord = new {
+                var response = result.Data;
+                var authorityRecord = new {
                     id = response.Id,
-                    startTab = "",
                     authorityName = response.AuthorityName,
                     authorityAlias = response.AuthorityAlias,
                     status = response.IsDeleted ? "Inactive" : "Active",
-                    addedon = response.CreatedAt.ToString("dd-MM-yyyy"),
-                    endTab = ""
+                    addedon = response.CreatedOn.ToString("dd-MM-yyyy"),
+                    addedBy = response.CreatedBy ?? string.Empty,
                 };
 
                 return Ok(new
                 {
                     success = true,
                     message = "",
-                    data = categoryRecord
+                    data = authorityRecord
                 });
             }
             catch (Exception ex)
             {
                 Logger.LogActivity($"Unexpected error deleting type: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "COMPLIANCE-SETTINGS", ex.StackTrace);
-                return Redirect(Url.Action("ComplianceAuthorities", "ComplianceSettings"));
+                return StatusCode(500, new {
+                    success = false,
+                    message = "An unexpected error occurred. Please try again later."
+                });
             }
         }
 
@@ -1157,12 +1210,10 @@ namespace Grc.ui.App.Controllers {
                     .Take(request.PageSize)
                     .Select(t => new {
                         id = t.Id,
-                        startTab = "",
                         authorityName = t.AuthorityName,
                         authorityAlias = t.AuthorityAlias,
                         status = t.IsDeleted ? "Inactive" : "Active",
-                        addedon = t.CreatedAt.ToString("dd-MM-yyyy"),
-                        endTab = ""
+                        addedon = t.CreatedOn.ToString("dd-MM-yyyy"),
                     }).ToList();
 
                 var totalPages = (int)Math.Ceiling((double)authoritiesList.TotalCount / authoritiesList.Size);
@@ -1245,7 +1296,10 @@ namespace Grc.ui.App.Controllers {
             {
                 Logger.LogActivity($"Unexpected error creating authority: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "COMPLIANCE-SETTINGS", ex.StackTrace);
-                return Redirect(Url.Action("ComplianceAuthorities", "ComplianceSettings"));
+                return StatusCode(500, new {
+                    success = false,
+                    message = "An unexpected error occurred. Please try again later."
+                });
             }
         }
 
@@ -1311,7 +1365,10 @@ namespace Grc.ui.App.Controllers {
             {
                 Logger.LogActivity($"Unexpected error updating authority: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "COMPLIANCE-SETTINGS", ex.StackTrace);
-                return Redirect(Url.Action("ComplianceAuthorities", "ComplianceSettings"));
+                return StatusCode(500, new {
+                    success = false,
+                    message = "An unexpected error occurred. Please try again later."
+                });
             }
         }
 
@@ -1383,7 +1440,10 @@ namespace Grc.ui.App.Controllers {
             {
                 Logger.LogActivity($"Unexpected error deleting authority: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "COMPLIANCE-SETTINGS", ex.StackTrace);
-                return Redirect(Url.Action("ComplianceAuthorities", "ComplianceSettings"));
+                return StatusCode(500, new {
+                    success = false,
+                    message = "An unexpected error occurred. Please try again later."
+                });
             }
         }
 
@@ -1406,7 +1466,7 @@ namespace Grc.ui.App.Controllers {
                 worksheet.Cell(row, 2).Value = item.AuthorityName;
                 worksheet.Cell(row, 2).Value = item.AuthorityAlias;
                 worksheet.Cell(row, 3).Value = item.IsDeleted ? "Inactive" : "Active";
-                worksheet.Cell(row, 4).Value = item.CreatedAt.ToString("dd-MM-yyyy");
+                worksheet.Cell(row, 4).Value = item.CreatedOn.ToString("dd-MM-yyyy");
                 row++;
             }
 
@@ -1475,7 +1535,7 @@ namespace Grc.ui.App.Controllers {
                 ws.Cell(row, 2).Value = cat.AuthorityName;
                 ws.Cell(row, 2).Value = cat.AuthorityAlias;
                 ws.Cell(row, 3).Value = cat.IsDeleted ? "Inactive" : "Active";
-                ws.Cell(row, 4).Value = cat.CreatedAt.ToString("dd-MM-yyyy");
+                ws.Cell(row, 4).Value = cat.CreatedOn.ToString("dd-MM-yyyy");
                 row++;
             }
 
@@ -1583,7 +1643,10 @@ namespace Grc.ui.App.Controllers {
                 {
                     select2Data = documentTypes.Select(type => new {
                         id = type.Id,
-                        text = type.TypeName
+                        text = type.TypeName,
+                        isDeleted = type.IsDeleted,
+                        addedBy = type.CreatedBy ?? string.Empty,
+                        addedon = type.CreatedOn.ToString("dd-MM-yyyy")
                     }).Cast<object>().ToList();
                 }
 
@@ -1630,7 +1693,7 @@ namespace Grc.ui.App.Controllers {
                     id = response.Id,
                     typeName = response.TypeName,
                     status = response.IsDeleted ? "Inactive" : "Active",
-                    addedon = response.CreatedAt.ToString("dd-MM-yyyy")
+                    addedon = response.CreatedOn.ToString("dd-MM-yyyy")
                 };
 
                 return Ok(new { success = true, data = record });
@@ -1638,7 +1701,10 @@ namespace Grc.ui.App.Controllers {
             catch (Exception ex)
             {
                 await ProcessErrorAsync(ex.Message, "DOCUMENT-TYPE", ex.StackTrace);
-                return Ok(new { success = false, message = "Unexpected error retrieving document type" });
+                return StatusCode(500, new {
+                    success = false,
+                    message = "An unexpected error occurred. Please try again later."
+                });
             }
         }
 
@@ -1784,7 +1850,7 @@ namespace Grc.ui.App.Controllers {
                         startTab = "",
                         typeName = t.TypeName,
                         status = t.IsDeleted ? "Inactive" : "Active",
-                        addedon = t.CreatedAt.ToString("dd-MM-yyyy"),
+                        addedon = t.CreatedOn.ToString("dd-MM-yyyy"),
                         endTab = ""
                     }).ToList();
 
@@ -1820,7 +1886,7 @@ namespace Grc.ui.App.Controllers {
             {
                 worksheet.Cell(row, 2).Value = item.TypeName;
                 worksheet.Cell(row, 3).Value = item.IsDeleted ? "Inactive" : "Active";
-                worksheet.Cell(row, 4).Value = item.CreatedAt.ToString("dd-MM-yyyy");
+                worksheet.Cell(row, 4).Value = item.CreatedOn.ToString("dd-MM-yyyy");
                 row++;
             }
 
@@ -1888,7 +1954,7 @@ namespace Grc.ui.App.Controllers {
             {
                 ws.Cell(row, 2).Value = cat.TypeName;
                 ws.Cell(row, 3).Value = cat.IsDeleted ? "Inactive" : "Active";
-                ws.Cell(row, 4).Value = cat.CreatedAt.ToString("dd-MM-yyyy");
+                ws.Cell(row, 4).Value = cat.CreatedOn.ToString("dd-MM-yyyy");
                 row++;
             }
 

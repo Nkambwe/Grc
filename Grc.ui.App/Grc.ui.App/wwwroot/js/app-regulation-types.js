@@ -1,12 +1,10 @@
 ﻿
-/*------------------------------------------ initialize table*/
-
 $(document).ready(function () {
     initRegulatoryTypeTable();
-    initializeTypeStatusSelect2();
 });
 
 let regulatoryTypeTable;
+
 function initRegulatoryTypeTable() {
     regulatoryTypeTable = new Tabulator("#regulatory-types-table", {
         ajaxURL: "/grc/compliance/settings/types-all",
@@ -83,20 +81,11 @@ function initRegulatoryTypeTable() {
             };
         },
         ajaxError: function (error) {
-            alert("Failed to load regulatory types. Please try again.");
+            Swal.fire("Failed to load regulatory types. Please try again.");
         },
         layout: "fitColumns",
         responsiveLayout: "hide",
         columns: [
-            {
-                title: "",
-                field: "startTab",
-                maxWidth: 50,
-                headerSort: false,
-                formatter: function (cell) {
-                    return `<span class="record-tab"></span>`;
-                }
-            },
             {
                 title: "TYPE NAME",
                 field: "typeName",
@@ -125,7 +114,10 @@ function initRegulatoryTypeTable() {
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
                     return `
-                        <button class="grc-delete-action" onclick="deleteRegulatoryTypeRecord(${rowData.id})">Delete</button>
+                        <button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteRegulatoryTypeRecord(${rowData.id})">
+                        <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                        <span>DELETE</span>
+                        </button>
                     `;
                 },
                 width: 200,
@@ -133,16 +125,7 @@ function initRegulatoryTypeTable() {
                 headerHozAlign: "center",
                 headerSort: false,
                 cssClass: "action-column"
-            },
-            {
-                title: "",
-                field: "endTab",
-                maxWidth: 50,
-                headerSort: false,
-                formatter: function (cell) {
-                    return `<span class="record-tab"></span>`;
-                }
-            },
+            }
         ]
     });
 
@@ -162,10 +145,18 @@ $('.action-btn-complianceHome').on('click', function () {
 });
 
 $('.action-btn-new-type').on('click', function () {
-    addRegulatoryTypeRootRecord();
+    addRegulatoryType();
 });
 
-/*------------------------------------------------ export to excel*/
+//..add type
+function addRegulatoryType() {
+    openRegulatoryTypePanel('New regulatory type', {
+        id: 0,
+        typeName: '',
+        isActive: false
+    }, false);
+}
+
 $('#btnTypeExportFiltered').on('click', function () {
     $.ajax({
         url: '/grc/compliance/settings/types-export',
@@ -204,91 +195,38 @@ $('.action-btn-type-export').on('click', function () {
     });
 });
 
-/*------------------------------------------------ add new record to pane*/
 $('.action-btn-newType').on('click', function () {
     exportToExcel();
 });
 
-// Function to initialize basic Select2 with accessibility fixes
-function initializeTypeStatusSelect2() {
-    $(".js-record-type").each(function () {
-        if (!$(this).hasClass('select2-hidden-accessible')) {
-            initializeTypeSelect2($(this));
-        }
-    });
-}
-
-// Function to initialize a single Select2 element with proper accessibility
-function initializeTypeSelect2($element) {
-    const elementId = $element.attr('id');
-    const labelText = $element.closest('.form-group').find('label').text().trim() || 'Select status';
-
-    $element.select2({
-        width: 'resolve',
-        placeholder: 'Select a status...',
-        allowClear: true,
-        escapeMarkup: function (markup) {
-            return markup;
-        },
-        language: {
-            noResults: function () {
-                return "No status found";
-            }
-        }
-    });
-}
-
-//..add type
-function addRegulatoryTypeRootRecord() {
-    openRegulatoryTypePanel('New regulatory type', {
-        id: 0,
-        startTab: '',
-        category: '',
-        status: 'Active',
-        addedon: "01-02-2025",
-        endTab: '',
-    }, false);
-}
-
 //..open slide panel
-function openRegulatoryTypePanel(title, record, isEdit) {
+function openDocumentTypePanel(title, record, isEdit) {
     $('#recordId').val(record.id);
     $('#typeName').val(record.typeName || '');
     $('#isEdit').val(isEdit);
-    $('#dpTypeStatus').val(record.status || 'Active').trigger('change');
+    $('#isActive').prop('checked', record.isActive);
 
+    //..open window
     $('#panelTitle').text(title);
-
     $('.overlay').addClass('active');
     $('#slidePanel').addClass('active');
 }
 
-/*------------------------------------------------ save/edit new record*/
-function saveRegulatoryTypeRecord() {
+function saveRegulatoryTypeRecord(e) {
+    e.preventDefault(); 
+
     let isEdit = $('#isEdit').val();
     //..build record payload from form
     let recordData = {
         id: parseInt($('#recordId').val()) || 0,
-        category: $('#typeName').val(),
-        status: $('#dpTypeStatus').val() || "Active"
+        typeName: $('#typeName').val(),
+        isActive: $('#isActive').is(':checked') ? true : false,
     };
 
     //..call backend
     saveRegulatoryType(isEdit, recordData);
 }
 
-//...edit record in data
-function updateRegulatoryTypeRecordInData(data, updatedRecord) {
-    for (let i = 0; i < data.length; i++) {
-        if (data[i].id === updatedRecord.id) {
-            Object.assign(data[i], updatedRecord);
-            return true;
-        }
-    }
-    return false;
-}
-
-/*------------------------------------------------ save via controller*/
 function saveRegulatoryType(isEdit, payload) {
     let url = isEdit === true || isEdit === "true"
         ? "/grc/compliance/settings/types-update"
@@ -304,18 +242,16 @@ function saveRegulatoryType(isEdit, payload) {
             'X-CSRF-TOKEN': getRegulationTypeAntiForgeryToken()
         },
         success: function (res) {
-            if (res && res.data) {
-                if (isEdit) {
-                    //..update existing type
-                    regulatoryTypeTable.updateData([res.data]);
-                } else {
-                    //..add new type
-                    regulatoryTypeTable.addData([res.data], true);
-                }
+            if (!res || res.success !== true) {
+                Swal.fire(res?.message || "Operation failed");
+                return;
             }
 
-            Swal.fire("Success", res.message || "Saved successfully.");
+            Swal.fire(res.message || (isEdit ? "Regulatory type updated successfully" : "Regulatory type created successfully"));
             closeRegulatoryTypePanel();
+
+            //..reload table
+            regulatoryTypeTable.replaceData();
         },
         error: function (xhr, status, error) {
             var errorMessage = error;
@@ -325,18 +261,16 @@ function saveRegulatoryType(isEdit, payload) {
                     errorMessage = response.message;
                 }
             } catch (e) {
-                // If parsing fails, use the default error
+                //..if parsing fails, use the default error
                 errorMessage = "Unexpected error occurred";
-                console.error("Failed to parse error response:", e);
             }
 
             Swal.fire(isEdit ? "Update Type" : "Save Type", errorMessage);
-            console.error("Save error:", error, xhr.responseText);
         }
+
     });
 }
 
-/*------------------------------------------------ delete Record*/
 function deleteRegulatoryTypeRecord(id) {
     if (!id && id !== 0) {
         toastr.error("Invalid id for delete.");
@@ -363,12 +297,16 @@ function deleteRegulatoryTypeRecord(id) {
                 'X-CSRF-TOKEN': getRegulationTypeAntiForgeryToken()
             },
             success: function (res) {
-                if (res && res.success) {
-                    toastr.success(res.message || "Type deleted successfully.");
-                    regulatoryTypeTable.setPage(1, true);
-                } else {
-                    toastr.error(res?.message || "Delete failed.");
+
+                if (!res || res.success !== true) {
+                    toastr.success(res.message || "Document Type deleted successfully.");
+                    return;
                 }
+
+                toastr.error(res?.message || "Delete failed.");
+               
+                //..reload table
+                regulatoryTypeTable.replaceData();
             },
             error: function (xhr, status, error) {
                 let msg = "Request failed.";
@@ -447,8 +385,6 @@ function findRegulatoryTypeRecord(id) {
     });
 }
 
-/*------------------------------------------------- Helper Functions*/
-
 //..close panel
 function closeRegulatoryTypePanel() {
     $('.overlay').removeClass('active');
@@ -484,5 +420,4 @@ function initRegulatoryTypeSearch() {
 function getRegulationTypeAntiForgeryToken() {
     return $('meta[name="csrf-token"]').attr('content');
 }
-
 

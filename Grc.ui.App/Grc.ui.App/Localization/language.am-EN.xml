@@ -448,6 +448,10 @@
 	<LocaleResource Name="Component.Key.DeletedUsers">
 		<Value>Deleted Users</Value>
 	</LocaleResource>
+	
+	<LocaleResource Name="Component.Table.Status.Active">
+		<Value>Deactivate this item?</Value>
+	</LocaleResource>
 
 	<LocaleResource Name="Component.Label.Branch">
 		<Value>Add Branch</Value>
@@ -657,7 +661,7 @@
 		<Value>Regulatory Category</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Type.Header">
-		<Value>Regulatory Types</Value>
+		<Value>Regulatory Type</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Authority.Header">
 		<Value>Regulatory Authorities</Value>

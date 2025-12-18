@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using DocumentFormat.OpenXml.EMMA;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
 using Grc.ui.App.Factories;
@@ -149,10 +147,14 @@ namespace Grc.ui.App.Services {
                 }
 
                 //..build request object
-                var request = Mapper.Map<GrcPolicyDocumentRequest>(model);
-                request.UserId = userId;
-                request.IpAddress = ipAddress;
-                request.Action = Activity.COMPLIANCE_EDITED_DOCTYPE.GetDescription();
+                var request = new DocumentTypeRequest {
+                    Id = model.Id,
+                    TypeName = model.TypeName,
+                    IsDeleted = model.IsDeleted,
+                    UserId = userId,
+                    IPAddress = ipAddress,
+                    Action = Activity.COMPLIANCE_EDITED_DOCTYPE.GetDescription()
+                };
 
                 //..map request
                 Logger.LogActivity($"UPDATE DOCUMENT TYPE REQUEST : {JsonSerializer.Serialize(request)}");
@@ -161,7 +163,7 @@ namespace Grc.ui.App.Services {
                 var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/update-document-type";
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
-                return await HttpHandler.PostAsync<GrcPolicyDocumentRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<DocumentTypeRequest, ServiceResponse>(endpoint, request);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
                 Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");

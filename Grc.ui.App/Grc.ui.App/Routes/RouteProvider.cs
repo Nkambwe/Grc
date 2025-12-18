@@ -699,6 +699,11 @@
                defaults: new { controller = "Register", action = "RegulationList" }
             );
             routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-laws-list",
+                pattern: "/grc/compliance/register/laws-list",
+                defaults: new { controller = "Register", action = "GetRegulatoryLaws" }
+            );
+            routeBuilder.MapControllerRoute(
                 name: "app-compliance-register-acts-list",
                 pattern: "/grc/compliance/register/acts-list",
                 defaults: new { controller = "Register", action = "GetAllRegulatoryActs" }
@@ -837,7 +842,7 @@
             );
             routeBuilder.MapControllerRoute(
                name: "app-compliance-settings-document-types-retrieve",
-               pattern: "/grc/compliance/settings/types-retrieve/{id:long}",
+               pattern: "/grc/compliance/settings/document-types-retrieve/{id:long}",
                defaults: new { controller = "ComplianceSettings", action = "GetDocumentType" }
            );
             routeBuilder.MapControllerRoute(
@@ -1057,6 +1062,12 @@
                 name: "app-compliance-settings-support-categories",
                 pattern: "/grc/compliance/support/categories",
                 defaults: new { controller = "ComplianceSettings", action = "GetRegulatoryCategories" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-settings-support-categories-all",
+                pattern: "/grc/compliance/support/categories-all",
+                defaults: new { controller = "ComplianceSettings", action = "AllRegulatoryCategories" }
             );
 
             routeBuilder.MapControllerRoute(

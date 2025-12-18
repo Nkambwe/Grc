@@ -33,14 +33,18 @@
             Html.AddCssFileParts("~/css/app-collapsable-pane.css");
             Html.AddCssFileParts("~/css/app-styles.css");
             Html.AddCssFileParts("~/css/app-tabular-styles.css");
+            Html.AddCssFileParts("~/lib/jstree/themes/default/style.min.css");
+
         }
         <!-- Keep these in head because they need to be available early -->
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
         <script src="~/lib/sweet-alert/sweetalert2.all.min.js"></script>
         <script src="~/lib/ckeditor5/ckeditor5.umd.js"></script>
         <script src="~/lib/chartjs/chart.bundle.min.js"></script>
         <script src="~/lib/tabulator/js/tabulator.min.js"></script>
         <script src="~/lib/xlsx/xlsx.full.min.js"></script>
         <script src="~/lib/flastpicker/flatpickr.js"></script>
+        
 
         @Html.GenerateCssFiles()
         @Html.GenerateHeadCustom()
@@ -548,6 +552,7 @@
             Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-script.js");        
             Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-table-script.js");
             Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-other-script.js");
+            Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jstree/jstree.min.js");
         }
 
         @Html.GenerateScripts(ResourceLocation.Footer)

@@ -3,10 +3,10 @@
 
 $(document).ready(function () {
     initRegulatoryAuthorityTable();
-    initializeAuthorityStatusSelect2();
 });
 
 let regulatoryAuthorityTable;
+
 function initRegulatoryAuthorityTable() {
     regulatoryAuthorityTable = new Tabulator("#regulatory-authorities-table", {
         ajaxURL: "/grc/compliance/settings/authorities-all",
@@ -76,11 +76,6 @@ function initRegulatoryAuthorityTable() {
             });
         },
         ajaxResponse: function (url, params, response) {
-            console.log("=== PROCESSING RESPONSE ===");
-            console.log("Params received:", params);
-            console.log("Response last_page:", response.last_page);
-            console.log("Response data length:", response.data ? response.data.length : 0);
-
             return {
                 data: response.data || [],
                 last_page: response.last_page || 1,
@@ -94,15 +89,6 @@ function initRegulatoryAuthorityTable() {
         layout: "fitColumns",
         responsiveLayout: "hide",
         columns: [
-            {
-                title: "",
-                field: "startTab",
-                maxWidth: 50,
-                headerSort: false,
-                formatter: function (cell) {
-                    return `<span class="record-tab"></span>`;
-                }
-            },
             {
                 title: "AUTHORITY NAME",
                 field: "authorityName",
@@ -138,7 +124,10 @@ function initRegulatoryAuthorityTable() {
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
                     return `
-                        <button class="grc-delete-action" onclick="deleteRegulatoryAuthorityRecord(${rowData.id})">Delete</button>
+                        <button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteRegulatoryAuthorityRecord(${rowData.id})">
+                         <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                        <span>DELETE</span>
+                        </button>
                     `;
                 },
                 width: 200,
@@ -146,16 +135,7 @@ function initRegulatoryAuthorityTable() {
                 headerHozAlign: "center",
                 headerSort: false,
                 cssClass: "action-column"
-            },
-            {
-                title: "",
-                field: "endTab",
-                maxWidth: 50,
-                headerSort: false,
-                formatter: function (cell) {
-                    return `<span class="record-tab"></span>`;
-                }
-            },
+            }
         ]
     });
 
@@ -177,7 +157,6 @@ $('.action-btn-new-authority').on('click', function () {
     addRegulatoryAuthorityRootRecord();
 });
 
-/*------------------------------------------------ export to excel*/
 $('#btnAuthorityExportFiltered').on('click', function () {
     $.ajax({
         url: '/grc/compliance/settings/authorities-export',
@@ -216,50 +195,17 @@ $('.action-btn-authority-export').on('click', function () {
     });
 });
 
-/*------------------------------------------------ add new record to pane*/
 $('.action-btn-new-authority').on('click', function () {
     addRegulatoryAuthorityRootRecord();
 });
 
-// Function to initialize basic Select2 with accessibility fixes
-function initializeAuthorityStatusSelect2() {
-    $(".js-record-authority").each(function () {
-        if (!$(this).hasClass('select2-hidden-accessible')) {
-            initializeAuthoritySelect2($(this));
-        }
-    });
-}
-
-// Function to initialize a single Select2 element with proper accessibility
-function initializeAuthoritySelect2($element) {
-    const elementId = $element.attr('id');
-    const labelText = $element.closest('.form-group').find('label').text().trim() || 'Select Select status';
-
-    $element.select2({
-        width: 'resolve',
-        placeholder: 'Select a status...',
-        allowClear: true,
-        escapeMarkup: function (markup) {
-            return markup;
-        },
-        language: {
-            noResults: function () {
-                return "No status found";
-            }
-        }
-    });
-}
-
-//..add type
+//..add authority
 function addRegulatoryAuthorityRootRecord() {
     openRegulatoryAuthorityPanel('New regulatory authority', {
         id: 0,
-        startTab: '',
         authorityName: '',
         authorityAlias: '',
-        status: 'Active',
-        addedon: "01-02-2025",
-        endTab: '',
+        isActive: 'Active'
     }, false);
 }
 
@@ -269,44 +215,32 @@ function openRegulatoryAuthorityPanel(title, record, isEdit) {
     $('#recordId').val(record.id);
     $('#authorityName').val(record.authorityName || '');
     $('#authorityAlias').val(record.authorityAlias || '');
-    $('#dpAuthorityStatus').val(record.status || 'Active').trigger('change');
+    $('#isActive').prop('checked', record.isActive);
 
+    //..open panel
     $('#panelTitle').text(title);
-
     $('.overlay').addClass('active');
     $('#slidePanel').addClass('active');
 }
 
-/*------------------------------------------------ save/edit new record*/
-function saveRegulatoryAuthorityRecord() {
+function saveRegulatoryAuthorityRecord(e) {
+    e.preventDefault(); 
+
     let isEdit = $('#isEdit').val();
+
     //..build record payload from form
     let recordData = {
         id: parseInt($('#recordId').val()) || 0,
         authorityName: $('#authorityName').val(),
         authorityAlias: $('#authorityAlias').val(),
-        status: $('#dpAuthorityStatus').val() || "Active"
+        isActive: $('#isActive').is(':checked') ? true : false
     };
 
     //..call backend
     saveRegulatoryAuthority(isEdit, recordData);
 }
 
-//...edit record in data
-function updateRegulatoryAuthorityRecordInData(data, updatedRecord) {
-    for (let i = 0; i < data.length; i++) {
-        if (data[i].id === updatedRecord.id) {
-            Object.assign(data[i], updatedRecord);
-            return true;
-        }
-    }
-    return false;
-}
-
-/*------------------------------------------------ save via controller*/
 function saveRegulatoryAuthority(isEdit, payload) {
-
-    console.log("IsEdit:", isEdit);
     let url = isEdit === true || isEdit === "true"
         ? "/grc/compliance/settings/authorities-update"
         : "/grc/compliance/settings/authorities-create";
@@ -321,18 +255,16 @@ function saveRegulatoryAuthority(isEdit, payload) {
             'X-CSRF-TOKEN': getAuthAntiForgeryToken()
         },
         success: function (res) {
-            if (res && res.data) {
-                if (isEdit) {
-                    //..update existing authority
-                    regulatoryAuthorityTable.updateData([res.data]);
-                } else {
-                    //..add new authority
-                    regulatoryAuthorityTable.addData([res.data], true);
-                }
+            if(!res || res.success !== true) {
+                Swal.fire(res?.message || "Operation failed");
+                return;
             }
 
-            Swal.fire("Success", res.message || "Saved successfully.");
+            Swal.fire(res.message || (isEdit ? "Document Type updated successfully" : "Document Type created successfully"));
             closeRegulatoryAuthorityPanel();
+
+            //..reload table
+            regulatoryAuthorityTable.replaceData();
         },
         error: function (xhr, status, error) {
             var errorMessage = error;
@@ -344,16 +276,13 @@ function saveRegulatoryAuthority(isEdit, payload) {
             } catch (e) {
                 // If parsing fails, use the default error
                 errorMessage = "Unexpected error occurred";
-                console.error("Failed to parse error response:", e);
             }
 
             Swal.fire(isEdit ? "Update Authority" : "Save Authority", errorMessage);
-            console.error("Save error:", error, xhr.responseText);
         }
     });
 }
 
-/*------------------------------------------------ delete Record*/
 function deleteRegulatoryAuthorityRecord(id) {
     if (!id && id !== 0) {
         toastr.error("Invalid id for delete.");
@@ -380,9 +309,15 @@ function deleteRegulatoryAuthorityRecord(id) {
                 'X-CSRF-TOKEN': getAuthAntiForgeryToken()
             },
             success: function (res) {
-                if (res && res.success) {
-                    toastr.success(res.message || "Authorities deleted successfully.");
-                    regulatoryAuthorityTable.setPage(1, true);
+
+                 if (res && res.success) {
+                    toastr.success(res.message || "Type deleted successfully.");
+
+                    if (typeof regulatoryAuthorityTable.replaceData === "function") {
+                        regulatoryAuthorityTable.replaceData();
+                    } else if (typeof regulatoryAuthorityTable.ajax !== "undefined") {
+                        regulatoryAuthorityTable.ajax.reload();
+                    }
                 } else {
                     toastr.error(res?.message || "Delete failed.");
                 }
@@ -394,20 +329,9 @@ function deleteRegulatoryAuthorityRecord(id) {
                     if (json && json.message) msg = json.message;
                 } catch (e) { }
                 toastr.error(msg);
-                console.error("Delete error:", error, xhr.responseText);
             }
         });
     });
-}
-
-function removeRegulationAuthorityRecordFromData(data, id) {
-    for (let i = 0; i < data.length; i++) {
-        if (data[i].id === id) {
-            data.splice(i, 1);
-            return true;
-        }
-    }
-    return false;
 }
 
 //..view regulatory authority record
@@ -462,15 +386,10 @@ function findRegulatoryAuthorityRecord(id) {
             },
             error: function (xhr, status, error) {
                 Swal.fire("Error", error);
-                console.error('AJAX Error:', error);
-                console.error('Status:', status);
-                console.error('Response:', xhr.responseText);
             }
         });
     });
 }
-
-/*------------------------------------------------- Helper Functions*/
 
 //..close panel
 function closeRegulatoryAuthorityPanel() {
@@ -483,7 +402,6 @@ function addRegulatoryAuthorityRecordToData(data, newRecord) {
     data.push(newRecord);
 }
 
-/*----------------------------------------------- search functionality*/
 function initRegulatoryAuthoritySearch() {
     const searchInput = $('#authoritySearchbox');
     let typingTimer;

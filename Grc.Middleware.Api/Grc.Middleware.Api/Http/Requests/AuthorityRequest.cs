@@ -10,7 +10,7 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("authorityName")]
         public string AuthorityName { get; set; }
 
-        [JsonPropertyName("alias")]
+        [JsonPropertyName("authorityAlias")]
         public string AuthorityAlias { get; set; }
 
         [JsonPropertyName("isDeleted")]

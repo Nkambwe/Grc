@@ -20,11 +20,14 @@
         Html.AddCssFileParts("~/lib/sweet-alert/sweetalert2.css");
         Html.AddCssFileParts("~/css/grc-style.css", excludeFromBundle: false);
         Html.AddCssFileParts("~/css/app-collapsable-pane.css");
-        Html.AddCssFileParts("~/css/register-styles.css", excludeFromBundle: false);   
+        Html.AddCssFileParts("~/css/register-styles.css", excludeFromBundle: false);
+        Html.AddCssFileParts("~/css/app-tabular-styles.css");
+        Html.AddCssFileParts("~/lib/jstree/jstree.min.css");
     }
 
     <script src="~/lib/toastr/toastr.min.js"></script>
     <script src="~/lib/sweet-alert/sweetalert2.all.min.js"></script>
+
     @Html.GenerateCssFiles()
     @Html.GenerateHeadCustom()
 </head>

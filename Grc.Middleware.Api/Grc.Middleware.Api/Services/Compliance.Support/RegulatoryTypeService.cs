@@ -978,8 +978,15 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
             using var uow = UowFactory.Create();
             try
             {
-                //..map Regulatory Type request to Regulatory Type entity
-                var type = Mapper.Map<RegulatoryTypeRequest, RegulatoryType>(request);
+                //..create Regulatory Type entity
+                var type = new RegulatoryType() { 
+                    TypeName = (request.TypeName ?? string.Empty).Trim(),
+                    IsDeleted = false,
+                    CreatedBy = $"{request.CreatedBy}",
+                    CreatedOn = DateTime.Now,
+                    LastModifiedBy = $"{request.CreatedBy}",
+                    LastModifiedOn = DateTime.Now,
+                };
 
                 //..log the Regulatory Type data being saved
                 var typeJson = JsonSerializer.Serialize(type, new JsonSerializerOptions

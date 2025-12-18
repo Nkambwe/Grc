@@ -75,12 +75,7 @@ namespace Grc.ui.App.Services {
         public async Task<GrcResponse<ServiceResponse>> CreateAuthorityAsync(RegulatoryAuthorityRequest request) {
             try {
                 if (request == null) {
-                    var error = new GrcResponseError(
-                        GrcStatusCodes.BADREQUEST,
-                        "Authority record cannot be null",
-                        "Invalid Authority record"
-                    );
-
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Authority record cannot be null", "Invalid Authority record");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return new GrcResponse<ServiceResponse>(error);
                 }

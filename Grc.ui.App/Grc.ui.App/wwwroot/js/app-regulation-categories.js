@@ -1,9 +1,6 @@
 ﻿
-/*------------------------------------------ initialize table*/
-
 $(document).ready(function () {
     initRegulatoryCategoryTable();
-    initializeCatStatusSelect2();
 });
 
 let regulatoryCategoryTable;
@@ -69,18 +66,12 @@ function initRegulatoryCategoryTable() {
                         resolve(response);
                     },
                     error: function (xhr, status, error) {
-                        console.error("AJAX Error:", error);
                         reject(error);
                     }
                 });
             });
         },
         ajaxResponse: function (url, params, response) {
-            console.log("=== PROCESSING RESPONSE ===");
-            console.log("Params received:", params);
-            console.log("Response last_page:", response.last_page);
-            console.log("Response data length:", response.data ? response.data.length : 0);
-
             return {
                 data: response.data || [],
                 last_page: response.last_page || 1,
@@ -88,8 +79,7 @@ function initRegulatoryCategoryTable() {
             };
         },
         ajaxError: function (error) {
-            console.error("Tabulator AJAX Error:", error);
-            alert("Failed to load regulatory categories. Please try again.");
+            Swal.fire("Failed to load regulatory categories. Please try again.");
         },
         layout: "fitColumns",
         responsiveLayout: "hide",
@@ -141,7 +131,10 @@ function initRegulatoryCategoryTable() {
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
                     return `
-                        <button class="grc-delete-action" onclick="deleteRegulatoryCategoryRecord(${rowData.id})">Delete</button>
+                        <button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteRegulatoryCategoryRecord(${rowData.id})">
+                        <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                        <span>DELETE</span>
+                        </button>
                     `;
                 },
                 width: 200,
@@ -181,7 +174,6 @@ $('.action-btn-new-category').on('click', function () {
     addRegulatoryCategoryRootRecord();
 });
 
-/*------------------------------------------------ export to excel*/
 $('#btnCategoryExportFiltered').on('click', function () {
     $.ajax({
         url: '/grc/compliance/support/category-export',
@@ -220,73 +212,42 @@ $('.action-btn-category-export').on('click', function () {
     });
 });
 
-/*------------------------------------------------ add new record to pane*/
 $('.action-btn-new-category').on('click', function () {
     addRegulatoryCategoryRootRecord();
 });
-
-// Function to initialize basic Select2 with accessibility fixes
-function initializeCatStatusSelect2() {
-    $(".js-record-category").each(function () {
-        if (!$(this).hasClass('select2-hidden-accessible')) {
-            initializeCatSelect2($(this));
-        }
-    });
-}
-
-// Function to initialize a single Select2 element with proper accessibility
-function initializeCatSelect2($element) {
-    const elementId = $element.attr('id');
-    const labelText = $element.closest('.form-group').find('label').text().trim() || 'Select Select status';
-
-    $element.select2({
-        width: 'resolve',
-        placeholder: 'Select a status...',
-        allowClear: true,
-        escapeMarkup: function (markup) {
-            return markup;
-        },
-        language: {
-            noResults: function () {
-                return "No status found";
-            }
-        }
-    });
-}
 
 //..add category
 function addRegulatoryCategoryRootRecord() {
     openRegulatoryCategoryPanel('New regulatory category', {
         id:0,
-        startTab: '',
-        category: '',
-        status: 'Active',
-        addedon: "01-02-2024",
-        endTab: '',
+        categoryName: '',
+        isActive: false
     }, false);
 }
 
 //..open slide panel
 function openRegulatoryCategoryPanel(title, record, isEdit) {
     $('#recordId').val(record.id);
-    $('#categoryName').val(record.category || '');
+    $('#categoryName').val(record.categoryName || '');
     $('#isEdit').val(isEdit);
-    $('#dpCategoryStatus').val(record.status || 'Active').trigger('change');
+    $('#isActive').prop('checked', record.isActive);
 
+    //..open panel
     $('#panelTitle').text(title);
-
     $('.overlay').addClass('active');
     $('#slidePanel').addClass('active');
 }
 
-/*------------------------------------------------ save/edit new record*/
-function saveRegulatoryCategoryRecord() {
+function saveRegulatoryCategoryRecord(e) {
+    e.preventDefault(); 
+
     let isEdit = $('#isEdit').val();
+
     //..build record payload from form
     let recordData = {
         id: parseInt($('#recordId').val()) || 0, 
-        category: $('#categoryName').val(),
-        status: $('#dpCategoryStatus').val() || "Active"
+        categoryName: $('#categoryName').val(),
+        isActive: $('#isActive').is(':checked') ? true : false
     };
 
     //..call backend
@@ -309,7 +270,6 @@ function updateRegulatoryCategoryRecordInData(data, updatedRecord) {
     return false;
 }
 
-/*------------------------------------------------ save via controller*/
 function saveRegulatoryCategory(isEdit, payload) {
     let url = isEdit === true || isEdit === "true"
         ? "/grc/compliance/support/category-update"
@@ -325,18 +285,19 @@ function saveRegulatoryCategory(isEdit, payload) {
             'X-CSRF-TOKEN': getCategoryAntiForgeryToken()
         },
         success: function (res) {
-            if (res && res.data) {
-                if (isEdit) {
-                    //..update existing category
-                    regulatoryCategoryTable.updateData([res.data]);
-                } else {
-                    //..add new category
-                    regulatoryCategoryTable.addData([res.data], true);
-                }
-            }
-
             Swal.fire("Success", res.message || "Saved successfully.");
             closeRegulatoryCategoryPanel();
+
+            if (!res || res.success !== true) {
+                Swal.fire(res?.message || "Operation failed");
+                return;
+            }
+
+            Swal.fire(res.message || (isEdit ? "Category updated successfully" : "Category created successfully"));
+            closeDoctypePanel();
+
+            // reload table
+            regulatoryCategoryTable.replaceData();
         },
         error: function (xhr, status, error) {
             var errorMessage = error; 
@@ -358,7 +319,6 @@ function saveRegulatoryCategory(isEdit, payload) {
     });
 }
 
-/*------------------------------------------------ delete Record*/
 function deleteRegulatoryCategoryRecord(id) {
     if (!id && id !== 0) {
         toastr.error("Invalid id for delete.");
@@ -385,9 +345,17 @@ function deleteRegulatoryCategoryRecord(id) {
                 'X-CSRF-TOKEN': getCategoryAntiForgeryToken()
             },
             success: function (res) {
+
                 if (res && res.success) {
                     toastr.success(res.message || "Category deleted successfully.");
-                    regulatoryTypeTable.setPage(1, true);
+
+                    if (typeof regulatoryCategoryTable.replaceData === "function") {
+                        regulatoryCategoryTable.replaceData();
+                    }
+
+                    else if (typeof regulatoryCategoryTable.ajax !== "undefined") {
+                        regulatoryCategoryTable.ajax.reload();
+                    }
                 } else {
                     toastr.error(res?.message || "Delete failed.");
                 }
@@ -402,16 +370,6 @@ function deleteRegulatoryCategoryRecord(id) {
             }
         });
     });
-}
-
-function removeRegulationCategoryRecordFromData(data, id) {
-    for (let i = 0; i < data.length; i++) {
-        if (data[i].id === id) {
-            data.splice(i, 1);
-            return true;
-        }
-    }
-    return false;
 }
 
 //..view regulatory category record
@@ -466,15 +424,10 @@ function findRegulatoryCategoryRecord(id) {
             },
             error: function (xhr, status, error) {
                 Swal.fire("Error", error);
-                console.error('AJAX Error:', error);
-                console.error('Status:', status);
-                console.error('Response:', xhr.responseText);
             }
         });
     });
 }
-
-/*------------------------------------------------- Helper Functions*/
 
 //..close panel
 function closeRegulatoryCategoryPanel() {
@@ -482,12 +435,6 @@ function closeRegulatoryCategoryPanel() {
     $('#slidePanel').removeClass('active');
 }
 
-//...save new record
-function addRegulatoryCategoryRecordToData(data, newRecord) {
-    data.push(newRecord);
-}
-
-/*----------------------------------------------- search functionality*/
 function initRegulatoryCategorySearch() {
     let typingTimer;
     $("#categorySearchbox").on("keyup", function () {

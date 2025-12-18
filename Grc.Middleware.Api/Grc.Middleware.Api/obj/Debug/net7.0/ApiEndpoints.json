@@ -885,6 +885,70 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetAuthority",
+    "RelativePath": "grc/registers/authorities-retrieve",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetCategoryList",
+    "RelativePath": "grc/registers/category-list",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "CreateAuthority",
+    "RelativePath": "grc/registers/create-authority",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.AuthorityRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "CreateCategory",
+    "RelativePath": "grc/registers/create-category",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.RegulatoryCategoryRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "CreateDocument",
     "RelativePath": "grc/registers/create-document",
     "HttpMethod": "POST",
@@ -901,8 +965,104 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "CreateDocumentType",
+    "RelativePath": "grc/registers/create-document-type",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.DocumentTypeRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "CreateRegulatoryType",
+    "RelativePath": "grc/registers/create-regulatory-type",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.RegulatoryTypeRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "DeleteAuthority",
+    "RelativePath": "grc/registers/delete-authority",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "DeleteCategory",
+    "RelativePath": "grc/registers/delete-category",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "DeleteDocument",
     "RelativePath": "grc/registers/delete-document",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "DeleteDocumentType",
+    "RelativePath": "grc/registers/delete-document-type",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "DeleteRegulatoryType",
+    "RelativePath": "grc/registers/delete-regulatory-type",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -949,6 +1109,38 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetDocumentTypeList",
+    "RelativePath": "grc/registers/document-type-list",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetDocumentType",
+    "RelativePath": "grc/registers/document-type-retrieve",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "LockDocument",
     "RelativePath": "grc/registers/lock-document",
     "HttpMethod": "POST",
@@ -958,6 +1150,38 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetPagedAuthorityList",
+    "RelativePath": "grc/registers/paged-authorities-list",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetPagedCategoryList",
+    "RelativePath": "grc/registers/paged-categories-list",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
         "IsRequired": true
       }
     ],
@@ -981,6 +1205,70 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetPagedDocumentTypeList",
+    "RelativePath": "grc/registers/paged-document-type-list",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetPagedRegulatoryTypeList",
+    "RelativePath": "grc/registers/paged-regulatory-type-list",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetCategory",
+    "RelativePath": "grc/registers/regulatory-categories-retrieve",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetRegulatoryType",
+    "RelativePath": "grc/registers/regulatory-types-retrieve",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "GetDocumentSupportItems",
     "RelativePath": "grc/registers/support-items",
     "HttpMethod": "POST",
@@ -997,6 +1285,38 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "UpdateAuthority",
+    "RelativePath": "grc/registers/update-authority",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.AuthorityRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "UpdateCategory",
+    "RelativePath": "grc/registers/update-category",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.RegulatoryCategoryRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "UpdateDocument",
     "RelativePath": "grc/registers/update-document",
     "HttpMethod": "POST",
@@ -1006,6 +1326,38 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.PolicyDocumentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "UpdateDocumentType",
+    "RelativePath": "grc/registers/update-document-type",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.DocumentTypeRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "UpdateRegulatoryType",
+    "RelativePath": "grc/registers/update-regulatory-type",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.RegulatoryTypeRequest",
         "IsRequired": true
       }
     ],

@@ -30,7 +30,7 @@
                 <input type="hidden" id="recordId">
                 <input type="hidden" id="isEdit">
 
-                <div class="col-sm-6">
+                <div class="col-sm-12">
                     <div class="row field-group">
                         <label for="typeName" class="form-label text-right col-12">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Doctypes.Name"))</label>
                         <input type="text" id="typeName" name="typeName" class="col-12 form-control" required>
@@ -39,27 +39,32 @@
 
                 <div class="col-sm-6">
                     <div class="row field-group">
-                        <label for="dpDoctypeStatus" class="col-sm-12 form-label text-right select2-field select2-column">
-                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Item.Status"))
-                            <select class="js-record-doctype form-control" id="dpDoctypeStatus" name="dpDoctypeStatus" aria-labelledby="dpDoctypeStatus-label" aria-describedby="dpDoctypeStatus-description">
-                                <option value="">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Staus.Select"))</option>
-                                <option value="Active">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Status.Active"))</option>
-                                <option value="Inactive">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Status.InActive"))</option>
-                            </select>
-                            <span id="dpDoctypeStatus-description" class="sr-only">
-                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
-                            </span>
-                        </label>
+                        <div id="isActive" class="col-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="isActive">
+                                <label class="form-check-label" for="isActive">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Status.Active"))
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveDocumentTypeRecord(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                        </div>
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeDoctypePanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                        </div>
+                        <div class="col-sm-10"></div>
                     </div>
                 </div>
 
             </form>
         </div>
-        <div class="panel-footer">
-            <button class="btn btn-secondary" onclick="closeDoctypePanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
-            <button class="btn btn-primary" onclick="saveDocumentTypeRecord()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
-        </div>
+
     </div>
 </div>
 

@@ -85,7 +85,7 @@ namespace Grc.ui.App.Services {
                     return new GrcResponse<ServiceResponse>(error);
                 }
 
-                var request = new RegulatoryTypeRequest {
+                var request = new GrcRegulatoryTypeRequest {
                     TypeName = model.TypeName,
                     IsDeleted = model.IsDeleted,
                     UserId = userId,
@@ -100,7 +100,7 @@ namespace Grc.ui.App.Services {
                 var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/create-regulatory-type";
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
-                return await HttpHandler.PostAsync<RegulatoryTypeRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcRegulatoryTypeRequest, ServiceResponse>(endpoint, request);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
                 Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
@@ -133,12 +133,15 @@ namespace Grc.ui.App.Services {
                     return new GrcResponse<ServiceResponse>(error);
                 }
 
-
                 //..build request object
-                var request = Mapper.Map<GrcPolicyDocumentRequest>(model);
-                request.UserId = userId;
-                request.IpAddress = ipAddress;
-                request.Action = Activity.COMPLIANCE_EDITED_TYPE.GetDescription();
+                var request = new GrcRegulatoryTypeRequest {
+                    Id = model.Id,
+                    TypeName = model.TypeName,
+                    IsDeleted = model.IsDeleted,
+                    UserId = userId,
+                    IPAddress = ipAddress,
+                    Action = Activity.COMPLIANCE_EDITED_TYPE.GetDescription()
+                };
 
                 //..map request
                 Logger.LogActivity($"UPDATE REGULATORY TYPE REQUEST : {JsonSerializer.Serialize(request)}");
@@ -147,7 +150,7 @@ namespace Grc.ui.App.Services {
                 var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/update-regulatory-type";
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
-                return await HttpHandler.PostAsync<GrcPolicyDocumentRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcRegulatoryTypeRequest, ServiceResponse>(endpoint, request);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
                 Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");

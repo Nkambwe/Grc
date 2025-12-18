@@ -447,38 +447,80 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        public IActionResult GetRegulatoryLaws([FromBody] TableListRequest request) {
+            var laws = new[]
+            {
+                new {
+                    id = 101,
+                    lawName = "Financial Institutions Act",
+                    lawCode = "FIA-2004",
+                    status = "Active"
+                },
+                new {
+                    id = 102,
+                    lawName = "Anti-Money Laundering Act",
+                    lawCode = "AML-2002",
+                    status = "Active"
+                }
+            };
+
+            return Ok(new { last_page = 1, total_records = 10, data = laws });
+        }
+
+        [HttpPost]
         public async Task<IActionResult> GetRegulatoryActs([FromBody] TableListRequest request) {
             try
             {
-                var ipAddress = WebHelper.GetCurrentIpAddress();
-                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (userResponse.HasError) Logger.LogActivity("REGULATORY ACT DATA ERROR: Failed to get user");
+                //var ipAddress = WebHelper.GetCurrentIpAddress();
+                //var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                //if (userResponse.HasError) Logger.LogActivity("REGULATORY ACT DATA ERROR: Failed to get user");
 
-                var currentUser = userResponse.Data;
-                request.UserId = currentUser.UserId;
-                request.IPAddress = ipAddress;
-                request.Action = Activity.COMPLIANCE_RETRIEVE_ACTS.GetDescription();
+                //var currentUser = userResponse.Data;
+                //request.UserId = currentUser.UserId;
+                //request.IPAddress = ipAddress;
+                //request.Action = Activity.COMPLIANCE_RETRIEVE_ACTS.GetDescription();
 
-                var result = await _regulatoryActService.GetPagedRegulatoryActAsync(request);
-                PagedResponse<RegulatoryActResponse> list = result.Data ?? new();
-                var pagedEntities = (list.Entities ?? new List<RegulatoryActResponse>())
-                    .Skip((request.PageIndex - 1) * request.PageSize)
-                    .Take(request.PageSize)
-                    .Select(a => new {
-                        id = a.Id,
-                        regulatoryName = a.RegulatoryName,
-                        authorityId = a.AuthorityId,
-                        regulatoryAuthority = a.RegulatoryAuthority,
-                        reviewFrequency = a.ReviewFrequency,
-                        isActive = a.IsActive,
-                        lastReviewDate = a.LastReviewDate,
-                        reviewResponsibility = a.ReviewResponsibility,
-                        comments = a.Comments
-                    }).ToList();
+                //var result = await _regulatoryActService.GetPagedRegulatoryActAsync(request);
+                //PagedResponse<RegulatoryActResponse> list = result.Data ?? new();
+                //var pagedEntities = (list.Entities ?? new List<RegulatoryActResponse>())
+                //    .Select(a => new {
+                //        id = a.Id,
+                //        regulatoryName = a.RegulatoryName,
+                //        authorityId = a.AuthorityId,
+                //        regulatoryAuthority = a.RegulatoryAuthority,
+                //        reviewFrequency = a.ReviewFrequency,
+                //        isActive = a.IsActive,
+                //        lastReviewDate = a.LastReviewDate,
+                //        reviewResponsibility = a.ReviewResponsibility,
+                //        comments = a.Comments
+                //    }).ToList();
 
-                var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
+                //var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
 
-                return Ok(new { last_page = totalPages, total_records = list.TotalCount, data = pagedEntities });
+                //return Ok(new { last_page = totalPages, total_records = list.TotalCount, data = pagedEntities });
+
+                var acts = new[]
+                {
+                    new {
+                        id = 501,
+                        sectionNumber = "Section 5",
+                        title = "Licensing of Financial Institutions",
+                        isMandatory = true
+                    },
+                    new {
+                        id = 502,
+                        sectionNumber = "Section 12",
+                        title = "Capital Adequacy Requirements",
+                        isMandatory = true
+                    },
+                    new {
+                        id = 503,
+                        sectionNumber = "Section 20",
+                        title = "Reporting Obligations",
+                        isMandatory = false
+                    }
+                };
+                return Ok(new { last_page = 1, total_records = 10, data = acts });
             }
             catch (Exception ex)
             {

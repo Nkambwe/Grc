@@ -505,6 +505,99 @@ button.action-btn.action-btn-separator {
     margin-top: 1rem;
 }
 
+
+.regulatory-container,
+.regulatory-inner-container {
+    height: 100%;
+}
+
+.hierarchy-panel {
+    height: 100vh;
+    display: flex;
+    padding: 0 !important;
+    flex-direction: column;
+}
+
+.category-list-box {
+    padding: 15px;
+    margin: 0 !important;
+    color: var(--amber-dark-extra);
+    border-bottom: solid 1px var(--grey-light-medium);
+}
+
+.category-list-box-title {
+    font-size:1.2em;
+}
+
+.grc-btn-outline-primary {
+    color: var(--pearl-purple-dark-30);
+    border-color: var(--pearl-purple-dark-30);
+    transition: all .5s ease-in-out;
+}
+    .grc-btn-outline-primary:hover {
+        color: var(--white-base);
+        background-color: var(--pearl-purple-dark-30);
+        transition: all .5s ease-in-out;
+    }
+
+
+    .grc-btn-outline-primary:focus {
+        box-shadow: rgba(169, 39, 181, 0.21) 0px 0px 0px 1.67226px;
+        color: rgb(231, 172, 255);
+        background-color: rgba(116, 27, 124, 0.773);
+    }
+
+.hierarchy-tree {
+    height: 100%;
+    padding: 0 !important;
+}
+
+.hierarchy-tree ul.jstree-container-ul.jstree-children {
+    height: 100%;
+}
+
+.hierarchy-tree ul.jstree-container-ul.jstree-children li.jstree-node {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: solid 1px var(--grey-light-medium);
+    transition: all .5s ease-in-out;
+}
+
+.hierarchy-tree ul.jstree-container-ul.jstree-children li.jstree-node:hover {
+    color: var(--pearl-purple-dark-40);
+    --pearl-purple-dark-40background: var(--purple-light-extra);
+    transition: all .5s ease-in-out;
+}
+
+    .hierarchy-tree ul.jstree-container-ul.jstree-children li.jstree-node a {
+        width: 90%;
+        background: transparent;
+    }
+
+.col-md-9.content-panel {
+    padding: 0 !important;
+}
+
+.bread-crumb-nav {
+    width: 100%;
+    border-bottom: solid 1px var(--grey-light-medium);
+}
+
+.breadcrumb {
+    min-height:30px;
+}
+
+    .breadcrumb li.breadcrumb-item {
+        padding: 10px;
+        text-align: center;
+        color: var(--pink-dark-extra);
+    }
+.breadcrumb-item.active {
+    color: var(--amber-dark-extra)!important;
+}
+
+
+
 div:where(.swal2-container).swal2-backdrop-show,
 div:where(.swal2-container).swal2-noanimation {
     z-index: 2000 !important;

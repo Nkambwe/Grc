@@ -6,7 +6,7 @@ namespace Grc.ui.App.Http.Requests
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
-        [JsonPropertyName("category")]
+        [JsonPropertyName("categoryName")]
         public string Category  { get; set; }
 
         [JsonPropertyName("isDeleted")]

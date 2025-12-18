@@ -2,6 +2,7 @@
 
 namespace Grc.ui.App.Http.Responses {
     public class GrcRegulatoryAuthorityResponse {
+
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
@@ -15,9 +16,12 @@ namespace Grc.ui.App.Http.Responses {
         public bool IsDeleted { get; set; }
 
         [JsonPropertyName("createdOn")]
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedOn { get; set; }
+
+        [JsonPropertyName("createdBy")]
+        public string CreatedBy { get; set; }
 
         [JsonPropertyName("updatedOn")]
-        public DateTime UpdatedAt { get; set; }
+        public DateTime UpdatedOn { get; set; }
     }
 }
