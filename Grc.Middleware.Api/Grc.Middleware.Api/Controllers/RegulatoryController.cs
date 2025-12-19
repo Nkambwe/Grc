@@ -1190,54 +1190,164 @@ namespace Grc.Middleware.Api.Controllers {
         public async Task<IActionResult> GetPagedCategoryList([FromBody] ListRequest request) {
 
             try {
-                Logger.LogActivity($"{request.Action}", "INFO");
-                if (request == null) {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "Invalid request body"
-                    );
-                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<PagedResponse<RegulatoryCategoryResponse>>(error));
-                }
+                //Logger.LogActivity($"{request.Action}", "INFO");
+                //if (request == null) {
+                //    var error = new ResponseError(
+                //        ResponseCodes.BADREQUEST,
+                //        "Request record cannot be empty",
+                //        "Invalid request body"
+                //    );
+                //    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                //    return Ok(new GrcResponse<PagedResponse<RegulatoryCategoryResponse>>(error));
+                //}
 
-                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                var pageResult = await _categoryService.PageAllAsync(request.PageIndex, request.PageSize, false);
-                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
-                    var error = new ResponseError(
-                        ResponseCodes.SUCCESS,
-                        "No data",
-                        "No regulatory category records found"
-                    );
-                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<PagedResponse<RegulatoryCategoryResponse>>(new PagedResponse<RegulatoryCategoryResponse>(new List<RegulatoryCategoryResponse>(), 0, pageResult.Page, pageResult.Size)));
-                }
+                //Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                //var pageResult = await _categoryService.PageAllAsync(request.PageIndex, request.PageSize, false);
+                //if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                //    var error = new ResponseError(
+                //        ResponseCodes.SUCCESS,
+                //        "No data",
+                //        "No regulatory category records found"
+                //    );
+                //    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                //    return Ok(new GrcResponse<PagedResponse<RegulatoryCategoryResponse>>(new PagedResponse<RegulatoryCategoryResponse>(new List<RegulatoryCategoryResponse>(), 0, pageResult.Page, pageResult.Size)));
+                //}
 
-                List<RegulatoryCategoryResponse> categories = new();
-                var records = pageResult.Entities.ToList();
-                if (records != null && records.Any()) {
-                    records.ForEach(category => categories.Add(new() {
-                        Id = category.Id,
-                        CategoryName = category.CategoryName ?? string.Empty,
-                        IsDeleted = category.IsDeleted,
-                        CreatedOn = category.CreatedOn,
-                        CreatedBy = category.CreatedBy ?? string.Empty,
-                        UpdatedOn = category.LastModifiedOn ?? category.CreatedOn
-                    }));
-                }
+                //List<RegulatoryCategoryResponse> categories = new();
+                //var records = pageResult.Entities.ToList();
+                //if (records != null && records.Any()) {
+                //    records.ForEach(category => categories.Add(new() {
+                //        Id = category.Id,
+                //        CategoryName = category.CategoryName ?? string.Empty,
+                //        IsDeleted = category.IsDeleted,
+                //        CreatedOn = category.CreatedOn,
+                //        CreatedBy = category.CreatedBy ?? string.Empty,
+                //        UpdatedOn = category.LastModifiedOn ?? category.CreatedOn
+                //    }));
+                //}
 
-                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
-                    var searchTerm = request.SearchTerm.ToLower();
-                    categories = categories.Where(u =>
-                        (u.CategoryName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
-                    ).ToList();
-                }
+                //if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                //    var searchTerm = request.SearchTerm.ToLower();
+                //    categories = categories.Where(u =>
+                //        (u.CategoryName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                //    ).ToList();
+                //}
 
+                var categories = new List<RegulatoryCategoryResponse>() {
+                        new () {
+                            Id = 1,
+                            CategoryName = "Financial Institutions Business",
+                            IsDeleted = false,
+                            CreatedOn = DateTime.Now.AddMonths(-5),
+                            CreatedBy = "System",
+                            Statutes = new List<StatutoryRegulationResponse>() {
+                                new () {
+                                    Id = 1,
+                                    StatutoryTypeId = 1,
+                                    StatutoryType = "Regulatory Act",
+                                    AuthorityId = 1,
+                                    AuthorityName = "Bank of Uganda",
+                                    StatutoryLawCode = "FIA-2004",
+                                    StatutoryLawName ="FINANCIAL INSTITUTIONS ACT ,2004 as Amended by the FINANCIAL INSTITUTIONS ACT 2016",
+                                    IsDeleted = false,
+                                    CreatedBy = "system",
+                                    ModifiedBy = "system"
+                                },
+                                new () {
+                                    Id = 2,
+                                    StatutoryTypeId = 2,
+                                    StatutoryType = "Regulation",
+                                    AuthorityId = 6,
+                                    AuthorityName = "Financial Intelligence Authority",
+                                    StatutoryLawCode = "FIR-2005",
+                                    StatutoryLawName ="FINANCIAL INSTITUTIONS (LICENSING) REGULATIONS, 2005",
+                                    IsDeleted = false,
+                                    CreatedBy = "system",
+                                    ModifiedBy = "system"
+                                },
+                                new () {
+                                    Id = 3,
+                                    StatutoryTypeId = 2,
+                                    StatutoryType = "Regulation",
+                                    AuthorityId = 6,
+                                    AuthorityName = "Financial Intelligence Authority",
+                                    StatutoryLawCode = "FIR-CAR",
+                                    StatutoryLawName ="FINANCIAL INSTITUTIONS (CAPITAL ADEQUACY REQUIREMENTS) REGULATIONS, 2018 as Amended by the Revision_of_minimum_Capital_Requirements_Instrument_2022",
+                                    IsDeleted = false,
+                                    CreatedBy = "system",
+                                    ModifiedBy = "system"
+                                },
+                                new () {
+                                    Id = 4,
+                                    StatutoryTypeId = 2,
+                                    StatutoryType = "Regulation",
+                                    AuthorityId = 6,
+                                    AuthorityName = "Financial Intelligence Authority",
+                                    StatutoryLawCode = "FIR-CCAP",
+                                    StatutoryLawName ="THE FINANCIAL INSTITUTIONS (CREDIT CLASSIFICATION AND PROVISIONING) REGULATIONS, 2005",
+                                    IsDeleted = false,
+                                    CreatedBy = "system",
+                                    ModifiedBy = "system"
+                                }
+                            }
+                        },
+                        new () {
+                            Id = 2,
+                            CategoryName = "Liquidity Regulations",
+                            CreatedOn = DateTime.Now.AddMonths(-20),
+                            CreatedBy = "System",
+                            Statutes = new List<StatutoryRegulationResponse>()
+                        },
+                        new () {
+                            Id = 3,
+                            CategoryName = "Payment Systems",
+                            CreatedOn = DateTime.Now.AddMonths(-50),
+                            CreatedBy = "System",
+                            Statutes = new List<StatutoryRegulationResponse>() {
+                                new () {
+                                    Id = 5,
+                                    StatutoryTypeId = 1,
+                                    StatutoryType = "Act",
+                                    AuthorityId = 1,
+                                    AuthorityName = "Bank of Uganda",
+                                    StatutoryLawCode = "NPS-2020",
+                                    StatutoryLawName ="THE NATIONAL PAYMENTS SYSTEMS ACT, 2020",
+                                    IsDeleted = false,
+                                    CreatedBy = "system",
+                                    ModifiedBy = "system"
+                                },
+                                new () {
+                                    Id = 6,
+                                    StatutoryTypeId = 2,
+                                    StatutoryType = "Regulation",
+                                    AuthorityId = 1,
+                                    AuthorityName = "Bank of Uganda",
+                                    StatutoryLawCode = "NPS-2021",
+                                    StatutoryLawName ="THE NATIONAL PAYMENTS SYSTEMS REGULATION 2021 S.I No.18 OF 2021",
+                                    IsDeleted = false,
+                                    CreatedBy = "system",
+                                    ModifiedBy = "system"
+                                },
+                                new () {
+                                    Id = 7,
+                                    StatutoryTypeId = 2,
+                                    StatutoryType = "Regulation",
+                                    AuthorityId = 1,
+                                    AuthorityName = "Bank of Uganda",
+                                    StatutoryLawCode = "NPS-AGENT",
+                                    StatutoryLawName ="THE NATIONAL PAYMENTS SYSTEMS (AGENT) REGULATION 2021",
+                                    IsDeleted = false,
+                                    CreatedBy = "system",
+                                    ModifiedBy = "system"
+                                }
+                            }
+                        }
+                    };
                 return Ok(new GrcResponse<PagedResponse<RegulatoryCategoryResponse>>(new PagedResponse<RegulatoryCategoryResponse>(
                     categories,
-                    pageResult.Count,
-                    pageResult.Page,
-                    pageResult.Size
+                    20, //pageResult.Count,
+                    2, //pageResult.Page,
+                    5 //pageResult.Size
                 )));
             } catch (Exception ex) {
                 var error = await HandleErrorAsync(ex);
@@ -1403,6 +1513,320 @@ namespace Grc.Middleware.Api.Controllers {
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<GeneralResponse>(error));
             }
+        }
+
+        #endregion
+
+        #region Statutories
+
+        [HttpPost("registers/statute-retrieve")]
+        public async Task<IActionResult> GetStatute([FromBody] IdRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/category-statute-list")]
+        public async Task<IActionResult> GetCategoryStatues([FromBody] StatuteListRequest request) {
+
+            if (request != null) {
+                var categoryId = request.ActivityTypeId.Value;
+
+                var categoryList = new List<StatutoryRegulationResponse>() {
+                    new () {
+                        Id = 1,
+                        CategoryId = 1,
+                        CategoryName = "Financial Institutions Business",
+                        StatutoryTypeId = 1,
+                        StatutoryType = "Regulatory Act",
+                        AuthorityId = 1,
+                        AuthorityName = "Bank of Uganda",
+                        StatutoryLawCode = "FIA-2004",
+                        StatutoryLawName ="FINANCIAL INSTITUTIONS ACT ,2004 as Amended by the FINANCIAL INSTITUTIONS ACT 2016",
+                        IsDeleted = false,
+                        CreatedBy = "system",
+                        ModifiedBy = "system"
+                    },
+                    new () {
+                        Id = 2,
+                        CategoryId = 1,
+                        CategoryName = "Financial Institutions Business",
+                        StatutoryTypeId = 2,
+                        StatutoryType = "Regulation",
+                        AuthorityId = 6,
+                        AuthorityName = "Financial Intelligence Authority",
+                        StatutoryLawCode = "FIR-2005",
+                        StatutoryLawName ="FINANCIAL INSTITUTIONS (LICENSING) REGULATIONS, 2005",
+                        IsDeleted = false,
+                        CreatedBy = "system",
+                        ModifiedBy = "system"
+                    },
+                    new () {
+                        Id = 3,
+                        CategoryId = 1,
+                        CategoryName = "Financial Institutions Business",
+                        StatutoryTypeId = 2,
+                        StatutoryType = "Regulation",
+                        AuthorityId = 6,
+                        AuthorityName = "Financial Intelligence Authority",
+                        StatutoryLawCode = "FIR-CAR",
+                        StatutoryLawName ="FINANCIAL INSTITUTIONS (CAPITAL ADEQUACY REQUIREMENTS) REGULATIONS, 2018 as Amended by the Revision_of_minimum_Capital_Requirements_Instrument_2022",
+                        IsDeleted = false,
+                        CreatedBy = "system",
+                        ModifiedBy = "system"
+                    },
+                    new () {
+                        Id = 4,
+                        CategoryId = 1,
+                        CategoryName = "Financial Institutions Business",
+                        StatutoryTypeId = 2,
+                        StatutoryType = "Regulation",
+                        AuthorityId = 6,
+                        AuthorityName = "Financial Intelligence Authority",
+                        StatutoryLawCode = "FIR-CCAP",
+                        StatutoryLawName ="THE FINANCIAL INSTITUTIONS (CREDIT CLASSIFICATION AND PROVISIONING) REGULATIONS, 2005",
+                        IsDeleted = false,
+                        CreatedBy = "system",
+                        ModifiedBy = "system"
+                    },
+                    new () {
+                        Id = 5,
+                        CategoryId = 2,
+                        CategoryName = "Liquidity Regulations",
+                        StatutoryTypeId = 2,
+                        StatutoryType = "Regulation",
+                        AuthorityId = 6,
+                        AuthorityName = "Financial Intelligence Authority",
+                        StatutoryLawCode = "FIR-LIQUIDITY",
+                        StatutoryLawName ="THE FINANCIAL INSTITUTIONS (LIQUIDITY) REGULATIONS, 2023",
+                        IsDeleted = false,
+                        CreatedBy = "system",
+                        ModifiedBy = "system"
+                    },
+                    new () {
+                        Id = 6,
+                        CategoryId = 3,
+                        CategoryName = "Payment Systems",
+                        StatutoryTypeId = 1,
+                        StatutoryType = "Act",
+                        AuthorityId = 1,
+                        AuthorityName = "Bank of Uganda",
+                        StatutoryLawCode = "NPS-2020",
+                        StatutoryLawName ="THE NATIONAL PAYMENTS SYSTEMS ACT, 2020",
+                        IsDeleted = false,
+                        CreatedBy = "system",
+                        ModifiedBy = "system"
+                    },
+                    new () {
+                        Id = 7,
+                        CategoryId = 3,
+                        CategoryName = "Payment Systems",
+                        StatutoryTypeId = 2,
+                        StatutoryType = "Regulation",
+                        AuthorityId = 1,
+                        AuthorityName = "Bank of Uganda",
+                        StatutoryLawCode = "NPS-2021",
+                        StatutoryLawName ="THE NATIONAL PAYMENTS SYSTEMS REGULATION 2021 S.I No.18 OF 2021",
+                        IsDeleted = false,
+                        CreatedBy = "system",
+                        ModifiedBy = "system"
+                    },
+                    new () {
+                        Id = 8,
+                        CategoryId = 3,
+                        CategoryName = "Payment Systems",
+                        StatutoryTypeId = 2,
+                        StatutoryType = "Regulation",
+                        AuthorityId = 1,
+                        AuthorityName = "Bank of Uganda",
+                        StatutoryLawCode = "NPS-AGENT",
+                        StatutoryLawName ="THE NATIONAL PAYMENTS SYSTEMS (AGENT) REGULATION 2021",
+                        IsDeleted = false,
+                        CreatedBy = "system",
+                        ModifiedBy = "system"
+                    }
+                };
+
+                var statutues = await Task.FromResult(categoryList.Where(l => l.CategoryId == categoryId).ToList());
+                return Ok(new GrcResponse<PagedResponse<StatutoryRegulationResponse>>(new PagedResponse<StatutoryRegulationResponse>(
+                  statutues,
+                  20, //pageResult.Count,
+                  2, //pageResult.Page,
+                  5 //pageResult.Size
+              )));
+            }
+
+            return Ok(new GrcResponse<PagedResponse<StatutoryRegulationResponse>>(new PagedResponse<StatutoryRegulationResponse>(null,0,0,0)));
+        }
+
+        [HttpPost("registers/paged-statute-list")]
+        public async Task<IActionResult> GetPagedStatues([FromBody] ListRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/create-statute")]
+        public async Task<IActionResult> CreateStatute([FromBody] StatutoryRegulationRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/update-statute")]
+        public async Task<IActionResult> UpdateStatute([FromBody] StatutoryRegulationRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/delete-statute")]
+        public async Task<IActionResult> DeleteStatute([FromBody] IdRequest request) {
+            return Ok();
+        }
+
+        #endregion
+
+        #region Statute Section
+
+        [HttpPost("registers/statute-section-retrieve")]
+        public async Task<IActionResult> GetStatuteSection([FromBody] IdRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/statute-sections-list")]
+        public async Task<IActionResult> GetLawSection([FromBody] StatuteListRequest request) {
+
+            if (request != null) {
+                if (request.ActivityTypeId.HasValue) {
+                    var statuteId = request.ActivityTypeId.Value;
+                    var statuteList = new List<StatuteSectionResponse>() {
+                        new () {
+                            Id = 1,
+                            StatutoryId = 1,
+                            Section = "R.7(1)",
+                            Summery = "Core and total capital",
+                            Obligation = "The bank shall at all times maintain a core capital of not less than 10% and a total capital of not less than 12% of the total risk adjusted assets plus risk adjusted off balance sheet",
+                            ComplianceAssurance = 10,
+                            IsMandatory = true
+                        },
+                        new () {
+                            Id = 2,
+                            StatutoryId = 1,
+                            Section = "R.7(2)",
+                            Summery = "Core capital to be equal too minimum capital funds",
+                            Obligation = "The core capital of the bank shall at all times be equivalent to at least the minimum capital funds set out by Law and shall be reduced by goodwill and similar intangible assets, investments in unconsolidated financial subsidiaries and future income tax benefits.",
+                            ComplianceAssurance = 40,
+                            IsMandatory = true
+                        },
+                        new () {
+                            Id = 3,
+                            StatutoryId = 1,
+                            Section = "R.8(1)",
+                            Summery = "Maintenance of Records",
+                            Obligation = "The bank shall at all times maintain adequate records, including daily balance sheets and periodic statements of income and expense to enable proper computation of its capital adequacy.",
+                            ComplianceAssurance = 40,
+                            IsMandatory = true
+                        },
+                        new () {
+                            Id = 3,
+                            StatutoryId = 2,
+                            Section = "R.6 (1)",
+                            Summery = "When credit facility with pre-established repayment schedule is  considered Non performing",
+                            Obligation = "Consider a credit facility with a pre-established repayment schedule  non-performing if—\r\n(a) the principal or interest is due and unpaid for 90 days or more; or\r\n(b) the principal or interest payments equal to 90 days interest or more have been capitalised, refinanced, renegotiated, restructured or rolled over.",
+                            ComplianceAssurance = 30,
+                            IsMandatory = true
+                        },
+                        new () {
+                            Id = 3,
+                            StatutoryId = 2,
+                            Section = "R.6 (2)",
+                            Summery = "When credit facility with pre-established repayment schedule is  considered Non performing",
+                            Obligation = "Consider a credit facility without a fixed repayment program, e.g  overdrafts or other forms of open-ended credit,  non-performing if—\r\n(a) It exceeds the customer’s established borrowing limit for 90 days or more\r\n(b) The customer’s borrowing line has expired for 90 consecutive days or more;\r\n(c) interest is due and unpaid for 90 days or more; or\r\n(d) the overdraft or account is inactive,",
+                            ComplianceAssurance = 50,
+                            IsMandatory = true
+                        },
+                        new () {
+                            Id = 3,
+                            StatutoryId = 4,
+                            Section = "R.8A(1)",
+                            Summery = "Ascertainment that foreign currency is legal tender",
+                            Obligation = "The bank has a duty to cross check and satisfy itself that the foreign currency exchanged is legal tender.",
+                            ComplianceAssurance = 3,
+                            IsMandatory = true
+                        },
+                        new () {
+                            Id = 3,
+                            StatutoryId = 5,
+                            Section = "5",
+                            Summery = "Liquidity risk appetite",
+                            Obligation = "(1) A financial institution shall set its liquidity risk appetite.\r\n(2) The liquidity risk appetite set in subregulation (1) shall—\r\n(a) define the level of liquidity risk that the financial institution is willing to take on;\r\n(b) match the business strategy of the financial institution and role in the financial system of the financial institution;\r\n(c) reflect the financial condition and funding capacity of the financial institution;\r\n(d) manage the liquidity of the financial institution efficiently in normal times so as to be able to withstand prolonged periods of stress; and\r\n(e) reflect a clear understanding of the trade-off between risk and return at all levels of management.\r\n(3) The liquidity risk appetite shall be reviewed periodically and adjusted in line with changes in the business strategy and operating conditions of the financial institutions.",
+                            ComplianceAssurance = 3,
+                            IsMandatory = true
+                        },
+                        new () {
+                            Id = 3,
+                            StatutoryId = 5,
+                            Section = "6(a)",
+                            Summery = "Liquidity management framework",
+                            Obligation = "(1) A financial institution, with the approval of the board of directors of the financial institution, shall formulate a liquidity risk management framework including—\r\n(a) liquidity management policy; and\r\n(b) liquidity management strategy.\r\n(2) The liquidity management strategy shall prescribe—\r\n(a) a general approach to liquidity risk management in line with the liquidity risk appetite of the financial institution;\r\n(b) measures to maintain sufficient liquidity of the financial institution including a cushion of unencumbered high quality liquid assets and the loss or impairment of both unsecured and secured funding sources; and(c) measures to manage the assets, liabilities and off-balance sheet items of the financial institution for the purpose of meeting the contractual commitments of the financial institution at a reasonable cost as and when they fall due.",
+                            ComplianceAssurance = 3,
+                            IsMandatory = true
+                        },
+                        new () {
+                            Id = 3,
+                            StatutoryId = 5,
+                            Section = "6(b)",
+                            Summery = "Liquidity management policy",
+                            Obligation = "A financial institution shall have a well-articulated liquidity management policy indicating crucial elements of sound liquidity management including—\r\n(a) the appropriate mix and composition of assets and liabilities required to maintain sufficient liquidity;an effective process for identifying, measuring, monitoring and controlling liquidity risk considering the forecasting of cash inflow and outflows over a suitable time horizon;\r\n(c) active monitoring of liquidity risk exposures and funding needs across all business lines, subsidiaries and currencies;\r\n(d) good management information systems;\r\n(e) central liquidity control;\r\n(f) a funding strategy that provides effective diversification and stability of funding sources; \r\n(g) active management of liquidity positions within the same day in order to meet payment system obligations in a timely manner under both normal and stressed conditions;\r\n(h) ongoing analysis and stress testing of net funding requirements under alternative scenarios to manage long term and temporary liquidity disruptions; and\r\n(i) monitoring and reporting of the liquidity metrics in these Regulations.",
+                            ComplianceAssurance = 3,
+                            IsMandatory = true
+                        },
+                        new () {
+                            Id = 3,
+                            StatutoryId = 5,
+                            Section = "7(a)",
+                            Summery = "Review of the Liquidity management policy",
+                            Obligation = "(4) The financial institution shall review the liquidity management policy on an annual basis.\r\n(5) The financial institution shall review the liquidity management strategy as part of the overall strategy of the financial institution.",
+                            ComplianceAssurance = 3,
+                            IsMandatory = true
+                        },
+                        new () {
+                            Id = 3,
+                            StatutoryId = 5,
+                            Section = "7(b)",
+                            Summery = "Liquidity contingency plan",
+                            Obligation = "(1) A financial institution shall formulate a liquidity contingency plan.\r\n(2) The liquidity contingency plan shall prescribe a strategy for addressing liquidity shortages and the procedures for managing cash flow deficits in emergency situations.\r\n(3) The liquidity contingency plan shall identify the range of events that may trigger a liquidity shortfall, outline mechanisms to facilitate monitoring of these trigger events, establish clear lines of responsibility of monitoring and approval procedures of remedying the liquidity shortfall.\r\n(4) The financial institution shall review, test and update the liquidity contingency plan annually and documentation of the results for the purpose of verifying that the liquidity contingency plan is operationally robust.",
+                            ComplianceAssurance = 3,
+                            IsMandatory = true
+                        },
+                    };
+
+
+                    var statutues = await Task.FromResult(statuteList.Where(l => l.StatutoryId == statuteId).ToList());
+                    return Ok(new GrcResponse<PagedResponse<StatuteSectionResponse>>(new PagedResponse<StatuteSectionResponse>(
+                      statutues,
+                      20, //pageResult.Count,
+                      2, //pageResult.Page,
+                      5 //pageResult.Size
+                  )));
+                }
+
+            }
+
+            return Ok(new GrcResponse<PagedResponse<StatuteSectionResponse>>(new PagedResponse<StatuteSectionResponse>(null, 0, 0, 0)));
+        }
+
+        [HttpPost("paged-statute-sections-list")]
+        public async Task<IActionResult> GetPagedSections([FromBody] ListRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/create-statute-section")]
+        public async Task<IActionResult> CreateSection([FromBody] StatutoryRegulationRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/update-statute-section")]
+        public async Task<IActionResult> UpdateSection([FromBody] StatutoryRegulationRequest request) {
+            return Ok();
+        }
+
+        [HttpPost("registers/delete-statute-section")]
+        public async Task<IActionResult> DeleteSection([FromBody] IdRequest request) {
+            return Ok();
         }
 
         #endregion
@@ -1675,12 +2099,6 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
-        #endregion
-
-        #region Statutories
-        #endregion
-
-        #region Articles
         #endregion
 
     }

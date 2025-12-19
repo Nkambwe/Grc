@@ -2,12 +2,23 @@
 let selectedLaw = null;
 
 function loadRegulatoryTree() {
+
+    const request = {
+        activityTypeId: 0,
+        searchTerm: "",
+        pageIndex: 0,
+        pageSize: 50,
+        sortBy: "",
+        sortDirection: "ASC"
+    };
+
     $.ajax({
         url: "/grc/compliance/support/categories-all",
         type: "POST",
         contentType: "application/json",
+        data: JSON.stringify(request), 
         success: function (res) {
-
+           
             //..destroy previous tree if exists (optional but safe)
             if ($('#regulatoryTree').jstree(true)) {
                 $('#regulatoryTree').jstree("destroy");
@@ -103,6 +114,7 @@ let lawsTable = new Tabulator("#lawsTable", {
         return new Promise((resolve, reject) => {
 
             let requestBody = {
+                activityTypeId: selectedCategory,
                 pageIndex: params.page || 1,
                 pageSize: params.size || 10,
                 searchTerm: "",
@@ -122,7 +134,6 @@ let lawsTable = new Tabulator("#lawsTable", {
                 contentType: "application/json",
                 data: JSON.stringify(requestBody),
                 success: function (response) {
-                    console.log("=== AJAX RESPONSE ===", response);
                     resolve(response);
                 },
                 error: function (xhr, status, error) {
@@ -146,9 +157,9 @@ let lawsTable = new Tabulator("#lawsTable", {
     layout: "fitColumns",
     responsiveLayout: "hide",
     columns: [
-        { title: "Law Name", field: "lawName" },
+        { title: "Law Name", field: "lawName", widthGrow: 4, minWidth: 280 },
         { title: "Code", field: "lawCode", width: 120 },
-        { title: "Status", field: "status", width: 300 },
+        { title: "Status", field: "status", width: 200 },
         {
             title: "Actions",
             formatter: () => `<button class="btn btn-sm btn-link">View Sections</button>`,
@@ -189,22 +200,10 @@ let actsTable = new Tabulator("#actsTable", {
         "data": "data",
         "total_records": "total_records"
     },
-
-    ajaxRequestFunc: function (url, config, params) {
-        return {
-            userId: 0,
-            action: "BY_LAW",
-            activityTypeId: selectedLaw,
-            pageIndex: params.page || 1,
-            pageSize: params.size || 10,
-            searchTerm: "",
-            sortBy: "",
-            sortDirection: "Ascending"
-        };
-    },
     ajaxRequestFunc: function (url, config, params) {
         return new Promise((resolve, reject) => {
             let requestBody = {
+                activityTypeId: selectedLaw,
                 pageIndex: params.page || 1,
                 pageSize: params.size || 10,
                 searchTerm: "",
@@ -224,7 +223,6 @@ let actsTable = new Tabulator("#actsTable", {
                 contentType: "application/json",
                 data: JSON.stringify(requestBody),
                 success: function (response) {
-                    console.log("=== AJAX RESPONSE ===", response);
                     resolve(response);
                 },
                 error: function (xhr, status, error) {
@@ -248,7 +246,7 @@ let actsTable = new Tabulator("#actsTable", {
     responsiveLayout: "hide",
     columns: [
         { title: "Section", field: "sectionNumber", width: 120 },
-        { title: "Title", field: "title" },
+        { title: "Title", field: "title", widthGrow: 4, minWidth: 280 },
         { title: "Mandatory", field: "isMandatory", formatter: "tickCross", width: 300 }
     ]
 });
@@ -293,13 +291,17 @@ $('#regulatoryTree').on("select_node.jstree", function (e, data) {
 });
 
 function loadLaws(categoryId) {
+    selectedCategory = categoryId;
+
     $("#categoryView").removeClass("d-none");
     $("#lawView").addClass("d-none");
-
-    lawsTable.setData();
+    lawsTable.setData(); 
 }
 
+
 function loadActs(lawId) {
+    selectedLaw = lawId;
+
     $("#lawView").removeClass("d-none");
     $("#categoryView").addClass("d-none");
 

@@ -571,6 +571,9 @@ button.action-btn.action-btn-separator {
 
     .hierarchy-tree ul.jstree-container-ul.jstree-children li.jstree-node a {
         width: 90%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         background: transparent;
     }
 

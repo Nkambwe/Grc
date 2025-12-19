@@ -1,4 +1,6 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Grc.ui.App.Defaults;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -13,6 +15,7 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
+using OpenXmlPowerTools;
 using System.Text.Json;
 
 namespace Grc.ui.App.Controllers {
@@ -203,19 +206,11 @@ namespace Grc.ui.App.Controllers {
                 if (result.HasError || result.Data == null) {
                     var errMsg = result.Error?.Message ?? "Failed to create category";
                     Logger.LogActivity(errMsg);
-                    return Ok(new {
-                        success = false,
-                        message = errMsg,
-                        data = new { }
-                    });
+                    return Ok(new { success = false,message = errMsg,data = new { }});
                 }
                 
                 var created = result.Data;
-                return Ok(new {
-                    success = true,
-                    message = "Category created successfully",
-                    data = new { }
-                });
+                return Ok(new {success = true,message = "Category created successfully",data = new { }});
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected error creating category: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "COMPLIANCE-SETTINGS", ex.StackTrace);
@@ -500,105 +495,53 @@ namespace Grc.ui.App.Controllers {
             }
         }
 
-        public async Task<IActionResult> AllRegulatoryCategories([FromBody] TableListRequest request)
-        {
-            try
-            {
-                ////..get user IP address
-                //var ipAddress = WebHelper.GetCurrentIpAddress();
+        public async Task<IActionResult> AllRegulatoryCategories([FromBody] TableListRequest request) {
+            try {
+                
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
 
-                ////..get current authenticated user record
-                //var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                //if (grcResponse.HasError)
-                //{
-                //    Logger.LogActivity($"REGULATORY CATEGORY DATA ERROR: Failed to get current user record - {JsonSerializer.Serialize(grcResponse)}");
-                //}
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    Logger.LogActivity($"REGULATORY CATEGORY DATA ERROR: Failed to get current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
 
-                ////..update with user data
-                //var currentUser = grcResponse.Data;
-                //request.UserId = currentUser.UserId;
-                //request.IPAddress = ipAddress;
-                //request.Action = Activity.RETRIEVEREGULATORYCATEGORIES.GetDescription();
+                //..update with user data
+                var currentUser = grcResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.RETRIEVEREGULATORYCATEGORIES.GetDescription();
 
-                ////..get regulatory category data
-                //var categoryData = await _regulatoryCategoryService.GetPagedCategoriesAsync(request);
-                //PagedResponse<GrcRegulatoryCategoryResponse> categoryList = new();
+                //..get regulatory category data
+                var categoryData = await _regulatoryCategoryService.GetPagedCategoriesAsync(request);
+                PagedResponse<GrcRegulatoryCategoryResponse> categoryList = new();
 
-                //if (categoryData.HasError)
-                //{
-                //    Logger.LogActivity($"REGULATORY CATEGORY DATA ERROR: Failed to retrieve category items - {JsonSerializer.Serialize(categoryData)}");
-                //}
-                //else
-                //{
-                //    categoryList = categoryData.Data;
-                //    Logger.LogActivity($"REGULATORY CATEGORY DATA - {JsonSerializer.Serialize(categoryList)}");
-                //}
-                //categoryList.Entities ??= new();
-                //var pagedEntities = categoryList.Entities
-                //    .Select(cat => new {
-                //        id = cat.Id,
-                //        category = cat.CategoryName,
-                //        status = cat.IsDeleted ? "Inactive" : "Active",
-                //        addedon = cat.CreatedOn.ToString("dd-MM-yyyy"),
-                //    }).ToList();
+                if (categoryData.HasError) {
+                    Logger.LogActivity($"REGULATORY CATEGORY DATA ERROR: Failed to retrieve category items - {JsonSerializer.Serialize(categoryData)}");
+                } else {
+                    categoryList = categoryData.Data;
+                    Logger.LogActivity($"REGULATORY CATEGORY DATA - {JsonSerializer.Serialize(categoryList)}");
+                }
 
-                //if (!string.IsNullOrEmpty(request.SearchTerm)) {
-                //    pagedEntities = pagedEntities.Where(c => c.category.ToLower().Contains(request.SearchTerm.ToLower())).ToList();
-                //}
-
-                //var totalPages = (int)Math.Ceiling((double)categoryList.TotalCount / categoryList.Size);
-                //return Ok(new
-                //{
-                //    last_page = totalPages,
-                //    total_records = categoryList.TotalCount,
-                //    data = pagedEntities
-                //});
-
-                var tree = new[]
-                {
-                    new {
-                        id = "C_1",
-                        text = "Banking & Finance Laws",
+                //..map to ajax object
+                var categories = categoryList.Entities ??= new();
+                if (categories.Any()) {
+                    var tree = categories.Select(l => new {
+                        id = $"C_{l.Id}",
+                        text = l.CategoryName,
                         type = "category",
-                        children = new[]
-                        {
-                            new {
-                                id = "L_101",
-                                text = "Financial Institutions Act",
-                                type = "law"
-                            },
-                            new {
-                                id = "L_102",
-                                text = "Anti-Money Laundering Act",
-                                type = "law"
-                            }
-                        }
-                    },
-                    new {
-                        id = "C_2",
-                        text = "Consumer Protection",
-                        type = "category",
-                        children = new[]
-                        {
-                            new {
-                                id = "L_201",
-                                text = "Consumer Protection Act",
-                                type = "law"
-                            }
-                        }
-                    }
-                };
+                        children = l.Statutes.Select(s => new { id = $"L_{s.Id}", text = s.StatutoryLawName, type = "law" }).ToArray()
+                    }).ToArray();
 
-                return Ok(tree);
-            }
-            catch (Exception ex)
-            {
+                    return Ok(tree);
+                }
+
+                return Ok(Array.Empty<object>());
+            } catch (Exception ex) {
                 Logger.LogActivity($"Error retrieving regulatory category items: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "REGULATORY-CATEGORY-CONTROLLER", ex.StackTrace);
-                return Ok(new
-                {
-                    data = new { }
-                });
+                return Ok(Array.Empty<object>());
             }
         }
 

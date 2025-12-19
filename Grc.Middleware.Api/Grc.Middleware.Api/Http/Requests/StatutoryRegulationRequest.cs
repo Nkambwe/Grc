@@ -16,7 +16,7 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("typeId")]
         public long TypeId { get; set; }
 
-        [JsonPropertyName("cuthorityId")]
+        [JsonPropertyName("authorityId")]
         public long AuthorityId { get; set; }
 
         [JsonPropertyName("categoryId")]

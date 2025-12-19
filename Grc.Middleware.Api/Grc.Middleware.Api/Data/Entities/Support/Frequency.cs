@@ -5,6 +5,7 @@ namespace Grc.Middleware.Api.Data.Entities.Support
 {
     public class Frequency : BaseEntity {
         public string FrequencyName { get; set; }
+        public virtual ICollection<StatutoryArticle> Articles { get; set; }
         public virtual ICollection<RegulatoryReturn> Returns { get; set; }
         public virtual ICollection<RegulatoryDocument> Documents { get; set; }
     }

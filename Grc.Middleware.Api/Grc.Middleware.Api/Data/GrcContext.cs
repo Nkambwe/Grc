@@ -90,6 +90,7 @@ namespace Grc.Middleware.Api.Data {
             ResponsibilityEntityConfiguration.Configure(modelBuilder.Entity<Responsebility>());
             ReturnTypeEntityConfiguration.Configure(modelBuilder.Entity<ReturnType>());
             StatutoryArticleEntityConfiguration.Configure(modelBuilder.Entity<StatutoryArticle>());
+            ArticleRevisionEntityConfiguration.Configure(modelBuilder.Entity<ArticleRevision>());
             StatutoryRegulationEntityConfiguration.Configure(modelBuilder.Entity<StatutoryRegulation>());
             ReturnSubmissionEntityConfiguration.Configure(modelBuilder.Entity<ReturnSubmission>());
             SubmissionNotificationEntityConfiguration.Configure(modelBuilder.Entity<SubmissionNotification>());

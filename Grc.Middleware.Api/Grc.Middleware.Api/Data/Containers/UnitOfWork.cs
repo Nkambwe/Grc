@@ -41,6 +41,7 @@ namespace Grc.Middleware.Api.Data.Containers {
         public IRegulatoryCategoryRepository RegulatoryCategoryRepository { get; set; }
         public IStatutoryRegulationRepository StatutoryRegulationRepository { get; set; }
         public IStatutoryArticleRepository StatutoryArticleRepository { get; set; }
+        public IArticleRevisionRepository ArticleRevisionRepository { get; set; }
         public IResponsebilityRepository ResponsebilityRepository { get; set; }
         public IRegulatoryReturnRepository RegulatoryReturnRepository { get; set; }
         public IReturnTypeRepository ReturnTypeRepository { get; set; }
@@ -104,6 +105,7 @@ namespace Grc.Middleware.Api.Data.Containers {
             RegulatoryCategoryRepository = new RegulatoryCategoryRepository(_loggerFactory, Context);
             StatutoryRegulationRepository = new StatutoryRegulationRepository(_loggerFactory, Context);
             StatutoryArticleRepository = new StatutoryArticleRepository(_loggerFactory, Context);
+            ArticleRevisionRepository = new ArticleRevisionRepository(_loggerFactory, Context);
             ResponsebilityRepository = new ResponsebilityRepository(_loggerFactory, Context);
             RegulatoryReturnRepository = new RegulatoryReturnRepository(_loggerFactory, Context);
             ReturnTypeRepository = new ReturnTypeRepository(_loggerFactory, Context);
@@ -263,6 +265,7 @@ namespace Grc.Middleware.Api.Data.Containers {
                     RegulatoryCategoryRepository = null;
                     StatutoryRegulationRepository = null;
                     StatutoryArticleRepository = null;
+                    ArticleRevisionRepository = null;
                     ResponsebilityRepository = null;
                     RegulatoryReturnRepository = null;
                     ReturnTypeRepository = null;

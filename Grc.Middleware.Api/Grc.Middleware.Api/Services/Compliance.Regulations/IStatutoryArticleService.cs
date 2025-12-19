@@ -1,5 +1,4 @@
-﻿
-using Grc.Middleware.Api.Helpers;
+﻿using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using System.Linq.Expressions;
 

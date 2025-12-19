@@ -876,7 +876,6 @@
                 defaults: new { controller = "ComplianceSettings", action = "ExcelExportAllDoctypes" }
             );
 
-
             /*--------------------------------------------- compliance Policies/Procedures routes*/
             routeBuilder.MapControllerRoute(
               name: "app-compliance-policies-registers",

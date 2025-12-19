@@ -3,13 +3,11 @@
 namespace Grc.Middleware.Api.Data.Repositories {
     public class StatutoryArticleRepository : Repository<StatutoryArticle>, IStatutoryArticleRepository
     {
-        public StatutoryArticleRepository(IServiceLoggerFactory loggerFactory, GrcContext _context)
-            : base(loggerFactory, _context)
+        public StatutoryArticleRepository(IServiceLoggerFactory loggerFactory, GrcContext context)
+            : base(loggerFactory, context)
         {
         }
     }
-
-
 }
 
 

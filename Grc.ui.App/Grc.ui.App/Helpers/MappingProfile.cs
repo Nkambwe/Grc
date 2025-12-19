@@ -62,6 +62,22 @@ namespace Grc.ui.App.Helpers {
                .ForMember(dest => dest.ModifiedOn, opt => opt.MapFrom(src => DateTime.Now))
                .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => string.Empty));
 
+
+            CreateMap<GrcStatuteSectionRequest, StatuteSectionViewModel>()
+                .ForMember(r => r.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(r => r.StatutoryId, reg => reg.MapFrom(o => o.StatutoryId))
+                .ForMember(r => r.Section, reg => reg.MapFrom(o => (o.Section ?? string.Empty).Trim()))
+                .ForMember(r => r.Summery, reg => reg.MapFrom(o => (o.Summery ?? string.Empty).Trim()))
+                .ForMember(r => r.Obligation, reg => reg.MapFrom(o => o.Obligation))
+                .ForMember(r => r.IsMandatory, reg => reg.MapFrom(o => o.IsMandatory))
+                .ForMember(r => r.ExcludeFromCompliance, reg => reg.MapFrom(o => o.ExcludeFromCompliance))
+                .ForMember(r => r.Coverage, reg => reg.MapFrom(o => o.Coverage))
+                .ForMember(r => r.IsCovered, reg => reg.MapFrom(o => o.IsCovered))
+                .ForMember(r => r.FrequencyId, reg => reg.MapFrom(o => o.FrequencyId))
+                .ForMember(r => r.ComplianceAssurance, reg => reg.MapFrom(o => o.ComplianceAssurance))
+                .ForMember(r => r.Comments, reg => reg.MapFrom(o => (o.Comments ?? string.Empty).Trim()))
+                .ForMember(r => r.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted));
+
             CreateMap<UsernameValidationModel, UsernameValidationRequest>()
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Username))
                 .ForMember(dest => dest.IPAddress, opt => opt.MapFrom(src => src.IPAddress))

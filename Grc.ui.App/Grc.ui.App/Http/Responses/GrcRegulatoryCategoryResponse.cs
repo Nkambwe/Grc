@@ -21,6 +21,9 @@ namespace Grc.ui.App.Http.Responses {
 
         [JsonPropertyName("updatedOn")]
         public DateTime UpdatedOn { get; set; }
+
+        [JsonPropertyName("statutes")]
+        public List<GrcStatutoryLawResponse> Statutes { get; set; } = new();
     }
 
 }

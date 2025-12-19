@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace Grc.Middleware.Api.Http.Responses {
+
     public class RegulatoryCategoryResponse {
 
         [JsonPropertyName("id")]
@@ -20,5 +21,9 @@ namespace Grc.Middleware.Api.Http.Responses {
 
         [JsonPropertyName("updatedOn")]
         public DateTime UpdatedOn { get; set; }
+
+        [JsonPropertyName("statutes")]
+        public List<StatutoryRegulationResponse> Statutes { get; set; } = new();
     }
+
 }

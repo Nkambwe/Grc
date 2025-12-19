@@ -64,6 +64,4 @@ namespace Grc.ui.App.Helpers {
         [JsonPropertyName("decrypts")]
         public string[] DecryptFields { get; set; }
     }
-
-
 }

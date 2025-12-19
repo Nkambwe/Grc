@@ -12,7 +12,7 @@ public class StatutoryRegulationEntityConfiguration
         builder.Property(s => s.RegulatoryName).HasColumnName("regulatory_name").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
         builder.Property(s => s.TypeId).HasColumnName("regulatory_type_id").IsRequired(true);
         builder.Property(s => s.AuthorityId).HasColumnName("regulatory_auth_id").IsRequired(true);
-        builder.Property(s => s.CategoryId).HasColumnName("regulatory_cat_id").IsRequired(true);
+        builder.Property(s => s.CategoryId).HasColumnName("regulatory_cat_id").IsRequired(true); 
         builder.Property(s => s.IsDeleted).HasColumnName("is_deleted");
         builder.Property(s => s.CreatedOn).HasColumnName("created_on").IsRequired();
         builder.Property(s => s.CreatedBy).HasColumnName("created_by").HasColumnType("NVARCHAR(50)").IsRequired();

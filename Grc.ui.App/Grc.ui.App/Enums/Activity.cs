@@ -251,6 +251,20 @@ namespace Grc.ui.App.Enums {
         [Description("Edit policy document")]
         PROCESSES_EDITED_POLICY = 131,
         [Description("Lock policy/procedure")]
-        COMPLIANCE_LOCK_POLCIY = 132
+        COMPLIANCE_LOCK_POLCIY = 132,
+        [Description("Retrieve all statutes")]
+        STATUS_RETRIEVE_ALL = 133,
+        [Description("Retrieve all category statutes")]
+        STATUS_RETRIEVE_CATEGORYLIST = 134,
+        [Description("Retrieve all sections")]
+        SECTION_RETRIEVE_SECTIONS_ALL = 135,
+        [Description("Retrieve statute sections")]
+        SECTION_RETRIEVE_LAWSECTIONLIST = 136,
+        [Description("Create new law section")]
+        SECTION_CREATE_SECTION = 137,
+        [Description("Create new law section")]
+        SECTION_UPDATE_SECTION = 138,
+        [Description("Retrieve section by ID")]
+        SECTION_RETRIVE_SECTION = 139,
     }
 }
