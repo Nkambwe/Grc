@@ -1445,7 +1445,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support
 
             try
             {
-                return await uow.RegulatoryDocumentTypeRepository.PageAllAsync(page, size, includeDeleted, includes);
+                return await uow.RegulatoryDocumentTypeRepository.PageAllAsync(page, size, includeDeleted, null, includes);
             }
             catch (Exception ex)
             {

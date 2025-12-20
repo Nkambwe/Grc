@@ -1143,7 +1143,7 @@ namespace Grc.Middleware.Api.Services {
 
             try
             {
-                return await uow.UserRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, u => u.Role, u => u.Department);
+                return await uow.UserRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, null, u => u.Role, u => u.Department);
             }
             catch (Exception ex)
             {
@@ -1793,7 +1793,7 @@ namespace Grc.Middleware.Api.Services {
             Logger.LogActivity($"Retrieve all System Role", "INFO");
 
             try {
-                return await uow.RoleRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, r => r.Group);
+                return await uow.RoleRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, null, r => r.Group);
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve System Role records : {ex.Message}", "ERROR");
                 var innerEx = ex.InnerException;
@@ -2490,7 +2490,7 @@ namespace Grc.Middleware.Api.Services {
 
             try
             {
-                return await uow.RoleGroupRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, g => g.Roles);
+                return await uow.RoleGroupRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, null, g => g.Roles);
             }
             catch (Exception ex)
             {
@@ -3679,7 +3679,7 @@ namespace Grc.Middleware.Api.Services {
 
             try
             {
-                return await uow.ActivityLogRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, a => a.ActivityType, a => a.User);
+                return await uow.ActivityLogRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, null, a => a.ActivityType, a => a.User);
             }
             catch (Exception ex)
             {

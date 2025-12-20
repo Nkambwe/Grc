@@ -298,7 +298,6 @@ function loadLaws(categoryId) {
     lawsTable.setData(); 
 }
 
-
 function loadActs(lawId) {
     selectedLaw = lawId;
 
@@ -320,23 +319,174 @@ function showLawView(lawName) {
     `);
 }
 
-function openLawModal(lawModel) {
-    alert(lawModel.categoryId);
-}
-
-$("#btnAddLaw").on("click", function () {
-    if (!selectedCategory) return;
-    openLawModal({ categoryId: selectedCategory });
+$("#btnAddCategory").on("click", function () {
+    addLawCategory();
 });
 
-function openActModal(actModel) {
-    alert(actModel.lawId);
+function addLawCategory() {
+    openCategoryPanel('New Regulatory Category', {
+        id: 0,
+        categoryName: '',
+        comments: '',
+        documentTypeId: 0,
+    }, false);
+}
+
+function editLawCategory() {
+    //..open edit panel
+}
+
+function openCategoryPanel(title, record, isEdit) {
+
+    //..initialize form fields
+    $('#isCategoryEdit').val(isEdit);
+    $('#categoryId').val(record.id);
+    $('#categoryName').val(record.categoryName || '');
+    $('#categoryDescription').val(record.comments || '');
+
+    //..load dialog window
+    closeAllPanels();
+    $('#categoryTitle').text(title);
+    $('#lawOverlay').addClass('active');
+    $('#lawCategoryPanel').addClass('active');
+    $('body').css('overflow', 'hidden');
+
+}
+
+function saveLawCategory(e) {
+    alert("Save Law Category clicked");
+}
+
+function closeLawCategory() {
+    closeAllPanels();
+    $('#lawCategoryPanel').removeClass('active');
+}
+
+
+$("#btnAddLaw").on("click", function () {
+
+    if (!selectedCategory) {
+        toastr.error(res?.message || "No category selected");
+        return;
+    } 
+
+    addLaw({ categoryId: selectedCategory });
+});
+
+function addLaw(category) {
+    const categoryId = category.categoryId;
+    console.log(`Category ID ${categoryId}`);
+
+    openLawPanel('New Regulation/Law', {
+        id: 0,
+        code: '',
+        lawName: '',
+        comments: '',
+        authorityId: 0,
+        lawCategoryId: categoryId,
+    }, false);
+}
+
+function editLaw() {
+    //..open edit panel
+}
+
+function openLawPanel(title, record, isEdit) {
+
+    //..initialize form fields
+    $('#isEdit').val(isEdit);
+    $('#lawId').val(record.id);
+    $('#lawCategoryId').val(record.lawCategoryId || '');
+    $('#lawReference').val(record.code || '');
+    $('#lawName').val(record.lawName || '');
+    $('#lawDescription').val(record.comments || '');
+
+    //..load dialog window
+    closeAllPanels();
+    $('#lawTitle').text(title);
+    $('#lawOverlay').addClass('active');
+    $('#lawRegulationPanel').addClass('active');
+    $('body').css('overflow', 'hidden');
+
+}
+
+function saveLaw(e) {
+    alert("Save Law Category clicked");
+}
+
+function closeLaw() {
+    closeAllPanels();
+    $('#lawRegulationPanel').removeClass('active');
 }
 
 $("#btnAddAct").on("click", function () {
-    if (!selectedLaw) return;
-    openActModal({ lawId: selectedLaw });
+
+    if (!selectedLaw) {
+        toastr.error(res?.message || "No regulation or law selected");
+        return;
+    }
+
+    addAct({ id: selectedCategory });
 });
+
+function addAct(law) {
+    let lawId = law.id
+    console.log(`Law ID ${lawId}`);
+    openActPanel('New Act/Section', {
+        id: 0,
+        actLawId: lawId,
+        sectionNumber: '',
+        section: '',
+        obligation: '',
+        isMandatory: false,
+        Summery: '',
+    }, false);
+}
+
+function openActPanel(title, record, isEdit) {
+
+    //..initialize form fields
+    $('#isActEdit').val(isEdit);
+    $('#actId').val(record.id);
+    $('#actLawId').val(record.actLawId || '');
+    $('#sectionNumber').val(record.sectionNumber || '');
+    $('#obligation').val(record.obligation || '');
+
+    //..load dialog window
+    closeAllPanels();
+    $('#actTitle').text(title);
+    $('#lawOverlay').addClass('active');
+    $('#actPanel').addClass('active');
+    $('body').css('overflow', 'hidden');
+
+}
+
+function saveAct(e) {
+    alert("Save act/section clicked");
+}
+
+function closeLawAct() {
+    closeAllPanels();
+    $('#actPanel').removeClass('active');
+}
+
+function closeAllPanels() {
+    $('.law-side-panel').removeClass('active');
+    $('#lawOverlay').removeClass('active');
+    $('body').css('overflow', '');
+}
+
+//..close panel handlers
+$('#lawOverlay').on('click', function () {
+    closeAllPanels();
+});
+
+//..close panel on Escape key
+$(document).on('keydown', function (e) {
+    if (e.key === 'Escape') {
+        closeAllPanels();
+    }
+})
 
 $(document).ready(function () {
     loadRegulatoryTree();

@@ -10,7 +10,7 @@ using Grc.Middleware.Api.Services.Compliance.Support;
 using Grc.Middleware.Api.Services.Organization;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Win32;
+using SQLitePCL;
 using System.Text.Json;
 
 namespace Grc.Middleware.Api.Controllers {
@@ -898,33 +898,33 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<PagedResponse<DocumentTypeResponse>>(new PagedResponse<DocumentTypeResponse>(new List<DocumentTypeResponse>(), 0, pageResult.Page, pageResult.Size)));
                 }
 
-                List<DocumentTypeResponse> types = new();
-                var records = pageResult.Entities.ToList();
-                if (records != null && records.Any()) {
-                    records.ForEach(type => types.Add(new() {
-                        Id = type.Id,
-                        TypeName = type.DocumentType ?? string.Empty,
-                        IsDeleted = type.IsDeleted,
-                        CreatedOn = type.CreatedOn,
-                        CreatedBy = type.CreatedBy ?? string.Empty,
-                        UpdatedOn = type.LastModifiedOn ?? type.CreatedOn
-                    }));
-                }
+                    List<DocumentTypeResponse> types = new();
+                    var records = pageResult.Entities.ToList();
+                    if (records != null && records.Any()) {
+                        records.ForEach(type => types.Add(new() {
+                            Id = type.Id,
+                            TypeName = type.DocumentType ?? string.Empty,
+                            IsDeleted = type.IsDeleted,
+                            CreatedOn = type.CreatedOn,
+                            CreatedBy = type.CreatedBy ?? string.Empty,
+                            UpdatedOn = type.LastModifiedOn ?? type.CreatedOn
+                        }));
+                    }
 
-                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
-                    var searchTerm = request.SearchTerm.ToLower();
-                    types = types.Where(u =>
-                        (u.TypeName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
-                    ).ToList();
-                }
+                    if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                        var searchTerm = request.SearchTerm.ToLower();
+                        types = types.Where(u =>
+                            (u.TypeName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                        ).ToList();
+                    } 
 
-                return Ok(new GrcResponse<PagedResponse<DocumentTypeResponse>>(
-                    new PagedResponse<DocumentTypeResponse>(
-                    types,
-                    pageResult.Count,
-                    pageResult.Page,
-                    pageResult.Size
-                )));
+                    return Ok(new GrcResponse<PagedResponse<DocumentTypeResponse>>(
+                        new PagedResponse<DocumentTypeResponse>(
+                        types,
+                        pageResult.Count,
+                        pageResult.Page,
+                        pageResult.Size
+                    )));
             } catch (Exception ex) {
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<PagedResponse<DocumentTypeResponse>>(error));
@@ -1147,11 +1147,7 @@ namespace Grc.Middleware.Api.Controllers {
             try {
                 Logger.LogActivity($"{request.Action}", "INFO");
                 if (request == null) {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "Invalid request body"
-                    );
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<PagedResponse<RegulatoryCategoryResponse>>(error));
                 }
@@ -1160,11 +1156,7 @@ namespace Grc.Middleware.Api.Controllers {
                 var documents = await _categoryService.GetAllAsync(false);
 
                 if (documents == null || !documents.Any()) {
-                    var error = new ResponseError(
-                        ResponseCodes.SUCCESS,
-                        "No data",
-                        "No category records found"
-                    );
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No category records found");
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<List<RegulatoryCategoryResponse>>(new List<RegulatoryCategoryResponse>()));
                 }
@@ -1188,171 +1180,70 @@ namespace Grc.Middleware.Api.Controllers {
 
         [HttpPost("registers/paged-categories-list")]
         public async Task<IActionResult> GetPagedCategoryList([FromBody] ListRequest request) {
-
             try {
-                //Logger.LogActivity($"{request.Action}", "INFO");
-                //if (request == null) {
-                //    var error = new ResponseError(
-                //        ResponseCodes.BADREQUEST,
-                //        "Request record cannot be empty",
-                //        "Invalid request body"
-                //    );
-                //    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
-                //    return Ok(new GrcResponse<PagedResponse<RegulatoryCategoryResponse>>(error));
-                //}
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<RegulatoryCategoryResponse>>(error));
+                }
 
-                //Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                //var pageResult = await _categoryService.PageAllAsync(request.PageIndex, request.PageSize, false);
-                //if (pageResult.Entities == null || !pageResult.Entities.Any()) {
-                //    var error = new ResponseError(
-                //        ResponseCodes.SUCCESS,
-                //        "No data",
-                //        "No regulatory category records found"
-                //    );
-                //    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
-                //    return Ok(new GrcResponse<PagedResponse<RegulatoryCategoryResponse>>(new PagedResponse<RegulatoryCategoryResponse>(new List<RegulatoryCategoryResponse>(), 0, pageResult.Page, pageResult.Size)));
-                //}
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _categoryService.PageProjectionAsync(request.PageIndex, request.PageSize, false,
+                    category => new RegulatoryCategoryResponse {
+                        Id = category.Id,
+                        CategoryName = category.CategoryName ?? string.Empty,
+                        CreatedOn = category.CreatedOn,
+                        CreatedBy = category.CreatedBy,
+                        Statutes = category.Regulations.Select(law => new StatutoryRegulationResponse() {
+                            Id = law.Id,
+                            CategoryId = law.CategoryId,
+                            CategoryName = category.CategoryName ?? string.Empty,
+                            StatutoryTypeId = law.TypeId,
+                            StatutoryType = law.RegulationType.TypeName ?? string.Empty,
+                            AuthorityId = law.AuthorityId,
+                            AuthorityName = law.Authority.AuthorityName ?? string.Empty,
+                            StatutoryLawCode = law.Code ?? string.Empty,
+                            StatutoryLawName = law.RegulatoryName ?? string.Empty,
+                            IsDeleted = law.IsDeleted,
+                            CreatedBy = law.CreatedBy ?? string.Empty,
+                            ModifiedBy = law.LastModifiedBy ?? string.Empty
+                        }).ToList()
+                    });
 
-                //List<RegulatoryCategoryResponse> categories = new();
-                //var records = pageResult.Entities.ToList();
-                //if (records != null && records.Any()) {
-                //    records.ForEach(category => categories.Add(new() {
-                //        Id = category.Id,
-                //        CategoryName = category.CategoryName ?? string.Empty,
-                //        IsDeleted = category.IsDeleted,
-                //        CreatedOn = category.CreatedOn,
-                //        CreatedBy = category.CreatedBy ?? string.Empty,
-                //        UpdatedOn = category.LastModifiedOn ?? category.CreatedOn
-                //    }));
-                //}
+                    if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                        var error = new ResponseError(
+                            ResponseCodes.SUCCESS,
+                            "No data",
+                            "No regulatory statute records found"
+                        );
+                        Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<PagedResponse<RegulatoryCategoryResponse>>(new PagedResponse<RegulatoryCategoryResponse>(
+                            new List<RegulatoryCategoryResponse>(), 0, pageResult.Page, pageResult.Size))
+                            );
+                    }
 
-                //if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
-                //    var searchTerm = request.SearchTerm.ToLower();
-                //    categories = categories.Where(u =>
-                //        (u.CategoryName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
-                //    ).ToList();
-                //}
+                    List<RegulatoryCategoryResponse> categories = new();
+                    var records = pageResult.Entities ?? new();
+                    if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                        var searchTerm = request.SearchTerm.ToLower();
+                        categories = records.Where(u => u.CategoryName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false).ToList();
+                    } else {
+                        categories = records;
+                    }
 
-                var categories = new List<RegulatoryCategoryResponse>() {
-                        new () {
-                            Id = 1,
-                            CategoryName = "Financial Institutions Business",
-                            IsDeleted = false,
-                            CreatedOn = DateTime.Now.AddMonths(-5),
-                            CreatedBy = "System",
-                            Statutes = new List<StatutoryRegulationResponse>() {
-                                new () {
-                                    Id = 1,
-                                    StatutoryTypeId = 1,
-                                    StatutoryType = "Regulatory Act",
-                                    AuthorityId = 1,
-                                    AuthorityName = "Bank of Uganda",
-                                    StatutoryLawCode = "FIA-2004",
-                                    StatutoryLawName ="FINANCIAL INSTITUTIONS ACT ,2004 as Amended by the FINANCIAL INSTITUTIONS ACT 2016",
-                                    IsDeleted = false,
-                                    CreatedBy = "system",
-                                    ModifiedBy = "system"
-                                },
-                                new () {
-                                    Id = 2,
-                                    StatutoryTypeId = 2,
-                                    StatutoryType = "Regulation",
-                                    AuthorityId = 6,
-                                    AuthorityName = "Financial Intelligence Authority",
-                                    StatutoryLawCode = "FIR-2005",
-                                    StatutoryLawName ="FINANCIAL INSTITUTIONS (LICENSING) REGULATIONS, 2005",
-                                    IsDeleted = false,
-                                    CreatedBy = "system",
-                                    ModifiedBy = "system"
-                                },
-                                new () {
-                                    Id = 3,
-                                    StatutoryTypeId = 2,
-                                    StatutoryType = "Regulation",
-                                    AuthorityId = 6,
-                                    AuthorityName = "Financial Intelligence Authority",
-                                    StatutoryLawCode = "FIR-CAR",
-                                    StatutoryLawName ="FINANCIAL INSTITUTIONS (CAPITAL ADEQUACY REQUIREMENTS) REGULATIONS, 2018 as Amended by the Revision_of_minimum_Capital_Requirements_Instrument_2022",
-                                    IsDeleted = false,
-                                    CreatedBy = "system",
-                                    ModifiedBy = "system"
-                                },
-                                new () {
-                                    Id = 4,
-                                    StatutoryTypeId = 2,
-                                    StatutoryType = "Regulation",
-                                    AuthorityId = 6,
-                                    AuthorityName = "Financial Intelligence Authority",
-                                    StatutoryLawCode = "FIR-CCAP",
-                                    StatutoryLawName ="THE FINANCIAL INSTITUTIONS (CREDIT CLASSIFICATION AND PROVISIONING) REGULATIONS, 2005",
-                                    IsDeleted = false,
-                                    CreatedBy = "system",
-                                    ModifiedBy = "system"
-                                }
-                            }
-                        },
-                        new () {
-                            Id = 2,
-                            CategoryName = "Liquidity Regulations",
-                            CreatedOn = DateTime.Now.AddMonths(-20),
-                            CreatedBy = "System",
-                            Statutes = new List<StatutoryRegulationResponse>()
-                        },
-                        new () {
-                            Id = 3,
-                            CategoryName = "Payment Systems",
-                            CreatedOn = DateTime.Now.AddMonths(-50),
-                            CreatedBy = "System",
-                            Statutes = new List<StatutoryRegulationResponse>() {
-                                new () {
-                                    Id = 5,
-                                    StatutoryTypeId = 1,
-                                    StatutoryType = "Act",
-                                    AuthorityId = 1,
-                                    AuthorityName = "Bank of Uganda",
-                                    StatutoryLawCode = "NPS-2020",
-                                    StatutoryLawName ="THE NATIONAL PAYMENTS SYSTEMS ACT, 2020",
-                                    IsDeleted = false,
-                                    CreatedBy = "system",
-                                    ModifiedBy = "system"
-                                },
-                                new () {
-                                    Id = 6,
-                                    StatutoryTypeId = 2,
-                                    StatutoryType = "Regulation",
-                                    AuthorityId = 1,
-                                    AuthorityName = "Bank of Uganda",
-                                    StatutoryLawCode = "NPS-2021",
-                                    StatutoryLawName ="THE NATIONAL PAYMENTS SYSTEMS REGULATION 2021 S.I No.18 OF 2021",
-                                    IsDeleted = false,
-                                    CreatedBy = "system",
-                                    ModifiedBy = "system"
-                                },
-                                new () {
-                                    Id = 7,
-                                    StatutoryTypeId = 2,
-                                    StatutoryType = "Regulation",
-                                    AuthorityId = 1,
-                                    AuthorityName = "Bank of Uganda",
-                                    StatutoryLawCode = "NPS-AGENT",
-                                    StatutoryLawName ="THE NATIONAL PAYMENTS SYSTEMS (AGENT) REGULATION 2021",
-                                    IsDeleted = false,
-                                    CreatedBy = "system",
-                                    ModifiedBy = "system"
-                                }
-                            }
-                        }
-                    };
-                return Ok(new GrcResponse<PagedResponse<RegulatoryCategoryResponse>>(new PagedResponse<RegulatoryCategoryResponse>(
-                    categories,
-                    20, //pageResult.Count,
-                    2, //pageResult.Page,
-                    5 //pageResult.Size
-                )));
+                    return Ok(new GrcResponse<PagedResponse<RegulatoryCategoryResponse>>(
+                        new PagedResponse<RegulatoryCategoryResponse>(categories, pageResult.Count, pageResult.Page, pageResult.Size))
+                        );
             } catch (Exception ex) {
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<PagedResponse<RegulatoryCategoryResponse>>(error));
             }
+            
         }
 
         [HttpPost("registers/create-category")]
@@ -1521,160 +1412,322 @@ namespace Grc.Middleware.Api.Controllers {
 
         [HttpPost("registers/statute-retrieve")]
         public async Task<IActionResult> GetStatute([FromBody] IdRequest request) {
-            return Ok();
+            try {
+                Logger.LogActivity("Get statute by ID", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "Invalid request body"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<StatutoryRegulationResponse>(error));
+                }
+
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request ID is required",
+                        "Invalid Statute request ID"
+                    );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<StatutoryRegulationResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var statuteRecord = await _regulatoryService.GetAsync(s => s.Id == request.RecordId, false, s => s.Category, s => s.Authority, s => s.RegulationType);
+                if (statuteRecord == null) {
+                    var error = new ResponseError(
+                        ResponseCodes.FAILED,
+                        "Statute not found",
+                        "No regulatory statute matched the provided ID"
+                    );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<StatutoryRegulationResponse>(error));
+                }
+
+                //..return regulatory statute
+                var result = new StatutoryRegulationResponse {
+                    Id = statuteRecord.Id,
+                    CategoryId = statuteRecord.CategoryId,
+                    CategoryName = statuteRecord.Category?.CategoryName ?? string.Empty,
+                    StatutoryTypeId = statuteRecord.TypeId,
+                    StatutoryType = statuteRecord.RegulationType?.TypeName ?? string.Empty,
+                    AuthorityId = statuteRecord.AuthorityId,
+                    AuthorityName = statuteRecord.Authority?.AuthorityName ?? string.Empty,
+                    StatutoryLawCode = statuteRecord.Code ?? string.Empty,
+                    StatutoryLawName = statuteRecord.RegulatoryName ?? string.Empty,
+                    IsDeleted = statuteRecord.IsDeleted,
+                    CreatedBy = statuteRecord.CreatedBy ?? string.Empty,
+                    ModifiedBy = statuteRecord.LastModifiedBy ?? string.Empty
+                };
+
+                return Ok(new GrcResponse<StatutoryRegulationResponse>(result));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<StatutoryRegulationResponse>(error));
+            }
         }
 
         [HttpPost("registers/category-statute-list")]
         public async Task<IActionResult> GetCategoryStatues([FromBody] StatuteListRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<StatutoryRegulationResponse>>(error));
+                }
 
-            if (request != null) {
-                var categoryId = request.ActivityTypeId.Value;
+                int pageCount = 0;
+                int pages = 0;
+                int pageSize = 0;
+                List<StatutoryRegulationResponse> statutes = new();
+                if (request.ActivityTypeId.HasValue) {
 
-                var categoryList = new List<StatutoryRegulationResponse>() {
-                    new () {
-                        Id = 1,
-                        CategoryId = 1,
-                        CategoryName = "Financial Institutions Business",
-                        StatutoryTypeId = 1,
-                        StatutoryType = "Regulatory Act",
-                        AuthorityId = 1,
-                        AuthorityName = "Bank of Uganda",
-                        StatutoryLawCode = "FIA-2004",
-                        StatutoryLawName ="FINANCIAL INSTITUTIONS ACT ,2004 as Amended by the FINANCIAL INSTITUTIONS ACT 2016",
-                        IsDeleted = false,
-                        CreatedBy = "system",
-                        ModifiedBy = "system"
-                    },
-                    new () {
-                        Id = 2,
-                        CategoryId = 1,
-                        CategoryName = "Financial Institutions Business",
-                        StatutoryTypeId = 2,
-                        StatutoryType = "Regulation",
-                        AuthorityId = 6,
-                        AuthorityName = "Financial Intelligence Authority",
-                        StatutoryLawCode = "FIR-2005",
-                        StatutoryLawName ="FINANCIAL INSTITUTIONS (LICENSING) REGULATIONS, 2005",
-                        IsDeleted = false,
-                        CreatedBy = "system",
-                        ModifiedBy = "system"
-                    },
-                    new () {
-                        Id = 3,
-                        CategoryId = 1,
-                        CategoryName = "Financial Institutions Business",
-                        StatutoryTypeId = 2,
-                        StatutoryType = "Regulation",
-                        AuthorityId = 6,
-                        AuthorityName = "Financial Intelligence Authority",
-                        StatutoryLawCode = "FIR-CAR",
-                        StatutoryLawName ="FINANCIAL INSTITUTIONS (CAPITAL ADEQUACY REQUIREMENTS) REGULATIONS, 2018 as Amended by the Revision_of_minimum_Capital_Requirements_Instrument_2022",
-                        IsDeleted = false,
-                        CreatedBy = "system",
-                        ModifiedBy = "system"
-                    },
-                    new () {
-                        Id = 4,
-                        CategoryId = 1,
-                        CategoryName = "Financial Institutions Business",
-                        StatutoryTypeId = 2,
-                        StatutoryType = "Regulation",
-                        AuthorityId = 6,
-                        AuthorityName = "Financial Intelligence Authority",
-                        StatutoryLawCode = "FIR-CCAP",
-                        StatutoryLawName ="THE FINANCIAL INSTITUTIONS (CREDIT CLASSIFICATION AND PROVISIONING) REGULATIONS, 2005",
-                        IsDeleted = false,
-                        CreatedBy = "system",
-                        ModifiedBy = "system"
-                    },
-                    new () {
-                        Id = 5,
-                        CategoryId = 2,
-                        CategoryName = "Liquidity Regulations",
-                        StatutoryTypeId = 2,
-                        StatutoryType = "Regulation",
-                        AuthorityId = 6,
-                        AuthorityName = "Financial Intelligence Authority",
-                        StatutoryLawCode = "FIR-LIQUIDITY",
-                        StatutoryLawName ="THE FINANCIAL INSTITUTIONS (LIQUIDITY) REGULATIONS, 2023",
-                        IsDeleted = false,
-                        CreatedBy = "system",
-                        ModifiedBy = "system"
-                    },
-                    new () {
-                        Id = 6,
-                        CategoryId = 3,
-                        CategoryName = "Payment Systems",
-                        StatutoryTypeId = 1,
-                        StatutoryType = "Act",
-                        AuthorityId = 1,
-                        AuthorityName = "Bank of Uganda",
-                        StatutoryLawCode = "NPS-2020",
-                        StatutoryLawName ="THE NATIONAL PAYMENTS SYSTEMS ACT, 2020",
-                        IsDeleted = false,
-                        CreatedBy = "system",
-                        ModifiedBy = "system"
-                    },
-                    new () {
-                        Id = 7,
-                        CategoryId = 3,
-                        CategoryName = "Payment Systems",
-                        StatutoryTypeId = 2,
-                        StatutoryType = "Regulation",
-                        AuthorityId = 1,
-                        AuthorityName = "Bank of Uganda",
-                        StatutoryLawCode = "NPS-2021",
-                        StatutoryLawName ="THE NATIONAL PAYMENTS SYSTEMS REGULATION 2021 S.I No.18 OF 2021",
-                        IsDeleted = false,
-                        CreatedBy = "system",
-                        ModifiedBy = "system"
-                    },
-                    new () {
-                        Id = 8,
-                        CategoryId = 3,
-                        CategoryName = "Payment Systems",
-                        StatutoryTypeId = 2,
-                        StatutoryType = "Regulation",
-                        AuthorityId = 1,
-                        AuthorityName = "Bank of Uganda",
-                        StatutoryLawCode = "NPS-AGENT",
-                        StatutoryLawName ="THE NATIONAL PAYMENTS SYSTEMS (AGENT) REGULATION 2021",
-                        IsDeleted = false,
-                        CreatedBy = "system",
-                        ModifiedBy = "system"
+                    //..log request
+                    Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+
+                    //..retrieve statutes
+                    var pageResult = await _regulatoryService.PageAllAsync(request.PageIndex, request.PageSize, false, 
+                                       c => c.CategoryId == request.ActivityTypeId, c => c.Authority, c => c.RegulationType, c => c.Category);
+                    if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                        var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No Statutes records found");
+                        Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<PagedResponse<StatutoryRegulationResponse>>(new PagedResponse<StatutoryRegulationResponse>(
+                                new List<StatutoryRegulationResponse>(), 0, pageResult.Page, pageResult.Size))
+                            );
                     }
-                };
 
-                var statutues = await Task.FromResult(categoryList.Where(l => l.CategoryId == categoryId).ToList());
-                return Ok(new GrcResponse<PagedResponse<StatutoryRegulationResponse>>(new PagedResponse<StatutoryRegulationResponse>(
-                  statutues,
-                  20, //pageResult.Count,
-                  2, //pageResult.Page,
-                  5 //pageResult.Size
-              )));
+                    //..map to response type
+                    var records = pageResult.Entities.ToList();
+                    if (records != null && records.Any()) {
+                        pageCount = pageResult.Count;
+                        pages = pageResult.Page;
+                        pageSize = pageResult.Size;
+                        records.ForEach(statute => statutes.Add(new() {
+                            Id = statute.Id,
+                            StatutoryTypeId = statute.TypeId,
+                            StatutoryType = statute.RegulationType?.TypeName??string.Empty,
+                            AuthorityId = statute.AuthorityId,
+                            AuthorityName = statute.Authority?.AuthorityName?? string.Empty,
+                            StatutoryLawCode = statute.Code ?? string.Empty,
+                            StatutoryLawName = statute.RegulatoryName?? string.Empty,
+                            IsDeleted = false,
+                            CreatedBy = statute.CreatedBy ?? string.Empty,
+                            ModifiedBy = statute.LastModifiedBy ?? string.Empty
+                        }));
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                        var searchTerm = request.SearchTerm.ToLower();
+                        statutes = statutes.Where(u =>
+                            (u.StatutoryType?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                            (u.AuthorityName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                            (u.StatutoryLawName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)).ToList();
+                    }
+
+                }
+
+                return Ok(new GrcResponse<PagedResponse<StatutoryRegulationResponse>>(new PagedResponse<StatutoryRegulationResponse>(statutes, pageCount, pages, pageSize)));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<StatutoryRegulationResponse>>(error));
             }
-
-            return Ok(new GrcResponse<PagedResponse<StatutoryRegulationResponse>>(new PagedResponse<StatutoryRegulationResponse>(null,0,0,0)));
         }
 
         [HttpPost("registers/paged-statute-list")]
         public async Task<IActionResult> GetPagedStatues([FromBody] ListRequest request) {
-            return Ok();
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<StatutoryRegulationResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _regulatoryService.PageAllAsync(request.PageIndex, request.PageSize, false);
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS,"No data","No statutes records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<StatutoryRegulationResponse>>(new PagedResponse<StatutoryRegulationResponse>(new List<StatutoryRegulationResponse>(), 0, pageResult.Page, pageResult.Size)));
+                }
+
+                List<StatutoryRegulationResponse> statutes = new();
+                var records = pageResult.Entities.ToList();
+                if (records != null && records.Any()) {
+                    records.ForEach(statute => statutes.Add(new() {
+                        Id = statute.Id,
+                        StatutoryTypeId = statute.TypeId,
+                        StatutoryType = statute.RegulationType?.TypeName ?? string.Empty,
+                        AuthorityId = statute.AuthorityId,
+                        AuthorityName = statute.Authority?.AuthorityName ?? string.Empty,
+                        StatutoryLawCode = statute.Code ?? string.Empty,
+                        StatutoryLawName = statute.RegulatoryName ?? string.Empty,
+                        IsDeleted = false,
+                        CreatedBy = statute.CreatedBy ?? string.Empty,
+                        ModifiedBy = statute.LastModifiedBy ?? string.Empty
+                    }));
+                }
+
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                    var searchTerm = request.SearchTerm.ToLower();
+                    statutes = statutes.Where(u =>
+                            (u.StatutoryType?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                            (u.AuthorityName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                            (u.StatutoryLawName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)).ToList();
+                }
+
+                return Ok(new GrcResponse<PagedResponse<StatutoryRegulationResponse>>(new PagedResponse<StatutoryRegulationResponse>(statutes, pageResult.Count, pageResult.Page, pageResult.Size)));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<StatutoryRegulationResponse>>(error));
+            }
         }
 
         [HttpPost("registers/create-statute")]
         public async Task<IActionResult> CreateStatute([FromBody] StatutoryRegulationRequest request) {
-            return Ok();
+            try {
+                Logger.LogActivity("Creating new regulatory statute", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty", "The regulatory statute record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!string.IsNullOrWhiteSpace(request.RegulatoryName) && !string.IsNullOrWhiteSpace(request.Code)) {
+                    if (await _regulatoryService.ExistsAsync(s => s.RegulatoryName == request.RegulatoryName || s.Code == request.Code)) {
+                        var error = new ResponseError(ResponseCodes.DUPLICATE, "Duplicate Record", "Another record found with similar name or code");
+                        Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<GeneralResponse>(error));
+                    }
+                } else {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Invalid Data, Statute name and code are required", "The Statute name and code are required");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser != null) {
+                    request.CreatedBy = currentUser.Username;
+                    request.ModifiedBy = currentUser.Username;
+                } else {
+                    request.CreatedBy = $"{request.UserId}";
+                    request.ModifiedBy = $"{request.UserId}";
+                }
+
+                //..add dates
+                request.CreatedOn = DateTime.Now;
+                request.ModifiedOn = DateTime.Now;
+
+                //..create document type
+                var result = await _regulatoryService.InsertAsync(request);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Regulatory statute saved successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to save regulatory statute record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
         }
 
         [HttpPost("registers/update-statute")]
         public async Task<IActionResult> UpdateStatute([FromBody] StatutoryRegulationRequest request) {
-            return Ok();
+            try {
+                Logger.LogActivity("Update regulatory statute", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The regulatory statute record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                if (string.IsNullOrWhiteSpace(request.RegulatoryName) || string.IsNullOrWhiteSpace(request.Code)) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Invalid Record, Statute name and code are required", "Statute name and code are required");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _regulatoryService.ExistsAsync(r => r.Id == request.Id)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "Regulatory statute record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser != null) {
+                    request.ModifiedBy = currentUser.Username;
+                } else {
+                    request.ModifiedBy = $"{request.UserId}";
+                }
+
+                //..add dates
+                request.ModifiedOn = DateTime.Now;
+
+                //..update regulatory statute
+                var result = await _regulatoryService.UpdateAsync(request);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Regulatory statute updated successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update regulatory statute record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
         }
 
         [HttpPost("registers/delete-statute")]
         public async Task<IActionResult> DeleteStatute([FromBody] IdRequest request) {
-            return Ok();
+            try {
+                Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
+
+                //..check if record exists
+                var response = new GeneralResponse();
+                if (!await _categoryService.ExistsAsync(r => r.Id == request.RecordId)) {
+                    response.Status = false;
+                    response.StatusCode = (int)ResponseCodes.NOTFOUND;
+                    response.Message = $"Regulatory statute Not Found!";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    return Ok(new GrcResponse<GeneralResponse>(response));
+                }
+
+                //..delete statute
+                var status = await _regulatoryService.DeleteAsync(request);
+                if (!status) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Failed to regulatory statute", "An error occurred! could delete regulatory statute");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse() { Status = status }));
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error deleting regulatory statute by user {request.UserId}: {ex.Message}", "ERROR");
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
         }
 
         #endregion
@@ -1683,150 +1736,324 @@ namespace Grc.Middleware.Api.Controllers {
 
         [HttpPost("registers/statute-section-retrieve")]
         public async Task<IActionResult> GetStatuteSection([FromBody] IdRequest request) {
-            return Ok();
+            try {
+                Logger.LogActivity("Get statute act/section by ID", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<StatuteSectionResponse>(error));
+                }
+
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request ID is required", "Invalid Statute act/section request ID");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<StatuteSectionResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var section = await _articleService.GetAsync(a => a.Id == request.RecordId, false, a => a.Frequency);
+                if (section == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Statute act/section not found", "No Statute act/section matched the provided ID");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<StatuteSectionResponse>(error));
+                }
+
+                //..return regulatory statute act/section
+                var result = new StatuteSectionResponse {
+                    Id = section.Id,
+                    Section = section.Article ?? string.Empty,
+                    Summery = section.Summery ?? string.Empty,
+                    Obligation = section.ObligationOrRequirement ?? string.Empty,
+                    StatutoryId = section.StatuteId,
+                    IsMandatory = section.IsMandatory,
+                    ExcludeFromCompliance = section.ExcludeFromCompliance,
+                    ComplianceAssurance = section.ComplianceAssurance,
+                    IsCovered = section.IsCovered,
+                    FrequencyId = section.FrequencyId ?? 0,
+                    Coverage = section.Coverage,
+                    ObligationFrequency = section.Frequency?.FrequencyName ?? string.Empty,
+                    Comments = section.Comments ?? string.Empty,
+                    IsDeleted = false,
+                    CreatedBy = section.CreatedBy ?? string.Empty,
+                    ModifiedBy = section.LastModifiedBy ?? string.Empty,
+                    Revisions = section.ArticleRevisions != null ? section.ArticleRevisions.Select(r => new ArticleRevisionResponse {
+                        Id = r.Id,
+                        ArticleId = r.ArticleId,
+                        Section = r.Section,
+                        Comments = r.Comments,
+                        Revision = r.Revision
+                    }).ToList() : new List<ArticleRevisionResponse>()
+                };
+
+                return Ok(new GrcResponse<StatuteSectionResponse>(result));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<StatuteSectionResponse>(error));
+            }
         }
 
         [HttpPost("registers/statute-sections-list")]
         public async Task<IActionResult> GetLawSection([FromBody] StatuteListRequest request) {
-
-            if (request != null) {
-                if (request.ActivityTypeId.HasValue) {
-                    var statuteId = request.ActivityTypeId.Value;
-                    var statuteList = new List<StatuteSectionResponse>() {
-                        new () {
-                            Id = 1,
-                            StatutoryId = 1,
-                            Section = "R.7(1)",
-                            Summery = "Core and total capital",
-                            Obligation = "The bank shall at all times maintain a core capital of not less than 10% and a total capital of not less than 12% of the total risk adjusted assets plus risk adjusted off balance sheet",
-                            ComplianceAssurance = 10,
-                            IsMandatory = true
-                        },
-                        new () {
-                            Id = 2,
-                            StatutoryId = 1,
-                            Section = "R.7(2)",
-                            Summery = "Core capital to be equal too minimum capital funds",
-                            Obligation = "The core capital of the bank shall at all times be equivalent to at least the minimum capital funds set out by Law and shall be reduced by goodwill and similar intangible assets, investments in unconsolidated financial subsidiaries and future income tax benefits.",
-                            ComplianceAssurance = 40,
-                            IsMandatory = true
-                        },
-                        new () {
-                            Id = 3,
-                            StatutoryId = 1,
-                            Section = "R.8(1)",
-                            Summery = "Maintenance of Records",
-                            Obligation = "The bank shall at all times maintain adequate records, including daily balance sheets and periodic statements of income and expense to enable proper computation of its capital adequacy.",
-                            ComplianceAssurance = 40,
-                            IsMandatory = true
-                        },
-                        new () {
-                            Id = 3,
-                            StatutoryId = 2,
-                            Section = "R.6 (1)",
-                            Summery = "When credit facility with pre-established repayment schedule is  considered Non performing",
-                            Obligation = "Consider a credit facility with a pre-established repayment schedule  non-performing if—\r\n(a) the principal or interest is due and unpaid for 90 days or more; or\r\n(b) the principal or interest payments equal to 90 days interest or more have been capitalised, refinanced, renegotiated, restructured or rolled over.",
-                            ComplianceAssurance = 30,
-                            IsMandatory = true
-                        },
-                        new () {
-                            Id = 3,
-                            StatutoryId = 2,
-                            Section = "R.6 (2)",
-                            Summery = "When credit facility with pre-established repayment schedule is  considered Non performing",
-                            Obligation = "Consider a credit facility without a fixed repayment program, e.g  overdrafts or other forms of open-ended credit,  non-performing if—\r\n(a) It exceeds the customer’s established borrowing limit for 90 days or more\r\n(b) The customer’s borrowing line has expired for 90 consecutive days or more;\r\n(c) interest is due and unpaid for 90 days or more; or\r\n(d) the overdraft or account is inactive,",
-                            ComplianceAssurance = 50,
-                            IsMandatory = true
-                        },
-                        new () {
-                            Id = 3,
-                            StatutoryId = 4,
-                            Section = "R.8A(1)",
-                            Summery = "Ascertainment that foreign currency is legal tender",
-                            Obligation = "The bank has a duty to cross check and satisfy itself that the foreign currency exchanged is legal tender.",
-                            ComplianceAssurance = 3,
-                            IsMandatory = true
-                        },
-                        new () {
-                            Id = 3,
-                            StatutoryId = 5,
-                            Section = "5",
-                            Summery = "Liquidity risk appetite",
-                            Obligation = "(1) A financial institution shall set its liquidity risk appetite.\r\n(2) The liquidity risk appetite set in subregulation (1) shall—\r\n(a) define the level of liquidity risk that the financial institution is willing to take on;\r\n(b) match the business strategy of the financial institution and role in the financial system of the financial institution;\r\n(c) reflect the financial condition and funding capacity of the financial institution;\r\n(d) manage the liquidity of the financial institution efficiently in normal times so as to be able to withstand prolonged periods of stress; and\r\n(e) reflect a clear understanding of the trade-off between risk and return at all levels of management.\r\n(3) The liquidity risk appetite shall be reviewed periodically and adjusted in line with changes in the business strategy and operating conditions of the financial institutions.",
-                            ComplianceAssurance = 3,
-                            IsMandatory = true
-                        },
-                        new () {
-                            Id = 3,
-                            StatutoryId = 5,
-                            Section = "6(a)",
-                            Summery = "Liquidity management framework",
-                            Obligation = "(1) A financial institution, with the approval of the board of directors of the financial institution, shall formulate a liquidity risk management framework including—\r\n(a) liquidity management policy; and\r\n(b) liquidity management strategy.\r\n(2) The liquidity management strategy shall prescribe—\r\n(a) a general approach to liquidity risk management in line with the liquidity risk appetite of the financial institution;\r\n(b) measures to maintain sufficient liquidity of the financial institution including a cushion of unencumbered high quality liquid assets and the loss or impairment of both unsecured and secured funding sources; and(c) measures to manage the assets, liabilities and off-balance sheet items of the financial institution for the purpose of meeting the contractual commitments of the financial institution at a reasonable cost as and when they fall due.",
-                            ComplianceAssurance = 3,
-                            IsMandatory = true
-                        },
-                        new () {
-                            Id = 3,
-                            StatutoryId = 5,
-                            Section = "6(b)",
-                            Summery = "Liquidity management policy",
-                            Obligation = "A financial institution shall have a well-articulated liquidity management policy indicating crucial elements of sound liquidity management including—\r\n(a) the appropriate mix and composition of assets and liabilities required to maintain sufficient liquidity;an effective process for identifying, measuring, monitoring and controlling liquidity risk considering the forecasting of cash inflow and outflows over a suitable time horizon;\r\n(c) active monitoring of liquidity risk exposures and funding needs across all business lines, subsidiaries and currencies;\r\n(d) good management information systems;\r\n(e) central liquidity control;\r\n(f) a funding strategy that provides effective diversification and stability of funding sources; \r\n(g) active management of liquidity positions within the same day in order to meet payment system obligations in a timely manner under both normal and stressed conditions;\r\n(h) ongoing analysis and stress testing of net funding requirements under alternative scenarios to manage long term and temporary liquidity disruptions; and\r\n(i) monitoring and reporting of the liquidity metrics in these Regulations.",
-                            ComplianceAssurance = 3,
-                            IsMandatory = true
-                        },
-                        new () {
-                            Id = 3,
-                            StatutoryId = 5,
-                            Section = "7(a)",
-                            Summery = "Review of the Liquidity management policy",
-                            Obligation = "(4) The financial institution shall review the liquidity management policy on an annual basis.\r\n(5) The financial institution shall review the liquidity management strategy as part of the overall strategy of the financial institution.",
-                            ComplianceAssurance = 3,
-                            IsMandatory = true
-                        },
-                        new () {
-                            Id = 3,
-                            StatutoryId = 5,
-                            Section = "7(b)",
-                            Summery = "Liquidity contingency plan",
-                            Obligation = "(1) A financial institution shall formulate a liquidity contingency plan.\r\n(2) The liquidity contingency plan shall prescribe a strategy for addressing liquidity shortages and the procedures for managing cash flow deficits in emergency situations.\r\n(3) The liquidity contingency plan shall identify the range of events that may trigger a liquidity shortfall, outline mechanisms to facilitate monitoring of these trigger events, establish clear lines of responsibility of monitoring and approval procedures of remedying the liquidity shortfall.\r\n(4) The financial institution shall review, test and update the liquidity contingency plan annually and documentation of the results for the purpose of verifying that the liquidity contingency plan is operationally robust.",
-                            ComplianceAssurance = 3,
-                            IsMandatory = true
-                        },
-                    };
-
-
-                    var statutues = await Task.FromResult(statuteList.Where(l => l.StatutoryId == statuteId).ToList());
-                    return Ok(new GrcResponse<PagedResponse<StatuteSectionResponse>>(new PagedResponse<StatuteSectionResponse>(
-                      statutues,
-                      20, //pageResult.Count,
-                      2, //pageResult.Page,
-                      5 //pageResult.Size
-                  )));
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<StatutoryRegulationResponse>>(error));
                 }
 
-            }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _articleService.PageAllAsync(request.PageIndex, request.PageSize, false, a => a.StatuteId == request.ActivityTypeId, a => a.Frequency);
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No statute acts/sections records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<StatuteSectionResponse>>(new PagedResponse<StatuteSectionResponse>(
+                            new List<StatuteSectionResponse>(), 0, pageResult.Page, pageResult.Size))
+                        );
+                }
 
-            return Ok(new GrcResponse<PagedResponse<StatuteSectionResponse>>(new PagedResponse<StatuteSectionResponse>(null, 0, 0, 0)));
+                List<StatuteSectionResponse> sections = new();
+                var records = pageResult.Entities.ToList();
+                if (records != null && records.Any()) {
+                    records.ForEach(statute => sections.Add(new() {
+                        Id = statute.Id,
+                        Section = statute.Article ?? string.Empty,
+                        Summery = statute.Summery ?? string.Empty,
+                        Obligation = statute.ObligationOrRequirement ?? string.Empty,
+                        StatutoryId = statute.StatuteId,
+                        IsMandatory = statute.IsMandatory,
+                        ExcludeFromCompliance = statute.ExcludeFromCompliance,
+                        ComplianceAssurance = statute.ComplianceAssurance,
+                        IsCovered = statute.IsCovered,
+                        FrequencyId = statute.FrequencyId ?? 0,
+                        Coverage = statute.Coverage,
+                        ObligationFrequency = statute.Frequency?.FrequencyName ?? string.Empty,
+                        Comments = statute.Comments ?? string.Empty,
+                        IsDeleted = false,
+                        CreatedBy = statute.CreatedBy ?? string.Empty,
+                        ModifiedBy = statute.LastModifiedBy ?? string.Empty,
+                    }));
+                }
+
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                    var searchTerm = request.SearchTerm.ToLower();
+                    sections = sections.Where(u =>
+                            (u.Section?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                            (u.Summery?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                            (u.Obligation?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)).ToList();
+                }
+
+                return Ok(new GrcResponse<PagedResponse<StatuteSectionResponse>>(new PagedResponse<StatuteSectionResponse>(
+                        sections, pageResult.Count, pageResult.Page, pageResult.Size))
+                    );
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<StatuteSectionResponse>>(error));
+            }
         }
 
         [HttpPost("paged-statute-sections-list")]
         public async Task<IActionResult> GetPagedSections([FromBody] ListRequest request) {
-            return Ok();
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<StatuteSectionResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _articleService.PageAllAsync(request.PageIndex, request.PageSize, false, null, a => a.Statute);
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No statute acts/sections found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<StatuteSectionResponse>>(new PagedResponse<StatuteSectionResponse>(
+                        new List<StatuteSectionResponse>(), 0, pageResult.Page, pageResult.Size))
+                        );
+                }
+
+                List<StatuteSectionResponse> sections = new();
+                var records = pageResult.Entities.ToList();
+                if (records != null && records.Any()) {
+                    records.ForEach(section => sections.Add(new() {
+                        Id = section.Id,
+                        Section = section.Article ?? string.Empty,
+                        Summery = section.Summery ?? string.Empty,
+                        Obligation = section.ObligationOrRequirement ?? string.Empty,
+                        StatutoryId = section.StatuteId,
+                        IsMandatory = section.IsMandatory, 
+                        ExcludeFromCompliance = section.ExcludeFromCompliance,
+                        ComplianceAssurance = section.ComplianceAssurance,
+                        IsCovered = section.IsCovered,
+                        FrequencyId = section.FrequencyId ?? 0,
+                        Coverage = section.Coverage,
+                        ObligationFrequency = section.Frequency?.FrequencyName ?? string.Empty,
+                        Comments = section.Comments ?? string.Empty,
+                        IsDeleted = false,
+                        CreatedBy = section.CreatedBy ?? string.Empty,
+                        ModifiedBy = section.LastModifiedBy ?? string.Empty
+                    }));
+                }
+
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                    var searchTerm = request.SearchTerm.ToLower();
+                    sections = sections.Where(u =>
+                            (u.Section?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                            (u.Summery?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                            (u.Obligation?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)).ToList();
+                }
+
+                return Ok(new GrcResponse<PagedResponse<StatuteSectionResponse>>(new PagedResponse<StatuteSectionResponse>(
+                        sections, pageResult.Count, pageResult.Page, pageResult.Size))
+                    );
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<StatuteSectionResponse>>(error));
+            }
         }
 
         [HttpPost("registers/create-statute-section")]
-        public async Task<IActionResult> CreateSection([FromBody] StatutoryRegulationRequest request) {
-            return Ok();
+        public async Task<IActionResult> CreateSection([FromBody] StatutoryArticleRequest request) {
+            try {
+                Logger.LogActivity("Creating new regulatory act/section", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The regulatory act/section record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!string.IsNullOrWhiteSpace(request.Section) && !string.IsNullOrWhiteSpace(request.Summery)) {
+                    if (await _articleService.ExistsAsync(s => s.Article == request.Section || s.Summery == request.Summery)) {
+                        var error = new ResponseError(ResponseCodes.DUPLICATE, "Duplicate Record", "Another record found with similar act/section, summery");
+                        Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<GeneralResponse>(error));
+                    }
+                } else {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Invalid Data, act/section, summery and obligation are required", "The act/section, summery and obligation are required");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser != null) {
+                    request.CreatedBy = currentUser.Username;
+                    request.ModifiedBy = currentUser.Username;
+                } else {
+                    request.CreatedBy = $"{request.UserId}";
+                    request.ModifiedBy = $"{request.UserId}";
+                }
+
+                //..add dates
+                request.CreatedOn = DateTime.Now;
+                request.ModifiedOn = DateTime.Now;
+
+                //..create document type
+                var result = await _articleService.InsertAsync(request);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Regulatory statute act/section saved successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to save regulatory statute act/section record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
         }
 
         [HttpPost("registers/update-statute-section")]
-        public async Task<IActionResult> UpdateSection([FromBody] StatutoryRegulationRequest request) {
-            return Ok();
+        public async Task<IActionResult> UpdateSection([FromBody] StatutoryArticleRequest request) {
+            try {
+                Logger.LogActivity("Update regulatory statute", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The regulatory statute record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                if (string.IsNullOrWhiteSpace(request.Section) || string.IsNullOrWhiteSpace(request.Summery) || string.IsNullOrWhiteSpace(request.Obligation)) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Invalid Record, Act/Section, summery and obligation are required", "Act/Section, summery and obligation are required");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _articleService.ExistsAsync(r => r.Id == request.Id)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "Statute Act/Section record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser != null) {
+                    request.ModifiedBy = currentUser.Username;
+                } else {
+                    request.ModifiedBy = $"{request.UserId}";
+                }
+
+                //..add dates
+                request.ModifiedOn = DateTime.Now;
+
+                //..update regulatory statute section
+                var result = await _articleService.UpdateAsync(request);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Statute Act/Section updated successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update Statute Act/Section record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
         }
 
         [HttpPost("registers/delete-statute-section")]
         public async Task<IActionResult> DeleteSection([FromBody] IdRequest request) {
-            return Ok();
+            try {
+                Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
+
+                //..check if record exists
+                var response = new GeneralResponse();
+                if (!await _articleService.ExistsAsync(r => r.Id == request.RecordId)) {
+                    response.Status = false;
+                    response.StatusCode = (int)ResponseCodes.NOTFOUND;
+                    response.Message = $"Regulatory statute section Not Found!";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    return Ok(new GrcResponse<GeneralResponse>(response));
+                }
+
+                //..delete statute
+                var status = await _articleService.DeleteAsync(request);
+                if (!status) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Failed to regulatory statute section", "An error occurred! could delete regulatory statute section");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse() { Status = status }));
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error deleting regulatory statute section by user {request.UserId}: {ex.Message}", "ERROR");
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
         }
 
         #endregion

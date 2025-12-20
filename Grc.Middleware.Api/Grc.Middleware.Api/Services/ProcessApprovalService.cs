@@ -476,7 +476,7 @@ namespace Grc.Middleware.Api.Services {
             Logger.LogActivity("Retrieve paged approved processes", "INFO");
             try
             {
-                return await uow.ProcessApprovalRepository.PageAllAsync(page, size, includeDeleted, includes);
+                return await uow.ProcessApprovalRepository.PageAllAsync(page, size, includeDeleted, null, includes);
             }
             catch (Exception ex)
             {

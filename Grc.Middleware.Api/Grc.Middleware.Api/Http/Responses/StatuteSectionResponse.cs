@@ -39,6 +39,9 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("assurance")]
         public decimal ComplianceAssurance { get; set; }
 
+        [JsonPropertyName("comments")]
+        public string Comments { get; set; }
+
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 

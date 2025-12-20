@@ -6,6 +6,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Threading;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Grc.Middleware.Api.Data.Repositories {
     public class Repository<T> : IRepository<T> where T : BaseEntity {
@@ -656,75 +657,51 @@ namespace Grc.Middleware.Api.Data.Repositories {
                 return false;
             }
         }
-        
-        public virtual async Task<PagedResult<T>> PageAllAsync(int page, int size, bool includeDeleted = false, params Expression<Func<T, object>>[] includes) {
+
+        public async Task<PagedResult<T>> PageAllAsync(int page,int size,bool includeDeleted, Expression<Func<T, bool>> predicate = null, params Expression<Func<T, object>>[] includes) {
             page = Math.Max(1, page);
             size = Math.Max(1, size);
 
-            //..get entity data set
-            IQueryable<T> query = context.Set<T>();
-
-            //..apply includes
-            foreach (var include in includes)
-                query = query.Include(include);
-
-            //..exclude deleted entities
-            if (!includeDeleted)
-                query = query.Where(m => !m.IsDeleted);
-
-            var totalRecords = await query.CountAsync();
-            var entities = await query.Skip((page - 1) * size).Take(size).ToListAsync();
-            return new PagedResult<T> { Entities = entities,Count = totalRecords,Page = page, Size = size };
-        }
-
-        public async Task<PagedResult<T>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<T, bool>> predicate = null, params Expression<Func<T, object>>[] includes) {
-            IQueryable<T> query = context.Set<T>();
+            //..no includes
+            IQueryable<T> baseQuery = context.Set<T>();
 
             if (!includeDeleted)
-                query = query.Where(m => !m.IsDeleted);
-
-            if (includes != null)
-                query = includes.Aggregate(query, (current, include) => current.Include(include));
+                baseQuery = baseQuery.Where(m => !m.IsDeleted);
 
             if (predicate != null)
-                query = query.Where(predicate);
+                baseQuery = baseQuery.Where(predicate);
 
-            var totalCount = await query.CountAsync();
+            //count before includes
+            var totalCount = await baseQuery.CountAsync();
+
+            //..apply includes after count
+            IQueryable<T> query = baseQuery;
+
+            if (includes != null) {
+                query = includes.Aggregate(query, (current, include) => current.Include(include));
+            }
+
             var entities = await query.Skip((page - 1) * size).Take(size).ToListAsync();
-            return new PagedResult<T> {
-                Entities = entities,
-                Count = totalCount,
-                Page = page,
-                Size = size
-            };
+            return new PagedResult<T> { Entities = entities, Count = totalCount, Page = page, Size = size };
         }
 
         public virtual async Task<PagedResult<T>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<T, object>>[] includes) {
             //make sure page size is never negative
             page = Math.Max(1, page);   
             size = Math.Max(1, size);  
-             IQueryable<T> query = context.Set<T>();
-
-            //..apply includes
-            foreach (var include in includes)
-                query = query.Include(include);
+             IQueryable<T> baseQuery = context.Set<T>();
 
             if (!includeDeleted)
-                query = query.Where(m => !m.IsDeleted);
+                baseQuery = baseQuery.Where(m => !m.IsDeleted);
 
-            var totalRecords = await query.CountAsync(token);
-            var entities = await query
-                .Skip((page - 1) * size)
-                .Take(size)
-                .ToListAsync(token);
+            var totalCount = await baseQuery.CountAsync(token);
 
-            return new PagedResult<T> {
-                Entities = entities,
-                Count = totalRecords,
-                Page = page,
-                Size = size
-            };
+            //..apply includes
+            IQueryable<T> query = baseQuery;
+            query = includes.Aggregate(query, (current, include) => current.Include(include));
 
+            var entities = await query.Skip((page - 1) * size).Take(size).ToListAsync();
+            return new PagedResult<T> { Entities = entities, Count = totalCount, Page = page, Size = size };
         }
 
         public virtual async Task<PagedResult<T>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<T, bool>> where = null) {
@@ -775,13 +752,21 @@ namespace Grc.Middleware.Api.Data.Repositories {
     
             var totalCount = await query.CountAsync(token);
             var entities = await query.Skip((page - 1) * size).Take(size).ToListAsync(token);
-    
-            return new PagedResult<T> {
-                Entities = entities,
-                Count = totalCount,
-                Page = page,
-                Size = size
-            };
+            return new PagedResult<T> { Entities = entities, Count = totalCount, Page = page, Size = size };
+        }
+
+        public async Task<PagedResult<TResult>> PageProjectionAsync<TResult>(int page, int size, bool includeDeleted, Expression<Func<T, TResult>> selector) {
+            page = Math.Max(1, page);
+            size = Math.Max(1, size);
+
+            IQueryable<T> query = context.Set<T>();
+
+            if (!includeDeleted)
+                query = query.Where(m => !m.IsDeleted);
+
+            var total = await query.CountAsync();
+            var data = await query.Skip((page - 1) * size).Take(size).Select(selector).ToListAsync();
+            return new PagedResult<TResult> { Entities = data, Count = total, Page = page, Size = size };
         }
 
         public int GetContextHashCode()

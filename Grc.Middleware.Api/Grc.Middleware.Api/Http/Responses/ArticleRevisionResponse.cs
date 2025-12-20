@@ -21,6 +21,9 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("reviewedOn")]
         public DateTime ReviewedOn { get; set; }
 
+        [JsonPropertyName("comments")]
+        public string Comments { get; set; }
+
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 

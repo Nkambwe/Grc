@@ -459,8 +459,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     artcle.LastModifiedBy = $"{request.ModifiedBy}";
 
                     //..check entity state
-                    _ = uow.StatutoryArticleRepository.Update(artcle, includeDeleted
-                        );
+                    _ = uow.StatutoryArticleRepository.Update(artcle, includeDeleted);
                     var entityState = ((UnitOfWork)uow).Context.Entry(artcle).State;
                     Logger.LogActivity($"Statutory article state after Update: {entityState}", "DEBUG");
 
@@ -666,12 +665,12 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<PagedResult<StatutoryArticle>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<StatutoryArticle, object>>[] includes) {
+        public async Task<PagedResult<StatutoryArticle>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<StatutoryArticle, bool>> predicate = null, params Expression<Func<StatutoryArticle, object>>[] includes) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve paged statutory articles", "INFO");
 
             try {
-                return await uow.StatutoryArticleRepository.PageAllAsync(page, size, includeDeleted, includes);
+                return await uow.StatutoryArticleRepository.PageAllAsync(page, size, includeDeleted, predicate, includes);
             } catch (Exception ex){
                 Logger.LogActivity($"Failed to retrieve statutory articles: {ex.Message}", "ERROR");
 

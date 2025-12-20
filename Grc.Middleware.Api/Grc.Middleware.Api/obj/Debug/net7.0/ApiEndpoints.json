@@ -1053,7 +1053,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Grc.Middleware.Api.Http.Requests.StatutoryRegulationRequest",
+        "Type": "Grc.Middleware.Api.Http.Requests.StatutoryArticleRequest",
         "IsRequired": true
       }
     ],
@@ -1549,7 +1549,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Grc.Middleware.Api.Http.Requests.StatutoryRegulationRequest",
+        "Type": "Grc.Middleware.Api.Http.Requests.StatutoryArticleRequest",
         "IsRequired": true
       }
     ],

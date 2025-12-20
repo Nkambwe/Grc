@@ -1439,6 +1439,38 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
             }
         }
 
+        public async Task<PagedResult<RegulatoryCategoryResponse>> PageProjectionAsync<RegulatoryCategoryResponse>(int page, int size, bool includeDeleted, Expression<Func<RegulatoryCategory, RegulatoryCategoryResponse>> selector) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve paged Regulatory Categories", "INFO");
+
+            try {
+                return await uow.RegulatoryCategoryRepository.PageProjectionAsync(page, size, includeDeleted, selector);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve Regulatory Categories: {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new() {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "REGULATORY-CATEGORY-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
+        }
+
         public async Task<PagedResult<RegulatoryCategory>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<RegulatoryCategory, object>>[] includes)
         {
             using var uow = UowFactory.Create();
@@ -1446,7 +1478,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
 
             try
             {
-                return await uow.RegulatoryCategoryRepository.PageAllAsync(page, size, includeDeleted, includes);
+                return await uow.RegulatoryCategoryRepository.PageAllAsync(page, size, includeDeleted, null, includes);
             }
             catch (Exception ex)
             {

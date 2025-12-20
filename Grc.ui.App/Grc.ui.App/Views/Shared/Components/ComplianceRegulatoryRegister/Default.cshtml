@@ -24,9 +24,11 @@
             </nav>
 
             <div id="contentArea">
+
                 <div class="empty-state text-muted text-start p-2" style="border-bottom: solid 1px #CED4DA!important">
                     Select a Category or Law from the left panel
                 </div>
+               
                 <div id="categoryView" class="d-none">
                     <div class="d-flex justify-content-between p-2">
                         <h6 class="p-2 m-0">Laws</h6>
@@ -35,6 +37,7 @@
 
                     <div id="lawsTable"></div>
                 </div>
+
                 <div id="lawView" class="d-none">
                     <div class="d-flex justify-content-between p-2">
                         <h6 class="p-2 m-0">Acts / Sections</h6>
@@ -46,9 +49,181 @@
 
             </div>
         </div>
+
     </div>
+
 </div>
 
+<!-- Overlay -->
+<div id="lawOverlay" class="law-panel-overlay"></div>
+
+<!-- Category Panel -->
+<div id="lawCategoryPanel" class="law-side-panel" onclick="event.stopPropagation()">
+
+    <div class="law-side-panel-header">
+        <h5 id="categoryTitle">Manage Regulatory Category</h5>
+        <button class="panel-close" onclick="closeLawCategory()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div class="law-side-panel-body">
+
+        <form id="categoryForm" class="grc-law-form">
+            <input type="hidden" id="categoryId" name="categoryId">
+            <input type="hidden" id="isCategoryEdit" name="isCategoryEdit">
+
+            <div class="col-12">
+
+                <div class="row mb-3">
+                    <div class="mb-3">
+                        <label for="categoryName" class="form-label">Category Name</label>
+                        <input type="text" class="form-control" id="categoryName" required>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="mb-3">
+                        <label for="categoryDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="categoryDescription" rows="3"></textarea>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-sm-12">
+                <div class="row mb-3">
+                    <div class="col-sm-1">
+                        <button class="btn btn-grc-primary" style="width:100%;" onclick="saveLawCategory(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                    </div>
+                    <div class="col-sm-1">
+                        <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeLawCategory()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                    </div>
+                    <div class="col-sm-10"></div>
+                </div>
+            </div>
+        </form>
+    </div>
+   
+</div>
+
+<!-- Law Panel -->
+<div id="lawRegulationPanel" class="law-side-panel" onclick="event.stopPropagation()">
+
+    <div class="law-side-panel-header">
+        <h5 id="lawTitle">Manage Law/Regulations</h5>
+        <button class="panel-close" onclick="closeLaw()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div class="law-side-panel-body">
+
+        <form id="lawForm">
+            <input type="hidden" id="lawId" name="lawId">
+            <input type="hidden" id="lawCategoryId" name="lawCategoryId">
+            <input type="hidden" id="isLawEdit" name="isLawEdit">
+
+            <div class="col-12">
+
+                <div class="row mb-3">
+                    <div class="mb-3">
+                        <label for="lawName" class="form-label">Law Name</label>
+                        <input type="text" class="form-control" id="lawName" required>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="mb-3">
+                        <label for="lawReference" class="form-label">Reference Number</label>
+                        <input type="text" class="form-control" id="lawReference">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="mb-3">
+                        <label for="lawDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="lawDescription" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12">
+                <div class="row mb-3">
+                    <div class="col-sm-1">
+                        <button class="btn btn-grc-primary" style="width:100%;" onclick="saveLaw(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                    </div>
+                    <div class="col-sm-1">
+                        <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeLaw()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                    </div>
+                    <div class="col-sm-10"></div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+<!-- Act/Section Panel -->
+<div id="actPanel" class="law-side-panel" onclick="event.stopPropagation()">
+
+    <div class="law-side-panel-header">
+        <h5 id="actTitle">Manage Act/Section</h5>
+        <button class="panel-close" onclick="closeLawAct()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div class="law-side-panel-body">
+
+        <form id="actForm" class="grc-law-form">
+
+            <input type="hidden" id="actId" name="actId">
+            <input type="hidden" id="actLawId" name="actLawId">
+            <input type="hidden" id="isActEdit" name="isActEdit">
+
+            <div class="col-12">
+
+                <div class="row mb-3">
+                    <div class="mb-3">
+                        <label for="sectionNumber" class="form-label">Section/Act Number</label>
+                        <input type="text" class="form-control" id="sectionNumber" required>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="mb-3">
+                        <label for="section" class="form-label">Section/Act Title</label>
+                        <input type="text" class="form-control" id="section" required>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="mb-3">
+                        <label for="obligation" class="form-label">Obligation</label>
+                        <textarea class="form-control" id="obligation" rows="4"></textarea>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-sm-12">
+                <div class="row mb-3">
+                    <div class="col-sm-1">
+                        <button class="btn btn-grc-primary" style="width:100%;" onclick="saveAct(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                    </div>
+                    <div class="col-sm-1">
+                        <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeLawAct()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                    </div>
+                    <div class="col-sm-10"></div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+</div>
 
 @{
     Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");

@@ -63,7 +63,7 @@ namespace Grc.Middleware.Api.Services {
                 int page = pageIndex > 0 ? pageIndex : 1;
                 int size = pageSize > 0 ? pageSize : 10;
 
-               var pagedResult = await uow.ActivityLogRepository.PageAllAsync(page, size, includeMarkedAsDeleted, x => x.User, x => x.ActivityType);
+               var pagedResult = await uow.ActivityLogRepository.PageAllAsync(page, size, includeMarkedAsDeleted, null, x => x.User, x => x.ActivityType);
                 if(pagedResult != null) {
                     var result = pagedResult.Entities;
 

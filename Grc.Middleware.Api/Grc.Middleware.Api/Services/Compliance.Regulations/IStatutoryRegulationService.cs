@@ -40,7 +40,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         Task<bool> BulkyInsertAsync(StatutoryRegulationRequest[] auditTasks);
         Task<bool> BulkyUpdateAsync(StatutoryRegulationRequest[] auditTasks);
         Task<bool> BulkyUpdateAsync(StatutoryRegulationRequest[] auditTasks, params Expression<Func<StatutoryRegulation, object>>[] propertySelectors);
-        Task<PagedResult<StatutoryRegulation>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<StatutoryRegulation, object>>[] includes);
+        Task<PagedResult<StatutoryRegulation>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<StatutoryRegulation, bool>> predicate = null, params Expression<Func<StatutoryRegulation, object>>[] includes);
         Task<PagedResult<StatutoryRegulation>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<StatutoryRegulation, object>>[] includes);
         Task<PagedResult<StatutoryRegulation>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<StatutoryRegulation, bool>> where = null);
         Task<PagedResult<StatutoryRegulation>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<StatutoryRegulation, bool>> where = null, bool includeDeleted = false);

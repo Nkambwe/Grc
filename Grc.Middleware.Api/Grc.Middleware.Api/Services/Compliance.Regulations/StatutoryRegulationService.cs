@@ -471,25 +471,21 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<bool> InsertAsync(StatutoryRegulationRequest request)
-        {
+        public async Task<bool> InsertAsync(StatutoryRegulationRequest request) {
             using var uow = UowFactory.Create();
-            try
-            {
+            try {
                 //..map statutory regulation request to statutory regulation entity
                 var statute = Mapper.Map<StatutoryRegulationRequest, StatutoryRegulation>(request);
 
                 //..log the statutory regulation data being saved
-                var auditTaaskJson = JsonSerializer.Serialize(statute, new JsonSerializerOptions
-                {
+                var auditTaaskJson = JsonSerializer.Serialize(statute, new JsonSerializerOptions {
                     WriteIndented = true,
                     ReferenceHandler = ReferenceHandler.IgnoreCycles
                 });
                 Logger.LogActivity($"Statutory regulation data: {auditTaaskJson}", "DEBUG");
 
                 var added = await uow.StatutoryRegulationRepository.InsertAsync(statute);
-                if (added)
-                {
+                if (added) {
                     //..check object state
                     var entityState = ((UnitOfWork)uow).Context.Entry(statute).State;
                     Logger.LogActivity($"Entity state after insert: {entityState}", "DEBUG");
@@ -500,9 +496,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 }
 
                 return false;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to save statutory regulation : {ex.Message}", "ERROR");
                 //..save error object to the database
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
@@ -762,14 +756,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<PagedResult<StatutoryRegulation>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<StatutoryRegulation, object>>[] includes)
+        public async Task<PagedResult<StatutoryRegulation>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<StatutoryRegulation, bool>> predicate = null, params Expression<Func<StatutoryRegulation, object>>[] includes)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve paged statutory regulations", "INFO");
 
             try
             {
-                return await uow.StatutoryRegulationRepository.PageAllAsync(page, size, includeDeleted, includes);
+                return await uow.StatutoryRegulationRepository.PageAllAsync(page, size, includeDeleted, predicate, includes);
             }
             catch (Exception ex)
             {

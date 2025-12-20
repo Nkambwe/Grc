@@ -840,7 +840,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
 
             try
             {
-                return await uow.RegulatoryDocumentRepository.PageAllAsync(page, size, includeDeleted, includes);
+                return await uow.RegulatoryDocumentRepository.PageAllAsync(page, size, includeDeleted, null, includes);
             }
             catch (Exception ex)
             {

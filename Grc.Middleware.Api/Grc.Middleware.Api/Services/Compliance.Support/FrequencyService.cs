@@ -1444,7 +1444,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
 
             try
             {
-                return await uow.FrequencyRepository.PageAllAsync(page, size, includeDeleted, includes);
+                return await uow.FrequencyRepository.PageAllAsync(page, size, includeDeleted, null, includes);
             }
             catch (Exception ex)
             {

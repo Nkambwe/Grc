@@ -1406,7 +1406,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
 
             try
             {
-                return await uow.AuditExceptionRepository.PageAllAsync(page, size, includeDeleted, includes);
+                return await uow.AuditExceptionRepository.PageAllAsync(page, size, includeDeleted, null, includes);
             }
             catch (Exception ex)
             {

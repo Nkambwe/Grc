@@ -1454,7 +1454,7 @@ namespace Grc.Middleware.Api.Services.Operations {
 
             try
             {
-                return await uow.ProcessTaskRepository.PageAllAsync(page, size, includeDeleted, includes);
+                return await uow.ProcessTaskRepository.PageAllAsync(page, size, includeDeleted, null, includes);
             }
             catch (Exception ex)
             {

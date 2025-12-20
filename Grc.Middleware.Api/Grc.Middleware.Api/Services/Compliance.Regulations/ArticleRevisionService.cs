@@ -647,7 +647,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             Logger.LogActivity($"Retrieve paged article revisions", "INFO");
 
             try {
-                return await uow.ArticleRevisionRepository.PageAllAsync(page, size, includeDeleted, includes);
+                return await uow.ArticleRevisionRepository.PageAllAsync(page, size, includeDeleted, null, includes);
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve article revisions: {ex.Message}", "ERROR");
 

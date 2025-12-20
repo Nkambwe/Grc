@@ -265,7 +265,6 @@ namespace Grc.Middleware.Api.Data.Repositories {
         /// <returns></returns>
         Task<bool> BulkyUpdateAsync(T[] entities, params Expression<Func<T, object>>[] propertySelectors);
 
-        
         /// <summary>
         /// Page all records seleceted
         /// </summary>
@@ -274,8 +273,6 @@ namespace Grc.Middleware.Api.Data.Repositories {
         /// <param name="includeDeleted">Flag to include deleted entities in the search</param>
         /// <param name="includes">Search includes</param>
         /// <returns></returns>
-        Task<PagedResult<T>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<T, object>>[] includes);
-
         Task<PagedResult<T>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<T, bool>> predicate = null, params Expression<Func<T, object>>[] includes);
 
         /// <summary>
@@ -309,7 +306,16 @@ namespace Grc.Middleware.Api.Data.Repositories {
         /// <param name="where">Filter predicate</param>
         /// <returns></returns>
         Task<PagedResult<T>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<T, bool>> where = null, bool includeDeleted = false);
-
+        /// <summary>
+        /// Project navigation at repository for deep graph objects
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="page"></param>
+        /// <param name="size"></param>
+        /// <param name="includeDeleted"></param>
+        /// <param name="selector"></param>
+        /// <returns></returns>
+        Task<PagedResult<TResult>> PageProjectionAsync<TResult>(int page, int size, bool includeDeleted, Expression<Func<T, TResult>> selector);
         /// <summary>
         /// DBContext HashCode
         /// </summary>

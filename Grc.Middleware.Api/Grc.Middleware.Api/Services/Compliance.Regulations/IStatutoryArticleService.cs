@@ -1,4 +1,5 @@
-﻿using Grc.Middleware.Api.Helpers;
+﻿using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
+using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using System.Linq.Expressions;
 
@@ -38,7 +39,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         Task<bool> BulkyInsertAsync(StatutoryArticleRequest[] article);
         Task<bool> BulkyUpdateAsync(StatutoryArticleRequest[] article);
         Task<bool> BulkyUpdateAsync(StatutoryArticleRequest[] article, params Expression<Func<StatutoryArticle, object>>[] propertySelectors);
-        Task<PagedResult<StatutoryArticle>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<StatutoryArticle, object>>[] includes);
+        Task<PagedResult<StatutoryArticle>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<StatutoryArticle, bool>> predicate = null, params Expression<Func<StatutoryArticle, object>>[] includes);
         Task<PagedResult<StatutoryArticle>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<StatutoryArticle, object>>[] includes);
         Task<PagedResult<StatutoryArticle>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<StatutoryArticle, bool>> where = null);
         Task<PagedResult<StatutoryArticle>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<StatutoryArticle, bool>> where = null, bool includeDeleted = false);
