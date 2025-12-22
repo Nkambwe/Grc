@@ -762,6 +762,88 @@
 		<Value>Select type</Value>
 	</LocaleResource>
 
+	<LocaleResource Name="Component.Table.Law.Categories">
+		<Value>Law\Regulation Categories</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Button.Category">
+		<Value>+ Category</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Header.Top">
+		<Value>Select a Category or Law from the left panel</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Button.Law">
+		<Value>+ Law/Regulation</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Header.Act">
+		<Value>Acts / Sections</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Button.Section">
+		<Value>+ Add Section</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Header.Category">
+		<Value>Select a category</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Title.Category">
+		<Value>Manage Regulatory Category</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Label.Category">
+		<Value>Category Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Label.Comments">
+		<Value>Comments</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Title.Laws">
+		<Value>Manage Law/Regulations</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Label.Reference">
+		<Value>Law/Regulation Reference</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Label.LawName">
+		<Value>Law/Regulation Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Label.Authority">
+		<Value>Issuing Authority</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Select.Authority">
+		<Value>Select authority...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Label.Type">
+		<Value>Law/Regulation Type</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Select.Type">
+		<Value>Select type...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Header.Acts">
+		<Value> Manage Act/Section</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Label.Number">
+		<Value>Section/Act Number</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Label.Summery">
+		<Value>Section/Act Summery</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Label.Obligation">
+		<Value>Compliance obligation</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Label.Coverage">
+		<Value>Percentage Covered</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Label.Mandatory">
+		<Value>Is Mandatory?</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Label.Comments">
+		<Value>Comments</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Label.Assurance">
+		<Value>Compliance Assurance</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Label.Frequency">
+		<Value>Obligation Frequency</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Select.Frequency">
+		<Value>Select frequency...</Value>
+	</LocaleResource>
+
 	<LocaleResource Name="Component.Table.Policy.Select.Status">
 		<Value>Select document status</Value>
 	</LocaleResource>

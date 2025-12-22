@@ -40,6 +40,9 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("frequencyId")]
         public long FrequencyId { get; set; }
 
+        [JsonPropertyName("ownerId")]
+        public long OwnerId { get; set; }
+
         [JsonPropertyName("reviewFrequency")]
         public string ReviewFrequency { get; set; }
 

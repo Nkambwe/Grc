@@ -25,6 +25,12 @@ namespace Grc.ui.App.Http.Responses
         [JsonPropertyName("frequency")]
         public string ObligationFrequency { get; set; }
 
+        [JsonPropertyName("ownerId")]
+        public long OwnerId { get; set; }
+
+        [JsonPropertyName("owner")]
+        public string Owner { get; set; }
+
         [JsonPropertyName("isMandatory")]
         public bool IsMandatory { get; set; }
 
@@ -40,7 +46,7 @@ namespace Grc.ui.App.Http.Responses
         [JsonPropertyName("assurance")]
         public decimal ComplianceAssurance { get; set; }
 
-        [JsonPropertyName("somments")]
+        [JsonPropertyName("comments")]
         public string Comments { get; set; }
 
         [JsonPropertyName("isDeleted")]

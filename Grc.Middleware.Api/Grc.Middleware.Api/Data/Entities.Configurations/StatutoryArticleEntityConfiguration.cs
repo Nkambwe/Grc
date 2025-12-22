@@ -17,6 +17,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
             builder.Property(s => s.ComplianceAssurance).HasColumnName("assurance");
             builder.Property(a => a.StatuteId).HasColumnName("statute_id").IsRequired();
             builder.Property(a => a.FrequencyId).HasColumnName("frequency_id").IsRequired(false);
+            builder.Property(a => a.OwnerId).HasColumnName("owner_id").IsRequired(false);
             builder.Property(a => a.Comments).HasColumnName("comments").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(a => a.IsDeleted).HasColumnName("is_deleted");
             builder.Property(a => a.CreatedOn).HasColumnName("created_on").IsRequired();
@@ -25,6 +26,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
             builder.Property(a => a.LastModifiedBy).HasColumnName("modified_by").HasColumnType("NVARCHAR(50)").IsRequired(false);
             builder.HasOne(a => a.Frequency).WithMany(r => r.Articles).HasForeignKey(a => a.FrequencyId);
             builder.HasOne(a => a.Statute).WithMany(r => r.Articles).HasForeignKey(a => a.StatuteId);
+            builder.HasOne(a => a.Owner).WithMany(r => r.Articles).HasForeignKey(a => a.OwnerId);
             builder.HasMany(a => a.Returns).WithOne(r => r.Article).HasForeignKey(a => a.ArticleId);
         }
     }

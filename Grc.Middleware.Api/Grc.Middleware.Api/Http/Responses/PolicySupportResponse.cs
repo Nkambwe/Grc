@@ -20,4 +20,5 @@ namespace Grc.Middleware.Api.Http.Responses
         public List<RegulatoryTypeResponse> RegulatoryTypes { get; set; } = new();
 
     }
+
 }

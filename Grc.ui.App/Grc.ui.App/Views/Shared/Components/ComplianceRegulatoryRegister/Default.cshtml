@@ -1,4 +1,4 @@
-﻿@* @model PolicyRegisterViewModel *@
+﻿@model StatutoryViewModel
 
 <div class="container-fluid regulatory-container">
 
@@ -7,8 +7,10 @@
         <div class="col-md-3 border-end hierarchy-panel">
 
             <div class="category-list-box d-flex justify-content-between align-items-center mb-2">
-                <strong class="category-list-box-title" >Categories</strong>
-                <button class="btn btn-sm grc-btn-outline-primary" id="btnAddCategory">+ Category</button>
+                <strong class="category-list-box-title">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Categories"))</strong>
+                <button class="btn btn-sm grc-btn-outline-primary" id="btnAddCategory">
+                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Button.Category"))
+                </button>
             </div>
 
             <div id="regulatoryTree" class="hierarchy-tree"></div>
@@ -19,20 +21,24 @@
 
             <nav class="bread-crumb-nav" aria-label="breadcrumb">
                 <ol class="breadcrumb small mb-2" id="regulatoryBreadcrumb">
-                    <li class="breadcrumb-item">Select a category</li>
+                    <li class="breadcrumb-item">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Header.Category"))
+                    </li>
                 </ol>
             </nav>
 
             <div id="contentArea">
 
                 <div class="empty-state text-muted text-start p-2" style="border-bottom: solid 1px #CED4DA!important">
-                    Select a Category or Law from the left panel
+                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Header.Top"))
                 </div>
                
                 <div id="categoryView" class="d-none">
                     <div class="d-flex justify-content-between p-2">
                         <h6 class="p-2 m-0">Laws</h6>
-                        <button class="btn btn-sm btn-primary"id="btnAddLaw">+ Add Law</button>
+                        <button class="btn btn-sm btn-primary"id="btnAddLaw">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Button.Law"))
+                        </button>
                     </div>
 
                     <div id="lawsTable"></div>
@@ -40,8 +46,12 @@
 
                 <div id="lawView" class="d-none">
                     <div class="d-flex justify-content-between p-2">
-                        <h6 class="p-2 m-0">Acts / Sections</h6>
-                        <button class="btn btn-sm btn-primary" id="btnAddAct">+ Add Section</button>
+                        <h6 class="p-2 m-0">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Header.Act"))
+                        </h6>
+                        <button class="btn btn-sm btn-primary" id="btnAddAct">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Button.Section"))
+                        </button>
                     </div>
 
                     <div id="actsTable"></div>
@@ -61,7 +71,9 @@
 <div id="lawCategoryPanel" class="law-side-panel" onclick="event.stopPropagation()">
 
     <div class="law-side-panel-header">
-        <h5 id="categoryTitle">Manage Regulatory Category</h5>
+        <h5 id="categoryTitle">
+            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Title.Category"))
+        </h5>
         <button class="panel-close" onclick="closeLawCategory()">
             <i class="mdi mdi-close"></i>
         </button>
@@ -77,15 +89,19 @@
 
                 <div class="row mb-3">
                     <div class="mb-3">
-                        <label for="categoryName" class="form-label">Category Name</label>
+                        <label for="categoryName" class="form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Category"))
+                        </label>
                         <input type="text" class="form-control" id="categoryName" required>
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="mb-3">
-                        <label for="categoryDescription" class="form-label">Description</label>
-                        <textarea class="form-control" id="categoryDescription" rows="3"></textarea>
+                        <label for="comments" class="form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Comments"))
+                        </label>
+                        <textarea class="form-control" id="comments" rows="3"></textarea>
                     </div>
                 </div>
 
@@ -111,7 +127,9 @@
 <div id="lawRegulationPanel" class="law-side-panel" onclick="event.stopPropagation()">
 
     <div class="law-side-panel-header">
-        <h5 id="lawTitle">Manage Law/Regulations</h5>
+        <h5 id="lawTitle">
+            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Title.Law"))
+        </h5>
         <button class="panel-close" onclick="closeLaw()">
             <i class="mdi mdi-close"></i>
         </button>
@@ -119,45 +137,87 @@
 
     <div class="law-side-panel-body">
 
-        <form id="lawForm">
+        <form id="lawForm" class="grc-law-form">
             <input type="hidden" id="lawId" name="lawId">
             <input type="hidden" id="lawCategoryId" name="lawCategoryId">
             <input type="hidden" id="isLawEdit" name="isLawEdit">
 
-            <div class="col-12">
+            <div class="row">
 
-                <div class="row mb-3">
-                    <div class="mb-3">
-                        <label for="lawName" class="form-label">Law Name</label>
-                        <input type="text" class="form-control" id="lawName" required>
+                <div class="col-12">
+
+                    <div class="row mb-3">
+                        <div class="mb-3">
+                            <label for="lawReference" class="form-label">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Reference"))
+                            </label>
+                            <input type="text" class="form-control" id="lawReference" name="lawReference">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="mb-3">
+                            <label for="lawName" class="form-label">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.LawName"))
+                            </label>
+                            <input type="text" class="form-control" id="lawName" name="lawName">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-6">
+
+                    <div class="row mb-3">
+                        <label for="authorityId" class="col-sm-4 col-form-label text-sm-end">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Authority"))
+                        </label>
+                        <div class="col-sm-8">
+                            <select class="js-act-authority-id form-control" id="authorityId" name="authorityId">
+                                <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Select.Authority"))</option>
+                                @if (Model?.Authorities != null && Model.Authorities.Any()) {
+                                    foreach (var authority in Model.Authorities) {
+                                        <option value="@authority.Id">@authority.AuthorityName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-6">
+
+                    <div class="row mb-3">
+                        <label for="typeId" class="col-sm-4 col-form-label text-sm-end">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Type"))
+                        </label>
+                        <div class="col-sm-8">
+                            <select class="js-act-law-type-id form-control" id="typeId" name="typeId">
+                                <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Select.Type"))</option>
+                                @if (Model?.StatuteTypes != null && Model.StatuteTypes.Any()) {
+                                    foreach (var type in Model.StatuteTypes) {
+                                        <option value="@type.Id">@type.TypeName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveLaw(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                        </div>
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeLaw()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                        </div>
+                        <div class="col-sm-10"></div>
                     </div>
                 </div>
 
-                <div class="row mb-3">
-                    <div class="mb-3">
-                        <label for="lawReference" class="form-label">Reference Number</label>
-                        <input type="text" class="form-control" id="lawReference">
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="mb-3">
-                        <label for="lawDescription" class="form-label">Description</label>
-                        <textarea class="form-control" id="lawDescription" rows="3"></textarea>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-12">
-                <div class="row mb-3">
-                    <div class="col-sm-1">
-                        <button class="btn btn-grc-primary" style="width:100%;" onclick="saveLaw(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
-                    </div>
-                    <div class="col-sm-1">
-                        <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeLaw()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
-                    </div>
-                    <div class="col-sm-10"></div>
-                </div>
             </div>
 
         </form>
@@ -169,7 +229,9 @@
 <div id="actPanel" class="law-side-panel" onclick="event.stopPropagation()">
 
     <div class="law-side-panel-header">
-        <h5 id="actTitle">Manage Act/Section</h5>
+        <h5 id="actTitle">
+            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Header.Acts"))
+        </h5>
         <button class="panel-close" onclick="closeLawAct()">
             <i class="mdi mdi-close"></i>
         </button>
@@ -183,29 +245,124 @@
             <input type="hidden" id="actLawId" name="actLawId">
             <input type="hidden" id="isActEdit" name="isActEdit">
 
+            <div class="row">
+
+                <div class="col-12">
+
+                    <div class="row mb-3">
+                        <div class="mb-3">
+                            <label for="section" class="form-label">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Number"))
+                            </label>
+                            <input type="text" class="form-control" id="section" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="mb-3">
+                            <label for="summery" class="form-label">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Summery"))
+                            </label>
+                            <input type="text" class="form-control" id="summery" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="mb-3">
+                            <label for="obligation" class="form-label">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Obligation"))
+                            </label>
+                            <textarea class="form-control" id="obligation" rows="4"></textarea>
+                        </div>
+                    </div>
+                 </div>
+
+                <div class="col-sm-6">
+                    <div class="row field-group mt-5 mb-5">
+                        <div class="col-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="isMandatory">
+                                <label class="form-check-label" for="isMandatory">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Mandatory"))
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    
+                    <div class="row mb-3">
+
+                        <div class="col-6">
+                            <label for="actFrequencyId" class="col-sm-4 col-form-label">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Frequency"))
+                            </label>
+                            <div class="col-sm-8">
+                                <select class="js-act-frequency-id form-control" id="actFrequencyId" name="actFrequencyId">
+                                    <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Select.Frequency"))</option>
+                                    @if (Model?.Frequencies != null && Model.Frequencies.Any()) {
+                                        foreach (var frequency in Model.Frequencies) {
+                                            <option value="@frequency.Id">@frequency.FrequencyName</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <label for="actResponsibleId" class="col-sm-4 col-form-label">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Responsible"))
+                            </label>
+                            <div class="col-sm-8">
+                                <select class="js-act-frequency-id form-control" id="actResponsibleId" name="actResponsibleId">
+                                    <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Select.Responsibility"))</option>
+                                    @if (Model?.Responsibilities != null && Model.Responsibilities.Any()) {
+                                        foreach (var resp in Model.Responsibilities) {
+                                            <option value="@resp.Id">@resp.ResponsibleRole</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                            
+                    </div>
+
+                </div>
+
+            </div>
+
             <div class="col-12">
 
                 <div class="row mb-3">
-                    <div class="mb-3">
-                        <label for="sectionNumber" class="form-label">Section/Act Number</label>
-                        <input type="text" class="form-control" id="sectionNumber" required>
+                    <div class="mb-2">
+                        <label for="assurance" class="form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Assurance"))
+                            <span id="assuranceValue" class="fw-bold ms-2">0%</span>
+                        </label>
+                        <input type="range" class="form-range" id="assurance" min="0" max="100" step="1" value="0">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="mb-2">
+                        <label for="coverage" class="form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Coverage"))
+                            <span id="coverageValue" class="fw-bold ms-2">0%</span>
+                        </label>
+                        <input type="range" class="form-range" id="coverage" min="0" max="100" step="1" value="0">
                     </div>
                 </div>
 
+            </div>
+
+            <div class="col-sm-12">
                 <div class="row mb-3">
                     <div class="mb-3">
-                        <label for="section" class="form-label">Section/Act Title</label>
-                        <input type="text" class="form-control" id="section" required>
+                        <label for="actComments" class="form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Comments"))
+                         </label>
+                        <textarea class="form-control" id="actComments" rows="4"></textarea>
                     </div>
                 </div>
-
-                <div class="row mb-3">
-                    <div class="mb-3">
-                        <label for="obligation" class="form-label">Obligation</label>
-                        <textarea class="form-control" id="obligation" rows="4"></textarea>
-                    </div>
-                </div>
-
             </div>
 
             <div class="col-sm-12">

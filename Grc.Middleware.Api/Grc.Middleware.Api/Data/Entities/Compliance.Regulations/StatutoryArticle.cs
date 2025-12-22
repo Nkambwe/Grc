@@ -15,8 +15,10 @@ public class StatutoryArticle : BaseEntity {
     public decimal ComplianceAssurance { get; set; }
     public string Comments { get; set; }
     public long? FrequencyId { get; set; }
+    public long? OwnerId { get; set; }
     public virtual Frequency Frequency { get; set; }
     public virtual StatutoryRegulation Statute { get; set; }
+    public virtual Responsebility Owner { get; set; }
     public virtual ICollection<RegulatoryReturn> Returns { get; set; }
     public virtual ICollection<ArticleRevision> ArticleRevisions { get; set; }
 }

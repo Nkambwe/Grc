@@ -692,16 +692,47 @@
                defaults: new { controller = "Register", action = "RegulationObligations" }
             );
 
-            /*----------------------------------------------Acts and obligation routes*/
+            /*----------------------------------------------Law routes*/
             routeBuilder.MapControllerRoute(
-               name: "app-compliance-register-list",
-               pattern: "/grc/register/register-list",
-               defaults: new { controller = "Register", action = "RegulationList" }
+               name: "app-compliance-register-law-list",
+               pattern: "/grc/register/register-law-list",
+               defaults: new { controller = "Register", action = "GetLawList" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-laws-retrieve",
+               pattern: "/grc/compliance/register/laws-retrieve/{id:long}",
+               defaults: new { controller = "Register", action = "GetLaw" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-laws-create",
+                pattern: "/grc/compliance/register/laws-create",
+                defaults: new { controller = "Register", action = "CreateLaw" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-laws-update",
+                pattern: "/grc/compliance/register/laws-update",
+                defaults: new { controller = "Register", action = "UpdateLaw" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-laws-delete",
+                pattern: "/grc/compliance/register/laws-delete/{id:long}",
+                defaults: new { controller = "Register", action = "DeleteLaw" }
             );
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-register-laws-list",
                 pattern: "/grc/compliance/register/laws-list",
                 defaults: new { controller = "Register", action = "GetRegulatoryLaws" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-laws-all",
+                pattern: "/grc/compliance/register/laws-all",
+                defaults: new { controller = "Register", action = "GetPagedRegulatoryLaws" }
+            );
+            /*----------------------------------------------Acts routes*/
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-list",
+               pattern: "/grc/register/register-list",
+               defaults: new { controller = "Register", action = "RegulationList" }
             );
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-register-acts-list",
@@ -1070,9 +1101,9 @@
             );
 
             routeBuilder.MapControllerRoute(
-                name: "app-compliance-settings-support-categories-all",
-                pattern: "/grc/compliance/support/categories-all",
-                defaults: new { controller = "ComplianceSettings", action = "AllRegulatoryCategories" }
+                name: "app-compliance-settings-support-paged-categories-all",
+                pattern: "/grc/compliance/support/paged-categories-all",
+                defaults: new { controller = "ComplianceSettings", action = "GetPagedCategories" }
             );
 
             routeBuilder.MapControllerRoute(

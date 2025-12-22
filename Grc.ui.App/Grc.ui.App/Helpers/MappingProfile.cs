@@ -62,7 +62,6 @@ namespace Grc.ui.App.Helpers {
                .ForMember(dest => dest.ModifiedOn, opt => opt.MapFrom(src => DateTime.Now))
                .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => string.Empty));
 
-
             CreateMap<GrcStatuteSectionRequest, StatuteSectionViewModel>()
                 .ForMember(r => r.Id, reg => reg.MapFrom(o => o.Id))
                 .ForMember(r => r.StatutoryId, reg => reg.MapFrom(o => o.StatutoryId))
@@ -74,9 +73,26 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(r => r.Coverage, reg => reg.MapFrom(o => o.Coverage))
                 .ForMember(r => r.IsCovered, reg => reg.MapFrom(o => o.IsCovered))
                 .ForMember(r => r.FrequencyId, reg => reg.MapFrom(o => o.FrequencyId))
+                .ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.OwnerId))
                 .ForMember(r => r.ComplianceAssurance, reg => reg.MapFrom(o => o.ComplianceAssurance))
                 .ForMember(r => r.Comments, reg => reg.MapFrom(o => (o.Comments ?? string.Empty).Trim()))
                 .ForMember(r => r.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted));
+
+            CreateMap<StatuteSectionViewModel, GrcStatuteSectionRequest>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.StatutoryId, opt => opt.MapFrom(src => src.StatutoryId))
+                .ForMember(dest => dest.Section, opt => opt.MapFrom(src => src.Section ?? string.Empty))
+                .ForMember(dest => dest.Summery, opt => opt.MapFrom(src => src.Summery ?? string.Empty))
+                .ForMember(dest => dest.Obligation, opt => opt.MapFrom(src => src.Obligation ?? string.Empty))
+                .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IsDeleted))
+                .ForMember(dest => dest.IsMandatory, opt => opt.MapFrom(src => src.IsMandatory))
+                .ForMember(dest => dest.ExcludeFromCompliance, opt => opt.MapFrom(src => src.ExcludeFromCompliance))
+                .ForMember(dest => dest.Coverage, opt => opt.MapFrom(src => src.Coverage))
+                .ForMember(dest => dest.IsCovered, opt => opt.MapFrom(src => src.IsCovered))
+                .ForMember(dest => dest.FrequencyId, opt => opt.MapFrom(src => src.FrequencyId))
+                .ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.OwnerId))
+                .ForMember(dest => dest.ComplianceAssurance, opt => opt.MapFrom(src => src.ComplianceAssurance))
+                .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments));
 
             CreateMap<UsernameValidationModel, UsernameValidationRequest>()
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Username))
@@ -257,6 +273,15 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments))
                 .ForMember(dest => dest.LastRevisionDate, opt => opt.MapFrom(src => src.LastRevisionDate))
                 .ForMember(dest => dest.NextRevisionDate, opt => opt.MapFrom(src => src.NextRevisionDate));
+
+            CreateMap<StatuteViewModel, GrcStatutoryLawRequest>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.StatuteCode))
+                .ForMember(dest => dest.RegulatoryName, opt => opt.MapFrom(src => src.StatuteName))
+                .ForMember(dest => dest.TypeId, opt => opt.MapFrom(src => src.StatuteTypeId))
+                .ForMember(dest => dest.AuthorityId, opt => opt.MapFrom(src => src.AuthorityId))
+                .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
+                .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IsDeleted));
 
             CreateMap<ProcessGroupViewModel, GrcProcessGroupRequest>()
                 .ForMember(e => e.Id, reg => reg.MapFrom(o => o.Id))

@@ -9,6 +9,9 @@ namespace Grc.ui.App.Http.Requests
         [JsonPropertyName("categoryName")]
         public string Category  { get; set; }
 
+        [JsonPropertyName("comments")]
+        public string Comments { get; set; }
+
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 

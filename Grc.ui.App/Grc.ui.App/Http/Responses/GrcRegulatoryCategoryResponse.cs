@@ -10,6 +10,9 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("categoryName")]
         public string CategoryName { get; set; }
 
+        [JsonPropertyName("comments")]
+        public string Comments { get; set; }
+
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 

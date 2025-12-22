@@ -15,7 +15,6 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
-using OpenXmlPowerTools;
 using System.Text.Json;
 
 namespace Grc.ui.App.Controllers {
@@ -148,6 +147,7 @@ namespace Grc.ui.App.Controllers {
                 var categoryRecord = new {
                     id = response.Id,
                     categoryName = response.CategoryName,
+                    comments = response.Comments,
                     status = response.IsDeleted ? "Inactive" : "Active",
                     addedon = response.CreatedOn.ToString("dd-MM-yyyy"),
                 };
@@ -480,6 +480,7 @@ namespace Grc.ui.App.Controllers {
                     id = cat.Id,
                     startTab = "",
                     category = cat.CategoryName,
+                    comments = cat.Comments,
                     status = cat.IsDeleted,
                     addedon = cat.CreatedOn.ToString("dd-MM-yyyy"),
                     endTab = ""
@@ -542,6 +543,58 @@ namespace Grc.ui.App.Controllers {
                 Logger.LogActivity($"Error retrieving regulatory category items: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "REGULATORY-CATEGORY-CONTROLLER", ex.StackTrace);
                 return Ok(Array.Empty<object>());
+            }
+        }
+
+        public async Task<IActionResult> GetPagedCategories([FromBody] TableListRequest request) {
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    Logger.LogActivity($"REGULATORY CATEGORY DATA ERROR: Failed to get current user record - {JsonSerializer.Serialize(grcResponse)}");
+                    return Ok(new { last_page = 0, data = new List<object>() });
+                }
+
+                //..update with user data
+                var currentUser = grcResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.COMPLIANCE_RETRIEVE_AUTHORITY.GetDescription();
+
+                //..map to ajax object
+                var categoryData = await _regulatoryCategoryService.GetPagedCategoriesAsync(request);
+                PagedResponse<GrcRegulatoryCategoryResponse> categoryList = new();
+
+                if (categoryData.HasError) {
+                    Logger.LogActivity($"REGULATORY CATEGORY DATA ERROR: Failed to retrieve Regulation categories - {JsonSerializer.Serialize(categoryData)}");
+                    return Ok(new {last_page = 0,data = new List<object>()});
+                } else {
+                    categoryList = categoryData.Data;
+                    Logger.LogActivity($"REGULATORY CATEGORY DATA - {JsonSerializer.Serialize(categoryList)}");
+                }
+
+                var pagedEntities = categoryList.Entities
+                    .Select(category => new {
+                        id = category.Id,
+                        category = category.CategoryName,
+                        comments = category.Comments,
+                        status = category.IsDeleted ? "Pending" : "Active",
+                        addedon = category.CreatedOn.ToString("dd-MM-yyyy"),
+                    }).ToList();
+
+                var totalPages = (int)Math.Ceiling((double)categoryList.TotalCount / categoryList.Size);
+                return Ok(new {
+                    last_page = totalPages,
+                    total_records = categoryList.TotalCount,
+                    data = pagedEntities
+                });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving regulatory categories: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "REGULATORY-SETTINGS-CONTROLLER", ex.StackTrace);
+                return Ok(new {last_page = 0, data = new List<object>()});
             }
         }
 
@@ -943,9 +996,9 @@ namespace Grc.ui.App.Controllers {
 
                 //..get current authenticated user record
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (grcResponse.HasError)
-                {
+                if (grcResponse.HasError){
                     Logger.LogActivity($"REGULATORY TYPES DATA ERROR: Failed to get current user record - {JsonSerializer.Serialize(grcResponse)}");
+                    return Ok(new {last_page = 0, data = new List<object>()});
                 }
 
                 //..update with user data
@@ -957,16 +1010,14 @@ namespace Grc.ui.App.Controllers {
                 //..get regulatory type data
                 var typeData = await _regulatoryTypeService.GetPagedTypesAsync(request);
                 PagedResponse<GrcRegulatoryTypeResponse> typeList = new();
-
-                if (typeData.HasError)
-                {
+                if (typeData.HasError){
                     Logger.LogActivity($"REGULATORY TYPE DATA ERROR: Failed to retrieve type items - {JsonSerializer.Serialize(typeData)}");
-                }
-                else
-                {
+                    return Ok(new { last_page = 0, data = new List<object>() });
+                } else {
                     typeList = typeData.Data;
                     Logger.LogActivity($"REGULATORY TYPE DATA - {JsonSerializer.Serialize(typeList)}");
                 }
+
                 typeList.Entities ??= new();
                 var pagedEntities = typeList.Entities
                     .Select(t => new {
@@ -978,21 +1029,11 @@ namespace Grc.ui.App.Controllers {
                     }).ToList();
 
                 var totalPages = (int)Math.Ceiling((double)typeList.TotalCount / typeList.Size);
-                return Ok(new {
-                    last_page = totalPages,
-                    total_records = typeList.TotalCount,
-                    data = pagedEntities
-                });
-            }
-            catch (Exception ex)
-            {
+                return Ok(new {last_page = totalPages, total_records = typeList.TotalCount, data = pagedEntities});
+            } catch (Exception ex) {
                 Logger.LogActivity($"Error retrieving regulatory type items: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "REGULATORY-TYPE-CONTROLLER", ex.StackTrace);
-                return Ok(new
-                {
-                    last_page = 0,
-                    data = new List<object>()
-                });
+                return Ok(new {last_page = 0, data = new List<object>() });
             }
         }
 
@@ -1126,6 +1167,7 @@ namespace Grc.ui.App.Controllers {
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError) {
                     Logger.LogActivity($"REGULATORY AUTHORITIES DATA ERROR: Failed to get current user record - {JsonSerializer.Serialize(grcResponse)}");
+                    return Ok(new { last_page = 0, data = new List<object>() });
                 }
 
                 //..update with user data
@@ -1140,17 +1182,13 @@ namespace Grc.ui.App.Controllers {
 
                 if (authoritiesData.HasError) {
                     Logger.LogActivity($"REGULATORY AUTHORITY DATA ERROR: Failed to retrieve authority items - {JsonSerializer.Serialize(authoritiesData)}");
-                }
-                else
-                {
+                    return Ok(new { last_page = 0, data = new List<object>() });
+                } else {
                     authoritiesList = authoritiesData.Data;
                     Logger.LogActivity($"REGULATORY AUTHORITY DATA - {JsonSerializer.Serialize(authoritiesList)}");
                 }
                 authoritiesList.Entities ??= new();
-
                 var pagedEntities = authoritiesList.Entities
-                    .Skip((request.PageIndex - 1) * request.PageSize)
-                    .Take(request.PageSize)
                     .Select(t => new {
                         id = t.Id,
                         authorityName = t.AuthorityName,
@@ -1160,22 +1198,11 @@ namespace Grc.ui.App.Controllers {
                     }).ToList();
 
                 var totalPages = (int)Math.Ceiling((double)authoritiesList.TotalCount / authoritiesList.Size);
-                return Ok(new
-                {
-                    last_page = totalPages,
-                    total_records = authoritiesList.TotalCount,
-                    data = pagedEntities
-                });
-            }
-            catch (Exception ex)
-            {
+                return Ok(new {last_page = totalPages, total_records = authoritiesList.TotalCount, data = pagedEntities });
+            } catch (Exception ex) {
                 Logger.LogActivity($"Error retrieving regulatory authority items: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "REGULATORY-AUTHGORITY-CONTROLLER", ex.StackTrace);
-                return Ok(new
-                {
-                    last_page = 0,
-                    data = new List<object>()
-                });
+                return Ok(new { last_page = 0, data = new List<object>() });
             }
         }
 
@@ -1757,10 +1784,8 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
-        public async Task<IActionResult> AllDocumentTypes([FromBody] TableListRequest request)
-        {
-            try
-            {
+        public async Task<IActionResult> AllDocumentTypes([FromBody] TableListRequest request) {
+            try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
                 var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (userResponse.HasError || userResponse.Data == null)
@@ -1774,20 +1799,16 @@ namespace Grc.ui.App.Controllers {
                 var typeData = await _documentTypeService.GetPagedDocumentTypesAsync(request);
                 PagedResponse<DocumentTypeResponse> docList = new();
 
-                if (typeData.HasError)
-                {
+                if (typeData.HasError) {
                     Logger.LogActivity($"DOCUMENT TYPES DATA ERROR: Failed to retrieve authority items - {JsonSerializer.Serialize(docList)}");
-                }
-                else
-                {
+                    return Ok(new { last_page = 0, data = new List<object>() });
+                } else {
                     docList = typeData.Data;
                     Logger.LogActivity($"DOCUMENT TYPES DATA - {JsonSerializer.Serialize(docList)}");
                 }
-                docList.Entities ??= new();
 
+                docList.Entities ??= new();
                 var pagedEntities = docList.Entities
-                    .Skip((request.PageIndex - 1) * request.PageSize)
-                    .Take(request.PageSize)
                     .Select(t => new {
                         id = t.Id,
                         startTab = "",
@@ -1798,15 +1819,8 @@ namespace Grc.ui.App.Controllers {
                     }).ToList();
 
                 var totalPages = (int)Math.Ceiling((double)docList.TotalCount / docList.Size);
-                return Ok(new
-                {
-                    last_page = totalPages,
-                    total_records = docList.TotalCount,
-                    data = pagedEntities
-                });
-            }
-            catch (Exception ex)
-            {
+                return Ok(new{ last_page = totalPages, total_records = docList.TotalCount, data = pagedEntities });
+            } catch (Exception ex) {
                 await ProcessErrorAsync(ex.Message, "DOCUMENT-TYPE", ex.StackTrace);
                 return Ok(new { last_page = 0, data = new List<object>() });
             }

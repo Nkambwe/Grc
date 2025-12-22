@@ -20,6 +20,7 @@ namespace Grc.Middleware.Api.Data.Entities.Support
         public virtual ICollection<RegulatoryDocument> ComplianceDocuments { get; set; }
         public virtual ICollection<OperationProcess> OwnerProcesses { get; set; }
         public virtual ICollection<OperationProcess> AssigneeProcesses { get; set; }
+        public virtual ICollection<StatutoryArticle> Articles { get; set; }
     }
 
 }

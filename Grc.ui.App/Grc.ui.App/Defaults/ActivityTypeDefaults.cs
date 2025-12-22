@@ -178,6 +178,10 @@
         public const string PROCESSES_UPDATE_APPROVAL = "Operations.Processes.Approvals.Update";
         public const string PROCESSES_INITIATE_REVIEW = "Operations.Processes.Initiate.Review";
         public const string PROCESSES_HOLD_REVIEW = "Operations.Processes.Hold.Review";
+        public const string COMPLIANCE_RETRIEVE_LAWS = "Register.Laws.Retrieve";
+        public const string COMPLIANCE_CREATE_LAW = "Register.Laws.Create";
+        public const string COMPLIANCE_EDITED_LAW = "Register.Laws.Edited";
+        public const string COMPLIANCE_DELETED_LAW = "Register.Laws.Deleted";
         #endregion
 
     }

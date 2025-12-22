@@ -6,7 +6,7 @@ $(document).ready(function () {
 let regulatoryCategoryTable;
 function initRegulatoryCategoryTable() {
     regulatoryCategoryTable = new Tabulator("#category-table", {
-        ajaxURL: "/grc/compliance/support/categories-all",
+        ajaxURL: "/grc/compliance/support/paged-categories-all",
         paginationMode: "remote",
         filterMode: "remote",
         sortMode: "remote",
@@ -85,15 +85,6 @@ function initRegulatoryCategoryTable() {
         responsiveLayout: "hide",
         columns: [
             {
-                title: "",
-                field: "startTab",
-                maxWidth: 50,
-                headerSort: false,
-                formatter: function (cell) {
-                    return `<span class="record-tab"></span>`;
-                }
-            },
-            {
                 title: "CATEGORY",
                 field: "category",
                 minWidth: 200,
@@ -102,6 +93,12 @@ function initRegulatoryCategoryTable() {
                 formatter: function (cell) {
                     return `<span class="clickable-title" onclick="viewRegulatoryCategoryRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
                 }
+            },
+            {
+                title: "COMMENTS",
+                field: "comments",
+                minWidth: 300,
+                widthGrow: 4
             },
             {
                 title: "STATUS",
@@ -142,16 +139,7 @@ function initRegulatoryCategoryTable() {
                 headerHozAlign: "center",
                 headerSort: false,
                 cssClass: "action-column"
-            },
-            {
-                title: "",
-                field: "endTab",
-                maxWidth: 50,
-                headerSort: false,
-                formatter: function (cell) {
-                    return `<span class="record-tab"></span>`;
-                }
-            },
+            }
         ]
     });
 
@@ -221,6 +209,7 @@ function addRegulatoryCategoryRootRecord() {
     openRegulatoryCategoryPanel('New regulatory category', {
         id:0,
         categoryName: '',
+        comments:'',
         isActive: false
     }, false);
 }
@@ -229,6 +218,7 @@ function addRegulatoryCategoryRootRecord() {
 function openRegulatoryCategoryPanel(title, record, isEdit) {
     $('#recordId').val(record.id);
     $('#categoryName').val(record.categoryName || '');
+    $('#comments').val(record.comments || '');
     $('#isEdit').val(isEdit);
     $('#isActive').prop('checked', record.isActive);
 
@@ -247,27 +237,30 @@ function saveRegulatoryCategoryRecord(e) {
     let recordData = {
         id: parseInt($('#recordId').val()) || 0, 
         categoryName: $('#categoryName').val(),
+        comments: $('#comments').val(),
         isActive: $('#isActive').is(':checked') ? true : false
     };
 
+    //..validate required fields
+    let errors = [];
+    if (!recordData.categoryName)
+        errors.push("Category name is required.");
+
+    if (!recordData.comments)
+        errors.push("Category comment is required.");
+
+    if (errors.length > 0) {
+        highlightCategoryField("#categoryName", !recordData.tagName);
+        highlightCategoryField("#comments", !recordData.tagDescription);
+        Swal.fire({
+            title: "Category Validation",
+            html: `<div style="text-align:left;">${errors.join("<br>")}</div>`,
+        });
+        return;
+    }
+
     //..call backend
     saveRegulatoryCategory(isEdit, recordData);
-}
-
-//...edit record in data
-function updateRegulatoryCategoryRecordInData(data, updatedRecord) {
-    for (let i = 0; i < data.length; i++) {
-        if (data[i].id === updatedRecord.id) {
-            Object.assign(data[i], updatedRecord);
-            return true;
-        }
-        if (data[i]._children) {
-            if (updateRegulatoryCategoryRecordInData(data[i]._children, updatedRecord)) {
-                return true;
-            }
-        }
-    }
-    return false;
 }
 
 function saveRegulatoryCategory(isEdit, payload) {
@@ -294,7 +287,7 @@ function saveRegulatoryCategory(isEdit, payload) {
             }
 
             Swal.fire(res.message || (isEdit ? "Category updated successfully" : "Category created successfully"));
-            closeDoctypePanel();
+            closeRegulatoryCategoryPanel();
 
             // reload table
             regulatoryCategoryTable.replaceData();
@@ -455,4 +448,20 @@ function initRegulatoryCategorySearch() {
 //..get antiforegery token from meta tag
 function getCategoryAntiForgeryToken() {
     return $('meta[name="csrf-token"]').attr('content');
+}
+
+function highlightCategoryField(selector, hasError, message) {
+    const $field = $(selector);
+    const $formGroup = $field.closest('.form-group, .mb-3, .col-sm-8');
+
+    // Remove existing error
+    $field.removeClass('is-invalid');
+    $formGroup.find('.field-error').remove();
+
+    if (hasError) {
+        $field.addClass('is-invalid');
+        if (message) {
+            $formGroup.append(`<div class="field-error text-danger small mt-1">${message}</div>`);
+        }
+    }
 }

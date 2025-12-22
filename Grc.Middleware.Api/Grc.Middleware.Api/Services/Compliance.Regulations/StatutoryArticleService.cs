@@ -452,6 +452,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     artcle.Coverage = request.Coverage;
                     artcle.IsCovered = request.IsCovered;
                     artcle.FrequencyId = request.FrequencyId;
+                    artcle.OwnerId = request.OwnerId;
                     artcle.ComplianceAssurance = request.ComplianceAssurance;
                     artcle.Comments = (request.Comments ?? string.Empty).Trim();
                     artcle.IsDeleted = request.IsDeleted;
@@ -497,6 +498,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     artcle.ComplianceAssurance = request.ComplianceAssurance;
                     artcle.Comments = (request.Comments ?? string.Empty).Trim();
                     artcle.FrequencyId = request.FrequencyId;
+                    artcle.OwnerId = request.OwnerId;
                     artcle.IsDeleted = request.IsDeleted;
                     artcle.LastModifiedOn = DateTime.Now;
                     artcle.LastModifiedBy = $"{request.ModifiedBy}";

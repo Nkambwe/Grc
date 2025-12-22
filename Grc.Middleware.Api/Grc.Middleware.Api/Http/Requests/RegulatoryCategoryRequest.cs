@@ -2,14 +2,16 @@
 
 namespace Grc.Middleware.Api.Http.Requests
 {
-    public class RegulatoryCategoryRequest
-    {
+    public class RegulatoryCategoryRequest {
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
         [JsonPropertyName("categoryName")]
         public string CategoryName { get; set; }
 
+        [JsonPropertyName("comments")]
+        public string Comments { get; set; }
+        
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 

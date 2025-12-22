@@ -548,7 +548,9 @@ button.action-btn.action-btn-separator {
     }
 
 .hierarchy-tree {
-    height: 100%;
+    height: 80%;
+    overflow-y: auto;
+    overflow-x: hidden;
     padding: 0 !important;
 }
 

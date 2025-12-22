@@ -828,9 +828,108 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
+        public async Task<StatuteSupportResponse> GetStatuteSupportItemsAsync(bool includeDeleted) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve support items for compliance laws and regulations", "INFO");
+
+            try {
+
+                StatuteSupportResponse response = new() {
+                    Frequencies = new(),
+                    Authorities = new(),
+                    Responsibilities = new(),
+                    StatuteTypes = new(),
+                    Departments = new()
+                };
+
+
+                // get policy types
+                var types = await uow.RegulatoryTypeRepository.GetAllAsync(false);
+
+                //..get frequencies
+                var frequencies = await uow.FrequencyRepository.GetAllAsync(false);
+
+                // get authorities
+                var authorities = await uow.AuthoritiesRepository.GetAllAsync(false);
+
+                //..get department details
+                var departments = await uow.DepartmentRepository.GetAllAsync(false, d => d.Responsibilities);
+
+                //..populate frequencies    
+                if (frequencies != null && frequencies.Count > 0) {
+                    response.Frequencies.AddRange(
+                        from frequency in frequencies
+                        select new FrequencyResponse {
+                            Id = frequency.Id,
+                            FrequencyName = frequency.FrequencyName
+                        });
+                    Logger.LogActivity($"Return Frequency found: {frequencies.Count}", "DEBUG");
+                }
+
+                //..populate departments
+                if (departments != null && departments.Count > 0) {
+
+                    foreach (var dept in departments) {
+                        //..add department
+                        response.Departments.Add(new PolicyDepartmentResponse {
+                            Id = dept.Id,
+                            DepartmentName = dept.DepartmentName
+                        });
+
+                        //..add responsibilities
+                        var owners = dept.Responsibilities;
+                        if (owners != null && owners.Count > 0) {
+                            response.Responsibilities.AddRange(
+                                from owner in owners
+                                select new ResponsibilityItemResponse {
+                                    Id = owner.Id,
+                                    DepartmentName = dept.DepartmentName,
+                                    ResponsibilityRole = owner.ContactPosition
+                                });
+                            Logger.LogActivity($"Department Responsibilities found: {owners.Count}", "DEBUG");
+                        }
+                    }
+
+                }
+
+                //..authorities
+                if (authorities != null && authorities.Count > 0) {
+                    response.Authorities.AddRange(
+                        from authority in authorities
+                        select new RegulatoryAuthorityResponse {
+                            Id = authority.Id,
+                            AuthorityAlias = authority.AuthorityAlias,
+                            AuthorityName = authority.AuthorityName,
+                            IsDeleted = authority.IsDeleted,
+                            CreatedOn = authority.CreatedOn,
+                            UpdatedOn = authority.LastModifiedOn ?? DateTime.Now
+                        });
+                    Logger.LogActivity($"Regulatory Authorities found: {authorities.Count}", "DEBUG");
+                }
+
+                //..regulatory types
+                if (types != null && types.Count > 0) {
+                    response.StatuteTypes.AddRange(
+                        from type in types
+                        select new StatuteTypeResponse {
+                            Id = type.Id,
+                            TypeName = type.TypeName
+                        });
+                    Logger.LogActivity($"Regulatory types found: {types.Count}", "DEBUG");
+                }
+
+                return response;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve policy support items: {ex.Message}", "ERROR");
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+        }
+
         public async Task<PolicySupportResponse> GetSupportItemsAsync(bool includeDeleted) {
             using var uow = UowFactory.Create();
-            Logger.LogActivity($"Retrieve support items for compliance policies", "INFO");
+            Logger.LogActivity($"Retrieve support items for operations policies", "INFO");
 
             try {
 

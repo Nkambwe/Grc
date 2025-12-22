@@ -22,29 +22,29 @@ namespace Grc.ui.App.Models
         [JsonPropertyName("isMandatory")]
         public bool IsMandatory { get; set; }
 
-        [JsonPropertyName("exclude")]
-        public bool ExcludeFromCompliance { get; set; }
+        [JsonPropertyName("frequencyId")]
+        public long FrequencyId { get; set; }
+
+        [JsonPropertyName("ownerId")]
+        public long OwnerId { get; set; }
 
         [JsonPropertyName("coverage")]
         public decimal Coverage { get; set; }
 
-        [JsonPropertyName("sCovered")]
+        [JsonPropertyName("isCovered")]
         public bool IsCovered { get; set; }
 
-        [JsonPropertyName("assurance")]
-        public decimal ComplianceAssurance { get; set; }
-
-        [JsonPropertyName("frequencyId")]
-        public long FrequencyId { get; set; }
-
-        [JsonPropertyName("reviewFrequency")]
-        public string ReviewFrequency { get; set; }
+        [JsonPropertyName("exclude")]
+        public bool ExcludeFromCompliance { get; set; }
 
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 
+        [JsonPropertyName("assurance")]
+        public decimal ComplianceAssurance { get; set; }
+
         [JsonPropertyName("comments")]
-        public decimal Comments { get; set; }
+        public string Comments { get; set; }
 
     }
 }

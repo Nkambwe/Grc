@@ -1920,6 +1920,37 @@
         }
       }
     },
+    "/grc/registers/law-support-items": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/grc/registers/statute-retrieve": {
       "post": {
         "tags": [
@@ -5780,6 +5811,10 @@
             "type": "string",
             "nullable": true
           },
+          "comments": {
+            "type": "string",
+            "nullable": true
+          },
           "isDeleted": {
             "type": "boolean"
           },
@@ -6212,6 +6247,10 @@
             "format": "double"
           },
           "frequencyId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ownerId": {
             "type": "integer",
             "format": "int64"
           },

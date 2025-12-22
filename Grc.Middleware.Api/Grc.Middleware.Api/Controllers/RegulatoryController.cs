@@ -10,8 +10,10 @@ using Grc.Middleware.Api.Services.Compliance.Support;
 using Grc.Middleware.Api.Services.Organization;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Win32;
 using SQLitePCL;
 using System.Text.Json;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Grc.Middleware.Api.Controllers {
 
@@ -1129,6 +1131,7 @@ namespace Grc.Middleware.Api.Controllers {
                 var type = new RegulatoryCategoryResponse {
                     Id = register.Id,
                     CategoryName = register.CategoryName ?? string.Empty,
+                    Comments = register.Comments ?? string.Empty,
                     IsDeleted = register.IsDeleted,
                     CreatedOn = register.CreatedOn,
                     CreatedBy = register.CreatedBy ?? string.Empty,
@@ -1165,6 +1168,7 @@ namespace Grc.Middleware.Api.Controllers {
                 documents.ToList().ForEach(category => categories.Add(new RegulatoryCategoryResponse() {
                     Id = category.Id,
                     CategoryName = category.CategoryName ?? string.Empty,
+                    Comments = category.Comments ?? string.Empty,
                     IsDeleted = category.IsDeleted,
                     CreatedOn = category.CreatedOn,
                     CreatedBy = category.CreatedBy ?? string.Empty,
@@ -1197,6 +1201,7 @@ namespace Grc.Middleware.Api.Controllers {
                     category => new RegulatoryCategoryResponse {
                         Id = category.Id,
                         CategoryName = category.CategoryName ?? string.Empty,
+                        Comments = category.Comments ?? string.Empty,
                         CreatedOn = category.CreatedOn,
                         CreatedBy = category.CreatedBy,
                         Statutes = category.Regulations.Select(law => new StatutoryRegulationResponse() {
@@ -1409,6 +1414,27 @@ namespace Grc.Middleware.Api.Controllers {
         #endregion
 
         #region Statutories
+
+        [HttpPost("registers/law-support-items")]
+        public async Task<IActionResult> GetLawSupportItems([FromBody] GeneralRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<StatuteSupportResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+
+                //..get support data
+                var _supportItemsList = await _regulatoryService.GetStatuteSupportItemsAsync(false);
+                return Ok(new GrcResponse<StatuteSupportResponse>(_supportItemsList));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<StatuteSupportResponse>(error));
+            }
+        }
 
         [HttpPost("registers/statute-retrieve")]
         public async Task<IActionResult> GetStatute([FromBody] IdRequest request) {
@@ -1772,6 +1798,8 @@ namespace Grc.Middleware.Api.Controllers {
                     FrequencyId = section.FrequencyId ?? 0,
                     Coverage = section.Coverage,
                     ObligationFrequency = section.Frequency?.FrequencyName ?? string.Empty,
+                    OwnerId = section.OwnerId ?? 0,
+                    Owner = section.Owner?.ContactPosition ?? string.Empty,
                     Comments = section.Comments ?? string.Empty,
                     IsDeleted = false,
                     CreatedBy = section.CreatedBy ?? string.Empty,
@@ -1828,6 +1856,8 @@ namespace Grc.Middleware.Api.Controllers {
                         FrequencyId = statute.FrequencyId ?? 0,
                         Coverage = statute.Coverage,
                         ObligationFrequency = statute.Frequency?.FrequencyName ?? string.Empty,
+                        OwnerId = statute.OwnerId ?? 0,
+                        Owner = statute.Owner?.ContactPosition ?? string.Empty,
                         Comments = statute.Comments ?? string.Empty,
                         IsDeleted = false,
                         CreatedBy = statute.CreatedBy ?? string.Empty,
@@ -1888,6 +1918,8 @@ namespace Grc.Middleware.Api.Controllers {
                         FrequencyId = section.FrequencyId ?? 0,
                         Coverage = section.Coverage,
                         ObligationFrequency = section.Frequency?.FrequencyName ?? string.Empty,
+                        OwnerId = section.OwnerId ?? 0,
+                        Owner = section.Owner?.ContactPosition ?? string.Empty,
                         Comments = section.Comments ?? string.Empty,
                         IsDeleted = false,
                         CreatedBy = section.CreatedBy ?? string.Empty,

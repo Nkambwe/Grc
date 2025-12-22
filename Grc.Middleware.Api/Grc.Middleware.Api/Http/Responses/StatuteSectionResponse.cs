@@ -24,6 +24,12 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("frequency")]
         public string ObligationFrequency { get; set; }
 
+        [JsonPropertyName("ownerId")]
+        public long OwnerId { get; set; }
+
+        [JsonPropertyName("owner")]
+        public string Owner { get; set; }
+
         [JsonPropertyName("isMandatory")]
         public bool IsMandatory { get; set; }
 

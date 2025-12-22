@@ -8,6 +8,7 @@ using Grc.Middleware.Api.Utils;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Xml.Linq;
 
 namespace Grc.Middleware.Api.Services.Compliance.Support {
     public class RegulatoryCategoryService : BaseService, IRegulatoryCategoryService
@@ -1044,6 +1045,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
                 {
                     //..update  Regulatory Category record
                     category.CategoryName = (request.CategoryName ?? string.Empty).Trim();
+                    category.Comments = request.Comments ?? string.Empty;
                     category.IsDeleted = request.IsDeleted;
                     category.LastModifiedOn = DateTime.Now;
                     category.LastModifiedBy = $"{request.UserId}";
@@ -1104,6 +1106,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
                 {
                     //..update Regulatory Category record
                     category.CategoryName = (request.CategoryName ?? string.Empty).Trim();
+                    category.Comments = request.Comments ?? string.Empty;
                     category.IsDeleted = request.IsDeleted;
                     category.LastModifiedOn = DateTime.Now;
                     category.LastModifiedBy = $"{request.UserId}";

@@ -11,6 +11,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
             builder.ToTable("TBL_GRC_STATUTORY_CAT");
             builder.HasKey(f => f.Id);
             builder.Property(f => f.CategoryName).HasColumnName("category_name").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
+            builder.Property(f => f.Comments).HasColumnName("comments").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(f => f.IsDeleted).HasColumnName("is_deleted");
             builder.Property(f => f.CreatedOn).HasColumnName("created_on").IsRequired();
             builder.Property(f => f.CreatedBy).HasColumnName("created_by").HasColumnType("NVARCHAR(50)").IsRequired();
