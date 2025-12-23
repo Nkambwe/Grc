@@ -356,7 +356,6 @@ function loadLaws(categoryId) {
 //..show acts/sections for the law
 function loadActs(lawId) {
     selectedLaw = lawId;
-
     $("#lawView").removeClass("d-none");
     $("#categoryView").addClass("d-none");
 
@@ -711,7 +710,7 @@ $("#btnAddAct").on("click", function () {
         return;
     }
 
-    addAct({ id: selectedCategory });
+    addAct({ id: selectedLaw });
 });
 
 function addAct(law) {
@@ -942,6 +941,10 @@ function closeAllPanels() {
 //..close panel handlers
 $('#lawOverlay').on('click', function () {
     closeAllPanels();
+});
+
+$('.action-btn-complianceHome').on('click', function () {
+    window.location.href = '/grc/compliance';
 });
 
 //..close panel on Escape key

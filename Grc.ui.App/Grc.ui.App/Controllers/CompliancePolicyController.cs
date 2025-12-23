@@ -16,23 +16,16 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
 namespace Grc.ui.App.Controllers {
+
     public class CompliancePolicyController : GrcBaseController {
         private readonly IAuthenticationService _authService;
         private readonly IPolicyService _policyService;
         private readonly IPolicyTaskService _policyTasksService;
         public CompliancePolicyController(IApplicationLoggerFactory loggerFactory, 
-            IEnvironmentProvider environment, 
-            IWebHelper webHelper, 
-            ILocalizationService localizationService, 
-            IErrorService errorService, 
-            IAuthenticationService authService,
-            IPolicyService policyService,
-            IPolicyTaskService policyTasksService,
-            IGrcErrorFactory errorFactory, 
-            SessionManager sessionManager) 
-            : base(loggerFactory, environment, webHelper, 
-                  localizationService, errorService,
-                  errorFactory, sessionManager) {
+            IEnvironmentProvider environment, IWebHelper webHelper, ILocalizationService localizationService, 
+            IErrorService errorService, IAuthenticationService authService, IPolicyService policyService,
+            IPolicyTaskService policyTasksService, IGrcErrorFactory errorFactory, SessionManager sessionManager) 
+            : base(loggerFactory, environment, webHelper, localizationService, errorService, errorFactory, sessionManager) {
 
             Logger.Channel = $"POLICY-{DateTime.Now:yyyyMMddHHmmss}";
              _authService = authService;
@@ -499,9 +492,7 @@ namespace Grc.ui.App.Controllers {
 
                 var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
                 return Ok(new { last_page = totalPages, total_records = list.TotalCount, data = pagedEntities });
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Error retrieving policies: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "POLICY-REGISTER", ex.StackTrace);
                 return Ok(new { last_page = 0, data = new List<object>() });
@@ -1038,4 +1029,5 @@ namespace Grc.ui.App.Controllers {
         #endregion
 
     }
+
 }

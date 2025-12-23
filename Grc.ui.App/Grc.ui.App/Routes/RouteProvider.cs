@@ -681,15 +681,19 @@
                pattern: "/grc/register/register-returns",
                defaults: new { controller = "Register", action = "RegulationReturns" }
             );
-            routeBuilder.MapControllerRoute(
-               name: "app-compliance-register-circulars",
-               pattern: "/grc/register/circulars",
-               defaults: new { controller = "Register", action = "RegulationMaps" }
-            );
+
+            /*----------------------------------------------Obligation Routes*/
+           
             routeBuilder.MapControllerRoute(
                name: "app-compliance-register-obligations",
                pattern: "/grc/register/obligations",
                defaults: new { controller = "Register", action = "RegulationObligations" }
+            );
+
+            routeBuilder.MapControllerRoute(
+              name: "app-compliance-register-obligations-list",
+              pattern: "/grc/register/obligations/paged-list",
+              defaults: new { controller = "Register", action = "GetObligationList" }
             );
 
             /*----------------------------------------------Law routes*/

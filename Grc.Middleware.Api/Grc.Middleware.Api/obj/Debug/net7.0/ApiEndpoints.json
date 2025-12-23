@@ -1333,6 +1333,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetPagedObligationsList",
+    "RelativePath": "grc/registers/paged-obligations-list",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "GetPagedRegulatoryTypeList",
     "RelativePath": "grc/registers/paged-regulatory-type-list",
     "HttpMethod": "POST",

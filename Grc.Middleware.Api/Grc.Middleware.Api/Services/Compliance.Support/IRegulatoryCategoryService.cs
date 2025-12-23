@@ -45,5 +45,6 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
         Task<PagedResult<RegulatoryCategory>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<RegulatoryCategory, object>>[] includes);
         Task<PagedResult<RegulatoryCategory>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<RegulatoryCategory, bool>> predicate = null);
         Task<PagedResult<RegulatoryCategory>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<RegulatoryCategory, bool>> predicate = null, bool includeDeleted = false);
+        Task<PagedResult<ObligaionResponse>> GetObligationsAsync(int pageIndex, int pageSize, bool isDeleted);
     }
 }

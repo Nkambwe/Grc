@@ -1,5 +1,4 @@
-﻿
-namespace Grc.Middleware.Api.Http.Responses {
+﻿namespace Grc.Middleware.Api.Http.Responses {
 
     /// <summary>
     /// GRC Class handling responses

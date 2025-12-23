@@ -8,7 +8,7 @@
             <input id="obligationSearchbox" type="text" class="form-control searchbox-field">
         </div>
         <div class="field-search-buttons">
-            <button id="btnObligationExportFiltered" class="btn btn-primary">
+            <button id="btnExport" class="btn btn-primary">
                 <i class="mdi mdi-file-excel-outline"></i> @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.ExportFiltered"))
             </button>
         </div>
@@ -18,23 +18,7 @@
 
 </div>
 
-<!-- Slide-out Panel Overlay -->
-<div class="slide-panel-overlay" id="panelOverlay" onclick="closePanel()"></div>
-
-<!-- Slide-out Panel -->
-<div class="slide-panel" id="slidePanel">
-    <div class="panel-header">
-        <h2>Compliance Mapping</h2>
-        <button class="panel-close" onclick="closePanel()">×</button>
-    </div>
-    <div class="panel-content" id="panelContent">
-        <!-- Content will be dynamically inserted here -->
-    </div>
-</div>
-
 @{
     Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
-    Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-regulation-obligations.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-obligation-register.js");
 }
-
-

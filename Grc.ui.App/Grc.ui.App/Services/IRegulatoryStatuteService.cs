@@ -10,6 +10,7 @@ namespace Grc.ui.App.Services {
         Task<GrcResponse<GrcStatutoryLawResponse>> GetStatuteAsync(GrcIdRequest request);
         Task<GrcResponse<PagedResponse<GrcStatutoryLawResponse>>> GetCategoryStatutes(StatueListRequest request, long userId, string ipAddress);
         Task<GrcResponse<PagedResponse<GrcStatutoryLawResponse>>> GetPagedStatutesAsync(StatueListRequest request, long userId, string ipAddress);
+        Task<GrcResponse<PagedResponse<GrcObligationResponse>>> GetStatutoryObligations(TableListRequest request);
         Task<GrcResponse<ServiceResponse>> CreateStatuteAsync(StatuteViewModel request, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> UpdateStatuteAsync(StatuteViewModel request, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> DeleteStatuteAsync(GrcIdRequest request);

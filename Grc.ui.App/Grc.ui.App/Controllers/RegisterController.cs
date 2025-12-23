@@ -1,5 +1,7 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Grc.ui.App.Defaults;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -236,7 +238,7 @@ namespace Grc.ui.App.Controllers {
                     Logger.LogActivity($"STATUTE DATA ERROR: Failed to retrieve category statutes - {JsonSerializer.Serialize(result)}");
                 } else {
                     list = result.Data;
-                    Logger.LogActivity($"CATEGORY STATUTES DATA - {JsonSerializer.Serialize(list)}");
+                    Logger.LogActivity($"CATEGORY STATUTES DATA - {list.TotalCount}");
                 }
 
                 var statutes = list.Entities ?? new();
@@ -276,7 +278,7 @@ namespace Grc.ui.App.Controllers {
                     Logger.LogActivity($"SECTION DATA ERROR: Failed to retrieve category statutes - {JsonSerializer.Serialize(result)}");
                 } else {
                     list = result.Data;
-                    Logger.LogActivity($"SECTION STATUTES DATA - {JsonSerializer.Serialize(list)}");
+                    Logger.LogActivity($"SECTION STATUTES DATA - {list.TotalCount}");
                 }
 
                 var statutes = list.Entities ?? new();
@@ -497,69 +499,6 @@ namespace Grc.ui.App.Controllers {
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllRegulatoryActs() {
-            try
-            {
-                //..get user IP address
-                var ipAddress = WebHelper.GetCurrentIpAddress();
-
-                //..get current authenticated user record
-                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (grcResponse.HasError)
-                {
-                    Logger.LogActivity($"REGULATORY ACT LIST ERROR: Failed to Current user record - {JsonSerializer.Serialize(grcResponse)}");
-                    return Ok(new { success = false, message = "Unable to resolve current user" });
-                }
-
-                var currentUser = grcResponse.Data;
-                GrcRequest request = new()
-                {
-                    UserId = currentUser.UserId,
-                    Action = Activity.COMPLIANCE_RETRIEVE_ACTS.GetDescription(),
-                    IPAddress = ipAddress,
-                    EncryptFields = Array.Empty<string>(),
-                    DecryptFields = Array.Empty<string>()
-                };
-
-                //..get list of all regulary act
-                var taskData = new List<GrcStatutorySectionResponse>();
-
-                List<GrcStatutorySectionResponse> acts = taskData;
-                //if (taskData.HasError) {
-                //    acts = new();
-                //    Logger.LogActivity($"REGUALTORY ACT DATA ERROR: Failed to retrieve type items - {JsonSerializer.Serialize(taskData)}");
-                //} else {
-                //    acts = taskData.Data;
-                //    Logger.LogActivity($"REGUALTORY ACT DATA - {JsonSerializer.Serialize(acts)}");
-                //}
-
-                //..get ajax data
-                List<object> select2Data = new();
-                if (acts.Any())
-                {
-                    //select2Data = acts.Select(a => new {
-                    //    id = a.Id,
-                    //    regulatoryName = a.RegulatoryName,
-                    //    authorityId = a.AuthorityId,
-                    //    regulatoryAuthority = a.RegulatoryAuthority,
-                    //    reviewFrequency = a.ReviewFrequency,
-                    //    isActive = a.IsDeleted,
-                    //    lastReviewDate = a.LastReviewDate,
-                    //    reviewResponsibility = a.ReviewResponsibility,
-                    //    comments = a.Comments
-                    //}).Cast<object>().ToList();
-                }
-
-                return Json(new { results = select2Data });
-            }
-            catch (Exception ex)
-            {
-                await ProcessErrorAsync(ex.Message, "RIGISTER-CONTROLLER", ex.StackTrace);
-                return Ok(new { last_page = 0, data = new List<object>() });
-            }
-        }
-
         [HttpPost]
         public async Task<IActionResult> GetRegulatoryActs([FromBody] StatueListRequest request) {
             try {
@@ -577,7 +516,7 @@ namespace Grc.ui.App.Controllers {
                     Logger.LogActivity($"SECTION DATA ERROR: Failed to retrieve category statutes - {JsonSerializer.Serialize(result)}");
                 } else {
                     list = result.Data;
-                    Logger.LogActivity($"SECTION STATUTES DATA - {JsonSerializer.Serialize(list)}");
+                    Logger.LogActivity($"SECTION STATUTES DATA - {list.TotalCount}");
                 }
 
                 var statutes = list.Entities ?? new();
@@ -605,21 +544,105 @@ namespace Grc.ui.App.Controllers {
         #endregion
 
         #region Obligations
-        public async Task<IActionResult> RegulationObligations()
-        {
-            if (User.Identity?.IsAuthenticated == true)
-            {
-                var userDashboard = new UserDashboardModel()
-                {
-                    Initials = "JS",
-                };
 
-                return View(userDashboard);
+        public async Task<IActionResult> RegulationObligations() {
+            try {
+                if (User.Identity?.IsAuthenticated == true) {
+                    var ipAddress = WebHelper.GetCurrentIpAddress();
+                    var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                    if (userResponse.HasError || userResponse.Data == null) {
+                        return Redirect(Url.Action("Dashboard", "Application"));
+                    }
+
+                    var currentUser = userResponse.Data;
+                    var userDashboard = new UserDashboardModel {
+                        Initials = $"{currentUser.FirstName[..1]} {currentUser.LastName[..1]}",
+                        LastLogin = DateTime.Now,
+                        Workspace = SessionManager.GetWorkspace(),
+                        DashboardStatistics = new()
+                    };
+
+                    return View(userDashboard);
+                } else {
+                    return RedirectToAction("Login", "Application");
+                }
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error loading Acts obligations view: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "REGISTER-OBLIGATION", ex.StackTrace);
+                return Redirect(Url.Action("Dashboard", "Application"));
             }
-
-            return Redirect(Url.Action("Dashboard", "Application"));
-
         }
+
+        public async Task<IActionResult> GetObligationList([FromBody] TableListRequest request) {
+
+            try {
+
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError) {
+                    Logger.LogActivity($"STATUTE DATA ERROR: Failed to get current user record - {JsonSerializer.Serialize(userResponse)}");
+                    return Ok(new { last_page = 0, data = new List<object>() });
+                }
+
+                //..update with user data
+                var currentUser = userResponse.Data;
+                if (currentUser == null) {
+                    Logger.LogActivity($"User record id null - {JsonSerializer.Serialize(userResponse)}");
+                    //..session has expired
+                    return Ok(new { last_page = 0, data = new List<object>() });
+                }
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.PageSize = 20;
+
+                var result = await _statuteService.GetStatutoryObligations(request);
+                PagedResponse<GrcObligationResponse> list = new();
+                if (result.HasError) {
+                    Logger.LogActivity($"STATUTE DATA ERROR: Failed to retrieve category statutes - {JsonSerializer.Serialize(result)}");
+                } else {
+                    list = result.Data;
+                    Logger.LogActivity($"OBLIGATIONS RECORD COUNT - {list.TotalCount}");
+                }
+
+                var categoryData = list.Entities ?? new();
+                if (categoryData.Any()) {
+                    var categories = categoryData.Select(category => new {
+                        categoryName = category.CategoryName,
+                        coverage = category.Coverage,
+                        isCovered = category.IsCovered,
+                        assurance = category.Assurance,
+                        issues = category.Issues,
+                        laws = category.Laws.Select(law => new {
+                            lawName = law.LawName,
+                            coverage = law.Coverage,
+                            isCovered = law.IsCovered,
+                            assurance = law.Assurance,
+                            issues = law.Issues,
+                            sections = law.Sections.Select(section => new {
+                                sectionId = section.Id,
+                                section = section.Section,
+                                requirement = section.Requirement,
+                                coverage = section.Coverage,
+                                isCovered = section.IsCovered,
+                                assurance = section.Assurance,
+                                issues = section.Issues
+                            })
+                        }),
+                    }).ToList();
+                    return Ok(new {
+                        last_page = list.TotalPages,
+                        total_records = list.TotalCount,
+                        data = categories
+                    });
+                }
+                return Ok(new { last_page = 0, total_records = 0, data = Array.Empty<object>() });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving regulatory obligations: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "RIGISTER-OBLIGATIONS", ex.StackTrace);
+                return Ok(new { last_page = 0, data = new List<object>() });
+            }
+        }
+
         #endregion
 
         #region Regulatory Returns

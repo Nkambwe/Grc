@@ -1,514 +1,207 @@
-﻿//..initialize on load
+﻿let obligationTable;
+
 $(document).ready(function () {
-    initObligationTable();
+    initObligationable();
 });
 
-let sampleObligationData = [
-    {
-        id: 1,
-        code: "PRJ-001",
-        title: "Main Project Alpha",
-        category: "Technical",
-        status: "Active",
-        owner: "John Smith",
-        children: [
-            {
-                id: 11,
-                parentId: 1,
-                code: "TSK-001",
-                title: "Database Design",
-                category: "Technical",
-                status: "Completed",
-                owner: "Jane Doe"
-            },
-            {
-                id: 12,
-                parentId: 1,
-                code: "TSK-002",
-                title: "API Development",
-                category: "Technical",
-                status: "Active",
-                owner: "Bob Wilson",
-                children: [
-                    {
-                        id: 121,
-                        parentId: 12,
-                        code: "SUB-001",
-                        title: "Authentication Module",
-                        category: "Technical",
-                        status: "Active",
-                        owner: "Alice Brown"
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        id: 2,
-        code: "PRJ-002",
-        title: "Project Beta",
-        category: "Administrative",
-        status: "Pending",
-        owner: "Sarah Johnson",
-        children: [
-            {
-                id: 21,
-                parentId: 2,
-                code: "TSK-003",
-                title: "Requirements Gathering",
-                category: "Administrative",
-                status: "Active",
-                owner: "Mike Davis"
-            }
-        ]
-    }
-];
-
-let obligationTable;
-let nextObligationId = 1000;
-
-//..table initialization function
-function initObligationTable() {
+function initObligationable() {
     obligationTable = new Tabulator("#obligations-table", {
-        data: sampleObligationData,
+        ajaxURL: "/grc/register/obligations/paged-list",
+        paginationMode: "remote",
+        filterMode: "remote",
+        sortMode: "remote",
         dataTree: true,
+        dataTreeChildField: "_children",
         dataTreeStartExpanded: false,
-        layout: "fitColumns", 
+        dataTreeCollapseElement: "<span><i class='mdi mdi-chevron-down'></i></span>",
+        dataTreeExpandElement: "<span><i class='mdi mdi-chevron-right'></i></span>",
+        pagination: true,
+        paginationSize: 10,
+        paginationSizeSelector: [10, 20, 35, 40, 50],
+        paginationCounter: "rows",
+        ajaxConfig: {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+        },
+        ajaxContentType: "json",
+        paginationDataSent: {
+            "page": "page",
+            "size": "size",
+            "sorters": "sort",
+            "filters": "filter"
+        },
+        paginationDataReceived: {
+            "last_page": "last_page",
+            "data": "data",
+            "total_records": "total_records"
+        },
+        ajaxRequestFunc: function (url, config, params) {
+            return new Promise((resolve, reject) => {
+                let requestBody = {
+                    pageIndex: params.page || 1,
+                    pageSize: params.size || 10,
+                    searchTerm: "",
+                    sortBy: "",
+                    sortDirection: "Ascending"
+                };
+
+                // Sorting
+                if (params.sort && params.sort.length > 0) {
+                    requestBody.sortBy = params.sort[0].field;
+                    requestBody.sortDirection = params.sort[0].dir === "asc" ? "Ascending" : "Descending";
+                }
+
+                // Filtering
+                if (params.filter && params.filter.length > 0) {
+                    let filter = params.filter.find(f =>
+                        ["requirement"].includes(f.field)
+                    );
+                    if (filter) requestBody.searchTerm = filter.value;
+                }
+
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(requestBody),
+                    success: function (response) {
+                        resolve(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error:", error);
+                        reject(error);
+                    }
+                });
+            });
+        },
+        ajaxResponse: function (url, params, response) {
+            const treeData = (response.data || []).map(category => ({
+                rowType: "category",
+                requirement: category.categoryName,
+                coverage: "-",
+                isCovered: "-",
+                assurance: "-",
+                issues: "-",
+                _children: (category.laws || []).map(law => ({
+                    rowType: "law",
+                    requirement: law.lawName || "Unnamed Law",
+                    coverage: law.coverage != null ? law.coverage + "%" : "",
+                    isCovered: law.isCovered != null ? (law.isCovered ? "Yes" : "No") : "",
+                    assurance: law.assurance != null ? law.assurance + "%" : "",
+                    issues: law.issues != null ? law.issues : "0",
+                    _children: (law.sections || []).map(section => ({
+                        rowType: "section",
+                        sectionId: section.sectionId,
+                        requirement: section.requirement || `Section ${section.sectionId}`,
+                        coverage: section.coverage + "%",
+                        isCovered: section.isCovered ? "Yes" : "No",
+                        assurance: section.assurance + "%",
+                        issues: section.issues
+                    }))
+                }))
+            }));
+
+            return {
+                data: treeData,
+                last_page: response.last_page || 1,
+                total_records: response.total_records || treeData.length
+            };
+        },
+        ajaxError: function (error) {
+            console.error("Tabulator AJAX Error:", error);
+            alert("Failed to load obligation requirements. Please try again.");
+        },
+        layout: "fitColumns",
         responsiveLayout: "hide",
-        dataTreeChildField: "children",
         columns: [
             {
-                title: "Record Code",
-                field: "code",
-                minWidth: 120, 
-                widthGrow: 1,
+                title: "REQUIREMENT",
+                field: "requirement",
+                minWidth: 250,
+                widthGrow: 2,
                 formatter: function (cell) {
-                    return `<span class="record-code">${cell.getValue()}</span>`;
-                }
-            },
-            {
-                title: "Title",
-                field: "title",
-                minWidth: 200, 
-                widthGrow: 4,
-                formatter: function (cell) {
-                    return `<span class="clickable-title" onclick="viewRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
-                }
-            },
-            {
-                title: "Category",
-                field: "category",
-                minWidth: 120,
-                widthGrow: 1
-            },
-            {
-                title: "Status",
-                field: "status",
-                minWidth: 100,
-                widthGrow: 1,
-                formatter: function (cell) {
-                    let value = cell.getValue();
-                    let color = {
-                        "Active": "#28a745",
-                        "Pending": "#ffc107",
-                        "Completed": "#6c757d",
-                        "Archived": "#dc3545"
-                    }[value] || "#6c757d";
-                    return `<span style="color: ${color}; font-weight: 600;">${value}</span>`;
-                }
-            },
-            {
-                title: "Owner",
-                field: "owner",
-                minWidth: 120,
-                widthGrow: 2
-            },
-            {
-                title: "Actions",
-                formatter: function (cell) {
-                    let rowData = cell.getRow().getData();
-                    return `
-                        <button class="btn" style="padding: 5px 10px; font-size: 12px; margin-right: 5px;" onclick="addChildRecord(${rowData.id})">Add Child</button>
-                        <button class="btn" style="padding: 5px 10px; font-size: 12px; background: #dc3545;" onclick="deleteRecord(${rowData.id})">Delete</button>
-                    `;
+                    const rowData = cell.getRow().getData();
+
+                    if (rowData.rowType === "section") {
+                        return `<span class="clickable-title">${cell.getValue()}</span>`;
+                    }
+
+                    return cell.getValue();
                 },
-                width: 200, 
-                hozAlign: "center",
-                headerSort: false
+                cellClick: function (e, cell) {
+                    const rowData = cell.getRow().getData();
+                    console.log(rowData)
+                    if (rowData.rowType === "section" && rowData.sectionId) {
+                        viewRequirement(rowData.sectionId);
+                    }
+                }
+            },
+            {
+                title: "COVERAGE",
+                field: "coverage",
+                minWidth: 150,
+                formatter: percentTextFormatter,
+                hozAlign: "left"
+            },
+            {
+                title: "COMPLIANT",
+                field: "isCovered",
+                minWidth: 150,
+                formatter: yesNoFormatter,
+                hozAlign: "left"
+            },
+            {
+                title: "ASSURANCE",
+                field: "assurance",
+                minWidth: 150,
+                formatter: percentTextFormatter,
+                hozAlign: "left"
+            },
+            {
+                title: "ISSUES",
+                field: "issues",
+                minWidth: 200
             }
         ]
     });
+
+    // Search init
+    initObligationsearch();
 }
 
-//..view/edit Record
-function viewObligationRecord(id) {
-    let record = findObligationRecord(sampleData, id);
-    if (record) {
-        openPanel('Edit Record', record, true);
-    }
+$('.action-btn-complianceHome').on('click', function () {
+    window.location.href = '/grc/compliance';
+});
+
+function initObligationsearch() {
+    // Add your search implementation here
 }
 
-//..add regiter
-function addObligationRootRecord() {
-    openPanel('Add New Record', {
-        id: ++nextObligationId,
-        code: '',
-        title: '',
-        category: 'General',
-        status: 'Active',
-        owner: ''
-    }, false);
+$('.action-btn-complianceHome').on('click', function () {
+    window.location.href = '/grc/compliance';
+});
+
+function viewRequirement(id) {
+    alert(`Selcted ID ${id}`);
 }
 
-//..add Child Record
-function addObligationChildRecord(parentId) {
-    let parent = findRecord(sampleData, parentId);
-    openPanel('Add Child Record', {
-        id: ++nextObligationId,
-        parentId: parentId,
-        code: '',
-        title: '',
-        category: 'General',
-        status: 'Active',
-        owner: '',
-        _parent: parent
-    }, false);
+function initObligationsearch() {
+
 }
 
-//..open slide panel
-function openObligationPanel(title, record, isEdit) {
-    $('#panelTitle').text(title);
-    $('#recordId').val(record.id);
-    $('#parentId').val(record.parentId || '');
-    $('#isEdit').val(isEdit);
-    $('#recordCode').val(record.code || '');
-    $('#recordTitle').val(record.title || '');
-    $('#recordCategory').val(record.category || 'General');
-    $('#recordStatus').val(record.status || 'Active');
-    $('#recordOwner').val(record.owner || '');
-    $('#recordDescription').val(record.description || '');
+function percentTextFormatter(cell) {
+    const value = cell.getValue();
+    if (value === undefined || value === null) return "";
+    return value;
+}
 
-    if (record.parentId && record._parent) {
-        $('#parentInfo').show();
-        $('#parentDisplay').val(`${record._parent.code} - ${record._parent.title}`);
-    } else {
-        $('#parentInfo').hide();
+function yesNoFormatter(cell) {
+    const value = cell.getValue();
+    if (value === "-" || value === "" || value == null) {
+        return "";
     }
 
-    $('.overlay').addClass('active');
-    $('#slidePanel').addClass('active');
+    //..show Yes/No
+    return value ? "Yes" : "No";
 }
 
-//..close panel
-function closeObligationPanel() {
-    $('.overlay').removeClass('active');
-    $('#slidePanel').removeClass('active');
-}
-
-//..save record (AJAX simulation)
-function saveObligationRecord() {
-    let isEdit = $('#isEdit').val() === 'true';
-    let recordData = {
-        id: parseInt($('#recordId').val()),
-        code: $('#recordCode').val(),
-        title: $('#recordTitle').val(),
-        category: $('#recordCategory').val(),
-        status: $('#recordStatus').val(),
-        owner: $('#recordOwner').val(),
-        description: $('#recordDescription').val()
-    };
-
-    let parentId = $('#parentId').val();
-    if (parentId) {
-        recordData.parentId = parseInt(parentId);
-    }
-
-    //..save via controller
-    saveObligationViaController(recordData, isEdit, function (success) {
-        if (success) {
-            if (isEdit) {
-                updateObligationRecordInData(sampleData, recordData);
-            } else {
-                addObligationRecordToData(sampleData, recordData);
-            }
-
-            obligationTable.replaceData(sampleData);
-            closePanel();
-            alert('Record saved successfully!');
-        }
-    });
-}
-
-//..save register
-function saveObligation(data, isEdit, callback) {
-    // This simulates an AJAX call to your ASP.NET Core controller
-    // Replace with actual $.ajax call:
-    /*
-    $.ajax({
-        url: isEdit ? '/Records/Update' : '/Records/Create',
-        type: 'POST',
-        data: JSON.stringify(data),
-        contentType: 'application/json',
-        success: function(response) {
-            callback(true);
-        },
-        error: function(xhr, status, error) {
-            alert('Error saving record: ' + error);
-            callback(false);
-        }
-    });
-    */
-
-    // Simulated success
-    setTimeout(() => callback(true), 100);
-}
-
-//..delete Record
-function deleteObligationRecord(id) {
-    if (confirm('Are you sure you want to delete this record and all its children?')) {
-        // Simulate AJAX delete
-        /*
-        $.ajax({
-            url: '/Records/Delete/' + id,
-            type: 'DELETE',
-            success: function(response) {
-                removeRecordFromData(sampleData, id);
-                table.replaceData(sampleData);
-                alert('Record deleted successfully!');
-            }
-        });
-        */
-
-        removeObligationRecordFromData(sampleData, id);
-        obligationTable.replaceData(sampleData);
-        alert('Record deleted successfully!');
-    }
-}
-
-// Helper Functions
-function findObligationRecord(data, id) {
-    for (let item of data) {
-        if (item.id === id) return item;
-        if (item._children) {
-            let found = findRecord(item._children, id);
-            if (found) return found;
-        }
-    }
-    return null;
-}
-
-function addObligationRecordToData(data, newRecord) {
-    if (newRecord.parentId) {
-        let parent = findRecord(data, newRecord.parentId);
-        if (parent) {
-            if (!parent._children) parent._children = [];
-            parent._children.push(newRecord);
-        }
-    } else {
-        data.push(newRecord);
-    }
-}
-
-function updateObligationRecordInData(data, updatedRecord) {
-    for (let i = 0; i < data.length; i++) {
-        if (data[i].id === updatedRecord.id) {
-            Object.assign(data[i], updatedRecord);
-            return true;
-        }
-        if (data[i]._children) {
-            if (updateObligationRecordInData(data[i]._children, updatedRecord)) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-function removeObligationRecordFromData(data, id) {
-    for (let i = 0; i < data.length; i++) {
-        if (data[i].id === id) {
-            data.splice(i, 1);
-            return true;
-        }
-        if (data[i]._children) {
-            if (removeObligationRecordFromData(data[i]._children, id)) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-//..initialize dropdowns
-//function initializeBranches() {
-//    $(".js-branches").each(function () {
-//        if (!$(this).hasClass('select2-hidden-accessible')) {
-//            initializeBranchElement($(this));
-//        }
-//    });
-//}
-
-//function initializeDepartments() {
-//    $(".js-departments").each(function () {
-//        if (!$(this).hasClass('select2-hidden-accessible')) {
-//            initializeDepartmentElement($(this));
-//        }
-//    });
-//}
-
-//function initializeBranchElement($element) {
-//    const elementId = $element.attr('id');
-//    const labelText = $element.closest('.form-group').find('label').text().trim() || 'Select branch';
-
-//    $element.select2({
-//        width: 'resolve',
-//        placeholder: 'Select a branch...',
-//        allowClear: true,
-//        escapeMarkup: function (markup) {
-//            return markup;
-//        },
-//        language: {
-//            noResults: function () {
-//                return "No branches found";
-//            }
-//        }
-//    });
-
-//    // Fix accessibility issues after Select2 initialization
-//    setTimeout(() => {
-//        fixSelect2Accessibility($element, labelText);
-//    }, 100);
-//}
-
-//function initializeDepartmentElement($element) {
-//    const elementId = $element.attr('id');
-//    const labelText = $element.closest('.form-group').find('label').text().trim() || 'Select Department';
-
-//    $element.select2({
-//        width: 'resolve',
-//        placeholder: 'Select a department...',
-//        allowClear: true,
-//        escapeMarkup: function (markup) {
-//            return markup;
-//        },
-//        language: {
-//            noResults: function () {
-//                return "No departments found";
-//            }
-//        }
-//    });
-
-//    // Fix accessibility issues after Select2 initialization
-//    setTimeout(() => {
-//        fixSelect2Accessibility($element, labelText);
-//    }, 100);
-//}
-
-//function loadBranchesForContainer($container) {
-//    const $branchSelects = $container.find('.js-branches');
-//    if ($branchSelects.length > 0) {
-//        $.ajax({
-//            url: '/support/organization/getBranches',
-//            type: 'GET',
-//            dataType: 'json',
-//            success: function (data) {
-//                $branchSelects.each(function () {
-//                    const $select = $(this);
-//                    const currentValue = $select.val();
-
-//                    // Destroy existing Select2 if it exists
-//                    if ($select.hasClass('select2-hidden-accessible')) {
-//                        $select.select2('destroy');
-//                    }
-
-//                    // Clear existing options
-//                    $select.empty();
-
-//                    // Add placeholder option
-//                    $select.append('<option value="">Select a branch...</option>');
-
-//                    // Add branch options
-//                    if (data.results && data.results.length > 0) {
-//                        $.each(data.results, function (index, branch) {
-//                            $select.append(`<option value="${branch.id}">${branch.text}</option>`);
-//                        });
-//                    }
-
-//                    // Restore previous value if it exists
-//                    if (currentValue) {
-//                        $select.val(currentValue);
-//                    }
-
-//                    // Initialize Select2 with accessibility fixes
-//                    initializeBranchElement($select);
-//                });
-//            },
-//            error: function (xhr, status, error) {
-//                console.error('Error loading branches:', error);
-
-//                // Initialize empty Select2 even on error
-//                $branchSelects.each(function () {
-//                    const $select = $(this);
-//                    if (!$select.hasClass('select2-hidden-accessible')) {
-//                        initializeBranchElement($select);
-//                    }
-//                });
-//            }
-//        });
-//    }
-//}
-
-//function loadDepartmentsForContainer($container) {
-//    const $branchSelects = $container.find('.js-departments');
-//    if ($branchSelects.length > 0) {
-//        $.ajax({
-//            url: '/support/departments/getDepartments',
-//            type: 'GET',
-//            dataType: 'json',
-//            success: function (data) {
-//                $branchSelects.each(function () {
-//                    const $select = $(this);
-//                    const currentValue = $select.val();
-
-//                    // Destroy existing Select2 if it exists
-//                    if ($select.hasClass('select2-hidden-accessible')) {
-//                        $select.select2('destroy');
-//                    }
-
-//                    // Clear existing options
-//                    $select.empty();
-
-//                    // Add placeholder option
-//                    $select.append('<option value="">Select a department...</option>');
-
-//                    // Add department options
-//                    if (data.results && data.results.length > 0) {
-//                        $.each(data.results, function (index, department) {
-//                            $select.append(`<option value="${department.id}">${department.text}</option>`);
-//                        });
-//                    }
-
-//                    // Restore previous value if it exists
-//                    if (currentValue) {
-//                        $select.val(currentValue);
-//                    }
-
-//                    // Initialize Select2 with accessibility fixes
-//                    initializeDepartmentElement($select);
-//                });
-//            },
-//            error: function (xhr, status, error) {
-//                console.error('Error loading departments:', error);
-
-//                // Initialize empty Select2 even on error
-//                $branchSelects.each(function () {
-//                    const $select = $(this);
-//                    if (!$select.hasClass('select2-hidden-accessible')) {
-//                        initializeDepartmentElement($select);
-//                    }
-//                });
-//            }
-//        });
-//    }
-
-//}

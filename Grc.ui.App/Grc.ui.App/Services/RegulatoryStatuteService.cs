@@ -142,6 +142,26 @@ namespace Grc.ui.App.Services {
             }
         }
 
+        public async Task<GrcResponse<PagedResponse<GrcObligationResponse>>> GetStatutoryObligations(TableListRequest request) {
+            try {
+
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object", "Request object cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<PagedResponse<GrcObligationResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/paged-obligations-list";
+                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<GrcObligationResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "STATUTE-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<PagedResponse<GrcObligationResponse>>(error);
+            }
+        }
+
         public async Task<GrcResponse<ServiceResponse>> CreateStatuteAsync(StatuteViewModel model, long userId, string ipAddress) {
             try {
 

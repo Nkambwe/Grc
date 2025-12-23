@@ -10,10 +10,9 @@ using Grc.Middleware.Api.Services.Compliance.Support;
 using Grc.Middleware.Api.Services.Organization;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Win32;
-using SQLitePCL;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Collections.Generic;
 using System.Text.Json;
-using static System.Collections.Specialized.BitVector32;
 
 namespace Grc.Middleware.Api.Controllers {
 
@@ -501,6 +500,39 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
+        #endregion
+
+        #region Obligations
+        [HttpPost("registers/paged-obligations-list")]
+        public async Task<IActionResult> GetPagedObligationsList([FromBody] ListRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<ObligaionResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _categoryService.GetObligationsAsync(request.PageIndex, request.PageSize, false);
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS,"No data", "No obligation records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<ObligaionResponse>>(
+                              new PagedResponse<ObligaionResponse>(
+                              new List<ObligaionResponse>(), 0, pageResult.Page, pageResult.Size)));
+                }
+
+                var categories = pageResult.Entities;
+                return Ok(new GrcResponse<PagedResponse<ObligaionResponse>>(
+                          new PagedResponse<ObligaionResponse>(
+                              categories, pageResult.Count, pageResult.Page,pageResult.Size))
+                    );
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<ObligaionResponse>>(error));
+            }
+        }
         #endregion
 
         #region Regulatory Types

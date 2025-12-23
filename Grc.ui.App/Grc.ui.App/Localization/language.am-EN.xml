@@ -430,7 +430,7 @@
 		<Value>Regulations,Guidelines and Laws</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.RegulatoryMaps">
-		<Value>Compliance Maps</Value>
+		<Value>Requirements/Obligations</Value>
 	</LocaleResource>
 
 	<LocaleResource Name="Component.Key.ActiveUsers">
@@ -1432,10 +1432,10 @@
 		<Value>Policies and Procedures</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Regulatory.Obligations">
-		<Value>Regulatory Obligations</Value>
+		<Value>Requirements/Obligation</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Obligations.Register">
-		<Value>Obligations Register</Value>
+		<Value>Compliance Mapping</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Registers.Circular">
 		<Value>Circular Returns</Value>
