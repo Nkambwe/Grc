@@ -262,7 +262,7 @@ namespace Grc.ui.App.Enums {
         SECTION_RETRIEVE_LAWSECTIONLIST = 136,
         [Description("Create new law section")]
         SECTION_CREATE_SECTION = 137,
-        [Description("Create new law section")]
+        [Description("Update law section")]
         SECTION_UPDATE_SECTION = 138,
         [Description("Retrieve section by ID")]
         SECTION_RETRIVE_SECTION = 139,
@@ -276,5 +276,7 @@ namespace Grc.ui.App.Enums {
         LAW_DELETE = 143,
         [Description("Retrieve law/regulatory register support")]
         LAW_RETRIEVE_SUPPORT = 144,
+        [Description("Create new compliance map")]
+        COMPLIANCE_CREATE_MAP = 145,
     }
 }

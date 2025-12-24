@@ -289,6 +289,28 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(e => e.GroupDescription, reg => reg.MapFrom(o => (o.GroupDescription ?? string.Empty).Trim()))
                 .ForMember(q => q.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
                 .ForMember(e => e.Processes, reg => reg.MapFrom(o => o.Processes ?? new()));
+
+            CreateMap<GrcComplianceMapViewMode, GrcComplianceMapRequest>()
+                .ForMember(e => e.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(q => q.Include, reg => reg.MapFrom(o => o.Include))
+                .ForMember(e => e.MapDescription, reg => reg.MapFrom(o => (o.MapDescription ?? string.Empty).Trim()))
+                .ForMember(e => e.ControlMaps, reg => reg.MapFrom(o => o.ControlMaps));
+
+            CreateMap<GrcControlMapViewModel, GrcControlMapRequest>()
+                .ForMember(e => e.Id, reg => reg.MapFrom(o => o.Id))
+                .ForMember(q => q.Include, reg => reg.MapFrom(o => o.Include))
+                .ForMember(e => e.ControlDescription, reg => reg.MapFrom(o => (o.ControlDescription ?? string.Empty).Trim()))
+                .ForMember(e => e.ParentId, reg => reg.MapFrom(o => o.ParentId));
+
+            CreateMap<ObligationMapViewModel, GrcObligationMapRequest>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.IsMandatory, opt => opt.MapFrom(src => src.IsMandatory))
+                .ForMember(dest => dest.Coverage, opt => opt.MapFrom(src => src.Coverage))
+                .ForMember(dest => dest.IsCovered, opt => opt.MapFrom(src => src.IsCovered))
+                .ForMember(dest => dest.Exclude, opt => opt.MapFrom(src => src.Exclude))
+                .ForMember(dest => dest.Assurance, opt => opt.MapFrom(src => src.Assurance))
+                .ForMember(dest => dest.Rationale, opt => opt.MapFrom(src => src.Rationale))
+                .ForMember(dest => dest.ComplianceMaps, opt => opt.MapFrom(src => src.ComplianceMaps));
         }
     }
 }

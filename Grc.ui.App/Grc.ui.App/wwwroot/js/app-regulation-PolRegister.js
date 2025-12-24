@@ -3,6 +3,7 @@
 });
 
 let policyRegisterTable;
+
 function initPolicyGuidTable() {
     policyRegisterTable = new Tabulator("#regulatory-policy-register-table", {
         ajaxURL: "/grc/compliance/register/policies-all",

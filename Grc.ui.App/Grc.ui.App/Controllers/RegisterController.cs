@@ -395,7 +395,7 @@ namespace Grc.ui.App.Controllers {
             {
                 Logger.LogActivity($"Unexpected error retrieving regulatory act: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "RIGISTER-CONTROLLER", ex.StackTrace);
-                return Ok(new { success = true, data = new { }});
+                return Ok(new { success = false, message="Failed to retrieve regulatory acts, an Unexpected error occurred", data = new { }});
             }
         }
 
@@ -429,7 +429,7 @@ namespace Grc.ui.App.Controllers {
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected error creating regulatory act: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "RIGISTER-CONTROLLER", ex.StackTrace);
-                return Ok(new { success = true, data = new { } });
+                return Ok(new { success = false, message="Failed to create regulatory act, an Unexpected error occurred", data = new { } });
             }
         }
 
@@ -593,12 +593,13 @@ namespace Grc.ui.App.Controllers {
                 }
                 request.UserId = currentUser.UserId;
                 request.IPAddress = ipAddress;
-                request.PageSize = 20;
+                request.PageIndex = request.PageIndex;
+                request.PageSize = request.PageSize;
 
                 var result = await _statuteService.GetStatutoryObligations(request);
                 PagedResponse<GrcObligationResponse> list = new();
                 if (result.HasError) {
-                    Logger.LogActivity($"STATUTE DATA ERROR: Failed to retrieve category statutes - {JsonSerializer.Serialize(result)}");
+                    Logger.LogActivity($"OBLIGATIONS DATA ERROR: Failed to retrieve category statutes - {JsonSerializer.Serialize(result)}");
                 } else {
                     list = result.Data;
                     Logger.LogActivity($"OBLIGATIONS RECORD COUNT - {list.TotalCount}");
@@ -629,6 +630,7 @@ namespace Grc.ui.App.Controllers {
                             })
                         }),
                     }).ToList();
+
                     return Ok(new {
                         last_page = list.TotalPages,
                         total_records = list.TotalCount,
@@ -640,6 +642,93 @@ namespace Grc.ui.App.Controllers {
                 Logger.LogActivity($"Error retrieving regulatory obligations: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "RIGISTER-OBLIGATIONS", ex.StackTrace);
                 return Ok(new { last_page = 0, data = new List<object>() });
+            }
+        }
+
+        [LogActivityResult("Retrieve Act", "User retrieved legal act", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_ACTS, "RegulatoryAct")]
+        public async Task<IActionResult> GetObligation(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0) {
+                    return BadRequest(new { success = false, message = "Legal Act Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.SECTION_RETRIVE_SECTION.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = false
+                };
+
+                var result = await _sectionService.GetObligationAsyncAsync(request);
+                if (result.HasError || result.Data == null) {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving legacl Act";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var response = result.Data;
+                var obligation = new {
+                    id = response.Id,
+                    category = response.Category ?? string.Empty,
+                    statute = response.Statute ?? string.Empty,
+                    section = response.Section ?? string.Empty,
+                    summery = response.Summery ?? string.Empty,
+                    obligation = response.Obligation ?? string.Empty,
+                    isMandatory = response.IsMandatory,
+                    exclude = response.Exclude,
+                    coverage = response.Coverage,
+                    isCovered = response.IsCovered,
+                    rationale = response.ComplianceReason ?? string.Empty,
+                    assurance = response.Assurance,
+                    complianceMaps = response.ComplianceMaps
+                };
+
+                return Ok(new { success = true, data = obligation });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error retrieving regulatory act: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "RIGISTER-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = true, data = new { } });
+            }
+        }
+
+        public async Task<IActionResult> CreateComplianceMap([FromBody] ObligationMapViewModel request) {
+            try {
+                Logger.LogActivity("Create Obligation Compliance Map", "INFO");
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (request == null) {
+                    var msg = "Invalid request data";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                //..set system fields
+                var currentUser = userResponse.Data;
+                var result = await _sectionService.CreateMapAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create compliance map, an error occurred" });
+
+                return Ok(new { success = false, message = "Compliance map saved successfully"});
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error occurred while saving compliance map: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "RIGISTER-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message="Could not save map, an unexpected error occurred"});
             }
         }
 
@@ -660,13 +749,10 @@ namespace Grc.ui.App.Controllers {
         }
         #endregion
 
-        #region Manage Regulations
-        public async Task<IActionResult> ManageRegulations()
-        {
-            if (User.Identity?.IsAuthenticated == true)
-            {
-                var userDashboard = new UserDashboardModel()
-                {
+        #region Circular Obligations
+        public async Task<IActionResult> RegulationCirculars() {
+            if (User.Identity?.IsAuthenticated == true) {
+                var userDashboard = new UserDashboardModel() {
                     Initials = "JS",
                 };
 
@@ -677,9 +763,11 @@ namespace Grc.ui.App.Controllers {
         }
         #endregion
 
-        #region Circular Obligations
-        public async Task<IActionResult> RegulationCirculars() {
-            if (User.Identity?.IsAuthenticated == true) {
+        #region Manage Regulations
+        public async Task<IActionResult> ManageRegulations()
+        {
+            if (User.Identity?.IsAuthenticated == true)
+            {
                 var userDashboard = new UserDashboardModel()
                 {
                     Initials = "JS",

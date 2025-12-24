@@ -16,8 +16,9 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
             builder.Property(s => s.IsCovered).HasColumnName("is_covered");
             builder.Property(s => s.ComplianceAssurance).HasColumnName("assurance");
             builder.Property(a => a.StatuteId).HasColumnName("statute_id").IsRequired();
-            builder.Property(a => a.FrequencyId).HasColumnName("frequency_id").IsRequired(false);
+            builder.Property(a => a.FrequencyId).HasColumnName("frequency_id").IsRequired(false); 
             builder.Property(a => a.OwnerId).HasColumnName("owner_id").IsRequired(false);
+            builder.Property(a => a.ComplianceReason).HasColumnName("rationale").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(a => a.Comments).HasColumnName("comments").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(a => a.IsDeleted).HasColumnName("is_deleted");
             builder.Property(a => a.CreatedOn).HasColumnName("created_on").IsRequired();

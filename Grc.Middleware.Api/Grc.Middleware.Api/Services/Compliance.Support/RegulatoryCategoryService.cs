@@ -630,7 +630,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
                             Assurance = 0,
                             Issues = 0,
                             Sections = law.Articles.Select(section => new ObligationActResponse() {
-                                Id = law.Id,
+                                Id = section.Id,
+                                Section = section.Article,
                                 Requirement = section.Summery,
                                 Coverage = section.Coverage,
                                 IsCovered = section.IsCovered,
@@ -639,7 +640,6 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
                             }).ToList() 
                         }).ToList()
                     });
-
 
                 //..calculate coverage for laws after data retrieval
                 var data = categories.Entities;

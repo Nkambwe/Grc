@@ -164,7 +164,7 @@ function addRootRecord() {
 function addChildRecord(parentId) {
     let parent = findRecord(sampleData, parentId);
     openPanel('Add Child Record', {
-        id: ++nextId,
+        id: 0,
         parentId: parentId,
         code: '',
         title: '',

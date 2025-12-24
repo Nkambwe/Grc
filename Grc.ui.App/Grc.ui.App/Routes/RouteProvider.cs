@@ -695,7 +695,16 @@
               pattern: "/grc/register/obligations/paged-list",
               defaults: new { controller = "Register", action = "GetObligationList" }
             );
-
+            routeBuilder.MapControllerRoute(
+               name: "app-operations-register-obligations-request",
+               pattern: "/grc/register/obligations/request/{id:long}",
+               defaults: new { controller = "Register", action = "GetObligation" }
+            );
+            routeBuilder.MapControllerRoute(
+                 name: "app-operations-register-obligations-createmap",
+                pattern: "/grc/register/obligations/create-map",
+                defaults: new { controller = "Register", action = "CreateComplianceMap" }
+            );
             /*----------------------------------------------Law routes*/
             routeBuilder.MapControllerRoute(
                name: "app-compliance-register-law-list",

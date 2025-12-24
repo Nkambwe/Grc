@@ -18,6 +18,172 @@
 
 </div>
 
+<!-- Overlay -->
+<div id="obligationOverlay" class="obligation-panel-overlay"></div>
+
+<!-- Section Panel -->
+<div id="obligationPanel" class="obligation-side-panel" onclick="event.stopPropagation()">
+
+    <div class="obligation-side-panel-header">
+        <h5 id="obligationTitle">
+            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Header.Acts"))
+        </h5>
+        <button class="panel-close" onclick="closeObligationt()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div class="obligation-side-panel-body">
+
+        <form id="obligationForm" class="grc-law-form">
+
+            <input type="hidden" id="obligationId" name="obligationId">
+
+            <!-- Tabs header -->
+            <ul class="nav nav-tabs mb-3" id="obligationTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">
+                        Obligation Details
+                    </button>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="controls-tab" data-bs-toggle="tab" data-bs-target="#controls" type="button" role="tab">
+                        Controls
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tabs content -->
+            <div class="tab-content">
+
+                <!--tab 1 -->
+                <div class="tab-pane fade show active" id="details" role="tabpanel">
+
+                    <div class="row">
+
+                        <div class="col-12">
+
+                            <div class="row mb-3">
+                                <span class="col-12 obligation-label">Regulatory Category</span>
+                                <div class="col-12">
+                                    <span id="category" class="obligation-field-detail"></span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <span class="col-12 obligation-label">Regulation/Statute</span>
+                                <div class="col-12">
+                                    <span id="statute" class="obligation-field-detail"></span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <span class="col-12 obligation-label">Requirement Summary</span>
+                                <div class="mb-3">
+                                    <span id="summery" class="obligation-field-detail"></span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <span class="col-12 obligation-label">Obligation Description</span>
+                                <div class="mb-3">
+                                    <span id="obligation" class="obligation-field-detail"></span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-sm-12">
+
+                            <div class="row mb-3">
+
+                                <div class="col-4">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="exclude">
+                                        <label class="form-check-label" for="exclude">Exclude from Compliance</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-4">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="isMandatory">
+                                        <label class="form-check-label" for="isMandatory">Is Mandatory</label>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row mb-3">
+
+                                <div class="col-4">
+                                    <div class="form-check form-switch mt-4">
+                                        <input class="form-check-input" type="checkbox" id="isCovered">
+                                        <label class="form-check-label" for="isCovered">Is Covered</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-4">
+                                    <label class="form-label">
+                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Coverage"))
+                                        <span id="coverageValue" class="fw-bold ms-2">0%</span>
+                                    </label>
+                                    <input type="range" class="form-range" id="coverage" min="0" max="100">
+                                </div>
+
+                                <div class="col-4">
+                                    <label class="form-label">
+                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Assurance"))
+                                        <span id="assuranceValue" class="fw-bold ms-2">0%</span>
+                                    </label>
+                                    <input type="range" class="form-range" id="assurance" min="0" max="100">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-sm-12">
+                            <label class="form-label">Rationale</label>
+                            <textarea class="form-control" id="rationale" rows="4"></textarea>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!--tab 2-->
+                <div class="tab-pane fade" id="controls" role="tabpanel">
+
+                    <!--TODO-1 Remove sample controls and handle cases where none are added yet-->
+                    <!--TODO-1 In this case, show button to click and display a list of controls to check-->
+                    <!--TODO-1 When One is checked, show the control details and ask use to enter control details-->
+                    <ul class="list-group" id="controlTree"></ul>
+
+                    <!--TODO-2 Add Page under obligations to add Maps and controls to the system-->
+                </div>
+            </div>
+
+            <div class="row mt-4 p-4">
+                <div class="col-sm-1">
+                    <button type="button" class="btn btn-grc-primary w-100" onclick="updateObligationt(event)">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))
+                    </button>
+                </div>
+
+                <div class="col-sm-1">
+                    <button type="button" class="btn btn-grc-secondary w-100" onclick="closeObligationt()">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))
+                    </button>
+                </div>
+            </div>
+
+        </form>
+
+
+    </div>
+
+</div>
+
 @{
     Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
     Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-obligation-register.js");

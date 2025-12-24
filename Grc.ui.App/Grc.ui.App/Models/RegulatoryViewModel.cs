@@ -13,4 +13,5 @@ namespace Grc.ui.App.Models
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
     }
+
 }

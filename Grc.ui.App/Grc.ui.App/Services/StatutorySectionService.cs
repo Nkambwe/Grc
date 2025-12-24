@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.EMMA;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
 using Grc.ui.App.Factories;
@@ -36,13 +37,21 @@ namespace Grc.ui.App.Services {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
                 await ProcessErrorAsync(ex.Message, "STATUTE-ACT-SERVICE", ex.StackTrace);
-                var error = new GrcResponseError(
-                    GrcStatusCodes.SERVERERROR,
-                    "An unexpected error occurred",
-                    "Cannot proceed! An error occurred, please try again later"
-                );
-
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<GrcStatutorySectionResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<GrcRequirementResponse>> GetObligationAsyncAsync(GrcIdRequest request) {
+            try {
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/obligation-retrieve";
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcRequirementResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "STATUTE-ACT-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<GrcRequirementResponse>(error);
             }
         }
 
@@ -236,6 +245,43 @@ namespace Grc.ui.App.Services {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
                 await ProcessErrorAsync(ex.Message, "STATUTE-ACT-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> CreateMapAsync(ObligationMapViewModel model, long userId, string ipAddress) {
+            try {
+                if (model == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Compliance Map record cannot be null", "Invalid compliance map record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                var request = Mapper.Map<GrcObligationMapRequest>(model);
+                request.UserId = userId;
+                request.IpAddress = ipAddress;
+                request.Action = Activity.COMPLIANCE_CREATE_MAP.GetDescription();
+
+                //..map request
+                Logger.LogActivity($"CREATE COMPLIANCE MAP SECTION REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/create-compliance-map";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcObligationMapRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "COMPLIANCE-MAP-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "COMPLIANCE-MAP-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<ServiceResponse>(error);
             }

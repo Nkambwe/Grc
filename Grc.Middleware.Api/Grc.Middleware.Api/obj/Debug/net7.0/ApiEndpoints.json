@@ -981,6 +981,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "CreateComplianceMap",
+    "RelativePath": "grc/registers/create-compliance-map",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ObligationMapRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "CreateDocument",
     "RelativePath": "grc/registers/create-document",
     "HttpMethod": "POST",
@@ -1269,6 +1285,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetObligation",
+    "RelativePath": "grc/registers/obligation-retrieve",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "GetPagedAuthorityList",
     "RelativePath": "grc/registers/paged-authorities-list",
     "HttpMethod": "POST",
@@ -1319,6 +1351,22 @@
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "GetPagedDocumentTypeList",
     "RelativePath": "grc/registers/paged-document-type-list",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetPagedMapList",
+    "RelativePath": "grc/registers/paged-maps-list",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,

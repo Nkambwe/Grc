@@ -502,7 +502,8 @@ namespace Grc.Middleware.Api.Controllers {
 
         #endregion
 
-        #region Obligations
+        #region Compliance Mapping
+
         [HttpPost("registers/paged-obligations-list")]
         public async Task<IActionResult> GetPagedObligationsList([FromBody] ListRequest request) {
             try {
@@ -533,6 +534,196 @@ namespace Grc.Middleware.Api.Controllers {
                 return Ok(new GrcResponse<PagedResponse<ObligaionResponse>>(error));
             }
         }
+
+        [HttpPost("registers/obligation-retrieve")]
+        public async Task<IActionResult> GetObligation([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Get Obligation/requirement by ID", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ObligationResponse>(error));
+                }
+
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request obligation ID is required", "Invalid regulation request ID");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ObligationResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var obligation = await _articleService.GetAsync(d => d.Id == request.RecordId, false, a => a.Statute, a => a.Statute.Category);
+                if (obligation == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Obligation/Requirement not found", "No obligation/Requirement matched the provided ID");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ObligationResponse>(error));
+                }
+
+                //..return obligation/requirement data
+                var registerRecord = new ObligationResponse {
+                    Id = obligation.Id,
+                    Category = obligation.Statute?.Category?.CategoryName ?? string.Empty,
+                    Statute = obligation.Statute?.RegulatoryName ?? string.Empty,
+                    Section = obligation.Article ?? string.Empty,
+                    Summery = obligation.Summery,
+                    IsMandatory = obligation.IsMandatory,
+                    Obligation = obligation.ObligationOrRequirement ?? string.Empty,
+                    Exclude = obligation.ExcludeFromCompliance,
+                    Coverage = obligation.Coverage,
+                    IsCovered = obligation.IsCovered,
+                    Assurance = obligation.ComplianceAssurance,
+                    ComplianceReason = obligation.ComplianceReason ?? string.Empty,
+                    ComplianceMaps = new List<ObligationComplianceMapResponse>() {
+                        new() {
+                            Id = 1,
+                            MapControl = "Access Control",
+                            Include = true,
+                            Owner = "Head Business Technology",
+                            ControlMaps = new List<ObligationControlMapResultResponse>() {
+                                new() {
+                                    Id=1,
+                                    ParentId = 1,
+                                    ControlCode = "AC-001",
+                                    Description = "Password Policy",
+                                    Notes = "Pearl Bank maintains a password cycle managed by Microsoft ADC for all company devices",
+                                    Include = true,
+                                    IsTested = true,
+                                    Passed = 20,
+                                    Failed = 0,
+                                    Issues = 0,
+                                    Weight = 30
+                                },
+                                new() {
+                                    Id=2,
+                                    ParentId = 1,
+                                    ControlCode = "AC-001",
+                                    Description = "MFA Enforcement",
+                                    Notes = "Pearl Bank uses Entrust System to manage Two-Factor authentication",
+                                    Include = true,
+                                    IsTested = true,
+                                    Passed = 50,
+                                    Failed = 2,
+                                    Issues = 5,
+                                    Weight = 70
+                                }
+                            }
+                        },
+                        new() {
+                            Id = 2,
+                            MapControl = "Incident Logging",
+                            Owner = "Head Business Technology",
+                            Include = true,
+                            ControlMaps = new()
+                        }
+                    }
+                };
+
+                return Ok(new GrcResponse<ObligationResponse>(registerRecord));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<ObligationResponse>(error));
+            }
+        }
+
+        [HttpPost("registers/create-compliance-map")]
+        public async Task<IActionResult> CreateComplianceMap([FromBody] ObligationMapRequest request) {
+            return Ok(new { success = true, message = "Success" });
+        }
+
+        [HttpPost("registers/paged-maps-list")]
+        public async Task<IActionResult> GetPagedMapList([FromBody] ListRequest request) {
+            try {
+                //Logger.LogActivity($"{request.Action}", "INFO");
+                //if (request == null) {
+                //    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                //    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                //    return Ok(new GrcResponse<PagedResponse<ObligaionResponse>>(error));
+                //}
+
+                //Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                //var pageResult = await _categoryService.GetObligationsAsync(request.PageIndex, request.PageSize, false);
+                //if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                //    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No obligation records found");
+                //    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                //    return Ok(new GrcResponse<PagedResponse<ObligaionResponse>>(
+                //              new PagedResponse<ObligaionResponse>(
+                //              new List<ObligaionResponse>(), 0, pageResult.Page, pageResult.Size)));
+                //}
+
+                //var categories = pageResult.Entities;
+                //return Ok(new GrcResponse<PagedResponse<ObligaionResponse>>(
+                //          new PagedResponse<ObligaionResponse>(
+                //              categories, pageResult.Count, pageResult.Page, pageResult.Size))
+                //    );
+
+                var maps = new List<ComplianceMapResponse>() {
+                    new() {
+                        Id = 1,
+                        MapControl = "Access Control",
+                        Include = true,
+                        Owner = "Head Business Technology",
+                        ControlMaps = new List<ControlMapResponse>() {
+                            new() {
+                                Id=1,
+                                ParentId = 1,
+                                Description = "Password Policy",
+                                Notes = "Pearl Bank maintains a password cycle managed by Microsoft ADC for all company devices",
+                                Include = false
+                            },
+                            new() {
+                                Id=2,
+                                ParentId = 1,
+                                Description = "MFA Enforcement",
+                                Notes = "Pearl Bank uses Entrust System to manage Two-Factor authentication",
+                                Include = false
+                            }
+                        }
+                    },
+                    new() {
+                        Id = 2,
+                        MapControl = "Incident Logging",
+                        Include = true,
+                        Owner = "Head Business Technology",
+                        ControlMaps = new()
+                    },
+                    new() {
+                        Id = 3,
+                        MapControl = "System Security",
+                        Include = true,
+                        Owner = "Head Security",
+                        ControlMaps = new List<ControlMapResponse>() { 
+                            new() {
+                                Id=3,
+                                ParentId = 3,
+                                Description = "Premises security",
+                                Notes = "Pearl Bank applys bio-metric systems for access, secures premises with armed security",
+                                Include = false
+                            },
+                            new() {
+                                Id=4,
+                                ParentId = 3,
+                                Description = "Customer Protection",
+                                Notes = "Maintains customer physical property and secure access points",
+                                Include = false
+                            },
+                            new() {
+                                Id=5,
+                                ParentId = 3,
+                                Description = "Data Security",
+                                Notes = "Some notes on data security",
+                                Include = false
+                            }
+                        }
+                    }
+                };
+
+                return Ok(new GrcResponse<PagedResponse<ComplianceMapResponse>>(new PagedResponse<ComplianceMapResponse>(maps, 2, 1, 2)));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<ObligaionResponse>>(error));
+            }
+        }
+
         #endregion
 
         #region Regulatory Types

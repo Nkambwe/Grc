@@ -14,6 +14,7 @@ public class StatutoryArticle : BaseEntity {
     public bool IsCovered { get; set; }
     public decimal ComplianceAssurance { get; set; }
     public string Comments { get; set; }
+    public string ComplianceReason { get; set; }
     public long? FrequencyId { get; set; }
     public long? OwnerId { get; set; }
     public virtual Frequency Frequency { get; set; }
