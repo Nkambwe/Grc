@@ -40,7 +40,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
         Task<bool> BulkyInsertAsync(RegulatoryCategoryRequest[] requestItems);
         Task<bool> BulkyUpdateAsync(RegulatoryCategoryRequest[] requestItems);
         Task<bool> BulkyUpdateAsync(RegulatoryCategoryRequest[] requestItems, params Expression<Func<RegulatoryCategory, object>>[] propertySelectors);
-        Task<PagedResult<RegulatoryCategoryResponse>> PageProjectionAsync<RegulatoryCategoryResponse>(int page, int size, bool includeDeleted, Expression<Func<RegulatoryCategory, RegulatoryCategoryResponse>> selector);
+        Task<PagedResult<RegulatoryCategoryResponse>> PageLookupAsync<RegulatoryCategoryResponse>(int page, int size, bool includeDeleted, Expression<Func<RegulatoryCategory, RegulatoryCategoryResponse>> selector);
         Task<PagedResult<RegulatoryCategory>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<RegulatoryCategory, object>>[] includes);
         Task<PagedResult<RegulatoryCategory>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<RegulatoryCategory, object>>[] includes);
         Task<PagedResult<RegulatoryCategory>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<RegulatoryCategory, bool>> predicate = null);

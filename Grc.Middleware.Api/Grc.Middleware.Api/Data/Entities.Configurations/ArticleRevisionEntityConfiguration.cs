@@ -2,10 +2,12 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Grc.Middleware.Api.Data.Entities.Configurations {
+
     public class ArticleRevisionEntityConfiguration {
         public static void Configure(EntityTypeBuilder<ArticleRevision> builder) {
             builder.ToTable("TBL_GRC_STATUTORY_ACT_REVISION");
             builder.HasKey(a => a.Id);
+            builder.Property(a => a.Id).HasColumnName("id");
             builder.Property(a => a.Section).HasColumnName("section").HasColumnType("NVARCHAR(40)").IsRequired(true);
             builder.Property(a => a.Summery).HasColumnName("act_summery").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
             builder.Property(a => a.Revision).HasColumnName("act_revision").HasColumnType("NVARCHAR(MAX)").IsRequired(true);

@@ -315,7 +315,7 @@ namespace Grc.Middleware.Api.Data.Repositories {
         /// <param name="includeDeleted"></param>
         /// <param name="selector"></param>
         /// <returns></returns>
-        Task<PagedResult<TResult>> PageProjectionAsync<TResult>(int page, int size, bool includeDeleted, Expression<Func<T, TResult>> selector);
+        Task<PagedResult<TResult>> PageLookupAsync<TResult>(int page, int size, bool includeDeleted, Expression<Func<T, TResult>> selector);
         /// <summary>
         /// DBContext HashCode
         /// </summary>

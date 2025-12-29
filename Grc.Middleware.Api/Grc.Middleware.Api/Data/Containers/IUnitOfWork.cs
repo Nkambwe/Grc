@@ -28,6 +28,9 @@ namespace Grc.Middleware.Api.Data.Containers {
         IStatutoryRegulationRepository StatutoryRegulationRepository { get; set; }
         IStatutoryArticleRepository StatutoryArticleRepository { get; set; }
         IArticleRevisionRepository ArticleRevisionRepository { get; set; }
+        IControlCategoryRepository ControlCategoryRepository { get; set; }
+        IControlItemRepository ControlItemRepository { get; set; }
+        IComplianceIssueRepository ComplianceIssueRepository { get; set; }
         IResponsebilityRepository ResponsebilityRepository { get; set; }
         IRegulatoryReturnRepository RegulatoryReturnRepository { get; set; }
         IReturnTypeRepository ReturnTypeRepository { get; set; }

@@ -22,4 +22,6 @@ public class StatutoryArticle : BaseEntity {
     public virtual Responsebility Owner { get; set; }
     public virtual ICollection<RegulatoryReturn> Returns { get; set; }
     public virtual ICollection<ArticleRevision> ArticleRevisions { get; set; }
+    public virtual ICollection<StatutoryArticleControl> StatutoryArticleControls { get; set; }
+    public virtual ICollection<ComplianceIssue> ComplianceIssues { get; set; }
 }

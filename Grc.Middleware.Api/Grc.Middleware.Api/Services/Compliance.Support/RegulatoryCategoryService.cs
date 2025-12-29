@@ -582,12 +582,12 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
             }
         }
 
-        public async Task<PagedResult<RegulatoryCategoryResponse>> PageProjectionAsync<RegulatoryCategoryResponse>(int page, int size, bool includeDeleted, Expression<Func<RegulatoryCategory, RegulatoryCategoryResponse>> selector) {
+        public async Task<PagedResult<RegulatoryCategoryResponse>> PageLookupAsync<RegulatoryCategoryResponse>(int page, int size, bool includeDeleted, Expression<Func<RegulatoryCategory, RegulatoryCategoryResponse>> selector) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve paged Regulatory Categories", "INFO");
 
             try {
-                return await uow.RegulatoryCategoryRepository.PageProjectionAsync(page, size, includeDeleted, selector);
+                return await uow.RegulatoryCategoryRepository.PageLookupAsync(page, size, includeDeleted, selector);
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve Regulatory Categories: {ex.Message}", "ERROR");
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
@@ -614,7 +614,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
 
             try {
 
-                var categories = await uow.RegulatoryCategoryRepository.PageProjectionAsync(pageIndex, pageSize, false,
+                var categories = await uow.RegulatoryCategoryRepository.PageLookupAsync(pageIndex, pageSize, false,
                     category => new ObligaionResponse {
                         Id = category.Id,
                         CategoryName = category.CategoryName ?? string.Empty,
@@ -636,7 +636,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
                                 Coverage = section.Coverage,
                                 IsCovered = section.IsCovered,
                                 Assurance = section.ComplianceAssurance,
-                                Issues = 0
+                                Issues = section.ComplianceIssues.Count //..added this
                             }).ToList() 
                         }).ToList()
                     });

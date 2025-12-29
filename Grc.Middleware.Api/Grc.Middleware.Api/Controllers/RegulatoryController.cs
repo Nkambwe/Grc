@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Grc.Middleware.Api.Data.Entities.Support;
 using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
@@ -10,61 +9,55 @@ using Grc.Middleware.Api.Services.Compliance.Support;
 using Grc.Middleware.Api.Services.Organization;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Collections.Generic;
 using System.Text.Json;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Grc.Middleware.Api.Controllers {
 
     [ApiController]
     [Route("grc")]
     public class RegulatoryController : GrcControllerBase {
-
-       
         private readonly ISystemAccessService _accessService;
         private readonly IRegulatoryDocumentTypeService _documentTypeService;
         private readonly IRegulatoryDocumentService _regulatoryDocuments;
-        private readonly IFrequencyService _frequencyService;
         private readonly IRegulatoryCategoryService _categoryService;
-        private readonly IRegulatoryReturnService _returnsService;
         private readonly IRegulatoryTypeService _regulatoryType;
         private readonly IAuthorityService _authorityService;
-        private readonly IResponsebilityService _responsibilityService;
-        private readonly IReturnTypeService _returnTypeService;
         private readonly IStatutoryArticleService _articleService;
         private readonly IStatutoryRegulationService _regulatoryService;
+        private readonly IControlCategoryService _controlCategoryService;
+        private readonly IComplianceIssueService _issueService;
+        private readonly IControlItemService _itemService;
         public RegulatoryController(IObjectCypher cypher,
             IServiceLoggerFactory loggerFactory, 
             IMapper mapper, 
             ICompanyService companyService,
             IAuthorityService authorityService,
             ISystemAccessService accessService,
-            IFrequencyService frequencyService,
             IRegulatoryCategoryService categoryService,
-            IRegulatoryReturnService returnsService,
             IRegulatoryTypeService regulatoryType,
             IRegulatoryDocumentService regulatoryDocuments,
             IRegulatoryDocumentTypeService documentTypeService,
-            IResponsebilityService responsibilityService,
-            IReturnTypeService returnTypeService,
             IStatutoryArticleService articleService,
             IStatutoryRegulationService regulatoryService,
+            IControlCategoryService controlCategoryService,
+            IComplianceIssueService issueService,
+            IControlItemService itemService,
             IEnvironmentProvider environment, 
             IErrorNotificationService errorService, 
             ISystemErrorService systemErrorService) 
             : base(cypher, loggerFactory, mapper, companyService, environment, errorService, systemErrorService) {
             _authorityService = authorityService;
             _accessService = accessService;
-            _frequencyService = frequencyService;
             _categoryService = categoryService;
-            _returnsService = returnsService;
-            _returnTypeService = returnTypeService;
             _regulatoryType = regulatoryType;
             _regulatoryDocuments = regulatoryDocuments;
             _documentTypeService = documentTypeService;
             _articleService = articleService;
             _regulatoryService = regulatoryService;
-            _responsibilityService = responsibilityService;
+            _controlCategoryService = controlCategoryService;
+            _issueService = issueService;
+            _itemService = itemService;
         }
 
         #region Policy Documents
@@ -573,6 +566,20 @@ namespace Grc.Middleware.Api.Controllers {
                     IsCovered = obligation.IsCovered,
                     Assurance = obligation.ComplianceAssurance,
                     ComplianceReason = obligation.ComplianceReason ?? string.Empty,
+                    //,
+                    //Revisions = section.ArticleRevisions != null ? section.ArticleRevisions.Select(r => new ArticleRevisionResponse {
+                    //    Id = r.Id,
+                    //    ArticleId = r.ArticleId,
+                    //    Section = r.Section,
+                    //    Comments = r.Comments,
+                    //    Revision = r.Revision
+                    //}).ToList() : new List<ArticleRevisionResponse>(),
+                    //ComplianceIssues = section.ComplianceIssues != null ? section.ComplianceIssues.Select(ci => new ComplianceIssueResponse {
+                    //    Id = ci.Id,
+                    //    Comments = ci.Notes,
+                    //    Description = ci.Description,
+                    //    IsDeleted = ci.IsDeleted
+                    //}).ToList() : new List<ComplianceIssueResponse>()
                     ComplianceMaps = new List<ObligationComplianceMapResponse>() {
                         new() {
                             Id = 1,
@@ -1420,7 +1427,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                var pageResult = await _categoryService.PageProjectionAsync(request.PageIndex, request.PageSize, false,
+                var pageResult = await _categoryService.PageLookupAsync(request.PageIndex, request.PageSize, false,
                     category => new RegulatoryCategoryResponse {
                         Id = category.Id,
                         CategoryName = category.CategoryName ?? string.Empty,
@@ -2027,13 +2034,9 @@ namespace Grc.Middleware.Api.Controllers {
                     IsDeleted = false,
                     CreatedBy = section.CreatedBy ?? string.Empty,
                     ModifiedBy = section.LastModifiedBy ?? string.Empty,
-                    Revisions = section.ArticleRevisions != null ? section.ArticleRevisions.Select(r => new ArticleRevisionResponse {
-                        Id = r.Id,
-                        ArticleId = r.ArticleId,
-                        Section = r.Section,
-                        Comments = r.Comments,
-                        Revision = r.Revision
-                    }).ToList() : new List<ArticleRevisionResponse>()
+                    Revisions = new(),
+                    ComplianceIssues = new(),
+                    
                 };
 
                 return Ok(new GrcResponse<StatuteSectionResponse>(result));
@@ -2576,6 +2579,420 @@ namespace Grc.Middleware.Api.Controllers {
                 return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse() { Status = status }));
             } catch (Exception ex) {
                 Logger.LogActivity($"Error deleting regulatory authority by user {request.UserId}: {ex.Message}", "ERROR");
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        #endregion
+
+        #region Compliance Control Categories
+
+        [HttpPost("registers/control-category-retrieve")]
+        public async Task<IActionResult> GetControlCategory([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Get Control Category by ID", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty","Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ControlCategoryResponse>(error));
+                }
+
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request Control Category ID is required", "Invalid Control Category request ID");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ControlCategoryResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var response = await _controlCategoryService.GetAsync(d => d.Id == request.RecordId, false, d => d.ControlItems);
+                if (response == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Control Category not found", "No control category matched the provided ID");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ControlCategoryResponse>(error));
+                }
+
+                return Ok(new GrcResponse<ControlCategoryResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<ControlCategoryResponse>(error));
+            }
+        }
+
+        [HttpPost("registers/control-item-retrieve")]
+        public async Task<IActionResult> GetControlItem([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Get Control Item by ID", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ControlItemResponse>(error));
+                }
+
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request Control Item ID is required", "Invalid Control Item request ID");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ControlItemResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var result = await _itemService.GetAsync(d => d.Id == request.RecordId, true);
+                if (result == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Control Category not found", "No control item matched the provided ID");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ControlItemResponse>(error));
+                }
+
+                //..map response
+                var response = new ControlItemResponse {
+                    Id = result.Id,
+                    CategoryId = result.ControlCategoryId,
+                    ItemName = result.ItemName ?? string.Empty,
+                    Comments = result.Notes ?? string.Empty,
+                    IsDeleted = result.IsDeleted,
+                    Exclude = result.Exclude
+                };
+
+                return Ok(new GrcResponse<ControlItemResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<ControlItemResponse>(error));
+            }
+        }
+
+        [HttpPost("registers/paged-control-categories")]
+        public async Task<IActionResult> GetPagedControlCategories([FromBody] ListRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<ControlCategoryResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _controlCategoryService.PageLookupAsync(request.PageIndex, request.PageSize, false,
+                    category => new ControlCategoryResponse {
+                        Id = category.Id,
+                        CategoryName = category.CategoryName ?? string.Empty,
+                        Comments = category.Notes ?? string.Empty,
+                        Exclude = category.Exclude,
+                        IsDeleted = category.IsDeleted,
+                        ControlItems = category.ControlItems.Select(item => new ControlItemResponse() {
+                            Id = item.Id,
+                            CategoryId = item.ControlCategoryId,
+                            ItemName = item.ItemName ?? string.Empty,
+                            Comments = item.Notes ?? string.Empty,
+                            Exclude = item.Exclude,
+                            IsDeleted = item.IsDeleted
+                        }).ToList()
+                    });
+
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No control categories found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<RegulatoryCategoryResponse>>(new PagedResponse<RegulatoryCategoryResponse>(
+                        new List<RegulatoryCategoryResponse>(), 0, pageResult.Page, pageResult.Size))
+                        );
+                }
+
+                List<ControlCategoryResponse> categories = new();
+                var records = pageResult.Entities ?? new();
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                    var searchTerm = request.SearchTerm.ToLower();
+                    categories = records.Where(u => u.CategoryName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false).ToList();
+                } else {
+                    categories = records;
+                }
+
+                return Ok(new GrcResponse<PagedResponse<ControlCategoryResponse>>(
+                    new PagedResponse<ControlCategoryResponse>(categories, pageResult.Count, pageResult.Page, pageResult.Size))
+                    );
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<ControlCategoryResponse>>(error));
+            }
+
+        }
+
+        [HttpPost("registers/create-control-item")]
+        public async Task<IActionResult> CreateControlCategory([FromBody] ControlCategoryRequest request) {
+            try {
+                Logger.LogActivity("Creating new control category", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The Control Category record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!string.IsNullOrWhiteSpace(request.CategoryName)) {
+                    if (await _controlCategoryService.ExistsAsync(t => t.CategoryName == request.CategoryName)) {
+                        var error = new ResponseError(ResponseCodes.DUPLICATE, "Duplicate Record", "Another Control Category found with similar name");
+                        Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<GeneralResponse>(error));
+                    }
+                } else {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The Control Category name is required");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser != null) {
+                    request.UserName = currentUser.Username;
+                }
+
+                //..create control category
+                var result = await _controlCategoryService.InsertAsync(request);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Control category saved successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to save control category record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("registers/update-control-item")]
+        public async Task<IActionResult> UpdateControlCategory([FromBody] ControlCategoryRequest request) {
+            try {
+                Logger.LogActivity("Update control category", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The control category record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                if (string.IsNullOrWhiteSpace(request.CategoryName)) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Invalid Record, Category name is required", "Category name is required");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _controlCategoryService.ExistsAsync(r => r.Id == request.Id)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "Control category record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser != null) {
+                    request.UserName = currentUser.Username;
+                } 
+                //..update regulatory category
+                var result = await _controlCategoryService.UpdateAsync(request);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Control category updated successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update control category record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("registers/delete-control-item")]
+        public async Task<IActionResult> DeleteControlItem([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
+
+                //..check if record exists
+                var response = new GeneralResponse();
+                if (!await _controlCategoryService.ExistsAsync(r => r.Id == request.RecordId)) {
+                    response.Status = false;
+                    response.StatusCode = (int)ResponseCodes.NOTFOUND;
+                    response.Message = $"Control item Not Found!";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    return Ok(new GrcResponse<GeneralResponse>(response));
+                }
+
+                //..delete document type
+                var status = await _controlCategoryService.DeleteAsync(request);
+                if (!status) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Failed to control item", "An error occurred! could delete control item");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse() { Status = status }));
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error deleting control item by user {request.UserId}: {ex.Message}", "ERROR");
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        #endregion
+
+        #region Compliance Issues
+
+        [HttpPost("registers/compliance-issue-retrieve")]
+        public async Task<IActionResult> GetComplianceIssue([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Get Compliance Issue by ID", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ComplianceIssueResponse>(error));
+                }
+
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request Compliance Issue ID is required", "Invalid Control Item request ID");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ComplianceIssueResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var result = await _issueService.GetAsync(d => d.Id == request.RecordId, true);
+                if (result == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Compliance Issue not found", "No compliance issue matched the provided ID");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ComplianceIssueResponse>(error));
+                }
+
+                //..map response
+                var response = new ComplianceIssueResponse {
+                    Id = result.Id,
+                    ArticleId = result.StatutoryArticleId,
+                    Description = result.Description ?? string.Empty,
+                    Comments = result.Notes ?? string.Empty,
+                    IsDeleted = result.IsDeleted
+                };
+
+                return Ok(new GrcResponse<ComplianceIssueResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<ComplianceIssueResponse>(error));
+            }
+        }
+
+        [HttpPost("registers/article-issues")]
+        public async Task<IActionResult> GetArticleIssues([FromBody] IssueListRequest request) {
+
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ListResponse<ComplianceIssueResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var result = await _issueService.GetAllAsync(i => i.StatutoryArticleId == request.ArticleId);
+                if (result == null || !result.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No article issues found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<ComplianceIssueResponse>>(new List<ComplianceIssueResponse>()));
+                }
+
+                List<ComplianceIssueResponse> issues = new();
+                result.ToList().ForEach(issue => issues.Add(new ComplianceIssueResponse() {
+                    Id = issue.Id,
+                    ArticleId = issue.StatutoryArticleId,
+                    Description = issue.Description ?? string.Empty,
+                    Comments = issue.Notes ?? string.Empty,
+                    IsDeleted = issue.IsDeleted
+                }));
+
+                return Ok(new GrcResponse<List<ComplianceIssueResponse>>(issues));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<ListResponse<ComplianceIssueResponse>>(error));
+            }
+        }
+
+        [HttpPost("registers/update-article-issue")]
+        public async Task<IActionResult> UpdateArticleIssue([FromBody] ComplianceIssueRequest request) {
+            try {
+                Logger.LogActivity("Update Compliance issue", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The Compliance issue record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _documentTypeService.ExistsAsync(r => r.Id == request.Id)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "Compliance issue record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser != null) {
+                    request.UserName = currentUser.Username;
+                }
+
+                //..update compliance issue
+                var result = await _issueService.UpdateAsync(request);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Compliance issue updated successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update compliance issue record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("registers/delete-article-issue")]
+        public async Task<IActionResult> DeleteArticleIssue([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
+
+                //..check if record exists
+                var response = new GeneralResponse();
+                if (!await _issueService.ExistsAsync(r => r.Id == request.RecordId)) {
+                    response.Status = false;
+                    response.StatusCode = (int)ResponseCodes.NOTFOUND;
+                    response.Message = $"Compliance issue Not Found!";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    return Ok(new GrcResponse<GeneralResponse>(response));
+                }
+
+                //..delete issue
+                var status = await _issueService.DeleteAsync(request);
+                if (!status) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Failed to compliance issue", "An error occurred! could delete compliance issue");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse() { Status = status }));
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error deleting compliance issue by user {request.UserId}: {ex.Message}", "ERROR");
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<GeneralResponse>(error));
             }

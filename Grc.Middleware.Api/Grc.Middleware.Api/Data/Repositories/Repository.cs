@@ -755,7 +755,7 @@ namespace Grc.Middleware.Api.Data.Repositories {
             return new PagedResult<T> { Entities = entities, Count = totalCount, Page = page, Size = size };
         }
 
-        public async Task<PagedResult<TResult>> PageProjectionAsync<TResult>(int page, int size, bool includeDeleted, Expression<Func<T, TResult>> selector) {
+        public async Task<PagedResult<TResult>> PageLookupAsync<TResult>(int page, int size, bool includeDeleted, Expression<Func<T, TResult>> selector) {
             page = Math.Max(1, page);
             size = Math.Max(1, size);
 

@@ -42,6 +42,9 @@ namespace Grc.Middleware.Api.Data.Containers {
         public IStatutoryRegulationRepository StatutoryRegulationRepository { get; set; }
         public IStatutoryArticleRepository StatutoryArticleRepository { get; set; }
         public IArticleRevisionRepository ArticleRevisionRepository { get; set; }
+        public IControlCategoryRepository ControlCategoryRepository { get; set; }
+        public IControlItemRepository ControlItemRepository { get; set; }
+        public IComplianceIssueRepository ComplianceIssueRepository { get; set; }
         public IResponsebilityRepository ResponsebilityRepository { get; set; }
         public IRegulatoryReturnRepository RegulatoryReturnRepository { get; set; }
         public IReturnTypeRepository ReturnTypeRepository { get; set; }
@@ -69,9 +72,7 @@ namespace Grc.Middleware.Api.Data.Containers {
 
         #endregion
 
-        public UnitOfWork(IServiceLoggerFactory loggerFactory,
-                          IDbContextFactory<GrcContext> contextFactory, 
-                          IServiceProvider serviceProvider) {
+        public UnitOfWork(IServiceLoggerFactory loggerFactory, IDbContextFactory<GrcContext> contextFactory, IServiceProvider serviceProvider) {
             _loggerFactory = loggerFactory;
             _logger = _loggerFactory.CreateLogger("middleware_log");
             _logger.Channel = $"UOW-{DateTime.Now:yyyyMMddHHmmss}";
@@ -106,6 +107,9 @@ namespace Grc.Middleware.Api.Data.Containers {
             StatutoryRegulationRepository = new StatutoryRegulationRepository(_loggerFactory, Context);
             StatutoryArticleRepository = new StatutoryArticleRepository(_loggerFactory, Context);
             ArticleRevisionRepository = new ArticleRevisionRepository(_loggerFactory, Context);
+            ControlCategoryRepository = new ControlCategoryRepository(_loggerFactory, Context);
+            ControlItemRepository = new ControlItemRepository(_loggerFactory, Context);
+            ComplianceIssueRepository = new ComplianceIssueRepository(_loggerFactory, Context);
             ResponsebilityRepository = new ResponsebilityRepository(_loggerFactory, Context);
             RegulatoryReturnRepository = new RegulatoryReturnRepository(_loggerFactory, Context);
             ReturnTypeRepository = new ReturnTypeRepository(_loggerFactory, Context);
@@ -266,6 +270,9 @@ namespace Grc.Middleware.Api.Data.Containers {
                     StatutoryRegulationRepository = null;
                     StatutoryArticleRepository = null;
                     ArticleRevisionRepository = null;
+                    ControlCategoryRepository = null;
+                    ControlItemRepository = null;
+                    ComplianceIssueRepository = null;
                     ResponsebilityRepository = null;
                     RegulatoryReturnRepository = null;
                     ReturnTypeRepository = null;

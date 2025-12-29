@@ -59,5 +59,8 @@ namespace Grc.Middleware.Api.Http.Responses {
 
         [JsonPropertyName("revisions")]
         public List<ArticleRevisionResponse> Revisions { get; set; } = new();
+
+        [JsonPropertyName("issues")]
+        public List<ComplianceIssueResponse> ComplianceIssues { get; set; } = new();
     }
 }

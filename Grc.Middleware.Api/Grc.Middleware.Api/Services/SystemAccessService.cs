@@ -23,6 +23,7 @@ namespace Grc.Middleware.Api.Services {
         }
 
         #region Admin Dashboard
+
         public async Task<int> GetTotalUsersCountAsync() {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Total User Count", "INFO");

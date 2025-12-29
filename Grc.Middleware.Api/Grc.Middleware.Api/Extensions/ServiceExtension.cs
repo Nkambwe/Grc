@@ -52,6 +52,9 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IStatutoryArticleRepository, StatutoryArticleRepository>();
             services.AddScoped<IArticleRevisionRepository, ArticleRevisionRepository>();
             services.AddScoped<IStatutoryRegulationRepository, StatutoryRegulationRepository>();
+            services.AddScoped<IControlCategoryRepository, ControlCategoryRepository>();
+            services.AddScoped<IControlItemRepository, ControlItemRepository>();
+            services.AddScoped<IComplianceIssueRepository, ComplianceIssueRepository>();
             services.AddScoped<IRegulatoryDocumentRepository, GuideDocumentRepository>();
             services.AddScoped<IRegulatoryDocumentTypeRepository, GuideDocumentTypeRepository>();
             services.AddScoped<IRegulatorySubmissionRepository, CircularSubmissionRepository>();
@@ -113,6 +116,9 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IStatutoryArticleService, StatutoryArticleService>();
             services.AddScoped<IArticleRevisionService, ArticleRevisionService>();
             services.AddScoped<IStatutoryRegulationService, StatutoryRegulationService>();
+            services.AddScoped<IComplianceIssueService, ComplianceIssueService>();
+            services.AddScoped<IControlItemService, ControlItemService>();
+            services.AddScoped<IControlCategoryService, ControlCategoryService>();
             services.AddScoped<IRegulatoryDocumentService, RegulatoryDocumentService>();
             services.AddScoped<IRegulatoryDocumentTypeService, RegulatoryDocumentTypeService>();
             services.AddScoped<IReturnsSubmissionService, ReturnsSubmissionService>();
