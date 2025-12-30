@@ -27,16 +27,5 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 
-        [JsonPropertyName("createdBy")]
-        public string CreatedBy { get; set; }
-
-        [JsonPropertyName("ceatedOn")]
-        public DateTime CreatedOn { get; set; }
-
-        [JsonPropertyName("modifiedBy")]
-        public string ModifiedBy { get; set; }
-
-        [JsonPropertyName("modifiedOn")]
-        public DateTime ModifiedOn { get; set; }
     }
 }

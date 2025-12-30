@@ -245,7 +245,17 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             using var uow = UowFactory.Create();
             try {
                 //..map Control Item request to Control Item entity
-                var category = Mapper.Map<ControlItemRequest, ControlItem>(request);
+                var category = new ControlItem() { 
+                    ControlCategoryId = request.CategoryId,
+                    ItemName = (request.ItemName ?? string.Empty).Trim(),
+                    Exclude = request.Exclude,
+                    IsDeleted = request.IsDeleted,
+                    CreatedBy = $"{request.UserName}",
+                    CreatedOn = DateTime.Now,
+                    Notes = request.Comments ?? string.Empty,
+                    LastModifiedBy = $"{request.UserName}",
+                    LastModifiedOn = DateTime.Now
+                };
 
                 //..log the Control Item data being saved
                 var categoryJson = JsonSerializer.Serialize(category, new JsonSerializerOptions {
@@ -351,7 +361,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             Logger.LogActivity($"Update Control Item request", "INFO");
 
             try {
-                var items = await uow.ControlItemRepository.GetAsync(a => a.Id == request.Id);
+                var items = await uow.ControlItemRepository.GetAsync(a => a.Id == request.Id, includeDeleted);
                 if (items != null) {
                     //..update Control Item record
                     items.ItemName = (request.ItemName ?? string.Empty).Trim();

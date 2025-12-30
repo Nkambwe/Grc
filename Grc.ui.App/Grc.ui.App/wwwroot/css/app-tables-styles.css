@@ -10,6 +10,10 @@
     width: 100%;
 }
 
+.grc-control-form {
+    padding: 10px 30px;
+}
+
 .field-search-group {
     display: flex;
     flex-direction: row;
@@ -58,8 +62,12 @@
     padding:5px;
 }
 
+.grc-delete-action.disabled {
+    color: var(--light-pink-trans-70)!important;
+}
+
 .grc-table-btn-open {
-    color: var(--pearl-orange)!important;
+    color: var(--pearl-orange) !important;
 }
 
 .grc-btn-default:hover {

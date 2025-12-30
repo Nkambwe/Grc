@@ -154,6 +154,13 @@
         public const string COMPLIANCE_EDITED_ACT = "Register.Acts.Edited";
         public const string COMPLIANCE_DELETED_ACT = "Register.Acts.Deleted";
         public const string COMPLIANCE_EXPORT_ACT = "Register.Acts.Export";
+        public const string COMPLIANCE_CONTROLCATEGORY_RETRIVE = "Register.Compliance.Controls.Retrieve";
+        public const string COMPLIANCE_CONTROLCATEGORY_CREATE = "Register.Compliance.Controls.Create";
+        public const string COMPLIANCE_CONTROLCATEGORY_UPDATE = "Register.Compliance.Controls.Update";
+        public const string COMPLIANCE_CONTROLCATEGORY_DELETE = "Register.Compliance.Controls.Delete";
+        public const string COMPLIANCE_CONTROLITEM_CREATE = "Register.Compliance.ControlItems.Create";
+        public const string COMPLIANCE_CONTROLITEM_UPDATE = "Register.Compliance.ControlItems.Update";
+        public const string COMPLIANCE_CONTROLITEM_DELETE = "Register.Compliance.ControlItems.Delete";
         public const string PROCESSES_RETRIEVE_PROCESS = "Operations.Processes.Retrieve";
         public const string PROCESSES_CREATE_PROCESS = "Operations.Processes.Create";
         public const string PROCESSES_EDITED_PROCESS = "Operations.Processes.Edit";

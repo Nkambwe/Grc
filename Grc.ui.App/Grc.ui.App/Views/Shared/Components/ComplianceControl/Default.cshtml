@@ -1,0 +1,185 @@
+﻿<div class="grc-tabulator-container">
+
+    <div class="grc-tabulator-search">
+        <div class="field-search-group">
+            <label class="form-searchbox-label text-right">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.Controls"))</label>
+            <input id="controlSearchbox" type="text" class="form-control searchbox-field">
+        </div>
+        <div class="field-search-buttons">
+            <button id="btnControlExport" class="btn btn-primary">
+                <i class="mdi mdi-file-excel-outline"></i> @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.ExportFiltered"))
+            </button>
+        </div>
+    </div>
+    <div id="controls-table"></div>
+</div>
+
+
+<!-- Overlay -->
+<div id="controlOverlay" class="control-panel-overlay"></div>
+
+<!-- Section Panel -->
+<div id="controlPanel" class="control-side-panel" onclick="event.stopPropagation()">
+    <div class="control-side-panel-header">
+        <h5 id="controlTitle">
+            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Header.Controls"))
+        </h5>
+        <button class="panel-close" onclick="closeControl()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div class="control-side-panel-body">
+
+        <form id="controlForm" class="grc-control-form">
+            <input type="hidden" id="categoryId" name="categoryId">
+            <input type="hidden" id="isControlEdit" name="isControlEdit">
+
+            <div class="row">
+
+                <div class="col-12">
+
+                    <div class="row mb-3">
+                        <div class="mb-3">
+                            <label for="categoryName" class="form-label">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.ControlName"))
+                            </label>
+                            <input type="text" class="form-control" id="categoryName" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-3">
+                            <div class="form-check form-switch mt-4">
+                                <input class="form-check-input" type="checkbox" id="isCategoryExcluded">
+                                <label class="form-check-label" for="isCategoryExcluded">Exclude</label>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-check form-switch mt-4">
+                                <input class="form-check-input" type="checkbox" id="isCategoryDeleted">
+                                <label class="form-check-label" for="isCategoryDeleted">Deactivate</label>
+                            </div>
+                        </div>
+                        <div class="col-6"></div>
+                    </div>
+
+
+                    <div class="row mb-3">
+                        <div class="mb-3">
+                            <label for="categoryComments" class="form-label">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.ControlNotes"))
+                            </label>
+                            <textarea class="form-control" id="categoryComments" rows="4"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <ul class="control-item-list"></ul>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveControl(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                        </div>
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeControl()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                        </div>
+                        <div class="col-sm-10"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<div id="itemPanel" class="item-side-panel" onclick="event.stopPropagation()">
+
+    <div class="item-side-panel-header">
+        <h5 id="itemTitle">
+            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Header.Items"))
+        </h5>
+        <button class="panel-close" onclick="closeItem()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div class="item-side-panel-body">
+
+        <form id="itemForm" class="grc-control-form">
+            <input type="hidden" id="itemId" name="itemId">
+            <input type="hidden" id="parentId" name="parentId">
+            <input type="hidden" id="isItemEdit" name="isItemEdit">
+
+            <div class="row">
+
+                <div class="col-12">
+
+                    <div class="row mb-3">
+                        <div class="mb-3">
+                            <label for="itemName" class="form-label">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.itemName"))
+                            </label>
+                            <input type="text" class="form-control" id="itemName" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-3">
+                            <div class="form-check form-switch mt-4">
+                                <input class="form-check-input" type="checkbox" id="isItemExcluded">
+                                <label class="form-check-label" for="isItemExcluded">Exclude</label>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-check form-switch mt-4">
+                                <input class="form-check-input" type="checkbox" id="isItemDeleted">
+                                <label class="form-check-label" for="isItemDeleted">Deactivate</label>
+                            </div>
+                        </div>
+                        <div class="col-6"></div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="mb-3">
+                            <label for="itemComments" class="form-label">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.itemNotes"))
+                            </label>
+                            <textarea class="form-control" id="itemComments" rows="4"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveItem(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                        </div>
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeItem()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                        </div>
+                        <div class="col-sm-10"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+@{
+    Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-compliance-controls.js");
+}
+

@@ -111,6 +111,8 @@ namespace Grc.Middleware.Api.Data.Repositories {
         /// <returns>Entity that fits predicate</returns>
         Task<T> GetAsync(Expression<Func<T, bool>> where, bool includeDeleted = false);
 
+        Task<TResult> GetLookupAsync<TResult>(Expression<Func<T, bool>> predicate, Expression<Func<T, TResult>> selector, bool includeDeleted = false);
+
         /// <summary>
         /// Asynchronous search for an entity that fits predicate with related entities. Option to check if it can be marked as deleted
         /// </summary>

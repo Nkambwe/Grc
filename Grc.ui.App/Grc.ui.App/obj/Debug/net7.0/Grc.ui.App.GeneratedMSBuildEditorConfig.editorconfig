@@ -364,6 +364,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXJyb3JcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Register/ComplianceControl.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJcQ29tcGxpYW5jZUNvbnRyb2wuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Register/ManageRegulations.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJcTWFuYWdlUmVndWxhdGlvbnMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -458,6 +462,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/CompletedProcessesDashboard/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQ29tcGxldGVkUHJvY2Vzc2VzRGFzaGJvYXJkXERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/ComplianceControl/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQ29tcGxpYW5jZUNvbnRyb2xcRGVmYXVsdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/ComplianceFileDocumentTypes/Default.cshtml]

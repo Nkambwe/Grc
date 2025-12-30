@@ -278,5 +278,19 @@ namespace Grc.ui.App.Enums {
         LAW_RETRIEVE_SUPPORT = 144,
         [Description("Create new compliance map")]
         COMPLIANCE_CREATE_MAP = 145,
+        [Description("Create Compliance Category Control")]
+        COMPLIANCE_CATEGORY_CONTROL = 146,
+        [Description("Retrieve Compliance Category Control")]
+        COMPLIANCE_CATEGORY_RETRIVE = 147,
+        [Description("Retrieve Compliance Control Item")]
+        COMPLIANCE_CONTROL_RETRIVE = 148,
+        [Description("Delete Control item")]
+        COMPLIANCE_DELETED_ITEM = 149,
+        [Description("Create Compliance Control item")]
+        COMPLIANCE_ITEM_CREATE = 150,
+        [Description("Update Compliance Category Control")]
+        COMPLIANCE_CONTROL_UPDATE = 151,
+        [Description("Update Compliance Control Item")]
+        COMPLIANCE_ITEM_UPDATE = 152,
     }
 }

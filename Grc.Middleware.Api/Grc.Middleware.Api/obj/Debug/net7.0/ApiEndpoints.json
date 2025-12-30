@@ -1062,7 +1062,7 @@
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "CreateControlCategory",
-    "RelativePath": "grc/registers/create-control-item",
+    "RelativePath": "grc/registers/create-control-category",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1070,6 +1070,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.ControlCategoryRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "CreateControlItemy",
+    "RelativePath": "grc/registers/create-control-item",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ControlItemRequest",
         "IsRequired": true
       }
     ],
@@ -1702,7 +1718,7 @@
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "UpdateControlCategory",
-    "RelativePath": "grc/registers/update-control-item",
+    "RelativePath": "grc/registers/update-control-category",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1710,6 +1726,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.ControlCategoryRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "UpdateControlItem",
+    "RelativePath": "grc/registers/update-control-item",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ControlItemRequest",
         "IsRequired": true
       }
     ],

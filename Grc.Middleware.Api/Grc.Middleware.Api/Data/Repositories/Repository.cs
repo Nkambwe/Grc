@@ -285,6 +285,15 @@ namespace Grc.Middleware.Api.Data.Repositories {
             }
         }
 
+        public async Task<TResult> GetLookupAsync<TResult>(Expression<Func<T, bool>> predicate, Expression<Func<T, TResult>> selector, bool includeDeleted = false) {
+            IQueryable<T> query = context.Set<T>();
+
+            if (!includeDeleted)
+                query = query.Where(e => EF.Property<bool>(e, "IsDeleted") == false);
+
+            return await query.Where(predicate).Select(selector).FirstOrDefaultAsync();
+        }
+
         public async Task<T> GetAsync(Expression<Func<T, bool>> predicate, bool includeDeleted = false, params Expression<Func<T, object>>[] filters) {
 
             IQueryable<T> query = context.Set<T>();

@@ -338,7 +338,7 @@ function saveGroup(isEdit, payload) {
                 }
             }
 
-            closeProcessGroupPanel()();
+            closeProcessGroupPanel();
         },
         error: function (xhr) {
             Swal.close();

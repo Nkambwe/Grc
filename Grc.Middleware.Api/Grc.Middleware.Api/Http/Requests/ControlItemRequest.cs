@@ -6,6 +6,9 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
+        [JsonPropertyName("categoryId")]
+        public long CategoryId { get; set; }
+
         [JsonPropertyName("itemName")]
         public string ItemName { get; set; }
 

@@ -1,0 +1,16 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "COMPLIANCE CONTROLS";
+    var component = new PageComponentViewModel {
+        ComponentId = $"0",
+        ComponentKey = "ComplianceControl",
+        LeftActions = new List<ComponentAction> {
+            new ComponentAction {ActionKey = ActionKey.ComplianceHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home")},
+            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
+            new ComponentAction { ActionKey = ActionKey.ComplianceControlNew.GetDescription(), Icon = "mdi mdi-cog-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") }
+        }
+    };
+}
+
+@await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("ComplianceControl") })
+

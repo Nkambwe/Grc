@@ -146,5 +146,9 @@ namespace Grc.ui.App.Enums {
         SupportHome,
         [Description("new-role")]
         RoleNew,
+        [Description("control-new")]
+        ComplianceControlNew,
+        [Description("item-new")]
+        ComplianceControlItemNew,
     }
 }

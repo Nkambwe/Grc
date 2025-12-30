@@ -23,6 +23,7 @@ namespace Grc.ui.App.Controllers {
         private readonly IAuthenticationService _authService;
         private readonly IStatutorySectionService _sectionService;
         private readonly IRegulatoryStatuteService _statuteService;
+        private readonly IComplianceControlService _controlsService;
         public RegisterController(IApplicationLoggerFactory loggerFactory,
                                   IEnvironmentProvider environment,
                                   IWebHelper webHelper,
@@ -31,6 +32,7 @@ namespace Grc.ui.App.Controllers {
                                   IAuthenticationService authService,
                                   IStatutorySectionService regulatoryActService,
                                   IRegulatoryStatuteService statuteService,
+                                  IComplianceControlService controlsService,
                                   IGrcErrorFactory errorFactory,
                                   SessionManager sessionManager)
                                 : base(loggerFactory, environment, webHelper,
@@ -40,6 +42,7 @@ namespace Grc.ui.App.Controllers {
             _authService = authService;
             _sectionService = regulatoryActService;
             _statuteService = statuteService;
+            _controlsService = controlsService;
         }
 
         #region Law Registers
@@ -460,7 +463,7 @@ namespace Grc.ui.App.Controllers {
                 var updated = result.Data;
                 return Ok(new { success = true, message = "Statute section created successfully", data = new { } });
             } catch (Exception ex) {
-                Logger.LogActivity($"Unexpected error updating task: {ex.Message}", "ERROR");
+                Logger.LogActivity($"Unexpected error updating status section: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "RIGISTER-CONTROLLER", ex.StackTrace);
                 return Ok(new { success = false, data = new { } });
             }
@@ -729,6 +732,363 @@ namespace Grc.ui.App.Controllers {
                 Logger.LogActivity($"Unexpected error occurred while saving compliance map: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "RIGISTER-CONTROLLER", ex.StackTrace);
                 return Ok(new { success = false, message="Could not save map, an unexpected error occurred"});
+            }
+        }
+
+        #endregion
+
+        #region Compliance Controls
+
+        public async Task<IActionResult> ComplianceControl() {
+            try {
+                if (User.Identity?.IsAuthenticated == true) {
+                    var ipAddress = WebHelper.GetCurrentIpAddress();
+                    var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                    if (userResponse.HasError || userResponse.Data == null) {
+                        return Redirect(Url.Action("Dashboard", "Application"));
+                    }
+
+                    var currentUser = userResponse.Data;
+                    var userDashboard = new UserDashboardModel {
+                        Initials = $"{currentUser.FirstName[..1]} {currentUser.LastName[..1]}",
+                        LastLogin = DateTime.Now,
+                        Workspace = SessionManager.GetWorkspace(),
+                        DashboardStatistics = new()
+                    };
+
+                    return View(userDashboard);
+                } else {
+                    return RedirectToAction("Login", "Application");
+                }
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error loading Acts obligations view: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "REGISTER-OBLIGATION", ex.StackTrace);
+                return Redirect(Url.Action("Dashboard", "Application"));
+            }
+        }
+
+        public async Task<IActionResult> GetCategoryControlList([FromBody] TableListRequest request) {
+            try {
+
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError) {
+                    Logger.LogActivity($"STATUTE DATA ERROR: Failed to get current user record - {JsonSerializer.Serialize(userResponse)}");
+                    return Ok(new { last_page = 0, data = new List<object>() });
+                }
+
+                //..update with user data
+                var currentUser = userResponse.Data;
+                if (currentUser == null) {
+                    Logger.LogActivity($"User record id null - {JsonSerializer.Serialize(userResponse)}");
+                    //..session has expired
+                    return Ok(new { last_page = 0, data = new List<object>() });
+                }
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.PageIndex = request.PageIndex;
+                request.PageSize = request.PageSize;
+
+                var result = await _controlsService.GetControlCategoriesAsync(request);
+                PagedResponse<GrcControlCategoryResponse> list = new();
+                if (result.HasError) {
+                    Logger.LogActivity($"CONTROL CATEGORY DATA ERROR: Failed to control category statutes - {JsonSerializer.Serialize(result)}");
+                } else {
+                    list = result.Data;
+                    Logger.LogActivity($"CONTROL CATEGORY RECORD COUNT - {list.TotalCount}");
+                }
+
+                var categoryData = list.Entities ?? new();
+                if (categoryData.Any()) {
+                    var categories = categoryData.Select(category => new {
+                        categoryId = category.Id,
+                        categoryName = category.CategoryName,
+                        isExcluded = category.Exclude,
+                        isDeleted = category.IsDeleted,
+                        notes = category.Comments ?? string.Empty,
+                        controls = category.ControlItems.Select(control => new {
+                            itemId = control.Id,
+                            controlName = control.ItemName,
+                            isExcluded = control.Exclude,
+                            isDeleted = control.IsDeleted,
+                            notes = control.Comments ?? string.Empty,
+                        }),
+                    }).ToList();
+
+                    return Ok(new { last_page = list.TotalPages, total_records = list.TotalCount, data = categories });
+                }
+
+                return Ok(new { last_page = 0, total_records = 0, data = Array.Empty<object>() });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving control category: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "RIGISTER-CONTROLS", ex.StackTrace);
+                return Ok(new { last_page = 0, data = new List<object>() });
+            }
+        }
+
+        [LogActivityResult("Retrieve Compliance control", "User retrieved compliance control", ActivityTypeDefaults.COMPLIANCE_CONTROLCATEGORY_RETRIVE, "ControlCategory")]
+        public async Task<IActionResult> GetControlCategory(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0) {
+                    return BadRequest(new { success = false, message = "Control category Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.COMPLIANCE_CATEGORY_RETRIVE.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = false
+                };
+
+                var result = await _controlsService.GetCategoryAsync(request);
+                if (result.HasError || result.Data == null) {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving control category";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var response = result.Data;
+                var categoryRecord = new {
+                    categoryId = response.Id,
+                    categoryName = response.CategoryName ?? string.Empty,
+                    isCategoryExcluded = response.Exclude,
+                    isCategoryDeleted = response.IsDeleted,
+                    categoryComments = response.Comments ?? string.Empty,
+                    items = response.ControlItems.Select(item => new {
+                        itemId = item.Id,
+                        itemName = item.ItemName ?? string.Empty,
+                        isItemExcluded = item.Exclude,
+                        isItemDeleted = item.IsDeleted,
+                        itemComments = item.Comments ?? string.Empty
+                    })
+                };
+
+                return Ok(new { success = true, data = categoryRecord });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error retrieving control categopry: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "COMPLIANCE-CONTROL", ex.StackTrace);
+                return Ok(new { success = false, message = "Failed to retrieve control categopry, an Unexpected error occurred", data = new { } });
+            }
+        }
+
+        [LogActivityResult("Add Compliance control", "User retrieved added new compliance control", ActivityTypeDefaults.COMPLIANCE_CONTROLCATEGORY_CREATE, "ControlCategory")]
+        public async Task<IActionResult> CreateControlCategory([FromBody] ControlCategoryViewModel request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (request == null) {
+                    var msg = "Invalid request data";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                //..set system fields
+                var currentUser = userResponse.Data;
+                var result = await _controlsService.CreateControlCategoryAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create control category" });
+
+                var created = result.Data;
+                return Ok(new { success = true, message = "Category created successfully", data = new { } });
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error creating category: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "COMPLIANCE-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Failed to create category, an Unexpected error occurred", data = new { } });
+            }
+        }
+
+        [LogActivityResult("Update Compliance control", "User retrieved updated compliance control", ActivityTypeDefaults.COMPLIANCE_CONTROLCATEGORY_UPDATE, "ControlCategory")]
+        public async Task<IActionResult> UpdateControlCategory([FromBody] ControlCategoryViewModel request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (request == null) {
+                    var msg = "Invalid request data";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                //..set system fields
+                var currentUser = userResponse.Data;
+                var result = await _controlsService.UpdateCategoryAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update control category" });
+
+                var updated = result.Data;
+                return Ok(new { success = true, message = "Control category created successfully", data = new { } });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error updating control category: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "COMPLIANCE-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, data = new { } });
+            }
+        }
+
+        [LogActivityResult("Retrieve control item", "User retrieved control item", ActivityTypeDefaults.COMPLIANCE_CONTROLCATEGORY_RETRIVE, "ControlItem")]
+        public async Task<IActionResult> GetControlItem(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0) {
+                    return BadRequest(new { success = false, message = "Legal Act Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.COMPLIANCE_CONTROL_RETRIVE.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = false
+                };
+
+                var result = await _controlsService.GetItemAsync(request);
+                if (result.HasError || result.Data == null) {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving legacl Act";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var response = result.Data;
+                var actRecord = new {
+                    itemId = response.Id,
+                    categoryId = response.Id,
+                    parentId = response.CategoryId,
+                    itemName = response.ItemName ?? string.Empty,
+                    isItemExcluded = response.Exclude,
+                    isItemDeleted = response.IsDeleted,
+                    itemComments = response.Comments ?? string.Empty
+                };
+
+                return Ok(new { success = true, data = actRecord });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error retrieving regulatory act: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "RIGISTER-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Failed to retrieve regulatory acts, an Unexpected error occurred", data = new { } });
+            }
+        }
+
+        [LogActivityResult("Add control item", "User retrieved added new control item", ActivityTypeDefaults.COMPLIANCE_CONTROLITEM_CREATE, "ControlItem")]
+        public async Task<IActionResult> CreateControlItem([FromBody] ItemViewModel request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (request == null) {
+                    var msg = "Invalid request data";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                //..set system fields
+                var currentUser = userResponse.Data;
+                var result = await _controlsService.CreateItemAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create control item" });
+
+                var created = result.Data;
+                return Ok(new { success = true, message = "Item created successfully", data = new { } });
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error creating item: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "COMPLIANCE-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Failed to create item, an Unexpected error occurred", data = new { } });
+            }
+        }
+
+        [LogActivityResult("Update control item", "User modified control item", ActivityTypeDefaults.COMPLIANCE_CONTROLITEM_UPDATE, "ControlItem")]
+        public async Task<IActionResult> UpdateControlItem([FromBody] ItemViewModel request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (request == null) {
+                    var msg = "Invalid request data";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                //..set system fields
+                var currentUser = userResponse.Data;
+                var result = await _controlsService.UpdateItemAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update control item" });
+
+                var updated = result.Data;
+                return Ok(new { success = true, message = "Control item created successfully", data = new { } });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error updating item: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "COMPLIANCE-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, data = new { } });
+            }
+        }
+
+        [LogActivityResult("Delete control item", "User retrieved deleted control item", ActivityTypeDefaults.COMPLIANCE_CONTROLITEM_DELETE, "ControlItem")]
+        public async Task<IActionResult> DeleteControlItem(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                if (id == 0) return BadRequest(new { success = false, message = "Item Id is required" });
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.COMPLIANCE_DELETED_ITEM.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = true
+                };
+
+                var result = await _controlsService.DeleteItemAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to delete Item" });
+
+                return Ok(new { success = result.Data.Status, message = result.Data.Message });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error deleting item: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "COMPLIANCE-ITEM", ex.StackTrace);
+                return Ok(new { success = true, data = new { } });
             }
         }
 

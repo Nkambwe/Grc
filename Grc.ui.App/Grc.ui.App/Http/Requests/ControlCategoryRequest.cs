@@ -16,6 +16,9 @@ namespace Grc.ui.App.Http.Requests {
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 
+        [JsonPropertyName("exclude")]
+        public bool Exclude { get; set; }
+
         [JsonPropertyName("userId")]
         public long UserId { get; set; }
 

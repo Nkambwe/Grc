@@ -3,8 +3,11 @@ using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
+using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
+using System;
 using System.Linq.Expressions;
+using System.Net.NetworkInformation;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -328,7 +331,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 throw;
             }
         }
-
+        
         public async Task<StatutoryArticle> GetAsync(Expression<Func<StatutoryArticle, bool>> predicate, bool includeDeleted = false, params Expression<Func<StatutoryArticle, object>>[] includes) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get statutory article that fit predicate '{predicate}'", "INFO");
@@ -717,6 +720,77 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 return await uow.StatutoryArticleRepository.PageAllAsync(token, page, size, predicate, includeDeleted);
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve statutory articles : {ex.Message}", "ERROR");
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+        }
+
+        public async Task<ObligationResponse> GetObligationAsync(Expression<Func<StatutoryArticle, bool>> predicate, bool includeDeleted) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Get obligation for statutory article that fits this predicate '{predicate}'", "INFO");
+            try {
+                Expression<Func<StatutoryArticle, ObligationResponse>> selector =
+                    article => new ObligationResponse {
+                        Id = article.Id,
+
+                        Category = article.Statute.Category.CategoryName,
+                        Statute = article.Statute.RegulatoryName,
+
+                        Section = article.Article,
+                        Summery = article.Summery,
+                        IsMandatory = article.IsMandatory,
+                        Obligation = article.ObligationOrRequirement,
+                        Exclude = article.ExcludeFromCompliance,
+                        Coverage = article.Coverage,
+                        IsCovered = article.IsCovered,
+                        Assurance = article.ComplianceAssurance,
+
+                        ComplianceIssues = article.ComplianceIssues
+                            .Where(i => !i.IsDeleted)
+                            .Select(i => new ComplianceIssueResponse {
+                                Id = i.Id,
+                                ArticleId = i.Id,
+                                Description = i.Description,
+                                Comments = i.Notes,
+                                IsDeleted = i.IsDeleted
+                            }).ToList(),
+
+                        Revisions = article.ArticleRevisions
+                            .Where(r => !r.IsDeleted)
+                            .Select(r => new ArticleRevisionResponse {
+                                Id = r.Id,
+                                ArticleId = r.ArticleId,
+                                Section = r.Section,
+                                Revision = r.Revision,
+                                Comments = r.Comments
+                            }).ToList(),
+
+                        ComplianceMaps = article.StatutoryArticleControls
+                            .GroupBy(sac => sac.ControlItem.ControlCategory)
+                            .Select(categoryGroup => new ObligationComplianceMapResponse {
+                                Id = categoryGroup.Key.Id,
+                                CategoryName = categoryGroup.Key.CategoryName,
+                                Comments = categoryGroup.Key.Notes,
+                                Exclude = !categoryGroup.Key.Exclude,
+
+                                Items = categoryGroup
+                                    .Select(sac => sac.ControlItem)
+                                    .Distinct()
+                                    .Select(ci => new ObligationComplianceItemResponse {
+                                        Id = ci.Id,
+                                        CategoryId = ci.ControlCategoryId,
+                                        ItemName = ci.ItemName,
+                                        Comments = ci.Notes,
+                                        Exclude = !ci.Exclude
+                                    }).ToList()
+                            }).ToList()
+                    };
+
+                var record = await uow.StatutoryArticleRepository.GetLookupAsync(predicate, selector, includeDeleted);
+                return record;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve statutory article obligation: {ex.Message}", "ERROR");
+                //..save error object to the database
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }

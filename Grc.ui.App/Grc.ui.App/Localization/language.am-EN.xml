@@ -109,7 +109,10 @@
 		<Value>Tasks</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Policies.Compliance.Tasks">
-		<Value>Task Assignment</Value>
+		<Value>Policy Task</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Policies.Compliance.Controls">
+		<Value>Compliance Controls</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Label.Responsibility">
 		<Value>Responsibility</Value>
@@ -432,6 +435,9 @@
 	<LocaleResource Name="Component.Key.RegulatoryMaps">
 		<Value>Requirements/Obligations</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Key.ComplianceControl">
+		<Value>Compliance Controls</Value>
+	</LocaleResource>
 
 	<LocaleResource Name="Component.Key.ActiveUsers">
 		<Value>Active Users</Value>
@@ -590,6 +596,9 @@
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Search.DocTypes">
 		<Value>Search types... </Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.Controls">
+		<Value>Search for control... </Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Search.Policy-register">
 		<Value>Search register... </Value>
@@ -840,10 +849,27 @@
 	<LocaleResource Name="Component.Table.Law.Label.Frequency">
 		<Value>Obligation Frequency</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Label.ControlName">
+		<Value>Control Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Label.ControlNotes">
+		<Value>Comment</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Label.itemName">
+		<Value>Item Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Label.itemNotes">
+		<Value>Comment</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Select.Frequency">
 		<Value>Select frequency...</Value>
 	</LocaleResource>
-
+	<LocaleResource Name="Component.Table.Law.Header.Controls">
+		<Value>Control Category</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Header.Items">
+		<Value>Control Item</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.Select.Status">
 		<Value>Select document status</Value>
 	</LocaleResource>

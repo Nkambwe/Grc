@@ -160,18 +160,18 @@
                                             </span>
                                         </a>
                                     </li>
-                                   
+
                                     <li class="sidebar-item">
-                                        <a asp-controller="CompliancePolicy" asp-action="PoliciesTasks">
+                                        <a asp-controller="Register" asp-action="ComplianceControl">
                                             <span class="menu-icon">
-                                                <i class="mdi mdi-checkbox-marked-circle-auto-outline"></i>
+                                            <i class="mdi mdi-cog-outline"></i>
                                             </span>
                                             <span class="sidebar-text">
-                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Policies.Compliance.Tasks"))
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Policies.Compliance.Controls"))
                                             </span>
                                         </a>
                                     </li>
-
+                                   
                                 </ul>
 
                             </li>
@@ -210,6 +210,17 @@
                                         </span>
                                         <span class="sidebar-text">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Regulation.Circulars"))
+                                        </span>
+                                    </a>
+                                </li>
+
+                                <li class="sidebar-item">
+                                    <a asp-controller="CompliancePolicy" asp-action="PoliciesTasks">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-checkbox-marked-circle-auto-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Policies.Compliance.Tasks"))
                                         </span>
                                     </a>
                                 </li>

@@ -689,7 +689,6 @@
                pattern: "/grc/register/obligations",
                defaults: new { controller = "Register", action = "RegulationObligations" }
             );
-
             routeBuilder.MapControllerRoute(
               name: "app-compliance-register-obligations-list",
               pattern: "/grc/register/obligations/paged-list",
@@ -705,6 +704,57 @@
                 pattern: "/grc/register/obligations/create-map",
                 defaults: new { controller = "Register", action = "CreateComplianceMap" }
             );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-controls",
+               pattern: "/grc/register/compliance-controls",
+               defaults: new { controller = "Register", action = "ComplianceControl" }
+            );
+            routeBuilder.MapControllerRoute(
+              name: "app-compliance-register-controls-list",
+              pattern: "/grc/register/compliance-controls/paged-list",
+              defaults: new { controller = "Register", action = "GetCategoryControlList" }
+            );
+            routeBuilder.MapControllerRoute(
+              name: "app-compliance-register-controls-retrieve",
+              pattern: "/grc/compliance/register/compliance-controls/retrieve-control/{id:long}",
+              defaults: new { controller = "Register", action = "GetControlCategory" }
+            );
+            routeBuilder.MapControllerRoute(
+                 name: "app-operations-register-controls-create",
+                pattern: "/grc/compliance/register/controls-create",
+                defaults: new { controller = "Register", action = "CreateControlCategory" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-controls-update",
+                pattern: "/grc/compliance/register/controls-update",
+                defaults: new { controller = "Register", action = "UpdateControlCategory" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-controls-delete",
+                pattern: "/grc/compliance/register/controls-delete/{id:long}",
+                defaults: new { controller = "Register", action = "DeleteControlCategory" }
+            );
+            routeBuilder.MapControllerRoute(
+                 name: "app-compliance-register-controlitems-retrieve",
+                 pattern: "/grc/compliance/register/compliance-controlitems/retrieve-item/{id:long}",
+                 defaults: new { controller = "Register", action = "GetControlItem" }
+            );
+            routeBuilder.MapControllerRoute(
+                 name: "app-operations-register-controlitems-create",
+                pattern: "/grc/compliance/register/controlitems-create",
+                defaults: new { controller = "Register", action = "CreateControlItem" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-controlitems-update",
+                pattern: "/grc/compliance/register/controlitems-update",
+                defaults: new { controller = "Register", action = "UpdateControlItem" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-controlitems-delete",
+                pattern: "/grc/compliance/register/controlitems-delete/{id:long}",
+                defaults: new { controller = "Register", action = "DeleteControlItem" }
+            );
+
             /*----------------------------------------------Law routes*/
             routeBuilder.MapControllerRoute(
                name: "app-compliance-register-law-list",

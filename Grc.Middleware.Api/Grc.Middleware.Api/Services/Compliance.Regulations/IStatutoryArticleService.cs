@@ -1,6 +1,8 @@
 ﻿using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
+using Grc.Middleware.Api.Http.Responses;
+using System;
 using System.Linq.Expressions;
 
 namespace Grc.Middleware.Api.Services.Compliance.Regulations {
@@ -43,5 +45,6 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         Task<PagedResult<StatutoryArticle>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<StatutoryArticle, object>>[] includes);
         Task<PagedResult<StatutoryArticle>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<StatutoryArticle, bool>> where = null);
         Task<PagedResult<StatutoryArticle>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<StatutoryArticle, bool>> where = null, bool includeDeleted = false);
+        Task<ObligationResponse> GetObligationAsync(Expression<Func<StatutoryArticle, bool>> predicate, bool includeDeleted);
     }
 }

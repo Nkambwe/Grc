@@ -321,10 +321,6 @@ function closeObligationt() {
     $('#obligationPanel').removeClass('active');
 }
 
-$('.action-btn-complianceHome').on('click', function () {
-    window.location.href = '/grc/compliance';
-});
-
 function viewRequirement(id) {
     Swal.fire({
         title: 'Loading...',
@@ -498,6 +494,7 @@ function yesNoFormatter(cell) {
     //..show Yes/No
     return value ? "Yes" : "No";
 }
+
 function getObligationToken() {
     return $('meta[name="csrf-token"]').attr('content');
 }

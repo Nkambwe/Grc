@@ -631,6 +631,7 @@ button.action-btn.action-btn-separator {
 }
 
 .law-panel-overlay,
+.control-panel-overlay,
 .obligation-panel-overlay {
     position: fixed;
     top: 0;
@@ -643,11 +644,14 @@ button.action-btn.action-btn-separator {
 }
 
     .law-panel-overlay.active,
+    .control-panel-overlay.active,
     .obligation-panel-overlay.active {
         display: block;
     }
 
 .law-side-panel,
+.control-side-panel,
+.item-side-panel,
 .obligation-side-panel {
     position: fixed;
     top: 0;
@@ -663,11 +667,15 @@ button.action-btn.action-btn-separator {
 }
 
     .law-side-panel.active,
+    .control-side-panel.active,
+    .item-side-panel.active,
     .obligation-side-panel.active {
         right: 0;
     }
 
 .law-side-panel-header,
+.control-side-panel-header,
+.item-side-panel-header,
 .obligation-side-panel-header {
     color: var(--pearl-orange);
     padding: 1.5rem;
@@ -679,6 +687,8 @@ button.action-btn.action-btn-separator {
 }
 
     .law-side-panel-header h5,
+    .control-side-panel-header h5,
+    .item-side-panel-header h5,
     .obligation-side-panel-header h5 {
         margin: 0;
         font-weight: 600;
@@ -690,12 +700,16 @@ button.action-btn.action-btn-separator {
     overflow-y: auto;
 }
 
-.obligation-side-panel-body {
+.obligation-side-panel-body,
+.item-side-panel-body,
+.control-side-panel-body {
     flex: 1;
-    overflow-y: auto;
+    overflow: hidden !important;
 }
 
 .law-side-panel-footer,
+.control-side-panel-footer,
+.item-side-panel-footer,
 .obligation-side-panel-footer {
     padding: 1rem 1.5rem;
     border-top: 1px solid #dee2e6;
@@ -704,19 +718,25 @@ button.action-btn.action-btn-separator {
     gap: 0.5rem;
 }
 
-.obligation-field {
+.obligation-field,
+.item-field,
+.control-field {
     display: flex;
     width: 100%;
 }
 
-.obligation-label {
+.obligation-label,
+.item-label,
+.control-label {
     display: flex;
     padding: 10px;
     font-size: 1.1em;
     color: var(--orange-dark-slightly);
 }
 
-.obligation-field-detail {
+.obligation-field-detail,
+.item-field-detail,
+.control-field-detail {
     display: flex;
     flex-direction: row;
     text-wrap: auto;
@@ -725,6 +745,90 @@ button.action-btn.action-btn-separator {
     background: var(--grey-light-extra);
     padding: 10px;
 }
+
+.control-item-list {
+    list-style: none;
+    padding: 0;
+}
+
+.control-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+    .control-item:last-child {
+        border-bottom: none;
+    }
+
+.control-item-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.control-item {
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+    .control-item:hover {
+        background-color: #e9ecef;
+        border-color: #adb5bd;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .control-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .control-item .form-check {
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .control-item .form-check-input {
+        margin-top: 0;
+        cursor: pointer;
+    }
+
+    .control-item .form-check-label {
+        cursor: pointer;
+        margin-left: 8px;
+        user-select: none;
+    }
+
+    .control-item .text-decoration-line-through {
+        color: var(--pink-tarn-accent);
+        opacity: 0.7;
+    }
+
+.no-control-items {
+    padding: 20px;
+    font-size: 1.2em;
+    background: linear-gradient(to right, #ffffff, #f8f9fa);
+    border-left: 4px solid var(--pearl-orange);
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.control-item {
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    background: linear-gradient(to right, #ffffff, #f8f9fa);
+    border-left: 4px solid var(--pearl-orange);
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+    .control-item:hover {
+        border-left-color: #0a58ca;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
 
 div:where(.swal2-container).swal2-backdrop-show,
 div:where(.swal2-container).swal2-noanimation {
@@ -742,11 +846,6 @@ div:where(.swal2-container).swal2-noanimation {
 
 .tab-content > .tab-pane {
     min-height: 600px;
-}
-
-.obligation-side-panel-body {
-    flex: 1;
-    overflow: hidden!important;
 }
 
 .nav-link {

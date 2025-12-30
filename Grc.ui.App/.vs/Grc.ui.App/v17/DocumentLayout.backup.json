@@ -3,36 +3,39 @@
   "WorkspaceRootPath": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\services\\compliance.support\\regulatorycategoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\data\\entities.configurations\\articlerevisionentityconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\services\\compliance.regulations\\statutoryarticleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\controllers\\registercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\controllers\\registercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\controllers\\regulatorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\services\\compliance.regulations\\controlcategoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\services\\compliance.support\\regulatorycategoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\js\\app-obligation-register.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\js\\app-obligation-register.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\data\\repositories\\statutoryarticlerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\js\\app-other-script.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\js\\app-other-script.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\services\\compliance.regulations\\istatutoryarticleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\data\\entities\\compliance.regulations\\statutoryarticle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\data\\repositories\\istatutoryarticlerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\services\\compliance.regulations\\icontrolcategoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\data\\repositories\\repository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\services\\systemaccessservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\data\\repositories\\irepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\services\\compliance.regulations\\complianceissueservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\services\\compliance.regulations\\controlitemservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\views\\shared\\components\\complianceobligationregister\\default.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\views\\shared\\components\\complianceobligationregister\\default.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -42,72 +45,165 @@
       "DocumentGroups": [
         {
           "DockedWidth": 5,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 11,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:131:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:132:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:133:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:134:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:135:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "RegulatoryCategoryService.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Support\\RegulatoryCategoryService.cs",
-              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Support\\RegulatoryCategoryService.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Support\\RegulatoryCategoryService.cs",
-              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Support\\RegulatoryCategoryService.cs",
-              "ViewState": "AgIAAGcCAAAAAAAAAAAAwH4CAABWAAAAAAAAAA==",
+              "Title": "ArticleRevisionEntityConfiguration.cs",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Entities.Configurations\\ArticleRevisionEntityConfiguration.cs",
+              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Entities.Configurations\\ArticleRevisionEntityConfiguration.cs",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Entities.Configurations\\ArticleRevisionEntityConfiguration.cs",
+              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Entities.Configurations\\ArticleRevisionEntityConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAABFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-29T16:09:18.742Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "app-obligation-register.js",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-obligation-register.js",
-              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\js\\app-obligation-register.js",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-obligation-register.js",
-              "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\app-obligation-register.js",
-              "ViewState": "AgIAAM8AAAAAAAAAAAAAAHEBAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-12-29T16:05:41.97Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "app-other-script.js",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-other-script.js",
-              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\js\\app-other-script.js",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-other-script.js",
-              "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\app-other-script.js",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-12-29T16:05:40.499Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ControlCategoryService.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\ControlCategoryService.cs",
-              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\ControlCategoryService.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\ControlCategoryService.cs",
-              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\ControlCategoryService.cs",
-              "ViewState": "AgIAAIQAAAAAAAAAAAA9wH4BAABMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-29T15:23:56.417Z",
+              "WhenOpened": "2025-12-30T16:31:18.445Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "StatutoryArticleService.cs",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\StatutoryArticleService.cs",
+              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\StatutoryArticleService.cs",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\StatutoryArticleService.cs*",
+              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\StatutoryArticleService.cs*",
+              "ViewState": "AgIAAOYCAAAAAAAAAAD4v/wCAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-30T13:45:50.556Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "IRepository.cs",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Repositories\\IRepository.cs",
+              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Repositories\\IRepository.cs",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Repositories\\IRepository.cs",
+              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Repositories\\IRepository.cs",
+              "ViewState": "AgIAAGAAAAAAAAAAAAAEwHEAAACXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-30T16:11:00.081Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "StatutoryArticleRepository.cs",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Repositories\\StatutoryArticleRepository.cs",
+              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Repositories\\StatutoryArticleRepository.cs",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Repositories\\StatutoryArticleRepository.cs",
+              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Repositories\\StatutoryArticleRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAYAAABnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-30T15:04:02.426Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "RegulatoryCategoryService.cs",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Support\\RegulatoryCategoryService.cs",
+              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Support\\RegulatoryCategoryService.cs",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Support\\RegulatoryCategoryService.cs",
+              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Support\\RegulatoryCategoryService.cs",
+              "ViewState": "AgIAAG4CAAAAAAAAAAAgwGgCAABXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-30T15:53:12.581Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "RegulatoryController.cs",
               "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\RegulatoryController.cs",
               "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\RegulatoryController.cs",
               "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\RegulatoryController.cs",
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\RegulatoryController.cs",
-              "ViewState": "AgIAADQAAAAAAAAAAAAgwAQCAABkAAAAAAAAAA==",
+              "ViewState": "AgIAAAoCAAAAAAAAAIAwwB4CAABPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-29T13:42:05.433Z",
+              "WhenOpened": "2025-12-30T13:41:26.329Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "RegisterController.cs",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Controllers\\RegisterController.cs",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Controllers\\RegisterController.cs",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Controllers\\RegisterController.cs",
+              "RelativeToolTip": "Grc.ui.App\\Controllers\\RegisterController.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAQwCkAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-30T13:41:11.43Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Default.cshtml",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\Shared\\Components\\ComplianceObligationRegister\\Default.cshtml",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Views\\Shared\\Components\\ComplianceObligationRegister\\Default.cshtml",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\Shared\\Components\\ComplianceObligationRegister\\Default.cshtml",
+              "RelativeToolTip": "Grc.ui.App\\Views\\Shared\\Components\\ComplianceObligationRegister\\Default.cshtml",
+              "ViewState": "AgIAADYAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-30T13:40:55.98Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedWidth": 876,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
             }
           ]
         }
@@ -117,12 +213,12 @@
       "Orientation": 0,
       "VerticalTabListWidth": 256,
       "FloatingWindowState": {
-        "Id": "83a353a0-e1dc-4926-b68d-2e665c0504ce",
+        "Id": "55bc86eb-108f-46dd-b3e7-5ba1dcd9a960",
         "Display": 0,
-        "X": 196,
-        "Y": 65,
-        "Width": 833,
-        "Height": 427,
+        "X": -3,
+        "Y": 61,
+        "Width": 1314,
+        "Height": 534,
         "WindowState": 2
       },
       "DocumentGroups": [
@@ -132,67 +228,41 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "StatutoryArticle.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Entities\\Compliance.Regulations\\StatutoryArticle.cs",
-              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Entities\\Compliance.Regulations\\StatutoryArticle.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Entities\\Compliance.Regulations\\StatutoryArticle.cs",
-              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Entities\\Compliance.Regulations\\StatutoryArticle.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAA3wAoAAAAQAAAAAAAAAA==",
+              "DocumentIndex": 6,
+              "Title": "IStatutoryArticleService.cs",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\IStatutoryArticleService.cs",
+              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\IStatutoryArticleService.cs",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\IStatutoryArticleService.cs",
+              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\IStatutoryArticleService.cs",
+              "ViewState": "AgIAACMAAAAAAAAAAAAEwDIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-29T16:03:21.226Z",
+              "WhenOpened": "2025-12-30T15:44:05.533Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 7,
-              "Title": "SystemAccessService.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\SystemAccessService.cs",
-              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\SystemAccessService.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\SystemAccessService.cs",
-              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\SystemAccessService.cs",
-              "ViewState": "AgIAAI4LAAAAAAAAAADwv44LAAB3AAAAAAAAAA==",
+              "Title": "IStatutoryArticleRepository.cs",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Repositories\\IStatutoryArticleRepository.cs",
+              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Repositories\\IStatutoryArticleRepository.cs",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Repositories\\IStatutoryArticleRepository.cs",
+              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Repositories\\IStatutoryArticleRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAUAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-29T14:47:21.463Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "IControlCategoryService.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\IControlCategoryService.cs",
-              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\IControlCategoryService.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\IControlCategoryService.cs",
-              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\IControlCategoryService.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAhwBYAAAATAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-29T14:14:37.102Z",
+              "WhenOpened": "2025-12-30T15:43:39.749Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 8,
-              "Title": "ComplianceIssueService.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\ComplianceIssueService.cs",
-              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\ComplianceIssueService.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\ComplianceIssueService.cs",
-              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\ComplianceIssueService.cs",
-              "ViewState": "AgIAABMBAAAAAAAAAAAkwGYBAAA4AAAAAAAAAA==",
+              "Title": "Repository.cs",
+              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Repositories\\Repository.cs",
+              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Repositories\\Repository.cs",
+              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Repositories\\Repository.cs",
+              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Data\\Repositories\\Repository.cs",
+              "ViewState": "AgIAAAsBAAAAAAAAAAAwwDIBAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-29T10:47:17.781Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "ControlItemService.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\ControlItemService.cs",
-              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\ControlItemService.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\ControlItemService.cs",
-              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\ControlItemService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-29T12:06:44.132Z",
+              "WhenOpened": "2025-12-30T14:46:36.984Z",
               "EditorCaption": ""
             }
           ]

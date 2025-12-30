@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure;
 using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
 using Grc.Middleware.Api.Data.Entities.System;
@@ -7,8 +6,6 @@ using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
-using Microsoft.AspNetCore.Http.HttpResults;
-using System;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -633,15 +630,6 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 CompanyId = companyId
             };
 
-        }
-        private static (List<long> toAdd, List<long> toRemove) GetChanges(IEnumerable<long> existingIds, IEnumerable<long> newIds) {
-            var existingSet = new HashSet<long>(existingIds);
-            var newSet = new HashSet<long>(newIds);
-
-            var toAdd = newSet.Except(existingSet).ToList();
-            var toRemove = existingSet.Except(newSet).ToList();
-
-            return (toAdd, toRemove);
         }
 
         #endregion
