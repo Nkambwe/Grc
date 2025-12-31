@@ -277,5 +277,215 @@ namespace Grc.ui.App.Services {
                 return new GrcResponse<ServiceResponse>(error);
             }
         }
+
+        public async Task<GrcResponse<GrcComplianceIssueResponse>> GetIssueAsyncAsync(GrcIdRequest request) {
+            try {
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/compliance-issue-retrieve";
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcComplianceIssueResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "COMPLIANCE-CONTROLS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<GrcComplianceIssueResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> CreateIssueAsync(IssueViewModel model, long userId, string ipAddress) {
+            try {
+
+                if (model == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Compliance control record cannot be null", "Invalid Compliance record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                var request = new GrcComplianceIssueRequest {
+                    ArticleId = model.ArticleId,
+                    Description = model.Description,
+                    Comments = model.Comments,
+                    IsDeleted = model.IsDeleted,
+                    IsClosed = model.IsClosed,
+                    UserId = userId,
+                    IpAddress = ipAddress,
+                    Action = Activity.COMPLIANCE_ISSUE_CREATE.GetDescription()
+                };
+
+                //..map request
+                Logger.LogActivity($"CREATE COMPLIANCE ISSUE REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/create-article-issue";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcComplianceIssueRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "COMPLIANCE-CONTROLS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "COMPLIANCE-CONTROLS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> UpdateIssueAsync(IssueViewModel model, long userId, string ipAddress) {
+            try {
+
+                if (model == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Compliance control record cannot be null", "Invalid Compliance record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                var request = new GrcComplianceIssueRequest {
+                    Id = model.Id,
+                    ArticleId = model.ArticleId,
+                    Description = model.Description,
+                    Comments = model.Comments,
+                    IsDeleted = model.IsDeleted,
+                    IsClosed = model.IsClosed,
+                    UserId = userId,
+                    IpAddress = ipAddress,
+                    Action = Activity.COMPLIANCE_ISSUE_UPDATE.GetDescription()
+                };
+
+                //..map request
+                Logger.LogActivity($"UPDATE COMPLIANCE ISSUE REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/update-article-issue";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcComplianceIssueRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "COMPLIANCE-CONTROLS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "COMPLIANCE-CONTROLS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> DeleteIssueAsync(GrcIdRequest request) {
+            try {
+
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Compliance issue record cannot be null", "Invalid Request record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..map request
+                Logger.LogActivity($"DELETE COMPLIANCE ISSUE REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/delete-article-issue";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcIdRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "COMPLIANCE-CONTROLS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "COMPLIANCE-CONTROLS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<GrcControlSupportResponse>> GetControlSupportItemsAsync(GrcRequest request) {
+            try {
+
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Compliance issue record cannot be null", "Invalid Request record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<GrcControlSupportResponse>(error);
+                }
+
+                //..map request
+                Logger.LogActivity($"GET COMPLIANCE SUPPORT ITEMS REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/compliance-support";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcRequest, GrcControlSupportResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "COMPLIANCE-CONTROLS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<GrcControlSupportResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "COMPLIANCE-CONTROLS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<GrcControlSupportResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> CreatMappAsync(ComplianceMapViewModel model, long userId, string ipAddress) {
+            try {
+
+                if (model == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Control Category record cannot be null", "Invalid Control Category record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                var request = new GrcComplianceItemMapRequest {
+                    ArticleId = model.SectionId,
+                    CategoryId = model.CategoryId,
+                    Items = model.ControlItemIds,
+                    UserId = userId,
+                    IpAddress = ipAddress,
+                    Action = Activity.COMPLIANCE_CREATE_MAP.GetDescription()
+                };
+
+                //..map request
+                Logger.LogActivity($"CREATE COMPLIANCE MAP REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/create-map";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcComplianceItemMapRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "COMPLIANCE-CONTROLS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "COMPLIANCE-CONTROLS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
     }
 }

@@ -632,6 +632,7 @@ button.action-btn.action-btn-separator {
 
 .law-panel-overlay,
 .control-panel-overlay,
+.map-panel-overlay,
 .obligation-panel-overlay {
     position: fixed;
     top: 0;
@@ -643,8 +644,20 @@ button.action-btn.action-btn-separator {
     display: none;
 }
 
+.map-panel-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1100;
+    display: none;
+}
+
     .law-panel-overlay.active,
     .control-panel-overlay.active,
+    .map-panel-overlay.active,
     .obligation-panel-overlay.active {
         display: block;
     }
@@ -666,9 +679,26 @@ button.action-btn.action-btn-separator {
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
 }
 
+.map-side-panel,
+.issue-side-panel {
+    position: fixed;
+    top: 0;
+    right: -50%;
+    width: 48%;
+    height: 100%;
+    background-color: #fff;
+    z-index: 1150;
+    transition: right 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+}
+
     .law-side-panel.active,
     .control-side-panel.active,
     .item-side-panel.active,
+    .map-side-panel.active,
+    .issue-side-panel.active,
     .obligation-side-panel.active {
         right: 0;
     }
@@ -676,6 +706,8 @@ button.action-btn.action-btn-separator {
 .law-side-panel-header,
 .control-side-panel-header,
 .item-side-panel-header,
+.map-side-panel-header,
+.issue-side-panel-header,
 .obligation-side-panel-header {
     color: var(--pearl-orange);
     padding: 1.5rem;
@@ -689,6 +721,8 @@ button.action-btn.action-btn-separator {
     .law-side-panel-header h5,
     .control-side-panel-header h5,
     .item-side-panel-header h5,
+    .map-side-panel-header h5,
+    .issue-side-panel-header h5,
     .obligation-side-panel-header h5 {
         margin: 0;
         font-weight: 600;
@@ -702,14 +736,23 @@ button.action-btn.action-btn-separator {
 
 .obligation-side-panel-body,
 .item-side-panel-body,
+.map-side-panel-body,
+.issue-side-panel-body,
 .control-side-panel-body {
     flex: 1;
     overflow: hidden !important;
 }
 
+    .map-side-panel-body,
+    .issue-side-panel-body {
+        padding: 15px;
+    }
+
 .law-side-panel-footer,
 .control-side-panel-footer,
 .item-side-panel-footer,
+.map-side-panel-footer,
+.issue-side-panel-footer,
 .obligation-side-panel-footer {
     padding: 1rem 1.5rem;
     border-top: 1px solid #dee2e6;
@@ -746,7 +789,8 @@ button.action-btn.action-btn-separator {
     padding: 10px;
 }
 
-.control-item-list {
+.control-item-list,
+.issues-list {
     list-style: none;
     padding: 0;
 }
@@ -760,10 +804,12 @@ button.action-btn.action-btn-separator {
         border-bottom: none;
     }
 
-.control-item-list {
+.control-item-list,
+.issues-list {
     list-style: none;
     padding: 0;
     margin: 0;
+    width: 100%!important;
 }
 
 .control-item {
@@ -788,6 +834,7 @@ button.action-btn.action-btn-separator {
     .control-item .form-check {
         margin: 0;
         display: flex;
+        flex-grow: 1;
         align-items: center;
     }
 
@@ -817,6 +864,9 @@ button.action-btn.action-btn-separator {
 }
 
 .control-item {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
     padding: 12px 16px;
     margin-bottom: 10px;
     background: linear-gradient(to right, #ffffff, #f8f9fa);
@@ -826,23 +876,78 @@ button.action-btn.action-btn-separator {
 }
 
     .control-item:hover {
-        border-left-color: #0a58ca;
+        border-left-color: var(--orange-light-strong);
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
 
-div:where(.swal2-container).swal2-backdrop-show,
-div:where(.swal2-container).swal2-noanimation {
-    z-index: 2000 !important;
+.tab-page-header {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 10px;
+    flex-grow: 1;
+    border-bottom: solid 1px var(--grey-light-slightly);
 }
+
+.tab-page-content {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+}
+
+.tab-page-content-inner {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+}
+.list-group {
+    width: 100%!important;
+}
+
+ul.controls-assigned-list {
+    padding: 0;
+}
+
+button.tab-header-button {
+    border: none;
+    background: transparent;
+    color: var(--purple-dark-slightly);
+    border-right: solid 1px var(--grey-light-strong);
+    padding-right: 15px;
+    transition: all .5s ease-in-out
+}
+
+    button.tab-header-button:hover {
+        color: var(--purple-medium-accent);
+        transition: all .5s ease-in-out
+    }
+
+    div:where(.swal2-container).swal2-backdrop-show,
+    div:where(.swal2-container).swal2-noanimation {
+        z-index: 2000 !important;
+    }
 
 .nav-link:hover, 
 .nav-link:focus {
     color: var(--pearl-purple-dark-light-light);
 }
 
-.tab-content {
-    padding: 10px 30px;
+.grc-view-action {
+    border: none;
+    background: transparent;
+    color: var(--pearl-purple-dark-30);
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all .5s ease-in-out;
 }
+
+    .grc-view-action:hover {
+        transition: all .5s ease-in-out;
+    }
 
 .tab-content > .tab-pane {
     min-height: 600px;

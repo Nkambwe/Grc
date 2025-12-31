@@ -294,6 +294,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                             categoryResponse.ControlItems = new List<ControlItemResponse>();
                             foreach (var item in items) {
                                 categoryResponse.ControlItems.Add(new ControlItemResponse {
+                                    Id = item.Id,
                                     CategoryId = item.ControlCategoryId,
                                     ItemName = item.ItemName ?? string.Empty,
                                     Comments = item.Notes ?? string.Empty,
@@ -434,6 +435,59 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 return result > 0;
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to save Control Category: {ex.Message}", "ERROR");
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+        }
+
+        public async Task<bool> GenerateMapAsync(ComplianceItemMapRequest request) {
+            using var uow = UowFactory.Create();
+
+            try {
+                //..load article (tracked)
+                var article = await uow.StatutoryArticleRepository.GetAsync(a => a.Id == request.ArticleId, true, article => article.StatutoryArticleControls);
+
+                if (article == null)
+                    return false;
+
+                //..ensure join collection is loaded
+                uow.Context.Entry(article).Collection(a => a.StatutoryArticleControls).Load();
+
+                //..normalize input
+                var controlItemIds = request.Items.Distinct().ToList();
+
+                //..remove mappings that no longer exist
+                var toRemove = article.StatutoryArticleControls.Where(x => !controlItemIds.Contains(x.ControlItemId)).ToList();
+                foreach (var item in toRemove) {
+                    article.StatutoryArticleControls.Remove(item);
+                }
+
+                //..add new mappings
+                var existingIds = article.StatutoryArticleControls.Select(x => x.ControlItemId).ToHashSet();
+                foreach (var controlItemId in controlItemIds) {
+                    if (existingIds.Contains(controlItemId))
+                        continue;
+
+                    article.StatutoryArticleControls.Add(
+                        new StatutoryArticleControl {
+                            StatutoryArticleId = article.Id, 
+                            ControlItemId = controlItemId
+                        }
+                    );
+                }
+
+                //..debug payload
+                var articleJson = JsonSerializer.Serialize(article, new JsonSerializerOptions {WriteIndented = true, ReferenceHandler = ReferenceHandler.IgnoreCycles});
+
+                Logger.LogActivity( $"Article after mapping data: {articleJson}","DEBUG");
+
+                //..save once
+                var result = await uow.SaveChangesAsync();
+                Logger.LogActivity( $"SaveChanges result: {result}", "DEBUG");
+
+                return result > 0;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to complete compliance map: {ex}","ERROR");
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
@@ -604,6 +658,64 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 var result = await uow.SaveChangesAsync();
                 return result > 0;
             } catch (Exception ex) {
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+        }
+
+        public async Task<ControlSupportResponse> GetSupportItemsAsync(bool includeDeleted) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Admin Dashboard Statistics", "INFO");
+
+            try {
+
+                ControlSupportResponse response = new() {
+                    Controls = new(),
+                    Responsibilities = new(),
+                };
+
+                // get control category
+                var controls = await uow.ControlCategoryRepository.GetAllAsync(false);
+
+                //..get department details
+                var operationsDept = await uow.DepartmentRepository.GetAllAsync(d =>
+                    d.DepartmentName.Contains("Operations"),
+                    false, d => d.Units, d => d.Responsibilities);
+
+
+                //..get operation department details
+                if (operationsDept != null && operationsDept.Count > 0) {
+                    //operation department
+                    var dept = operationsDept.FirstOrDefault();
+
+                    //..operations owners
+                    var owners = dept.Responsibilities;
+                    if (owners != null && owners.Count > 0) {
+                        response.Responsibilities.AddRange(
+                            from owner in owners
+                            select new ResponsibilityItemResponse {
+                                Id = owner.Id,
+                                DepartmentName = dept.DepartmentName,
+                                ResponsibilityRole = owner.ContactPosition
+                            });
+                        Logger.LogActivity($"Operations Department Responsibilities found: {owners.Count}", "DEBUG");
+                    }
+                }
+
+                if (controls != null && controls.Count > 0) {
+                    response.Controls.AddRange(
+                        from control in controls
+                        select new ControlListResponse {
+                            Id = control.Id,
+                            ControlName = control.CategoryName
+                        });
+                    Logger.LogActivity($"Control categoriesfound: {controls.Count}", "DEBUG");
+                }
+
+                return response;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve control support items: {ex.Message}", "ERROR");
+                //..save error object to the database
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }

@@ -26,6 +26,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         Task<PagedResult<ControlCategoryResponse>> PageLookupAsync<ControlCategoryResponse>(int page, int size, bool includeDeleted, Expression<Func<ControlCategory, ControlCategoryResponse>> selector);
         Task<PagedResult<ControlCategory>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<ControlCategory, object>>[] includes);
         Task<PagedResult<ControlCategory>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<ControlCategory, bool>> predicate = null);
+        Task<ControlSupportResponse> GetSupportItemsAsync(bool includeDeleted);
+        Task<bool> GenerateMapAsync(ComplianceItemMapRequest request);
     }
 
 }

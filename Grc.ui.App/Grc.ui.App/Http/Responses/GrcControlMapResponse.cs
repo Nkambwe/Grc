@@ -7,13 +7,22 @@ namespace Grc.ui.App.Http.Responses
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
-        [JsonPropertyName("parentId")]
-        public long ParentId { get; set; }
+        [JsonPropertyName("categoryId")]
+        public long CategoryId { get; set; }
+
+        [JsonPropertyName("itemName")]
+        public string ItemName { get; set; }
+
+        [JsonPropertyName("comments")]
+        public string Comments { get; set; }
 
         [JsonPropertyName("include")]
-        public bool Include { get; set; }
+        public bool Include { get; set; } = true;
 
-        [JsonPropertyName("mapControl")]
-        public string Control { get; set; }
+        [JsonPropertyName("exclude")]
+        public bool Exclude { get; set; }
+
+        [JsonPropertyName("owner")]
+        public string Owner { get; set; }
     }
 }

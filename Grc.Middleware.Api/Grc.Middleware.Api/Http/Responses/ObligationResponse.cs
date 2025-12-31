@@ -42,7 +42,11 @@ namespace Grc.Middleware.Api.Http.Responses
 
         [JsonPropertyName("complianceMaps")]
         public List<ObligationComplianceMapResponse> ComplianceMaps { get; set; } = new();
+
+        [JsonPropertyName("items")]
         public List<ComplianceIssueResponse> ComplianceIssues { get; set; } = new();
+
+        [JsonPropertyName("revisions")]
         public List<ArticleRevisionResponse> Revisions { get; set; } = new();
     }
 }

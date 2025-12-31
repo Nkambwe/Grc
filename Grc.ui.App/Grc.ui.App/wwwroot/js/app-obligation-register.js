@@ -206,7 +206,7 @@ function getSelectedControlIds() {
     return selectedIds;
 }
 
-function updateObligationt(e) {
+function updateObligation(e) {
     e.preventDefault();
     let coverage = Number($('#coverage').val()) || 0;
     let assurance = Number($('#assurance').val()) || 0;
@@ -316,7 +316,7 @@ function updateRecord(record) {
     });
 }
 
-function closeObligationt() {
+function closeObligation() {
     $('.obligation-panel-overlay').removeClass('active');
     $('#obligationPanel').removeClass('active');
 }
@@ -384,8 +384,11 @@ function openObligationPanel(title, record) {
     $('#coverageValue').text(`${coverageValue}%`);
     $('#rationale').val(record.complianceReason);
 
-    //..load controls
+    //..load compliance controls
     renderComplianceControls(record.complianceMaps);
+
+    //..load issues
+    renderIssues(record.issues);
 
     $('#obligationTitle').text(title);
     $('.obligation-panel-overlay').addClass('active');
@@ -395,8 +398,6 @@ function openObligationPanel(title, record) {
 }
 
 function renderComplianceControls(complianceMaps) {
-    console.log("renderComplianceControls called with:", complianceMaps);
-
     const $controlTree = $('#controlTree');
     $controlTree.empty(); // Clear existing content
 
@@ -436,10 +437,10 @@ function renderComplianceControls(complianceMaps) {
                                    type="checkbox" 
                                    id="control_${control.id}" 
                                    data-control-id="${control.id}"
-                                   data-parent-id="${control.parentId}"
+                                   data-parent-id="${control.categoryId}"
                                    ${control.include ? 'checked' : ''}>
                             <label class="form-check-label" for="control_${control.id}">
-                                ${control.mapControl}
+                                ${control.itemName}
                             </label>
                         </div>
                     </li>
@@ -452,8 +453,353 @@ function renderComplianceControls(complianceMaps) {
 
         $controlTree.append(parentItem);
     });
+}
 
-    console.log("Controls rendered successfully");
+function addControlToList(map) {
+    const $controlTree = $('#controlTree');
+    //..create parent control item
+    const parentItem = $(`
+            <li class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="form-check">
+                        <input class="form-check-input parent-control" 
+                               type="checkbox" 
+                               id="map_${map.id}" 
+                               data-map-id="${map.id}"
+                               ${map.include ? 'checked' : ''}>
+                        <label class="form-check-label fw-bold" for="map_${map.id}">
+                            ${map.mapControl}
+                        </label>
+                    </div>
+                </div>
+            </li>
+        `);
+    //..if there are child controls, create nested list
+    if (map.controlMaps && map.controlMaps.length > 0) {
+        const childList = $('<ul class="list-group list-group-flush ms-4 mt-2"></ul>');
+
+        map.controlMaps.forEach(control => {
+            const childItem = $(`
+                    <li class="list-group-item border-0 py-1">
+                        <div class="form-check">
+                            <input class="form-check-input child-control" 
+                                   type="checkbox" 
+                                   id="control_${control.id}" 
+                                   data-control-id="${control.id}"
+                                   data-parent-id="${control.categoryId}"
+                                   ${control.include ? 'checked' : ''}>
+                            <label class="form-check-label" for="control_${control.id}">
+                                ${control.itemName}
+                            </label>
+                        </div>
+                    </li>
+                `);
+            childList.append(childItem);
+        });
+
+        parentItem.append(childList);
+    }
+
+    $controlTree.append(parentItem);
+}
+
+function renderIssues(issues) {
+    const $list = $('.issues-list');
+    $list.empty();
+
+    if (issues.length === 0) {
+        $list.append('<li class="text-muted no-control-items">No issues reported</li>');
+        return;
+    }
+
+    issues.forEach(issue => {
+        const isChecked = true;
+        const nameClass = issue.isDeleted ? 'text-decoration-line-through' : '';
+
+        const listItem = `
+            <li class="control-item mb-2">
+                <div class="form-check">
+                    <input class="form-check-input" 
+                           type="checkbox" 
+                           id="item_${issue.id}" 
+                           data-item-id="${issue.id}"
+                           ${isChecked ? 'checked' : ''}>
+                    <label class="form-check-label ${nameClass}" for="item_${issue.id}">
+                        ${issue.description}
+                    </label>
+                </div>
+                <div class="text-muted small">
+                    <button type="button" 
+                            class="grc-table-btn grc-view-action grc-edit-issue" 
+                            data-id="${issue.id}">
+                        <span><i class="mdi mdi-pencil-outline" aria-hidden="true"></i></span>
+                    </button>
+                </div>
+            </li>`;
+        $list.append(listItem);
+    });
+
+    //..attach handler
+    attachEditIssueHandlers();
+}
+
+function addIssueToList(issue) {
+    console.log("Issues called with:", issue);
+    const $list = $('.issues-list');
+
+    if (!issue) {
+        return;
+    }
+
+    // Remove "No issues reported" placeholder if it exists
+    $list.find('.no-control-items').remove();
+
+    const isChecked = true;
+    const nameClass = issue.isDeleted ? 'text-decoration-line-through' : '';
+    const newItem = `
+        <li class="control-item mb-2">
+            <div class="form-check">
+                <input class="form-check-input" 
+                       type="checkbox" 
+                       id="item_${issue.id}" 
+                       data-item-id="${issue.id}"
+                       ${isChecked ? 'checked' : ''}>
+                <label class="form-check-label ${nameClass}" for="item_${issue.id}">
+                    ${issue.description}
+                </label>
+            </div>
+            <div class="text-muted small">
+                <button type="button" 
+                        class="grc-table-btn grc-view-action grc-edit-issue" 
+                        data-id="${issue.id}">
+                    <span><i class="mdi mdi-pencil-outline" aria-hidden="true"></i></span>
+                </button>
+            </div>
+        </li>`;
+
+    $list.append(newItem);
+
+    //..attach handler
+    attachEditIssueHandlers();
+}
+
+function attachEditIssueHandlers() {
+    //..remove any existing handlers first
+    $('.grc-edit-issue').off('click.editIssue');
+
+    //..attach directly to each button
+    $('.grc-edit-issue').on('click.editIssue', function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        const id = $(this).data('id');
+        //..call your edit function
+        editIssue(id);
+
+        return false;
+    });
+}
+
+function addControl(e) {
+    e.preventDefault();
+
+    let id = Number($('#obligationId').val()) || 0;
+    openNewControlPane("New Control", {
+        id: id
+    }, false);
+}
+
+function openNewControlPane(title, record, isEdit) {
+    $('#sectionId').val(record.id);
+    $('#controlIsEdit').val(isEdit);
+
+    $('#mapTitle').text(title);
+    $('.map-panel-overlay').addClass('active');
+    $('#mapPanel').addClass('active');
+}
+
+function closeControl() {
+    $('.map-panel-overlay').removeClass('active');
+    $('#mapPanel').removeClass('active');
+}
+
+function addIssue(e) {
+    e.preventDefault();
+    let articleId = Number($('#obligationId').val()) || 0;
+    openIssue("New Issue", {
+        id: 0,
+        articleId: articleId,
+        description:'',
+        comments: '',
+        isClosed: false,
+        isDeleted:false,
+    }, false);
+}
+
+function openIssue(title,record, isEdit) {
+    $('#issueId').val(record.id);
+    $('#articleId').val(record.articleId);
+    $('#issueDescription').val(record.description || '');
+    $('#issueComments').val(record.comments || '');
+    $('#issueEdit').val(isEdit);
+    $('#isIssueClosed').prop('checked', record.isClosed);
+    $('#isIssueDeleted').prop('checked', record.isDeleted);
+
+    //..open panel
+    $('#issueTitle').text(title);
+    $('.map-panel-overlay').addClass('active');
+    $('#issuePanel').addClass('active');
+}
+
+function saveIssue(e) {
+    e.preventDefault();
+    let id = Number($('#issueId').val()) || 0;
+    let articleId = Number($('#articleId').val()) || 0;
+    let isEdit = $('#issueEdit').val() || false;
+
+    //..build record payload from form
+    let recordData = {
+        id: id,
+        articleId: articleId,
+        description: $('#issueDescription').val()?.trim(),
+        comments: $('#issueComments').val()?.trim(),
+        isClosed: $('#isIssueClosed').prop('checked'),
+        isDeleted: $('#isIssueDeleted').prop('checked'),
+    };
+
+    //..validate required fields
+    let errors = [];
+    if (!recordData.description)
+        errors.push("Description field is required.");
+
+    if (!recordData.comments)
+        errors.push("Notes field is required.");
+
+    if (errors.length > 0) {
+        highlightError("#issueDescription", !recordData.description);
+        highlightError("#issueComments", !recordData.comments);
+        Swal.fire({
+            title: "Compliance issue Validation",
+            html: `<div style="text-align:left;">${errors.join("<br>")}</div>`,
+        });
+        return;
+    }
+
+    //..call backend
+    saveIssueRecord(isEdit, recordData);
+}
+
+function saveIssueRecord(isEdit, record){
+    const url = (isEdit === true || isEdit === "true")
+        ? "/grc/compliance/register/issues/update-issue"
+        : "/grc/compliance/register/issues/create-issue";
+
+    Swal.fire({
+        title: isEdit ? "Updating issue..." : "Saving issue...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(record),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getIssueToken()
+        },
+        success: function (res) {
+            Swal.close();
+            if (!res.success) {
+                Swal.fire({
+                    title: "Invalid record",
+                    html: res.message.replaceAll("; ", "<br>")
+                });
+                return;
+            }
+
+            //..add issue to list
+            addIssueToList(record);
+
+            Swal.fire(res.message || (isEdit ? "Issue updated successfully" : "Issue created successfully"));
+
+            //..close panel
+            closeIssue();
+        },
+        error: function (xhr) {
+            Swal.close();
+
+            let errorMessage = "Unexpected error occurred.";
+            try {
+                let response = JSON.parse(xhr.responseText);
+                if (response.message) errorMessage = response.message;
+            } catch (e) { }
+
+            Swal.fire({
+                title: isEdit ? "Update Failed" : "Save Failed",
+                text: errorMessage
+            });
+        }
+    });
+}
+
+$(document).on('click', '.grc-edit-issue', function () {
+    const id = $(this).data('id');
+    editIssue(id);
+    return false;
+});
+
+function editIssue(id) {
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving issue...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    findIssue(id)
+        .then(record => {
+            Swal.close();
+            if (record) {
+                openIssue('ISSUE DETAILS', record, true);
+            } else {
+                Swal.fire({ title: 'NOT FOUND', text: 'Issue record not found' });
+            }
+        })
+        .catch(() => {
+            Swal.close();
+            Swal.fire({ title: 'Error', text: 'Failed to load issue details.' });
+        });
+}
+
+function findIssue(id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/grc/compliance/register/issues/retrieve-issue/${id}`,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success && response.data) {
+                    resolve(response.data);
+                    resolve(null);
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire("Error", error);
+                return;
+            }
+        });
+    });
+}
+
+function closeIssue() {
+    $('.map-panel-overlay').removeClass('active');
+    $('#issuePanel').removeClass('active');
 }
 
 //..capture tab state
@@ -469,7 +815,7 @@ function restoreActiveTab() {
     const trigger = document.querySelector(`button[data-bs-target="${tab}"]`);
     if (!trigger) return;
 
-    // 🔹 Ensure Bootstrap is available
+    //..ensure bootstrap is available
     if (typeof bootstrap === 'undefined' || !bootstrap.Tab) return;
 
     bootstrap.Tab.getOrCreateInstance(trigger).show();
@@ -499,8 +845,213 @@ function getObligationToken() {
     return $('meta[name="csrf-token"]').attr('content');
 }
 
+function getSelectedControlItems() {
+    const selectedItems = [];
+    $('.child-control:checked').each(function () {
+        const itemId = $(this).data('control-id');
+        selectedItems.push(itemId);
+    });
+    return selectedItems;
+}
+
+function assignControl(event) {
+    event.preventDefault();
+
+    //..get the selected child control IDs
+    const selectedControlIds = getSelectedControlItems();
+
+    //..validate that at least one control is selected
+    if (selectedControlIds.length === 0) {
+        Swal.fire({
+            title: 'No Controls Selected',
+            text: 'Please select at least one control item to assign.',
+            icon: 'warning'
+        });
+        return;
+    }
+
+    //..get other form data
+    const sectionId = $('#sectionId').val();
+    const categoryId = $('.parent-control:checked').data('map-id'); 
+
+    //..build your record object
+    const record = {
+        sectionId: sectionId,
+        categoryId: categoryId,
+        controlItemIds: selectedControlIds
+    };
+
+    console.log('Submitting record:', record);
+
+    //..call your save function
+    saveControlAssignment(record);
+}
+
+function saveControlAssignment(record) {
+    const url ="/grc/compliance/register/controlitems/assign-control";
+    Swal.fire({
+        title: "Compliance mapping...",
+        text: "Please wait while we map controls.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(record),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getIssueToken()
+        },
+        success: function (res) {
+            Swal.close();
+            if (!res.success) {
+                Swal.fire({
+                    title: "Invalid record",
+                    html: res.message.replaceAll("; ", "<br>")
+                });
+                return;
+            }
+
+            //..add control to list
+            addControlToList(record);
+
+            Swal.fire(res.message || "Compliance mapping completed successfully");
+
+            //..close panel
+            closeControl();
+        },
+        error: function (xhr) {
+            Swal.close();
+
+            let errorMessage = "Unexpected error occurred.";
+            try {
+                let response = JSON.parse(xhr.responseText);
+                if (response.message) errorMessage = response.message;
+            } catch (e) { }
+
+            Swal.fire({
+                title: "Compliance mapping failed",
+                text: errorMessage
+            });
+        }
+    });
+
+}
+
+function getControl(id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/grc/compliance/register/compliance-controls/retrieve-control/${id}`,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success && response.data) {
+                    resolve(response.data);
+                    resolve(null);
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire("Error", error);
+                return;
+            }
+        });
+    });
+}
+
 $(document).ready(function () {
     initObligationable();
+    $('#controlId').select2({
+        width: '100%',
+        dropdownParent: $('#mapPanel')
+    });
+   
+    $('#controlId').on('change', function () {
+        const selectedValue = $(this).val();
+        if (selectedValue === '0' || !selectedValue) {
+            return;
+        }
+        $('#parentId').val(selectedValue);
+        Swal.fire({
+            title: 'Loading...',
+            text: 'Retrieving control...',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => Swal.showLoading()
+        });
+
+        getControl(selectedValue)
+            .then(response => {
+                Swal.close();
+
+                console.log(`RESP >>> ${response}`);
+                console.log(`Response cat ID ${response.categoryId}`);
+                if (response && response.categoryId) {  
+                    const data = response;
+                    const $controlTree = $('.controls-assigned-list'); 
+                    $controlTree.empty();
+
+                    //..create parent control item
+                    const parentItem = $(`
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="form-check">
+                                    <input class="form-check-input parent-control" 
+                                           type="checkbox" 
+                                           id="map_${data.categoryId}" 
+                                           data-map-id="${data.categoryId}">
+                                    <label class="form-check-label fw-bold" for="map_${data.categoryId}">
+                                        ${data.categoryName}
+                                    </label>
+                                </div>
+                            </div>
+                        </li>
+                    `);
+
+                    //..if there are child controls, create nested list
+                    if (data.items && data.items.length > 0) {
+                        const childList = $('<ul class="list-group list-group-flush ms-4 mt-2"></ul>');
+                        data.items.forEach(control => {
+                            const deletedClass = control.isItemDeleted ? 'text-decoration-line-through text-muted' : '';
+                            const childItem = $(`
+                                <li class="list-group-item border-0 py-1">
+                                    <div class="form-check">
+                                        <input class="form-check-input child-control" 
+                                               type="checkbox" 
+                                               id="control_${control.itemId}" 
+                                               data-control-id="${control.itemId}"
+                                               data-parent-id="${data.categoryId}">
+                                        <label class="form-check-label ${deletedClass}" for="control_${control.itemId}">
+                                            ${control.itemName}
+                                        </label>
+                                    </div>
+                                </li>
+                            `);
+                            childList.append(childItem);
+                        });
+                        parentItem.append(childList);
+                    }
+
+                    $controlTree.append(parentItem);
+
+                    //..handler for parent checkbox to select/deselect all children
+                    attachControlCheckboxHandlers();
+
+                } else {
+                    Swal.fire({ title: 'NOT FOUND', text: 'Control record not found' });
+                }
+            })
+            .catch((error) => {
+                Swal.close();
+                console.error('Error loading control:', error);
+                Swal.fire({ title: 'Error', text: 'Failed to load control details.' });
+            });
+    });
 
     $('#coverage').on('input', function () {
         $('#coverageValue').text(this.value + '%');
@@ -509,6 +1060,14 @@ $(document).ready(function () {
     $('#assurance').on('input', function () {
         $('#assuranceValue').text(this.value + '%');
     });
+
+    $('#issueForm').on('submit', function (e) {
+        e.preventDefault();
+    })
+
+    $('#controlForm').on('submit', function (e) {
+        e.preventDefault();
+    })
 
     $(document).on('change', '.parent-control', function () {
         const $parent = $(this);
@@ -549,3 +1108,38 @@ $(document).ready(function () {
 
 });
 
+function attachControlCheckboxHandlers() {
+    //..checked/unchecked all children when parent clicked
+    $('.parent-control').off('change').on('change', function () {
+        const isChecked = $(this).prop('checked');
+        $(this).closest('li').find('.child-control').prop('checked', isChecked);
+    });
+
+    //..update parent if all children are checked
+    $('.child-control').off('change').on('change', function () {
+        const $parent = $(this).closest('li').closest('li').find('.parent-control');
+        const $allChildren = $(this).closest('ul').find('.child-control');
+        const allChecked = $allChildren.length === $allChildren.filter(':checked').length;
+        $parent.prop('checked', allChecked);
+    });
+}
+
+function highlightError(selector, hasError, message) {
+    const $field = $(selector);
+    const $formGroup = $field.closest('.form-group, .mb-3, .col-sm-8');
+
+    // Remove existing error
+    $field.removeClass('is-invalid');
+    $formGroup.find('.field-error').remove();
+
+    if (hasError) {
+        $field.addClass('is-invalid');
+        if (message) {
+            $formGroup.append(`<div class="field-error text-danger small mt-1">${message}</div>`);
+        }
+    }
+}
+
+function getIssueToken() {
+    return $('meta[name="csrf-token"]').attr('content');
+}

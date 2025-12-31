@@ -755,6 +755,35 @@
                 defaults: new { controller = "Register", action = "DeleteControlItem" }
             );
 
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-controlitems-assigne",
+                pattern: "/grc/compliance/register/controlitems/assign-control",
+                defaults: new { controller = "Register", action = "ComplianceMapping" }
+            );
+
+            /*----------------------------------------------Issues Routes*/
+
+            routeBuilder.MapControllerRoute(
+                 name: "app-compliance-register-issues-retrieve",
+                 pattern: "/grc/compliance/register/issues/retrieve-issue/{id:long}",
+                 defaults: new { controller = "Register", action = "GetIssue" }
+            );
+            routeBuilder.MapControllerRoute(
+                 name: "app-operations-register-issues-create",
+                pattern: "/grc/compliance/register/issues/create-issue",
+                defaults: new { controller = "Register", action = "CreateIssue" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-issues-update",
+                pattern: "/grc/compliance/register/issues/update-issue",
+                defaults: new { controller = "Register", action = "UpdateIssue" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-issues-delete",
+                pattern: "/grc/compliance/register/issues/delete-issue/{id:long}",
+                defaults: new { controller = "Register", action = "DeleteIssue" }
+            );
+
             /*----------------------------------------------Law routes*/
             routeBuilder.MapControllerRoute(
                name: "app-compliance-register-law-list",

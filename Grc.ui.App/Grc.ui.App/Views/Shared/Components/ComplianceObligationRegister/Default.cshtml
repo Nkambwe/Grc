@@ -1,4 +1,6 @@
-﻿<div class="grc-tabulator-container">
+﻿@model ControlViewModel
+
+<div class="grc-tabulator-container">
 
     <div class="grc-tabulator-search">
         <div class="field-search-group">
@@ -28,7 +30,7 @@
         <h5 id="obligationTitle">
             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Header.Acts"))
         </h5>
-        <button class="panel-close" onclick="closeObligationt()">
+        <button class="panel-close" onclick="closeObligation()">
             <i class="mdi mdi-close"></i>
         </button>
     </div>
@@ -40,7 +42,7 @@
             <input type="hidden" id="obligationId" name="obligationId">
 
             <!-- Tabs header -->
-            <ul class="nav nav-tabs mb-3" id="obligationTabs" role="tablist">
+            <ul class="nav nav-tabs" id="obligationTabs" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">
                         OBLIGATION DETAILS
@@ -50,6 +52,12 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="controls-tab" data-bs-toggle="tab" data-bs-target="#controls" type="button" role="tab">
                         COMPLIANCE MAP
+                    </button>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="issues-tab" data-bs-toggle="tab" data-bs-target="#issues" type="button" role="tab">
+                        ISSUES
                     </button>
                 </li>
             </ul>
@@ -64,122 +72,301 @@
 
                         <div class="col-12">
 
-                            <div class="row mb-3">
-                                <span class="col-12 obligation-label">Requirement Statement</span>
-                                <div class="mb-3">
-                                    <span id="summery" class="obligation-field-detail"></span>
-                                </div>
-                            </div>
+                            <div class="tab-page-content">
 
-                            <div class="row mb-3">
-                                <span class="col-12 obligation-label">Obligation Description</span>
-                                <div class="mb-3">
-                                    <span id="obligation" class="obligation-field-detail"></span>
-                                </div>
-                            </div>
+                                <div class="tab-page-content-inner">
+                                    <div class="row">
 
-                            <div class="row mb-3">
-                                <span class="col-12 obligation-label">Regulatory Category</span>
-                                <div class="col-12">
-                                    <span id="category" class="obligation-field-detail"></span>
-                                </div>
-                            </div>
+                                        <div class="col-12">
 
-                            <div class="row mb-3">
-                                <span class="col-12 obligation-label">Regulation/Statute</span>
-                                <div class="col-12">
-                                    <span id="statute" class="obligation-field-detail"></span>
-                                </div>
-                            </div>
+                                            <div class="row mb-3">
+                                                <span class="col-12 obligation-label">Requirement Statement</span>
+                                                <div class="mb-3">
+                                                    <span id="summery" class="obligation-field-detail"></span>
+                                                </div>
+                                            </div>
 
-                        </div>
+                                            <div class="row mb-3">
+                                                <span class="col-12 obligation-label">Obligation Description</span>
+                                                <div class="mb-3">
+                                                    <span id="obligation" class="obligation-field-detail"></span>
+                                                </div>
+                                            </div>
 
-                        <div class="col-sm-12">
+                                            <div class="row mb-3">
+                                                <span class="col-12 obligation-label">Regulatory Category</span>
+                                                <div class="col-12">
+                                                    <span id="category" class="obligation-field-detail"></span>
+                                                </div>
+                                            </div>
 
-                            <div class="row mb-3">
+                                            <div class="row mb-3">
+                                                <span class="col-12 obligation-label">Regulation/Statute</span>
+                                                <div class="col-12">
+                                                    <span id="statute" class="obligation-field-detail"></span>
+                                                </div>
+                                            </div>
 
-                                <div class="col-4">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="exclude">
-                                        <label class="form-check-label" for="exclude">Exclude from Compliance</label>
+                                        </div>
+
+                                        <div class="col-sm-12">
+
+                                            <div class="row mb-3">
+
+                                                <div class="col-4">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" id="exclude">
+                                                        <label class="form-check-label" for="exclude">Exclude from Compliance</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-4">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" id="isMandatory">
+                                                        <label class="form-check-label" for="isMandatory">Is Mandatory</label>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="row mb-3">
+
+                                                <div class="col-4">
+                                                    <div class="form-check form-switch mt-4">
+                                                        <input class="form-check-input" type="checkbox" id="isCovered">
+                                                        <label class="form-check-label" for="isCovered">Is Covered</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-4">
+                                                    <label class="form-label">
+                                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Coverage"))
+                                                        <span id="coverageValue" class="fw-bold ms-2">0%</span>
+                                                    </label>
+                                                    <input type="range" class="form-range" id="coverage" min="0" max="100">
+                                                </div>
+
+                                                <div class="col-4">
+                                                    <label class="form-label">
+                                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Assurance"))
+                                                        <span id="assuranceValue" class="fw-bold ms-2">0%</span>
+                                                    </label>
+                                                    <input type="range" class="form-range" id="assurance" min="0" max="100">
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <label class="form-label">Rationale</label>
+                                            <textarea class="form-control" id="rationale" rows="4"></textarea>
+                                        </div>
+
                                     </div>
-                                </div>
 
-                                <div class="col-4">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="isMandatory">
-                                        <label class="form-check-label" for="isMandatory">Is Mandatory</label>
+                                    <div class="row mt-4 p-4">
+                                        <div class="col-sm-2">
+                                            <button type="button" class="btn btn-grc-primary w-100" onclick="updateObligation(event)">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))
+                                            </button>
+                                        </div>
+
+                                        <div class="col-sm-1">
+                                            <button type="button" class="btn btn-grc-secondary w-100" onclick="closeObligation()">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
 
+                                </div>
+                                
                             </div>
 
-                            <div class="row mb-3">
-
-                                <div class="col-4">
-                                    <div class="form-check form-switch mt-4">
-                                        <input class="form-check-input" type="checkbox" id="isCovered">
-                                        <label class="form-check-label" for="isCovered">Is Covered</label>
-                                    </div>
-                                </div>
-
-                                <div class="col-4">
-                                    <label class="form-label">
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Coverage"))
-                                        <span id="coverageValue" class="fw-bold ms-2">0%</span>
-                                    </label>
-                                    <input type="range" class="form-range" id="coverage" min="0" max="100">
-                                </div>
-
-                                <div class="col-4">
-                                    <label class="form-label">
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Assurance"))
-                                        <span id="assuranceValue" class="fw-bold ms-2">0%</span>
-                                    </label>
-                                    <input type="range" class="form-range" id="assurance" min="0" max="100">
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-sm-12">
-                            <label class="form-label">Rationale</label>
-                            <textarea class="form-control" id="rationale" rows="4"></textarea>
                         </div>
 
                     </div>
+                    
                 </div>
 
                 <!--tab 2-->
                 <div class="tab-pane fade" id="controls" role="tabpanel">
+                    <div class="row">
 
-                    <!--TODO-1 Remove sample controls and handle cases where none are added yet-->
-                    <!--TODO-1 In this case, show button to click and display a list of controls to check-->
-                    <!--TODO-1 When One is checked, show the control details and ask use to enter control details-->
-                    <ul class="list-group" id="controlTree"></ul>
+                        <div class="col-12 mb-2">
+                            <div class="tab-page-header">
+                                <button class="tab-header-button" onclick="addControl(event)">
+                                    <span><i class="mdi mdi-plus"></i></span>
+                                    <span>Control</span>
+                                </button>
+                            </div>
+                            <div class="tab-page-content">
+                                <ul class="list-group" id="controlTree"></ul>
+                            </div>
+                        </div>
 
-                    <!--TODO-2 Add Page under obligations to add Maps and controls to the system-->
+                    </div>
+
                 </div>
-            </div>
 
-            <div class="row mt-4 p-4">
-                <div class="col-sm-1">
-                    <button type="button" class="btn btn-grc-primary w-100" onclick="updateObligationt(event)">
-                        @Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))
-                    </button>
-                </div>
+                <!--tab 3-->
+                <div class="tab-pane fade" id="issues" role="tabpanel">
+                    <div class="row">
 
-                <div class="col-sm-1">
-                    <button type="button" class="btn btn-grc-secondary w-100" onclick="closeObligationt()">
-                        @Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))
-                    </button>
+                        <div class="col-12">
+                            <div class="tab-page-header">
+                                <button class="tab-header-button" onclick="addIssue(event)">
+                                    <span><i class="mdi mdi-plus"></i></span>
+                                    <span>Issue</span>
+                                </button>
+                            </div>
+                            <div class="tab-page-content">
+                                <ul class="issues-list"></ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
         </form>
 
+    </div>
 
+</div>
+
+<!-- Overlay -->
+<div id="mapOverlay" class="map-panel-overlay"></div>
+
+<div id="mapPanel" class="map-side-panel" onclick="event.stopPropagation()">
+
+    <div class="map-side-panel-header">
+        <h5 id="mapTitle">
+            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Header.Acts"))
+        </h5>
+        <button class="panel-close" onclick="closeControl()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div class="map-side-panel-body">
+
+        <form id="controlForm" class="grc-law-form">
+            <input type="hidden" id="sectionId" name="sectionId">
+            <input type="hidden" id="parentId" name="parentId">
+            <input type="hidden" id="controlIsEdit" name="controlIsEdit">
+            <div class="row">
+
+                <div class="col-12">
+                    <div class="row mb-3">
+                        <label for="controlId" class="col-sm-12 col-form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.ControlName"))
+                        </label>
+                        <div class="col-sm-12">
+                            <select class="js-compliance-controls-id form-control" id="controlId" name="controlId">
+                                <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Select.ControlName"))</option>
+                                @if (Model?.Controls != null && Model.Controls.Any()) {
+                                    foreach (var control in Model.Controls) {
+                                        <option value="@control.Id">@control.ControlName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <ul class="controls-assigned-list"></ul>
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+                        <div class="col-sm-2">
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="assignControl(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeControl()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                        </div>
+                        <div class="col-sm-10"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+<div id="issuePanel" class="issue-side-panel " onclick="event.stopPropagation()">
+
+    <div class="issue-side-panel-header">
+        <h5 id="issueTitle">
+            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Header.Acts"))
+        </h5>
+        <button class="panel-close" onclick="closeIssue()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div class="issue-side-panel-body">
+
+        <form id="issueForm" class="grc-law-form">
+            <input type="hidden" id="articleId" name="articleId">
+            <input type="hidden" id="issueId" name="issueId">
+            <input type="hidden" id="issueEdit" name="issueEdit">
+            <div class="row">
+
+                <div class="col-12">
+
+                    <div class="row mb-3">
+                        <div class="mb-3">
+                            <label for="issueDescription" class="form-label">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.IssueDescription"))
+                            </label>
+                            <input type="text" class="form-control" id="issueDescription" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-3">
+                            <div class="form-check form-switch mt-4">
+                                <input class="form-check-input" type="checkbox" id="isIssueClosed">
+                                <label class="form-check-label" for="isIssueClosed">Close Issue</label>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-check form-switch mt-4">
+                                <input class="form-check-input" type="checkbox" id="isIssueDeleted">
+                                <label class="form-check-label" for="isIssueDeleted">Mark As Deleted</label>
+                            </div>
+                        </div>
+                        <div class="col-9"></div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="mb-3">
+                            <label for="issueComments" class="form-label">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.IssueNotes"))
+                            </label>
+                            <textarea class="form-control" id="issueComments" rows="4"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveIssue(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                        </div>
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeIssue()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                        </div>
+                        <div class="col-sm-10"></div>
+                    </div>
+                </div>
+
+            </div>
+            
+        </form>
     </div>
 
 </div>

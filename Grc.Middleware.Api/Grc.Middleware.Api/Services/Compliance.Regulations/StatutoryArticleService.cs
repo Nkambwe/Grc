@@ -772,8 +772,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                                 CategoryName = categoryGroup.Key.CategoryName,
                                 Comments = categoryGroup.Key.Notes,
                                 Exclude = !categoryGroup.Key.Exclude,
-
-                                Items = categoryGroup
+                                ControlMaps = categoryGroup
                                     .Select(sac => sac.ControlItem)
                                     .Distinct()
                                     .Select(ci => new ObligationComplianceItemResponse {

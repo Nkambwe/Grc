@@ -189,6 +189,10 @@
         public const string COMPLIANCE_CREATE_LAW = "Register.Laws.Create";
         public const string COMPLIANCE_EDITED_LAW = "Register.Laws.Edited";
         public const string COMPLIANCE_DELETED_LAW = "Register.Laws.Deleted";
+        public const string COMPLIANCE_RETRIEVE_ISSUE = "Register.Issues.Retrieve";
+        public const string COMPLIANCE_CREATE_ISSUE = "Register.Issues.Create";
+        public const string COMPLIANCE_EDITED_ISSUE = "Register.Issues.Edited";
+        public const string COMPLIANCE_DELETED_ISSUE = "Register.Issues.Deleted";
         #endregion
 
     }

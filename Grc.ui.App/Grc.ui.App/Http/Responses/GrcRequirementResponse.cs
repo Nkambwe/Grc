@@ -42,5 +42,11 @@ namespace Grc.ui.App.Http.Responses
 
         [JsonPropertyName("complianceMaps")]
         public List<GrcComplianceMapResponse> ComplianceMaps { get; set; } = new();
+
+        [JsonPropertyName("items")]
+        public List<GrcComplianceIssueResponse> Issues { get; set; } = new();
+
+        [JsonPropertyName("revisions")]
+        public List<GrcArticleRevisionResponse> Revisions { get; set; } = new();
     }
 }

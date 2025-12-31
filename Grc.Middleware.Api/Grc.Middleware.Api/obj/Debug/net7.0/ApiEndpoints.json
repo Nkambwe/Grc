@@ -981,6 +981,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetComplianceSupport",
+    "RelativePath": "grc/registers/compliance-support",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "GetControlCategory",
     "RelativePath": "grc/registers/control-category-retrieve",
     "HttpMethod": "POST",
@@ -1006,6 +1022,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "CreateArticleIssue",
+    "RelativePath": "grc/registers/create-article-issue",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ComplianceIssueRequest",
         "IsRequired": true
       }
     ],
@@ -1118,6 +1150,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.DocumentTypeRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetCreatMapping",
+    "RelativePath": "grc/registers/create-map",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ComplianceItemMapRequest",
         "IsRequired": true
       }
     ],

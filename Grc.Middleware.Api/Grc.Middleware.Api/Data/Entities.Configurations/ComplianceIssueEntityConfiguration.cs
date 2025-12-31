@@ -10,6 +10,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
             builder.Property(a => a.Id).HasColumnName("id");
             builder.Property(a => a.Description).HasColumnName("issue_description").HasColumnType("NVARCHAR(250)").IsRequired(true);
             builder.Property(a => a.StatutoryArticleId).HasColumnName("artical_id");
+            builder.Property(a => a.IsClosed).HasColumnName("is_closed");
             builder.Property(a => a.IsDeleted).HasColumnName("is_deleted");
             builder.Property(a => a.Notes).HasColumnName("notes").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(a => a.CreatedOn).HasColumnName("created_on").IsRequired();

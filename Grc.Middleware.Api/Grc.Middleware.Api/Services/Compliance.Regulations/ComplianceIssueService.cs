@@ -212,20 +212,31 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         public bool Insert(ComplianceIssueRequest request) {
             using var uow = UowFactory.Create();
             try {
-                //..map Compliance issue request to Compliance issue entity
-                var category = Mapper.Map<ComplianceIssueRequest, ComplianceIssue>(request);
+                //..map entity
+                var issue = new ComplianceIssue() {
+                    StatutoryArticleId = request.ArticleId,
+                    Description = (request.Description ?? string.Empty).Trim(),
+                    Notes = request.Comments ?? string.Empty,
+                    IsClosed = request.IsClosed,
+                    IsDeleted = false,
+                    CreatedOn = DateTime.Now,
+                    CreatedBy = $"{request.UserName}",
+                    LastModifiedBy = $"{request.UserName}",
+                    LastModifiedOn = DateTime.Now
+                };
+
 
                 //..log the Compliance issue data being saved
-                var categoryJson = JsonSerializer.Serialize(category, new JsonSerializerOptions {
+                var issueJson = JsonSerializer.Serialize(issue, new JsonSerializerOptions {
                     WriteIndented = true,
                     ReferenceHandler = ReferenceHandler.IgnoreCycles
                 });
-                Logger.LogActivity($"Compliance issue data: {categoryJson}", "DEBUG");
+                Logger.LogActivity($"Compliance issue data: {issueJson}", "DEBUG");
 
-                var added = uow.ComplianceIssueRepository.Insert(category);
+                var added = uow.ComplianceIssueRepository.Insert(issue);
                 if (added) {
                     //..check object state
-                    var entityState = ((UnitOfWork)uow).Context.Entry(category).State;
+                    var entityState = ((UnitOfWork)uow).Context.Entry(issue).State;
                     Logger.LogActivity($"Entity state after insert: {entityState}", "DEBUG");
 
                     var result = uow.SaveChanges();
@@ -235,7 +246,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
 
                 return false;
             } catch (Exception ex) {
-                Logger.LogActivity($"Failed to save Control Category : {ex.Message}", "ERROR");
+                Logger.LogActivity($"Failed to save Compliance issue : {ex.Message}", "ERROR");
                 _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
@@ -244,20 +255,30 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         public async Task<bool> InsertAsync(ComplianceIssueRequest request) {
             using var uow = UowFactory.Create();
             try {
-                //..map Compliance issue request to Control Item entity
-                var category = Mapper.Map<ComplianceIssueRequest, ComplianceIssue>(request);
+                //..map entity
+                var issue = new ComplianceIssue() { 
+                    StatutoryArticleId = request.ArticleId,
+                    Description = (request.Description ?? string.Empty).Trim(), 
+                    Notes = request.Comments ?? string.Empty,
+                    IsClosed = request.IsClosed,
+                    IsDeleted = false,
+                    CreatedOn = DateTime.Now,
+                    CreatedBy = $"{request.UserName}",
+                    LastModifiedBy  = $"{request.UserName}",
+                    LastModifiedOn = DateTime.Now
+                };
 
                 //..log the Compliance issue data being saved
-                var categoryJson = JsonSerializer.Serialize(category, new JsonSerializerOptions {
+                var issueJson = JsonSerializer.Serialize(issue, new JsonSerializerOptions {
                     WriteIndented = true,
                     ReferenceHandler = ReferenceHandler.IgnoreCycles
                 });
-                Logger.LogActivity($"Compliance issue data: {categoryJson}", "DEBUG");
+                Logger.LogActivity($"Compliance issue data: {issueJson}", "DEBUG");
 
-                var added = await uow.ComplianceIssueRepository.InsertAsync(category);
+                var added = await uow.ComplianceIssueRepository.InsertAsync(issue);
                 if (added) {
                     //..check object state
-                    var entityState = ((UnitOfWork)uow).Context.Entry(category).State;
+                    var entityState = ((UnitOfWork)uow).Context.Entry(issue).State;
                     Logger.LogActivity($"Entity state after insert: {entityState}", "DEBUG");
 
                     var result = uow.SaveChanges();
@@ -324,6 +345,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     //..update Compliance issue record
                     issue.Description = (request.Description ?? string.Empty).Trim();
                     issue.Notes = request.Comments ?? string.Empty;
+                    issue.IsClosed = request.IsClosed;
                     issue.IsDeleted = request.IsDeleted;
                     issue.LastModifiedOn = DateTime.Now;
                     issue.LastModifiedBy = $"{request.UserName}";
@@ -356,6 +378,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     issue.Description = (request.Description ?? string.Empty).Trim();
                     issue.Notes = request.Comments ?? string.Empty;
                     issue.IsDeleted = request.IsDeleted;
+                    issue.IsClosed = request.IsClosed;
                     issue.LastModifiedOn = DateTime.Now;
                     issue.LastModifiedBy = $"{request.UserName}";
 

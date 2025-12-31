@@ -19,7 +19,7 @@ namespace Grc.Middleware.Api.Http.Responses
         [JsonPropertyName("owner")]
         public string Owner { get; set; }
 
-        [JsonPropertyName("items")]
-        public List<ObligationComplianceItemResponse> Items { get; set; } = new();
+        [JsonPropertyName("controlMaps")]
+        public List<ObligationComplianceItemResponse> ControlMaps { get; set; } = new();
     }
 }

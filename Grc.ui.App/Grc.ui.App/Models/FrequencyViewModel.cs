@@ -3,4 +3,5 @@
         public long Id { get; set; }
         public string FrequencyName { get; set; }
     }
+
 }

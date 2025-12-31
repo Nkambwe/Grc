@@ -15,6 +15,7 @@ using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -427,7 +428,7 @@ namespace Grc.ui.App.Controllers {
                     return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create statutory section" });
 
                 var created = result.Data;
-                return Ok(new{success = true,message = "Category created successfully",data = new { }});
+                return Ok(new{success = true,message = "Regulatory Act created successfully",data = new { }});
 
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected error creating regulatory act: {ex.Message}", "ERROR");
@@ -478,7 +479,7 @@ namespace Grc.ui.App.Controllers {
                 if (userResponse.HasError || userResponse.Data == null)
                     return Ok(new { success = false, message = "Unable to resolve current user" });
 
-                if (id == 0) return BadRequest(new { success = false, message = "Task Id is required" });
+                if (id == 0) return BadRequest(new { success = false, message = "Section Id is required" });
 
                 var currentUser = userResponse.Data;
                 GrcIdRequest request = new()
@@ -693,7 +694,9 @@ namespace Grc.ui.App.Controllers {
                     isCovered = response.IsCovered,
                     rationale = response.ComplianceReason ?? string.Empty,
                     assurance = response.Assurance,
-                    complianceMaps = response.ComplianceMaps
+                    complianceMaps = response.ComplianceMaps,
+                    issues = response.Issues,
+                    revisions = response.Revisions,
                 };
 
                 return Ok(new { success = true, data = obligation });
@@ -727,11 +730,209 @@ namespace Grc.ui.App.Controllers {
                 if (result.HasError || result.Data == null)
                     return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create compliance map, an error occurred" });
 
+                var created = result.Data;
+                if (!created.Status)
+                    return Ok(new { success = created.Status, message = created.Message ?? "Failed to create compliance map, an error occurred", data = new { } });
+
                 return Ok(new { success = false, message = "Compliance map saved successfully"});
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected error occurred while saving compliance map: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "RIGISTER-CONTROLLER", ex.StackTrace);
                 return Ok(new { success = false, message="Could not save map, an unexpected error occurred"});
+            }
+        }
+
+        #endregion
+
+        #region Compliance Issues
+
+        [LogActivityResult("Retrieve Compliance Issue", "User retrieved compliance issue", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_ISSUE, "ComplianceIssue")]
+        public async Task<IActionResult> GetIssue(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0) {
+                    return BadRequest(new { success = false, message = "Issue Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.COMPLIANCE_ISSUE_RETRIEVE.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = false
+                };
+
+                var result = await _controlsService.GetIssueAsyncAsync(request);
+                if (result.HasError || result.Data == null) {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving compliance issue";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var response = result.Data;
+                var actRecord = new {
+                    id = response.Id,
+                    articleId = response.ArticleId,
+                    description = response.Description ?? string.Empty,
+                    isClosed = response.IsClosed,
+                    isActive = response.IsDeleted,
+                    comments = response.Comments ?? string.Empty
+                };
+
+                return Ok(new { success = true, data = actRecord });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error retrieving regulatory act: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "RIGISTER-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Failed to retrieve regulatory acts, an Unexpected error occurred", data = new { } });
+            }
+        }
+
+        [LogActivityResult("Create Compliance Issue", "User added new compliance issue", ActivityTypeDefaults.COMPLIANCE_CREATE_ISSUE, "ComplianceIssue")]
+        public async Task<IActionResult> CreateIssue([FromBody] IssueViewModel request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (request == null) {
+                    var msg = "Invalid request data";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                //..set system fields
+                var currentUser = userResponse.Data;
+                var result = await _controlsService.CreateIssueAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create issue" });
+
+                var created = result.Data;
+                if (!created.Status)
+                    return Ok(new { success = created.Status, message = created.Message ?? "Failed to update issue", data = new { } });
+
+                return Ok(new { success = true, message = "Issue created successfully", data = new { } });
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error creating issue: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "RIGISTER-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Failed to create issue, an Unexpected error occurred", data = new { } });
+            }
+        }
+
+        [LogActivityResult("Update Compliance issue", "User updated compliance issue", ActivityTypeDefaults.COMPLIANCE_EDITED_ISSUE, "ComplianceIssue")]
+        public async Task<IActionResult> UpdateIssue([FromBody] IssueViewModel request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (request == null) {
+                    var msg = "Invalid request data";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                //..set system fields
+                var currentUser = userResponse.Data;
+                var result = await _controlsService.UpdateIssueAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update issue" });
+
+                var updated = result.Data;
+                if (!updated.Status)
+                    return Ok(new { success = updated.Status, message = updated.Message ?? "Failed to update issue", data = new { } });
+
+                return Ok(new { success = true, message = "Issue created successfully", data = new { } });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error updating issue: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "RIGISTER-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, data = new { } });
+            }
+        }
+
+        [LogActivityResult("Delete Compliance Issue", "User deleted control item", ActivityTypeDefaults.COMPLIANCE_DELETED_ISSUE, "ControlItem")]
+        public async Task<IActionResult> DeleteIssue(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                if (id == 0) return BadRequest(new { success = false, message = "Issue Id is required" });
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.COMPLIANCE_ISSUE_DELETE.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = true
+                };
+
+                var result = await _controlsService.DeleteIssueAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to delete issue" });
+                
+                var resultData = result.Data;
+                if (!resultData.Status)
+                    return Ok(new { success = resultData.Status, message = resultData.Message ?? "Failed to delete issue", data = new { } });
+
+                return Ok(new { success = result.Data.Status, message = result.Data.Message });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error deleting issue: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "RIGISTER-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = true, data = new { } });
+            }
+        }
+
+        public async Task<IActionResult> ComplianceMapping([FromBody] ComplianceMapViewModel model) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (model == null) {
+                    var msg = "Invalid request data";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                //..set system fields
+                var currentUser = userResponse.Data;
+                var result = await _controlsService.CreatMappAsync(model, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to complete mapping" });
+
+                var created = result.Data;
+                if(!created.Status)
+                    return Ok(new { success = created.Status, message = created.Message ?? "Failed to complete mapping", data = new { } });
+
+                return Ok(new { success = true, message = "Compliance mapping completed successfully", data = new { } });
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error creating issue: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "RIGISTER-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Failed to create issue, an Unexpected error occurred", data = new { } });
             }
         }
 
@@ -881,7 +1082,7 @@ namespace Grc.ui.App.Controllers {
             }
         }
 
-        [LogActivityResult("Add Compliance control", "User retrieved added new compliance control", ActivityTypeDefaults.COMPLIANCE_CONTROLCATEGORY_CREATE, "ControlCategory")]
+        [LogActivityResult("Add Compliance control", "User added new compliance control", ActivityTypeDefaults.COMPLIANCE_CONTROLCATEGORY_CREATE, "ControlCategory")]
         public async Task<IActionResult> CreateControlCategory([FromBody] ControlCategoryViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -914,7 +1115,7 @@ namespace Grc.ui.App.Controllers {
             }
         }
 
-        [LogActivityResult("Update Compliance control", "User retrieved updated compliance control", ActivityTypeDefaults.COMPLIANCE_CONTROLCATEGORY_UPDATE, "ControlCategory")]
+        [LogActivityResult("Update Compliance control", "User updated compliance control", ActivityTypeDefaults.COMPLIANCE_CONTROLCATEGORY_UPDATE, "ControlCategory")]
         public async Task<IActionResult> UpdateControlCategory([FromBody] ControlCategoryViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1061,7 +1262,7 @@ namespace Grc.ui.App.Controllers {
             }
         }
 
-        [LogActivityResult("Delete control item", "User retrieved deleted control item", ActivityTypeDefaults.COMPLIANCE_CONTROLITEM_DELETE, "ControlItem")]
+        [LogActivityResult("Delete control item", "User deleted control item", ActivityTypeDefaults.COMPLIANCE_CONTROLITEM_DELETE, "ControlItem")]
         public async Task<IActionResult> DeleteControlItem(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();

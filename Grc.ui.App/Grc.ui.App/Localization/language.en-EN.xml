@@ -816,6 +816,15 @@
 	<LocaleResource Name="Component.Table.Select.Authority">
 		<Value>Select authority...</Value>
 	</LocaleResource>
+
+	<LocaleResource Name="Component.Table.Law.Label.ControlName">
+		<Value>Choose control to add</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Select.ControlName">
+		<Value>Select control...</Value>
+	</LocaleResource>
+	
+	
 	<LocaleResource Name="Component.Table.Law.Label.Type">
 		<Value>Law/Regulation Type</Value>
 	</LocaleResource>
@@ -852,6 +861,14 @@
 	<LocaleResource Name="Component.Table.Law.Label.ControlName">
 		<Value>Control Name</Value>
 	</LocaleResource>
+
+	<LocaleResource Name="Component.Table.Law.Label.IssueDescription">
+		<Value>Issue Description</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Law.Label.IssueNotes">
+		<Value>Notes</Value>
+	</LocaleResource>
+	
 	<LocaleResource Name="Component.Table.Law.Label.ControlNotes">
 		<Value>Comment</Value>
 	</LocaleResource>
