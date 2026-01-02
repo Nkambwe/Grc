@@ -294,7 +294,10 @@
 	<LocaleResource Name="Component.Key.PolicyTasks">
 		<Value>Task Assignment</Value>
 	</LocaleResource>
-	<LocaleResource Name="Component.Key.StandardsRegulationRegister">
+	<LocaleResource Name="Component.Key.CircularReturns">
+		<Value>Circular Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.RegulatoryReturns">
 		<Value>Regulatory Returns</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.SettingAuthorities">
@@ -823,8 +826,8 @@
 	<LocaleResource Name="Component.Table.Select.ControlName">
 		<Value>Select control...</Value>
 	</LocaleResource>
-	
-	
+
+
 	<LocaleResource Name="Component.Table.Law.Label.Type">
 		<Value>Law/Regulation Type</Value>
 	</LocaleResource>
@@ -868,7 +871,7 @@
 	<LocaleResource Name="Component.Table.Law.Label.IssueNotes">
 		<Value>Notes</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Component.Table.Law.Label.ControlNotes">
 		<Value>Comment</Value>
 	</LocaleResource>
@@ -1465,9 +1468,35 @@
 	<LocaleResource Name="App.Menu.Registers.List">
 		<Value>Statutes/Regulations</Value>
 	</LocaleResource>
-	<LocaleResource Name="App.Menu.Registers.Regulations">
-		<Value>Regulatory Returns</Value>
+
+	<LocaleResource Name="App.Menu.Returns">
+		<Value>Returns</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Menu.Returns.Dashboard">
+		<Value>Returns Dashboard</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Returns.Register">
+		<Value>Returns Register</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Circulars">
+		<Value>Circular Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Circulars.Dashboard">
+		<Value>Circular Dashboard</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Circulars.Register">
+		<Value>Circular List</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Returns.Tasks">
+		<Value>Return Tasks</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Returns.Tasks.Dashboard">
+		<Value>Task Dashboard</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Returns.Tasks.List">
+		<Value>Open Tasks</Value>
+	</LocaleResource>
+
 	<LocaleResource Name="App.Menu.Registers.Obligations">
 		<Value>Regulatory Obligations</Value>
 	</LocaleResource>
@@ -1491,9 +1520,6 @@
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Regulation.Maps">
 		<Value>Compliance Maps</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Regulation.Circulars">
-		<Value>Circular Returns</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Regulation.Authorites">
 		<Value>Authorities</Value>
@@ -1528,33 +1554,56 @@
 	<LocaleResource Name="App.Menu.Compliance.Dashboard.Circular">
 		<Value>Circular Returns</Value>
 	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Dashboard.Received">
+	<LocaleResource Name="App.Menu.Compliance.Circular.Received">
 		<Value>Received</Value>
 	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Dashboard.Open">
+	<LocaleResource Name="App.Menu.Compliance.Circular.Open">
 		<Value>Open</Value>
 	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Dashboard.Closed">
-		<Value>Closed</Value>
+	<LocaleResource Name="App.Menu.Compliance.Circular.Closed">
+		<Value>Submitted</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Circular.Closed">
+		<Value>Submitted</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Circular.Breach">
+		<Value>Breached</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Compliance.Dashboard.RegulationStandards">
 		<Value>Compliance Obligations</Value>
 	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Dashboard.Applicable">
-		<Value>Applicable</Value>
+	<LocaleResource Name="App.Menu.Compliance.Dashboard.Returns">
+		<Value>Compliance Returns</Value>
 	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Dashboard.Gaps">
-		<Value>Gaps</Value>
+	<LocaleResource Name="App.Menu.Compliance.Returns.Totals">
+		<Value>Total Returns</Value>
 	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Dashboard.Covered">
-		<Value>Covered</Value>
+	<LocaleResource Name="App.Menu.Compliance.Returns.Submitted">
+		<Value>Returns Submitted</Value>
 	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Dashboard.NotApplicable">
-		<Value>Not Applicable</Value>
+	<LocaleResource Name="App.Menu.Compliance.Returns.Open">
+		<Value>Returns Open</Value>
 	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Dashboard.Issues">
-		<Value>Issues</Value>
+	<LocaleResource Name="App.Menu.Compliance.Returns.Breach">
+		<Value>Returns Breached</Value>
 	</LocaleResource>
+
+	<LocaleResource Name="App.Menu.Compliance.Dashboard.Tasks">
+		<Value>Compliance Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Tasks.Totals">
+		<Value>Total Tasks</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Tasks.Open">
+		<Value>Open Tasks</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Tasks.Closed">
+		<Value>Closed Tasks</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Tasks.Failed">
+		<Value>Failed Tasks</Value>
+	</LocaleResource>
+
 	<LocaleResource Name="App.Menu.Support">
 		<Value>Support</Value>
 	</LocaleResource>

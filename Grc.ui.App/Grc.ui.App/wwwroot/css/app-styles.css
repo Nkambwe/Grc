@@ -597,6 +597,10 @@ span.app-serach {
     display: none;
 }
 
+.sidebar-collapsed-init .sidebar-container {
+    width: var(--sidebar-collapsed-width);
+}
+
 /*..when collapsed, show separator as a simple line */
 .sidebar-container.collapsed .sidebar-separator {
     justify-content: center;
@@ -634,7 +638,7 @@ span.app-serach {
 
         .sidebar-submenu .sidebar-item a {
             padding: 0.5rem 1rem 0.5rem 2.5rem;
-            font-size: 13px;
+            font-size: 20px;
         }
 
 .sidebar-container.collapsed .sidebar-submenu {
@@ -1115,7 +1119,7 @@ div.input-group.date {
 
 .stat-card {
     padding: 10px;
-    min-height: 150px;
+    min-height: 190px;
     border-radius: 5px;
     border: none;
     background: var(--background-color);
@@ -1136,7 +1140,9 @@ div.input-group.date {
     }
 
 .stat-number {
-    height: 50px;
+    height: 60px;
+    display: flex;
+    flex-direction: column;
 }
 
     .stat-number span {
@@ -1148,10 +1154,15 @@ div.input-group.date {
         color: var(--pearl-orange);
     }
 
+        .stat-number span:last-child {
+            font-size: 1em;
+        }
+
 .stat-separator {
     display: block;
     width: 100%;
     height: 3px;
+    margin-top: 20px;
 }
 
 .stat-separator-default {
@@ -1287,6 +1298,22 @@ div.input-group.date {
     gap: 20px; 
 }
 
+.stats-comp-card {
+    padding: 20px;
+    height: 200px;
+    text-align: center;
+    transition: transform 0.2s;
+    background: var(--background-color);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
+
+.stats-comp-title {
+    font-size: 2.5rem;
+    color: var(--grey-dark);
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
 .category-chart-card {
     padding: 20px;
     height: 370px;
@@ -1294,6 +1321,12 @@ div.input-group.date {
     flex-direction: column;
     background: var(--background-color);
     box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
+
+.stats-comp-value {
+    font-size: 25px;
+    font-weight: bold;
+    color: var(--pearl-purple-dark-70);
 }
 
 .chart-card-title {

@@ -104,10 +104,6 @@ namespace Grc.ui.App.Controllers {
 
         [HttpGet]
         public async Task<IActionResult> Login() {
-            //if (User.Identity?.IsAuthenticated == true) {
-            //    return RedirectToAction("Dashboard");
-            //}
-
             var loginModel = await _loginFactory.PrepareLoginModelAsync();
             return View(loginModel);
         }

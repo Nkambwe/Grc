@@ -639,12 +639,12 @@
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-regulations-received",
                 pattern: "/grc/regulations/received",
-                defaults: new { controller = "Regulations", action = "ReceivedRegulations" }
+                defaults: new { controller = "ComplianceDashboard", action = "ReceivedRegulations" }
             );
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-regulations-open",
                 pattern: "/grc/regulations/open",
-                defaults: new { controller = "Regulations", action = "OpenRegulations" }
+                defaults: new { controller = "ComplianceDashboard", action = "OpenRegulations" }
             );
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-regulations-closed",
@@ -654,36 +654,125 @@
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-regulations-applicable",
                 pattern: "/grc/regulations/applicable",
-                defaults: new { controller = "Regulations", action = "RegulatoryApplicable" }
+                defaults: new { controller = "ComplianceDashboard", action = "RegulatoryApplicable" }
             );
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-regulations-gaps",
                 pattern: "/grc/regulations/gaps",
-                defaults: new { controller = "Regulations", action = "RegulatoryGaps" }
+                defaults: new { controller = "ComplianceDashboard", action = "RegulatoryGaps" }
             );
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-regulations-covered",
                 pattern: "/grc/regulations/covered",
-                defaults: new { controller = "Regulations", action = "RegulatoryCovered" }
+                defaults: new { controller = "ComplianceDashboard", action = "RegulatoryCovered" }
             );
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-regulations-issues",
                 pattern: "/grc/regulations/issues",
-                defaults: new { controller = "Regulations", action = "RegulatoryIssues" }
+                defaults: new { controller = "ComplianceDashboard", action = "RegulatoryIssues" }
             );
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-regulations-na",
                 pattern: "/grc/regulations/not-applicable",
-                defaults: new { controller = "Regulations", action = "RegulatoryNotApplicable" }
-            );
-            routeBuilder.MapControllerRoute(
-               name: "app-compliance-register-returns",
-               pattern: "/grc/register/register-returns",
-               defaults: new { controller = "Register", action = "RegulationReturns" }
+                defaults: new { controller = "ComplianceDashboard", action = "RegulatoryNotApplicable" }
             );
 
+            /*----------------------------------------------Compliance returns Routes*/
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-returns-home",
+               pattern: "/grc/returns/compliance-returns/dashboard",
+               defaults: new { controller = "ComplianceReturn", action = "ReturnsHome" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-returns-dashboard-received",
+                pattern: "/grc/returns/compliance-returns/dashboard-received",
+                defaults: new { controller = "ComplianceReturn", action = "ReturnTotalStatistics" }
+           );
+            routeBuilder.MapControllerRoute(
+                 name: "app-compliance-register-returns-dashboard-open",
+                 pattern: "/grc/returns/compliance-returns/dashboard-open",
+                 defaults: new { controller = "ComplianceReturn", action = "ReturnOpenStatistics" }
+            );
+            routeBuilder.MapControllerRoute(
+                 name: "app-compliance-register-returns-dashboard-closed",
+                 pattern: "/grc/returns/compliance-returns/dashboard-closed",
+                 defaults: new { controller = "ComplianceReturn", action = "ReturnSubmittedStatistics" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-returns-dashboard-breach",
+                pattern: "/grc/returns/compliance-returns/dashboard-breach",
+                defaults: new { controller = "ComplianceReturn", action = "ReturnBreachStatistics" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-returns-register",
+               pattern: "/grc/returns/compliance-returns/register",
+               defaults: new { controller = "ComplianceReturn", action = "ReturnsHome" }
+            );
+
+            /*----------------------------------------------Circular returns Routes*/
+            routeBuilder.MapControllerRoute(
+              name: "app-compliance-circular-returns-home",
+              pattern: "/grc/returns/circular-returns/dashboard",
+              defaults: new { controller = "ComplianceReturn", action = "CircularHome" }
+            );
+            routeBuilder.MapControllerRoute(
+                 name: "app-compliance-circular-returns-dashboard-received",
+                 pattern: "/grc/returns/circular-returns/dashboard-received",
+                 defaults: new { controller = "ComplianceReturn", action = "CircularReceivedStatistics" }
+            );
+            routeBuilder.MapControllerRoute(
+                 name: "app-compliance-circular-returns-dashboard-open",
+                 pattern: "/grc/returns/circular-returns/dashboard-open",
+                 defaults: new { controller = "ComplianceReturn", action = "CircularOpenStatistics" }
+            );
+            routeBuilder.MapControllerRoute(
+                 name: "app-compliance-circular-returns-dashboard-closed",
+                 pattern: "/grc/returns/circular-returns/dashboard-closed",
+                 defaults: new { controller = "ComplianceReturn", action = "CircularClosedStatistics" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-circular-returns-dashboard-breach",
+                pattern: "/grc/returns/circular-returns/dashboard-breach",
+                defaults: new { controller = "ComplianceReturn", action = "CircularBreachStatistics" }
+            );
+            routeBuilder.MapControllerRoute(
+                 name: "app-compliance-circular-returns-register",
+                 pattern: "/grc/returns/circular-returns/register",
+                 defaults: new { controller = "ComplianceReturn", action = "CircularRegister" }
+            );
+
+            /*----------------------------------------------Compliance Returns Routes*/
+            routeBuilder.MapControllerRoute(
+                 name: "app-compliance-returns-tasks-home",
+                 pattern: "/grc/returns/tasks/dashboard",
+                 defaults: new { controller = "ComplianceReturn", action = "ComplianceTasksHome" }
+            );
+            routeBuilder.MapControllerRoute(
+                 name: "app-compliance-returns-tasks-dashboard-totals",
+                 pattern: "/grc/returns/tasks/dashboard-totals",
+                 defaults: new { controller = "ComplianceReturn", action = "TotalTaskStatistics" }
+            );
+            routeBuilder.MapControllerRoute(
+                 name: "app-compliance-returns-tasks-dashboard-open",
+                 pattern: "/grc/returns/tasks/dashboard-open",
+                 defaults: new { controller = "ComplianceReturn", action = "TaskOpenStatistics" }
+            );
+            routeBuilder.MapControllerRoute(
+                 name: "app-compliance-returns-tasks-dashboard-closed",
+                 pattern: "/grc/returns/tasks/dashboard-closed",
+                 defaults: new { controller = "ComplianceReturn", action = "TaskClosedStatistics" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-returns-tasks-dashboard-failed",
+                pattern: "/grc/returns/tasks/dashboard-failed",
+                defaults: new { controller = "ComplianceReturn", action = "FailedTaskStatistics" }
+            );
+            routeBuilder.MapControllerRoute(
+                 name: "app-compliance-returns-tasks-list",
+                 pattern: "/grc/returns/tasks/task-list",
+                 defaults: new { controller = "ComplianceReturn", action = "ComplianceTasksList" }
+            );
             /*----------------------------------------------Obligation Routes*/
-           
             routeBuilder.MapControllerRoute(
                name: "app-compliance-register-obligations",
                pattern: "/grc/register/obligations",

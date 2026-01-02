@@ -3,14 +3,17 @@
     Layout = "_Layout";
     ViewData["Title"] = "GRC SUITE";
 
+    var returns = Model.DashboardStatistics.ReturnTotals;
     var circulars = Model.DashboardStatistics.CircularTotals;
-    var regulations = Model.DashboardStatistics.RegulationsTotals;
+    var tasks = Model.DashboardStatistics.TaskTotals;
 }
 
 <div class="welcome-container">
+
     <div class="welcome-container-message">
         <span class="display-1">@Model.WelcomeMessage</span>
     </div>
+
     <div class="incon-container-expand">
         <button id="expandBtn" type="button" class="icon-btn">
             <span>
@@ -35,43 +38,64 @@
     <div class="stats-grid">
 
         <div class="title-box">
-            <h3 class="display-1 stats-grid-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.Circular"))</h3>
+            <h3 class="display-1 stats-grid-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.Tasks"))</h3>
             <span class="title-line"></span>
         </div>
 
         <div class="stats-content">
-            <div class="stat-card stat-card-light">
-                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.Received"))</span></div>
-                <div class="stat-number"><span>@circulars.Received</span></div>
-                <span class="stat-separator stat-separator-primary"></span>
-                <a class="stat-link" asp-controller="Regulations" asp-action="ReceivedRegulations">
+
+            <div class="stat-card  stat-card-light">
+                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Returns.Totals"))</span></div>
+                <div class="stat-number">
+                    <span>@returns.Total</span>
+                    <span>@returns.Period</span>
+                </div>
+                <span class="stat-separator stat-separator-colored-pearl"></span>
+                <a class="stat-link" asp-controller="ComplianceReturn" asp-action="ReturnTotalStatistics">
                     <span><i class="mdi mdi-chevron-right"></i></span>
                     <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
                 </a>
             </div>
+
             <div class="stat-card stat-card-light">
-                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.Open"))</span></div>
-                <div class="stat-number"><span>@circulars.Open</span></div>
-                <span class="stat-separator stat-separator-danger"></span>
-                <a class="stat-link" asp-controller="Regulations" asp-action="OpenRegulations">
+                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Returns.Open"))</span></div>
+                <div class="stat-number">
+                    <span>@returns.Open</span>
+                    <span>@returns.Period</span>
+                </div>
+                <span class="stat-separator stat-separator-colored-pearl"></span>
+                <a class="stat-link" asp-controller="ComplianceReturn" asp-action="ReturnOpenStatistics">
                     <span><i class="mdi mdi-chevron-right"></i></span>
                     <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
                 </a>
             </div>
+
             <div class="stat-card stat-card-light">
-                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.Closed"))</span></div>
-                <div class="stat-number"><span>@circulars.Closed</span></div>
-                <span class="stat-separator stat-separator-cancelled"></span>
-                <a class="stat-link" asp-controller="Regulations" asp-action="ClosedRegulations">
+                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Returns.Submitted"))</span></div>
+                <div class="stat-number">
+                    <span>@returns.Submitted</span>
+                    <span>@returns.Period</span>
+                </div>
+                <span class="stat-separator stat-separator-colored-pearl"></span>
+                <a class="stat-link" asp-controller="ComplianceReturn" asp-action="ReturnSubmittedStatistics">
                     <span><i class="mdi mdi-chevron-right"></i></span>
                     <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
                 </a>
             </div>
+
             <div class="stat-card stat-card-light">
-                <div class="stat-title"><span></span></div>
-                <div class="stat-number"><span></span></div>
-                <span class="stat-separator"></span>
+                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Returns.Breach"))</span></div>
+                <div class="stat-number">
+                    <span>@returns.Breach</span>
+                    <span>@returns.Period</span>
+                </div>
+                <span class="stat-separator stat-separator-colored-pearl"></span>
+                <a class="stat-link" asp-controller="ComplianceReturn" asp-action="ReturnBreachStatistics">
+                    <span><i class="mdi mdi-chevron-right"></i></span>
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
+                </a>
             </div>
+
             <div class="stat-card stat-card-light">
                 <div class="stat-title"><span></span></div>
                 <div class="stat-number"><span></span></div>
@@ -84,63 +108,143 @@
     <div class="stats-grid">
 
         <div class="title-box">
-            <h3 class="display-1 stats-grid-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.RegulationStandards"))</h3>
+            <h3 class="display-1 stats-grid-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.Circular"))</h3>
             <span class="title-line"></span>
         </div>
 
         <div class="stats-content">
 
-            <div class="stat-card stat-card-colored">
-                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.Applicable"))</span></div>
-                <div class="stat-number"><span>@regulations.Applicable</span></div>
-                <span class="stat-separator stat-separator-colored-pearl"></span>
-                <a class="stat-link" asp-controller="Regulations" asp-action="RegulatoryApplicable">
+            <div class="stat-card stat-card-light">
+                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Circular.Received"))</span></div>
+                <div class="stat-number">
+                    <span>@circulars.Total</span>
+                    <span>@circulars.Period</span>
+                </div>
+                <span class="stat-separator stat-separator-primary"></span>
+                <a class="stat-link" asp-controller="ComplianceReturn" asp-action="CircularReceivedStatistics">
                     <span><i class="mdi mdi-chevron-right"></i></span>
                     <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
                 </a>
             </div>
 
-            <div class="stat-card stat-card-colored">
-                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.Gaps"))</span></div>
-                <div class="stat-number"><span>@regulations.Gaps</span></div>
-                <span class="stat-separator stat-separator-colored-pearl"></span>
-                <a class="stat-link" asp-controller="Regulations" asp-action="RegulatoryGaps">
+            <div class="stat-card stat-card-light">
+                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Circular.Open"))</span></div>
+                <div class="stat-number">
+                    <span>@circulars.Open</span>
+                    <span>@circulars.Period</span>
+                </div>
+                <span class="stat-separator stat-separator-danger"></span>
+                <a class="stat-link" asp-controller="ComplianceReturn" asp-action="CircularOpenStatistics">
                     <span><i class="mdi mdi-chevron-right"></i></span>
                     <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
                 </a>
             </div>
 
-            <div class="stat-card stat-card-colored">
-                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.Covered"))</span></div>
-                <div class="stat-number"><span>@regulations.Covered</span></div>
-                <span class="stat-separator stat-separator-colored-pearl"></span>
-                <a class="stat-link" asp-controller="Regulations" asp-action="RegulatoryCovered">
-                    <span><i class="mdi mdi-chevron-right"></i></span>
-                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
-                </a>
-            </div>
-            
-            <div class="stat-card stat-card-colored">
-                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.NotApplicable"))</span></div>
-                <div class="stat-number"><span>@regulations.NotApplicable</span></div>
-                <span class="stat-separator stat-separator-colored-pearl"></span>
-                <a class="stat-link" asp-controller="Regulations" asp-action="RegulatoryNotApplicable">
+            <div class="stat-card stat-card-light">
+                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Circular.Closed"))</span></div>
+                <div class="stat-number">
+                    <span>@circulars.Closed</span>
+                    <span>@circulars.Period</span>
+                </div>
+                <span class="stat-separator stat-separator-cancelled"></span>
+                <a class="stat-link" asp-controller="ComplianceReturn" asp-action="CircularClosedStatistics">
                     <span><i class="mdi mdi-chevron-right"></i></span>
                     <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
                 </a>
             </div>
 
-            <div class="stat-card stat-card-colored">
-                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.Issues"))</span></div>
-                <div class="stat-number"><span>@regulations.Issues</span></div>
-                <span class="stat-separator stat-separator-colored-pearl"></span>
-                <a class="stat-link" asp-controller="Regulations" asp-action="RegulatoryIssues">
+            <div class="stat-card stat-card-light">
+                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Circular.Breach"))</span></div>
+                <div class="stat-number">
+                    <span>@circulars.Breach</span>
+                    <span>@circulars.Period</span>
+                 </div>
+                <span class="stat-separator stat-separator-cancelled"></span>
+                <a class="stat-link" asp-controller="ComplianceReturn" asp-action="CircularBreachStatistics">
                     <span><i class="mdi mdi-chevron-right"></i></span>
                     <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
                 </a>
+            </div>
+
+            <div class="stat-card stat-card-light">
+                <div class="stat-title"><span></span></div>
+                <div class="stat-number"><span></span></div>
+                <span class="stat-separator"></span>
             </div>
 
         </div>
 
     </div>
+
+    <div class="stats-grid">
+
+        <div class="title-box">
+            <h3 class="display-1 stats-grid-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Dashboard.Tasks"))</h3>
+            <span class="title-line"></span>
+        </div>
+
+        <div class="stats-content">
+
+            <div class="stat-card stat-card-light">
+                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Tasks.Totals"))</span></div>
+                <div class="stat-number">
+                    <span>@tasks.Total</span>
+                    <span>@tasks.Period</span>
+                </div>
+                <span class="stat-separator stat-separator-primary"></span>
+                <a class="stat-link" asp-controller="ComplianceReturn" asp-action="TotalTaskStatistics">
+                    <span><i class="mdi mdi-chevron-right"></i></span>
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
+                </a>
+            </div>
+
+            <div class="stat-card stat-card-light">
+                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Tasks.Open"))</span></div>
+                <div class="stat-number">
+                    <span>@tasks.Open</span>
+                    <span>@tasks.Period</span>
+                </div>
+                <span class="stat-separator stat-separator-danger"></span>
+                <a class="stat-link" asp-controller="ComplianceReturn" asp-action="TaskOpenStatistics">
+                    <span><i class="mdi mdi-chevron-right"></i></span>
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
+                </a>
+            </div>
+
+            <div class="stat-card stat-card-light">
+                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Tasks.Closed"))</span></div>
+                <div class="stat-number">
+                    <span>@tasks.Closed</span>
+                    <span>@tasks.Period</span>
+                </div>
+                <span class="stat-separator stat-separator-cancelled"></span>
+                <a class="stat-link" asp-controller="ComplianceReturn" asp-action="TaskClosedStatistics">
+                    <span><i class="mdi mdi-chevron-right"></i></span>
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
+                </a>
+            </div>
+
+            <div class="stat-card stat-card-light">
+                <div class="stat-title"><span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Tasks.Failed"))</span></div>
+                <div class="stat-number">
+                    <span>@tasks.Failed</span>
+                    <span>@tasks.Period</span>
+                </div>
+                <span class="stat-separator stat-separator-cancelled"></span>
+                <a class="stat-link" asp-controller="ComplianceReturn" asp-action="FailedTaskStatistics">
+                    <span><i class="mdi mdi-chevron-right"></i></span>
+                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.SeeMore"))</span>
+                </a>
+            </div>
+
+            <div class="stat-card stat-card-light">
+                <div class="stat-title"><span></span></div>
+                <div class="stat-number"><span></span></div>
+                <span class="stat-separator"></span>
+            </div>
+
+        </div>
+
+    </div>
+
 </div>

@@ -1,0 +1,48 @@
+﻿@model ReturnsMinDashboardModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "OPEN RFETURNS";
+    var colors = new[] { "card-draft", "card-uptodate", "card-proposed", "card-unchanged" };
+}
+
+<div class="welcome-container">
+
+    <div class="welcome-container-message">
+        <span class="display-1">@Model.WelcomeMessage >> Open Returns</span>
+    </div>
+
+    <div class="incon-container-expand">
+        <button id="expandBtn" type="button" class="icon-btn">
+            <span>
+                <i id="toggleIcon" class="mdi mdi-arrow-expand"></i>
+            </span>
+        </button>
+    </div>
+
+</div>
+
+<div class="action-box">
+    <div class="title-box">
+        <h3 class="display-1 action-box-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Quick"))</h3>
+        <span class="title-line"></span>
+    </div>
+
+    @await Component.InvokeAsync("QuickActions", new { model = Model.QuickActions })
+</div>
+
+<div class="dashboard-category-grid">
+
+    <div class="stats-category-grid">
+        @if (Model.DashboardStatistics != null && Model.DashboardStatistics.ReturnsList.Any()) {
+            for (var i = 0; i <= Model.DashboardStatistics.ReturnsList.Count - 1; i++) {
+                var circular = Model.DashboardStatistics.ReturnsList[i];
+                <div class="stats-comp-card @colors[i]">
+                    <div class="stats-comp-title"><span>@circular.Open</span></div>
+                    <div class="stats-comp-value">
+                        <span>@circular.Period</span>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

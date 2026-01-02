@@ -1,13 +1,15 @@
-﻿@model UserDashboardModel
+﻿@model ReturnsDashboardModel
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "OPEN REGULATIONS";
-
+    ViewData["Title"] = "REGULATORY RETURNS";
 }
+
 <div class="welcome-container">
+
     <div class="welcome-container-message">
         <span class="display-1">@Model.WelcomeMessage</span>
     </div>
+
     <div class="incon-container-expand">
         <button id="expandBtn" type="button" class="icon-btn">
             <span>
@@ -26,5 +28,3 @@
 
     @await Component.InvokeAsync("QuickActions", new { model = Model.QuickActions })
 </div>
-
-<span class="display-1 text-success">Open Regulations</span>

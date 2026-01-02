@@ -1,8 +1,4 @@
-﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Bibliography;
-using DocumentFormat.OpenXml.Drawing.Diagrams;
-using DocumentFormat.OpenXml.Office2010.Excel;
-using Grc.ui.App.Defaults;
+﻿using Grc.ui.App.Defaults;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
 using Grc.ui.App.Extensions.Http;
@@ -15,7 +11,6 @@ using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -1293,67 +1288,6 @@ namespace Grc.ui.App.Controllers {
             }
         }
 
-        #endregion
-
-        #region Regulatory Returns
-        public async Task<IActionResult> RegulationReturns() {
-            if (User.Identity?.IsAuthenticated == true) {
-                var userDashboard = new UserDashboardModel()
-                {
-                    Initials = "JS",
-                };
-
-                return View(userDashboard);
-            }
-
-            return Redirect(Url.Action("Dashboard", "Application"));
-        }
-        #endregion
-
-        #region Circular Obligations
-        public async Task<IActionResult> RegulationCirculars() {
-            if (User.Identity?.IsAuthenticated == true) {
-                var userDashboard = new UserDashboardModel() {
-                    Initials = "JS",
-                };
-
-                return View(userDashboard);
-            }
-
-            return Redirect(Url.Action("Dashboard", "Application"));
-        }
-        #endregion
-
-        #region Manage Regulations
-        public async Task<IActionResult> ManageRegulations()
-        {
-            if (User.Identity?.IsAuthenticated == true)
-            {
-                var userDashboard = new UserDashboardModel()
-                {
-                    Initials = "JS",
-                };
-
-                return View(userDashboard);
-            }
-
-            return Redirect(Url.Action("Dashboard", "Application"));
-        }
-        #endregion
-
-        #region Regulatory Maps
-        public IActionResult RegulationMaps() {
-            if (User.Identity?.IsAuthenticated == true) {
-                var userDashboard = new UserDashboardModel()
-                {
-                    Initials = "JS",
-                };
-
-                return View(userDashboard);
-            }
-
-            return Redirect(Url.Action("Dashboard", "Application"));
-        }
         #endregion
 
     }

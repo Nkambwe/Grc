@@ -7,18 +7,27 @@ namespace Grc.ui.App.Services {
         public async Task<ComplianceStatistics> StatisticAsync(long userId, string ipAddress) {
             var data = new ComplianceStatistics {
                 CircularTotals = new CircularTotalsStatistics {
-                    Received = 431,
-                    Open = 231,
-                    Closed = 200
+                    Period = DateTime.Now.ToString("MMM yyyy").ToUpper(),
+                    Total = 31,
+                    Submitted = 28,
+                    Closed = 3,
+                    Breach = 4,
                 },
-                RegulationsTotals = new RegulationsTotalsStatistics {
-                    Applicable = 3940,
-                    Gaps = 132,
-                    Covered = 3010,
-                    NotApplicable = 320,
-                    Issues = 828
+                ReturnTotals = new ReturnTotalsStatistics {
+                    Period = DateTime.Now.ToString("MMM yyyy").ToUpper(),
+                    Total = 52,
+                    Submitted = 20,
+                    Open = 32,
+                    Breach = 4
                 },
-                CircularByAuthority = new List<CircularAuthorityStatistics>() {
+                TaskTotals = new TaskTotalsStatistics {
+                    Period = DateTime.Now.ToString("MMM yyyy").ToUpper(),
+                    Total = 51,
+                    Open = 8,
+                    Closed = 43,
+                    Failed = 8
+                },
+                Circulars = new List<CircularAuthorityStatistics>() {
                     new() {
                         Authority = "BOU",
                         Received = 120,
@@ -26,15 +35,41 @@ namespace Grc.ui.App.Services {
                         Closed = 56
                     }
                 },
-                RegulationStatistics = new List<RegulationStatistics>() {
+                Regulations = new List<RegulationStatistics>() {
                     new() {
                         Regulation = "Anti Money Laudering",
                         Applicable = 0,
                         Gaps = 0,
-                        Covered = 0,
+                        Compliant = 0,
                         Issues = 0
                     }
-                }
+                },
+                Tasks = new List<TaskTotalsStatistics>() {
+                    new() {
+                        Period = "TODAY",
+                        Open = 2,
+                        Closed = 4,
+                        Failed = 0
+                    },
+                    new() {
+                        Period = "THIS WEEK",
+                        Open = 8,
+                        Closed = 12,
+                        Failed = 0
+                    },
+                    new() {
+                        Period = "LAST WEEK",
+                        Open = 2,
+                        Closed = 20,
+                        Failed = 2
+                    },
+                    new() {
+                        Period =DateTime.Now.ToString("MMM yyyy").ToUpper(),
+                        Open = 80,
+                        Closed = 20,
+                        Failed = 2
+                    }
+                },
             };
             return await Task.FromResult(data);
         }

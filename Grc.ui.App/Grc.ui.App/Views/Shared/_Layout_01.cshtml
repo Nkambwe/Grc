@@ -57,7 +57,11 @@
 
     @Html.GenerateScripts(ResourceLocation.Footer)
     @await RenderSectionAsync("Scripts", required: false)
-
+    <script>
+        if (localStorage.getItem('sidebar-collapsed') !== 'false') {
+            document.documentElement.classList.add('sidebar-collapsed-init');
+        }
+    </script>
 </body>
 </html>
 

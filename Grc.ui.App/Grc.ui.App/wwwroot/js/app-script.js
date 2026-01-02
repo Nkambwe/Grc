@@ -1,4 +1,6 @@
 
+const SIDEBAR_STATE_KEY = 'sidebar-collapsed';
+
 async function performLogout(event) {
     event.preventDefault();
     // Show loading state
@@ -8,7 +10,6 @@ async function performLogout(event) {
     
     try {
         const token = getAntiForgeryToken();
-        console.log('Performing logout...');
         
         const response = await $.ajax({
             url: window.ADMIN_LOGOUT_URL,
@@ -20,11 +21,7 @@ async function performLogout(event) {
             dataType: 'json'
         });
         
-        console.log('Logout response:', response);
-        
         if (response.success) {
-            console.log('Logout successful, redirecting...');
-            
             //..show success message briefly before redirect
             logoutLink.innerHTML = '<span><i class="mdi mdi-check"></i></span><span>Logged out!</span>';
             
@@ -35,8 +32,6 @@ async function performLogout(event) {
             }, 1000);
             
         } else {
-            console.error('Logout failed:', response);
-            
             //..show error message
             let errorMessage = 'Logout failed. Please try again.';
             if (response.error && response.error.message) {
@@ -49,7 +44,6 @@ async function performLogout(event) {
             logoutLink.innerHTML = originalHtml; 
         }
     } catch (error) {
-        console.error('Logout error:', error);
         let errorMessage = 'Logout failed. Please try again.';
         
         //..error handling
@@ -112,8 +106,7 @@ function showToast(message, type = 'info') {
 }
  
 $(document).ready(function () {
-   
-    // User dropdown toggle
+    //..user dropdown toggle
     window.toggleDropdown = function() {
         $('#userDropdown').toggleClass('is-active');
     };
@@ -140,24 +133,30 @@ $(document).ready(function () {
             $sidebarContainer.toggleClass('open');
         } else {
             //..on desktop, toggle the 'collapsed' class
-            $sidebarContainer.toggleClass('collapsed');
-            $headerContainer.toggleClass('collapsed');
+            const isCollapsed = $sidebarContainer.toggleClass('collapsed').hasClass('collapsed');
+            $headerContainer.toggleClass('collapsed', isCollapsed);
+
+            //..persist state
+            localStorage.setItem(SIDEBAR_STATE_KEY, isCollapsed);
         }
     }
-   
-    // Submenu toggle functionality
+
+    function cleanupInitSidebarClass() {
+        $('html').removeClass('sidebar-collapsed-init');
+    }
+
+    //..submenu toggle functionality
     function toggleSubmenu($element) {
-        const menuId = $element.data('id');
-        const $submenu = $('#' + menuId);
         const $parentItem = $element.closest('.sidebar-item');
-        
-        if ($submenu.length) {
-            $submenu.toggleClass('open');
-            $parentItem.toggleClass('open');
-        }
+        const $submenu = $parentItem.children('.sidebar-submenu');
+
+        if (!$submenu.length) return;
+
+        $submenu.toggleClass('open');
+        $parentItem.toggleClass('open');
     }
     
-    // Close dropdown when clicking outside
+    //..close dropdown when clicking outside
     $(document).on('click', function(event) {
         const $dropdown = $('#userDropdown');
         const $dropdownTrigger = $dropdown.find('.dropdown-trigger');
@@ -167,32 +166,33 @@ $(document).ready(function () {
         }
     });
     
-    // Handle submenu toggles
-    $(document).on('click', '.toggle-submenu', function(event) {
+    //..handle submenu toggles
+    $(document).on('click', '.toggle-submenu', function (event) {
         event.preventDefault();
+        event.stopPropagation();
         toggleSubmenu($(this));
     });
     
-    // Handle window resize
+    //..handle window resize
     $(window).on('resize', function() {
         const $sidebarContainer = $('.sidebar-container');
         const isMobile = $(window).width() <= 768;
         
         if (!isMobile) {
-            // Remove mobile-specific classes when switching to desktop
+            //..remove mobile-specific classes when switching to desktop
             $sidebarContainer.removeClass('open');
         } else {
-            // Remove desktop-specific classes when switching to mobile
+            //..remove desktop-specific classes when switching to mobile
             $sidebarContainer.removeClass('collapsed');
         }
     });
     
-    // Sidebar header toggle (the menu button in sidebar header)
+    //..sidebar header toggle
     $('.sidebar-geader button').on('click', function() {
         toggleSidebar();
     });
     
-    // Mobile menu toggle (hamburger in header)
+    //..mobile menu toggle
     $('.mobile-menu-toggle').on('click', function() {
         toggleSidebar();
     });
@@ -202,7 +202,17 @@ $(document).ready(function () {
         event.stopPropagation();
         toggleDropdown();
     });
-    
+
+    function restoreSidebarState() {
+        const isCollapsed = localStorage.getItem(SIDEBAR_STATE_KEY);
+
+        //..default to collapsed if nothing stored yet
+        const collapsed = isCollapsed === null ? true : isCollapsed === 'true';
+
+        $('.sidebar-container').toggleClass('collapsed', collapsed);
+        $('.header-bar').toggleClass('collapsed', collapsed);
+    }
+
     //..initialize active states
     function initializeActiveStates() {
         const currentPath = window.location.pathname.toLowerCase();
@@ -230,16 +240,19 @@ $(document).ready(function () {
                 $sidebarItem.addClass('active');
 
                 //..if it's inside a submenu, expand it and highlight parent
-                const $submenu = $link.closest('.sidebar-submenu');
-                if ($submenu.length) {
+                const $allSubmenus = $link.parents('.sidebar-submenu');
+                $allSubmenus.each(function () {
+                    const $submenu = $(this);
                     $submenu.addClass('open');
+
                     const submenuId = $submenu.attr('id');
                     const $parentToggle = $('[data-id="' + submenuId + '"]');
+
                     if ($parentToggle.length) {
-                        const $parentItem = $parentToggle.closest('.sidebar-item');
-                        $parentItem.addClass('open parent-active');
+                        $parentToggle.closest('.sidebar-item')
+                            .addClass('open parent-active');
                     }
-                }
+                });
             }
         });
 
@@ -370,17 +383,19 @@ $(document).ready(function () {
         }
     });
     
-    // Initialize everything
+    //..initialize everything
+    cleanupInitSidebarClass();
+    restoreSidebarState();
     initializeActiveStates();
     enableSmoothTransitions();
     initializeTooltips();
     animateCounters();
     
-    // Make functions available globally for onclick handlers (if still needed)
+    //..make functions available globally for onclick handlers
     window.toggleSidebar = toggleSidebar;
     window.toggleDropdown = toggleDropdown;
     
-    // Optional: Add some nice hover effects
+    //..add some nice hover effects
     $('.sidebar-item').hover(
         function() {
             $(this).addClass('hover');
@@ -390,7 +405,7 @@ $(document).ready(function () {
         }
     );
     
-    // Add ripple effect on click (optional modern touch)
+    //..add ripple effect on click
     $('.sidebar-item a').on('click', function(e) {
         const $ripple = $('<span class="ripple"></span>');
         const $button = $(this);
@@ -419,7 +434,7 @@ $(document).ready(function () {
         }, 600);
     });
     
-    // Add CSS for ripple animation
+    //..add CSS for ripple animation
     $('<style>')
         .prop('type', 'text/css')
         .html(`

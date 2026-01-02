@@ -20,8 +20,6 @@ async function performLogout(event) {
             dataType: 'json'
         });
         
-        console.log('Logout response:', response);
-        
         if (response.success) {
             console.log('Logout successful, redirecting...');
             
@@ -115,13 +113,11 @@ $(document).ready(function() {
      //..user dropdown toggle
     window.toggleDropdown = function() {
         $('#userDropdown').toggleClass('is-active');
-        console.log("User dropdown clicked");
     };
 
      $('.avator-button').on('click', function(e) {
         e.preventDefault();
         $('#userDropdown').toggleClass('is-active');
-        console.log("User avator clicked");
     });
     
     //..user dropdown toggle
@@ -137,7 +133,7 @@ $(document).ready(function() {
         }
     });
 
-    // Close dropdown when clicking outside
+    //..close dropdown when clicking outside
     $(document).on('click', function(event) {
         const $dropdown = $('#userDropdown');
         const $dropdownTrigger = $dropdown.find('.dropdown-trigger');

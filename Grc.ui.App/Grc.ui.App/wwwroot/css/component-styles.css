@@ -876,6 +876,7 @@ button.action-btn.action-btn-separator {
 }
 
     .control-item:hover {
+        border-color: var(--orange-light-strong);
         border-left-color: var(--orange-light-strong);
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }

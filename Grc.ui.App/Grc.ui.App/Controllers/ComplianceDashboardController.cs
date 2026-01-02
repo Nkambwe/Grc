@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Grc.ui.App.Controllers {
 
-    public class RegulationsController : GrcBaseController {
+    public class ComplianceDashboardController : GrcBaseController {
         private readonly IAuthenticationService _authService;
         private readonly ISystemAccessService _accessService;
         private readonly IDashboardFactory _dashboardFactory;
 
-        public RegulationsController(IApplicationLoggerFactory loggerFactory,
+        public ComplianceDashboardController(IApplicationLoggerFactory loggerFactory,
                                     IDashboardFactory dashboardFactory,
                                     IEnvironmentProvider environment,
                                     IWebHelper webHelper,
