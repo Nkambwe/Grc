@@ -46,7 +46,9 @@ namespace Grc.Middleware.Api.Data.Containers {
         public IControlItemRepository ControlItemRepository { get; set; }
         public IComplianceIssueRepository ComplianceIssueRepository { get; set; }
         public IResponsebilityRepository ResponsebilityRepository { get; set; }
-        public IRegulatoryReturnRepository RegulatoryReturnRepository { get; set; }
+        public IReturnRepository ReturnRepository { get; set; }
+        public ICircularRepository CircularRepository { get; set; }
+        public ICircularIssueRepository CircularIssueRepository { get; set; }
         public IReturnTypeRepository ReturnTypeRepository { get; set; }
         public IRegulatoryTypeRepository RegulatoryTypeRepository { get; set; }
         public IRegulatoryDocumentRepository RegulatoryDocumentRepository { get; set; }
@@ -111,7 +113,9 @@ namespace Grc.Middleware.Api.Data.Containers {
             ControlItemRepository = new ControlItemRepository(_loggerFactory, Context);
             ComplianceIssueRepository = new ComplianceIssueRepository(_loggerFactory, Context);
             ResponsebilityRepository = new ResponsebilityRepository(_loggerFactory, Context);
-            RegulatoryReturnRepository = new RegulatoryReturnRepository(_loggerFactory, Context);
+            ReturnRepository = new ReturnRepository(_loggerFactory, Context);
+            CircularRepository = new CircularRepository(_loggerFactory, Context);
+            CircularIssueRepository = new CircularIssueRepository(_loggerFactory, Context);
             ReturnTypeRepository = new ReturnTypeRepository(_loggerFactory, Context);
             RegulatoryTypeRepository = new RegulatoryTypeRepository(_loggerFactory, Context);
             RegulatoryDocumentRepository = new GuideDocumentRepository(_loggerFactory, Context);
@@ -274,7 +278,9 @@ namespace Grc.Middleware.Api.Data.Containers {
                     ControlItemRepository = null;
                     ComplianceIssueRepository = null;
                     ResponsebilityRepository = null;
-                    RegulatoryReturnRepository = null;
+                    ReturnRepository = null;
+                    ReturnRepository = null;
+                    CircularRepository = null;
                     ReturnTypeRepository = null;
                     RegulatoryTypeRepository = null;
                     RegulatoryDocumentRepository = null;

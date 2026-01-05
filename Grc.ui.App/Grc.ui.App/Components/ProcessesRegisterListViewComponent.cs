@@ -8,18 +8,18 @@ namespace Grc.ui.App.Components
 {
     public class ProcessesRegisterListViewComponent : ViewComponent
     {
-        private readonly ISupportDashboardFactory _dDashboardFactory;
+        private readonly IDashboardFactory _dDashboardFactory;
         private readonly IWebHelper _webHelper;
         private readonly IAuthenticationService _authService;
 
-        public ProcessesRegisterListViewComponent(ISupportDashboardFactory dDashboardFactory, IWebHelper webHelper, IAuthenticationService authService) {
+        public ProcessesRegisterListViewComponent(IDashboardFactory dDashboardFactory, IWebHelper webHelper, IAuthenticationService authService) {
             _dDashboardFactory = dDashboardFactory;
             _webHelper = webHelper;
             _authService = authService;
         }
 
         public async Task<IViewComponentResult> InvokeAsync() {
-            OperationProcessViewModel model = new();
+            PolicyRegisterViewModel model = new();
             //..get user IP address
             var ipAddress = _webHelper.GetCurrentIpAddress();
 
@@ -33,7 +33,7 @@ namespace Grc.ui.App.Components
 
             var currentUser = grcResponse.Data;
             currentUser.IPAddress = ipAddress;
-            model = await _dDashboardFactory.PrepareProcessViewModelAsync(currentUser);
+            model = await _dDashboardFactory.PrepareReturnSupportItemsModelAsync(currentUser);
             return View(model);
         }
     }

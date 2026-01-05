@@ -150,5 +150,7 @@ namespace Grc.ui.App.Enums {
         ComplianceControlNew,
         [Description("item-new")]
         ComplianceControlItemNew,
+        [Description("return-new")]
+        ReturnNew,
     }
 }

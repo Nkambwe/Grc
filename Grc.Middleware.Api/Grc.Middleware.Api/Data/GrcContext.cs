@@ -8,6 +8,7 @@ using Grc.Middleware.Api.Data.Entities.Org;
 using Grc.Middleware.Api.Data.Entities.Support;
 using Grc.Middleware.Api.Data.Entities.System;
 using Microsoft.EntityFrameworkCore;
+using static CircularEntityConfiguration;
 
 namespace Grc.Middleware.Api.Data {
 
@@ -31,7 +32,7 @@ namespace Grc.Middleware.Api.Data {
         public DbSet<Authority> Authorities { get; set; }
         public DbSet<Frequency> Frequencies { get; set; }
         public DbSet<RegulatoryCategory> RegulatoryCategories { get; set; }
-        public DbSet<RegulatoryReturn> RegulatoryReturns { get; set; }
+        public DbSet<ReturnReport> RegulatoryReturns { get; set; }
         public DbSet<RegulatoryType> RegulatoryTypes { get; set; }
         public DbSet<ReturnSubmission> CircularSubmissions { get; set; }
         public DbSet<RegulatoryDocument> GuideDocuments { get; set; }
@@ -83,7 +84,7 @@ namespace Grc.Middleware.Api.Data {
             AuthorityEntityConfiguration.Configure(modelBuilder.Entity<Authority>());
             FrequencyEntityConfiguration.Configure(modelBuilder.Entity<Frequency>());
             RegulatoryCategoryEntityConfiguration.Configure(modelBuilder.Entity<RegulatoryCategory>());
-            RegulatoryReturnEntityConfiguration.Configure(modelBuilder.Entity<RegulatoryReturn>());
+            ReturnEntityConfiguration.Configure(modelBuilder.Entity<ReturnReport>());
             RegulatoryTypeEntityConfiguration.Configure(modelBuilder.Entity<RegulatoryType>());
             GuideDocumentEntityConfiguration.Configure(modelBuilder.Entity<RegulatoryDocument>());
             GuideDocumentTypeEntityConfiguration.Configure(modelBuilder.Entity<RegulatoryDocumentType>());
@@ -118,7 +119,8 @@ namespace Grc.Middleware.Api.Data {
             SystemRoleGroupPermissionSetEntityConfiguration.Configure(modelBuilder.Entity<SystemRoleGroupPermissionSet>());
             MailSettingEntityConfiguration.Configure(modelBuilder.Entity<MailSettings>());
             MailRecordEntityConfiguration.Configure(modelBuilder.Entity<MailRecord>());
-
+            CircularEntityConfiguration.Configure(modelBuilder.Entity<Circular>());
+            CircularIssueEntityConfiguration.Configure(modelBuilder.Entity<CircularIssue>());
             base.OnModelCreating(modelBuilder);
         }
     }

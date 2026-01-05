@@ -1,8 +1,29 @@
-﻿using Grc.ui.App.Http.Responses;
+﻿using AutoMapper;
+using Grc.ui.App.Enums;
+using Grc.ui.App.Factories;
+using Grc.ui.App.Helpers;
+using Grc.ui.App.Http.Requests;
+using Grc.ui.App.Http.Responses;
+using Grc.ui.App.Infrastructure;
+using Grc.ui.App.Utils;
+using System.Text.Json;
 
 namespace Grc.ui.App.Services {
 
-    public class ReturnsService : IReturnsService {
+    public class ReturnsService : GrcBaseService, IReturnsService {
+        public ReturnsService(IApplicationLoggerFactory loggerFactory, 
+            IHttpHandler httpHandler, 
+            IEnvironmentProvider environment, 
+            IEndpointTypeProvider endpointType, 
+            IMapper mapper, 
+            IWebHelper webHelper, 
+            SessionManager sessionManager, 
+            IGrcErrorFactory errorFactory, 
+            IErrorService errorService) 
+            : base(loggerFactory, httpHandler, environment, 
+                  endpointType, mapper, webHelper, sessionManager, 
+                  errorFactory, errorService) {
+        }
 
         public async Task<GeneralComplianceReturnStatistics> GetAllStatisticAsync(long userId, string ipAddress) {
             return await Task.FromResult(new GeneralComplianceReturnStatistics() {
@@ -630,6 +651,51 @@ namespace Grc.ui.App.Services {
         public static string GetMonthPeriod() {
             var today = DateTime.Today;
             return today.ToString("MMM yyyy").ToUpper();
+        }
+
+        #endregion
+
+        #region Return
+        public async Task<GrcResponse<PagedResponse<GrcReturnsResponse>>> GetPagedReturnsAsync(TableListRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST,"Invalid Request object","Request object cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<PagedResponse<GrcReturnsResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.ReturnBase}/paged-returns-list";
+                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<GrcReturnsResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<PagedResponse<GrcReturnsResponse>>(error);
+            }
+        }
+
+        #endregion
+
+        #region Circulars
+
+        public async Task<GrcResponse<PagedResponse<GrcCircularsResponse>>> GetPagedCircularAsync(TableListRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object", "Request object cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<PagedResponse<GrcCircularsResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.CircularBase}/paged-circulars-list";
+                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<GrcCircularsResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<PagedResponse<GrcCircularsResponse>>(error);
+            }
         }
 
         #endregion

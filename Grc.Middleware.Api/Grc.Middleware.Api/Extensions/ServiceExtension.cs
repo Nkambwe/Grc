@@ -45,7 +45,9 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IAuthoritiesRepository, AuthoritiesRepository>();
             services.AddScoped<IFrequencyRepository, FrequencyRepository>();
             services.AddScoped<IRegulatoryCategoryRepository, RegulatoryCategoryRepository>();
-            services.AddScoped<IRegulatoryReturnRepository, RegulatoryReturnRepository>();
+            services.AddScoped<IReturnRepository, ReturnRepository>();
+            services.AddScoped<ICircularRepository, CircularRepository>();
+            services.AddScoped<ICircularIssueRepository, CircularIssueRepository>();
             services.AddScoped<IRegulatoryTypeRepository, RegulatoryTypeRepository>();
             services.AddScoped<IReturnTypeRepository, ReturnTypeRepository>();
             services.AddScoped<IResponsebilityRepository, ResponsebilityRepository>();
@@ -108,7 +110,7 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IAuthorityService, AuthorityService>(); 
             services.AddScoped<IFrequencyService, FrequencyService>();
             services.AddScoped<IRegulatoryCategoryService, RegulatoryCategoryService>();
-            services.AddScoped<IRegulatoryReturnService, RegulatoryReturnService>();
+            services.AddScoped<IReturnService, ReturnService>();
             services.AddScoped<IRegulatoryTypeService, RegulatoryTypeService>();
             services.AddScoped<IResponsebilityService, ResponsebilityService>();
             services.AddScoped<IReturnTypeService, ReturnTypeService>();
@@ -129,6 +131,8 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IProcessTypeService, ProcessTypeService>();
             services.AddScoped<IOperationProcessService, OperationProcessService>();
             services.AddScoped<IProcessApprovalService, ProcessApprovalService>();
+            services.AddScoped<ICircularService, CircularService>();
+            services.AddScoped<ICircularIssueService, CircularIssueService>();
             services.AddScoped<IAuditExceptionService, AuditExceptionService>();
             services.AddScoped<IAuditReportService, AuditReportService>();
             services.AddScoped<IAuditService, AuditService>();

@@ -1,21 +1,20 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Compliance.Returns;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Utils;
-using System;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Grc.Middleware.Api.Services.Compliance.Regulations {
-    public class RegulatoryReturnService : BaseService, IRegulatoryReturnService {
+    public class ReturnService : BaseService, IReturnService {
 
-        public RegulatoryReturnService(IServiceLoggerFactory loggerFactory,
-            IUnitOfWorkFactory uowFactory, IMapper mapper) : base(loggerFactory, uowFactory, mapper) {
+        public ReturnService(IServiceLoggerFactory loggerFactory,
+            IUnitOfWorkFactory uowFactory, IMapper mapper)
+            : base(loggerFactory, uowFactory, mapper) {
         }
 
         public int Count()
@@ -25,7 +24,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
 
             try
             {
-                return uow.RegulatoryReturnRepository.Count();
+                return uow.ReturnRepository.Count();
             }
             catch (Exception ex)
             {
@@ -57,14 +56,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public int Count(Expression<Func<RegulatoryReturn, bool>> predicate)
+        public int Count(Expression<Func<ReturnReport, bool>> predicate)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Count number of Regulatory Return in the database", "INFO");
 
             try
             {
-                return uow.RegulatoryReturnRepository.Count(predicate);
+                return uow.ReturnRepository.Count(predicate);
             }
             catch (Exception ex)
             {
@@ -103,7 +102,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
 
             try
             {
-                return await uow.RegulatoryReturnRepository.CountAsync(cancellationToken);
+                return await uow.ReturnRepository.CountAsync(cancellationToken);
             }
             catch (Exception ex)
             {
@@ -174,14 +173,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<int> CountAsync(Expression<Func<RegulatoryReturn, bool>> predicate, CancellationToken cancellationToken = default)
+        public async Task<int> CountAsync(Expression<Func<ReturnReport, bool>> predicate, CancellationToken cancellationToken = default)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Count number of Regulatory Return in the database that fit predicate >> '{predicate}'", "INFO");
 
             try
             {
-                return await uow.RegulatoryReturnRepository.CountAsync(predicate, cancellationToken);
+                return await uow.ReturnRepository.CountAsync(predicate, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -213,14 +212,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<int> CountAsync(Expression<Func<RegulatoryReturn, bool>> predicate, bool excludeDeleted = true, CancellationToken cancellationToken = default)
+        public async Task<int> CountAsync(Expression<Func<ReturnReport, bool>> predicate, bool excludeDeleted = true, CancellationToken cancellationToken = default)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Count number of Regulatory Return in the database that fit predicate >> '{predicate}'", "INFO");
 
             try
             {
-                return await uow.RegulatoryReturnRepository.CountAsync(predicate, excludeDeleted, cancellationToken);
+                return await uow.ReturnRepository.CountAsync(predicate, excludeDeleted, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -252,14 +251,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public bool Exists(Expression<Func<RegulatoryReturn, bool>> predicate, bool excludeDeleted = false)
+        public bool Exists(Expression<Func<ReturnReport, bool>> predicate, bool excludeDeleted = false)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Check if an Regulatory Return exists in the database that fit predicate >> '{predicate}'", "INFO");
 
             try
             {
-                return uow.RegulatoryReturnRepository.Exists(predicate, excludeDeleted);
+                return uow.ReturnRepository.Exists(predicate, excludeDeleted);
             }
             catch (Exception ex)
             {
@@ -291,14 +290,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<bool> ExistsAsync(Expression<Func<RegulatoryReturn, bool>> predicate, bool excludeDeleted = false, CancellationToken token = default)
+        public async Task<bool> ExistsAsync(Expression<Func<ReturnReport, bool>> predicate, bool excludeDeleted = false, CancellationToken token = default)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Check if an Regulatory Return exists in the database that fit predicate >> '{predicate}'", "INFO");
 
             try
             {
-                return await uow.RegulatoryReturnRepository.ExistsAsync(predicate, excludeDeleted, token);
+                return await uow.ReturnRepository.ExistsAsync(predicate, excludeDeleted, token);
             }
             catch (Exception ex)
             {
@@ -330,14 +329,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<Dictionary<string, bool>> ExistsBatchAsync(Dictionary<string, Expression<Func<RegulatoryReturn, bool>>> predicates, bool excludeDeleted = true, CancellationToken cancellationToken = default)
+        public async Task<Dictionary<string, bool>> ExistsBatchAsync(Dictionary<string, Expression<Func<ReturnReport, bool>>> predicates, bool excludeDeleted = true, CancellationToken cancellationToken = default)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Check for batch Regulatory Return if they exist in the database that fit predicate >> '{predicates}'", "INFO");
 
             try
             {
-                return await uow.RegulatoryReturnRepository.ExistsBatchAsync(predicates, excludeDeleted, cancellationToken);
+                return await uow.ReturnRepository.ExistsBatchAsync(predicates, excludeDeleted, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -369,14 +368,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public RegulatoryReturn Get(long id, bool includeDeleted = false)
+        public ReturnReport Get(long id, bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get Regulatory Return with ID '{id}'", "INFO");
 
             try
             {
-                return uow.RegulatoryReturnRepository.Get(id, includeDeleted);
+                return uow.ReturnRepository.Get(id, includeDeleted);
             }
             catch (Exception ex)
             {
@@ -408,14 +407,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public RegulatoryReturn Get(Expression<Func<RegulatoryReturn, bool>> predicate, bool includeDeleted = false)
+        public ReturnReport Get(Expression<Func<ReturnReport, bool>> predicate, bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get Regulatory Return that fits predicate >> '{predicate}'", "INFO");
 
             try
             {
-                return uow.RegulatoryReturnRepository.Get(predicate, includeDeleted);
+                return uow.ReturnRepository.Get(predicate, includeDeleted);
             }
             catch (Exception ex)
             {
@@ -447,14 +446,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public RegulatoryReturn Get(Expression<Func<RegulatoryReturn, bool>> predicate, bool includeDeleted = false, params Expression<Func<RegulatoryReturn, object>>[] includes)
+        public ReturnReport Get(Expression<Func<ReturnReport, bool>> predicate, bool includeDeleted = false, params Expression<Func<ReturnReport, object>>[] includes)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get Regulatory Return that fits predicate >> '{predicate}'", "INFO");
 
             try
             {
-                return uow.RegulatoryReturnRepository.Get(predicate, includeDeleted, includes);
+                return uow.ReturnRepository.Get(predicate, includeDeleted, includes);
             }
             catch (Exception ex)
             {
@@ -486,14 +485,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public IQueryable<RegulatoryReturn> GetAll(bool includeDeleted = false, params Expression<Func<RegulatoryReturn, object>>[] includes)
+        public IQueryable<ReturnReport> GetAll(bool includeDeleted = false, params Expression<Func<ReturnReport, object>>[] includes)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get all Regulatory Return", "INFO");
 
             try
             {
-                return uow.RegulatoryReturnRepository.GetAll(includeDeleted, includes);
+                return uow.ReturnRepository.GetAll(includeDeleted, includes);
             }
             catch (Exception ex)
             {
@@ -525,14 +524,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public IList<RegulatoryReturn> GetAll(bool includeDeleted = false)
+        public IList<ReturnReport> GetAll(bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get all regulatory return", "INFO");
 
             try
             {
-                return uow.RegulatoryReturnRepository.GetAll(includeDeleted);
+                return uow.ReturnRepository.GetAll(includeDeleted);
             }
             catch (Exception ex)
             {
@@ -564,14 +563,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public IList<RegulatoryReturn> GetAll(Expression<Func<RegulatoryReturn, bool>> predicate, bool includeDeleted)
+        public IList<ReturnReport> GetAll(Expression<Func<ReturnReport, bool>> predicate, bool includeDeleted)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get all Regulatory Return that fit predicate '{predicate}'", "INFO");
 
             try
             {
-                return uow.RegulatoryReturnRepository.GetAll(predicate, includeDeleted);
+                return uow.ReturnRepository.GetAll(predicate, includeDeleted);
             }
             catch (Exception ex)
             {
@@ -603,14 +602,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<IList<RegulatoryReturn>> GetAllAsync(bool includeDeleted = false)
+        public async Task<IList<ReturnReport>> GetAllAsync(bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get all Regulatory Return", "INFO");
 
             try
             {
-                return await uow.RegulatoryReturnRepository.GetAllAsync(includeDeleted);
+                return await uow.ReturnRepository.GetAllAsync(includeDeleted);
             }
             catch (Exception ex)
             {
@@ -642,14 +641,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<IList<RegulatoryReturn>> GetAllAsync(Expression<Func<RegulatoryReturn, bool>> predicate, bool includeDeleted)
+        public async Task<IList<ReturnReport>> GetAllAsync(Expression<Func<ReturnReport, bool>> predicate, bool includeDeleted)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get all Regulatory Return that fit predicate '{predicate}'", "INFO");
 
             try
             {
-                return await uow.RegulatoryReturnRepository.GetAllAsync(predicate, includeDeleted);
+                return await uow.ReturnRepository.GetAllAsync(predicate, includeDeleted);
             }
             catch (Exception ex)
             {
@@ -681,14 +680,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<IList<RegulatoryReturn>> GetAllAsync(Expression<Func<RegulatoryReturn, bool>> predicate, bool includeDeleted = false, params Expression<Func<RegulatoryReturn, object>>[] includes)
+        public async Task<IList<ReturnReport>> GetAllAsync(Expression<Func<ReturnReport, bool>> predicate, bool includeDeleted = false, params Expression<Func<ReturnReport, object>>[] includes)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get all Regulatory Return that fit predicate '{predicate}'", "INFO");
 
             try
             {
-                return await uow.RegulatoryReturnRepository.GetAllAsync(predicate, includeDeleted, includes);
+                return await uow.ReturnRepository.GetAllAsync(predicate, includeDeleted, includes);
             }
             catch (Exception ex)
             {
@@ -720,14 +719,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<IList<RegulatoryReturn>> GetAllAsync(bool includeDeleted = false, params Expression<Func<RegulatoryReturn, object>>[] includes)
+        public async Task<IList<ReturnReport>> GetAllAsync(bool includeDeleted = false, params Expression<Func<ReturnReport, object>>[] includes)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity("Get all Regulatory Return", "INFO");
 
             try
             {
-                return await uow.RegulatoryReturnRepository.GetAllAsync(includeDeleted, includes);
+                return await uow.ReturnRepository.GetAllAsync(includeDeleted, includes);
             }
             catch (Exception ex)
             {
@@ -759,14 +758,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<RegulatoryReturn> GetAsync(long id, bool includeDeleted = false)
+        public async Task<ReturnReport> GetAsync(long id, bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get Regulatory Return with ID '{id}'", "INFO");
 
             try
             {
-                return await uow.RegulatoryReturnRepository.GetAsync(id, includeDeleted);
+                return await uow.ReturnRepository.GetAsync(id, includeDeleted);
             }
             catch (Exception ex)
             {
@@ -798,14 +797,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<RegulatoryReturn> GetAsync(Expression<Func<RegulatoryReturn, bool>> predicate, bool includeDeleted = false)
+        public async Task<ReturnReport> GetAsync(Expression<Func<ReturnReport, bool>> predicate, bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get Regulatory Return that fit predicate '{predicate}'", "INFO");
 
             try
             {
-                return await uow.RegulatoryReturnRepository.GetAsync(predicate, includeDeleted);
+                return await uow.ReturnRepository.GetAsync(predicate, includeDeleted);
             }
             catch (Exception ex)
             {
@@ -837,14 +836,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<RegulatoryReturn> GetAsync(Expression<Func<RegulatoryReturn, bool>> predicate, bool includeDeleted = false, params Expression<Func<RegulatoryReturn, object>>[] includes)
+        public async Task<ReturnReport> GetAsync(Expression<Func<ReturnReport, bool>> predicate, bool includeDeleted = false, params Expression<Func<ReturnReport, object>>[] includes)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get Regulatory Return that fit predicate '{predicate}'", "INFO");
 
             try
             {
-                return await uow.RegulatoryReturnRepository.GetAsync(predicate, includeDeleted, includes);
+                return await uow.ReturnRepository.GetAsync(predicate, includeDeleted, includes);
             }
             catch (Exception ex)
             {
@@ -876,14 +875,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<IList<RegulatoryReturn>> GetTopAsync(Expression<Func<RegulatoryReturn, bool>> predicate, int top, bool includeDeleted = false)
+        public async Task<IList<ReturnReport>> GetTopAsync(Expression<Func<ReturnReport, bool>> predicate, int top, bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get top {top} Regulatory Returns that fit predicate >> {predicate}", "INFO");
 
             try
             {
-                return await uow.RegulatoryReturnRepository.GetTopAsync(predicate, top, includeDeleted);
+                return await uow.ReturnRepository.GetTopAsync(predicate, top, includeDeleted);
             }
             catch (Exception ex)
             {
@@ -915,13 +914,13 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public bool Insert(RegulatoryReturnRequest request)
+        public bool Insert(ReturnRequest request)
         {
             using var uow = UowFactory.Create();
             try
             {
                 //..map Regulatory Return request to Regulatory Return entity
-                var article = Mapper.Map<RegulatoryReturnRequest, RegulatoryReturn>(request);
+                var article = Mapper.Map<ReturnRequest, ReturnReport>(request);
 
                 //..log the Regulatory Return data being saved
                 var articleJson = JsonSerializer.Serialize(article, new JsonSerializerOptions
@@ -931,7 +930,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 });
                 Logger.LogActivity($"Regulatory Return data: {articleJson}", "DEBUG");
 
-                var added = uow.RegulatoryReturnRepository.Insert(article);
+                var added = uow.ReturnRepository.Insert(article);
                 if (added)
                 {
                     //..check object state
@@ -974,13 +973,13 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<bool> InsertAsync(RegulatoryReturnRequest request)
+        public async Task<bool> InsertAsync(ReturnRequest request)
         {
             using var uow = UowFactory.Create();
             try
             {
                 //..map Regulatory Return request to Regulatory Return entity
-                var article = Mapper.Map<RegulatoryReturnRequest, RegulatoryReturn>(request);
+                var article = Mapper.Map<ReturnRequest, ReturnReport>(request);
 
                 //..log the Regulatory Return data being saved
                 var articleJson = JsonSerializer.Serialize(article, new JsonSerializerOptions
@@ -990,7 +989,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 });
                 Logger.LogActivity($"Regulatory Return data: {articleJson}", "DEBUG");
 
-                var added = await uow.RegulatoryReturnRepository.InsertAsync(article);
+                var added = await uow.ReturnRepository.InsertAsync(article);
                 if (added)
                 {
                     //..check object state
@@ -1033,36 +1032,30 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public bool Update(RegulatoryReturnRequest request, bool includeDeleted = false)
+        public bool Update(ReturnRequest request, bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update Regulatory Return request", "INFO");
 
             try
             {
-                var regReturn = uow.RegulatoryReturnRepository.Get(a => a.Id == request.Id);
+                var regReturn = uow.ReturnRepository.Get(a => a.Id == request.Id);
                 if (regReturn != null)
                 {
-                    //..update Regulatory Return record
+                    //..update record
                     regReturn.ReturnName = (request.ReturnName ?? string.Empty).Trim();
-                    regReturn.Description = (request.Description ?? string.Empty).Trim();
-                    regReturn.RequirementDetails = (request.RequirementDetails ?? string.Empty).Trim();
                     regReturn.TypeId = request.TypeId;
                     regReturn.FrequencyId = request.FrequencyId;
-                    regReturn.LastSubmissionDate = request.LastSubmissionDate;
-                    regReturn.NextSubmissionDate = request.NextSubmissionDate;
-                    regReturn.FrequencyInfo = (request.FrequencyInfo ?? string.Empty).Trim();
                     regReturn.ArticleId = request.ArticleId;
                     regReturn.AuthorityId = request.AuthorityId;
-                    regReturn.ResponsibilityId = request.ResponsibilityId;
-                    regReturn.ComplianceGap = (request.ComplianceGap ?? string.Empty).Trim();
+                    regReturn.DepartmentId = request.DepartmentId;
                     regReturn.Comments = (request.Comments ?? string.Empty).Trim();
                     regReturn.IsDeleted = request.IsDeleted;
                     regReturn.LastModifiedOn = DateTime.Now;
                     regReturn.LastModifiedBy = $"{request.UserId}";
 
                     //..check entity state
-                    _ = uow.RegulatoryReturnRepository.Update(regReturn, includeDeleted);
+                    _ = uow.ReturnRepository.Update(regReturn, includeDeleted);
                     var entityState = ((UnitOfWork)uow).Context.Entry(regReturn).State;
                     Logger.LogActivity($"Regulatory Return state after Update: {entityState}", "DEBUG");
 
@@ -1072,9 +1065,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 }
 
                 return false;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to update Regulatory Return record: {ex.Message}", "ERROR");
 
                 //..log inner exceptions here too
@@ -1105,36 +1096,30 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<bool> UpdateAsync(RegulatoryReturnRequest request, bool includeDeleted = false)
+        public async Task<bool> UpdateAsync(ReturnRequest request, bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update Regulatory Return", "INFO");
 
             try
             {
-                var regReturn = await uow.RegulatoryReturnRepository.GetAsync(a => a.Id == request.Id);
+                var regReturn = await uow.ReturnRepository.GetAsync(a => a.Id == request.Id);
                 if (regReturn != null)
                 {
-                    //..update Regulatory Return record
+                    //..update record
                     regReturn.ReturnName = (request.ReturnName ?? string.Empty).Trim();
-                    regReturn.Description = (request.Description ?? string.Empty).Trim();
-                    regReturn.RequirementDetails = (request.RequirementDetails ?? string.Empty).Trim();
                     regReturn.TypeId = request.TypeId;
                     regReturn.FrequencyId = request.FrequencyId;
-                    regReturn.LastSubmissionDate = request.LastSubmissionDate;
-                    regReturn.NextSubmissionDate = request.NextSubmissionDate;
-                    regReturn.FrequencyInfo = (request.FrequencyInfo ?? string.Empty).Trim();
                     regReturn.ArticleId = request.ArticleId;
                     regReturn.AuthorityId = request.AuthorityId;
-                    regReturn.ResponsibilityId = request.ResponsibilityId;
-                    regReturn.ComplianceGap = (request.ComplianceGap ?? string.Empty).Trim();
+                    regReturn.DepartmentId = request.DepartmentId;
                     regReturn.Comments = (request.Comments ?? string.Empty).Trim();
                     regReturn.IsDeleted = request.IsDeleted;
                     regReturn.LastModifiedOn = DateTime.Now;
                     regReturn.LastModifiedBy = $"{request.UserId}";
 
                     //..check entity state
-                    _ = await uow.RegulatoryReturnRepository.UpdateAsync(regReturn, includeDeleted);
+                    _ = await uow.ReturnRepository.UpdateAsync(regReturn, includeDeleted);
                     var entityState = ((UnitOfWork)uow).Context.Entry(regReturn).State;
                     Logger.LogActivity($"Regulatory Regulatory Return state after Update: {entityState}", "DEBUG");
 
@@ -1189,11 +1174,11 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 });
                 Logger.LogActivity($"Regulatory Return data: {auditJson}", "DEBUG");
 
-                var statute = uow.RegulatoryReturnRepository.Get(t => t.Id == request.RecordId);
+                var statute = uow.ReturnRepository.Get(t => t.Id == request.RecordId);
                 if (statute != null)
                 {
                     //..mark as delete this Regulatory Return
-                    _ = uow.RegulatoryReturnRepository.Delete(statute, request.markAsDeleted);
+                    _ = uow.ReturnRepository.Delete(statute, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(statute).State;
@@ -1245,11 +1230,11 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 });
                 Logger.LogActivity($"Regulatory Return data: {statuteJson}", "DEBUG");
 
-                var tasktask = await uow.RegulatoryReturnRepository.GetAsync(t => t.Id == request.RecordId);
+                var tasktask = await uow.ReturnRepository.GetAsync(t => t.Id == request.RecordId);
                 if (tasktask != null)
                 {
                     //..mark as delete this Regulatory Return
-                    _ = await uow.RegulatoryReturnRepository.DeleteAsync(tasktask, request.markAsDeleted);
+                    _ = await uow.ReturnRepository.DeleteAsync(tasktask, request.markAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(tasktask).State;
@@ -1295,13 +1280,13 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             using var uow = UowFactory.Create();
             try
             {
-                var statutes = await uow.RegulatoryReturnRepository.GetAllAsync(e => requestIds.Contains(e.Id));
+                var statutes = await uow.ReturnRepository.GetAllAsync(e => requestIds.Contains(e.Id));
                 if (statutes.Count == 0)
                 {
                     Logger.LogActivity($"Records not found", "INFO");
                     return false;
                 }
-                return await uow.RegulatoryReturnRepository.DeleteAllAsync(statutes, markAsDeleted);
+                return await uow.ReturnRepository.DeleteAllAsync(statutes, markAsDeleted);
             }
             catch (Exception ex)
             {
@@ -1330,20 +1315,20 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<bool> BulkyInsertAsync(RegulatoryReturnRequest[] requestItems)
+        public async Task<bool> BulkyInsertAsync(ReturnRequest[] requestItems)
         {
             using var uow = UowFactory.Create();
             try
             {
                 //..map Regulatory Return to Regulatory Return entity
-                var returns = requestItems.Select(Mapper.Map<RegulatoryReturnRequest, RegulatoryReturn>).ToArray();
+                var returns = requestItems.Select(Mapper.Map<ReturnRequest, ReturnReport>).ToArray();
                 var returnsJson = JsonSerializer.Serialize(returns, new JsonSerializerOptions
                 {
                     WriteIndented = true,
                     ReferenceHandler = ReferenceHandler.IgnoreCycles
                 });
                 Logger.LogActivity($"Regulatory Return data: {returnsJson}", "DEBUG");
-                return await uow.RegulatoryReturnRepository.BulkyInsertAsync(returns);
+                return await uow.ReturnRepository.BulkyInsertAsync(returns);
             }
             catch (Exception ex)
             {
@@ -1374,20 +1359,20 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<bool> BulkyUpdateAsync(RegulatoryReturnRequest[] requestItems)
+        public async Task<bool> BulkyUpdateAsync(ReturnRequest[] requestItems)
         {
             using var uow = UowFactory.Create();
             try
             {
                 //..map  Regulatory Returns request to  Regulatory Returns entity
-                var returns = requestItems.Select(Mapper.Map<RegulatoryReturnRequest, RegulatoryReturn>).ToArray();
+                var returns = requestItems.Select(Mapper.Map<ReturnRequest, ReturnReport>).ToArray();
                 var returnsJson = JsonSerializer.Serialize(returns, new JsonSerializerOptions
                 {
                     WriteIndented = true,
                     ReferenceHandler = ReferenceHandler.IgnoreCycles
                 });
                 Logger.LogActivity($"Regulatory Return data: {returnsJson}", "DEBUG");
-                return await uow.RegulatoryReturnRepository.BulkyUpdateAsync(returns);
+                return await uow.ReturnRepository.BulkyUpdateAsync(returns);
             }
             catch (Exception ex)
             {
@@ -1418,20 +1403,20 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<bool> BulkyUpdateAsync(RegulatoryReturnRequest[] requestItems, params Expression<Func<RegulatoryReturn, object>>[] propertySelectors)
+        public async Task<bool> BulkyUpdateAsync(ReturnRequest[] requestItems, params Expression<Func<ReturnReport, object>>[] propertySelectors)
         {
             using var uow = UowFactory.Create();
             try
             {
                 //..map regulatory return request to regulatory return entity
-                var returns = requestItems.Select(Mapper.Map<RegulatoryReturnRequest, RegulatoryReturn>).ToArray();
+                var returns = requestItems.Select(Mapper.Map<ReturnRequest, ReturnReport>).ToArray();
                 var returnsJson = JsonSerializer.Serialize(returns, new JsonSerializerOptions
                 {
                     WriteIndented = true,
                     ReferenceHandler = ReferenceHandler.IgnoreCycles
                 });
                 Logger.LogActivity($" Regulatory Returns data: {returnsJson}", "DEBUG");
-                return await uow.RegulatoryReturnRepository.BulkyUpdateAsync(returns, propertySelectors);
+                return await uow.ReturnRepository.BulkyUpdateAsync(returns, propertySelectors);
             }
             catch (Exception ex)
             {
@@ -1462,14 +1447,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<PagedResult<RegulatoryReturn>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<RegulatoryReturn, object>>[] includes)
+        public async Task<PagedResult<ReturnReport>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<ReturnReport, object>>[] includes)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve paged regulatory return", "INFO");
 
             try
             {
-                return await uow.RegulatoryReturnRepository.PageAllAsync(page, size, includeDeleted, null, includes);
+                return await uow.ReturnRepository.PageAllAsync(page, size, includeDeleted, null, includes);
             }
             catch (Exception ex)
             {
@@ -1500,14 +1485,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<PagedResult<RegulatoryReturn>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<RegulatoryReturn, object>>[] includes)
+        public async Task<PagedResult<ReturnReport>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<ReturnReport, object>>[] includes)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve paged regulatory return", "INFO");
 
             try
             {
-                return await uow.RegulatoryReturnRepository.PageAllAsync(token, page, size, includeDeleted, includes);
+                return await uow.ReturnRepository.PageAllAsync(token, page, size, includeDeleted, includes);
             }
             catch (Exception ex)
             {
@@ -1538,14 +1523,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<PagedResult<RegulatoryReturn>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<RegulatoryReturn, bool>> predicate = null)
+        public async Task<PagedResult<ReturnReport>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<ReturnReport, bool>> predicate = null)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve paged regulatory return", "INFO");
 
             try
             {
-                return await uow.RegulatoryReturnRepository.PageAllAsync(page, size, includeDeleted, predicate);
+                return await uow.ReturnRepository.PageAllAsync(page, size, includeDeleted, predicate);
             }
             catch (Exception ex)
             {
@@ -1576,13 +1561,13 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
         
-        public async Task<PagedResult<RegulatoryReturn>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<RegulatoryReturn, bool>> predicate = null, bool includeDeleted = false) {
+        public async Task<PagedResult<ReturnReport>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<ReturnReport, bool>> predicate = null, bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve paged regulatory return", "INFO");
 
             try
             {
-                return await uow.RegulatoryReturnRepository.PageAllAsync(token, page, size, predicate, includeDeleted);
+                return await uow.ReturnRepository.PageAllAsync(token, page, size, predicate, includeDeleted);
             }
             catch (Exception ex)
             {

@@ -1,340 +1,155 @@
-﻿//..initialize on load
+﻿let returnsTable;
+
+
 $(document).ready(function () {
     initReturnsTable();
 });
 
-let sampleReturnsData = [
-    {
-        id: 1,
-        code: "PRJ-001",
-        title: "Main Project Alpha",
-        category: "Technical",
-        status: "Active",
-        owner: "John Smith",
-        children: [
-            {
-                id: 11,
-                parentId: 1,
-                code: "TSK-001",
-                title: "Database Design",
-                category: "Technical",
-                status: "Completed",
-                owner: "Jane Doe"
-            },
-            {
-                id: 12,
-                parentId: 1,
-                code: "TSK-002",
-                title: "API Development",
-                category: "Technical",
-                status: "Active",
-                owner: "Bob Wilson",
-                children: [
-                    {
-                        id: 121,
-                        parentId: 12,
-                        code: "SUB-001",
-                        title: "Authentication Module",
-                        category: "Technical",
-                        status: "Active",
-                        owner: "Alice Brown"
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        id: 2,
-        code: "PRJ-002",
-        title: "Project Beta",
-        category: "Administrative",
-        status: "Pending",
-        owner: "Sarah Johnson",
-        children: [
-            {
-                id: 21,
-                parentId: 2,
-                code: "TSK-003",
-                title: "Requirements Gathering",
-                category: "Administrative",
-                status: "Active",
-                owner: "Mike Davis"
-            }
-        ]
-    }
-];
-
-let returnsTable;
-let nextReturnsId = 1000;
-
-//..table initialization function
 function initReturnsTable() {
-    returnsTable = new Tabulator("#returns-table", {
-        data: sampleReturnsData,
-        dataTree: false,
-        dataTreeStartExpanded: false,
-        layout: "fitColumns", 
+    returnsTable = new Tabulator("#returns-register-table", {
+    ajaxURL: "/grc/returns/compliance-returns/paged-register",
+    paginationMode: "remote",
+    filterMode: "remote",
+    sortMode: "remote",
+    pagination: true,
+    paginationSize: 10,
+    paginationSizeSelector: [10, 20, 35, 40, 50],
+    paginationCounter: "rows",
+    ajaxConfig: {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+    },
+    ajaxContentType: "json",
+    paginationDataSent: {
+        "page": "page",
+        "size": "size",
+        "sorters": "sort",
+        "filters": "filter"
+    },
+    paginationDataReceived: {
+        "last_page": "last_page",
+        "data": "data",
+        "total_records": "total_records"
+    },
+    ajaxRequestFunc: function (url, config, params) {
+        return new Promise((resolve, reject) => {
+            let requestBody = {
+                pageIndex: params.page || 1,
+                pageSize: params.size || 10,
+                searchTerm: "",
+                sortBy: "",
+                sortDirection: "Ascending"
+            };
+
+            //..sorting
+            if (params.sort && params.sort.length > 0) {
+                requestBody.sortBy = params.sort[0].field;
+                requestBody.sortDirection = params.sort[0].dir === "asc" ? "Ascending" : "Descending";
+            }
+
+            //..filtering
+            if (params.filter && params.filter.length > 0) {
+                let filter = params.filter.find(f =>
+                    ["reportName", "owner", "department", "authority", "frequency"].includes(f.field)
+                );
+                if (filter) requestBody.searchTerm = filter.value;
+            }
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(requestBody),
+                success: function (response) {
+                    resolve(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", error);
+                    reject(error);
+                }
+            });
+        });
+    },
+    ajaxResponse: function (url, params, response) {
+        return {
+            data: response.data || [],
+            last_page: response.last_page || 1,
+            total_records: response.total_records || 0
+        };
+    },
+    ajaxError: function (error) {
+        console.error("Tabulator AJAX Error:", error);
+        alert("Failed to load returns. Please try again.");
+    },
+    layout: "fitColumns",
         responsiveLayout: "hide",
-        dataTreeChildField: "children",
         columns: [
             {
-                title: "Record Code",
-                field: "code",
-                minWidth: 120, 
-                widthGrow: 1,
-                formatter: function (cell) {
-                    return `<span class="record-code">${cell.getValue()}</span>`;
-                }
-            },
-            {
-                title: "Title",
-                field: "title",
-                minWidth: 200, 
+                title: "REPORT/RETURN NAME",
+                field: "reportName",
+                minWidth: 200,
                 widthGrow: 4,
-                formatter: function (cell) {
-                    return `<span class="clickable-title" onclick="viewRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
-                }
+                headerSort: true,
+                frozen: true,
+                formatter: (cell) => `<span class="clickable-title" onclick="viewReport(${cell.getRow().getData().id})">${cell.getValue()}</span>`
             },
+            { title: "AUTHORITY", field: "authority", minWidth: 200, frozen: true, headerSort: true },
+            { title: "FREQUENCY", field: "frequency", widthGrow: 1, minWidth: 200, frozen: true, headerSort: true },
             {
-                title: "Category",
-                field: "category",
-                minWidth: 120,
-                widthGrow: 1
-            },
-            {
-                title: "Status",
-                field: "status",
-                minWidth: 100,
-                widthGrow: 1,
-                formatter: function (cell) {
-                    let value = cell.getValue();
-                    let color = {
-                        "Active": "#28a745",
-                        "Pending": "#ffc107",
-                        "Completed": "#6c757d",
-                        "Archived": "#dc3545"
-                    }[value] || "#6c757d";
-                    return `<span style="color: ${color}; font-weight: 600;">${value}</span>`;
-                }
-            },
-            {
-                title: "Owner",
+                title: "OWNER/RESPONSIBLE",
                 field: "owner",
-                minWidth: 120,
-                widthGrow: 2
+                widthGrow: 1,
+                minWidth: 280,
+                headerSort: true
             },
+            { title: "DEPARTMENT", field: "department", minWidth: 200 },
             {
-                title: "Actions",
+                title: "DEADLINE",
+                field: "deadlineOn",
+                minWidth: 200,
+                formatter: function (cell) {
+                    const value = cell.getValue();
+                    if (!value) return "";
+
+                    const d = new Date(value);
+                    const day = String(d.getDate()).padStart(2, "0");
+                    const month = String(d.getMonth() + 1).padStart(2, "0");
+                    const year = d.getFullYear();
+
+                    return `${day}-${month}-${year}`;
+                }
+            },
+            { title: "ENABLING LAW/REGULATION/GUIDELINE.", field: "article", minWidth: 200 },
+            {
+                title: "ACTION",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                    return `
-                        <button class="btn" style="padding: 5px 10px; font-size: 12px; margin-right: 5px;" onclick="addChildRecord(${rowData.id})">Add Child</button>
-                        <button class="btn" style="padding: 5px 10px; font-size: 12px; background: #dc3545;" onclick="deleteRecord(${rowData.id})">Delete</button>
-                    `;
+                    return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteReturn(${rowData.id})">
+                            <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                            <span>DELETE</span>
+                        </button>`;
                 },
-                width: 200, 
+                width: 200,
                 hozAlign: "center",
+                headerHozAlign: "center",
                 headerSort: false
             }
         ]
     });
+
+    //..initialize search
+    initReturnSearch();
 }
 
-//..view/edit Record
-function viewReturnsRecord(id) {
-    let record = findRecord(sampleData, id);
-    if (record) {
-        openPanel('Edit Record', record, true);
-    }
+function initReturnSearch() {
+   
 }
 
-//..add regiter
-function addReturnsRootRecord() {
-    openPanel('Add New Record', {
-        id: ++nextReturnsId,
-        code: '',
-        title: '',
-        category: 'General',
-        status: 'Active',
-        owner: ''
-    }, false);
+function viewReport(id) {
+    alert("View report with ID >> " + id);
 }
 
-//..add Child Record
-function addReturnsChildRecord(parentId) {
-    let parent = findRecord(sampleData, parentId);
-    openPanel('Add Child Record', {
-        id: ++nextReturnsId,
-        parentId: parentId,
-        code: '',
-        title: '',
-        category: 'General',
-        status: 'Active',
-        owner: '',
-        _parent: parent
-    }, false);
+function deleteReturn(id) {
+    alert("Delete return with ID >> " + id);
 }
 
-//..open slide panel
-function openReturnsPanel(title, record, isEdit) {
-    $('#panelTitle').text(title);
-    $('#recordId').val(record.id);
-    $('#parentId').val(record.parentId || '');
-    $('#isEdit').val(isEdit);
-    $('#recordCode').val(record.code || '');
-    $('#recordTitle').val(record.title || '');
-    $('#recordCategory').val(record.category || 'General');
-    $('#recordStatus').val(record.status || 'Active');
-    $('#recordOwner').val(record.owner || '');
-    $('#recordDescription').val(record.description || '');
-
-    if (record.parentId && record._parent) {
-        $('#parentInfo').show();
-        $('#parentDisplay').val(`${record._parent.code} - ${record._parent.title}`);
-    } else {
-        $('#parentInfo').hide();
-    }
-
-    $('.overlay').addClass('active');
-    $('#slidePanel').addClass('active');
-}
-
-//..close panel
-function closeReturnsPanel() {
-    $('.overlay').removeClass('active');
-    $('#slidePanel').removeClass('active');
-}
-
-//..save record (AJAX simulation)
-function saveReturnsRecord() {
-    let isEdit = $('#isEdit').val() === 'true';
-    let recordData = {
-        id: parseInt($('#recordId').val()),
-        code: $('#recordCode').val(),
-        title: $('#recordTitle').val(),
-        category: $('#recordCategory').val(),
-        status: $('#recordStatus').val(),
-        owner: $('#recordOwner').val(),
-        description: $('#recordDescription').val()
-    };
-
-    let parentId = $('#parentId').val();
-    if (parentId) {
-        recordData.parentId = parseInt(parentId);
-    }
-
-    //..save via controller
-    saveReturnsViaController(recordData, isEdit, function (success) {
-        if (success) {
-            if (isEdit) {
-                updateReturnRecordInData(sampleData, recordData);
-            } else {
-                addRecordToData(sampleData, recordData);
-            }
-
-            returnsTable.replaceData(sampleData);
-            closePanel();
-            alert('Record saved successfully!');
-        }
-    });
-}
-
-//..save register
-function saveReturnsRegister(data, isEdit, callback) {
-    // This simulates an AJAX call to your ASP.NET Core controller
-    // Replace with actual $.ajax call:
-    /*
-    $.ajax({
-        url: isEdit ? '/Records/Update' : '/Records/Create',
-        type: 'POST',
-        data: JSON.stringify(data),
-        contentType: 'application/json',
-        success: function(response) {
-            callback(true);
-        },
-        error: function(xhr, status, error) {
-            alert('Error saving record: ' + error);
-            callback(false);
-        }
-    });
-    */
-
-    // Simulated success
-    setTimeout(() => callback(true), 100);
-}
-
-//..delete Record
-function deleteReturnsRecord(id) {
-    if (confirm('Are you sure you want to delete this record and all its children?')) {
-        // Simulate AJAX delete
-        /*
-        $.ajax({
-            url: '/Records/Delete/' + id,
-            type: 'DELETE',
-            success: function(response) {
-                removeRecordFromData(sampleData, id);
-                table.replaceData(sampleData);
-                alert('Record deleted successfully!');
-            }
-        });
-        */
-
-        removeRecordFromData(sampleData, id);
-        returnsTable.replaceData(sampleData);
-        alert('Record deleted successfully!');
-    }
-}
-
-// Helper Functions
-function findReturnsRecord(data, id) {
-    for (let item of data) {
-        if (item.id === id) return item;
-        if (item._children) {
-            let found = findRecord(item._children, id);
-            if (found) return found;
-        }
-    }
-    return null;
-}
-
-function addReturnsRecordToData(data, newRecord) {
-    if (newRecord.parentId) {
-        let parent = findRecord(data, newRecord.parentId);
-        if (parent) {
-            if (!parent._children) parent._children = [];
-            parent._children.push(newRecord);
-        }
-    } else {
-        data.push(newRecord);
-    }
-}
-
-function updateReturnRecordInData(data, updatedRecord) {
-    for (let i = 0; i < data.length; i++) {
-        if (data[i].id === updatedRecord.id) {
-            Object.assign(data[i], updatedRecord);
-            return true;
-        }
-        if (data[i]._children) {
-            if (updateReturnRecordInData(data[i]._children, updatedRecord)) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-function removeReturnRecordFromData(data, id) {
-    for (let i = 0; i < data.length; i++) {
-        if (data[i].id === id) {
-            data.splice(i, 1);
-            return true;
-        }
-        if (data[i]._children) {
-            if (removeReturnRecordFromData(data[i]._children, id)) {
-                return true;
-            }
-        }
-    }
-    return false;
-}

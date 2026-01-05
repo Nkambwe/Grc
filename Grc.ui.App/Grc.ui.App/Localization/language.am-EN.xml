@@ -441,7 +441,6 @@
 	<LocaleResource Name="Component.Key.ComplianceControl">
 		<Value>Compliance Controls</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="Component.Key.ActiveUsers">
 		<Value>Active Users</Value>
 	</LocaleResource>
@@ -460,6 +459,13 @@
 
 	<LocaleResource Name="Component.Table.Status.Active">
 		<Value>Deactivate this item?</Value>
+	</LocaleResource>
+	
+	<LocaleResource Name="Component.Key.ReturnRegister">
+		<Value>Returns Register</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.CircularRegister">
+		<Value>Circular Register</Value>
 	</LocaleResource>
 
 	<LocaleResource Name="Component.Label.Branch">

@@ -20,7 +20,7 @@ public class StatutoryArticle : BaseEntity {
     public virtual Frequency Frequency { get; set; }
     public virtual StatutoryRegulation Statute { get; set; }
     public virtual Responsebility Owner { get; set; }
-    public virtual ICollection<RegulatoryReturn> Returns { get; set; }
+    public virtual ICollection<ReturnReport> Returns { get; set; }
     public virtual ICollection<ArticleRevision> ArticleRevisions { get; set; }
     public virtual ICollection<StatutoryArticleControl> StatutoryArticleControls { get; set; }
     public virtual ICollection<ComplianceIssue> ComplianceIssues { get; set; }

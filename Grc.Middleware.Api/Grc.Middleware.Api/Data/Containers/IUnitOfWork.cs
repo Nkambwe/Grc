@@ -32,7 +32,9 @@ namespace Grc.Middleware.Api.Data.Containers {
         IControlItemRepository ControlItemRepository { get; set; }
         IComplianceIssueRepository ComplianceIssueRepository { get; set; }
         IResponsebilityRepository ResponsebilityRepository { get; set; }
-        IRegulatoryReturnRepository RegulatoryReturnRepository { get; set; }
+        IReturnRepository ReturnRepository { get; set; }
+        ICircularRepository CircularRepository { get; set; }
+        ICircularIssueRepository CircularIssueRepository { get; set; }
         IReturnTypeRepository ReturnTypeRepository { get; set; }
         IRegulatoryTypeRepository RegulatoryTypeRepository { get; set; }
         IRegulatoryDocumentRepository RegulatoryDocumentRepository { get; set; }

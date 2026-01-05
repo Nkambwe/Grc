@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Compliance.Returns;
 using Grc.Middleware.Api.Data.Entities.System;
@@ -1045,12 +1044,9 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 if (submission != null)
                 {
                     //..update submission record
-                    submission.RefNumber = (request.RefNumber ?? string.Empty).Trim();
-                    submission.Description = (request.Description ?? string.Empty).Trim();
                     submission.Status = (request.Status ?? string.Empty).Trim();
                     submission.FilePath = (request.FilePath ?? string.Empty).Trim();
                     submission.SubmittedBy = (request.SubmittedBy ?? string.Empty).Trim();
-                    submission.ResponseRef = (request.ResponseRef ?? string.Empty).Trim();
                     submission.Comments = (request.Comments ?? string.Empty).Trim();
                     submission.ReturnId = request.ReturnId;
                     submission.Deadline = request.Deadline;
@@ -1113,13 +1109,9 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 var submission = await uow.RegulatorySubmissionRepository.GetAsync(a => a.Id == request.Id);
                 if (submission != null)
                 {
-                    //..update submission record
-                    submission.RefNumber = (request.RefNumber ?? string.Empty).Trim();
-                    submission.Description = (request.Description ?? string.Empty).Trim();
                     submission.Status = (request.Status ?? string.Empty).Trim();
                     submission.FilePath = (request.FilePath ?? string.Empty).Trim();
                     submission.SubmittedBy = (request.SubmittedBy ?? string.Empty).Trim();
-                    submission.ResponseRef = (request.ResponseRef ?? string.Empty).Trim();
                     submission.Comments = (request.Comments ?? string.Empty).Trim();
                     submission.ReturnId = request.ReturnId;
                     submission.Deadline = request.Deadline;

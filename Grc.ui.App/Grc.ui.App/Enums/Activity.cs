@@ -299,6 +299,11 @@ namespace Grc.ui.App.Enums {
         [Description("Update compliance issue")]
         COMPLIANCE_ISSUE_UPDATE = 155,
         [Description("Delete compliance issue")]
-        COMPLIANCE_ISSUE_DELETE = 156
+        COMPLIANCE_ISSUE_DELETE = 156,
+
+        [Description("Get a list of returns available")]
+        COMPLIANCE_RETURNS_RETRIEVE = 157,
+        [Description("Get a list of circulars available")]
+        COMPLIANCE_CIRCULAR_RETRIEVE = 158
     }
 }

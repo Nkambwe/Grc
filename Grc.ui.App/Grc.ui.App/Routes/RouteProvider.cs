@@ -706,7 +706,12 @@
             routeBuilder.MapControllerRoute(
                name: "app-compliance-register-returns-register",
                pattern: "/grc/returns/compliance-returns/register",
-               defaults: new { controller = "ComplianceReturn", action = "ReturnsHome" }
+               defaults: new { controller = "ComplianceReturn", action = "ReturnsRegister" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-returns-register-paged",
+               pattern: "/grc/returns/compliance-returns/paged-register",
+               defaults: new { controller = "ComplianceReturn", action = "GetPagedReturnsList" }
             );
 
             /*----------------------------------------------Circular returns Routes*/
@@ -740,8 +745,13 @@
                  pattern: "/grc/returns/circular-returns/register",
                  defaults: new { controller = "ComplianceReturn", action = "CircularRegister" }
             );
+            routeBuilder.MapControllerRoute(
+                 name: "app-compliance-circular-returns-register-paged",
+                 pattern: "/grc/returns/circular-returns/circular-register",
+                 defaults: new { controller = "ComplianceReturn", action = "GetPagedCircularList" }
+            );
 
-            /*----------------------------------------------Compliance Returns Routes*/
+            /*----------------------------------------------Compliance Tasks Routes*/
             routeBuilder.MapControllerRoute(
                  name: "app-compliance-returns-tasks-home",
                  pattern: "/grc/returns/tasks/dashboard",

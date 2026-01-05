@@ -26,5 +26,4 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         Task<PagedResult<ControlItem>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<ControlItem, object>>[] includes);
         Task<PagedResult<ControlItem>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<ControlItem, bool>> predicate = null);
     }
-
 }

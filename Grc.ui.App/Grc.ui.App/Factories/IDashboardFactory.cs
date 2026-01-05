@@ -19,6 +19,7 @@ namespace Grc.ui.App.Factories {
         Task<TaskMinDashboardModel> PrepareClosedTaskStatisticModelAsync(UserModel data);
         Task<TaskMinDashboardModel> PrepareFailedTaskStatisticModelAsync(UserModel data);
         Task<UserDashboardModel> PrepareUserDashboardModelAsync(UserModel model);
-        
+        Task<UserDashboardModel> PrepareUserModelAsync(UserModel model);
+        Task<PolicyRegisterViewModel> PrepareReturnSupportItemsModelAsync(UserModel data);
     }
 }

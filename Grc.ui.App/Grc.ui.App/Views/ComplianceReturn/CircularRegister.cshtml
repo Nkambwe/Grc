@@ -1,20 +1,15 @@
 ﻿@{
     Layout = "_Layout";
     ViewData["Title"] = "CIRCULAR REGISTER";
+    var component = new PageComponentViewModel {
+        ComponentId = $"0",
+        ComponentKey = "CircularRegister",
+        LeftActions = new List<ComponentAction> {
+            new ComponentAction {ActionKey = ActionKey.ComplianceHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home")},
+            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
+            new ComponentAction { ActionKey = ActionKey.ReturnNew.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") },
+        }
+    };
 }
 
-<div class="welcome-container">
-
-    <div class="welcome-container-message">
-        <span class="display-1">@Model.WelcomeMessage</span>
-    </div>
-
-    <div class="incon-container-expand">
-        <button id="expandBtn" type="button" class="icon-btn">
-            <span>
-                <i id="toggleIcon" class="mdi mdi-arrow-expand"></i>
-            </span>
-        </button>
-    </div>
-
-</div>
+@await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("CircularRegister") })

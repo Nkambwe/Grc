@@ -18,3 +18,4 @@ public class AuthorityEntityConfiguration
         builder.HasMany(a => a.Regulations).WithOne(s => s.Authority).HasForeignKey(r => r.AuthorityId);
     }
 }
+

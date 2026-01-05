@@ -1,4 +1,5 @@
-﻿using Grc.ui.App.Http.Responses;
+﻿using Grc.ui.App.Helpers;
+using Grc.ui.App.Http.Responses;
 
 namespace Grc.ui.App.Services {
     public interface IReturnsService {
@@ -43,6 +44,12 @@ namespace Grc.ui.App.Services {
         Task<ComplianceMinStatistics> GetOpenTaskStatisticAsync(long userId, string iPAddress);
         Task<ComplianceMinStatistics> GetClosedTaskStatisticAsync(long userId, string iPAddress);
         Task<ComplianceMinStatistics> GetFailedTaskStatisticAsync(long userId, string iPAddress);
-
+        /// <summary>
+        /// Query records
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<GrcResponse<PagedResponse<GrcReturnsResponse>>> GetPagedReturnsAsync(TableListRequest request);
+        Task<GrcResponse<PagedResponse<GrcCircularsResponse>>> GetPagedCircularAsync(TableListRequest request);
     }
 }
