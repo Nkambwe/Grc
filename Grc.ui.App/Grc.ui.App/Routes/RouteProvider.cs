@@ -630,12 +630,50 @@
                 pattern: "/operations/workflow/processes/approval/new-request/{id:long}",
                 defaults: new { area = "Operations", controller = "OperationWorkflow", action = "NewProcessApproval" }
             );
+
             /*----------------------- Compliance dashboard routes*/
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-dashboard",
                 pattern: "/grc/compliance",
                 defaults: new { controller = "Application", action = "Dashboard" }
             );
+
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-dashboard-policies-totals",
+                pattern: "/grc/compliance/policies-statistics/totals",
+                defaults: new { controller = "CompliancePolicy", action = "PoliciesTotals" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-dashboard-policies-onhold",
+                pattern: "/grc/compliance/policies-statistics/onhold",
+                defaults: new { controller = "CompliancePolicy", action = "PoliciesOnHold" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-dashboard-policies-need-review",
+                pattern: "/grc/compliance/policies-statistics/need-review",
+                defaults: new { controller = "CompliancePolicy", action = "PoliciesNeedReview" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-dashboard-policies-board-review",
+               pattern: "/grc/compliance/policies-statistics/board-review",
+               defaults: new { controller = "CompliancePolicy", action = "PoliciesPendingBoard" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-dashboard-policies-department-review",
+               pattern: "/grc/compliance/policies-statistics/department-review",
+               defaults: new { controller = "CompliancePolicy", action = "PoliciesPendingDepartment" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-dashboard-policies-uptodate",
+               pattern: "/grc/compliance/policies-statistics/uptodate",
+               defaults: new { controller = "CompliancePolicy", action = "PoliciesUptodate" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-dashboard-policies-standard",
+               pattern: "/grc/compliance/policies-statistics/standard",
+               defaults: new { controller = "CompliancePolicy", action = "PoliciesStandard" }
+            );
+
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-regulations-received",
                 pattern: "/grc/regulations/received",
@@ -680,7 +718,7 @@
             /*----------------------------------------------Compliance returns Routes*/
             routeBuilder.MapControllerRoute(
                name: "app-compliance-register-returns-home",
-               pattern: "/grc/returns/compliance-returns/dashboard",
+               pattern: "/grc/returns/compliance-returns/returns-dashboard",
                defaults: new { controller = "ComplianceReturn", action = "ReturnsHome" }
             );
             routeBuilder.MapControllerRoute(
@@ -717,7 +755,7 @@
             /*----------------------------------------------Circular returns Routes*/
             routeBuilder.MapControllerRoute(
               name: "app-compliance-circular-returns-home",
-              pattern: "/grc/returns/circular-returns/dashboard",
+              pattern: "/grc/returns/circular-returns/circulars-dashboard",
               defaults: new { controller = "ComplianceReturn", action = "CircularHome" }
             );
             routeBuilder.MapControllerRoute(

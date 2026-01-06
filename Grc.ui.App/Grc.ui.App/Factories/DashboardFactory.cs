@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
 using Grc.ui.App.Extensions.Http;
 using Grc.ui.App.Http.Requests;
+using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
@@ -12,12 +14,10 @@ namespace Grc.ui.App.Factories {
         private readonly IQuickActionService _quickActionService;
         private readonly IMapper _mapper;
         private readonly SessionManager _sessionManager;
-        private readonly IRegistersService _registersService;
         private readonly IReturnsService _returnsService;
         private readonly IPolicyService _policyService;
         public DashboardFactory(IMapper mapper,
                                 IQuickActionService quickActionService,
-                                IRegistersService registersService,
                                 IReturnsService returnsService,
                                 IPolicyService policyService,
                                 SessionManager session) {  
@@ -26,7 +26,6 @@ namespace Grc.ui.App.Factories {
             _sessionManager = session;
             _returnsService = returnsService;
             _policyService = policyService;
-            _registersService = registersService;
         }
 
         public async Task<UserDashboardModel>  PrepareUserDashboardModelAsync(UserModel currentUser) {
@@ -43,14 +42,26 @@ namespace Grc.ui.App.Factories {
                 }
             }
 
-            var stats = await _registersService.StatisticAsync(currentUser.UserId, currentUser.IPAddress);
+            var grcResponse = await _returnsService.GetAllReturnsStatisticAsync(currentUser.UserId, currentUser.IPAddress);
+            ComplianceGeneralStatistic stats = new();
+            if (grcResponse.HasError) {
+                stats.Circulars = new();
+                stats.Returns = new();
+                stats.Tasks = new();
+            } else {
+                var data = grcResponse.Data;
+                stats.Circulars = data.CircularStatuses;
+                stats.Returns = data.ReturnStatuses;
+                stats.Tasks = data.TaskStatuses;
+                stats.Policies = data.Policies;
+            }
+
             var model = new UserDashboardModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
                 Workspace = _sessionManager.GetWorkspace(),
-                //..statistics
-                DashboardStatistics = stats
+                Statistics = stats
             };
 
             return await Task.FromResult(model);
@@ -75,7 +86,7 @@ namespace Grc.ui.App.Factories {
                 QuickActions = quickActions,
                 Workspace = _sessionManager.GetWorkspace(),
                 //..statistics
-                DashboardStatistics = null
+                Statistics = null
             };
 
             return await Task.FromResult(model);
@@ -182,21 +193,33 @@ namespace Grc.ui.App.Factories {
                 }
             }
 
-            var stats = await _returnsService.GetCircularStatisticAsync(currentUser.UserId, currentUser.IPAddress);
+            var grcResponse = await _returnsService.GetCircularStatisticAsync(currentUser.UserId, currentUser.IPAddress);
+            CircularDashboardResponses circulars = new();
+            if (grcResponse.HasError) {
+                circulars.Authorities = new();
+                circulars.Statuses = new();
+            } else {
+                var data = grcResponse.Data;
+                circulars.Authorities = data.Authorities;
+                circulars.Statuses = data.Statuses;
+            }
             var model = new CircularDashboardModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
                 Workspace = _sessionManager.GetWorkspace(),
                 //..statistics
-                DashboardStatistics = stats
+                Circulars = new() {
+                    Authorities = circulars.Authorities,
+                    Statuses = circulars.Statuses
+                }
             };
 
             return await Task.FromResult(model);
 
         }
 
-        public async Task<CircularMinDashboardModel> PrepareCircularBreachStatisticModelAsync(UserModel currentUser) {
+        public async Task<CircularExtensionModel> PrepareCircularAuthorityDashboardModelAsync(UserModel currentUser, string authority) {
             //..get quick items
             var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
             var quickActions = new List<QuickActionModel>();
@@ -209,20 +232,28 @@ namespace Grc.ui.App.Factories {
                 }
             }
 
-            var stats = await _returnsService.GetBreachCircularStatisticAsync(currentUser.UserId, currentUser.IPAddress);
-            var model = new CircularMinDashboardModel {
+            var grcResponse = await _returnsService.GetAuthorityCircularCountAsync(currentUser.UserId, currentUser.IPAddress, authority);
+            CircularMiniDashboardResponses circulars = new();
+            if (grcResponse.HasError) {
+                circulars.Circulars = new();
+            } else {
+                var data = grcResponse.Data;
+                circulars.Circulars = data.Circulars;
+            }
+            var model = new CircularExtensionModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
                 Workspace = _sessionManager.GetWorkspace(),
                 //..statistics
-                DashboardStatistics = stats
+                Circulars = circulars.Circulars,
             };
 
             return await Task.FromResult(model);
+
         }
 
-        public async Task<CircularMinDashboardModel> PrepareCircularClosedStatisticModelAsync(UserModel currentUser) {
+        public async Task<CircularExtensionModel> PrepareCircularStatusDashboardModelAsync(UserModel currentUser, string status) {
             //..get quick items
             var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
             var quickActions = new List<QuickActionModel>();
@@ -235,76 +266,33 @@ namespace Grc.ui.App.Factories {
                 }
             }
 
-            var stats = await _returnsService.GetClosedCircularStatisticAsync(currentUser.UserId, currentUser.IPAddress);
-            var model = new CircularMinDashboardModel {
-                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
-                Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
-                QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
-                //..statistics
-                DashboardStatistics = stats
-            };
-
-            return await Task.FromResult(model);
-        }
-
-        public async Task<CircularMinDashboardModel> PrepareCircularOpenStatisticModelAsync(UserModel currentUser) {
-            //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
-            var quickActions = new List<QuickActionModel>();
-            if (!quicksData.HasError) {
-                var quickies = quicksData.Data;
-                if (quickies.Count > 0) {
-                    foreach (var action in quickies) {
-                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
-                    }
-                }
+            var grcResponse = await _returnsService.GetStatusCircularCountAsync(currentUser.UserId, currentUser.IPAddress, status);
+            CircularMiniDashboardResponses circulars = new();
+            if (grcResponse.HasError) {
+                circulars.Circulars = new();
+            } else {
+                var data = grcResponse.Data;
+                circulars.Circulars = data.Circulars;
             }
 
-            var stats = await _returnsService.GetOpenCircularStatisticAsync(currentUser.UserId, currentUser.IPAddress);
-            var model = new CircularMinDashboardModel {
+            var model = new CircularExtensionModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
                 Workspace = _sessionManager.GetWorkspace(),
                 //..statistics
-                DashboardStatistics = stats
+                Circulars = circulars.Circulars,
             };
 
             return await Task.FromResult(model);
-        }
 
-        public async Task<CircularMinDashboardModel> PrepareCircularReceivedStatisticModelAsync(UserModel currentUser) {
-            //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
-            var quickActions = new List<QuickActionModel>();
-            if (!quicksData.HasError) {
-                var quickies = quicksData.Data;
-                if (quickies.Count > 0) {
-                    foreach (var action in quickies) {
-                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
-                    }
-                }
-            }
-
-            var stats = await _returnsService.GetReceivedCircularStatisticAsync(currentUser.UserId, currentUser.IPAddress);
-            var model = new CircularMinDashboardModel {
-                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
-                Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
-                QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
-                //..statistics
-                DashboardStatistics = stats
-            };
-
-            return await Task.FromResult(model);
         }
 
         #endregion
 
         #region Returns
-
-        public async Task<ReturnsDashboardModel> PrepareReturnsDashboardModelAsync(UserModel currentUser) {
+        
+        public async Task<ComplianceGeneralStatisticViewModel> PrepareGeneralReturnsDashboardModelAsync(UserModel currentUser) {
             //..get quick items
             var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
             var quickActions = new List<QuickActionModel>();
@@ -317,20 +305,33 @@ namespace Grc.ui.App.Factories {
                 }
             }
 
-            var stats = await _returnsService.GetReturnStatisticAsync(currentUser.UserId, currentUser.IPAddress);
-            var model = new ReturnsDashboardModel {
+            var grcResponse = await _returnsService.GetAllReturnsStatisticAsync(currentUser.UserId, currentUser.IPAddress);
+            ComplianceGeneralStatistic stats = new();
+            if (grcResponse.HasError) {
+                stats.Circulars = new();
+                stats.Returns = new();
+                stats.Tasks = new();
+            } else {
+                var data = grcResponse.Data;
+                stats.Circulars = data.CircularStatuses;
+                stats.Returns = data.ReturnStatuses;
+                stats.Tasks = data.TaskStatuses;
+                stats.Policies = data.Policies;
+            }
+   
+            var model = new ComplianceGeneralStatisticViewModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
                 Workspace = _sessionManager.GetWorkspace(),
                 //..statistics
-                DashboardStatistics = stats
+                Statistics = stats
             };
 
             return await Task.FromResult(model);
         }
 
-        public async Task<ReturnsMinDashboardModel> PrepareReturnReceivedStatisticModelAsync(UserModel currentUser) {
+        public async Task<ComplianceReturnStatisticViewModel> PrepareReturnsDashboardModelAsync(UserModel currentUser) {
             //..get quick items
             var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
             var quickActions = new List<QuickActionModel>();
@@ -343,20 +344,33 @@ namespace Grc.ui.App.Factories {
                 }
             }
 
-            var stats = await _returnsService.GetReturnReceivedStatisticAsync(currentUser.UserId, currentUser.IPAddress);
-            var model = new ReturnsMinDashboardModel {
+            var grcResponse = await _returnsService.GetReturnStatisticAsync(currentUser.UserId, currentUser.IPAddress);
+            ComplianceReturnStatistic returns = new();
+            if (grcResponse.HasError) {
+                returns.Periods = new();
+                returns.Statuses = new();
+            } else {
+                var data = grcResponse.Data;
+                returns.Periods = data.Periods;
+                returns.Statuses = data.Statuses;
+            }
+
+            var model = new ComplianceReturnStatisticViewModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
                 Workspace = _sessionManager.GetWorkspace(),
                 //..statistics
-                DashboardStatistics = stats
+                Statistics = new() {
+                    Periods = returns.Periods,
+                    Statuses = returns.Statuses   
+                }
             };
 
             return await Task.FromResult(model);
         }
 
-        public async Task<ReturnsMinDashboardModel> PrepareReturnTotalStatisticModelAsync(UserModel currentUser) {
+        public async Task<ComplianceMiniReturnStatisticViewModel> PrepareReturnPeriodDashboardModelAsync(UserModel currentUser, string period) {
             //..get quick items
             var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
             var quickActions = new List<QuickActionModel>();
@@ -369,20 +383,28 @@ namespace Grc.ui.App.Factories {
                 }
             }
 
-            var stats = await _returnsService.GetReturnTotalStatisticAsync(currentUser.UserId, currentUser.IPAddress);
-            var model = new ReturnsMinDashboardModel {
+            var grcResponse = await _returnsService.GetPeriodReturnStatisticAsync(currentUser.UserId, currentUser.IPAddress, period);
+            ComplianceMiniReturnStatisticViewModel returns = new();
+            if (grcResponse.HasError) {
+                returns.Statistics = new();
+            } else {
+                var data = grcResponse.Data;
+                returns.Statistics = data.Returns;
+            }
+
+            var model = new ComplianceMiniReturnStatisticViewModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
                 Workspace = _sessionManager.GetWorkspace(),
                 //..statistics
-                DashboardStatistics = stats
+                Statistics = returns.Statistics
             };
 
             return await Task.FromResult(model);
         }
 
-        public async Task<ReturnsMinDashboardModel> PrepareReturnOpenStatisticModelAsync(UserModel currentUser) {
+        public async Task<ComplianceMiniReturnStatisticViewModel> PrepareReturnStatusDashboardModelAsync(UserModel currentUser, string status) {
             //..get quick items
             var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
             var quickActions = new List<QuickActionModel>();
@@ -395,66 +417,19 @@ namespace Grc.ui.App.Factories {
                 }
             }
 
-            var stats = await _returnsService.GetReturnOpenStatisticAsync(currentUser.UserId, currentUser.IPAddress);
-            var model = new ReturnsMinDashboardModel {
-                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
-                Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
-                QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
-                //..statistics
-                DashboardStatistics = stats
-            };
-
-            return await Task.FromResult(model);
-        }
-
-        public async Task<ReturnsMinDashboardModel> PrepareReturnSubmittedStatisticModelAsync(UserModel currentUser) {
-            //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
-            var quickActions = new List<QuickActionModel>();
-            if (!quicksData.HasError) {
-                var quickies = quicksData.Data;
-                if (quickies.Count > 0) {
-                    foreach (var action in quickies) {
-                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
-                    }
-                }
+            var grcResponse = await _returnsService.GetStatusReturnStatisticAsync(currentUser.UserId, currentUser.IPAddress, status);
+            Dictionary<string, int> stats = new();
+            if (!grcResponse.HasError) {
+                stats = grcResponse.Data.Returns;
             }
 
-            var stats = await _returnsService.GetReturnSubmittedStatisticAsync(currentUser.UserId, currentUser.IPAddress);
-            var model = new ReturnsMinDashboardModel {
+            var model = new ComplianceMiniReturnStatisticViewModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
                 Workspace = _sessionManager.GetWorkspace(),
                 //..statistics
-                DashboardStatistics = stats
-            };
-
-            return await Task.FromResult(model);
-        }
-
-        public async Task<ReturnsMinDashboardModel> PrepareReturnBreachStatisticModelAsync(UserModel currentUser) {
-            //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
-            var quickActions = new List<QuickActionModel>();
-            if (!quicksData.HasError) {
-                var quickies = quicksData.Data;
-                if (quickies.Count > 0) {
-                    foreach (var action in quickies) {
-                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
-                    }
-                }
-            }
-
-            var stats = await _returnsService.GetReturnBreachStatisticAsync(currentUser.UserId, currentUser.IPAddress);
-            var model = new ReturnsMinDashboardModel {
-                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
-                Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
-                QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
-                //..statistics
-                DashboardStatistics = stats
+                Statistics = stats
             };
 
             return await Task.FromResult(model);
@@ -476,20 +451,39 @@ namespace Grc.ui.App.Factories {
                 }
             }
 
-            var stats = await _returnsService.GetTaskStatisticAsync(currentUser.UserId, currentUser.IPAddress);
+            var grcResponse = await _returnsService.GetTaskStatisticAsync(currentUser.UserId, currentUser.IPAddress);
+            TaskDashboardResponses task = new();
+            if (grcResponse.HasError) {
+                task.Total = new();
+                task.Open = new();
+                task.Closed = new();
+                task.Breached = new();
+            } else {
+                var data = grcResponse.Data;
+                task.Total = data.Totals;
+                task.Open = data.Open;
+                task.Closed = data.Closed;
+                task.Breached = data.Breached;
+            }
+
             var model = new TaskDashboardModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
                 Workspace = _sessionManager.GetWorkspace(),
                 //..statistics
-                DashboardStatistics = stats
+                Tasks = new() {
+                    Total = task.Total,
+                    Open = task.Open,
+                    Closed = task.Closed,
+                    Breached = task.Breached
+                }
             };
 
             return await Task.FromResult(model);
         }
 
-        public async Task<TaskMinDashboardModel> PrepareTotalTaskStatisticModelAsync(UserModel currentUser) {
+        public async Task<TaskMinDashboardModel> PrepareMinTaskDashboardStatisticModelAsync(UserModel currentUser, string status) {
             //..get quick items
             var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
             var quickActions = new List<QuickActionModel>();
@@ -502,92 +496,22 @@ namespace Grc.ui.App.Factories {
                 }
             }
 
-            var stats = await _returnsService.GetTotalTaskStatisticAsync(currentUser.UserId, currentUser.IPAddress);
-            var model = new TaskMinDashboardModel {
-                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
-                Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
-                QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
-                //..statistics
-                DashboardStatistics = stats
-            };
-
-            return await Task.FromResult(model);
-        }
-
-        public async Task<TaskMinDashboardModel> PrepareOpenTaskStatisticModelAsync(UserModel currentUser) {
-            //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
-            var quickActions = new List<QuickActionModel>();
-            if (!quicksData.HasError) {
-                var quickies = quicksData.Data;
-                if (quickies.Count > 0) {
-                    foreach (var action in quickies) {
-                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
-                    }
-                }
+            var grcResponse = await _returnsService.GetMiniTaskStatisticAsync(currentUser.UserId, currentUser.IPAddress, status);
+            TaskMinDashboardModel task = new();
+            if (grcResponse.HasError) {
+                task.Tasks = new();
+            } else {
+                var data = grcResponse.Data;
+                task.Tasks = data.Tasks;
             }
 
-            var stats = await _returnsService.GetOpenTaskStatisticAsync(currentUser.UserId, currentUser.IPAddress);
             var model = new TaskMinDashboardModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
                 Workspace = _sessionManager.GetWorkspace(),
                 //..statistics
-                DashboardStatistics = stats
-            };
-
-            return await Task.FromResult(model);
-        }
-
-        public async Task<TaskMinDashboardModel> PrepareClosedTaskStatisticModelAsync(UserModel currentUser) {
-            //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
-            var quickActions = new List<QuickActionModel>();
-            if (!quicksData.HasError) {
-                var quickies = quicksData.Data;
-                if (quickies.Count > 0) {
-                    foreach (var action in quickies) {
-                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
-                    }
-                }
-            }
-
-            var stats = await _returnsService.GetClosedTaskStatisticAsync(currentUser.UserId, currentUser.IPAddress);
-            var model = new TaskMinDashboardModel {
-                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
-                Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
-                QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
-                //..statistics
-                DashboardStatistics = stats
-            };
-
-            return await Task.FromResult(model);
-        }
-
-        public async Task<TaskMinDashboardModel> PrepareFailedTaskStatisticModelAsync(UserModel currentUser) {
-            //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
-            var quickActions = new List<QuickActionModel>();
-            if (!quicksData.HasError) {
-                var quickies = quicksData.Data;
-                if (quickies.Count > 0) {
-                    foreach (var action in quickies) {
-                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
-                    }
-                }
-            }
-
-            var stats = await _returnsService.GetFailedTaskStatisticAsync(currentUser.UserId, currentUser.IPAddress);
-            var model = new TaskMinDashboardModel {
-                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
-                Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
-                QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
-                //..statistics
-                DashboardStatistics = stats
+                Tasks = task.Tasks
             };
 
             return await Task.FromResult(model);

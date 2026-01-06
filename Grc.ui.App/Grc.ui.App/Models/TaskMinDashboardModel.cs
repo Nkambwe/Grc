@@ -1,5 +1,4 @@
 ﻿using Grc.ui.App.Defaults;
-using Grc.ui.App.Http.Responses;
 
 namespace Grc.ui.App.Models {
     public class TaskMinDashboardModel {
@@ -8,7 +7,7 @@ namespace Grc.ui.App.Models {
         public string Initials { get; set; }
         public DateTime LastLogin { get; set; }
         public WorkspaceModel Workspace { get; set; }
-        public ComplianceMinStatistics DashboardStatistics { get; set; }
+        public Dictionary<string, int> Tasks { get; set; }
         public List<QuickActionModel> QuickActions { get; set; } = new();
     }
 }

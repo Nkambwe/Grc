@@ -42,5 +42,8 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("comments")]
         public string Comments { get; set; }
 
+        [JsonPropertyName("issues")]
+        public List<CircularIssueResponse> Issues { get; set; }
+
     }
 }

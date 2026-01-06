@@ -297,8 +297,14 @@
 	<LocaleResource Name="Component.Key.CircularReturns">
 		<Value>Circular Returns</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.Circular-register">
+		<Value>Search circulars...</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Key.RegulatoryReturns">
 		<Value>Regulatory Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.Returns-register">
+		<Value>Search returns...</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.SettingAuthorities">
 		<Value>Regulatory Authorities</Value>

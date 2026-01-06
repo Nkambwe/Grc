@@ -159,7 +159,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     SubmissionDate = request.SubmissionDate,
                     FilePath = request.FilePath,
                     SubmittedBy = request.SubmittedBy,
-                    RefNumber = request.Reference,
+                    Reference = request.Reference,
                     FrequencyId = request.FrequencyId,
                     AuthorityId = request.AuthorityId,
                     DepartmentId = request.DepartmentId,
@@ -209,7 +209,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     SubmissionDate = request.SubmissionDate,
                     FilePath = request.FilePath,
                     SubmittedBy = request.SubmittedBy,
-                    RefNumber = request.Reference,
+                    Reference = request.Reference,
                     FrequencyId = request.FrequencyId,
                     AuthorityId = request.AuthorityId,
                     DepartmentId = request.DepartmentId,
@@ -267,7 +267,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     circular.AuthorityId = request.AuthorityId;
                     circular.FrequencyId = request.FrequencyId;
                     circular.DepartmentId = request.DepartmentId;
-                    circular.RefNumber = request.Reference;
+                    circular.Reference = request.Reference;
                     circular.LastModifiedOn = DateTime.Now;
                     circular.LastModifiedBy = $"{request.UserName}";
 
@@ -308,7 +308,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     circular.AuthorityId = request.AuthorityId;
                     circular.FrequencyId = request.FrequencyId;
                     circular.DepartmentId = request.DepartmentId;
-                    circular.RefNumber = request.Reference;
+                    circular.Reference = request.Reference;
                     circular.LastModifiedOn = DateTime.Now;
                     circular.LastModifiedBy = $"{request.UserName}";
 

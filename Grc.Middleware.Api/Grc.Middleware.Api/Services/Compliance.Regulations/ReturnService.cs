@@ -4,6 +4,7 @@ using Grc.Middleware.Api.Data.Entities.Compliance.Returns;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
+using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
 using System.Linq.Expressions;
 using System.Text.Json;
@@ -17,6 +18,41 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             : base(loggerFactory, uowFactory, mapper) {
         }
 
+        #region Statistics
+        public async Task<ComplianceStatisticsResponse> GetComplianceStatisticsAsync(bool includeDeleted) {
+
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Generate compliance statistics", "INFO");
+
+            var statistics = new ComplianceStatisticsResponse() {
+                CircularStatuses = new(),
+                ReturnStatuses = new(),
+                TaskStatuses = new(),
+                Policies = new()
+            };
+
+            try {
+                var policie = await uow.RegulatoryDocumentRepository.GetAllAsync(includeDeleted);
+                statistics.Policies.Add("Total", policie.Count);
+                statistics.Policies.Add("On Hold", policie.Count(p=>p.Status == "ON-HOLD"));
+                statistics.Policies.Add("Department Review", policie.Count(p => p.Status == "DEPT-REVIEW"));
+                statistics.Policies.Add("Not Uptodate", policie.Count(p => p.Status == "DUE"));
+                statistics.Policies.Add("Board Review", policie.Count(p => p.Status == "ON-HOLD"));
+                statistics.Policies.Add("Uptodate", policie.Count(p => p.Status == "UPTODATE"));
+                statistics.Policies.Add("Standard", policie.Count(p => p.Status == "NA"));
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to Regulatory Return in the database: {ex.Message}", "ERROR");
+                LogError(uow, ex);
+                throw;
+            }
+
+
+            return statistics;
+        }
+
+        #endregion
+
+        #region Queries
         public int Count()
         {
             using var uow = UowFactory.Create();
@@ -29,29 +65,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to Regulatory Return in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -68,29 +82,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count Regulatory Return in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -107,29 +99,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count Regulatory Return in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -146,29 +116,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count Regulatory Return in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -185,29 +133,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count Regulatory Return in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -224,29 +150,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count Regulatory Return in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -263,29 +167,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to check for Regulatory Return in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -302,29 +184,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to check for Regulatory Return in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -341,584 +201,196 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to check for Regulatory Return in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public ReturnReport Get(long id, bool includeDeleted = false)
-        {
+        public ReturnReport Get(long id, bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get Regulatory Return with ID '{id}'", "INFO");
 
-            try
-            {
+            try {
                 return uow.ReturnRepository.Get(id, includeDeleted);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve Regulatory Return: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
 
-        public ReturnReport Get(Expression<Func<ReturnReport, bool>> predicate, bool includeDeleted = false)
-        {
+        public ReturnReport Get(Expression<Func<ReturnReport, bool>> predicate, bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get Regulatory Return that fits predicate >> '{predicate}'", "INFO");
 
-            try
-            {
+            try {
                 return uow.ReturnRepository.Get(predicate, includeDeleted);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve Regulatory Return : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
 
-        public ReturnReport Get(Expression<Func<ReturnReport, bool>> predicate, bool includeDeleted = false, params Expression<Func<ReturnReport, object>>[] includes)
-        {
+        public ReturnReport Get(Expression<Func<ReturnReport, bool>> predicate, bool includeDeleted = false, params Expression<Func<ReturnReport, object>>[] includes) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get Regulatory Return that fits predicate >> '{predicate}'", "INFO");
 
-            try
-            {
+            try {
                 return uow.ReturnRepository.Get(predicate, includeDeleted, includes);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve Regulatory Return : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
 
-        public IQueryable<ReturnReport> GetAll(bool includeDeleted = false, params Expression<Func<ReturnReport, object>>[] includes)
-        {
+        public IQueryable<ReturnReport> GetAll(bool includeDeleted = false, params Expression<Func<ReturnReport, object>>[] includes) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get all Regulatory Return", "INFO");
 
-            try
-            {
+            try {
                 return uow.ReturnRepository.GetAll(includeDeleted, includes);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve Regulatory Return : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
 
-        public IList<ReturnReport> GetAll(bool includeDeleted = false)
-        {
+        public IList<ReturnReport> GetAll(bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get all regulatory return", "INFO");
 
-            try
-            {
+            try {
                 return uow.ReturnRepository.GetAll(includeDeleted);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve regulatory return : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
 
-        public IList<ReturnReport> GetAll(Expression<Func<ReturnReport, bool>> predicate, bool includeDeleted)
-        {
+        public IList<ReturnReport> GetAll(Expression<Func<ReturnReport, bool>> predicate, bool includeDeleted) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get all Regulatory Return that fit predicate '{predicate}'", "INFO");
 
-            try
-            {
+            try {
                 return uow.ReturnRepository.GetAll(predicate, includeDeleted);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve Regulatory Return : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
 
-        public async Task<IList<ReturnReport>> GetAllAsync(bool includeDeleted = false)
-        {
+        public async Task<IList<ReturnReport>> GetAllAsync(bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get all Regulatory Return", "INFO");
 
-            try
-            {
+            try {
                 return await uow.ReturnRepository.GetAllAsync(includeDeleted);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex)  {
                 Logger.LogActivity($"Failed to retrieve Regulatory Return : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public async Task<IList<ReturnReport>> GetAllAsync(Expression<Func<ReturnReport, bool>> predicate, bool includeDeleted)
-        {
+        public async Task<IList<ReturnReport>> GetAllAsync(Expression<Func<ReturnReport, bool>> predicate, bool includeDeleted) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get all Regulatory Return that fit predicate '{predicate}'", "INFO");
 
-            try
-            {
+            try {
                 return await uow.ReturnRepository.GetAllAsync(predicate, includeDeleted);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve Regulatory Return : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public async Task<IList<ReturnReport>> GetAllAsync(Expression<Func<ReturnReport, bool>> predicate, bool includeDeleted = false, params Expression<Func<ReturnReport, object>>[] includes)
-        {
+        public async Task<IList<ReturnReport>> GetAllAsync(Expression<Func<ReturnReport, bool>> predicate, bool includeDeleted = false, params Expression<Func<ReturnReport, object>>[] includes) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get all Regulatory Return that fit predicate '{predicate}'", "INFO");
 
-            try
-            {
+            try {
                 return await uow.ReturnRepository.GetAllAsync(predicate, includeDeleted, includes);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve Regulatory Return : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public async Task<IList<ReturnReport>> GetAllAsync(bool includeDeleted = false, params Expression<Func<ReturnReport, object>>[] includes)
-        {
+        public async Task<IList<ReturnReport>> GetAllAsync(bool includeDeleted = false, params Expression<Func<ReturnReport, object>>[] includes) {
             using var uow = UowFactory.Create();
             Logger.LogActivity("Get all Regulatory Return", "INFO");
 
-            try
-            {
+            try {
                 return await uow.ReturnRepository.GetAllAsync(includeDeleted, includes);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex)  {
                 Logger.LogActivity($"Failed to retrieve Regulatory Return : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public async Task<ReturnReport> GetAsync(long id, bool includeDeleted = false)
-        {
+        public async Task<ReturnReport> GetAsync(long id, bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get Regulatory Return with ID '{id}'", "INFO");
 
-            try
-            {
+            try {
                 return await uow.ReturnRepository.GetAsync(id, includeDeleted);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve Regulatory Return : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public async Task<ReturnReport> GetAsync(Expression<Func<ReturnReport, bool>> predicate, bool includeDeleted = false)
-        {
+        public async Task<ReturnReport> GetAsync(Expression<Func<ReturnReport, bool>> predicate, bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get Regulatory Return that fit predicate '{predicate}'", "INFO");
 
-            try
-            {
+            try {
                 return await uow.ReturnRepository.GetAsync(predicate, includeDeleted);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve Regulatory Return : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public async Task<ReturnReport> GetAsync(Expression<Func<ReturnReport, bool>> predicate, bool includeDeleted = false, params Expression<Func<ReturnReport, object>>[] includes)
-        {
+        public async Task<ReturnReport> GetAsync(Expression<Func<ReturnReport, bool>> predicate, bool includeDeleted = false, params Expression<Func<ReturnReport, object>>[] includes) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get Regulatory Return that fit predicate '{predicate}'", "INFO");
 
-            try
-            {
+            try {
                 return await uow.ReturnRepository.GetAsync(predicate, includeDeleted, includes);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve Regulatory Return : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public async Task<IList<ReturnReport>> GetTopAsync(Expression<Func<ReturnReport, bool>> predicate, int top, bool includeDeleted = false)
-        {
+        public async Task<IList<ReturnReport>> GetTopAsync(Expression<Func<ReturnReport, bool>> predicate, int top, bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get top {top} Regulatory Returns that fit predicate >> {predicate}", "INFO");
 
-            try
-            {
+            try {
                 return await uow.ReturnRepository.GetTopAsync(predicate, top, includeDeleted);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve Regulatory Return : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public bool Insert(ReturnRequest request)
-        {
+        public bool Insert(ReturnRequest request) {
             using var uow = UowFactory.Create();
-            try
-            {
+            try {
                 //..map Regulatory Return request to Regulatory Return entity
                 var article = Mapper.Map<ReturnRequest, ReturnReport>(request);
 
@@ -931,8 +403,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 Logger.LogActivity($"Regulatory Return data: {articleJson}", "DEBUG");
 
                 var added = uow.ReturnRepository.Insert(article);
-                if (added)
-                {
+                if (added) {
                     //..check object state
                     var entityState = ((UnitOfWork)uow).Context.Entry(article).State;
                     Logger.LogActivity($"Entity state after insert: {entityState}", "DEBUG");
@@ -943,38 +414,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 }
 
                 return false;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to save submission : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
 
-        public async Task<bool> InsertAsync(ReturnRequest request)
-        {
+        public async Task<bool> InsertAsync(ReturnRequest request) {
             using var uow = UowFactory.Create();
             try
             {
@@ -982,16 +429,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 var article = Mapper.Map<ReturnRequest, ReturnReport>(request);
 
                 //..log the Regulatory Return data being saved
-                var articleJson = JsonSerializer.Serialize(article, new JsonSerializerOptions
-                {
+                var articleJson = JsonSerializer.Serialize(article, new JsonSerializerOptions {
                     WriteIndented = true,
                     ReferenceHandler = ReferenceHandler.IgnoreCycles
                 });
                 Logger.LogActivity($"Regulatory Return data: {articleJson}", "DEBUG");
 
                 var added = await uow.ReturnRepository.InsertAsync(article);
-                if (added)
-                {
+                if (added) {
                     //..check object state
                     var entityState = ((UnitOfWork)uow).Context.Entry(article).State;
                     Logger.LogActivity($"Entity state after insert: {entityState}", "DEBUG");
@@ -1002,46 +447,20 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 }
 
                 return false;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to save Regulatory Return : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public bool Update(ReturnRequest request, bool includeDeleted = false)
-        {
+        public bool Update(ReturnRequest request, bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update Regulatory Return request", "INFO");
 
-            try
-            {
+            try {
                 var regReturn = uow.ReturnRepository.Get(a => a.Id == request.Id);
-                if (regReturn != null)
-                {
+                if (regReturn != null) {
                     //..update record
                     regReturn.ReturnName = (request.ReturnName ?? string.Empty).Trim();
                     regReturn.TypeId = request.TypeId;
@@ -1067,45 +486,18 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 return false;
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to update Regulatory Return record: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
 
-        public async Task<bool> UpdateAsync(ReturnRequest request, bool includeDeleted = false)
-        {
+        public async Task<bool> UpdateAsync(ReturnRequest request, bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update Regulatory Return", "INFO");
 
-            try
-            {
+            try {
                 var regReturn = await uow.ReturnRepository.GetAsync(a => a.Id == request.Id);
-                if (regReturn != null)
-                {
+                if (regReturn != null) {
                     //..update record
                     regReturn.ReturnName = (request.ReturnName ?? string.Empty).Trim();
                     regReturn.TypeId = request.TypeId;
@@ -1129,44 +521,16 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 }
 
                 return false;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to update Regulatory Return record: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public bool Delete(IdRequest request)
-        {
+        public bool Delete(IdRequest request) {
             using var uow = UowFactory.Create();
-            try
-            {
+            try {
                 var auditJson = JsonSerializer.Serialize(request, new JsonSerializerOptions
                 {
                     WriteIndented = true,
@@ -1190,39 +554,16 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 }
 
                 return false;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to delete Regulatory Return : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
+                LogError(uow, ex);
                 throw;
             }
         }
 
-        public async Task<bool> DeleteAsync(IdRequest request)
-        {
+        public async Task<bool> DeleteAsync(IdRequest request) {
             using var uow = UowFactory.Create();
-            try
-            {
+            try {
                 var statuteJson = JsonSerializer.Serialize(request, new JsonSerializerOptions
                 {
                     WriteIndented = true,
@@ -1246,80 +587,32 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 }
 
                 return false;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to delete Regulatory Return : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public async Task<bool> DeleteAllAsync(IList<long> requestIds, bool markAsDeleted = false)
-        {
+        public async Task<bool> DeleteAllAsync(IList<long> requestIds, bool markAsDeleted = false) {
             using var uow = UowFactory.Create();
-            try
-            {
+            try {
                 var statutes = await uow.ReturnRepository.GetAllAsync(e => requestIds.Contains(e.Id));
-                if (statutes.Count == 0)
-                {
+                if (statutes.Count == 0) {
                     Logger.LogActivity($"Records not found", "INFO");
                     return false;
                 }
                 return await uow.ReturnRepository.DeleteAllAsync(statutes, markAsDeleted);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to delete Regulatory Return: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public async Task<bool> BulkyInsertAsync(ReturnRequest[] requestItems)
-        {
+        public async Task<bool> BulkyInsertAsync(ReturnRequest[] requestItems) {
             using var uow = UowFactory.Create();
-            try
-            {
+            try {
                 //..map Regulatory Return to Regulatory Return entity
                 var returns = requestItems.Select(Mapper.Map<ReturnRequest, ReturnReport>).ToArray();
                 var returnsJson = JsonSerializer.Serialize(returns, new JsonSerializerOptions
@@ -1329,41 +622,16 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 });
                 Logger.LogActivity($"Regulatory Return data: {returnsJson}", "DEBUG");
                 return await uow.ReturnRepository.BulkyInsertAsync(returns);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to save Regulatory Return : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public async Task<bool> BulkyUpdateAsync(ReturnRequest[] requestItems)
-        {
+        public async Task<bool> BulkyUpdateAsync(ReturnRequest[] requestItems) {
             using var uow = UowFactory.Create();
-            try
-            {
+            try {
                 //..map  Regulatory Returns request to  Regulatory Returns entity
                 var returns = requestItems.Select(Mapper.Map<ReturnRequest, ReturnReport>).ToArray();
                 var returnsJson = JsonSerializer.Serialize(returns, new JsonSerializerOptions
@@ -1373,190 +641,65 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 });
                 Logger.LogActivity($"Regulatory Return data: {returnsJson}", "DEBUG");
                 return await uow.ReturnRepository.BulkyUpdateAsync(returns);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to save Regulatory Return : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public async Task<bool> BulkyUpdateAsync(ReturnRequest[] requestItems, params Expression<Func<ReturnReport, object>>[] propertySelectors)
-        {
+        public async Task<bool> BulkyUpdateAsync(ReturnRequest[] requestItems, params Expression<Func<ReturnReport, object>>[] propertySelectors) {
             using var uow = UowFactory.Create();
-            try
-            {
+            try {
                 //..map regulatory return request to regulatory return entity
                 var returns = requestItems.Select(Mapper.Map<ReturnRequest, ReturnReport>).ToArray();
-                var returnsJson = JsonSerializer.Serialize(returns, new JsonSerializerOptions
-                {
+                var returnsJson = JsonSerializer.Serialize(returns, new JsonSerializerOptions {
                     WriteIndented = true,
                     ReferenceHandler = ReferenceHandler.IgnoreCycles
                 });
                 Logger.LogActivity($" Regulatory Returns data: {returnsJson}", "DEBUG");
                 return await uow.ReturnRepository.BulkyUpdateAsync(returns, propertySelectors);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to save  Regulatory Returns : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public async Task<PagedResult<ReturnReport>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<ReturnReport, object>>[] includes)
-        {
+        public async Task<PagedResult<ReturnReport>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<ReturnReport, object>>[] includes) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve paged regulatory return", "INFO");
 
-            try
-            {
+            try {
                 return await uow.ReturnRepository.PageAllAsync(page, size, includeDeleted, null, includes);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve regulatory return: {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public async Task<PagedResult<ReturnReport>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<ReturnReport, object>>[] includes)
-        {
+        public async Task<PagedResult<ReturnReport>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<ReturnReport, object>>[] includes) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve paged regulatory return", "INFO");
 
-            try
-            {
+            try {
                 return await uow.ReturnRepository.PageAllAsync(token, page, size, includeDeleted, includes);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieves regulatory return : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public async Task<PagedResult<ReturnReport>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<ReturnReport, bool>> predicate = null)
-        {
+        public async Task<PagedResult<ReturnReport>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<ReturnReport, bool>> predicate = null) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve paged regulatory return", "INFO");
-
-            try
-            {
+            try {
                 return await uow.ReturnRepository.PageAllAsync(page, size, includeDeleted, predicate);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve regulatory return: {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1564,39 +707,71 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         public async Task<PagedResult<ReturnReport>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<ReturnReport, bool>> predicate = null, bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve paged regulatory return", "INFO");
-
-            try
-            {
+            try {
                 return await uow.ReturnRepository.PageAllAsync(token, page, size, predicate, includeDeleted);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve regulatory return : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "REGULATORY-RETURN-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
+        #endregion
+
+        #region private methods
+
+        private void LogError(IUnitOfWork uow, Exception ex) {
+            var currentEx = ex.InnerException;
+            while (currentEx != null) {
+                Logger.LogActivity($"Service Inner Exception: {currentEx.Message}", "ERROR");
+                currentEx = currentEx.InnerException;
+            }
+
+            // Get company ID efficiently
+            var company = uow.CompanyRepository.GetAll(c => true, false);
+            long companyId = company.FirstOrDefault()?.Id ?? 1L;
+
+            // Get innermost exception
+            var innermostException = ex;
+            while (innermostException.InnerException != null)
+                innermostException = innermostException.InnerException;
+
+            var errorObj = new SystemError {
+                ErrorMessage = innermostException.Message,
+                ErrorSource = "REGULATORY-RETURN-SERVICE",
+                StackTrace = ex.StackTrace,
+                Severity = "CRITICAL",
+                ReportedOn = DateTime.Now,
+                CompanyId = companyId
+            };
+
+            uow.SystemErrorRespository.Insert(errorObj);
+            uow.SaveChanges();
+        }
+
+        private async Task LogErrorAsync(IUnitOfWork uow, Exception ex) {
+            var innerEx = ex.InnerException;
+            while (innerEx != null) {
+                Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                innerEx = innerEx.InnerException;
+            }
+            Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+            var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+            long companyId = company != null ? company.Id : 1;
+            SystemError errorObj = new() {
+                ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                ErrorSource = "REGULATORY-RETURN-SERVICE",
+                StackTrace = ex.StackTrace,
+                Severity = "CRITICAL",
+                ReportedOn = DateTime.Now,
+                CompanyId = companyId
+            };
+
+            //..save error object to the database
+            _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+        }
+
+        #endregion
     }
 }

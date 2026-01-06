@@ -300,10 +300,27 @@ namespace Grc.ui.App.Enums {
         COMPLIANCE_ISSUE_UPDATE = 155,
         [Description("Delete compliance issue")]
         COMPLIANCE_ISSUE_DELETE = 156,
-
         [Description("Get a list of returns available")]
         COMPLIANCE_RETURNS_RETRIEVE = 157,
         [Description("Get a list of circulars available")]
-        COMPLIANCE_CIRCULAR_RETRIEVE = 158
+        COMPLIANCE_CIRCULAR_RETRIEVE = 158,
+        [Description("Retrieve circular status statistics")]
+        CIRCULAR_STATUS_STATISTIC = 159,
+        [Description("Retrieve circular authority statistics")]
+        CIRCULAR_AUTHORITY_STATISTIC = 160,
+        [Description("Retrieve circular all statistics")]
+        CIRCULAR_ALL_STATISTIC = 161,
+        [Description("Retrieve return status statistics")]
+        RETURNS_STATUS_STATISTIC = 162,
+        [Description("Retrieve return period statistics")]
+        RETURNS_PERIOD_STATISTIC = 163,
+        [Description("Retrieve circular all statistics")]
+        RETURNS_ALL_STATISTIC = 164,
+        [Description("Retrieve returns dashboard statistics")]
+        RETURNS_DASHBOARD_STATISTIC = 165,
+        [Description("Retrieve tasks all statistics")]
+        TASKS_ALL_STATISTIC = 166,
+        [Description("Retrieve task status statistics")]
+        TASK_STATUS_STATISTIC = 167,
     }
 }

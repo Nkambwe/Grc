@@ -13,6 +13,7 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Policy;
 using System.Text.Json;
 
 namespace Grc.ui.App.Controllers {
@@ -21,9 +22,12 @@ namespace Grc.ui.App.Controllers {
         private readonly IAuthenticationService _authService;
         private readonly IPolicyService _policyService;
         private readonly IPolicyTaskService _policyTasksService;
+        private readonly IDashboardFactory _dashboardFactory;
         public CompliancePolicyController(IApplicationLoggerFactory loggerFactory, 
             IEnvironmentProvider environment, IWebHelper webHelper, ILocalizationService localizationService, 
-            IErrorService errorService, IAuthenticationService authService, IPolicyService policyService,
+            IErrorService errorService, IAuthenticationService authService,
+            IPolicyService policyService,
+            IDashboardFactory dashboardFactory,
             IPolicyTaskService policyTasksService, IGrcErrorFactory errorFactory, SessionManager sessionManager) 
             : base(loggerFactory, environment, webHelper, localizationService, errorService, errorFactory, sessionManager) {
 
@@ -31,7 +35,194 @@ namespace Grc.ui.App.Controllers {
              _authService = authService;
             _policyService = policyService;
             _policyTasksService = policyTasksService;
+            _dashboardFactory = dashboardFactory;
         }
+
+        #region Policy statistics
+
+        public async Task<IActionResult> PoliciesTotals() {
+            try {
+                if (User.Identity?.IsAuthenticated == true) {
+                    //..try getting current user logged in
+                    var ipAddress = WebHelper.GetCurrentIpAddress();
+                    var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                    if (grcResponse.HasError) {
+                        //..log error to database
+                        _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-POLICY-CONTROLLER", "Unable to process user information");
+                        return Redirect(Url.Action("Login", "Application"));
+                    }
+
+                    //..redirect to dashboard
+                    var model = await _dashboardFactory.PrepareUserModelAsync(grcResponse.Data);
+                    model.WelcomeMessage = $"{model.WelcomeMessage} >> Total Policies";
+                    return View(model);
+                } else {
+                    return Redirect(Url.Action("Dashboard", "Application"));
+                }
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error loading Policies Register view: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "POLICY-REGISTER", ex.StackTrace);
+                return Redirect(Url.Action("Dashboard", "Application"));
+            }
+        }
+
+        public async Task<IActionResult> PoliciesOnHold() {
+            try {
+                if (User.Identity?.IsAuthenticated == true) {
+                    //..try getting current user logged in
+                    var ipAddress = WebHelper.GetCurrentIpAddress();
+                    var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                    if (grcResponse.HasError) {
+                        //..log error to database
+                        _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-POLICY-CONTROLLER", "Unable to process user information");
+                        return Redirect(Url.Action("Login", "Application"));
+                    }
+
+                    //..redirect to dashboard
+                    var model = await _dashboardFactory.PrepareUserModelAsync(grcResponse.Data);
+                    model.WelcomeMessage = $"{model.WelcomeMessage} >> Policies On Hold";
+                    return View(model);
+                } else {
+                    return Redirect(Url.Action("Dashboard", "Application"));
+                }
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error loading Policies Register view: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "POLICY-REGISTER", ex.StackTrace);
+                return Redirect(Url.Action("Dashboard", "Application"));
+            }
+        }
+
+        public async Task<IActionResult> PoliciesNeedReview() {
+            try {
+                if (User.Identity?.IsAuthenticated == true) {
+                    //..try getting current user logged in
+                    var ipAddress = WebHelper.GetCurrentIpAddress();
+                    var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                    if (grcResponse.HasError) {
+                        //..log error to database
+                        _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-POLICY-CONTROLLER", "Unable to process user information");
+                        return Redirect(Url.Action("Login", "Application"));
+                    }
+
+                    //..redirect to dashboard
+                    var model = await _dashboardFactory.PrepareUserModelAsync(grcResponse.Data);
+                    model.WelcomeMessage = $"{model.WelcomeMessage} >> Policies Needing Review";
+                    return View(model);
+                } else {
+                    return Redirect(Url.Action("Dashboard", "Application"));
+                }
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error loading Policies Register view: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "POLICY-REGISTER", ex.StackTrace);
+                return Redirect(Url.Action("Dashboard", "Application"));
+            }
+        }
+
+        public async Task<IActionResult> PoliciesPendingBoard() {
+            try {
+                if (User.Identity?.IsAuthenticated == true) {
+                    //..try getting current user logged in
+                    var ipAddress = WebHelper.GetCurrentIpAddress();
+                    var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                    if (grcResponse.HasError) {
+                        //..log error to database
+                        _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-POLICY-CONTROLLER", "Unable to process user information");
+                        return Redirect(Url.Action("Login", "Application"));
+                    }
+
+                    //..redirect to dashboard
+                    var model = await _dashboardFactory.PrepareUserModelAsync(grcResponse.Data);
+                    model.WelcomeMessage = $"{model.WelcomeMessage} >> Policies Pending Board Approval";
+                    return View(model);
+                } else {
+                    return Redirect(Url.Action("Dashboard", "Application"));
+                }
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error loading Policies Register view: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "POLICY-REGISTER", ex.StackTrace);
+                return Redirect(Url.Action("Dashboard", "Application"));
+            }
+        }
+
+        public async Task<IActionResult> PoliciesPendingDepartment() {
+            try {
+                if (User.Identity?.IsAuthenticated == true) {
+                    //..try getting current user logged in
+                    var ipAddress = WebHelper.GetCurrentIpAddress();
+                    var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                    if (grcResponse.HasError) {
+                        //..log error to database
+                        _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-POLICY-CONTROLLER", "Unable to process user information");
+                        return Redirect(Url.Action("Login", "Application"));
+                    }
+
+                    //..redirect to dashboard
+                    var model = await _dashboardFactory.PrepareUserModelAsync(grcResponse.Data);
+                    model.WelcomeMessage = $"{model.WelcomeMessage} >> Policies Pending Department Approval";
+                    return View(model);
+                } else {
+                    return Redirect(Url.Action("Dashboard", "Application"));
+                }
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error loading Policies Register view: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "POLICY-REGISTER", ex.StackTrace);
+                return Redirect(Url.Action("Dashboard", "Application"));
+            }
+        }
+
+        public async Task<IActionResult> PoliciesUptodate() {
+            try {
+                if (User.Identity?.IsAuthenticated == true) {
+                    //..try getting current user logged in
+                    var ipAddress = WebHelper.GetCurrentIpAddress();
+                    var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                    if (grcResponse.HasError) {
+                        //..log error to database
+                        _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-POLICY-CONTROLLER", "Unable to process user information");
+                        return Redirect(Url.Action("Login", "Application"));
+                    }
+
+                    //..redirect to dashboard
+                    var model = await _dashboardFactory.PrepareUserModelAsync(grcResponse.Data);
+                    model.WelcomeMessage = $"{model.WelcomeMessage} >> Policies Uptodate";
+                    return View(model);
+                } else {
+                    return Redirect(Url.Action("Dashboard", "Application"));
+                }
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error loading Policies Register view: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "POLICY-REGISTER", ex.StackTrace);
+                return Redirect(Url.Action("Dashboard", "Application"));
+            }
+        }
+
+        public async Task<IActionResult> PoliciesStandard() {
+            try {
+                if (User.Identity?.IsAuthenticated == true) {
+                    //..try getting current user logged in
+                    var ipAddress = WebHelper.GetCurrentIpAddress();
+                    var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                    if (grcResponse.HasError) {
+                        //..log error to database
+                        _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-POLICY-CONTROLLER", "Unable to process user information");
+                        return Redirect(Url.Action("Login", "Application"));
+                    }
+
+                    //..redirect to dashboard
+                    var model = await _dashboardFactory.PrepareUserModelAsync(grcResponse.Data);
+                    model.WelcomeMessage = $"{model.WelcomeMessage} >> Standard Policies [Policies that don't change]";
+                    return View(model);
+                } else {
+                    return Redirect(Url.Action("Dashboard", "Application"));
+                }
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error loading Policies Register view: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "POLICY-REGISTER", ex.StackTrace);
+                return Redirect(Url.Action("Dashboard", "Application"));
+            }
+        }
+
+        #endregion
 
         #region Policy Registers
 
@@ -53,7 +244,7 @@ namespace Grc.ui.App.Controllers {
                         Initials = $"{currentUser.FirstName[..1]} {currentUser.LastName[..1]}",
                         LastLogin = DateTime.Now,
                         Workspace = SessionManager.GetWorkspace(),
-                        DashboardStatistics = new()
+                        Statistics = new()
                     };
 
                     return View(userDashboard);
@@ -521,7 +712,7 @@ namespace Grc.ui.App.Controllers {
                         Initials = $"{currentUser.FirstName[..1]} {currentUser.LastName[..1]}",
                         LastLogin = DateTime.Now,
                         Workspace = SessionManager.GetWorkspace(),
-                        DashboardStatistics = new()
+                        Statistics = new()
                     };
 
                     return View(userDashboard);
@@ -1008,7 +1199,7 @@ namespace Grc.ui.App.Controllers {
                         Initials = $"{currentUser.FirstName[..1]} {currentUser.LastName[..1]}",
                         LastLogin = DateTime.Now,
                         Workspace = SessionManager.GetWorkspace(),
-                        DashboardStatistics = new()
+                        Statistics = new()
                     };
 
                     return View(userDashboard);

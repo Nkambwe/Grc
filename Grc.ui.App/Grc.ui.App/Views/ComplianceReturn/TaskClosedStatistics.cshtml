@@ -29,13 +29,13 @@
 
     @await Component.InvokeAsync("QuickActions", new { model = Model.QuickActions })
 </div>
-
+@* 
 <div class="dashboard-category-grid">
 
     <div class="stats-category-grid">
-        @if (Model.DashboardStatistics != null && Model.DashboardStatistics.TaskLists.Any()) {
-            for (var i = 0; i <= Model.DashboardStatistics.TaskLists.Count - 1; i++) {
-                var circular = Model.DashboardStatistics.TaskLists[i];
+        @if (Model.Tasks != null && Model.Tasks.TaskLists.Any()) {
+            for (var i = 0; i <= Model.Tasks.TaskLists.Count - 1; i++) {
+                var circular = Model.Tasks.TaskLists[i];
                 <div class="stats-comp-card @colors[i]">
                     <div class="stats-comp-title"><span>@circular.Closed</span></div>
                     <div class="stats-comp-value">
@@ -45,4 +45,4 @@
             }
         }
     </div>
-</div>
+</div> *@

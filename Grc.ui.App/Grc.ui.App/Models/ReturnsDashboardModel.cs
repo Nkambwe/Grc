@@ -1,5 +1,5 @@
 ﻿using Grc.ui.App.Defaults;
-using Grc.ui.App.Http.Responses;
+using Grc.ui.App.Dtos;
 
 namespace Grc.ui.App.Models {
     public class ReturnsDashboardModel {
@@ -8,7 +8,7 @@ namespace Grc.ui.App.Models {
         public string Initials { get; set; }
         public DateTime LastLogin { get; set; }
         public WorkspaceModel Workspace { get; set; }
-        public ComplianceReturnStatistics DashboardStatistics { get; set; }
+        public ComplianceReturnViewModel DashboardStatistics { get; set; }
         public List<QuickActionModel> QuickActions { get; set; } = new();
     }
 }

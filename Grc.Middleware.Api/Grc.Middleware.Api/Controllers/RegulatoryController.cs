@@ -68,6 +68,36 @@ namespace Grc.Middleware.Api.Controllers {
             _circularIssueService = circularIssueService;
         }
 
+        #region Compliance Statistics
+        [HttpPost("returns/dashboard-statistics")]
+        public async Task<IActionResult> GetComplianceStatistics([FromBody] GeneralRequest request) {
+
+            try {
+                Logger.LogActivity("Retrieve compliance statistics", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ComplianceStatisticsResponse>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IPAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var statistics = await _returnService.GetComplianceStatisticsAsync(false);
+                if (statistics == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could compliance statistics. A system error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<ComplianceStatisticsResponse>>(error));
+                }
+
+                return Ok(new GrcResponse<ComplianceStatisticsResponse>(statistics));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<ComplianceStatisticsResponse>(error));
+            }
+        }
+
+        #endregion
+
         #region Policy Documents
 
         [HttpPost("registers/support-items")]
@@ -3201,7 +3231,7 @@ namespace Grc.Middleware.Api.Controllers {
                         ReportName = type.ReturnName ?? string.Empty,
                         Type = type.ReturnType?.TypeName ?? string.Empty,
                         Authority = type.Authority?.AuthorityAlias ?? string.Empty,
-                        Article = type.Article?.Article ?? string.Empty,
+                        Article = type.Article?.Summery ?? string.Empty,
                         Frequency = type.Frequency?.FrequencyName ?? string.Empty,
                         Department = type.Department?.DepartmentName ?? string.Empty,
                         Comments = type.Comments ?? string.Empty,
@@ -3253,22 +3283,31 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 List<CircularsResponse> circulars = new();
+
                 var records = pageResult.Entities.ToList();
                 if (records != null && records.Any()) {
-                    records.ForEach(type => circulars.Add(new() {
-                        Id = type.Id,
-                        CircularTitle = type.CircularTitle ?? string.Empty,
-                        FilePath = type.FilePath ?? string.Empty,
-                        RefNumber = type.RefNumber ?? string.Empty,
-                        Authority = type.Authority?.AuthorityAlias ?? string.Empty,
-                        Frequency = type.Frequency?.FrequencyName ?? string.Empty,
-                        Department = type.Department?.DepartmentName ?? string.Empty,
-                        Status = type.Status ?? string.Empty,
-                        Comments = type.Comments ?? string.Empty,
-                        RecievedOn = type.RecievedOn,
-                        DeadlineOn = type.DeadlineOn,
-                        SubmissionDate = type.SubmissionDate,
-                        SubmittedBy = type.SubmittedBy ?? string.Empty,
+                    records.ForEach(circular => circulars.Add(new CircularsResponse {
+                        Id = circular.Id,
+                        CircularTitle = circular.CircularTitle ?? string.Empty,
+                        FilePath = circular.FilePath ?? string.Empty,
+                        RefNumber = circular.Reference ?? string.Empty,
+                        Authority = circular.Authority?.AuthorityAlias ?? string.Empty,
+                        Frequency = circular.Frequency?.FrequencyName ?? string.Empty,
+                        Department = circular.Department?.DepartmentName ?? string.Empty,
+                        Status = circular.Status ?? string.Empty,
+                        Comments = circular.Comments ?? string.Empty,
+                        RecievedOn = circular.RecievedOn,
+                        DeadlineOn = circular.DeadlineOn,
+                        SubmissionDate = circular.SubmissionDate,
+                        SubmittedBy = circular.SubmittedBy ?? string.Empty,
+                        Issues = circular.Issues != null && circular.Issues.Count > 0
+                            ? circular.Issues.Select(issue => new CircularIssueResponse {
+                                Id = issue.Id,
+                                IssueDescription = issue.IssueDescription,
+                                Resolution = issue.Resolution,
+                                Status = issue.Status,
+                            }).ToList()
+                            : new List<CircularIssueResponse>()
                     }));
                 }
 
@@ -3287,6 +3326,40 @@ namespace Grc.Middleware.Api.Controllers {
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<PagedResponse<CircularsResponse>>(error));
             }
+        }
+
+        #endregion
+
+        #region Protected methods
+
+        private static string GetThisWeekPeriod() {
+            var today = DateTime.Today;
+
+            // Calculate Monday of the current week
+            int diff = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
+            var weekStart = today.AddDays(-diff);
+            var weekEnd = weekStart.AddDays(6);
+
+            return $"WEEK {weekStart:yyyy-MM-dd}/{weekEnd:yyyy-MM-dd}";
+        }
+
+        private static string GetLastWeekPeriod() {
+            var today = DateTime.Today;
+
+            // Calculate Monday of the current week
+            int diff = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
+            var thisWeekStart = today.AddDays(-diff);
+
+            // Last week is the 7 days before this week
+            var lastWeekStart = thisWeekStart.AddDays(-7);
+            var lastWeekEnd = thisWeekStart.AddDays(-1);
+
+            return $"LAST WEEK {lastWeekStart:yyyy-MM-dd}/{lastWeekEnd:yyyy-MM-dd}";
+        }
+
+        private static string GetMonthPeriod() {
+            var today = DateTime.Today;
+            return today.ToString("MMM yyyy").ToUpper();
         }
 
         #endregion

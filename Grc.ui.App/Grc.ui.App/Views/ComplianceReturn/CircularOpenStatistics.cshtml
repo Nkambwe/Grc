@@ -1,4 +1,4 @@
-﻿@model CircularMinDashboardModel
+﻿@model CircularExtensionModel
 @{
     Layout = "_Layout";
     ViewData["Title"] = "OPEN CIRCULARS";
@@ -30,7 +30,7 @@
     @await Component.InvokeAsync("QuickActions", new { model = Model.QuickActions })
 </div>
 
-<div class="dashboard-category-grid">
+@* <div class="dashboard-category-grid">
 
     <div class="stats-category-grid">
         @if (Model.DashboardStatistics != null && Model.DashboardStatistics.CircularList.Any()) {
@@ -45,4 +45,4 @@
             }
         }
     </div>
-</div>
+</div> *@

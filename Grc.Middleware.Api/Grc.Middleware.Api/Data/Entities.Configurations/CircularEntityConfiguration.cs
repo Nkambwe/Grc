@@ -14,7 +14,7 @@ public partial class CircularEntityConfiguration {
         builder.Property(a => a.SubmissionDate).HasColumnName("submission_on").IsRequired(false);
         builder.Property(a => a.FilePath).HasColumnName("file_path").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
         builder.Property(a => a.SubmittedBy).HasColumnName("submitted_by").HasColumnType("NVARCHAR(50)").IsRequired(false);
-        builder.Property(a => a.RefNumber).HasColumnName("ref_number").HasColumnType("NVARCHAR(20)").IsRequired(false);
+        builder.Property(a => a.Reference).HasColumnName("reference").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
         builder.Property(a => a.Comments).HasColumnName("comments").HasColumnType("NVARCHAR(50)").IsRequired(false);
         builder.Property(a => a.AuthorityId).HasColumnName("auth_id");
         builder.Property(a => a.FrequencyId).HasColumnName("freq_id");

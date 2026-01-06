@@ -2,6 +2,8 @@
 @{
     Layout = "_Layout";
     ViewData["Title"] = "CIRCULAR RETURNS";
+
+    var chartsJson = JsonSerializer.Serialize(Model);
 }
 
 <div class="welcome-container">
@@ -29,3 +31,11 @@
     @await Component.InvokeAsync("QuickActions", new { model = Model.QuickActions })
 </div>
 
+<div class="dashboard-category-grid">
+    <div class="stats-category-grid" id="circularCards"></div>
+</div>
+
+<script>
+    const circularData = @Html.Raw(chartsJson);
+    const cardColor = "card-circular-default";
+</script>

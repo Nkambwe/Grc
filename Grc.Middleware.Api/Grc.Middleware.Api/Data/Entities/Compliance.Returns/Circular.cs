@@ -10,7 +10,7 @@ namespace Grc.Middleware.Api.Data.Entities.Compliance.Returns {
         public DateTime? SubmissionDate { get; set; }
         public string FilePath { get; set; }
         public string SubmittedBy { get; set; }
-        public string RefNumber { get; set; }
+        public string Reference { get; set; }
         public string Comments { get; set; }
         public long AuthorityId { get; set; }
         public virtual Authority Authority { get; set; }

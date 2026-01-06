@@ -56,7 +56,7 @@ namespace Grc.ui.App.Controllers {
                         Initials = $"{currentUser.FirstName[..1]} {currentUser.LastName[..1]}",
                         LastLogin = DateTime.Now,
                         Workspace = SessionManager.GetWorkspace(),
-                        DashboardStatistics = new()
+                        Statistics = new()
                     };
 
                     return View(userDashboard);
@@ -320,7 +320,7 @@ namespace Grc.ui.App.Controllers {
                         Initials = $"{currentUser.FirstName[..1]} {currentUser.LastName[..1]}",
                         LastLogin = DateTime.Now,
                         Workspace = SessionManager.GetWorkspace(),
-                        DashboardStatistics = new()
+                        Statistics = new()
                     };
 
                     return View(userDashboard);
@@ -558,7 +558,7 @@ namespace Grc.ui.App.Controllers {
                         Initials = $"{currentUser.FirstName[..1]} {currentUser.LastName[..1]}",
                         LastLogin = DateTime.Now,
                         Workspace = SessionManager.GetWorkspace(),
-                        DashboardStatistics = new()
+                        Statistics = new()
                     };
 
                     return View(userDashboard);
@@ -949,7 +949,7 @@ namespace Grc.ui.App.Controllers {
                         Initials = $"{currentUser.FirstName[..1]} {currentUser.LastName[..1]}",
                         LastLogin = DateTime.Now,
                         Workspace = SessionManager.GetWorkspace(),
-                        DashboardStatistics = new()
+                        Statistics = new()
                     };
 
                     return View(userDashboard);

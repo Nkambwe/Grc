@@ -92,19 +92,11 @@ function initCircularTable() {
                 frozen: true,
                 formatter: (cell) => `<span class="clickable-title" onclick="viewCircular(${cell.getRow().getData().id})">${cell.getValue()}</span>`
             },
-            { title: "REQUIREMENT", field: "requirement", minWidth: 200, frozen: true, headerSort: true },
             { title: "AUTHORITY", field: "authority", minWidth: 200, frozen: true, headerSort: true },
-            {
-                title: "OWNER/RESPONSIBLE",
-                field: "owner",
-                widthGrow: 1,
-                minWidth: 280,
-                headerSort: true
-            },
             { title: "DEPARTMENT", field: "department", minWidth: 200 },
             {
                 title: "RECIEVE DATE",
-                field: "receivedOn",
+                field: "recievedOn",
                 minWidth: 200,
                 formatter: function (cell) {
                     const value = cell.getValue();
@@ -168,7 +160,7 @@ function initCircularTable() {
             },
             {
                 title: "CLOSE DATE",
-                field: "closedOn",
+                field: "submissionDate",
                 minWidth: 200,
                 formatter: function (cell) {
                     const value = cell.getValue();
@@ -182,7 +174,23 @@ function initCircularTable() {
                     return `${day}-${month}-${year}`;
                 }
             },
-            { title: "RESPONSE REF", field: "reference", minWidth: 200 },
+            {
+                title: "VIEW ISSUES",
+                field: "hasIssues",
+                formatter: function (cell) {
+                    let rowData = cell.getRow().getData();
+                    let value = rowData.hasIssues;
+                    let hasIssues = value === true ? "" : "disabled";
+                    return `<button class="grc-table-btn grc-btn-default grc-task-action ${hasIssues}" ${hasIssues} onclick="viewIssues(${rowData.id})">
+                            <span><i class="mdi mdi-link-lock" aria-hidden="true"></i></span>
+                            <span>ISSUES</span>
+                        </button>`;
+                },
+                width: 200,
+                hozAlign: "left",
+                headerHozAlign: "left",
+                headerSort: false
+            },
             {
                 title: "ACTION",
                 formatter: function (cell) {
@@ -210,6 +218,10 @@ function initReturnSearch() {
 
 function viewCircular(id) {
     alert("View circular with ID >> " + id);
+}
+
+function viewIssues(id) {
+    alert("View Issues for ID >> " + id)
 }
 
 function deleteCircular(id) {

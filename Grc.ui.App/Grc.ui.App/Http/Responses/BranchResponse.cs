@@ -53,4 +53,5 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("modifiedBy")]
         public string LastModifiedBy { get;set; }
     }
+
 }

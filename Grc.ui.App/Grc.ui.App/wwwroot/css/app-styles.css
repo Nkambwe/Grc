@@ -1119,7 +1119,7 @@ div.input-group.date {
 
 .stat-card {
     padding: 10px;
-    min-height: 190px;
+    min-height: 150px;
     border-radius: 5px;
     border: none;
     background: var(--background-color);

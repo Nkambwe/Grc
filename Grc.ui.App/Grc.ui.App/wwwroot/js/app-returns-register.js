@@ -95,30 +95,7 @@ function initReturnsTable() {
             },
             { title: "AUTHORITY", field: "authority", minWidth: 200, frozen: true, headerSort: true },
             { title: "FREQUENCY", field: "frequency", widthGrow: 1, minWidth: 200, frozen: true, headerSort: true },
-            {
-                title: "OWNER/RESPONSIBLE",
-                field: "owner",
-                widthGrow: 1,
-                minWidth: 280,
-                headerSort: true
-            },
             { title: "DEPARTMENT", field: "department", minWidth: 200 },
-            {
-                title: "DEADLINE",
-                field: "deadlineOn",
-                minWidth: 200,
-                formatter: function (cell) {
-                    const value = cell.getValue();
-                    if (!value) return "";
-
-                    const d = new Date(value);
-                    const day = String(d.getDate()).padStart(2, "0");
-                    const month = String(d.getMonth() + 1).padStart(2, "0");
-                    const year = d.getFullYear();
-
-                    return `${day}-${month}-${year}`;
-                }
-            },
             { title: "ENABLING LAW/REGULATION/GUIDELINE.", field: "article", minWidth: 200 },
             {
                 title: "ACTION",

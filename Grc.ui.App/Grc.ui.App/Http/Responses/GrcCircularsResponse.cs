@@ -37,11 +37,14 @@ namespace Grc.ui.App.Http.Responses
         [JsonPropertyName("status")]
         public string Status { get; set; }
 
-        [JsonPropertyName("refNumber")]
-        public string RefNumber { get; set; }
+        [JsonPropertyName("reference")]
+        public string Reference { get; set; }
 
         [JsonPropertyName("comments")]
         public string Comments { get; set; }
+
+        [JsonPropertyName("issues")]
+        public virtual List<GrcCircularIssueResponse> Issues { get; set; } = new();
 
     }
 }

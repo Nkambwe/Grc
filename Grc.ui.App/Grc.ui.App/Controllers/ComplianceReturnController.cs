@@ -1,5 +1,4 @@
-﻿using Grc.ui.App.Enums;
-using Grc.ui.App.Extensions;
+﻿using Grc.ui.App.Extensions;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Helpers;
 using Grc.ui.App.Http.Responses;
@@ -69,7 +68,7 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareReturnTotalStatisticModelAsync(grcResponse.Data));
+                return View(await _dashboardFactory.PrepareGeneralReturnsDashboardModelAsync(grcResponse.Data));
             }
 
             //..redirect to login
@@ -88,7 +87,7 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareReturnOpenStatisticModelAsync(grcResponse.Data));
+                return View(await _dashboardFactory.PrepareReturnStatusDashboardModelAsync(grcResponse.Data, "OPEN"));
             }
 
             //..redirect to login
@@ -107,7 +106,7 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareReturnSubmittedStatisticModelAsync(grcResponse.Data));
+                return View(await _dashboardFactory.PrepareReturnStatusDashboardModelAsync(grcResponse.Data, "CLOSED"));
             }
 
             //..redirect to login
@@ -126,7 +125,7 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareReturnBreachStatisticModelAsync(grcResponse.Data));
+                return View(await _dashboardFactory.PrepareReturnStatusDashboardModelAsync(grcResponse.Data, "BREACHED"));
             }
 
             //..redirect to login
@@ -222,7 +221,7 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareCircularReceivedStatisticModelAsync(grcResponse.Data));
+                return View(await _dashboardFactory.PrepareCircularDashboardModelAsync(grcResponse.Data));
             }
 
             //..redirect to login
@@ -241,7 +240,7 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareCircularOpenStatisticModelAsync(grcResponse.Data));
+                return View(await _dashboardFactory.PrepareCircularStatusDashboardModelAsync(grcResponse.Data, "OPEN"));
             }
 
             //..redirect to login
@@ -260,7 +259,7 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareCircularClosedStatisticModelAsync(grcResponse.Data));
+                return View(await _dashboardFactory.PrepareCircularStatusDashboardModelAsync(grcResponse.Data, "CLOSED"));
             }
 
             //..redirect to login
@@ -279,7 +278,7 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareCircularBreachStatisticModelAsync(grcResponse.Data));
+                return View(await _dashboardFactory.PrepareCircularStatusDashboardModelAsync(grcResponse.Data, "BREACHED"));
             }
 
             //..redirect to login
@@ -329,9 +328,10 @@ namespace Grc.ui.App.Controllers {
                         status = circular.Status ?? string.Empty,
                         submissionDate = circular.SubmissionDate,
                         deadlineOn = circular.DeadlineOn,
+                        hasIssues = circular.Issues.Count > 0,
                         file = circular.FilePath ?? string.Empty,
                         submittedBy = circular.SubmittedBy ?? string.Empty,
-                        reference = circular.RefNumber ?? string.Empty,
+                        reference = circular.Reference ?? string.Empty,
                         comments = circular.Comments ?? string.Empty,
                     }).ToList();
 
@@ -379,7 +379,7 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareTotalTaskStatisticModelAsync(grcResponse.Data));
+                return View(await _dashboardFactory.PrepareTasksDashboardModelAsync(grcResponse.Data));
             }
 
             //..redirect to login
@@ -398,7 +398,7 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareOpenTaskStatisticModelAsync(grcResponse.Data));
+                return View(await _dashboardFactory.PrepareMinTaskDashboardStatisticModelAsync(grcResponse.Data, "OPEN"));
             }
 
             //..redirect to login
@@ -417,7 +417,7 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareClosedTaskStatisticModelAsync(grcResponse.Data));
+                return View(await _dashboardFactory.PrepareMinTaskDashboardStatisticModelAsync(grcResponse.Data, "CLOSED"));
             }
 
             //..redirect to login
@@ -436,7 +436,7 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareFailedTaskStatisticModelAsync(grcResponse.Data));
+                return View(await _dashboardFactory.PrepareMinTaskDashboardStatisticModelAsync(grcResponse.Data, "BREACHED"));
             }
 
             //..redirect to login

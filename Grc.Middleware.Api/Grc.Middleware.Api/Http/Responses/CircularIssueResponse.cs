@@ -6,6 +6,9 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
+        [JsonPropertyName("circularId")]
+        public long CircularId { get; set; }
+
         [JsonPropertyName("issueDescription")]
         public string IssueDescription { get; set; }
 
@@ -24,8 +27,8 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("ownerId")]
         public long OwnerId { get; set; }
 
-        [JsonPropertyName("circularId")]
-        public long CircularId { get; set; }
+        [JsonPropertyName("owner")]
+        public string Owner { get; set; }
 
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
