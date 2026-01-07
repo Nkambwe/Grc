@@ -13,7 +13,6 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Policy;
 using System.Text.Json;
 
 namespace Grc.ui.App.Controllers {
@@ -53,7 +52,7 @@ namespace Grc.ui.App.Controllers {
                     }
 
                     //..redirect to dashboard
-                    var model = await _dashboardFactory.PrepareUserModelAsync(grcResponse.Data);
+                    var model = await _dashboardFactory.PreparePolicyMinModelAsync(grcResponse.Data, "TOTALS");
                     model.WelcomeMessage = $"{model.WelcomeMessage} >> Total Policies";
                     return View(model);
                 } else {
@@ -79,7 +78,7 @@ namespace Grc.ui.App.Controllers {
                     }
 
                     //..redirect to dashboard
-                    var model = await _dashboardFactory.PrepareUserModelAsync(grcResponse.Data);
+                    var model = await _dashboardFactory.PreparePolicyMinModelAsync(grcResponse.Data, "ONHOLD");
                     model.WelcomeMessage = $"{model.WelcomeMessage} >> Policies On Hold";
                     return View(model);
                 } else {
@@ -105,7 +104,7 @@ namespace Grc.ui.App.Controllers {
                     }
 
                     //..redirect to dashboard
-                    var model = await _dashboardFactory.PrepareUserModelAsync(grcResponse.Data);
+                    var model = await _dashboardFactory.PreparePolicyMinModelAsync(grcResponse.Data, "NEEDREVIEW");
                     model.WelcomeMessage = $"{model.WelcomeMessage} >> Policies Needing Review";
                     return View(model);
                 } else {
@@ -131,7 +130,7 @@ namespace Grc.ui.App.Controllers {
                     }
 
                     //..redirect to dashboard
-                    var model = await _dashboardFactory.PrepareUserModelAsync(grcResponse.Data);
+                    var model = await _dashboardFactory.PreparePolicyMinModelAsync(grcResponse.Data, "PENDINGBOARD");
                     model.WelcomeMessage = $"{model.WelcomeMessage} >> Policies Pending Board Approval";
                     return View(model);
                 } else {
@@ -157,7 +156,7 @@ namespace Grc.ui.App.Controllers {
                     }
 
                     //..redirect to dashboard
-                    var model = await _dashboardFactory.PrepareUserModelAsync(grcResponse.Data);
+                    var model = await _dashboardFactory.PreparePolicyMinModelAsync(grcResponse.Data, "PENDINGDEPARTMENT");
                     model.WelcomeMessage = $"{model.WelcomeMessage} >> Policies Pending Department Approval";
                     return View(model);
                 } else {
@@ -183,7 +182,7 @@ namespace Grc.ui.App.Controllers {
                     }
 
                     //..redirect to dashboard
-                    var model = await _dashboardFactory.PrepareUserModelAsync(grcResponse.Data);
+                    var model = await _dashboardFactory.PreparePolicyMinModelAsync(grcResponse.Data, "UPTODATE");
                     model.WelcomeMessage = $"{model.WelcomeMessage} >> Policies Uptodate";
                     return View(model);
                 } else {
@@ -209,7 +208,7 @@ namespace Grc.ui.App.Controllers {
                     }
 
                     //..redirect to dashboard
-                    var model = await _dashboardFactory.PrepareUserModelAsync(grcResponse.Data);
+                    var model = await _dashboardFactory.PreparePolicyMinModelAsync(grcResponse.Data, "STANDARD");
                     model.WelcomeMessage = $"{model.WelcomeMessage} >> Standard Policies [Policies that don't change]";
                     return View(model);
                 } else {

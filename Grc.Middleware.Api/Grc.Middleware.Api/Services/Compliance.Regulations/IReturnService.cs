@@ -1,4 +1,5 @@
 ﻿using Grc.Middleware.Api.Data.Entities.Compliance.Returns;
+using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
@@ -47,5 +48,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
 
 
         Task<ComplianceStatisticsResponse> GetComplianceStatisticsAsync(bool includeDeleted);
+        Task<PolicyDashboardResponse> GetPolicyStatisticsAsync(bool includeDeleted, PolicyStatus status);
+        Task<ReturnDashboardResponse> GetReturnStatisticsAsync(bool includeDeleted, ReportPeriod period);
+        Task<CircularDashboardResponse> GetCircularStatisticsAsync(bool includeDeleted, string authority);
     }
 }

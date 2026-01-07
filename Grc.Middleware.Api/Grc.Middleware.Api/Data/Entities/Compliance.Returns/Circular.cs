@@ -4,6 +4,7 @@ using Grc.Middleware.Api.Data.Entities.Support;
 namespace Grc.Middleware.Api.Data.Entities.Compliance.Returns {
     public class Circular: BaseEntity {       
         public string CircularTitle { get; set; }
+        public string Requirement { get; set; }
         public DateTime RecievedOn { get; set; }
         public DateTime DeadlineOn { get; set; }
         public string Status { get; set; }

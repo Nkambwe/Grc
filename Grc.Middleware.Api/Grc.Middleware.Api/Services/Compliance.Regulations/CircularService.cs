@@ -153,6 +153,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 //..map record to entity
                 var category = new Circular() {
                     CircularTitle = (request.CircularTitle ?? string.Empty).Trim(),
+                    Requirement = (request.Requirement ?? string.Empty).Trim(),
                     RecievedOn = request.RecievedOn,
                     DeadlineOn = request.DeadlineOn,
                     Status = request.Status,
@@ -203,6 +204,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 //..map record to entity
                 var category = new Circular() {
                     CircularTitle = (request.CircularTitle ?? string.Empty).Trim(),
+                    Requirement = (request.Requirement ?? string.Empty).Trim(),
                     RecievedOn = request.RecievedOn,
                     DeadlineOn = request.DeadlineOn,
                     Status = request.Status,
@@ -256,6 +258,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 if (circular != null) {
                     //..update record
                     circular.CircularTitle = (request.CircularTitle ?? string.Empty).Trim();
+                    circular.Requirement = (request.Requirement ?? string.Empty).Trim();
                     circular.Comments = request.Comments ?? string.Empty;
                     circular.IsDeleted = request.IsDeleted;
                     circular.Status = request.Status;
@@ -297,6 +300,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 if (circular != null) {
                     //..update record
                     circular.CircularTitle = (request.CircularTitle ?? string.Empty).Trim();
+                    circular.Requirement = (request.Requirement ?? string.Empty).Trim();
                     circular.Comments = request.Comments ?? string.Empty;
                     circular.IsDeleted = request.IsDeleted;
                     circular.Status = request.Status;

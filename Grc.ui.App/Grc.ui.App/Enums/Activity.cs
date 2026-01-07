@@ -322,5 +322,7 @@ namespace Grc.ui.App.Enums {
         TASKS_ALL_STATISTIC = 166,
         [Description("Retrieve task status statistics")]
         TASK_STATUS_STATISTIC = 167,
+        [Description("Retrieve policy status statistics")]
+        POLICY_STATUS_STATISTIC = 168,
     }
 }

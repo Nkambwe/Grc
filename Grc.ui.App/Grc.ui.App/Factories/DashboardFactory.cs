@@ -179,6 +179,48 @@ namespace Grc.ui.App.Factories {
             return policyModel;
         }
 
+        public async Task<PolicyDashboardModel> PreparePolicyMinModelAsync(UserModel currentUser, string status) {
+            //..get quick items
+            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
+            var quickActions = new List<QuickActionModel>();
+            if (!quicksData.HasError) {
+                var quickies = quicksData.Data;
+                if (quickies.Count > 0) {
+                    foreach (var action in quickies) {
+                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
+                    }
+                }
+            }
+
+            var grcResponse = await _returnsService.GetPolicyCountAsync(currentUser.UserId, currentUser.IPAddress, status);
+            PolicyDashboardStatistic policyData = new();
+            if (grcResponse.HasError) {
+                policyData.Policies = new();
+                policyData.Statistics = new();
+            } else {
+                var data = grcResponse.Data;
+                policyData.Policies = data.Policies.Select(policy => new PolicyDocument {
+                    Id = policy.Id,
+                    Title = policy.Title,
+                    OwnerId = policy.OwnerId,
+                    Department = policy.Department,
+                    ReviewDate = policy.ReviewDate
+                }).ToList();
+                policyData.Statistics = data.Statistics;
+            }
+
+            var model = new PolicyDashboardModel {
+                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
+                Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
+                QuickActions = quickActions,
+                Workspace = _sessionManager.GetWorkspace(),
+                PolicyData = policyData
+            };
+
+            return await Task.FromResult(model);
+
+        }
+
         #region Circulars
         public async Task<CircularDashboardModel> PrepareCircularDashboardModelAsync(UserModel currentUser) {
             //..get quick items
@@ -219,7 +261,7 @@ namespace Grc.ui.App.Factories {
 
         }
 
-        public async Task<CircularExtensionModel> PrepareCircularAuthorityDashboardModelAsync(UserModel currentUser, string authority) {
+        public async Task<CircularMiniStatisticViewModel> PrepareCircularAuthorityDashboardModelAsync(UserModel currentUser, string authority) {
             //..get quick items
             var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
             var quickActions = new List<QuickActionModel>();
@@ -233,55 +275,31 @@ namespace Grc.ui.App.Factories {
             }
 
             var grcResponse = await _returnsService.GetAuthorityCircularCountAsync(currentUser.UserId, currentUser.IPAddress, authority);
-            CircularMiniDashboardResponses circulars = new();
+            CircularDashboardStatistic circulars = new();
             if (grcResponse.HasError) {
-                circulars.Circulars = new();
+                circulars.Statistics = new();
+                circulars.Reports = new();
             } else {
                 var data = grcResponse.Data;
-                circulars.Circulars = data.Circulars;
+                circulars.Statistics = data.Statistics;
+                circulars.Reports = data.Circulars!= null && data.Circulars.Any() ?
+                    data.Circulars.Select(circular => new CircularReport() { 
+                        Id = circular.Id,
+                        Title = circular.Title,
+                        Status = circular.Status,
+                        Authority = circular.Authority,
+                        AuthorityAlias = circular.AuthorityAlias,
+                        Department = circular.Department
+                    }).ToList(): 
+                    new List<CircularReport>();
             }
-            var model = new CircularExtensionModel {
+            var model = new CircularMiniStatisticViewModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
                 Workspace = _sessionManager.GetWorkspace(),
                 //..statistics
-                Circulars = circulars.Circulars,
-            };
-
-            return await Task.FromResult(model);
-
-        }
-
-        public async Task<CircularExtensionModel> PrepareCircularStatusDashboardModelAsync(UserModel currentUser, string status) {
-            //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
-            var quickActions = new List<QuickActionModel>();
-            if (!quicksData.HasError) {
-                var quickies = quicksData.Data;
-                if (quickies.Count > 0) {
-                    foreach (var action in quickies) {
-                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
-                    }
-                }
-            }
-
-            var grcResponse = await _returnsService.GetStatusCircularCountAsync(currentUser.UserId, currentUser.IPAddress, status);
-            CircularMiniDashboardResponses circulars = new();
-            if (grcResponse.HasError) {
-                circulars.Circulars = new();
-            } else {
-                var data = grcResponse.Data;
-                circulars.Circulars = data.Circulars;
-            }
-
-            var model = new CircularExtensionModel {
-                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
-                Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
-                QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
-                //..statistics
-                Circulars = circulars.Circulars,
+                Circulars = circulars
             };
 
             return await Task.FromResult(model);
@@ -370,7 +388,7 @@ namespace Grc.ui.App.Factories {
             return await Task.FromResult(model);
         }
 
-        public async Task<ComplianceMiniReturnStatisticViewModel> PrepareReturnPeriodDashboardModelAsync(UserModel currentUser, string period) {
+        public async Task<ReturnMiniStatisticViewModel> PrepareReturnPeriodDashboardModelAsync(UserModel currentUser, string period) {
             //..get quick items
             var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
             var quickActions = new List<QuickActionModel>();
@@ -383,53 +401,28 @@ namespace Grc.ui.App.Factories {
                 }
             }
 
-            var grcResponse = await _returnsService.GetPeriodReturnStatisticAsync(currentUser.UserId, currentUser.IPAddress, period);
-            ComplianceMiniReturnStatisticViewModel returns = new();
+            var grcResponse = await _returnsService.GrcReturnDashboardResponseAsync(currentUser.UserId, currentUser.IPAddress, period);
+            ReturnDashboardStatistic returns = new();
             if (grcResponse.HasError) {
                 returns.Statistics = new();
+                returns.Reports = new();
             } else {
                 var data = grcResponse.Data;
-                returns.Statistics = data.Returns;
+                returns.Statistics = data.Statistics;
+                returns.Reports = data.Reports.Select(report => new ReturnReport() {
+                    Id = report.Id,
+                    Department = report.Department,
+                    Title = report.Title,
+                    Type = report.Type
+                }).ToList();
             }
 
-            var model = new ComplianceMiniReturnStatisticViewModel {
+            var model = new ReturnMiniStatisticViewModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
                 Workspace = _sessionManager.GetWorkspace(),
-                //..statistics
-                Statistics = returns.Statistics
-            };
-
-            return await Task.FromResult(model);
-        }
-
-        public async Task<ComplianceMiniReturnStatisticViewModel> PrepareReturnStatusDashboardModelAsync(UserModel currentUser, string status) {
-            //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
-            var quickActions = new List<QuickActionModel>();
-            if (!quicksData.HasError) {
-                var quickies = quicksData.Data;
-                if (quickies.Count > 0) {
-                    foreach (var action in quickies) {
-                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
-                    }
-                }
-            }
-
-            var grcResponse = await _returnsService.GetStatusReturnStatisticAsync(currentUser.UserId, currentUser.IPAddress, status);
-            Dictionary<string, int> stats = new();
-            if (!grcResponse.HasError) {
-                stats = grcResponse.Data.Returns;
-            }
-
-            var model = new ComplianceMiniReturnStatisticViewModel {
-                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
-                Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
-                QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
-                //..statistics
-                Statistics = stats
+                Returns = returns
             };
 
             return await Task.FromResult(model);

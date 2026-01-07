@@ -7,19 +7,18 @@ namespace Grc.ui.App.Factories {
         Task<UserDashboardModel> PrepareUserDashboardModelAsync(UserModel currentUser);
         Task<UserDashboardModel> PrepareUserModelAsync(UserModel currentUser);
         Task<PolicyRegisterViewModel> PrepareReturnSupportItemsModelAsync(UserModel data);
+        Task<PolicyDashboardModel> PreparePolicyMinModelAsync(UserModel data, string status);
+        Task<ComplianceGeneralStatisticViewModel> PrepareGeneralReturnsDashboardModelAsync(UserModel currentUser);
+
+        #region Returns
+        Task<ComplianceReturnStatisticViewModel> PrepareReturnsDashboardModelAsync(UserModel currentUser);
+        Task<ReturnMiniStatisticViewModel> PrepareReturnPeriodDashboardModelAsync(UserModel currentUser, string period);
+
+        #endregion
 
         #region Circulars
         Task<CircularDashboardModel> PrepareCircularDashboardModelAsync(UserModel data);
-        Task<CircularExtensionModel> PrepareCircularAuthorityDashboardModelAsync(UserModel currentUser, string authority);
-        Task<CircularExtensionModel> PrepareCircularStatusDashboardModelAsync(UserModel currentUser, string status);
-        #endregion
-
-        #region Returns
-        Task<ComplianceGeneralStatisticViewModel> PrepareGeneralReturnsDashboardModelAsync(UserModel currentUser);
-        Task<ComplianceReturnStatisticViewModel> PrepareReturnsDashboardModelAsync(UserModel currentUser);
-        Task<ComplianceMiniReturnStatisticViewModel> PrepareReturnPeriodDashboardModelAsync(UserModel currentUser, string period);
-        Task<ComplianceMiniReturnStatisticViewModel> PrepareReturnStatusDashboardModelAsync(UserModel currentUser, string status);
-
+        Task<CircularMiniStatisticViewModel> PrepareCircularAuthorityDashboardModelAsync(UserModel currentUser, string authority);
         #endregion
 
         #region Tasks

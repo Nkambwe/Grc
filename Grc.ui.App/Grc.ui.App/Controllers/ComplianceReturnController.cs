@@ -56,7 +56,7 @@ namespace Grc.ui.App.Controllers {
             return Redirect(Url.Action("Login", "Application"));
         }
 
-        public async Task<IActionResult> ReturnTotalStatistics() {
+        public async Task<IActionResult> ReturnAnnualStatistics() {
             if (User.Identity?.IsAuthenticated == true) {
                 //..try getting current user logged in
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -68,14 +68,14 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareGeneralReturnsDashboardModelAsync(grcResponse.Data));
+                return View(await _dashboardFactory.PrepareReturnPeriodDashboardModelAsync(grcResponse.Data, "ANNUAL"));
             }
 
             //..redirect to login
-            return Redirect(Url.Action("Login", "Application"));
+            return Redirect(Url.Action("Dashboard", "Application"));
         }
 
-        public async Task<IActionResult> ReturnOpenStatistics() {
+        public async Task<IActionResult> ReturnDailyStatistics() {
             if (User.Identity?.IsAuthenticated == true) {
                 //..try getting current user logged in
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -87,14 +87,14 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareReturnStatusDashboardModelAsync(grcResponse.Data, "OPEN"));
+                return View(await _dashboardFactory.PrepareReturnPeriodDashboardModelAsync(grcResponse.Data, "DAILY"));
             }
 
             //..redirect to login
-            return Redirect(Url.Action("Login", "Application"));
+            return Redirect(Url.Action("Dashboard", "Application"));
         }
 
-        public async Task<IActionResult> ReturnSubmittedStatistics() {
+        public async Task<IActionResult> ReturnWeeklyStatistics() {
             if (User.Identity?.IsAuthenticated == true) {
                 //..try getting current user logged in
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -106,14 +106,14 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareReturnStatusDashboardModelAsync(grcResponse.Data, "CLOSED"));
+                return View(await _dashboardFactory.PrepareReturnPeriodDashboardModelAsync(grcResponse.Data, "WEEKLY"));
             }
 
             //..redirect to login
-            return Redirect(Url.Action("Login", "Application"));
+            return Redirect(Url.Action("Dashboard", "Application"));
         }
 
-        public async Task<IActionResult> ReturnBreachStatistics() {
+        public async Task<IActionResult> ReturnMonthlyStatistics() {
             if (User.Identity?.IsAuthenticated == true) {
                 //..try getting current user logged in
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -125,11 +125,163 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareReturnStatusDashboardModelAsync(grcResponse.Data, "BREACHED"));
+                return View(await _dashboardFactory.PrepareReturnPeriodDashboardModelAsync(grcResponse.Data, "MONTHLY"));
             }
 
             //..redirect to login
-            return Redirect(Url.Action("Login", "Application"));
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> ReturnQuaterlyStatistics() {
+            if (User.Identity?.IsAuthenticated == true) {
+                //..try getting current user logged in
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    //..log error to database
+                    _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-RETURNS-CONTROLLER", "Unable to process user information");
+                    return Redirect(Url.Action("Login", "Application"));
+                }
+
+                //..redirect to dashboard
+                return View(await _dashboardFactory.PrepareReturnPeriodDashboardModelAsync(grcResponse.Data, "QUARTERLY"));
+            }
+
+            //..redirect to login
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> ReturnBiennailStatistics() {
+            if (User.Identity?.IsAuthenticated == true) {
+                //..try getting current user logged in
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    //..log error to database
+                    _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-RETURNS-CONTROLLER", "Unable to process user information");
+                    return Redirect(Url.Action("Login", "Application"));
+                }
+
+                //..redirect to dashboard;
+                return View(await _dashboardFactory.PrepareReturnPeriodDashboardModelAsync(grcResponse.Data, "BIENNIAL"));
+            }
+
+            //..redirect to login
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> ReturnBiannaulStatistics() {
+            if (User.Identity?.IsAuthenticated == true) {
+                //..try getting current user logged in
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    //..log error to database
+                    _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-RETURNS-CONTROLLER", "Unable to process user information");
+                    return Redirect(Url.Action("Login", "Application"));
+                }
+
+                //..redirect to dashboard
+                return View(await _dashboardFactory.PrepareReturnPeriodDashboardModelAsync(grcResponse.Data, "BIANNUAL"));
+            }
+
+            //..redirect to login
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> ReturnOneOffStatistics() {
+            if (User.Identity?.IsAuthenticated == true) {
+                //..try getting current user logged in
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    //..log error to database
+                    _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-RETURNS-CONTROLLER", "Unable to process user information");
+                    return Redirect(Url.Action("Login", "Application"));
+                }
+
+                //..redirect to dashboard
+                return View(await _dashboardFactory.PrepareReturnPeriodDashboardModelAsync(grcResponse.Data, "ONE-OFF"));
+            }
+
+            //..redirect to login
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> ReturnOnOccurrenceStatistics() {
+            if (User.Identity?.IsAuthenticated == true) {
+                //..try getting current user logged in
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    //..log error to database
+                    _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-RETURNS-CONTROLLER", "Unable to process user information");
+                    return Redirect(Url.Action("Login", "Application"));
+                }
+
+                //..redirect to dashboard
+                return View(await _dashboardFactory.PrepareReturnPeriodDashboardModelAsync(grcResponse.Data, "ON OCCURRENCE"));
+            }
+
+            //..redirect to login
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> ReturnPeriodicStatistics() {
+            if (User.Identity?.IsAuthenticated == true) {
+                //..try getting current user logged in
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    //..log error to database
+                    _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-RETURNS-CONTROLLER", "Unable to process user information");
+                    return Redirect(Url.Action("Login", "Application"));
+                }
+
+                //..redirect to dashboard
+                return View(await _dashboardFactory.PrepareReturnPeriodDashboardModelAsync(grcResponse.Data, "PERIODIC"));
+            }
+
+            //..redirect to login
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> ReturnNaStatistics() {
+            if (User.Identity?.IsAuthenticated == true) {
+                //..try getting current user logged in
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    //..log error to database
+                    _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-RETURNS-CONTROLLER", "Unable to process user information");
+                    return Redirect(Url.Action("Login", "Application"));
+                }
+
+                //..redirect to dashboard
+                return View(await _dashboardFactory.PrepareReturnPeriodDashboardModelAsync(grcResponse.Data, "NA"));
+            }
+
+            //..redirect to login
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> ReturnTriennialStatistics() {
+            if (User.Identity?.IsAuthenticated == true) {
+                //..try getting current user logged in
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    //..log error to database
+                    _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-RETURNS-CONTROLLER", "Unable to process user information");
+                    return Redirect(Url.Action("Login", "Application"));
+                }
+
+                //..redirect to dashboard
+                return View(await _dashboardFactory.PrepareReturnPeriodDashboardModelAsync(grcResponse.Data, "TRIENNIAL"));
+            }
+
+            //..redirect to login
+            return Redirect(Url.Action("Dashboard", "Application"));
         }
 
         public async Task<IActionResult> ReturnsRegister() {
@@ -209,7 +361,7 @@ namespace Grc.ui.App.Controllers {
             return Redirect(Url.Action("Login", "Application"));
         }
 
-        public async Task<IActionResult> CircularReceivedStatistics() {
+        public async Task<IActionResult> CircularBouStatistics() {
             if (User.Identity?.IsAuthenticated == true) {
                 //..try getting current user logged in
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -221,14 +373,14 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareCircularDashboardModelAsync(grcResponse.Data));
+                return View(await _dashboardFactory.PrepareCircularAuthorityDashboardModelAsync(grcResponse.Data, "BOU"));
             }
 
             //..redirect to login
-            return Redirect(Url.Action("Login", "Application"));
+            return Redirect(Url.Action("Dashboard", "Application"));
         }
 
-        public async Task<IActionResult> CircularOpenStatistics() {
+        public async Task<IActionResult> CircularFiaStatistics() {
             if (User.Identity?.IsAuthenticated == true) {
                 //..try getting current user logged in
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -240,14 +392,14 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareCircularStatusDashboardModelAsync(grcResponse.Data, "OPEN"));
+                return View(await _dashboardFactory.PrepareCircularAuthorityDashboardModelAsync(grcResponse.Data, "FIA"));
             }
 
             //..redirect to login
-            return Redirect(Url.Action("Login", "Application"));
+            return Redirect(Url.Action("Dashboard", "Application"));
         }
 
-        public async Task<IActionResult> CircularClosedStatistics() {
+        public async Task<IActionResult> CircularPpdaStatistics() {
             if (User.Identity?.IsAuthenticated == true) {
                 //..try getting current user logged in
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -259,14 +411,14 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareCircularStatusDashboardModelAsync(grcResponse.Data, "CLOSED"));
+                return View(await _dashboardFactory.PrepareCircularAuthorityDashboardModelAsync(grcResponse.Data, "PPDA"));
             }
 
             //..redirect to login
-            return Redirect(Url.Action("Login", "Application"));
+            return Redirect(Url.Action("Dashboard", "Application"));
         }
 
-        public async Task<IActionResult> CircularBreachStatistics() {
+        public async Task<IActionResult> CircularMofedStatistics() {
             if (User.Identity?.IsAuthenticated == true) {
                 //..try getting current user logged in
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -278,11 +430,220 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareCircularStatusDashboardModelAsync(grcResponse.Data, "BREACHED"));
+                return View(await _dashboardFactory.PrepareCircularAuthorityDashboardModelAsync(grcResponse.Data, "MoFED"));
             }
 
             //..redirect to login
-            return Redirect(Url.Action("Login", "Application"));
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> CircularUraStatistics() {
+            if (User.Identity?.IsAuthenticated == true) {
+                //..try getting current user logged in
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    //..log error to database
+                    _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-RETURNS-CONTROLLER", "Unable to process user information");
+                    return Redirect(Url.Action("Login", "Application"));
+                }
+
+                //..redirect to dashboard
+                return View(await _dashboardFactory.PrepareCircularAuthorityDashboardModelAsync(grcResponse.Data, "URA"));
+            }
+
+            //..redirect to login
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> CircularPdpoStatistics() {
+            if (User.Identity?.IsAuthenticated == true) {
+                //..try getting current user logged in
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    //..log error to database
+                    _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-RETURNS-CONTROLLER", "Unable to process user information");
+                    return Redirect(Url.Action("Login", "Application"));
+                }
+
+                //..redirect to dashboard
+                return View(await _dashboardFactory.PrepareCircularAuthorityDashboardModelAsync(grcResponse.Data, "PDPO"));
+            }
+
+            //..redirect to login
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> CircularAgStatistics() {
+            if (User.Identity?.IsAuthenticated == true) {
+                //..try getting current user logged in
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    //..log error to database
+                    _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-RETURNS-CONTROLLER", "Unable to process user information");
+                    return Redirect(Url.Action("Login", "Application"));
+                }
+
+                //..redirect to dashboard
+                return View(await _dashboardFactory.PrepareCircularAuthorityDashboardModelAsync(grcResponse.Data, "AG"));
+            }
+
+            //..redirect to login
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> CircularUibStatistics() {
+            if (User.Identity?.IsAuthenticated == true) {
+                //..try getting current user logged in
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    //..log error to database
+                    _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-RETURNS-CONTROLLER", "Unable to process user information");
+                    return Redirect(Url.Action("Login", "Application"));
+                }
+
+                //..redirect to dashboard
+                return View(await _dashboardFactory.PrepareCircularAuthorityDashboardModelAsync(grcResponse.Data, "UIB"));
+            }
+
+            //..redirect to login
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> CircularNiraStatistics() {
+            if (User.Identity?.IsAuthenticated == true) {
+                //..try getting current user logged in
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    //..log error to database
+                    _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-RETURNS-CONTROLLER", "Unable to process user information");
+                    return Redirect(Url.Action("Login", "Application"));
+                }
+
+                //..redirect to dashboard
+                return View(await _dashboardFactory.PrepareCircularAuthorityDashboardModelAsync(grcResponse.Data, "NIRA"));
+            }
+
+            //..redirect to login
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> CircularDpfStatistics() {
+            if (User.Identity?.IsAuthenticated == true) {
+                //..try getting current user logged in
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    //..log error to database
+                    _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-RETURNS-CONTROLLER", "Unable to process user information");
+                    return Redirect(Url.Action("Login", "Application"));
+                }
+
+                //..redirect to dashboard
+                return View(await _dashboardFactory.PrepareCircularAuthorityDashboardModelAsync(grcResponse.Data, "DPF"));
+            }
+
+            //..redirect to login
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> CircularOtherStatistics() {
+            if (User.Identity?.IsAuthenticated == true) {
+                //..try getting current user logged in
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    //..log error to database
+                    _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-RETURNS-CONTROLLER", "Unable to process user information");
+                    return Redirect(Url.Action("Login", "Application"));
+                }
+
+                //..redirect to dashboard
+                return View(await _dashboardFactory.PrepareCircularAuthorityDashboardModelAsync(grcResponse.Data, "OTHERS"));
+            }
+
+            //..redirect to login
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> CircularCmaStatistics() {
+            if (User.Identity?.IsAuthenticated == true) {
+                //..try getting current user logged in
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    //..log error to database
+                    _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-RETURNS-CONTROLLER", "Unable to process user information");
+                    return Redirect(Url.Action("Login", "Application"));
+                }
+
+                //..redirect to dashboard
+                return View(await _dashboardFactory.PrepareCircularAuthorityDashboardModelAsync(grcResponse.Data, "CMA"));
+            }
+
+            //..redirect to login
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> CircularUmraStatistics() {
+            if (User.Identity?.IsAuthenticated == true) {
+                //..try getting current user logged in
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    //..log error to database
+                    _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-RETURNS-CONTROLLER", "Unable to process user information");
+                    return Redirect(Url.Action("Login", "Application"));
+                }
+
+                //..redirect to dashboard
+                return View(await _dashboardFactory.PrepareCircularAuthorityDashboardModelAsync(grcResponse.Data, "UMRA"));
+            }
+
+            //..redirect to login
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> CircularUrbraStatistics() {
+            if (User.Identity?.IsAuthenticated == true) {
+                //..try getting current user logged in
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    //..log error to database
+                    _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-RETURNS-CONTROLLER", "Unable to process user information");
+                    return Redirect(Url.Action("Login", "Application"));
+                }
+
+                //..redirect to dashboard
+                return View(await _dashboardFactory.PrepareCircularAuthorityDashboardModelAsync(grcResponse.Data, "URBRA"));
+            }
+
+            //..redirect to login
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        public async Task<IActionResult> CircularIrauStatistics() {
+            if (User.Identity?.IsAuthenticated == true) {
+                //..try getting current user logged in
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    //..log error to database
+                    _ = await ProcessErrorAsync(grcResponse.Error.Message, "COMPLIACE-RETURNS-CONTROLLER", "Unable to process user information");
+                    return Redirect(Url.Action("Login", "Application"));
+                }
+
+                //..redirect to dashboard
+                return View(await _dashboardFactory.PrepareCircularAuthorityDashboardModelAsync(grcResponse.Data, "IRAU"));
+            }
+
+            //..redirect to login
+            return Redirect(Url.Action("Dashboard", "Application"));
         }
 
         public async Task<IActionResult> CircularRegister() {

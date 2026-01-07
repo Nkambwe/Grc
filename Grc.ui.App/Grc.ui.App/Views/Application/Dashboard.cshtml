@@ -34,11 +34,36 @@
 <div class="dashboard-grid m-3">
 
     <div class="stats-grid">
+
         <div class="title-box">
             <h3 class="display-1 stats-grid-title">Regulation Policies</h3>
             <span class="title-line"></span>
         </div>
+
         <div class="stats-category-grid" id="policyCards"></div>
+
+    </div>
+
+    <div class="stats-grid">
+
+        <div class="title-box">
+            <h3 class="display-1 stats-grid-title">Compliance Returns</h3>
+            <span class="title-line"></span>
+        </div>
+
+        <div class="stats-category-grid" id="returnsCards"></div>
+
+    </div>
+
+    <div class="stats-grid">
+
+        <div class="title-box">
+            <h3 class="display-1 stats-grid-title">Circular Returns</h3>
+            <span class="title-line"></span>
+        </div>
+
+        <div class="stats-category-grid" id="circularCards"></div>
+
     </div>
 
 </div>
@@ -47,14 +72,49 @@
     const dashboardData = @Html.Raw(data);
     const cardColor = "card-returns-default";
 
-     const policyRoutes = {
-        "Total": '@Url.Action("PoliciesTotals", "CompliancePolicy")',
+    const policyRoutes = {
+        "Total": '@Url.Action("Dashboard", "Application")',
         "Uptodate": '@Url.Action("PoliciesUptodate", "CompliancePolicy")',
         "Not Uptodate": '@Url.Action("PoliciesNeedReview", "CompliancePolicy")',
         "Board Review": '@Url.Action("PoliciesPendingBoard", "CompliancePolicy")',
         "Department Review": '@Url.Action("PoliciesPendingDepartment", "CompliancePolicy")',
         "On Hold": '@Url.Action("PoliciesOnHold", "CompliancePolicy")',
         "Standard": '@Url.Action("PoliciesStandard", "CompliancePolicy")'
+    };
+
+    const reportRoutes = {
+        "TOTALS": '@Url.Action("Dashboard", "Application")',
+        "NA": '@Url.Action("ReturnNaStatistics", "ComplianceReturn")',
+        "ONE-OFF": '@Url.Action("ReturnOneOffStatistics", "ComplianceReturn")',
+        "ON OCCURRENCE": '@Url.Action("ReturnOnOccurrenceStatistics", "ComplianceReturn")',
+        "PERIODIC": '@Url.Action("ReturnPeriodicStatistics", "ComplianceReturn")',
+        "DAILY": '@Url.Action("ReturnDailyStatistics", "ComplianceReturn")',
+        "WEEKLY": '@Url.Action("ReturnWeeklyStatistics", "ComplianceReturn")',
+        "MONTHLY": '@Url.Action("ReturnMonthlyStatistics", "ComplianceReturn")',
+        "QUARTERLY": '@Url.Action("ReturnQuaterlyStatistics", "ComplianceReturn")',
+        "BIANNUAL": '@Url.Action("ReturnBiannaulStatistics", "ComplianceReturn")',
+        "ANNUAL": '@Url.Action("ReturnAnnualStatistics", "ComplianceReturn")',
+        "BIENNIAL": '@Url.Action("ReturnBiennailStatistics", "ComplianceReturn")',
+        "TRIENNIAL": '@Url.Action("ReturnTriennialStatistics", "ComplianceReturn")'
+    };
+
+
+    const circularRoutes = {
+        "TOTALS": '@Url.Action("Dashboard", "Application")',
+        "BOU": '@Url.Action("CircularBouStatistics", "ComplianceReturn")',
+        "CMA": '@Url.Action("CircularCmaStatistics", "ComplianceReturn")',
+        "UMRA": '@Url.Action("CircularUmraStatistics", "ComplianceReturn")',
+        "IRAU": '@Url.Action("CircularIrauStatistics", "ComplianceReturn")',
+        "FIA": '@Url.Action("CircularFiaStatistics", "ComplianceReturn")',
+        "PPDA": '@Url.Action("CircularPpdaStatistics", "ComplianceReturn")',
+        "URBRA": '@Url.Action("CircularUrbraStatistics", "ComplianceReturn")',
+        "MoFED": '@Url.Action("CircularMofedStatistics", "ComplianceReturn")',
+        "URA": '@Url.Action("CircularUraStatistics", "ComplianceReturn")',
+        "AG": '@Url.Action("CircularAgStatistics", "ComplianceReturn")',
+        "UIB": '@Url.Action("CircularUibStatistics", "ComplianceReturn")',
+        "NIRA": '@Url.Action("CircularNiraStatistics", "ComplianceReturn")',
+        "DPF": '@Url.Action("CircularDpfStatistics", "ComplianceReturn")',
+        "OTHERS": '@Url.Action("CircularOtherStatistics", "ComplianceReturn")'
     };
 </script>
 

@@ -6,8 +6,9 @@ public partial class CircularEntityConfiguration {
     public static void Configure(EntityTypeBuilder<Circular> builder) {
         builder.ToTable("TBL_GRC_CIRCULAR");
         builder.HasKey(t => t.Id);
-        builder.Property(a => a.Id).HasColumnName("id");
+        builder.Property(a => a.Id).HasColumnName("id"); 
         builder.Property(a => a.CircularTitle).HasColumnName("circular_title").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
+        builder.Property(a => a.Requirement).HasColumnName("requirement").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
         builder.Property(a => a.RecievedOn).HasColumnName("received_on");
         builder.Property(a => a.DeadlineOn).HasColumnName("deadline_on");
         builder.Property(a => a.Status).HasColumnName("status").HasColumnType("NVARCHAR(20)").IsRequired();

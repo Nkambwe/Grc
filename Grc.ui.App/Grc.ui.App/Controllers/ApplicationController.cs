@@ -87,7 +87,9 @@ namespace Grc.ui.App.Controllers {
                     return HandleLoginError(new GrcResponse<UserModel>(grcResponse.Error), model);
                 }
 
-                return View(await _dashboardFactory.PrepareUserDashboardModelAsync(grcResponse.Data));
+                var data = await _dashboardFactory.PrepareUserDashboardModelAsync(grcResponse.Data);
+                data.WelcomeMessage = $"{data.WelcomeMessage} >> Dashboard";
+                return View(data);
             } catch(Exception ex){ 
                 Logger.LogActivity($"Error Loading user dashboard: {ex.Message}", "ERROR");
                  _= await ProcessErrorAsync(ex.Message, "APPLICATIONCONTROLLER-DASHBORAD", ex.StackTrace);

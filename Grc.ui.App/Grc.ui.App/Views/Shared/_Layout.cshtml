@@ -269,7 +269,7 @@
                                         
                                     </li>
 
-                                    <li class="sidebar-item">
+                              @*       <li class="sidebar-item">
 
                                         <a href="" class="toggle-submenu" data-id="return-tasks-menu">
                                             <span class="menu-icon">
@@ -308,7 +308,7 @@
                                             </li>
                                         </ul>
 
-                                </li>
+                                </li> *@
 
                                 </ul>
 
@@ -331,7 +331,8 @@
                                 <ul id="audits-menu" class="sidebar-submenu">
 
                                     <li class="sidebar-item">
-                                    <a asp-controller="ComplianceAudit" asp-action="ManageAudits">
+                                        @* <a asp-controller="ComplianceAudit" asp-action="ManageAudits"> *@
+                                        <a asp-controller="Application" asp-action="Dashboard">
                                             <span class="menu-icon">
                                                 <i class="mdi mdi-marker-check"></i>
                                             </span>
@@ -342,7 +343,8 @@
                                     </li>
 
                                     <li class="sidebar-item">
-                                    <a asp-controller="ComplianceAudit" asp-action="AuditTypes">
+                                        @* <a asp-controller="ComplianceAudit" asp-action="AuditTypes"> *@
+                                        <a asp-controller="Application" asp-action="Dashboard">
                                             <span class="menu-icon">
                                                 <i class="mdi mdi-checkbox-multiple-marked-circle-outline"></i>
                                             </span>
@@ -353,7 +355,8 @@
                                     </li>
 
                                     <li class="sidebar-item">
-                                    <a asp-controller="ComplianceAudit" asp-action="AuditExceptions">
+                                            @* <a asp-controller="ComplianceAudit" asp-action="AuditExceptions"> *@
+                                        <a asp-controller="Application" asp-action="Dashboard">
                                             <span class="menu-icon">
                                                 <i class="mdi mdi-wrench-check-outline"></i>
                                             </span>

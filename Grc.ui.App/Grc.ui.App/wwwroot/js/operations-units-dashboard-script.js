@@ -97,7 +97,7 @@ function viewProcesses(unit) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    generateUnitCards(unitStatistics)
+    generateUnitCards(unitStatistics);
     renderPiechart(unitStatistics);
 
     // Table of processes

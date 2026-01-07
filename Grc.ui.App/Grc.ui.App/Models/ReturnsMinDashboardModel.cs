@@ -1,4 +1,5 @@
 ﻿using Grc.ui.App.Defaults;
+using Grc.ui.App.Dtos;
 
 namespace Grc.ui.App.Models {
     public class ReturnsMinDashboardModel {
@@ -7,7 +8,7 @@ namespace Grc.ui.App.Models {
         public string Initials { get; set; }
         public DateTime LastLogin { get; set; }
         public WorkspaceModel Workspace { get; set; }
-        public Dictionary<string, int> Returns { get; set; }
+        public ReturnDashboardStatistic Returns { get; set; }
         public List<QuickActionModel> QuickActions { get; set; } = new();
     }
 }

@@ -69,6 +69,7 @@ namespace Grc.Middleware.Api.Controllers {
         }
 
         #region Compliance Statistics
+
         [HttpPost("returns/dashboard-statistics")]
         public async Task<IActionResult> GetComplianceStatistics([FromBody] GeneralRequest request) {
 
@@ -93,6 +94,87 @@ namespace Grc.Middleware.Api.Controllers {
             } catch (Exception ex) {
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<ComplianceStatisticsResponse>(error));
+            }
+        }
+
+        [HttpPost("returns/policy-statistics")]
+        public async Task<IActionResult> GetPolicyStatistics([FromBody] StatusStatisticRequest request) {
+
+            try {
+                Logger.LogActivity("Retrieve policy status statistics", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PolicyDashboardResponse>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IPAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var statistics = await _returnService.GetPolicyStatisticsAsync(false, GetStatusEnumValue(request.Status));
+                if (statistics == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could policy status statistics. A system error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<PolicyDashboardResponse>>(error));
+                }
+
+                return Ok(new GrcResponse<PolicyDashboardResponse>(statistics));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PolicyDashboardResponse>(error));
+            }
+        }
+
+        [HttpPost("returns/period-returns")]
+        public async Task<IActionResult> GetReturnsStatistics([FromBody] PeriodStatisticRequest request) {
+
+            try {
+                Logger.LogActivity("Retrieve returns statistics", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ReturnDashboardResponse>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IPAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var statistics = await _returnService.GetReturnStatisticsAsync(false, GetPeriodEnumValue(request.Period));
+                if (statistics == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could returns statistics. A system error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<ReturnDashboardResponse>>(error));
+                }
+
+                return Ok(new GrcResponse<ReturnDashboardResponse>(statistics));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<ReturnDashboardResponse>(error));
+            }
+        }
+
+        [HttpPost("circulars/circular-authorities")]
+        public async Task<IActionResult> GetCircularStatistics([FromBody] CircularStatisticRequest request) {
+
+            try {
+                Logger.LogActivity("Retrieve circular statistics", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<CircularDashboardResponse>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IPAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var statistics = await _returnService.GetCircularStatisticsAsync(false, request.Authority);
+                if (statistics == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could circular statistics. A system error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<CircularDashboardResponse>>(error));
+                }
+
+                return Ok(new GrcResponse<CircularDashboardResponse>(statistics));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<CircularDashboardResponse>(error));
             }
         }
 
@@ -3289,6 +3371,7 @@ namespace Grc.Middleware.Api.Controllers {
                     records.ForEach(circular => circulars.Add(new CircularsResponse {
                         Id = circular.Id,
                         CircularTitle = circular.CircularTitle ?? string.Empty,
+                        Requirement = circular.Requirement ?? string.Empty,
                         FilePath = circular.FilePath ?? string.Empty,
                         RefNumber = circular.Reference ?? string.Empty,
                         Authority = circular.Authority?.AuthorityAlias ?? string.Empty,
@@ -3331,6 +3414,23 @@ namespace Grc.Middleware.Api.Controllers {
         #endregion
 
         #region Protected methods
+
+        protected static PolicyStatus GetStatusEnumValue(string status) {
+            if (Enum.TryParse<PolicyStatus>(status, ignoreCase: true, out var enumVal)) {
+                return enumVal;
+            }
+
+            return PolicyStatus.TOTALS;
+        }
+
+        protected static ReportPeriod GetPeriodEnumValue(string period) {
+            if (Enum.TryParse<ReportPeriod>(period, ignoreCase: true, out var enumVal)) {
+                return enumVal;
+            }
+
+            return ReportPeriod.NA;
+        }
+
 
         private static string GetThisWeekPeriod() {
             var today = DateTime.Today;

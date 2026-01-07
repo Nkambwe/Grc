@@ -1,0 +1,74 @@
+﻿@model CircularMiniStatisticViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "BOU CIRCULARS";
+
+    var chartsJson = JsonSerializer.Serialize(Model);
+}
+
+<div class="welcome-container">
+
+    <div class="welcome-container-message">
+        <span class="display-1">@Model.WelcomeMessage >> BOU Circular Returns </span>
+    </div>
+
+    <div class="incon-container-expand">
+        <button id="expandBtn" type="button" class="icon-btn">
+            <span>
+                <i id="toggleIcon" class="mdi mdi-arrow-expand"></i>
+            </span>
+        </button>
+    </div>
+
+</div>
+
+<div class="action-box">
+    <div class="title-box">
+        <h3 class="display-1 action-box-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Quick"))</h3>
+        <span class="title-line"></span>
+    </div>
+
+    @await Component.InvokeAsync("QuickActions", new { model = Model.QuickActions })
+</div>
+
+<div class="dashboard-category-grid m-3">
+
+    <div class="stats-category-grid" id="circularCards"></div>
+
+    <div class="dashboard-bottom-row" style="display:flex; gap:20px; margin-top:30px;">
+        <!-- Left: Pie chart of categories -->
+        <div class="category-chart-container" style="flex:1">
+            <div class="chart-card-title">UMRA Circulars</div>
+            <canvas id="unitPieChart"></canvas>
+        </div>
+
+        <!-- Right: Table of processes -->
+        <div class="category-chart-container" style="flex:1">
+            <div class="chart-card-title">Returns and departments responsible</div>
+            <table class="table is-fullwidth is-striped" id="processTable">
+                <thead>
+                    <tr>
+                        <th>TITLE</th>
+                        <th>STATUS</th>
+                        <th>DEPARTMENT</th>
+                        <th>VIEW</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+@{
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/circular-authority-dashboard-script.js");
+}
+
+<script>
+    const circularData = @Html.Raw(chartsJson);
+    const cardColor = "card-unit-default";
+    const cardClass = "card-onhold";
+    const cardBg = "#F59E0B";
+</script>

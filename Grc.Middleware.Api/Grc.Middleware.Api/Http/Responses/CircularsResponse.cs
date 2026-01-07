@@ -9,6 +9,9 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("circularTitle")]
         public string CircularTitle { get; set; }
 
+        [JsonPropertyName("requirement")]
+        public string Requirement { get; set; }
+
         [JsonPropertyName("filePath")]
         public string FilePath { get; set; }
 
