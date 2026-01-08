@@ -4,6 +4,7 @@ using Grc.Middleware.Api.Data.Entities.Support;
 namespace Grc.Middleware.Api.Data.Entities.Compliance.Returns {
     public class ReturnReport: BaseEntity {
         public string ReturnName { get; set; }
+        public string Risk { get; set; }
         public string Comments { get; set; }
         public long DepartmentId { get; set; }
         public virtual Department Department { get; set; }

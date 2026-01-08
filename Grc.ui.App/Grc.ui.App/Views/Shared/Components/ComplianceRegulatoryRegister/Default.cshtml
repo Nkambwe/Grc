@@ -3,7 +3,7 @@
 <div class="container-fluid regulatory-container">
 
     <div class="row regulatory-inner-container">
-
+        <!------jtree----->
         <div class="col-md-3 border-end hierarchy-panel">
 
             <div class="category-list-box d-flex justify-content-between align-items-center mb-2">
@@ -19,6 +19,7 @@
 
         <div class="col-md-9 content-panel">
 
+            <!------breadcrubs----->
             <nav class="bread-crumb-nav" aria-label="breadcrumb">
                 <ol class="breadcrumb small mb-2" id="regulatoryBreadcrumb">
                     <li class="breadcrumb-item">
@@ -28,7 +29,7 @@
             </nav>
 
             <div id="contentArea">
-
+                <!------law table----->
                 <div class="empty-state text-muted text-start p-2" style="border-bottom: solid 1px #CED4DA!important">
                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Header.Top"))
                 </div>
@@ -44,6 +45,7 @@
                     <div id="lawsTable"></div>
                 </div>
 
+                <!------act table----->
                 <div id="lawView" class="d-none">
                     <div class="d-flex justify-content-between p-2">
                         <h6 class="p-2 m-0">

@@ -22,6 +22,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         }
 
         #region Statistics
+
         public async Task<ComplianceStatisticsResponse> GetComplianceStatisticsAsync(bool includeDeleted) {
 
             using var uow = UowFactory.Create();
@@ -146,6 +147,123 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
+        public async Task<ReturnExtensionResponse> GetReturnExtensionStatisticsAsync(bool includeDeleted, ReportPeriod period) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Generate returns statistics", "INFO");
+
+            try {
+                var frequencyName = MapReturnStatusToFilter(period);
+                var reports = await uow.ReturnRepository.GetAllAsync(r => r.Frequency.FrequencyName == frequencyName, includeDeleted,
+                    r => r.Department, r => r.Frequency, r => r.Submissions);
+
+                if (reports == null || reports.Count == 0) {
+                    return new ReturnExtensionResponse {
+                        Periods = new Dictionary<string, int>(),
+                        Reports = new List<ReturnSubmissionResponse>()
+                    };
+                }
+
+                var response = new ReturnExtensionResponse {
+                    Periods = reports.GroupBy(r => r.Frequency?.FrequencyName ?? "NA").ToDictionary(g => g.Key, g => g.Count()),
+
+                    Reports = reports
+                        .SelectMany(r => r.Submissions ?? Enumerable.Empty<ReturnSubmission>(),
+                            (r, s) => new ReturnSubmissionResponse {
+                                Id = r.Id,
+                                Title = r.ReturnName,
+                                Status = s.Status ?? "OPEN",
+                                Department = r.Department?.DepartmentName,
+                                Risk = string.Empty
+                            })
+                        .ToList()
+                };
+
+                return response;
+            } catch (Exception ex) {
+                Logger.LogActivity(
+                    $"Failed to generate returns statistics: {ex.Message}",
+                    "ERROR");
+
+                LogError(uow, ex);
+                throw;
+            }
+        }
+
+
+        public async Task<ReturnsStatisticsResponses> GetReturnDashboardStatisticsAsync(bool includeDeleted) {
+
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Generate compliance statistics", "INFO");
+
+            var statistics = new ReturnsStatisticsResponses() {
+                Periods = new Dictionary<string, int>(),
+                Statuses = new Dictionary<string, Dictionary<string, int>> ()
+            };
+
+            try {
+                // ..returns
+                var returns = await uow.ReturnRepository.GetAllAsync(includeDeleted,r => r.Frequency,r => r.Submissions);
+                statistics.Periods = returns.GroupBy(d => d.Frequency?.FrequencyName ?? "NA").ToDictionary(g => g.Key, g => g.Count());
+                statistics.Periods.Add("TOTALS", returns.Count);
+
+                //..graph data from submissions
+                statistics.Statuses = returns.GroupBy(r => r.Frequency?.FrequencyName ?? "NA").ToDictionary(
+                    periodGroup => periodGroup.Key,
+                    periodGroup => periodGroup
+                        .SelectMany(r => r.Submissions ?? Enumerable.Empty<ReturnSubmission>())
+                        .GroupBy(s => s.Status) 
+                        .ToDictionary(
+                            statusGroup => statusGroup.Key.ToString(),
+                            statusGroup => statusGroup.Count()
+                        )
+                );
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve statistics: {ex.Message}", "ERROR");
+                LogError(uow, ex);
+                throw;
+            }
+
+
+            return statistics;
+        }
+
+        public async Task<CircularStatisticsResponse> GetCircularDashboardStatisticsAsync(bool includeDeleted) {
+
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Circular statistics", "INFO");
+
+            var statistics = new CircularStatisticsResponse() {
+                Authorities = new Dictionary<string, int>(),
+                Statuses = new Dictionary<string, Dictionary<string, int>>()
+            };
+
+            try {
+                // ..circulars
+                var circulars = await uow.CircularRepository.GetAllAsync(includeDeleted, c => c.Authority, c => c.Department);
+                statistics.Authorities = circulars.GroupBy(d => d.Authority?.AuthorityAlias ?? "OTHER").ToDictionary(g => g.Key, g => g.Count());
+                statistics.Authorities.Add("TOTALS", circulars.Count);
+
+                //..graph data from submissions
+                statistics.Statuses = circulars.GroupBy(c => c.Authority?.AuthorityAlias ?? "OTHER")
+                                               .ToDictionary(authorityGroup => authorityGroup.Key, authorityGroup => authorityGroup
+                                                    .GroupBy(c => c.Status)
+                                                    .ToDictionary(
+                                                        statusGroup => statusGroup.Key?.ToString() ?? "OPEN",
+                                                        statusGroup => statusGroup.Count()
+                                                    )
+                                               );
+
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve statistics: {ex.Message}", "ERROR");
+                LogError(uow, ex);
+                throw;
+            }
+
+            return statistics;
+        }
+
         public async Task<CircularDashboardResponse> GetCircularStatisticsAsync(bool includeDeleted, string authority) {
             using var uow = UowFactory.Create();
             Logger.LogActivity("Generate circular statistics", "INFO");
@@ -185,6 +303,45 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 throw;
             }
         }
+
+        public async Task<CircularExtensionResponses> GetCircularExtensionStatisticsAsync(bool includeDeleted, string authority) {
+
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Generate circular statistics", "INFO");
+
+            var statistics = new CircularExtensionResponses() {
+                Statuses = new(),
+                Reports = new()
+            };
+
+            try {
+                //..get records
+                var reports = await uow.CircularRepository.GetAllAsync(p => p.Authority.AuthorityAlias == authority, includeDeleted, p => p.Department, p => p.Authority);
+                if (reports?.Any() == true) {
+                    //..department statistics
+                    statistics.Statuses = reports.GroupBy(d => d.Status ?? "OPEN")
+                                                 .ToDictionary(g => g.Key, g => g.Count());
+
+                    //..returns list
+                    statistics.Reports = reports.Select(r => new CircularExtensionResponse {
+                        Id = r.Id,
+                        Title = r.CircularTitle,
+                        Status = r.Status,
+                        AuthorityAlias = r.Authority?.AuthorityAlias,
+                        Authority = r.Authority?.AuthorityName ?? string.Empty,
+                        Department = r.Department?.DepartmentName ?? string.Empty,
+                    }).ToList();
+                }
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve statistics: {ex.Message}", "ERROR");
+                LogError(uow, ex);
+                throw;
+            }
+
+            return statistics;
+
+        }
+
         #endregion
 
         #region Queries

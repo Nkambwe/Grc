@@ -6,8 +6,23 @@ using Grc.Middleware.Api.Http.Responses;
 using System.Linq.Expressions;
 
 namespace Grc.Middleware.Api.Services.Compliance.Regulations {
-    public interface IReturnService : IBaseService
-    {
+
+    public interface IReturnService : IBaseService {
+
+        #region Statistics
+
+        Task<ComplianceStatisticsResponse> GetComplianceStatisticsAsync(bool includeDeleted);
+        Task<PolicyDashboardResponse> GetPolicyStatisticsAsync(bool includeDeleted, PolicyStatus status);
+        Task<ReturnDashboardResponse> GetReturnStatisticsAsync(bool includeDeleted, ReportPeriod period);
+        Task<ReturnExtensionResponse> GetReturnExtensionStatisticsAsync(bool includeDeleted, ReportPeriod reportPeriod);
+        Task<ReturnsStatisticsResponses> GetReturnDashboardStatisticsAsync(bool includeDeleted);
+        Task<CircularDashboardResponse> GetCircularStatisticsAsync(bool includeDeleted, string authority);
+        Task<CircularStatisticsResponse> GetCircularDashboardStatisticsAsync(bool includeDeleted);
+        Task<CircularExtensionResponses> GetCircularExtensionStatisticsAsync(bool includeDeleted, string authority);
+
+        #endregion
+
+        #region Queries
         int Count();
         int Count(Expression<Func<ReturnReport, bool>> predicate);
         Task<int> CountAsync(CancellationToken cancellationToken = default);
@@ -45,11 +60,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         Task<PagedResult<ReturnReport>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<ReturnReport, object>>[] includes);
         Task<PagedResult<ReturnReport>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<ReturnReport, bool>> where = null);
         Task<PagedResult<ReturnReport>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<ReturnReport, bool>> where = null, bool includeDeleted = false);
+        
+        #endregion
 
-
-        Task<ComplianceStatisticsResponse> GetComplianceStatisticsAsync(bool includeDeleted);
-        Task<PolicyDashboardResponse> GetPolicyStatisticsAsync(bool includeDeleted, PolicyStatus status);
-        Task<ReturnDashboardResponse> GetReturnStatisticsAsync(bool includeDeleted, ReportPeriod period);
-        Task<CircularDashboardResponse> GetCircularStatisticsAsync(bool includeDeleted, string authority);
     }
 }

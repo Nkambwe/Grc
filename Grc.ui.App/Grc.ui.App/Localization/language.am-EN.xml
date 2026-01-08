@@ -2066,4 +2066,96 @@
 	<LocaleResource Name="Error.Service.Unavailable">
 		<Value>Service unavailable. Please try again later.</Value>
 	</LocaleResource>
+
+
+	<LocaleResource Name="App.Label.Open">
+		<Value>OPEN</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Closed">
+		<Value>CLOSSED</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Totals">
+		<Value>TOTAL</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Triennial">
+		<Value>Triennial Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Periodic">
+		<Value>Periodic Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Biannual">
+		<Value>Biannual Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Occurrence">
+		<Value>On Occurrence Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Biennial">
+		<Value>Biennial Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Oneoff">
+		<Value>One-Off Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Annual">
+		<Value>Annual Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.NoReturn">
+		<Value>No Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Quartery">
+		<Value>Quartery Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Monthly">
+		<Value>Monthly Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Weekly">
+		<Value>Weekly Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Daily">
+		<Value>Daily Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Mofed">
+		<Value>MoFED Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Ura">
+		<Value>URA Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Pdpo">
+		<Value>PDPO Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Bou">
+		<Value>BOU Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Cma">
+		<Value>CMA Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Ag">
+		<Value>AG Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Umra">
+		<Value>UMRA Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Uib">
+		<Value>UIB Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Irau">
+		<Value>IRAU Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Nira">
+		<Value>NIRA Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Fia">
+		<Value>FIA Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Dpf">
+		<Value>DPF Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Ppda">
+		<Value>PPDA Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Urbra">
+		<Value>URBA Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Other">
+		<Value>Other Circulars</Value>
+	</LocaleResource>
 </Language>

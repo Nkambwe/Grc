@@ -32,10 +32,43 @@
 </div>
 
 <div class="dashboard-category-grid">
+
     <div class="stats-category-grid" id="circularCards"></div>
+
+    <div class="charts-grid">
+
+        <div class="chart-container">
+            <canvas id="statusChart"></canvas>
+        </div>
+
+    </div>
+
 </div>
 
 <script>
     const circularData = @Html.Raw(chartsJson);
     const cardColor = "card-circular-default";
+
+    const circularRoutes = {
+        "TOTALS": '@Url.Action("CircularHome", "ComplianceReturn")',
+        "BOU": '@Url.Action("BouInnerDashboard", "ComplianceReturn")',
+        "CMA": '@Url.Action("CmaInnerDashboard", "ComplianceReturn")',
+        "UMRA": '@Url.Action("UmraInnerDashboard", "ComplianceReturn")',
+        "IRAU": '@Url.Action("IrauInnerDashboard", "ComplianceReturn")',
+        "FIA": '@Url.Action("FiaInnerDashboard", "ComplianceReturn")',
+        "PPDA": '@Url.Action("PpdaInnerDashboard", "ComplianceReturn")',
+        "URBRA": '@Url.Action("UrbraInnerDashboard", "ComplianceReturn")',
+        "MoFED": '@Url.Action("MofedInnerDashboard", "ComplianceReturn")',
+        "URA": '@Url.Action("UraInnerDashboard", "ComplianceReturn")',
+        "AG": '@Url.Action("AgInnerDashboard", "ComplianceReturn")',
+        "UIB": '@Url.Action("UibInnerDashboard", "ComplianceReturn")',
+        "NIRA": '@Url.Action("NiraInnerDashboard", "ComplianceReturn")',
+        "DPF": '@Url.Action("DpfInnerDashboard", "ComplianceReturn")',
+        "OTHERS": '@Url.Action("OtherInnerDashboard", "ComplianceReturn")'
+    };
 </script>
+
+@{
+    Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/circular-home-dashboard.js");
+}

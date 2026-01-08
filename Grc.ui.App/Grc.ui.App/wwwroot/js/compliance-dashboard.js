@@ -152,6 +152,7 @@ function generateCircularCards(record) {
         circularContainer.appendChild(card);
     });
 }
+
 document.addEventListener('DOMContentLoaded', function () {
     generatePolicyCards(dashboardData);
     generateReturnsCards(dashboardData);

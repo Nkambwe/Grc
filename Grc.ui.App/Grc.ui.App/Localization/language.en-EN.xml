@@ -297,8 +297,14 @@
 	<LocaleResource Name="Component.Key.CircularReturns">
 		<Value>Circular Returns</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.Circular-register">
+		<Value>Search circulars...</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Key.RegulatoryReturns">
 		<Value>Regulatory Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Search.Returns-register">
+		<Value>Search returns...</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.SettingAuthorities">
 		<Value>Regulatory Authorities</Value>
@@ -441,7 +447,6 @@
 	<LocaleResource Name="Component.Key.ComplianceControl">
 		<Value>Compliance Controls</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="Component.Key.ActiveUsers">
 		<Value>Active Users</Value>
 	</LocaleResource>
@@ -460,6 +465,13 @@
 
 	<LocaleResource Name="Component.Table.Status.Active">
 		<Value>Deactivate this item?</Value>
+	</LocaleResource>
+	
+	<LocaleResource Name="Component.Key.ReturnRegister">
+		<Value>Returns Register</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.CircularRegister">
+		<Value>Circular Register</Value>
 	</LocaleResource>
 
 	<LocaleResource Name="Component.Label.Branch">
@@ -826,8 +838,8 @@
 	<LocaleResource Name="Component.Table.Select.ControlName">
 		<Value>Select control...</Value>
 	</LocaleResource>
-
-
+	
+	
 	<LocaleResource Name="Component.Table.Law.Label.Type">
 		<Value>Law/Regulation Type</Value>
 	</LocaleResource>
@@ -871,7 +883,7 @@
 	<LocaleResource Name="Component.Table.Law.Label.IssueNotes">
 		<Value>Notes</Value>
 	</LocaleResource>
-
+	
 	<LocaleResource Name="Component.Table.Law.Label.ControlNotes">
 		<Value>Comment</Value>
 	</LocaleResource>
@@ -1468,7 +1480,7 @@
 	<LocaleResource Name="App.Menu.Registers.List">
 		<Value>Statutes/Regulations</Value>
 	</LocaleResource>
-
+	
 	<LocaleResource Name="App.Menu.Returns">
 		<Value>Returns</Value>
 	</LocaleResource>
@@ -1496,7 +1508,7 @@
 	<LocaleResource Name="App.Menu.Returns.Tasks.List">
 		<Value>Open Tasks</Value>
 	</LocaleResource>
-
+	
 	<LocaleResource Name="App.Menu.Registers.Obligations">
 		<Value>Regulatory Obligations</Value>
 	</LocaleResource>
@@ -1587,9 +1599,8 @@
 	<LocaleResource Name="App.Menu.Compliance.Returns.Breach">
 		<Value>Returns Breached</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="App.Menu.Compliance.Dashboard.Tasks">
-		<Value>Compliance Returns</Value>
+		<Value>Compliance Tasks</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Compliance.Tasks.Totals">
 		<Value>Total Tasks</Value>
@@ -1603,7 +1614,6 @@
 	<LocaleResource Name="App.Menu.Compliance.Tasks.Failed">
 		<Value>Failed Tasks</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="App.Menu.Support">
 		<Value>Support</Value>
 	</LocaleResource>
@@ -2055,5 +2065,97 @@
 	</LocaleResource>
 	<LocaleResource Name="Error.Service.Unavailable">
 		<Value>Service unavailable. Please try again later.</Value>
+	</LocaleResource>
+
+
+	<LocaleResource Name="App.Label.Open">
+		<Value>OPEN</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Closed">
+		<Value>CLOSSED</Value>
+	</LocaleResource>
+	<LocaleResource Name="App.Label.Totals">
+		<Value>TOTAL</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Triennial">
+		<Value>Triennial Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Periodic">
+		<Value>Periodic Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Biannual">
+		<Value>Biannual Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Occurrence">
+		<Value>On Occurrence Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Biennial">
+		<Value>Biennial Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Oneoff">
+		<Value>One-Off Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Annual">
+		<Value>Annual Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.NoReturn">
+		<Value>No Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Quartery">
+		<Value>Quartery Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Monthly">
+		<Value>Monthly Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Weekly">
+		<Value>Weekly Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Returns.Daily">
+		<Value>Daily Returns</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Mofed">
+		<Value>MoFED Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Ura">
+		<Value>URA Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Pdpo">
+		<Value>PDPO Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Bou">
+		<Value>BOU Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Cma">
+		<Value>CMA Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Ag">
+		<Value>AG Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Umra">
+		<Value>UMRA Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Uib">
+		<Value>UIB Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Irau">
+		<Value>IRAU Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Nira">
+		<Value>NIRA Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Fia">
+		<Value>FIA Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Dpf">
+		<Value>DPF Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Ppda">
+		<Value>PPDA Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Urbra">
+		<Value>URBA Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Circulars.Other">
+		<Value>Other Circulars</Value>
 	</LocaleResource>
 </Language>

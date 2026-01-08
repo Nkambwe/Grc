@@ -9,7 +9,7 @@
 <div class="welcome-container">
 
     <div class="welcome-container-message">
-        <span class="display-1">@Model.WelcomeMessage</span>
+        <span class="display-1">@Model.WelcomeMessage >> Returns Dashboard</span>
     </div>
 
     <div class="incon-container-expand">
@@ -31,11 +31,44 @@
     @await Component.InvokeAsync("QuickActions", new { model = Model.QuickActions })
 </div>
 
-<div class="dashboard-category-grid">
+<div class="dashboard-grid m-3">
+
     <div class="stats-category-grid" id="returnsCards"></div>
+
+    <div class="charts-grid">
+
+        <div class="chart-container">
+            <canvas id="statusChart"></canvas>
+        </div>
+
+    </div>
+
 </div>
 
 <script>
     const returnsData = @Html.Raw(chartsJson);
     const cardColor = "card-returns-default";
+
+    const reportRoutes = {
+        "TOTALS": '@Url.Action("ReturnsHome", "ComplianceReturn")',
+        "NA": '@Url.Action("NaInnerDashboard", "ComplianceReturn")',
+        "ONE-OFF": '@Url.Action("OneInnerDashboard", "ComplianceReturn")',
+        "ON OCCURRENCE": '@Url.Action("OccurrenceInnerDashboard", "ComplianceReturn")',
+        "PERIODIC": '@Url.Action("PeriodicInnerDashboard", "ComplianceReturn")',
+        "DAILY": '@Url.Action("DailyInnerDashboard", "ComplianceReturn")',
+        "WEEKLY": '@Url.Action("WeeklyInnerDashboard", "ComplianceReturn")',
+        "MONTHLY": '@Url.Action("MonthlyInnerDashboard", "ComplianceReturn")',
+        "QUARTERLY": '@Url.Action("QuarterlyInnerDashboard", "ComplianceReturn")',
+        "BIANNUAL": '@Url.Action("BiannualInnerDashboard", "ComplianceReturn")',
+        "ANNUAL": '@Url.Action("AnnualInnerDashboard", "ComplianceReturn")',
+        "BIENNIAL": '@Url.Action("BiennialInnerDashboard", "ComplianceReturn")',
+        "TRIENNIAL": '@Url.Action("TriennialInnerDashboard", "ComplianceReturn")'
+    };
 </script>
+
+
+@{
+    Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/returns-home-dashboard.js");
+}
+

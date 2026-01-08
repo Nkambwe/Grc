@@ -8,7 +8,7 @@ namespace Grc.ui.App.Models {
         public string Initials { get; set; }
         public DateTime LastLogin { get; set; }
         public WorkspaceModel Workspace { get; set; }
-        public ComplianceCircularViewModel Circulars { get; set; }
+        public CircularAuthorityStatistics Circulars { get; set; }
         public List<QuickActionModel> QuickActions { get; set; } = new();
     }
 }

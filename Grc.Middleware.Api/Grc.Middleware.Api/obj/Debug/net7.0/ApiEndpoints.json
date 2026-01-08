@@ -43,6 +43,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetCircularDashboardStatistics",
+    "RelativePath": "grc/circulars/all-statistics",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.StatusStatisticRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "GetCircularStatistics",
     "RelativePath": "grc/circulars/circular-authorities",
     "HttpMethod": "POST",
@@ -68,6 +84,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetCircularExtensionStatistics",
+    "RelativePath": "grc/circulars/status-statistics",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.CircularStatisticRequest",
         "IsRequired": true
       }
     ],
@@ -1926,6 +1958,22 @@
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "GetComplianceStatistics",
+    "RelativePath": "grc/returns/all-statistics",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.StatusStatisticRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetComplianceStatistics",
     "RelativePath": "grc/returns/dashboard-statistics",
     "HttpMethod": "POST",
     "IsController": true,
@@ -1982,6 +2030,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.StatusStatisticRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetReturnExtensionStatistics",
+    "RelativePath": "grc/returns/returns-extension",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.PeriodStatisticRequest",
         "IsRequired": true
       }
     ],

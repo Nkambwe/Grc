@@ -12,12 +12,14 @@ namespace Grc.ui.App.Factories {
 
         #region Returns
         Task<ComplianceReturnStatisticViewModel> PrepareReturnsDashboardModelAsync(UserModel currentUser);
+        Task<ComplianceExtensionReturnStatisticViewModel> PrepareReturnExtensionDashboardModelAsync(UserModel currentUser, string period);
         Task<ReturnMiniStatisticViewModel> PrepareReturnPeriodDashboardModelAsync(UserModel currentUser, string period);
 
         #endregion
 
         #region Circulars
         Task<CircularDashboardModel> PrepareCircularDashboardModelAsync(UserModel data);
+        Task<CircularExtensionDashboardModel> PrepareCircularExtensionDashboardModelAsync(UserModel currentUser, string authority);
         Task<CircularMiniStatisticViewModel> PrepareCircularAuthorityDashboardModelAsync(UserModel currentUser, string authority);
         #endregion
 

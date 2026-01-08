@@ -152,5 +152,15 @@ namespace Grc.ui.App.Enums {
         ComplianceControlItemNew,
         [Description("return-new")]
         ReturnNew,
+        [Description("open-returns")]
+        OpenReturns,
+        [Description("closed-returns")]
+        ClosedReturns,
+        [Description("returns-home")]
+        ReturnsHome,
+        [Description("circular-home")]
+        CircularHome,
+        [Description("excel-export")]
+        ExportToExcel,
     }
 }

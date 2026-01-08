@@ -124,6 +124,33 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
+        [HttpPost("returns/all-statistics")]
+        public async Task<IActionResult> GetComplianceStatistics([FromBody] StatusStatisticRequest request) {
+
+            try {
+                Logger.LogActivity("Retrieve returns statistics", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ReturnsStatisticsResponses>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IPAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var statistics = await _returnService.GetReturnDashboardStatisticsAsync(false);
+                if (statistics == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could not retrieve statistics. A system error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<ReturnsStatisticsResponses>>(error));
+                }
+
+                return Ok(new GrcResponse<ReturnsStatisticsResponses>(statistics));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<ReturnsStatisticsResponses>(error));
+            }
+        }
+
         [HttpPost("returns/period-returns")]
         public async Task<IActionResult> GetReturnsStatistics([FromBody] PeriodStatisticRequest request) {
 
@@ -139,15 +166,42 @@ namespace Grc.Middleware.Api.Controllers {
 
                 var statistics = await _returnService.GetReturnStatisticsAsync(false, GetPeriodEnumValue(request.Period));
                 if (statistics == null) {
-                    var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could returns statistics. A system error occurred");
+                    var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could not retrieve returns statistics. A system error occurred");
                     Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<List<ReturnDashboardResponse>>(error));
+                    return Ok(new GrcResponse<ReturnDashboardResponse>(error));
                 }
 
                 return Ok(new GrcResponse<ReturnDashboardResponse>(statistics));
             } catch (Exception ex) {
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<ReturnDashboardResponse>(error));
+            }
+        }
+
+        [HttpPost("returns/returns-extension")]
+        public async Task<IActionResult> GetReturnExtensionStatistics([FromBody] PeriodStatisticRequest request) {
+
+            try {
+                Logger.LogActivity("Retrieve returns statistics", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ReturnExtensionResponse>(error));
+                }
+                Logger.LogActivity($"ACTION >> {request.Action}:: IPADDRESS >> {request.IPAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var statistics = await _returnService.GetReturnExtensionStatisticsAsync(false, GetPeriodEnumValue(request.Period));
+                if (statistics == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could not retrieve returns statistics. A system error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ReturnExtensionResponse>(error));
+                }
+
+                return Ok(new GrcResponse<ReturnExtensionResponse>(statistics));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<ReturnExtensionResponse>(error));
             }
         }
 
@@ -175,6 +229,60 @@ namespace Grc.Middleware.Api.Controllers {
             } catch (Exception ex) {
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<CircularDashboardResponse>(error));
+            }
+        }
+
+        [HttpPost("circulars/all-statistics")]
+        public async Task<IActionResult> GetCircularDashboardStatistics([FromBody] StatusStatisticRequest request) {
+
+            try {
+                Logger.LogActivity("Retrieve circular dashboard statistics", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<CircularStatisticsResponse>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IPAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var statistics = await _returnService.GetCircularDashboardStatisticsAsync(false);
+                if (statistics == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could compliance statistics. A system error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<CircularStatisticsResponse>>(error));
+                }
+
+                return Ok(new GrcResponse<CircularStatisticsResponse>(statistics));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<CircularStatisticsResponse>(error));
+            }
+        }
+
+        [HttpPost("circulars/status-statistics")]
+        public async Task<IActionResult> GetCircularExtensionStatistics([FromBody] CircularStatisticRequest request) {
+
+            try {
+                Logger.LogActivity("Retrieve circular statistics", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<CircularExtensionResponses>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IPAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var statistics = await _returnService.GetCircularExtensionStatisticsAsync(false, request.Authority);
+                if (statistics == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could circular statistics. A system error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<CircularExtensionResponses>>(error));
+                }
+
+                return Ok(new GrcResponse<CircularExtensionResponses>(statistics));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<CircularExtensionResponses>(error));
             }
         }
 

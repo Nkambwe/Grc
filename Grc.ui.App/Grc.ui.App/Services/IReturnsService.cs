@@ -1,4 +1,5 @@
-﻿using Grc.ui.App.Helpers;
+﻿using Grc.ui.App.Dtos;
+using Grc.ui.App.Helpers;
 using Grc.ui.App.Http.Responses;
 
 namespace Grc.ui.App.Services {
@@ -10,7 +11,9 @@ namespace Grc.ui.App.Services {
         #endregion
 
         #region Returns Statistics
+
         Task<GrcResponse<ReturnsDashboardResponses>> GetReturnStatisticAsync(long userId, string ipAddress);
+        Task<GrcResponse<ComplianceExtensionReturnResponse>> GetReturnExtensionStatisticAsync(long userId, string iPAddress, string period);
         Task<GrcResponse<GrcReturnDashboardResponse>> GrcReturnDashboardResponseAsync(long userId, string ipAddress, string period);
         
         #endregion
@@ -18,6 +21,7 @@ namespace Grc.ui.App.Services {
         #region Circular Statistics
 
         Task<GrcResponse<CircularDashboardResponses>> GetCircularStatisticAsync(long userId, string ipAddress);
+        Task<GrcResponse<CircularExtensionDashboardResponses>> GetCircularExtensionStatisticAsync(long userId, string iPAddress, string authority);
         Task<GrcResponse<CircularMiniDashboardResponses>> GetAuthorityCircularCountAsync(long userId, string ipAddress, string authority);
 
         #endregion
@@ -35,7 +39,6 @@ namespace Grc.ui.App.Services {
 
         #region Circular Queries
         Task<GrcResponse<PagedResponse<GrcCircularsResponse>>> GetPagedCircularAsync(TableListRequest request);
-       
         #endregion
     }
 }

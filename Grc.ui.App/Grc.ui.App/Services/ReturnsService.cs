@@ -99,6 +99,7 @@ namespace Grc.ui.App.Services {
         #endregion
 
         #region Circular Statistics
+
         public async Task<GrcResponse<CircularDashboardResponses>> GetCircularStatisticAsync(long userId, string ipAddress) {
             try {
 
@@ -133,14 +134,14 @@ namespace Grc.ui.App.Services {
             }
         }
 
-        public async Task<GrcResponse<CircularMiniDashboardResponses>> GetStatusCircularCountAsync(long userId, string ipAddress, string status) {
+        public async Task<GrcResponse<CircularExtensionDashboardResponses>> GetCircularExtensionStatisticAsync(long userId, string ipAddress, string authority) {
             try {
 
-                var request = new GrcStatusStatisticRequest() {
+                var request = new GrcAuthorityStatisticRequest() {
                     UserId = userId,
-                    Status = (status ?? string.Empty).Trim(),
+                    Authority = (authority ?? string.Empty).Trim(),
                     IPAddress = ipAddress,
-                    Action = Activity.CIRCULAR_STATUS_STATISTIC.GetDescription()
+                    Action = Activity.CIRCULAR_AUTHORITY_STATISTIC.GetDescription()
                 };
 
                 //..map request
@@ -150,20 +151,20 @@ namespace Grc.ui.App.Services {
                 var endpoint = $"{EndpointProvider.Compliance.CircularBase}/status-statistics";
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
-                return await HttpHandler.PostAsync<GrcStatusStatisticRequest, CircularMiniDashboardResponses>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcAuthorityStatisticRequest, CircularExtensionDashboardResponses>(endpoint, request);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
                 Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
                 await ProcessErrorAsync(httpEx.Message, "RETURNS-SERVICE", httpEx.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
-                return new GrcResponse<CircularMiniDashboardResponses>(error);
+                return new GrcResponse<CircularExtensionDashboardResponses>(error);
 
             } catch (GRCException ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
                 await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
-                return new GrcResponse<CircularMiniDashboardResponses>(error);
+                return new GrcResponse<CircularExtensionDashboardResponses>(error);
             }
         }
 
@@ -201,6 +202,7 @@ namespace Grc.ui.App.Services {
             }
         }
 
+
         #endregion
 
         #region Return Statistics
@@ -237,6 +239,40 @@ namespace Grc.ui.App.Services {
                 await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<ReturnsDashboardResponses>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ComplianceExtensionReturnResponse>> GetReturnExtensionStatisticAsync(long userId, string ipAddress, string period) {
+            try {
+
+                var request = new GrcPeriodStatisticRequest() {
+                    UserId = userId,
+                    Period = (period ?? string.Empty).Trim(),
+                    IPAddress = ipAddress,
+                    Action = Activity.RETURNS_PERIOD_STATISTIC.GetDescription()
+                };
+
+                //..map request
+                Logger.LogActivity($"RETURNS PERIOD STATISTIC REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.ReturnBase}/returns-extension";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcPeriodStatisticRequest, ComplianceExtensionReturnResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "RETURNS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<ComplianceExtensionReturnResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ComplianceExtensionReturnResponse>(error);
             }
         }
 

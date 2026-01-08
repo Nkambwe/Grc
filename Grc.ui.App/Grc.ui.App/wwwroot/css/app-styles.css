@@ -29,6 +29,21 @@ body {
     --separator-color: #ddd;
 }
 
+.chart-header {
+    font-size: 1.1em;
+    padding: 5px;
+    font-weight: 500;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    text-shadow: 2px 4px 3px rgba(0, 0, 0, 0.3);
+}
+.inner-dashboard-container {
+    border-radius: 8px;
+    padding: 1.5rem;
+    position: relative;
+    height: auto;
+    background: var(--background-color);
+}
 .tooltip {
     position: relative;
 }

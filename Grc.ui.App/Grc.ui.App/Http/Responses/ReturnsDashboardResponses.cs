@@ -7,7 +7,7 @@ namespace Grc.ui.App.Http.Responses {
         public Dictionary<string, int> Periods { get; set; } = new();
 
         [JsonPropertyName("statuses")]
-        public Dictionary<string, int> Statuses { get; set; } = new();
+        public Dictionary<string, Dictionary<string, int>> Statuses { get; set; } = new();
 
     }
 
