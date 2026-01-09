@@ -21,7 +21,7 @@ $('.action-btn-returns-home').on('click', function () {
 document.addEventListener('DOMContentLoaded', function () {
     const tableBody = document.querySelector('#returnsTable tbody');
     tableBody.innerHTML = '';
-    const returns = retData.Returns.Reports;
+    const returns = returnsData.Returns.Reports;
     const cardColorList = Object.values(cardColors);
     returns.forEach((report, index) => {
         const tr = document.createElement('tr');

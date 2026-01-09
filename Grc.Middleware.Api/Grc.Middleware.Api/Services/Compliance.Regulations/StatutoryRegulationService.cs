@@ -938,7 +938,9 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     Authorities = new(),
                     Responsibilities = new(),
                     RegulatoryTypes = new(),
-                    Departments = new()
+                    Departments = new(),
+                    ReturnTypes = new(),
+                    EnforcementLaws = new()
                 };
 
                 
@@ -950,6 +952,12 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
 
                 // get authorities
                 var authorities = await uow.AuthoritiesRepository.GetAllAsync(false);
+
+                // get acts and laws
+                var acts = await uow.StatutoryArticleRepository.GetAllAsync(false);
+
+                // get return types
+                var returnTypes = await uow.ReturnTypeRepository.GetAllAsync(false);
 
                 //..get department details
                 var departments = await uow.DepartmentRepository.GetAllAsync(false, d => d.Responsibilities);
@@ -1015,6 +1023,29 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                             TypeName = type.DocumentType
                         });
                     Logger.LogActivity($"Regulatory types found: {types.Count}", "DEBUG");
+                }
+
+                //..return types
+                if (returnTypes != null && returnTypes.Count > 0) {
+                    response.ReturnTypes.AddRange(
+                        from type in returnTypes
+                        select new ReturnTypeResponse {
+                            Id = type.Id,
+                            TypeName = type.TypeName
+                        });
+                    Logger.LogActivity($"Return types found: {returnTypes.Count}", "DEBUG");
+                }
+
+                //..enabling laws
+                if (acts != null && acts.Count > 0) {
+                    response.EnforcementLaws.AddRange(
+                        from act in acts
+                        select new MiniObligationActResponse {
+                            Id = act.Id,
+                            Section = act.Article,
+                            Requirement = act.Summery
+                        });
+                    Logger.LogActivity($"Statutory Laws found: {acts.Count}", "DEBUG");
                 }
 
                 return response;

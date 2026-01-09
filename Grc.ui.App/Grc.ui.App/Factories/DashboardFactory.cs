@@ -97,9 +97,11 @@ namespace Grc.ui.App.Factories {
             PolicyRegisterViewModel policyModel = new() {
                 Authorities = new(),
                 Responsibilities = new(),
+                EnforcementLaws= new(),
                 Departments = new(),
                 Frequencies = new(),
-                RegulatoryTypes = new()
+                RegulatoryTypes = new(),
+                ReturnTypes = new()
             };
 
             GrcRequest request = new() {
@@ -171,6 +173,29 @@ namespace Grc.ui.App.Factories {
                 policyModel.RegulatoryTypes.AddRange(
                     from type in supportItems.RegulatoryTypes
                     select new RegulatoryTypeViewModel {
+                        Id = type.Id,
+                        TypeName = type.TypeName
+                    }
+                );
+            }
+
+            //..get enforcement laws
+            if (supportItems.EnforcementLaws != null && supportItems.EnforcementLaws.Any()) {
+                policyModel.EnforcementLaws.AddRange(
+                    from type in supportItems.EnforcementLaws
+                    select new StatuteMinViewModel {
+                        Id = type.Id,
+                        Section = type.Section,
+                        Requirement = type.Requirement
+                    }
+                );
+            }
+
+            //..get return types
+            if (supportItems.ReturnTypes != null && supportItems.ReturnTypes.Any()) {
+                policyModel.ReturnTypes.AddRange(
+                    from type in supportItems.ReturnTypes
+                    select new ReturnTypeViewModel {
                         Id = type.Id,
                         TypeName = type.TypeName
                     }
@@ -262,6 +287,7 @@ namespace Grc.ui.App.Factories {
         }
 
         #region Circulars
+
         public async Task<CircularDashboardModel> PrepareCircularDashboardModelAsync(UserModel currentUser) {
             //..get quick items
             var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);

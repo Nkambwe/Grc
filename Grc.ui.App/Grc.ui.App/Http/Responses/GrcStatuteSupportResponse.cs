@@ -18,5 +18,5 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("statuteTypes")]
         public List<GrcStatuteTypeResponse> StatuteTypes { get; set; } = new();
 
-    }
+    } 
 }

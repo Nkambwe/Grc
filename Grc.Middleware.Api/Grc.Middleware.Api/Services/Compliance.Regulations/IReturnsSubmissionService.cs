@@ -4,7 +4,10 @@ using Grc.Middleware.Api.Http.Requests;
 using System.Linq.Expressions;
 
 namespace Grc.Middleware.Api.Services.Compliance.Regulations {
+
     public interface IReturnsSubmissionService {
+
+        #region Queries
         int Count();
         int Count(Expression<Func<ReturnSubmission, bool>> predicate);
         Task<int> CountAsync(CancellationToken cancellationToken = default);
@@ -42,5 +45,13 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         Task<PagedResult<ReturnSubmission>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<ReturnSubmission, object>>[] includes);
         Task<PagedResult<ReturnSubmission>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<ReturnSubmission, bool>> where = null);
         Task<PagedResult<ReturnSubmission>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<ReturnSubmission, bool>> where = null, bool includeDeleted = false);
+        #endregion
+
+        #region Background Service
+
+        Task GenerateMissingSubmissionsAsync(DateTime today, CancellationToken ct);
+
+        #endregion
+
     }
 }

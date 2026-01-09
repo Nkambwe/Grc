@@ -2158,4 +2158,32 @@
 	<LocaleResource Name="Component.Key.Circulars.Other">
 		<Value>Other Circulars</Value>
 	</LocaleResource>
+
+	<LocaleResource Name="Component.Key.Returns.Header.Register">
+		<Value>Add new Return/Report</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Law">
+		<Value>Guiding Law/Regulation</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Select.Law">
+		<Value>Select guiding law...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Name">
+		<Value>Return/Report Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Return.Type">
+		<Value>Return/Report Type</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Select.Type">
+		<Value>Select type...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Deleted">
+		<Value>Remove Return/Report</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Risk">
+		<Value>Risk in case of breach</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Comments">
+		<Value>Comment</Value>
+	</LocaleResource>
 </Language>

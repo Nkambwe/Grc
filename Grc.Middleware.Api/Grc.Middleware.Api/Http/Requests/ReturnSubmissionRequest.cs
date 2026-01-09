@@ -22,8 +22,14 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("status")]
         public string Status { get; set; }
 
+        [JsonPropertyName("periodStart")]
+        public DateTime PeriodStart { get; set; }
+
+        [JsonPropertyName("periodEnd")]
+        public DateTime PeriodEnd { get; set; }
+
         [JsonPropertyName("submissionDate")]
-        public DateTime SubmissionDate { get; set; }
+        public DateTime? SubmissionDate { get; set; }
 
         [JsonPropertyName("submittedBy")]
         public string SubmittedBy { get; set; }

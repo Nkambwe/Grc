@@ -2,4 +2,5 @@
     public class GrcInsertRequest<T>: GrcRequest {
         public T Record {get;set;}
     }
+
 }

@@ -31,8 +31,8 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 
-        [JsonPropertyName("userId")]
-        public long UserId { get; set; }
+        [JsonPropertyName("userName")]
+        public string UserName { get; set; }
 
         [JsonPropertyName("ipAddress")]
         public string IpAddress { get; set; }

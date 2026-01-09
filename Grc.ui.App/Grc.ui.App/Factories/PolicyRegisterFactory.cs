@@ -98,6 +98,29 @@ namespace Grc.ui.App.Factories {
                 );
             }
 
+            //..get enforcement laws
+            if (supportItems.ReturnTypes != null && supportItems.ReturnTypes.Any()) {
+                policyModel.ReturnTypes.AddRange(
+                    from type in supportItems.ReturnTypes
+                    select new ReturnTypeViewModel {
+                        Id = type.Id,
+                        TypeName = type.TypeName
+                    }
+                );
+            }
+
+            //..get enforcement laws
+            if (supportItems.EnforcementLaws != null && supportItems.EnforcementLaws.Any()) {
+                policyModel.EnforcementLaws.AddRange(
+                    from law in supportItems.EnforcementLaws
+                    select new StatuteMinViewModel {
+                        Id = law.Id,
+                        Section = law.Section,
+                        Requirement = law.Requirement
+                    }
+                );
+            }
+
             return policyModel;
         }
     }

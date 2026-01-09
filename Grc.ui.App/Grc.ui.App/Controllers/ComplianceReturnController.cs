@@ -1,6 +1,9 @@
-﻿using Grc.ui.App.Extensions;
+﻿using Grc.ui.App.Defaults;
+using Grc.ui.App.Extensions;
 using Grc.ui.App.Factories;
+using Grc.ui.App.Filters;
 using Grc.ui.App.Helpers;
+using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
@@ -301,6 +304,167 @@ namespace Grc.ui.App.Controllers {
 
             return Redirect(Url.Action("Dashboard", "Application"));
 
+        }
+        [LogActivityResult("Retrieve Return", "User retrieved return/report", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_RETURN, "StatutoryReturn")]
+        public async Task<IActionResult> GetReturn(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0) {
+                    return BadRequest(new { success = false, message = "Return/Report Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.COMPLIANCE_GET_RETURN.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = false
+                };
+
+                var result = await _returnService.GetReturnAsync(request);
+                if (result.HasError || result.Data == null) {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving return/report";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var response = result.Data;
+                var report = new {
+                    id = response.Id,
+                    sectionId = response.StatuteId,
+                    returnName = response.ReturnName ?? string.Empty,
+                    returnTypeId = response.TypeId,
+                    authorityId = response.AuthorityId,
+                    departmentId = response.DepartmentId,
+                    isDeleted = response.IsDeleted,
+                    frequencyId = response.FrequencyId,
+                    documentTypeId = response.DepartmentId,
+                    riskAttached = response.Risk ?? string.Empty,
+                    comments = response.Comments ?? string.Empty
+                };
+
+                return Ok(new { success = true, data = report });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error retrieving return/report: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "RETURNS-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Unable to retrieve return/report.Something went wrong" });
+            }
+        }
+
+        [HttpPost]
+        [LogActivityResult("Add Return", "User added return/repor", ActivityTypeDefaults.COMPLIANCE_CREATE_RETURN, "StatutoryReturn")]
+        public async Task<IActionResult> CreateReturn([FromBody] StatutoryReturnViewModel request) {
+            try {
+                if (!ModelState.IsValid) {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+
+                    string combinedErrors = string.Join("; ", errors);
+                    return Ok(new { success = false, message = $"Please correct these errors: {combinedErrors}", data = (object)null });
+                }
+
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                if (request == null) {
+                    return Ok(new { success = false, message = "Invalid Return/Report data" });
+                }
+
+
+                var result = await _returnService.CreateReturnAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create return/report" });
+
+                var created = result.Data;
+                return Ok(new { success = true, message = "Return/Report created successfully", data = new { } });
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error retrieving return/report: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "RETURNS-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Unable to create return/report.Something went wrong" });
+            }
+        }
+
+        [HttpPost]
+        [LogActivityResult("Update Return", "User updated return/repor", ActivityTypeDefaults.COMPLIANCE_EDITED_RETURN, "StatutoryReturn")]
+        public async Task<IActionResult> UpdateReturn([FromBody] StatutoryReturnViewModel request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                var result = await _returnService.UpdateReturnAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update return/report" });
+
+                var updated = result.Data;
+                return Ok(new {
+                    success = true,
+                    message = "Return/report updated successfully",
+                    data = new { }
+                });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error updating return/report: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "RETURNS-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Unable to updating return/report.Something went wrong" });
+            }
+        }
+
+        [HttpPost]
+        [LogActivityResult("Delete Return", "User delete return/report", ActivityTypeDefaults.COMPLIANCE_DELETED_RETURN, "StatutoryReturn")]
+        public async Task<IActionResult> DeleteReturn(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                if (id == 0) return BadRequest(new { success = false, message = "Return/Report Id is required" });
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.COMPLIANCE_DELETED_POLCIY.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = true
+                };
+
+                var result = await _returnService.DeleteReturnAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to delete return/report" });
+
+                return Ok(new { success = result.Data.Status, message = result.Data.Message });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error updating return/report: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "RETURNS-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Unable to updating return/report.Something went wrong" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult ExportReturnsFiltered([FromBody] List<GrcStatutoryReturnReportResponse> data) {
+            return Ok(new { data = data });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ExportReturnsAll() {
+            return Ok(new { message = "success" });
         }
 
         public async Task<IActionResult> GetPagedReturnsList([FromBody] TableListRequest request) {

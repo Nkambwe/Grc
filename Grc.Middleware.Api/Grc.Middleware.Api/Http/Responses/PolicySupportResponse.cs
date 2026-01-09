@@ -19,6 +19,11 @@ namespace Grc.Middleware.Api.Http.Responses
         [JsonPropertyName("regulatoryTypes")]
         public List<RegulatoryTypeResponse> RegulatoryTypes { get; set; } = new();
 
+        [JsonPropertyName("returnTypes")]
+        public List<ReturnTypeResponse> ReturnTypes { get; set; } = new();
+
+        [JsonPropertyName("enforcementLaws")]
+        public List<MiniObligationActResponse> EnforcementLaws { get; set; } = new();
     }
 
 }

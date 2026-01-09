@@ -684,7 +684,20 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             using var uow = UowFactory.Create();
             try {
                 //..map Regulatory Return request to Regulatory Return entity
-                var article = Mapper.Map<ReturnRequest, ReturnReport>(request);
+                var article = new ReturnReport() {
+                    ArticleId = request.ArticleId,
+                    ReturnName = request.ReturnName,
+                    TypeId = request.TypeId,
+                    AuthorityId = request.AuthorityId,
+                    FrequencyId = request.FrequencyId,
+                    DepartmentId = request.DepartmentId,
+                    CreatedBy = request.UserName,
+                    CreatedOn = DateTime.Now,
+                    LastModifiedBy = request.UserName,
+                    LastModifiedOn = DateTime.Now,
+                    Comments = request.Comments,
+                    IsDeleted = request.IsDeleted,
+                };
 
                 //..log the Regulatory Return data being saved
                 var articleJson = JsonSerializer.Serialize(article, new JsonSerializerOptions
@@ -718,7 +731,20 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             try
             {
                 //..map Regulatory Return request to Regulatory Return entity
-                var article = Mapper.Map<ReturnRequest, ReturnReport>(request);
+                var article = new ReturnReport() {
+                    ArticleId = request.ArticleId,
+                    ReturnName = request.ReturnName,
+                    TypeId = request.TypeId,
+                    AuthorityId = request.AuthorityId,
+                    FrequencyId = request.FrequencyId,
+                    DepartmentId = request.DepartmentId,
+                    CreatedBy = request.UserName,
+                    CreatedOn = DateTime.Now,
+                    LastModifiedBy = request.UserName,
+                    LastModifiedOn = DateTime.Now,
+                    Comments = request.Comments,
+                    IsDeleted = request.IsDeleted,
+                };
 
                 //..log the Regulatory Return data being saved
                 var articleJson = JsonSerializer.Serialize(article, new JsonSerializerOptions {
@@ -763,7 +789,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     regReturn.Comments = (request.Comments ?? string.Empty).Trim();
                     regReturn.IsDeleted = request.IsDeleted;
                     regReturn.LastModifiedOn = DateTime.Now;
-                    regReturn.LastModifiedBy = $"{request.UserId}";
+                    regReturn.LastModifiedBy = $"{request.UserName}";
 
                     //..check entity state
                     _ = uow.ReturnRepository.Update(regReturn, includeDeleted);
@@ -800,7 +826,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     regReturn.Comments = (request.Comments ?? string.Empty).Trim();
                     regReturn.IsDeleted = request.IsDeleted;
                     regReturn.LastModifiedOn = DateTime.Now;
-                    regReturn.LastModifiedBy = $"{request.UserId}";
+                    regReturn.LastModifiedBy = $"{request.UserName}";
 
                     //..check entity state
                     _ = await uow.ReturnRepository.UpdateAsync(regReturn, includeDeleted);

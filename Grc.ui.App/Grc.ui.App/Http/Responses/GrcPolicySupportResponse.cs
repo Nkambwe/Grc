@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace Grc.ui.App.Http.Responses {
+
     public class GrcPolicySupportResponse {
 
         [JsonPropertyName("frequencies")]
@@ -18,5 +19,12 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("regulatoryTypes")]
         public List<GrcRegulatoryTypeResponse> RegulatoryTypes { get; set; } = new();
 
+        [JsonPropertyName("returnTypes")]
+        public List<GrcReturnTypeResponse> ReturnTypes { get; set; } = new();
+
+        [JsonPropertyName("enforcementLaws")]
+        public List<GrcMiniObligationActResponse> EnforcementLaws { get; set; } = new();
+
     }
+    
 }

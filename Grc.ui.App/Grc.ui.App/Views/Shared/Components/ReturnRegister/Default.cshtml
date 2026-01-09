@@ -18,6 +18,189 @@
     <div id="returns-register-table"></div>
 </div>
 
+<!-- Overlay -->
+<div id="returnOverlay" class="obligation-panel-overlay"></div>
+
+<!-- Section Panel -->
+<div id="returnPanel" class="obligation-side-panel" onclick="event.stopPropagation()">
+
+    <div class="obligation-side-panel-header">
+        <h5 id="returnTitle">
+            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Key.Returns.Header.Register"))
+        </h5>
+        <button class="panel-close" onclick="closeReturnPane()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div class="obligation-side-panel-body">
+
+        <form id="returnForm" class="grc-law-form">
+            <input type="hidden" id="returnId" name="returnId">
+            <input type="hidden" id="isEdit" name="isEdit">
+
+            <div class="row m-3">
+
+                <!-- Guiding Law -->
+                <div class="col-12">
+                    <div class="row mb-3">
+                        <label for="sectionId" class="col-sm-12 col-form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Returns.Law"))
+                        </label>
+                        <div class="col-sm-12">
+                            <select class="js-section form-control" id="sectionId" name="sectionId">
+                                <option value="UNKNOWN">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Returns.Select.Law"))</option>
+                                @if (Model?.EnforcementLaws != null && Model.EnforcementLaws.Any()) {
+                                    foreach (var act in Model.EnforcementLaws) {
+                                        <option value="@act.Id">@act.Section @act.Requirement</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12">
+                    <label for="returnName" class="form-label">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Returns.Name"))
+                    </label>
+                    <textarea class="form-control" id="returnName" name="returnName" rows="2"></textarea>
+                </div>
+
+                <!-- Return Type -->
+                <div class="col-6">
+                    <div class="row mb-3">
+                        <label for="returnTypeId" class="col-sm-4 col-form-label text-sm-end">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Return.Type"))
+                        </label>
+                        <div class="col-sm-8">
+                            <select class="js-return-type-id form-control" id="returnTypeId" name="returnTypeId">
+                                <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Returns.Select.Type"))</option>
+                                @if (Model?.ReturnTypes != null && Model.ReturnTypes.Any()) {
+                                    foreach (var type in Model.ReturnTypes) {
+                                        <option value="@type.Id">@type.TypeName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Departments -->
+                <div class="col-6">
+
+                    <div class="row mb-3">
+                        <label for="departmentId" class="col-sm-4 col-form-label text-sm-end">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Department"))
+                        </label>
+                        <div class="col-sm-8">
+                            <select class="js-act-departments form-control" id="departmentId" name="departmentId">
+                                <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Department"))</option>
+                                @if (Model?.Departments != null && Model.Departments.Any()) {
+                                    foreach (var department in Model.Departments) {
+                                        <option value="@department.Id">@department.DepartmentName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Frequency -->
+                <div class="col-6">
+                    <div class="row mb-3">
+                        <label for="frequencyId" class="col-sm-4 col-form-label text-sm-end">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Frequency"))
+                        </label>
+                        <div class="col-sm-8">
+                            <select class="js-act-frequency form-control" id="frequencyId" name="frequencyId">
+                                <option value="UNKNOWN">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Placeholder"))</option>
+                                @if (Model?.Frequencies != null && Model.Frequencies.Any()) {
+                                    foreach (var frequency in Model.Frequencies) {
+                                        <option value="@frequency.Id">@frequency.FrequencyName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Authorities -->
+                <div class="col-6">
+
+                    <div class="row mb-3">
+                        <label for="authorityId" class="col-sm-4 col-form-label text-sm-end">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Authority"))
+                        </label>
+                        <div class="col-sm-8">
+                            <select class="js-act-authority-id form-control" id="authorityId" name="authorityId">
+                                <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Select.Authority"))</option>
+                                @if (Model?.Authorities != null && Model.Authorities.Any()) {
+                                    foreach (var authority in Model.Authorities) {
+                                        <option value="@authority.Id">@authority.AuthorityName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Remove -->
+                <div class="col-sm-6">
+                    <div class="row field-group mt-5 mb-5">
+                        <div class="col-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="isDeleted">
+                                <label class="form-check-label" for="isDeleted">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Returns.Deleted"))
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Risk -->
+                <div class="col-sm-12 mt-3 mb-3">
+                    <label for="riskAttached" class="form-label">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Returns.Risk"))
+                    </label>
+                    <textarea class="form-control" id="riskAttached" name="riskAttached" rows="2"></textarea>
+                </div>
+
+                <!-- Comments -->
+                <div class="col-sm-12 mt-3 mb-3">
+
+                    <label for="comments" class="form-label">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Returns.Comments"))
+                    </label>
+
+                    <textarea class="form-control" id="comments" name="comments" rows="2"></textarea>
+
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveReturn(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                        </div>
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeReturnPane()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                        </div>
+                        <div class="col-sm-10"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
 @{
     Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
     Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-returns-register.js");

@@ -1,5 +1,7 @@
 ﻿namespace Grc.Middleware.Api.Data.Entities.Compliance.Returns {
     public class ReturnSubmission: BaseEntity {
+        public DateTime PeriodStart { get; set; }
+        public DateTime PeriodEnd { get; set; }
         public string Status { get; set; }
         public DateTime Deadline { get; set; }
         public DateTime? SubmissionDate { get; set; }

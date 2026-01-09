@@ -1,6 +1,8 @@
 ﻿using Grc.ui.App.Dtos;
 using Grc.ui.App.Helpers;
+using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
+using Grc.ui.App.Models;
 
 namespace Grc.ui.App.Services {
     public interface IReturnsService {
@@ -33,12 +35,17 @@ namespace Grc.ui.App.Services {
         #endregion
 
         #region Returns Queries
+        Task<GrcResponse<GrcStatutoryReturnReportResponse>> GetReturnAsync(GrcIdRequest request);
+        Task<GrcResponse<ServiceResponse>> CreateReturnAsync(StatutoryReturnViewModel model, long userId, string ipAddress);
+        Task<GrcResponse<ServiceResponse>> UpdateReturnAsync(StatutoryReturnViewModel model, long userId, string ipAddress);
+        Task<GrcResponse<ServiceResponse>> DeleteReturnAsync(GrcIdRequest request);
         Task<GrcResponse<PagedResponse<GrcReturnsResponse>>> GetPagedReturnsAsync(TableListRequest request);
 
         #endregion
 
         #region Circular Queries
         Task<GrcResponse<PagedResponse<GrcCircularsResponse>>> GetPagedCircularAsync(TableListRequest request);
+        
         #endregion
     }
 }

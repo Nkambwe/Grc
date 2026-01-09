@@ -807,9 +807,39 @@
                defaults: new { controller = "ComplianceReturn", action = "ReturnsRegister" }
             );
             routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-returns-request",
+               pattern: "/grc/returns/compliance-returns/request/{id:long}",
+               defaults: new { controller = "ComplianceReturn", action = "GetReturn" }
+            );
+            routeBuilder.MapControllerRoute(
+                 name: "app-compliance-register-returns-create",
+                pattern: "/grc/returns/compliance-returns/create-return",
+                defaults: new { controller = "ComplianceReturn", action = "CreateReturn" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-returns-update",
+                pattern: "/grc/returns/compliance-returns/update-return",
+                defaults: new { controller = "ComplianceReturn", action = "UpdateReturn" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-returns-delete",
+                pattern: "/grc/returns/compliance-returns/delete-return/{id:long}",
+                defaults: new { controller = "ComplianceReturn", action = "DeleteReturn" }
+            );
+            routeBuilder.MapControllerRoute(
                name: "app-compliance-register-returns-register-paged",
                pattern: "/grc/returns/compliance-returns/paged-register",
                defaults: new { controller = "ComplianceReturn", action = "GetPagedReturnsList" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-returns-export-filtered",
+                pattern: "/grc/returns/compliance-returns/export-filtered",
+                defaults: new { controller = "Register", action = "ExportReturnsFiltered" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-returns-export-all",
+                pattern: "/grc/returns/compliance-returns/export-all",
+                defaults: new { controller = "Register", action = "ExportReturnsAll" }
             );
             routeBuilder.MapControllerRoute(
                name: "app-compliance-register-returns-innerDashboard-na",

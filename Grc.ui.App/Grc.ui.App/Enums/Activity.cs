@@ -91,7 +91,6 @@ namespace Grc.ui.App.Enums {
         COMPLIANCE_EXPORT_DOCTYPES = 42,
         [Description("Get document type details")]
         COMPLIANCE_GET_DOCTYPE = 43,
-
         [Description("Get a list of document owners available")]
         COMPLIANCE_RETRIEVE_DOCOWNERS = 44,
         [Description("Add document owner")]
@@ -324,5 +323,15 @@ namespace Grc.ui.App.Enums {
         TASK_STATUS_STATISTIC = 167,
         [Description("Retrieve policy status statistics")]
         POLICY_STATUS_STATISTIC = 168,
+        [Description("Get Return/Report details")]
+        COMPLIANCE_GET_RETURN = 169,
+        [Description("Add Return/Report")]
+        COMPLIANCE_CREATE_RETURN = 171,
+        [Description("Update Return/Report")]
+        COMPLIANCE_EDITED_RETURN = 172,
+        [Description("Delete Return/Report")]
+        COMPLIANCE_DELETED_RETURN = 173,
+        [Description("Export Return/Report")]
+        COMPLIANCE_EXPORT_RETURN = 174,
     }
 }

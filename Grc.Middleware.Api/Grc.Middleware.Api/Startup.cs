@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.HttpOverrides;
-using Grc.Middleware.Api.Utils;
-using Grc.Middleware.Api.Extensions;
+﻿using Grc.Middleware.Api.Extensions;
 using Grc.Middleware.Api.Security;
+using Grc.Middleware.Api.TaskHandler;
+using Grc.Middleware.Api.Utils;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace Grc.Middleware.Api {
 
@@ -78,7 +79,10 @@ namespace Grc.Middleware.Api {
  
             //forward headers
             services.ConfigureForwardHeaders();
- 
+
+            //..add background service
+            services.AddHostedService<ReturnSubmissionBackgroundService>();
+
             // http configurations
             services.AddHttpClient();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

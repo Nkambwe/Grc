@@ -8,6 +8,8 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
         public static void Configure(EntityTypeBuilder<ReturnSubmission> builder) {
             builder.ToTable("TBL_GRC_RETURN_SUBMISSION");
             builder.HasKey(t => t.Id);
+            builder.Property(t => t.PeriodStart).HasColumnName("form_date").IsRequired();
+            builder.Property(t => t.PeriodEnd).HasColumnName("to_date").IsRequired();
             builder.Property(t => t.Deadline).HasColumnName("deadline").IsRequired(true);
             builder.Property(t => t.Status).HasColumnName("return_status").HasColumnType("NVARCHAR(50)").IsRequired(true);
             builder.Property(t => t.IsDeleted).HasColumnName("is_deleted");

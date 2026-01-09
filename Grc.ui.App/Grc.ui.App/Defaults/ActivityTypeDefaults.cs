@@ -193,6 +193,11 @@
         public const string COMPLIANCE_CREATE_ISSUE = "Register.Issues.Create";
         public const string COMPLIANCE_EDITED_ISSUE = "Register.Issues.Edited";
         public const string COMPLIANCE_DELETED_ISSUE = "Register.Issues.Deleted";
+        public const string COMPLIANCE_RETRIEVE_RETURN = "Returns.Report.Retrieve";
+        public const string COMPLIANCE_CREATE_RETURN = "Returns.Report.Create";
+        public const string COMPLIANCE_EDITED_RETURN = "Returns.Report.Edited";
+        public const string COMPLIANCE_DELETED_RETURN = "Returns.Report.Deleted";
+
         #endregion
 
     }

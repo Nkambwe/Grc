@@ -3393,20 +3393,246 @@ namespace Grc.Middleware.Api.Controllers {
 
         #region Returns
 
+        [HttpPost("returns/return-retrieve")]
+        public async Task<IActionResult> GetReturn([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Get Return by ID", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ComplianceIssueResponse>(error));
+                }
+
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request Return ID is required", "Invalid Return request ID");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<StatutoryReturnReportResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var result = await _returnService.GetAsync(d => d.Id == request.RecordId, true, r => r.Authority, r => r.Article, r => r.Frequency, r => r.Department, r => r.ReturnType);
+                if (result == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Return/Report not found", "No return/report matched the provided ID");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<StatutoryReturnReportResponse>(error));
+                }
+
+                //..map response
+                var response = new StatutoryReturnReportResponse {
+                    Id = result.Id,
+                    StatuteId = result.Article?.Id ?? 0,
+                    Statute = result.Article?.Article ?? string.Empty,
+                    ReturnName = result.ReturnName ?? string.Empty,
+                    TypeId = result.ReturnType?.Id ?? 0,
+                    Type = result.ReturnType?.TypeName ?? string.Empty,
+                    DepartmentId = result.Department?.Id ?? 0,
+                    Department = result.Department?.DepartmentName ?? string.Empty,
+                    AuthorityId = result.Authority?.Id ?? 0,
+                    Authority = result.Authority?.AuthorityName ?? string.Empty,
+                    FrequencyId = result.Frequency?.Id ?? 0,
+                    Frequency = result.Frequency?.FrequencyName ?? string.Empty,
+                    Comments = result.Comments ?? string.Empty,
+                    Risk = result.Risk ?? string.Empty,
+                    IsDeleted = result.IsDeleted
+                };
+
+                return Ok(new GrcResponse<StatutoryReturnReportResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<StatutoryReturnReportResponse>(error));
+            }
+        }
+
+        [HttpPost("returns/create-return")]
+        public async Task<IActionResult> CreateReturn([FromBody] StatutoryReturnReportRequest request) {
+            try {
+                Logger.LogActivity("Creating new return/report", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The return/report record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!string.IsNullOrWhiteSpace(request.ReturnName)) {
+                    if (await _returnService.ExistsAsync(i => i.ReturnName == request.ReturnName)) {
+                        var error = new ResponseError(ResponseCodes.DUPLICATE, "Duplicate Record", "Another return/report found with similar name");
+                        Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<GeneralResponse>(error));
+                    }
+                } else {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Return/report cannot be empty", "The name is required");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                if (string.IsNullOrWhiteSpace(request.Comments)) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Return/report notes cannot be empty", "The notes is required");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser == null) {
+                    var error = new ResponseError(ResponseCodes.RESTRICTED, "Authentication Error", "User ID could not be verified");
+                    Logger.LogActivity($"RESTRICTED: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                var record = new ReturnRequest() {
+                    ArticleId = request.StatuteId,
+                    ReturnName = request.ReturnName,
+                    TypeId = request.TypeId,
+                    AuthorityId = request.AuthorityId,
+                    FrequencyId = request.FrequencyId,
+                    DepartmentId = request.DepartmentId,
+                    UserName = currentUser.Username,
+                    Action = request.Action,
+                    IpAddress = request.IPAddress,
+                    Comments = request.Comments,
+                    IsDeleted = request.IsDeleted,
+                };
+
+                //..create return/report
+                var result = await _returnService.InsertAsync(record);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Issue saved successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to save issuerecord. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("returns/update-return")]
+        public async Task<IActionResult> UpdateReturn([FromBody] StatutoryReturnReportRequest request) {
+            try {
+                Logger.LogActivity("Update Return/report", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The return/report record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _issueService.ExistsAsync(r => r.Id == request.Id)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "Return/Report record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                if (string.IsNullOrWhiteSpace(request.ReturnName)) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Report/return name cannot be empty", "The name is required");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                if (string.IsNullOrWhiteSpace(request.Comments)) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Report/return notes cannot be empty", "The notes is required");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser == null) {
+                    var error = new ResponseError(ResponseCodes.RESTRICTED, "Authentication Error", "User ID could not be verified");
+                    Logger.LogActivity($"RESTRICTED: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                var record = new ReturnRequest() {
+                    Id = request.Id,
+                    ArticleId = request.StatuteId,
+                    ReturnName = request.ReturnName,
+                    TypeId = request.TypeId,
+                    AuthorityId = request.AuthorityId,
+                    FrequencyId = request.FrequencyId,
+                    DepartmentId = request.DepartmentId,
+                    UserName = currentUser.Username,
+                    Action = request.Action,
+                    IpAddress = request.IPAddress,
+                    Comments = request.Comments,
+                    IsDeleted = request.IsDeleted,
+                };
+
+                //..update report
+                var result = await _returnService.UpdateAsync(record);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Return/report updated successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update report/return record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("returns/delete-return")]
+        public async Task<IActionResult> DeleteReturn([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
+
+                //..check if record exists
+                var response = new GeneralResponse();
+                if (!await _returnService.ExistsAsync(r => r.Id == request.RecordId)) {
+                    response.Status = false;
+                    response.StatusCode = (int)ResponseCodes.NOTFOUND;
+                    response.Message = $"Return/report Not Found!";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    return Ok(new GrcResponse<GeneralResponse>(response));
+                }
+
+                //..delete return/report
+                var status = await _returnService.DeleteAsync(request);
+                if (!status) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Failed to return/report", "An error occurred! could delete return/report");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse() { Status = status }));
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error deleting report/return by user {request.UserId}: {ex.Message}", "ERROR");
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
         [HttpPost("returns/paged-returns-list")]
         public async Task<IActionResult> GetPagedReturnsList([FromBody] ListRequest request) {
 
             try {
                 Logger.LogActivity($"{request.Action}", "INFO");
                 if (request == null) {
-                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","Invalid request body");
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<PagedResponse<ReturnsResponse>>(error));
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                var pageResult = await _returnService.PageAllAsync(request.PageIndex, request.PageSize, false, 
-                            r=> r.Department, r=>r.Frequency, r=> r.Article, r=> r.Authority, r=>r.ReturnType);
+                var pageResult = await _returnService.PageAllAsync(request.PageIndex, request.PageSize, false,
+                            r => r.Department, r => r.Frequency, r => r.Article, r => r.Authority, r => r.ReturnType);
                 if (pageResult.Entities == null || !pageResult.Entities.Any()) {
                     var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No returns found");
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
@@ -3432,9 +3658,9 @@ namespace Grc.Middleware.Api.Controllers {
                 if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
                     var searchTerm = request.SearchTerm.ToLower();
                     returns = returns.Where(u =>
-                        (u.ReportName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)||
-                        (u.Department?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)||
-                        (u.Authority?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)||
+                        (u.ReportName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.Department?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.Authority?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
                         (u.Department?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
                     ).ToList();
                 }

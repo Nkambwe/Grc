@@ -106,12 +106,7 @@ namespace Grc.ui.App.Services {
         public async Task<GrcResponse<GrcPolicySupportResponse>> GetPolicySupportItemsAsync(GrcRequest request) {
             try {
                 if (request == null) {
-                    var error = new GrcResponseError(
-                        GrcStatusCodes.BADREQUEST,
-                        "Invalid Request object",
-                        "Request object cannot be null"
-                    );
-
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST,"Invalid Request object","Request object cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return new GrcResponse<GrcPolicySupportResponse>(error);
                 }
