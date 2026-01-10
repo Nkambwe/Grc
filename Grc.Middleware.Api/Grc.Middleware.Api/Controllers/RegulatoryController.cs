@@ -30,6 +30,7 @@ namespace Grc.Middleware.Api.Controllers {
         private readonly IReturnService _returnService;
         private readonly ICircularService _circularService;
         private readonly ICircularIssueService _circularIssueService;
+        private readonly IReturnsSubmissionService _submissionService;
         public RegulatoryController(IObjectCypher cypher,
             IServiceLoggerFactory loggerFactory, 
             IMapper mapper, 
@@ -48,7 +49,8 @@ namespace Grc.Middleware.Api.Controllers {
             ICircularIssueService circularIssueService,
             IReturnService returnService,
             ICircularService circularService,
-            IEnvironmentProvider environment, 
+            IEnvironmentProvider environment,
+            IReturnsSubmissionService submissionService,
             IErrorNotificationService errorService, 
             ISystemErrorService systemErrorService) 
             : base(cypher, loggerFactory, mapper, companyService, environment, errorService, systemErrorService) {
@@ -66,6 +68,7 @@ namespace Grc.Middleware.Api.Controllers {
             _returnService = returnService;
             _circularService = circularService;
             _circularIssueService = circularIssueService;
+            _submissionService = submissionService;
         }
 
         #region Compliance Statistics
@@ -3747,6 +3750,104 @@ namespace Grc.Middleware.Api.Controllers {
 
         #endregion
 
+        #region Submissions
+
+        [HttpPost("returns/submission-retrieve")]
+        public async Task<IActionResult> GetSubmission([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Get submission by ID", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ComplianceIssueResponse>(error));
+                }
+
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request Submission ID is required", "Invalid Submission request ID");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<SubmissionResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var result = await _submissionService.GetAsync(d => d.Id == request.RecordId, true, r => r.RegulatoryReturn, r => r.RegulatoryReturn.Department, r => r.RegulatoryReturn.Department);
+                if (result == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "submission/Report not found", "No submission/report matched the provided ID");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<SubmissionResponse>(error));
+                }
+
+                //..map response
+                var response = new SubmissionResponse {
+                    Id = result.Id,
+                    Report = result.RegulatoryReturn?.ReturnName ?? string.Empty,
+                    Title = result.RegulatoryReturn?.ReturnName ?? string.Empty,
+                    PeriodStart = result.PeriodStart,
+                    PeriodEnd = result.PeriodEnd,
+                    Status = result.Status ?? string.Empty,
+                    OwnerId = result.RegulatoryReturn?.Department?.Id ?? 0,
+                    Department = result.RegulatoryReturn?.Department?.DepartmentName,
+                    IsDeleted = result.IsDeleted,
+                    IsBreached = result.IsBreached,
+                    BreachReason = result.BreachReason ?? string.Empty,
+                    Risk = result.RegulatoryReturn?.Risk ?? string.Empty
+                };
+
+                return Ok(new GrcResponse<SubmissionResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<SubmissionResponse>(error));
+            }
+        }
+
+        [HttpPost("returns/update-submission")]
+        public async Task<IActionResult> UpdateSubmission([FromBody] SubmissionRequest request) {
+            try {
+                Logger.LogActivity("Update submission", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The submission record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _submissionService.ExistsAsync(r => r.Id == request.Id)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "Submission record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username = string.Empty;
+                if (currentUser != null) {
+                    username = currentUser.Username;
+                } else {
+                    username = $"{request.UserId}";
+                }
+
+                //..update document type
+                var result = await _submissionService.UpdateAsync(request, username);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Document type updated successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update document type record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+        #endregion
+
         #region Protected methods
 
         protected static PolicyStatus GetStatusEnumValue(string status) {
@@ -3764,38 +3865,7 @@ namespace Grc.Middleware.Api.Controllers {
 
             return ReportPeriod.NA;
         }
-
-
-        private static string GetThisWeekPeriod() {
-            var today = DateTime.Today;
-
-            // Calculate Monday of the current week
-            int diff = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
-            var weekStart = today.AddDays(-diff);
-            var weekEnd = weekStart.AddDays(6);
-
-            return $"WEEK {weekStart:yyyy-MM-dd}/{weekEnd:yyyy-MM-dd}";
-        }
-
-        private static string GetLastWeekPeriod() {
-            var today = DateTime.Today;
-
-            // Calculate Monday of the current week
-            int diff = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
-            var thisWeekStart = today.AddDays(-diff);
-
-            // Last week is the 7 days before this week
-            var lastWeekStart = thisWeekStart.AddDays(-7);
-            var lastWeekEnd = thisWeekStart.AddDays(-1);
-
-            return $"LAST WEEK {lastWeekStart:yyyy-MM-dd}/{lastWeekEnd:yyyy-MM-dd}";
-        }
-
-        private static string GetMonthPeriod() {
-            var today = DateTime.Today;
-            return today.ToString("MMM yyyy").ToUpper();
-        }
-
+        
         #endregion
 
     }

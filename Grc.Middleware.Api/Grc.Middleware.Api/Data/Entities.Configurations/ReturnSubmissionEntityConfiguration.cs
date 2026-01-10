@@ -14,8 +14,10 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
             builder.Property(t => t.Status).HasColumnName("return_status").HasColumnType("NVARCHAR(50)").IsRequired(true);
             builder.Property(t => t.IsDeleted).HasColumnName("is_deleted");
             builder.Property(t => t.SubmissionDate).HasColumnName("submission_date").IsRequired(false);
-            builder.Property(t => t.FilePath).HasColumnName("file_path").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
+            builder.Property(t => t.FilePath).HasColumnName("file_path").HasColumnType("NVARCHAR(MAX)").IsRequired(false); 
             builder.Property(t => t.SubmittedBy).HasColumnName("submitted_by").HasColumnType("NVARCHAR(50)").IsRequired(false);
+            builder.Property(t => t.IsBreached).HasColumnName("is_breached").IsRequired();
+            builder.Property(t => t.BreachReason).HasColumnName("breach_reason").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(t => t.Comments).HasColumnName("return_comments").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(t => t.CreatedOn).HasColumnName("created_on").IsRequired();
             builder.Property(t => t.ReturnId).HasColumnName("return_id").IsRequired(true);

@@ -44,6 +44,13 @@ body {
     height: auto;
     background: var(--background-color);
 }
+
+.table > :not(caption) > * > * {
+    padding-top: 5px;
+    text-align: left;
+    align-items: center;
+}
+
 .tooltip {
     position: relative;
 }
@@ -100,8 +107,28 @@ header.header-bar.collapsed {
     transition: all .3s ease-in-out;
 }
 
-.main-content{
-    padding: 0!important;
+#breachBox{
+    padding:0;
+    display:flex;
+}
+
+    #breachBox span {
+        display: flex;
+        width: 100%;
+        padding: 10px;
+        color: #FF076E;
+        background-color: #FFD0DC;
+        border: solid 1px #FF076E;
+    }
+
+.breach-marker {
+    color: #FF076E;
+    background-color: #FFD0DC;
+    border: solid 1px #FF076E;
+}
+
+.main-content {
+    padding: 0 !important;
 }
 
 .app-seach-box {

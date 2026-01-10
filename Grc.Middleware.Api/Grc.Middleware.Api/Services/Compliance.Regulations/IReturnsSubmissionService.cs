@@ -49,6 +49,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
 
         #region Background Service
 
+        Task<bool> UpdateAsync(SubmissionRequest submission, string username);
+
         Task GenerateMissingSubmissionsAsync(DateTime today, CancellationToken ct);
 
         #endregion

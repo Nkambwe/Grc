@@ -486,6 +486,7 @@ namespace Grc.ui.App.Factories {
                 returns.Reports = data.Reports.Select(report => new ReturnSubmission() {
                     Id = report.Id,
                     Title = report.Title,
+                    Period =period.Equals("DAILY")? GetReportDate(report.PeriodStart) : $"{report.PeriodStart:yyyy-MM-dd} TO {report.PeriodEnd:yyyy-MM-dd}",
                     Status = report.Status,
                     Department = report.Department,
                     Risk = report.Risk
@@ -631,5 +632,20 @@ namespace Grc.ui.App.Factories {
         }
 
         #endregion
+
+        private static string GetReportDate(DateTime date) {
+            var today = DateTime.Today;
+
+            string report;
+            if (date == today) {
+                report = "TODAY";
+            } else if (date == today.AddDays(-1)) {
+                report = "YESTERDAY";
+            } else {
+                report = date.ToString("yyyy-MM-dd");
+            }
+            return report;
+
+        }
     }
 }

@@ -18,7 +18,211 @@ $('.action-btn-returns-home').on('click', function () {
     }
 });
 
+$('#processReviewForm').on('submit', function (e) {
+    e.preventDefault();
+});
+
+function viewReport(id) {
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving Return/Report...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    findSubmission(id)
+        .then(record => {
+            Swal.close();
+            if (record) {
+                openViewPanel(record);
+            } else {
+                Swal.fire({
+                    title: 'NOT FOUND',
+                    text: 'Return/Report not found',
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            Swal.close();
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to load Return/Report details. Please try again.',
+                confirmButtonText: 'OK'
+            });
+        });
+}
+
+function findSubmission(id) {
+
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/grc/returns/compliance-returns/submissions/retrieve/${id}`,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success && response.data) {
+                    resolve(response.data);
+                    resolve(null);
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire("Error", error);
+            }
+        });
+    });
+}
+
+function openViewPanel(record) {
+
+    $('#submissionId').val(record.id);
+    $('#title').val(record.title || '');
+    $('#period').val(record.period || '');
+    $('#ownerId').val(record.period || '0');
+    $('#status').val(record.status || 'UNKNOWN').trigger('change');
+    $('#isBreached').prop('checked', record.isBreached);
+    $('#submissionBreach').val(record.isBreached ? 'YES': 'NO');
+    $('#riskAttached').val(record.riskAttached || '');
+    $('#comments').val(record.comments || '');
+    $('#reason').val(record.returnName || '');
+    $('#file').val(record.file || '');
+    $('#department').val(record.department || '');
+    $('#submittedBy').val(record.reason || '');
+
+    if (record.isBreached) {
+        $('#breachBox').show();
+        $('#riskAttached').addClass('breach-marker');
+        $('#period').addClass('breach-marker');
+    }
+
+    //..load dialog window
+    closeInnerPane();
+    $('#returnInnerOverlay').addClass('active');
+    $('#returnInnerPanel').addClass('active');
+    $('body').css('overflow', 'hidden');
+}
+
+function updateSubmission(e) {
+    e.preventDefault();
+
+    //..build record payload from form
+    let recordData = {
+        id: Number($('#submissionId').val()) || 0,
+        ownerId: Number($('#ownerId').val()) || 0,
+        submissionBreach: $('#submissionBreach').val(),
+        isBreached: $('#isBreached').is(':checked') ? true : false,
+        comments: $('#comments').val(),
+        reason: $('#reason').val(),
+        file: $('#file').val(),
+        status: $('#status').val() || 'UNKNOWN',
+        submittedBy: $('#submittedBy').val()
+    };
+
+    console.log(recordData);
+
+    //..validate required fields
+    let errors = [];
+    if (recordData.submissionBreach === 'YES') {
+        if (!recordData.reason)
+            errors.push("Reason for breach MUST be provided.");
+    }
+
+    if (!recordData.status || recordData.status === "UNKNOWN")
+        errors.push("You must select the report status");
+
+    if (!recordData.comments)
+        errors.push("Provide a note for the submission");
+
+    if (!recordData.submittedBy)
+        errors.push("Provide name for person submitting the report");
+
+    if (errors.length > 0) {
+        highlightSubmissionField("#submittedBy", !recordData.submittedBy);
+        if (recordData.submissionBreach === 'YES') {
+            if (!recordData.reason)
+                highlightSubmissionField("#reason", !recordData.reason);
+        }
+
+        highlightSubmissionField("#comments", !recordData.comments);
+        Swal.fire({
+            title: "Submission Validation",
+            html: `<div style="text-align:left;">${errors.join("<br>")}</div>`,
+        });
+        return;
+    }
+
+    //..call backend
+    saveSubmissionRecord(recordData);
+}
+
+function saveSubmissionRecord(payload) {
+    let url = "/grc/returns/compliance-returns/submissions/update";
+    Swal.fire({
+        title: "Updating submission...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(payload),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getSubmissionToken()
+        },
+        success: function (res) {
+            if (!res || res.success !== true) {
+                Swal.fire(res?.message || "Operation failed");
+                return;
+            }
+
+            Swal.fire(res.message || "Return/Report updated successfully")
+                .then(() => {
+                    closeInnerPane();
+                    window.location.reload();
+                });
+        },
+        error: function (xhr, status, error) {
+            var errorMessage = error;
+
+            try {
+                var response = JSON.parse(xhr.responseText);
+                if (response.message) {
+                    errorMessage = response.message;
+                }
+            } catch (e) {
+                // If parsing fails, use the default error
+                errorMessage = "Unexpected error occurred";
+            }
+
+            Swal.fire("Report/Return Submission Update", errorMessage);
+        }
+    });
+}
+
+function closeInnerPane() {
+    $('#returnInnerOverlay').removeClass('active');
+    $('#returnInnerPanel').removeClass('active');
+}
+
 document.addEventListener('DOMContentLoaded', function () {
+    //..hide breach box
+    $('#breachBox').hide();
+
+    $('#status').select2({
+        width: '100%',
+        dropdownParent: $('#returnInnerPanel')
+    });
+
+    //..load table data
     const tableBody = document.querySelector('#returnsTable tbody');
     tableBody.innerHTML = '';
     const returns = returnsData.Returns.Reports;
@@ -27,28 +231,64 @@ document.addEventListener('DOMContentLoaded', function () {
         const tr = document.createElement('tr');
 
         const color = cardColorList[index % cardColorList.length].bg;
+        let statusColor = "#FF2413"; 
+        if (report.Status === "CLOSED") {
+            statusColor = "#09B831"; 
+        } else if (report.Status === "OPEN") {
+            statusColor = "#FF8503"; 
+        }
 
         tr.innerHTML = `
-        <td>${report.Title}</td>
-        <td>${report.Status}</td>
-        <td>${report.Risk}</td>
-        <td>${report.Department}</td>
-        <td>
-            <button class="btn btn-category-button" onclick="viewReport('${report.Id}')">
-                <span style="
-                    display:inline-block;
-                    width:15px;
-                    height:15px;
-                    border-radius:50%;
-                    background-color:${color};">
-                </span>
-                <span style="margin-left:10px;">
-                    <i class="mdi mdi-eye"></i>
-                </span>
-            </button>
-        </td>
-    `;
+            <td>${report.Title}</td>
+            <td>${report.Period}</td>
+            <td style="
+                background-color:${statusColor};
+                color:#FFFFFF;
+                font-weight:600;
+                text-align:center;">
+                ${report.Status}
+            </td>
+            <td>${report.Risk}</td>
+            <td>${report.Department}</td>
+            <td>
+                <button class="btn btn-category-button" onclick="viewReport('${report.Id}')">
+                    <span style="
+                        display:inline-block;
+                        width:15px;
+                        height:15px;
+                        border-radius:50%;
+                        text-align:left;
+                        background-color:${color};">
+                    </span>
+                    <span style="margin-left:10px;">
+                        <i class="mdi mdi-eye"></i>
+                    </span>
+                </button>
+            </td>
+        `;
 
         tableBody.appendChild(tr);
     });
 });
+
+//..get antiforegery token from meta tag
+function getSubmissionToken() {
+    return $('meta[name="csrf-token"]').attr('content');
+}
+
+function highlightSubmissionField(selector, hasError, message) {
+    const $field = $(selector);
+    const $formGroup = $field.closest('.form-group, .mb-3, .col-sm-8');
+
+    // Remove existing error
+    $field.removeClass('is-invalid');
+    $formGroup.find('.field-error').remove();
+
+    if (hasError) {
+        $field.addClass('is-invalid');
+        if (message) {
+            $formGroup.append(`<div class="field-error text-danger small mt-1">${message}</div>`);
+        }
+    }
+}
+

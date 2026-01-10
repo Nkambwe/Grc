@@ -22,6 +22,12 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("status")]
         public string Status { get; set; }
 
+        [JsonPropertyName("isBreached")]
+        public bool IsBreached { get; set; }
+
+        [JsonPropertyName("breachReason")]
+        public string BreachReason { get; set; }
+
         [JsonPropertyName("periodStart")]
         public DateTime PeriodStart { get; set; }
 

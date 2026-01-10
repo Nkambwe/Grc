@@ -146,8 +146,6 @@ $(".action-btn-return-new").on("click", function () {
 });
 
 function openReturnPanel(title, record, isEdit) {
-
-    console.log(record);
     //..initialize form fields
     $('#isEdit').val(isEdit);
     $('#returnId').val(record.id);

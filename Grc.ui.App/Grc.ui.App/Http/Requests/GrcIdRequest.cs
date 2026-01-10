@@ -38,4 +38,5 @@ namespace Grc.ui.App.Http.Requests {
         [JsonPropertyName("decrypts")]
         public string[] DecryptFields { get; set; }
     }
+
 }

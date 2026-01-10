@@ -2101,6 +2101,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetSubmission",
+    "RelativePath": "grc/returns/submission-retrieve",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "UpdateReturn",
     "RelativePath": "grc/returns/update-return",
     "HttpMethod": "POST",
@@ -2110,6 +2126,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.StatutoryReturnReportRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "UpdateSubmission",
+    "RelativePath": "grc/returns/update-submission",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.SubmissionRequest",
         "IsRequired": true
       }
     ],

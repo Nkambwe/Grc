@@ -902,6 +902,16 @@
               defaults: new { controller = "ComplianceReturn", action = "TriennialInnerDashboard" }
             );
 
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-returns-submissions-retrieve",
+               pattern: "/grc/returns/compliance-returns/submissions/retrieve/{id:long}",
+               defaults: new { controller = "ComplianceReturn", action = "GetSubmission" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-returns-submissions-update",
+               pattern: "/grc/returns/compliance-returns/submissions/update",
+               defaults: new { controller = "ComplianceReturn", action = "UpdateSubmission" }
+           );
             /*----------------------------------------------Circular returns Routes*/
             routeBuilder.MapControllerRoute(
               name: "app-compliance-circular-returns-home",

@@ -1,5 +1,4 @@
-﻿using Grc.ui.App.Dtos;
-using Grc.ui.App.Helpers;
+﻿using Grc.ui.App.Helpers;
 using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Models;
@@ -34,6 +33,12 @@ namespace Grc.ui.App.Services {
 
         #endregion
 
+        #region Submissions
+        Task<GrcResponse<GrcReturnSubmissionResponse>> GetSubmissionAsync(GrcIdRequest request);
+        Task<GrcResponse<ServiceResponse>> UpdateSubmissionAsync(SubmissionViewModel submission, long userId, string ipAddress);
+
+        #endregion
+
         #region Returns Queries
         Task<GrcResponse<GrcStatutoryReturnReportResponse>> GetReturnAsync(GrcIdRequest request);
         Task<GrcResponse<ServiceResponse>> CreateReturnAsync(StatutoryReturnViewModel model, long userId, string ipAddress);
@@ -45,7 +50,7 @@ namespace Grc.ui.App.Services {
 
         #region Circular Queries
         Task<GrcResponse<PagedResponse<GrcCircularsResponse>>> GetPagedCircularAsync(TableListRequest request);
-        
+       
         #endregion
     }
 }

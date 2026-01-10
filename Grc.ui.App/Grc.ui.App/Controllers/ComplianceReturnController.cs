@@ -737,6 +737,85 @@ namespace Grc.ui.App.Controllers {
 
         #endregion
 
+        #region Return Submissions
+        public async Task<IActionResult> GetSubmission(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0) {
+                    return BadRequest(new { success = false, message = "Policy Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.COMPLIANCE_GET_POLICY.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = false
+                };
+
+                var result = await _returnService.GetSubmissionAsync(request);
+                if (result.HasError || result.Data == null) {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving policy";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var response = result.Data;
+                var policyRecord = new {
+                    id = response.Id,
+                    report = response.Report ?? string.Empty,
+                    title = response.Title ?? string.Empty,
+                    period = $"{response.PeriodStart:yyyy-MM-dd} TO {response.PeriodEnd:yyyy-MM-dd}",
+                    status = response.Status ?? string.Empty,
+                    isDeleted = response.IsDeleted,
+                    isBreached = response.IsBreached,
+                    ownerId = response.OwnerId,
+                    riskAttached = response.Risk ?? string.Empty,
+                    department = response.Department ?? string.Empty,
+                    comments = response.Comment ?? string.Empty,
+                    submittedBy = response.SubmittedBy,
+                    reason = response.BreachReason ?? string.Empty
+                };
+
+                return Ok(new { success = true, data = policyRecord });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error retrieving submission: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "RETURNS-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Unable to retrieving submission. An error occurred" });
+            }
+        }
+
+        public async Task<IActionResult> UpdateSubmission([FromBody] SubmissionViewModel submission) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                var result = await _returnService.UpdateSubmissionAsync(submission, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update policy" });
+
+                var updated = result.Data;
+                return Ok(new { success = true, message = "Submission updated successfully", data = new { }});
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error updating submission: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "RETURNS-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Unable to update submission. An error occurred" });
+            }
+        }
+
+        #endregion
+
         #region Circular Returns
 
         public async Task<IActionResult> CircularHome() {

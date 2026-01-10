@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Compliance.Returns;
 using Grc.Middleware.Api.Data.Entities.System;
@@ -789,10 +790,45 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 throw;
             }
         }
-        
+
         #endregion
 
         #region Background Tasks
+
+        public async Task<bool> UpdateAsync(SubmissionRequest request, string username) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Update submission", "INFO");
+
+            try {
+                var record = await uow.RegulatorySubmissionRepository.GetAsync(a => a.Id == request.Id);
+                if (record != null) {
+                    record.Status = (request.Status ?? string.Empty).Trim();
+                    record.FilePath = (request.File ?? string.Empty).Trim();
+                    record.SubmittedBy = (request.SubmittedBy ?? string.Empty).Trim();
+                    record.Comments = (request.Comments ?? string.Empty).Trim();
+                    record.SubmissionDate = DateTime.Now;
+                    record.IsBreached = !string.IsNullOrWhiteSpace(request.BreachReason);
+                    record.BreachReason = (request.BreachReason ?? string.Empty).Trim();
+                    record.LastModifiedOn = DateTime.Now;
+                    record.LastModifiedBy = $"{username}";
+
+                    //..check entity state
+                    _ = await uow.RegulatorySubmissionRepository.UpdateAsync(record, true);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(record).State;
+                    Logger.LogActivity($"Submission state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to update submission record: {ex.Message}", "ERROR");
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+        }
 
         public async Task GenerateMissingSubmissionsAsync(DateTime today, CancellationToken ct) {
 
@@ -820,6 +856,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                             ReturnId = report.Id,
                             Status = "OPEN",
                             PeriodStart = start,
+                            IsBreached = false,
                             PeriodEnd = end,
                             Deadline = end,
                             SubmissionDate = null,
@@ -831,9 +868,22 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     }
 
                     //..breach old submissions
-                    var overdue = await GetAllAsync(r => r.ReturnId == report.Id && r.Status == "OPEN" && r.SubmissionDate == null && r.Deadline < today, false);
+                    var overdue = await GetAllAsync(r => r.ReturnId == report.Id && r.Status == "OPEN" && r.SubmissionDate == null && r.Deadline < today && !r.IsBreached, false);
                     foreach (var sub in overdue) {
-                        breachedUpdates.Add(new ReturnSubmissionRequest {Id = sub.Id, Status = "BREACHED", ModifiedBy = "SYSTEM", ModifiedOn = DateTime.Now});
+                        breachedUpdates.Add(new ReturnSubmissionRequest {
+                            Id = sub.Id,
+                            ReturnId = report.Id,
+                            PeriodStart = sub.PeriodStart,
+                            PeriodEnd = sub.PeriodEnd,
+                            Deadline = sub.Deadline,
+                            IsBreached = true,
+                            Status = sub.Status,
+                            SubmissionDate = sub.SubmissionDate,
+                            CreatedBy = sub.CreatedBy,
+                            CreatedOn = sub.CreatedOn,
+                            ModifiedBy = "SYSTEM", 
+                            ModifiedOn = DateTime.Now
+                        });
                     }
                 }
 
@@ -841,7 +891,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     await BulkyInsertAsync(newSubmissions.ToArray());
 
                 if (breachedUpdates.Any())
-                    await BulkyUpdateAsync(breachedUpdates.ToArray(), r => r.Status, r => r.LastModifiedOn, r => r.LastModifiedBy);
+                    await BulkyUpdateAsync(breachedUpdates.ToArray());
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to Submission in the database: {ex.Message}", "ERROR");
                 _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));

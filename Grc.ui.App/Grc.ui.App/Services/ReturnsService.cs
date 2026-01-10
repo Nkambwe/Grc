@@ -549,6 +549,67 @@ namespace Grc.ui.App.Services {
 
         #endregion
 
+        #region Submissions
+        public async Task<GrcResponse<GrcReturnSubmissionResponse>> GetSubmissionAsync(GrcIdRequest request) {
+            try {
+                var endpoint = $"{EndpointProvider.Compliance.ReturnBase}/submission-retrieve";
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcReturnSubmissionResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<GrcReturnSubmissionResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> UpdateSubmissionAsync(SubmissionViewModel submission, long userId, string ipAddress) {
+
+            try {
+
+                if (submission == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Submission record cannot be null", "Invalid Submission record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..build request object
+                var request = new GrcReturnSubmissionRequest() {
+                    Id = submission.Id,
+                    Status = submission.Status,
+                    File = submission.File,
+                    BreachReason = submission.Reason,
+                    Comments = submission.Comments,
+                    OwnerId = submission.OwnerId,
+                    SubmittedBy = submission.SubmittedBy,
+                    UserId = userId,
+                    IPAddress = ipAddress,
+                    Action = "Update Return Submission"
+                };
+
+                //..map request
+                Logger.LogActivity($"UPDATE SUBMISSION REQUEST : {JsonSerializer.Serialize(request)}");
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.ReturnBase}/update-submission";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+                return await HttpHandler.PostAsync<GrcReturnSubmissionRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "RETURNS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<ServiceResponse>(error);
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        #endregion
+
         #region Circulars
 
         public async Task<GrcResponse<PagedResponse<GrcCircularsResponse>>> GetPagedCircularAsync(TableListRequest request) {

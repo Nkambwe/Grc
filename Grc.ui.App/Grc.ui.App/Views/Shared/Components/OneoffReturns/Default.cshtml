@@ -10,6 +10,7 @@
                 <thead>
                     <tr>
                         <th>RETURN/REPORT</th>
+                        <th>FOR PERIOD</th>
                         <th>STATUS</th>
                         <th>RISK</th>
                         <th>DEPARTMENT</th>
@@ -19,6 +20,151 @@
                 <tbody></tbody>
             </table>
         </div>
+
+    </div>
+
+</div>
+
+<!-- Section Panel -->
+<div id="returnInnerPanel" class="obligation-side-panel" onclick="event.stopPropagation()">
+
+    <div class="obligation-side-panel-header">
+        <h5 id="returnInnerTitle">
+            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Submitted.Header"))
+        </h5>
+        <button class="panel-close" onclick="closeInnerPane()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div class="obligation-side-panel-body">
+
+        <form id="innerForm" class="grc-law-form">
+            <input type="hidden" id="submissionId" name="submissionId" />
+            <input type="hidden" id="submissionBreach" name="submissionBreach" />
+            <input type="hidden" id="ownerId" name="ownerId" />
+
+            <div class="row m-3">
+
+                <div id="breachBox" class="col-sm-12">
+                    <span>This return/report was not submitted in time and acquired a risk to the bank. You MUST give a reason why submission period was breached.</span>
+                </div>
+
+                <!-- title -->
+                <div class="col-sm-12">
+                    <label for="title" class="form-label m-3">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Submitted.Title"))
+                    </label>
+                    <textarea class="form-control" id="title" name="title" rows="2" readonly></textarea>
+                </div>
+
+                <!-- department -->
+                <div class="col-sm-12">
+                    <label for="department" class="form-label m-3">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Submitted.Department"))
+                    </label>
+                    <input class="form-control" id="department" name="department" readonly />
+                </div>
+
+                <!-- period -->
+                <div class="col-sm-12">
+                    <label for="period" class="form-label m-3">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Submitted.Period"))
+                    </label>
+                    <input class="form-control" id="period" name="period" readonly />
+                </div>
+
+                <!-- file -->
+                <div class="col-sm-12">
+                    <label for="file" class="form-label m-3">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Submitted.FileName"))
+                    </label>
+                    <input class="form-control" id="file" name="file" />
+                </div>
+
+                <!-- status -->
+                <div class="col-6">
+                    <div class="row mb-3">
+                        <label for="status" class="col-sm-12 col-form-label m-3">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Submitted.Select"))
+                        </label>
+                        <div class="col-sm-12">
+                            <select class="js-status form-control" id="status" name="status">
+                                <option value="UNKNOWN">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Submitted.Select.Status"))</option>
+                                <option value="CLOSED">Submitted</option>
+                                <option value="OPEN">Pending Submission</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- breached -->
+                <div class="col-sm-6">
+                    <div class="row field-group mt-5 mb-5">
+                        <div class="col-6">
+                            <div class="form-check">
+                                <input class="form-check-input pe-none" type="checkbox" id="isBreached" onclick="return false;">
+                                <label class="form-check-label" for="isBreached">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Submitted.Breached"))
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Risk -->
+                <div class="col-sm-12 mt-3 mb-3">
+                    <label for="riskAttached" class="form-label">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Returns.Risk"))
+                    </label>
+                    <textarea class="form-control" id="riskAttached" name="riskAttached" rows="2" readonly></textarea>
+                </div>
+
+                <!-- reason -->
+                <div class="col-sm-12 mt-3 mb-3">
+
+                    <label for="reason" class="form-label">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Submitted.Reason"))
+                    </label>
+
+                    <textarea class="form-control" id="reason" name="reason" rows="2"></textarea>
+
+                </div>
+
+                <!-- submitted -->
+                <div class="col-sm-12">
+                    <label for="submittedBy" class="form-label">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Submitted.SubmittedBy"))
+                    </label>
+                    <input class="form-control" id="submittedBy" name="submittedBy" />
+                </div>
+
+                <!-- Comments -->
+                <div class="col-sm-12 mt-3 mb-3">
+
+                    <label for="comments" class="form-label">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Returns.Comments"))
+                    </label>
+
+                    <textarea class="form-control" id="comments" name="comments" rows="2"></textarea>
+
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="updateSubmission(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                        </div>
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeInnerPane()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                        </div>
+                        <div class="col-sm-10"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
 
     </div>
 

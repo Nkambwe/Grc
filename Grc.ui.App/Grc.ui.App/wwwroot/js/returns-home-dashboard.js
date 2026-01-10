@@ -12,7 +12,6 @@
     "BIENNIAL": { bg: "#F59E0B", class: "stat-card-light", class2: "stat-separator-cancelled" },
     "BIANNUAL": { bg: "#F59E0B", class: "stat-card-light", class2: "stat-separator-cancelled" },
     "TRIENNIAL": { bg: "#3B82F6", class: "stat-card-light", class2: "stat-separator-primary" },
-
 };
 
 function generateInnerCards(record) {
@@ -69,15 +68,15 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
 
     const statusColors = {
-        OPEN: '#6A1B9A',
-        CLOSED: '#F75F0D'
+        OPEN: '#FF8503',
+        CLOSED: '#09B831'
     };
 
     //...build datasets
     const datasets = allStatuses.map(status => ({
         label: status,
         data: periods.map(period => statuses[period][status] || 0),
-        backgroundColor: statusColors[status] || '#9E9E9E'
+        backgroundColor: statusColors[status] || '#FF2413'
     }));
 
     new Chart(document.getElementById("statusChart"), {

@@ -2158,4 +2158,62 @@
 	<LocaleResource Name="Component.Key.Circulars.Other">
 		<Value>Other Circulars</Value>
 	</LocaleResource>
+
+	<LocaleResource Name="Component.Key.Returns.Header.Register">
+		<Value>Add new Return/Report</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Law">
+		<Value>Guiding Law/Regulation</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Select.Law">
+		<Value>Select guiding law...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Name">
+		<Value>Return/Report Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Return.Type">
+		<Value>Return/Report Type</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Select.Type">
+		<Value>Select type...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Deleted">
+		<Value>Remove Return/Report</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Risk">
+		<Value>Risk in case of breach</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Comments">
+		<Value>Comment</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Submitted.Title">
+		<Value>Report/Return Title</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Submitted.Period">
+		<Value>Report/Return Period</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Submitted.Select">
+		<Value>Report Status</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Submitted.Select.Status">
+		<Value>Select status...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Submitted.Breached">
+		<Value>Is Breached</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Submitted.Reason">
+		<Value>Reason for delayed submisstion</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Submitted.SubmittedBy">
+		<Value>Submitted By</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Submitted.Department">
+		<Value>Responsible Department</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Submitted.Header">
+		<Value>Report/Return Submission Update</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Submitted.FileName">
+		<Value>Add file path</Value>
+	</LocaleResource>
 </Language>

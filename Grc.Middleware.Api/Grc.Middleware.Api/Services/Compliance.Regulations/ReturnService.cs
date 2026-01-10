@@ -115,7 +115,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             };
 
             try {
-                //get frequency name from enum
+                //..get frequency name from enum
                 var frequencyName = MapReturnStatusToFilter(period);
 
                 //..get records
@@ -166,16 +166,19 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 var response = new ReturnExtensionResponse {
                     Periods = reports.GroupBy(r => r.Frequency?.FrequencyName ?? "NA").ToDictionary(g => g.Key, g => g.Count()),
 
-                    Reports = reports
-                        .SelectMany(r => r.Submissions ?? Enumerable.Empty<ReturnSubmission>(),
-                            (r, s) => new ReturnSubmissionResponse {
-                                Id = r.Id,
-                                Title = r.ReturnName,
-                                Status = s.Status ?? "OPEN",
-                                Department = r.Department?.DepartmentName,
-                                Risk = string.Empty
-                            })
-                        .ToList()
+                    //..select only those that belobg to the period, and those breached and still open
+                    Reports = reports.SelectMany(report => report.Submissions ?? Enumerable.Empty<ReturnSubmission>(), (r, s) => new { r, s })
+                        .Where(record => BelongsToPeriod(record.s, period) || (record.s.IsBreached && string.Equals(record.s.Status, "OPEN", StringComparison.OrdinalIgnoreCase)))
+                        .Select(set => new ReturnSubmissionResponse {
+                            Id = set.s.Id,
+                            Title = set.r.ReturnName,
+                            PeriodStart = set.s.PeriodStart,
+                            PeriodEnd = set.s.PeriodEnd,
+                            Status = set.s.IsBreached ? "BREACHED" : set.s.Status ?? "OPEN",
+                            Department = set.r.Department?.DepartmentName,
+                            Risk = set.r.Risk?.ToString()
+                        }).ToList()
+
                 };
 
                 return response;
@@ -188,7 +191,6 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 throw;
             }
         }
-
 
         public async Task<ReturnsStatisticsResponses> GetReturnDashboardStatisticsAsync(bool includeDeleted) {
 
@@ -207,16 +209,24 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 statistics.Periods.Add("TOTALS", returns.Count);
 
                 //..graph data from submissions
-                statistics.Statuses = returns.GroupBy(r => r.Frequency?.FrequencyName ?? "NA").ToDictionary(
+                statistics.Statuses = returns
+                .GroupBy(r => r.Frequency?.FrequencyName ?? "NA")
+                .ToDictionary(
                     periodGroup => periodGroup.Key,
-                    periodGroup => periodGroup
-                        .SelectMany(r => r.Submissions ?? Enumerable.Empty<ReturnSubmission>())
-                        .GroupBy(s => s.Status) 
-                        .ToDictionary(
-                            statusGroup => statusGroup.Key.ToString(),
-                            statusGroup => statusGroup.Count()
-                        )
+                    periodGroup => {
+                        var reportPeriod = MapFrequencyToReportPeriod(periodGroup.Key);
+
+                        return periodGroup
+                            .SelectMany(r => r.Submissions ?? Enumerable.Empty<ReturnSubmission>())
+                            .Where(s => BelongsToPeriod(s, reportPeriod) || (s.IsBreached && string.Equals(s.Status, "OPEN", StringComparison.OrdinalIgnoreCase)))
+                            .GroupBy(s => s.IsBreached ? "BREACHED" : s.Status ?? "OPEN")
+                            .ToDictionary(
+                                statusGroup => statusGroup.Key,
+                                statusGroup => statusGroup.Count()
+                            );
+                    }
                 );
+
 
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve statistics: {ex.Message}", "ERROR");
@@ -345,25 +355,20 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         #endregion
 
         #region Queries
-        public int Count()
-        {
+        public int Count() {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Count number of Regulatory Return in the database", "INFO");
 
-            try
-            {
+            try {
                 return uow.ReturnRepository.Count();
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to Regulatory Return in the database: {ex.Message}", "ERROR");
                 LogError(uow, ex);
                 throw;
             }
         }
 
-        public int Count(Expression<Func<ReturnReport, bool>> predicate)
-        {
+        public int Count(Expression<Func<ReturnReport, bool>> predicate) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Count number of Regulatory Return in the database", "INFO");
 
@@ -1062,6 +1067,72 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             ReportPeriod.ONEOFF => "ONE-OFF",
             _ => "ON OCCURRENCE"
         };
+        private static bool BelongsToPeriod(ReturnSubmission s, ReportPeriod period) {
+            var today = DateTime.Today;
+
+            if (s.PeriodStart == default || s.PeriodEnd == default)
+                return false;
+
+            return period switch {
+                ReportPeriod.DAILY =>
+                    s.PeriodStart.Date == today,
+
+                ReportPeriod.WEEKLY =>
+                    s.PeriodStart.Date <= today &&
+                    s.PeriodEnd.Date >= today &&
+                    (s.PeriodEnd - s.PeriodStart).TotalDays <= 7,
+
+                ReportPeriod.MONTHLY =>
+                    s.PeriodStart.Year == today.Year &&
+                    s.PeriodStart.Month == today.Month,
+
+                ReportPeriod.QUARTERLY =>
+                    s.PeriodStart.Year == today.Year &&
+                    GetQuarter(s.PeriodStart) == GetQuarter(today),
+
+                ReportPeriod.BIANNUAL =>
+                    s.PeriodStart.Year == today.Year &&
+                    GetHalf(s.PeriodStart) == GetHalf(today),
+
+                ReportPeriod.ANNUAL =>
+                    s.PeriodStart.Year == today.Year,
+
+                ReportPeriod.BIENNIAL =>
+                    s.PeriodStart.Year / 2 == today.Year / 2,
+
+                ReportPeriod.TRIENNIAL =>
+                    s.PeriodStart.Year / 3 == today.Year / 3,
+
+                //..none time based periods
+                ReportPeriod.ONEOFF or
+                ReportPeriod.ONOCCURRENCE or
+                ReportPeriod.PERIODIC =>
+                    true,
+
+                _ => false
+            };
+        }
+
+        private static ReportPeriod MapFrequencyToReportPeriod(string frequencyName) {
+            return frequencyName?.ToUpperInvariant() switch {
+                "DAILY" => ReportPeriod.DAILY,
+                "WEEKLY" => ReportPeriod.WEEKLY,
+                "MONTHLY" => ReportPeriod.MONTHLY,
+                "QUARTERLY" => ReportPeriod.QUARTERLY,
+                "BIANNUAL" => ReportPeriod.BIANNUAL,
+                "ANNUAL" => ReportPeriod.ANNUAL,
+                "BIENNIAL" => ReportPeriod.BIENNIAL,
+                "TRIENNIAL" => ReportPeriod.TRIENNIAL,
+                "ONE-OFF" => ReportPeriod.ONEOFF,
+                "ON OCCURRENCE" => ReportPeriod.ONOCCURRENCE,
+                "PERIODIC" => ReportPeriod.PERIODIC,
+                _ => ReportPeriod.NA
+            };
+        }
+
+        private static int GetQuarter(DateTime date) => (date.Month - 1) / 3 + 1;
+
+        private static int GetHalf(DateTime date) => date.Month <= 6 ? 1 : 2;
 
         private void LogError(IUnitOfWork uow, Exception ex) {
             var currentEx = ex.InnerException;
@@ -1114,7 +1185,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             //..save error object to the database
             _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
         }
-
+        
         #endregion
     }
 }
