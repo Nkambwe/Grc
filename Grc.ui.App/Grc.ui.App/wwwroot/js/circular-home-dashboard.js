@@ -73,8 +73,9 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
 
     const statusColors = {
-        OPEN: '#6A1B9A',
-        CLOSED: '#F75F0D'
+        OPEN: '#FF8503',
+        CLOSED: '#09B831',
+        BREACHED: '#FF2413'
     };
 
     //...build datasets

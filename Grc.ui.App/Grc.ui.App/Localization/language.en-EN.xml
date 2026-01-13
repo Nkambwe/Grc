@@ -466,7 +466,7 @@
 	<LocaleResource Name="Component.Table.Status.Active">
 		<Value>Deactivate this item?</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Component.Key.ReturnRegister">
 		<Value>Returns Register</Value>
 	</LocaleResource>
@@ -838,8 +838,8 @@
 	<LocaleResource Name="Component.Table.Select.ControlName">
 		<Value>Select control...</Value>
 	</LocaleResource>
-	
-	
+
+
 	<LocaleResource Name="Component.Table.Law.Label.Type">
 		<Value>Law/Regulation Type</Value>
 	</LocaleResource>
@@ -883,7 +883,7 @@
 	<LocaleResource Name="Component.Table.Law.Label.IssueNotes">
 		<Value>Notes</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="Component.Table.Law.Label.ControlNotes">
 		<Value>Comment</Value>
 	</LocaleResource>
@@ -1480,7 +1480,7 @@
 	<LocaleResource Name="App.Menu.Registers.List">
 		<Value>Statutes/Regulations</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="App.Menu.Returns">
 		<Value>Returns</Value>
 	</LocaleResource>
@@ -1508,7 +1508,7 @@
 	<LocaleResource Name="App.Menu.Returns.Tasks.List">
 		<Value>Open Tasks</Value>
 	</LocaleResource>
-	
+
 	<LocaleResource Name="App.Menu.Registers.Obligations">
 		<Value>Regulatory Obligations</Value>
 	</LocaleResource>
@@ -2078,40 +2078,40 @@
 		<Value>TOTAL</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.Returns.Triennial">
-		<Value>Triennial Returns</Value>
+		<Value>Triennial Submissions</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.Returns.Periodic">
-		<Value>Periodic Returns</Value>
+		<Value>Periodic Submissions</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.Returns.Biannual">
-		<Value>Biannual Returns</Value>
+		<Value>Biannual Submissions</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.Returns.Occurrence">
-		<Value>On Occurrence Returns</Value>
+		<Value>On Occurrence Submissions</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.Returns.Biennial">
-		<Value>Biennial Returns</Value>
+		<Value>Biennial Submissions</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.Returns.Oneoff">
-		<Value>One-Off Returns</Value>
+		<Value>One-Off Submissions</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.Returns.Annual">
-		<Value>Annual Returns</Value>
+		<Value>Annual Submissions</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.Returns.NoReturn">
 		<Value>No Returns</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.Returns.Quartery">
-		<Value>Quartery Returns</Value>
+		<Value>Quartery Submissions</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.Returns.Monthly">
-		<Value>Monthly Returns</Value>
+		<Value>Monthly Submissions</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.Returns.Weekly">
-		<Value>Weekly Returns</Value>
+		<Value>Weekly Submissions</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.Returns.Daily">
-		<Value>Daily Returns</Value>
+		<Value>Daily Submissions</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.Circulars.Mofed">
 		<Value>MoFED Circulars</Value>
@@ -2158,7 +2158,6 @@
 	<LocaleResource Name="Component.Key.Circulars.Other">
 		<Value>Other Circulars</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="Component.Key.Returns.Header.Register">
 		<Value>Add new Return/Report</Value>
 	</LocaleResource>
@@ -2215,5 +2214,107 @@
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Submitted.FileName">
 		<Value>Add file path</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Submission.Circular">
+		<Value>Circular Title</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Submission.Status">
+		<Value>Status</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Submission.Risk">
+		<Value>Risk</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Submission.Department">
+		<Value>Department</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Submission.Action">
+		<Value>Action</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Submission.Header">
+		<Value>Circular Submission</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Submission.Details">
+		<Value>Submission Details</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Submission.Issues">
+		<Value>Submission Issues</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Submission.Breach-info">
+		<Value>This Circular was not submitted in time and acquired a risk to the bank. You MUST give a reason why submission period was breached.</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Submission.Label.Title">
+		<Value>Circular Title</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Submission.Label.Requirement">
+		<Value>Circular Requirement</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Submission.Label.Receive-date">
+		<Value>Recieve Date</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Submission.Label.Deadline-date">
+		<Value>Deadline</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Submission.Label.IsBreached">
+		<Value>Is Breached</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Submission.Label.Breach-Reason">
+		<Value>Reason For Breached</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Submission.Label.Submitted-By">
+		<Value>Submitted By</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Submission.Label.Comments">
+		<Value>Comments</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Submitted.Reference">
+		<Value>Submission Reference</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Submissions.Label.Status">
+		<Value>Submission Status</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Issues.Label.Comments">
+		<Value>Comments</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Issues.Label.Recieved-on">
+		<Value>Recieve Date</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Issues.Label.IsDeleted">
+		<Value>Mark as deleted</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Issues.Label.Status">
+		<Value>Issue Status</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Issues.Label.Status.Select">
+		<Value>Select status...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Issues.Label.Resolved-on">
+		<Value>Resolve Date</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Issues.Label.Resolution">
+		<Value>Proposed Resolution</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Submission.Label.Department">
+		<Value>Responsible Department/Unit</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circulars.Submission.Label.Frequency">
+		<Value>Reporting Frequency</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Header.Frequency.Returns">
+		<Value>Frequency Returns/Reports</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Header.Frequency.Reports.List">
+		<Value>Returns/Report List</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Header.Frequency.Reports.Add">
+		<Value>Add Returns/Report</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Header.Frequency.Reports.Submissions">
+		<Value>Returns/Report Submissions</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Header.Frequency.Reports.Submissions.Add">
+		<Value>New Submissions</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Submitted.SubmittedOn">
+		<Value>Submitted On</Value>
 	</LocaleResource>
 </Language>

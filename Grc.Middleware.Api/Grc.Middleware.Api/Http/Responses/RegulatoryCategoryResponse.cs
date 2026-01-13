@@ -29,4 +29,5 @@ namespace Grc.Middleware.Api.Http.Responses {
         public List<StatutoryRegulationResponse> Statutes { get; set; } = new();
     }
 
+    
 }

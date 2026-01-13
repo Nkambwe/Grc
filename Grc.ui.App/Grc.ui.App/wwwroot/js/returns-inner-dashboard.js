@@ -87,10 +87,10 @@ function openViewPanel(record) {
     $('#submissionBreach').val(record.isBreached ? 'YES': 'NO');
     $('#riskAttached').val(record.riskAttached || '');
     $('#comments').val(record.comments || '');
-    $('#reason').val(record.returnName || '');
+    $('#reason').val(record.reason || '');
     $('#file').val(record.file || '');
     $('#department').val(record.department || '');
-    $('#submittedBy').val(record.reason || '');
+    $('#submittedBy').val(record.submittedBy || '');
 
     if (record.isBreached) {
         $('#breachBox').show();
@@ -233,9 +233,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const color = cardColorList[index % cardColorList.length].bg;
         let statusColor = "#FF2413"; 
         if (report.Status === "CLOSED") {
-            statusColor = "#09B831"; 
+            statusColor = "#09B831";
         } else if (report.Status === "OPEN") {
-            statusColor = "#FF8503"; 
+            statusColor = "#FF8503";
+        } else {
+            statusColor = "#FF2413"; 
         }
 
         tr.innerHTML = `
@@ -266,7 +268,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 </button>
             </td>
         `;
-
         tableBody.appendChild(tr);
     });
 });

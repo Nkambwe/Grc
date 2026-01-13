@@ -28,5 +28,8 @@ namespace Grc.ui.App.Http.Responses
         [JsonPropertyName("comments")]
         public string Comments { get; set; }
 
+        [JsonPropertyName("createdOn")]
+        public DateTime CreatedOn { get; set; }
+
     }
 }

@@ -624,15 +624,20 @@ button.action-btn.action-btn-separator {
     .breadcrumb li.breadcrumb-item {
         padding: 10px;
         text-align: center;
+        font-size: 1.5em;
         color: var(--pink-dark-extra);
     }
 .breadcrumb-item.active {
     color: var(--amber-dark-extra)!important;
 }
 
+div#contentArea {
+    font-size: 1.2em;
+}
+
 .law-panel-overlay,
 .control-panel-overlay,
-.map-panel-overlay,
+.circular-outer-panel-overlay,
 .obligation-panel-overlay {
     position: fixed;
     top: 0;
@@ -644,7 +649,8 @@ button.action-btn.action-btn-separator {
     display: none;
 }
 
-.map-panel-overlay {
+.map-panel-overlay,
+.circular-inner-panel-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -658,6 +664,8 @@ button.action-btn.action-btn-separator {
     .law-panel-overlay.active,
     .control-panel-overlay.active,
     .map-panel-overlay.active,
+    .circular-outer-panel-overlay.active,
+    .circular-inner-panel-overlay.active,
     .obligation-panel-overlay.active {
         display: block;
     }
@@ -665,6 +673,7 @@ button.action-btn.action-btn-separator {
 .law-side-panel,
 .control-side-panel,
 .item-side-panel,
+.circular-side-panel,
 .obligation-side-panel {
     position: fixed;
     top: 0;
@@ -699,6 +708,7 @@ button.action-btn.action-btn-separator {
     .item-side-panel.active,
     .map-side-panel.active,
     .issue-side-panel.active,
+    .circular-side-panel.active,
     .obligation-side-panel.active {
         right: 0;
     }
@@ -708,6 +718,7 @@ button.action-btn.action-btn-separator {
 .item-side-panel-header,
 .map-side-panel-header,
 .issue-side-panel-header,
+.circular-side-panel-header,
 .obligation-side-panel-header {
     color: var(--pearl-orange);
     padding: 1.5rem;
@@ -723,6 +734,7 @@ button.action-btn.action-btn-separator {
     .item-side-panel-header h5,
     .map-side-panel-header h5,
     .issue-side-panel-header h5,
+    .circular-side-panel-header h5,
     .obligation-side-panel-header h5 {
         margin: 0;
         font-weight: 600;
@@ -734,13 +746,30 @@ button.action-btn.action-btn-separator {
     overflow-y: auto;
 }
 
-.obligation-side-panel-body,
+
+
+.issue-side-panel-body,
+.circular-side-panel-body
+ {
+    flex: 1;
+    height: 100vh; 
+    overflow: hidden;
+}
+
 .item-side-panel-body,
 .map-side-panel-body,
-.issue-side-panel-body,
-.control-side-panel-body {
+.control-side-panel-body,
+.obligation-side-panel-body {
     flex: 1;
-    overflow: hidden !important;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.tab-pane {
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    overflow-x:hidden;
 }
 
     .map-side-panel-body,
@@ -753,6 +782,7 @@ button.action-btn.action-btn-separator {
 .item-side-panel-footer,
 .map-side-panel-footer,
 .issue-side-panel-footer,
+.circular-side-panel-footer,
 .obligation-side-panel-footer {
     padding: 1rem 1.5rem;
     border-top: 1px solid #dee2e6;

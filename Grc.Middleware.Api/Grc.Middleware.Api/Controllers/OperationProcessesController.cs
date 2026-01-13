@@ -2201,7 +2201,7 @@ namespace Grc.Middleware.Api.Controllers {
                     if (hod is null) {
                         msg += ". Head Of Operations Contacts not found. Mail not sent";
                     } else {
-                        var hodName = (hod.ContactEmail ?? string.Empty).Trim();
+                        var hodName = (hod.ContactName ?? string.Empty).Trim();
                         var hodEmail = (hod.ContactEmail ?? string.Empty).Trim();
                         if (!string.IsNullOrEmpty(hodName) && !string.IsNullOrEmpty(hodEmail)) {
                             var (sent, subject, mail) = MailHandler.GenerateMail(Logger, mailSettings.MailSender, hodName, hodEmail, mailSettings.CopyTo, processName, mailSettings.NetworkPort, mailSettings.SystemPassword);

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Grc.Middleware.Api.Data.Entities.Compliance.Returns;
 using Grc.Middleware.Api.Enums;
+using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Security;
@@ -9,6 +11,7 @@ using Grc.Middleware.Api.Services.Compliance.Support;
 using Grc.Middleware.Api.Services.Organization;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
 namespace Grc.Middleware.Api.Controllers {
@@ -28,9 +31,12 @@ namespace Grc.Middleware.Api.Controllers {
         private readonly IComplianceIssueService _issueService;
         private readonly IControlItemService _itemService;
         private readonly IReturnService _returnService;
+        private readonly IMailService _mailService;
         private readonly ICircularService _circularService;
+        private readonly IResponsebilityService _ownerService;
         private readonly ICircularIssueService _circularIssueService;
         private readonly IReturnsSubmissionService _submissionService;
+        private readonly IFrequencyService _frequencyService;
         public RegulatoryController(IObjectCypher cypher,
             IServiceLoggerFactory loggerFactory, 
             IMapper mapper, 
@@ -41,6 +47,7 @@ namespace Grc.Middleware.Api.Controllers {
             IRegulatoryTypeService regulatoryType,
             IRegulatoryDocumentService regulatoryDocuments,
             IRegulatoryDocumentTypeService documentTypeService,
+            IResponsebilityService ownerService,
             IStatutoryArticleService articleService,
             IStatutoryRegulationService regulatoryService,
             IControlCategoryService controlCategoryService,
@@ -48,8 +55,10 @@ namespace Grc.Middleware.Api.Controllers {
             IControlItemService itemService,
             ICircularIssueService circularIssueService,
             IReturnService returnService,
+            IFrequencyService frequencyService,
             ICircularService circularService,
             IEnvironmentProvider environment,
+            IMailService mailService,
             IReturnsSubmissionService submissionService,
             IErrorNotificationService errorService, 
             ISystemErrorService systemErrorService) 
@@ -69,6 +78,9 @@ namespace Grc.Middleware.Api.Controllers {
             _circularService = circularService;
             _circularIssueService = circularIssueService;
             _submissionService = submissionService;
+            _ownerService = ownerService;
+            _mailService = mailService;
+            _frequencyService = frequencyService;
         }
 
         #region Compliance Statistics
@@ -3622,6 +3634,111 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
+        [HttpPost("returns/returns-list")]
+        public async Task<IActionResult> GetReturnsList([FromBody] RecordListRequest request) {
+
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<ReturnsResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _returnService.PageAllAsync(request.PageIndex, request.PageSize, false, 
+                    r=> r.FrequencyId == request.RecordId, r=>r.Frequency, r=> r.Department,r=> r.ReturnType, r=>r.Authority);
+
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS,"No data", "No return/report records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<ReturnsResponse>>(new PagedResponse<ReturnsResponse>(new List<ReturnsResponse>(), 0, pageResult.Page, pageResult.Size)));
+                }
+
+                List<ReturnsResponse> returns = new();
+                var records = pageResult.Entities ?? new();
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                    var searchTerm = request.SearchTerm.ToLower();
+                    records = records.Where(u => u.ReturnName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false).ToList();
+                }
+
+                returns = records.Select(rec => new ReturnsResponse() {
+                    Id = rec.Id,
+                    ReportName = rec.ReturnName ?? string.Empty,
+                    Article = $"{rec.Article?.Article ?? string.Empty}{rec.Article?.Summery ?? string.Empty}",
+                    Frequency = rec.Frequency?.FrequencyName ?? string.Empty,
+                    Department = rec.Department?.DepartmentName ?? string.Empty,
+                    Type = rec.ReturnType?.TypeName ?? string.Empty,
+                    IsDeleted = rec.IsDeleted,
+                    Risk = rec.Risk ??string.Empty,
+                    Authority = rec.Authority?.AuthorityName ?? string.Empty,
+                    Comments = rec.Comments??string.Empty
+
+                }).ToList();
+
+                return Ok(new GrcResponse<PagedResponse<ReturnsResponse>>(new PagedResponse<ReturnsResponse>(returns, pageResult.Count, pageResult.Page, pageResult.Size)));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<ReturnsResponse>>(error));
+            }
+        }
+
+        [HttpPost("returns/returns-submissions-list")]
+        public async Task<IActionResult> GetReturnSubmissions([FromBody] RecordListRequest request) {
+
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<ReturnSubmissionResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _submissionService.PageAllAsync(request.PageIndex, request.PageSize, false, 
+                                                         r => r.ReturnId == request.RecordId, 
+                                                         r => r.RegulatoryReturn,
+                                                         r => r.RegulatoryReturn.Article,
+                                                         r => r.RegulatoryReturn.Department);
+
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No submissions records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<ReturnSubmissionResponse>>(new PagedResponse<ReturnSubmissionResponse>(new List<ReturnSubmissionResponse>(), 0, pageResult.Page, pageResult.Size)));
+                }
+
+                List<ReturnSubmissionResponse> returns = new();
+                var records = pageResult.Entities ?? new();
+                if (records.Count > 0) {
+                    records.ForEach(s => {
+                        returns.Add(new ReturnSubmissionResponse() {
+                            Id = s.Id,
+                            Report = s.RegulatoryReturn.ReturnName,
+                            Title = s.RegulatoryReturn.ReturnName,
+                            Article = $"{s.RegulatoryReturn?.Article.Article ?? string.Empty} {s.RegulatoryReturn?.Article.Summery ?? string.Empty}",
+                            PeriodEnd = s.PeriodEnd,
+                            PeriodStart = s.PeriodStart,
+                            Status = s.IsBreached ? "BREACHED" : s.Status,
+                            BreachReason = s.BreachReason,
+                            SubmittedOn = s.SubmissionDate,
+                            SubmittedBy = s.SubmittedBy,
+                            Risk = s.RegulatoryReturn.Risk,
+                            Comment = s.Comments,
+                            IsBreached = s.IsBreached,
+                            IsDeleted = s.IsDeleted,
+                            Department = s.RegulatoryReturn?.Department?.DepartmentName ?? string.Empty
+
+                        });
+                    });
+                }
+
+                return Ok(new GrcResponse<PagedResponse<ReturnSubmissionResponse>>(new PagedResponse<ReturnSubmissionResponse>(returns, pageResult.Count, pageResult.Page, pageResult.Size)));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<ReturnSubmissionResponse>>(error));
+            }
+        }
+
         [HttpPost("returns/paged-returns-list")]
         public async Task<IActionResult> GetPagedReturnsList([FromBody] ListRequest request) {
 
@@ -3634,45 +3751,108 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                var pageResult = await _returnService.PageAllAsync(request.PageIndex, request.PageSize, false,
-                            r => r.Department, r => r.Frequency, r => r.Article, r => r.Authority, r => r.ReturnType);
+                var pageResult = await _categoryService.PageLookupAsync(request.PageIndex, request.PageSize, false,
+                    category => new RegulatoryCategoryResponse {
+                        Id = category.Id,
+                        CategoryName = category.CategoryName ?? string.Empty,
+                        Comments = category.Comments ?? string.Empty,
+                        CreatedOn = category.CreatedOn,
+                        CreatedBy = category.CreatedBy,
+                        Statutes = category.Regulations.Select(law => new StatutoryRegulationResponse() {
+                            Id = law.Id,
+                            CategoryId = law.CategoryId,
+                            CategoryName = category.CategoryName ?? string.Empty,
+                            StatutoryTypeId = law.TypeId,
+                            StatutoryType = law.RegulationType.TypeName ?? string.Empty,
+                            AuthorityId = law.AuthorityId,
+                            AuthorityName = law.Authority.AuthorityName ?? string.Empty,
+                            StatutoryLawCode = law.Code ?? string.Empty,
+                            StatutoryLawName = law.RegulatoryName ?? string.Empty,
+                            IsDeleted = law.IsDeleted,
+                            CreatedBy = law.CreatedBy ?? string.Empty,
+                            ModifiedBy = law.LastModifiedBy ?? string.Empty
+                        }).ToList()
+                    });
+
                 if (pageResult.Entities == null || !pageResult.Entities.Any()) {
-                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No returns found");
+                    var error = new ResponseError(
+                        ResponseCodes.SUCCESS,
+                        "No data",
+                        "No regulatory statute records found"
+                    );
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<PagedResponse<ReturnsResponse>>(new PagedResponse<ReturnsResponse>(new List<ReturnsResponse>(), 0, pageResult.Page, pageResult.Size)));
+                    return Ok(new GrcResponse<PagedResponse<RegulatoryCategoryResponse>>(new PagedResponse<RegulatoryCategoryResponse>(
+                        new List<RegulatoryCategoryResponse>(), 0, pageResult.Page, pageResult.Size))
+                        );
                 }
 
-                List<ReturnsResponse> returns = new();
-                var records = pageResult.Entities.ToList();
-                if (records != null && records.Any()) {
-                    records.ForEach(type => returns.Add(new() {
-                        Id = type.Id,
-                        ReportName = type.ReturnName ?? string.Empty,
-                        Type = type.ReturnType?.TypeName ?? string.Empty,
-                        Authority = type.Authority?.AuthorityAlias ?? string.Empty,
-                        Article = type.Article?.Summery ?? string.Empty,
-                        Frequency = type.Frequency?.FrequencyName ?? string.Empty,
-                        Department = type.Department?.DepartmentName ?? string.Empty,
-                        Comments = type.Comments ?? string.Empty,
-                        IsDeleted = type.IsDeleted
-                    }));
-                }
-
+                List<RegulatoryCategoryResponse> categories = new();
+                var records = pageResult.Entities ?? new();
                 if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
                     var searchTerm = request.SearchTerm.ToLower();
-                    returns = returns.Where(u =>
-                        (u.ReportName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (u.Department?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (u.Authority?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (u.Department?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
-                    ).ToList();
+                    categories = records.Where(u => u.CategoryName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false).ToList();
+                } else {
+                    categories = records;
                 }
 
-                return Ok(new GrcResponse<PagedResponse<ReturnsResponse>>(
-                          new PagedResponse<ReturnsResponse>(returns, pageResult.Count, pageResult.Page, pageResult.Size)));
+                return Ok(new GrcResponse<PagedResponse<RegulatoryCategoryResponse>>(
+                    new PagedResponse<RegulatoryCategoryResponse>(categories, pageResult.Count, pageResult.Page, pageResult.Size))
+                    );
             } catch (Exception ex) {
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<PagedResponse<ReturnsResponse>>(error));
+            }
+        }
+
+        [HttpPost("returns/frequency-returns")]
+        public async Task<IActionResult> GetFrequencyReturnsList([FromBody] ListRequest request) {
+
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<FrequencyResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _frequencyService.PageLookupAsync(request.PageIndex, request.PageSize, false,
+                    frequencies => new FrequencyResponse {
+                        Id = frequencies.Id,
+                        FrequencyName = frequencies.FrequencyName ?? string.Empty,
+                        IsDeleted = frequencies.IsDeleted,
+                        Returns = frequencies.Returns.Select(report => new ReturnReportResponse() {
+                            Id = report.Id,
+                            Title = report.ReturnName ?? string.Empty,
+                            BreachRisk = report.Risk ?? string.Empty,
+                            DepartmentId = report.DepartmentId,
+                            Department = report.Department.DepartmentName ?? string.Empty,
+                            ArticleNo = report.Article.Article ?? string.Empty,
+                            ArticleSummery = report.Article.Summery ?? string.Empty,
+                            AuthorityId = report.AuthorityId,
+                            Authority = report.Authority.AuthorityAlias ?? string.Empty,
+                        }).ToList()
+                    });
+
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No Frequency reports records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<FrequencyResponse>>(new PagedResponse<FrequencyResponse>(new List<FrequencyResponse>(), 0, pageResult.Page, pageResult.Size)));
+                }
+
+                List<FrequencyResponse> frquencies = new();
+                var records = pageResult.Entities ?? new();
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                    var searchTerm = request.SearchTerm.ToLower();
+                    frquencies = records.Where(u => u.FrequencyName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false).ToList();
+                } else {
+                    frquencies = records;
+                }
+
+                return Ok(new GrcResponse<PagedResponse<FrequencyResponse>>(new PagedResponse<FrequencyResponse>(frquencies, pageResult.Count, pageResult.Page, pageResult.Size)));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<FrequencyResponse>>(error));
             }
         }
 
@@ -3712,9 +3892,12 @@ namespace Grc.Middleware.Api.Controllers {
                         FilePath = circular.FilePath ?? string.Empty,
                         RefNumber = circular.Reference ?? string.Empty,
                         Authority = circular.Authority?.AuthorityAlias ?? string.Empty,
-                        Frequency = circular.Frequency?.FrequencyName ?? string.Empty,
+                        Frequency = circular.Frequency?.FrequencyName ?? "N/A",
                         Department = circular.Department?.DepartmentName ?? string.Empty,
                         Status = circular.Status ?? string.Empty,
+                        IsBreached = circular.IsBreached,
+                        BreachReason = circular.BreachReason,
+                        BreachRisk = circular.BreachRisk,
                         Comments = circular.Comments ?? string.Empty,
                         RecievedOn = circular.RecievedOn,
                         DeadlineOn = circular.DeadlineOn,
@@ -3759,7 +3942,7 @@ namespace Grc.Middleware.Api.Controllers {
                 if (request == null) {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<ComplianceIssueResponse>(error));
+                    return Ok(new GrcResponse<SubmissionResponse>(error));
                 }
 
                 if (request.RecordId == 0) {
@@ -3831,12 +4014,12 @@ namespace Grc.Middleware.Api.Controllers {
                 if (result) {
                     response.Status = true;
                     response.StatusCode = (int)ResponseCodes.SUCCESS;
-                    response.Message = "Document type updated successfully";
+                    response.Message = "Return submission updated successfully";
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
                 } else {
                     response.Status = true;
                     response.StatusCode = (int)ResponseCodes.FAILED;
-                    response.Message = "Failed to update document type record. An error occurrred";
+                    response.Message = "Failed to update Return submission record. An error occurrred";
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
                 }
 
@@ -3846,6 +4029,167 @@ namespace Grc.Middleware.Api.Controllers {
                 return Ok(new GrcResponse<GeneralResponse>(error));
             }
         }
+
+        [HttpPost("circulars/submission-retrieve")]
+        public async Task<IActionResult> GetCircularSubmission([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Get submission by ID", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<CircularSubmissionResponse>(error));
+                }
+
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request Submission ID is required", "Invalid Submission request ID");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<CircularSubmissionResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var result = await _circularService.GetAsync(c => c.Id == request.RecordId, true, c => c.Authority, c => c.Frequency, c => c.Department, c => c.Issues);
+                if (result == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "submission/Report not found", "No submission/report matched the provided ID");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<CircularSubmissionResponse>(error));
+                }
+
+                //..map response
+                var response = new CircularSubmissionResponse {
+                    Id = result.Id,
+                    Reference = result.Reference?? string.Empty,
+                    CircularTitle = result.CircularTitle ?? string.Empty,
+                    CircularRequirement = result.Requirement ?? string.Empty,
+                    RecievedOn = result.RecievedOn,
+                    Deadline = result.DeadlineOn,
+                    AuthorityId = result?.Authority?.Id?? 0,
+                    Authority = result?.Authority?.AuthorityAlias?? string.Empty,
+                    FrequencyId = result?.Frequency?.Id ?? 0,
+                    Frequency = result?.Frequency?.FrequencyName ?? string.Empty,
+                    CircularStatus = result.Status ?? string.Empty,
+                    OwnerId = result.Department?.Id ?? 0,
+                    Department = result.Department?.DepartmentName,
+                    FilePath = result.FilePath ?? string.Empty,
+                    IsDeleted = result.IsDeleted,
+                    IsBreached = result.IsBreached,
+                    BreachReason = result.BreachReason ?? string.Empty,
+                    BreachRisk = result.BreachRisk ?? string.Empty,
+                    Comments = result.Comments ?? string.Empty,
+                    SubmittedOn = result.SubmissionDate,
+                    SubmittedBy = result.SubmittedBy ?? string.Empty,
+                    Issues = result.Issues != null && result.Issues.Count > 0
+                            ? result.Issues.Select(issue => new CircularIssueResponse {
+                                Id = issue.Id,
+                                IssueDescription = issue.IssueDescription,
+                                Resolution = issue.Resolution,
+                                Status = issue.Status,
+                            }).ToList()
+                            : new List<CircularIssueResponse>()
+                };
+
+                return Ok(new GrcResponse<CircularSubmissionResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<CircularSubmissionResponse>(error));
+            }
+        }
+
+        [HttpPost("circulars/update-submission")]
+        public async Task<IActionResult> UpdateCircularSubmission([FromBody] CircularSubmissionRequest request) {
+            try {
+                Logger.LogActivity("Update submission", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The submission record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _circularService.ExistsAsync(r => r.Id == request.Id)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "Submission record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username = string.Empty;
+                if (currentUser != null) {
+                    username = currentUser.Username;
+                } else {
+                    username = $"{request.UserId}";
+                }
+
+                //..update document type
+                var result = await _circularService.UpdateSubmissionAsync(request, username);
+                var response = new GeneralResponse();
+                if (result) {
+
+                    //..send submission messages
+                    var owners = await _ownerService.GetAllAsync(d => d.Id == request.DepartmentId);
+                    var emails = new Dictionary<string, string>();
+                    if (owners != null && owners.Any()) {
+                        foreach (var o in owners) {
+                            if (emails.ContainsKey(o.ContactName))
+                                continue;
+                           emails[o.ContactName] = o.ContactEmail;
+                        }
+
+                    }
+
+                    string msg = "Circular submission updated successfully";
+                    if (emails.Any()) {
+                        
+                        var mailSettings = await _mailService.GetMailSettingsAsync();
+                        if (mailSettings is null) {
+                            msg += ". Mail settings not found. No mail sent";
+                        } else {
+                            foreach (var kv in emails) {
+                                var sendToName = kv.Key;
+                                var email = kv.Value;
+                                string title = "";
+                                var (sent, subject, mail) = MailHandler.GenerateSubmissionMail(Logger, mailSettings.MailSender, email, 
+                                    sendToName, mailSettings.CopyTo, "CURCULAR", title, mailSettings.NetworkPort, mailSettings.SystemPassword);
+                                if (sent) {
+                                    await _mailService.InsertMailAsync(new Data.Entities.System.MailRecord() {
+                                        SentToEmail = email,
+                                        CCMail = mailSettings.CopyTo,
+                                        Subject = subject,
+                                        Mail = mail,
+                                        ApprovalId = request.Id,
+                                        IsDeleted = false,
+                                        CreatedBy = "SYSTEM",
+                                        CreatedOn = DateTime.Now,
+                                        LastModifiedBy = "SYSTEM",
+                                        LastModifiedOn = DateTime.Now,
+                                    });
+                                } else {
+                                    msg += ". Notification email not sent. Something went erong";
+                                }
+                            }
+                                
+                        }
+
+                    }
+
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = msg;
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to Circular submission record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
         #endregion
 
         #region Protected methods

@@ -12,6 +12,9 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("status")]
         public string Status { get; set; }
 
+        [JsonPropertyName("breachRisk")]
+        public string BreachRisk { get; set; }
+
         [JsonPropertyName("authorityAlias")]
         public string AuthorityAlias { get; set; }
 

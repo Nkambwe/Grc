@@ -827,9 +827,19 @@
                 defaults: new { controller = "ComplianceReturn", action = "DeleteReturn" }
             );
             routeBuilder.MapControllerRoute(
-               name: "app-compliance-register-returns-register-paged",
-               pattern: "/grc/returns/compliance-returns/paged-register",
+               name: "app-compliance-register-returns-frquency-paged",
+               pattern: "/grc/returns/compliance-returns/returns-list",
                defaults: new { controller = "ComplianceReturn", action = "GetPagedReturnsList" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-frequency-returns",
+               pattern: "/grc/returns/compliance-returns/frequency-returns",
+               defaults: new { controller = "ComplianceReturn", action = "GetFrequencyReturns" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-frequency-return-submissions",
+               pattern: "/grc/returns/compliance-returns/return-submissions",
+               defaults: new { controller = "ComplianceReturn", action = "GetPagedReturnSubmissions" }
             );
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-register-returns-export-filtered",
@@ -1075,6 +1085,17 @@
                  defaults: new { controller = "ComplianceReturn", action = "OtherInnerDashboard" }
             );
 
+
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-circular-returns-retrieve",
+               pattern: "/grc/returns/circular-returns/submissions/retrieve/{id:long}",
+               defaults: new { controller = "ComplianceReturn", action = "GetCircular" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-circular-returns-submissions-update",
+               pattern: "/grc/returns/circular-returns/submissions/update",
+               defaults: new { controller = "ComplianceReturn", action = "UpdateCircular" }
+           );
             /*----------------------------------------------Compliance Tasks Routes*/
             routeBuilder.MapControllerRoute(
                  name: "app-compliance-returns-tasks-home",

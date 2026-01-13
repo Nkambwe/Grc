@@ -34,8 +34,14 @@ namespace Grc.ui.App.Services {
         #endregion
 
         #region Submissions
+
         Task<GrcResponse<GrcReturnSubmissionResponse>> GetSubmissionAsync(GrcIdRequest request);
+
         Task<GrcResponse<ServiceResponse>> UpdateSubmissionAsync(SubmissionViewModel submission, long userId, string ipAddress);
+
+        Task<GrcResponse<GrcCircularSubmissionResponse>> GetCircularSubmissionAsync(GrcIdRequest request);
+
+        Task<GrcResponse<ServiceResponse>> UpdateCircularSubmissionAsync(CircularSubmissionViewModel submission, long userId, string ipAddress);
 
         #endregion
 
@@ -44,13 +50,16 @@ namespace Grc.ui.App.Services {
         Task<GrcResponse<ServiceResponse>> CreateReturnAsync(StatutoryReturnViewModel model, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> UpdateReturnAsync(StatutoryReturnViewModel model, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> DeleteReturnAsync(GrcIdRequest request);
+        Task<GrcResponse<PagedResponse<GrcReturnSubmissionResponse>>> GetReturnSubmissionsAsync(TableListRequest model);
         Task<GrcResponse<PagedResponse<GrcReturnsResponse>>> GetPagedReturnsAsync(TableListRequest request);
-
+        Task<GrcResponse<PagedResponse<GrcReturnsResponse>>> GetReturnsListAsync(TableListRequest request);
+        Task<GrcResponse<PagedResponse<GrcFrequencyResponse>>> GetFrequencyReturnsAsync(TableListRequest request);
         #endregion
 
         #region Circular Queries
         Task<GrcResponse<PagedResponse<GrcCircularsResponse>>> GetPagedCircularAsync(TableListRequest request);
-       
+        
+
         #endregion
     }
 }

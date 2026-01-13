@@ -18,6 +18,9 @@ namespace Grc.ui.App.Models {
         [JsonPropertyName("submittedBy")]
         public string SubmittedBy { get; set; }
 
+        [JsonPropertyName("submittedOn")]
+        public DateTime SubmittedOn { get; set; }
+
         [JsonPropertyName("comments")]
         public string Comments { get; set; }
 

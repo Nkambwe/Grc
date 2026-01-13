@@ -25,10 +25,7 @@
 
 </div>
 
-@{
-    Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
-    Html.AddScriptParts(ResourceLocation.Footer, "~/js/returns-inner-dashboard.js");
-}
+<div id="returnInnerOverlay" class="obligation-panel-overlay"></div>
 
 <!-- Section Panel -->
 <div id="returnInnerPanel" class="obligation-side-panel" onclick="event.stopPropagation()">
@@ -157,13 +154,13 @@
 
                 <div class="col-sm-12">
                     <div class="row mb-3">
-                        <div class="col-sm-1">
+                        <div class="col-sm-2">
                             <button class="btn btn-grc-primary" style="width:100%;" onclick="updateSubmission(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
                         </div>
-                        <div class="col-sm-1">
+                        <div class="col-sm-2">
                             <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeInnerPane()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
                         </div>
-                        <div class="col-sm-10"></div>
+                        <div class="col-sm-8"></div>
                     </div>
                 </div>
 
@@ -174,6 +171,11 @@
     </div>
 
 </div>
+
+@{
+    Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/returns-inner-dashboard.js");
+}
 
 <script>
     const excelUrl = '';

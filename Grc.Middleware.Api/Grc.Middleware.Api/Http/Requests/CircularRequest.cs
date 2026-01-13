@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Grc.Middleware.Api.Http.Requests
-{
+namespace Grc.Middleware.Api.Http.Requests {
     public class CircularRequest {
 
         [JsonPropertyName("id")]
@@ -25,29 +24,35 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("receivedOn")]
         public DateTime RecievedOn { get; set; }
 
+        [JsonPropertyName("deadlineOn")]
+        public DateTime? DeadlineOn { get; set; }
+
+        [JsonPropertyName("status")]
+        public string Status { get; set; }
+
+        [JsonPropertyName("reference")]
+        public string SubmissionReference { get; set; }
+
+        [JsonPropertyName("filePath")]
+        public string FilePath { get; set; }
+
+        [JsonPropertyName("isBreached")]
+        public bool IsBreached { get; set; }
+
+        [JsonPropertyName("breachReason")]
+        public string BreachReason { get; set; }
+
+        [JsonPropertyName("breachRisk")]
+        public string BreachRisk { get; set; }
+
+        [JsonPropertyName("comments")]
+        public string Comments { get; set; }
+
         [JsonPropertyName("submissionDate")]
         public DateTime? SubmissionDate { get; set; }
 
         [JsonPropertyName("submittedBy")]
         public string SubmittedBy { get; set; }
-
-        [JsonPropertyName("deadlineOn")]
-        public DateTime DeadlineOn { get; set; }
-
-        [JsonPropertyName("status")]
-        public string Status { get; set; }
-
-        [JsonPropertyName("closedOn")]
-        public DateTime? ClosedOn { get; set; }
-
-        [JsonPropertyName("reference")]
-        public string Reference { get; set; }
-
-        [JsonPropertyName("filePath")]
-        public string FilePath { get; set; }
-
-        [JsonPropertyName("comments")]
-        public string Comments { get; set; }
 
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }

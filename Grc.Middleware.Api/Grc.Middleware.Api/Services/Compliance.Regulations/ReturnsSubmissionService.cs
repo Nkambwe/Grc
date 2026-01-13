@@ -6,6 +6,7 @@ using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Utils;
+using RTools_NTS.Util;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -774,17 +775,26 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<PagedResult<ReturnSubmission>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<ReturnSubmission, bool>> predicate = null, bool includeDeleted = false)
-        {
+        public async Task<PagedResult<ReturnSubmission>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<ReturnSubmission, bool>> predicate = null, bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve paged Submission", "INFO");
 
-            try
-            {
+            try {
                 return await uow.RegulatorySubmissionRepository.PageAllAsync(token, page, size, predicate, includeDeleted);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve Submission : {ex.Message}", "ERROR");
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
             }
-            catch (Exception ex)
-            {
+        }
+
+        public async Task<PagedResult<ReturnSubmission>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<ReturnSubmission, bool>> predicate = null, params Expression<Func<ReturnSubmission, object>>[] includes) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve paged Submission", "INFO");
+
+            try {
+                return await uow.RegulatorySubmissionRepository.PageAllAsync(page, size, includeDeleted,  predicate, includes);
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve Submission : {ex.Message}", "ERROR");
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
@@ -806,7 +816,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     record.FilePath = (request.File ?? string.Empty).Trim();
                     record.SubmittedBy = (request.SubmittedBy ?? string.Empty).Trim();
                     record.Comments = (request.Comments ?? string.Empty).Trim();
-                    record.SubmissionDate = DateTime.Now;
+                    record.SubmissionDate = request.SubmittedOn;
                     record.IsBreached = !string.IsNullOrWhiteSpace(request.BreachReason);
                     record.BreachReason = (request.BreachReason ?? string.Empty).Trim();
                     record.LastModifiedOn = DateTime.Now;

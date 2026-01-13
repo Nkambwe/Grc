@@ -22,6 +22,9 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("ownerId")]
         public long OwnerId { get; set; }
 
+        [JsonPropertyName("submittedOn")]
+        public DateTime SubmittedOn { get; set; }
+
         [JsonPropertyName("submittedBy")]
         public string SubmittedBy { get; set; }
 

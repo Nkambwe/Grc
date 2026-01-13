@@ -2,22 +2,220 @@
 @{
     var dataJson = JsonSerializer.Serialize(Model);
 }
+
 <div class="dashboard-category-grid">
     <div class="dashboard-bottom-row" style="display:flex; gap:20px; margin-top:30px;">
         <div class="inner-dashboard-container" style="flex:1">
             <table class="table is-fullwidth is-striped" id="circularTable">
                 <thead>
                     <tr>
-                        <th>CIRCULAR</th>
-                        <th>STATUS</th>
-                        <th>RISK</th>
-                        <th>DEPARTMENT</th>
-                        <th>VIEW</th>
+                        <th> @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Circular"))</th>
+                        <th> @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Status"))</th>
+                        <th> @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Risk"))</th>
+                        <th> @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Department"))</th>
+                        <th> @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Action"))</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
         </div>
+
+    </div>
+
+</div>
+
+<!-- Outer-Overlay -->
+<div id="circularOuterOverlay" class="circular-outer-panel-overlay"></div>
+
+<!-- Section Panel -->
+<div id="circularOuterPanel" class="circular-side-panel" onclick="event.stopPropagation()">
+
+    <div class="circular-side-panel-header">
+        <h5 id="circularTitle">
+            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Header"))
+        </h5>
+        <button class="panel-close" onclick="closeCircular()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div class="circular-side-panel-body">
+
+        <form id="circularForm" class="grc-law-form">
+
+            <input type="hidden" id="circularId" name="circularId">
+            <input type="hidden" id="submissionBreach" name="submissionBreach" />
+            <input type="hidden" id="ownerId" name="ownerId" />
+
+            <div id="breachBox" class="row m-4">
+
+                <span>
+                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Breach-info"))
+                </span>
+
+            </div>
+
+            <div class="row m-4">
+
+                <div class="col-12">
+
+                    <div class="row mb-3">
+                        <label for="circularTitle" class="col-sm-12 col-form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Label.Title"))
+                        </label>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="circularTitle" name="circularTitle" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="circularRequirement" class="col-sm-12 col-form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Label.Requirement"))
+                        </label>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="circularRequirement" name="circularRequirement" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+
+                        <div class="col-6">
+                            <div class="row mb-3">
+                                <label for="recieveDate" class="col-sm-12 col-form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Label.Receive-date"))
+                                </label>
+                                <div class="col-12">
+                                    <input type="text" class="form-control" id="recieveDate" name="recieveDate" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row mb-3">
+                                <label for="deadline" class="col-sm-12 col-form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Label.Deadline-date"))
+                                </label>
+                                <div class="col-12">
+                                    <input type="text" class="form-control" id="deadline" name="deadline" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row mb-3">
+                                <label for="frequency" class="col-sm-12 col-form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Label.Frequency"))
+                                </label>
+                                <div class="col-12">
+                                    <input type="text" class="form-control" id="frequency" name="frequency" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row mb-3">
+                                <label for="department" class="col-sm-12 col-form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Label.Department"))
+                                </label>
+                                <div class="col-12">
+                                    <input type="text" class="form-control" id="department" name="department" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="circularStatus" class="col-sm-12 col-form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submissions.Label.Status"))
+                                </label>
+                                <div class="col-sm-12">
+                                    <select class="js-task-document form-control" id="circularStatus" name="circularStatus">
+                                        <option value="UNKNOWN">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Issues.Label.Status.Select"))</option>
+                                        <option value="CLOSED">Closed</option>
+                                        <option value="OPEN">Open</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-check form-switch mt-4">
+                                <input class="form-check-input pe-none" type="checkbox" id="isBreached" onclick="return false;">
+                                <label class="form-check-label" for="isBreached">
+                                    I
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Label.IsBreached"))
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-2"></div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="reference" class="col-12 form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Submitted.Reference"))
+                        </label>
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="reference" name="reference">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="filePath" class="col-12 form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Submitted.FileName"))
+                        </label>
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="filePath" name="filePath">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label for="breachReason" class="col-12 form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Label.Breach-Reason"))
+                        </label>
+                        <div class="col-sm-12">
+                            <textarea class="form-control" id="breachReason" name="breachReason" rows="4"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="submittedBy" class="col-12 form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Label.Submitted-By"))
+                        </label>
+                        <div class="col-12">
+                            <input type="text" class="form-control" id="submittedBy" name="submittedBy">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label for="comments" class="col-12 form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Label.Comments"))
+                        </label>
+                        <div class="col-sm-12">
+                            <textarea class="form-control" id="comments" name="comments" rows="4"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="row mt-4 p-4">
+
+                <div class="col-sm-2">
+
+                    <button type="button" class="btn btn-grc-primary w-100" onclick="updateSubmission(event)">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))
+                    </button>
+                </div>
+
+                <div class="col-sm-1">
+                    <button type="button" class="btn btn-grc-secondary w-100" onclick="closeCircular()">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))
+                    </button>
+                </div>
+
+            </div>
+
+        </form>
 
     </div>
 

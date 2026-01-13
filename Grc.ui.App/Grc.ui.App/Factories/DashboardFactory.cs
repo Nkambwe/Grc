@@ -359,12 +359,13 @@ namespace Grc.ui.App.Factories {
                     Statuses = circulars.Statuses,
                     Reports = circulars.Reports != null && circulars.Reports.Any() ?
                               circulars.Reports.Select(report => new CircularReport() {
-                                    Id= report.Id,
-                                    Title = report.Title,
-                                    Status = report.Status,
-                                    Authority = report.Authority,
-                                    AuthorityAlias = report.AuthorityAlias,
-                                    Department = report.Department
+                                  Id= report.Id,
+                                  Title = report.Title ?? string.Empty,
+                                  Status = report.Status ?? string.Empty,
+                                  BreachRisk = report.BreachRisk ?? string.Empty,
+                                  Authority = report.Authority ?? string.Empty,
+                                  AuthorityAlias = report.AuthorityAlias ?? string.Empty,
+                                  Department = report.Department ?? string.Empty
 
                               }).ToList() :
                               new List<CircularReport>()
@@ -399,11 +400,12 @@ namespace Grc.ui.App.Factories {
                 circulars.Reports = data.Circulars!= null && data.Circulars.Any() ?
                     data.Circulars.Select(circular => new CircularReport() { 
                         Id = circular.Id,
-                        Title = circular.Title,
-                        Status = circular.Status,
-                        Authority = circular.Authority,
-                        AuthorityAlias = circular.AuthorityAlias,
-                        Department = circular.Department
+                        Title = circular.Title ?? string.Empty,
+                        Status = circular.Status ?? string.Empty,
+                        BreachRisk = circular.BreachRisk ?? string.Empty,
+                        Authority = circular.Authority ?? string.Empty,
+                        AuthorityAlias = circular.AuthorityAlias ?? string.Empty,
+                        Department = circular.Department ?? string.Empty
                     }).ToList(): 
                     new List<CircularReport>();
             }
@@ -485,11 +487,11 @@ namespace Grc.ui.App.Factories {
                 var data = grcResponse.Data;
                 returns.Reports = data.Reports.Select(report => new ReturnSubmission() {
                     Id = report.Id,
-                    Title = report.Title,
+                    Title = report.Title ?? string.Empty,
                     Period =period.Equals("DAILY")? GetReportDate(report.PeriodStart) : $"{report.PeriodStart:yyyy-MM-dd} TO {report.PeriodEnd:yyyy-MM-dd}",
-                    Status = report.Status,
-                    Department = report.Department,
-                    Risk = report.Risk
+                    Status = report.Status ?? string.Empty,
+                    Department = report.Department ?? string.Empty,
+                    Risk = report.Risk ?? string.Empty,
                 }).ToList();
                 returns.Periods = data.Periods;
             }
@@ -532,9 +534,9 @@ namespace Grc.ui.App.Factories {
                 returns.Statistics = data.Statistics;
                 returns.Reports = data.Reports.Select(report => new ReturnReport() {
                     Id = report.Id,
-                    Department = report.Department,
-                    Title = report.Title,
-                    Type = report.Type
+                    Department = report.Department ?? string.Empty,
+                    Title = report.Title ?? string.Empty,
+                    Type = report.Type ?? string.Empty
                 }).ToList();
             }
 

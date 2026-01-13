@@ -7,5 +7,11 @@ namespace Grc.ui.App.Http.Responses {
 
         [JsonPropertyName("frequencyName")]
         public string FrequencyName { get; set; }
+
+        [JsonPropertyName("isDeleted")]
+        public bool IsDeleted { get; set; }
+
+        [JsonPropertyName("returns")]
+        public List<ReturnReportResponse> Returns { get; set; } = new();
     }
 }

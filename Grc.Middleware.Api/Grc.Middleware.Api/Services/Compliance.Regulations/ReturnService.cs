@@ -9,6 +9,7 @@ using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
+using RTools_NTS.Util;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -239,39 +240,54 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         }
 
         public async Task<CircularStatisticsResponse> GetCircularDashboardStatisticsAsync(bool includeDeleted) {
-
             using var uow = UowFactory.Create();
-            Logger.LogActivity($"Circular statistics", "INFO");
-
-            var statistics = new CircularStatisticsResponse() {
-                Authorities = new Dictionary<string, int>(),
-                Statuses = new Dictionary<string, Dictionary<string, int>>()
-            };
+            Logger.LogActivity("Circular statistics", "INFO");
 
             try {
-                // ..circulars
-                var circulars = await uow.CircularRepository.GetAllAsync(includeDeleted, c => c.Authority, c => c.Department);
-                statistics.Authorities = circulars.GroupBy(d => d.Authority?.AuthorityAlias ?? "OTHER").ToDictionary(g => g.Key, g => g.Count());
-                statistics.Authorities.Add("TOTALS", circulars.Count);
+                //..fetch circulars once
+                var circulars = await uow.CircularRepository.GetAllAsync(
+                    includeDeleted,
+                    c => c.Authority,
+                    c => c.Department
+                );
 
-                //..graph data from submissions
-                statistics.Statuses = circulars.GroupBy(c => c.Authority?.AuthorityAlias ?? "OTHER")
-                                               .ToDictionary(authorityGroup => authorityGroup.Key, authorityGroup => authorityGroup
-                                                    .GroupBy(c => c.Status)
-                                                    .ToDictionary(
-                                                        statusGroup => statusGroup.Key?.ToString() ?? "OPEN",
-                                                        statusGroup => statusGroup.Count()
-                                                    )
-                                               );
+                var circularsList = circulars.ToList();
 
+                //..build statistics in a single pass where possible
+                var statistics = new CircularStatisticsResponse {
+                    Authorities = new Dictionary<string, int>(),
+                    Statuses = new Dictionary<string, Dictionary<string, int>>()
+                };
 
+                //..group by authority and calculate both metrics
+                var authorityGroups = circularsList
+                    .GroupBy(c => c.Authority?.AuthorityAlias ?? "OTHER")
+                    .ToList();
+
+                foreach (var authorityGroup in authorityGroups) {
+                    var circularArray = authorityGroup.ToList();
+
+                    //..count for Authorities dictionary
+                    statistics.Authorities[authorityGroup.Key] = circularArray.Count;
+
+                    //..group by status for Statuses dictionary
+                    statistics.Statuses[authorityGroup.Key] = circularArray
+                        .GroupBy(c => GetCircularStatus(c))
+                        .ToDictionary(
+                            statusGroup => statusGroup.Key,
+                            statusGroup => statusGroup.Count()
+                        );
+                }
+
+                //..add total count
+                statistics.Authorities["TOTALS"] = circularsList.Count;
+
+                return statistics;
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve statistics: {ex.Message}", "ERROR");
                 LogError(uow, ex);
                 throw;
             }
-
-            return statistics;
         }
 
         public async Task<CircularDashboardResponse> GetCircularStatisticsAsync(bool includeDeleted, string authority) {
@@ -296,7 +312,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     response.Circulars = reports.Select(r => new CircularReportResponse {
                         Id = r.Id,
                         Title = r.CircularTitle,
-                        Status = r.Status,
+                        Status = r.IsBreached ? "BREACHED" : r.Status,
+                        BreachRisk = r.BreachRisk,
                         AuthorityAlias = r.Authority?.AuthorityAlias,
                         Authority = r.Authority?.AuthorityName ?? string.Empty,
                         Department = r.Department?.DepartmentName ?? string.Empty,
@@ -336,7 +353,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     statistics.Reports = reports.Select(r => new CircularExtensionResponse {
                         Id = r.Id,
                         Title = r.CircularTitle,
-                        Status = r.Status,
+                        Status = r.IsBreached ? "BREACHED": r.Status,
                         AuthorityAlias = r.Authority?.AuthorityAlias,
                         Authority = r.Authority?.AuthorityName ?? string.Empty,
                         Department = r.Department?.DepartmentName ?? string.Empty,
@@ -1039,10 +1056,27 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
+        public async Task<PagedResult<ReturnReport>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<ReturnReport, bool>> predicate = null, params Expression<Func<ReturnReport, object>>[] includes) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve paged regulatory return", "INFO");
+            try {
+                return await uow.ReturnRepository.PageAllAsync(page, size, includeDeleted,predicate,includes);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve regulatory return : {ex.Message}", "ERROR");
+                await LogErrorAsync(uow, ex);
+                throw;
+            }
+        }
+
         #endregion
 
         #region private methods
+        private static string GetCircularStatus(Circular c) {
+            if (c.IsBreached)
+                return "BREACHED";
 
+            return c.Status ?? "OPEN";
+        }
         private static string MapPolicyStatusToFilter(PolicyStatus status) => status switch {
             PolicyStatus.ONHOLD => "ON-HOLD",
             PolicyStatus.NEEDREVIEW => "DUE",

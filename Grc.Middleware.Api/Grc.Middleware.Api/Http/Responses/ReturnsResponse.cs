@@ -27,6 +27,9 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("comments")]
         public string Comments { get; set; }
 
+        [JsonPropertyName("risk")]
+        public string Risk { get; set; }
+
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 

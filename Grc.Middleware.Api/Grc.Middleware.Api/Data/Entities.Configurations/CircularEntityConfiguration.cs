@@ -10,12 +10,15 @@ public partial class CircularEntityConfiguration {
         builder.Property(a => a.CircularTitle).HasColumnName("circular_title").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
         builder.Property(a => a.Requirement).HasColumnName("requirement").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
         builder.Property(a => a.RecievedOn).HasColumnName("received_on");
-        builder.Property(a => a.DeadlineOn).HasColumnName("deadline_on");
+        builder.Property(a => a.DeadlineOn).HasColumnName("deadline_on").IsRequired(false);
         builder.Property(a => a.Status).HasColumnName("status").HasColumnType("NVARCHAR(20)").IsRequired();
         builder.Property(a => a.SubmissionDate).HasColumnName("submission_on").IsRequired(false);
         builder.Property(a => a.FilePath).HasColumnName("file_path").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
         builder.Property(a => a.SubmittedBy).HasColumnName("submitted_by").HasColumnType("NVARCHAR(50)").IsRequired(false);
         builder.Property(a => a.Reference).HasColumnName("reference").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
+        builder.Property(a => a.IsBreached).HasColumnName("is_breached");
+        builder.Property(a => a.BreachReason).HasColumnName("breach_reason").HasColumnType("NVARCHAR(50)").IsRequired(false);
+        builder.Property(a => a.BreachRisk).HasColumnName("breach_risk").HasColumnType("NVARCHAR(50)").IsRequired(false);
         builder.Property(a => a.Comments).HasColumnName("comments").HasColumnType("NVARCHAR(50)").IsRequired(false);
         builder.Property(a => a.AuthorityId).HasColumnName("auth_id");
         builder.Property(a => a.FrequencyId).HasColumnName("freq_id");

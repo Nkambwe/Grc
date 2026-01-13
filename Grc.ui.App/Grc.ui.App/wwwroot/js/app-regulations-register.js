@@ -1022,6 +1022,7 @@ function coverageIconFormatter(cell) {
 
     return "-";
 }
+
 function progressFormatter(cell) {
     let value = Number(cell.getValue()) || 0;
 

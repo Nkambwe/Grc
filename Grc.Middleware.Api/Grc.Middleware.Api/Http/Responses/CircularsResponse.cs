@@ -28,7 +28,7 @@ namespace Grc.Middleware.Api.Http.Responses {
         public DateTime RecievedOn { get; set; }
 
         [JsonPropertyName("deadlineOn")]
-        public DateTime DeadlineOn { get; set; }
+        public DateTime? DeadlineOn { get; set; }
 
         [JsonPropertyName("submissionDate")]
         public DateTime? SubmissionDate { get; set; }
@@ -38,6 +38,15 @@ namespace Grc.Middleware.Api.Http.Responses {
 
         [JsonPropertyName("status")]
         public string Status { get; set; }
+
+        [JsonPropertyName("isBreached")]
+        public bool IsBreached { get; set; }
+
+        [JsonPropertyName("breachReason")]
+        public string BreachReason { get; set; }
+
+        [JsonPropertyName("breachRisk")]
+        public string BreachRisk { get; set; }
 
         [JsonPropertyName("refNumber")]
         public string RefNumber { get; set; }

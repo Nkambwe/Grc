@@ -7,6 +7,8 @@ namespace Grc.ui.App.Dtos {
 
         public string Status { get; set; }
 
+        public string BreachRisk { get; set; }
+
         public string AuthorityAlias { get; set; }
         public string Authority { get; set; }
 

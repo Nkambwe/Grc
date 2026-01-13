@@ -24,6 +24,9 @@ namespace Grc.ui.App.Http.Requests {
         [JsonPropertyName("submittedBy")]
         public string SubmittedBy { get; set; }
 
+        [JsonPropertyName("submittedOn")]
+        public DateTime SubmittedOn { get; set; }
+
         [JsonPropertyName("userId")]
         public long UserId { get; set; }
         [JsonPropertyName("action")]

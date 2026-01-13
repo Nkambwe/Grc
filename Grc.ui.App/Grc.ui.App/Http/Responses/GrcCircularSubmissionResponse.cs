@@ -1,0 +1,73 @@
+﻿using System.Text.Json.Serialization;
+
+namespace Grc.ui.App.Http.Responses {
+    public class GrcCircularSubmissionResponse {
+
+        [JsonPropertyName("id")]
+        public long Id { get; set; }
+
+        [JsonPropertyName("reference")]
+        public string Reference { get; set; }
+
+        [JsonPropertyName("circularTitle")]
+        public string CircularTitle { get; set; }
+
+        [JsonPropertyName("circularRequirement")]
+        public string CircularRequirement { get; set; }
+
+        [JsonPropertyName("recievedOn")]
+        public DateTime RecievedOn { get; set; }
+
+        [JsonPropertyName("deadline")]
+        public DateTime? Deadline { get; set; }
+
+        [JsonPropertyName("authorityId")]
+        public long AuthorityId { get; set; }
+
+        [JsonPropertyName("authority")]
+        public string Authority { get; set; }
+
+        [JsonPropertyName("frequencyId")]
+        public long FrequencyId { get; set; }
+
+        [JsonPropertyName("frequency")]
+        public string Frequency { get; set; }
+
+        [JsonPropertyName("circularStatus")]
+        public string CircularStatus { get; set; }
+
+        [JsonPropertyName("isBreached")]
+        public bool IsBreached { get; set; }
+
+        [JsonPropertyName("breachReason")]
+        public string BreachReason { get; set; }
+
+        [JsonPropertyName("breachRisk")]
+        public string BreachRisk { get; set; }
+
+        [JsonPropertyName("isDeleted")]
+        public bool IsDeleted { get; set; }
+
+        [JsonPropertyName("comments")]
+        public string Comments { get; set; }
+
+        [JsonPropertyName("filePath")]
+        public string FilePath { get; set; }
+
+        [JsonPropertyName("ownerId")]
+        public long OwnerId { get; set; }
+
+        [JsonPropertyName("department")]
+        public string Department { get; set; }
+
+        [JsonPropertyName("submittedOn")]
+        public DateTime? SubmittedOn { get; set; }
+
+        [JsonPropertyName("submittedBy")]
+        public string SubmittedBy { get; set; }
+
+        [JsonPropertyName("issues")]
+        public List<GrcCircularIssueResponse> Issues { get; set; }
+
+    }
+}

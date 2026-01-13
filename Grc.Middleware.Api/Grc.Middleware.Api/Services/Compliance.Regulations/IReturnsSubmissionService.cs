@@ -45,6 +45,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         Task<PagedResult<ReturnSubmission>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<ReturnSubmission, object>>[] includes);
         Task<PagedResult<ReturnSubmission>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<ReturnSubmission, bool>> where = null);
         Task<PagedResult<ReturnSubmission>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<ReturnSubmission, bool>> where = null, bool includeDeleted = false);
+        Task<PagedResult<ReturnSubmission>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<ReturnSubmission, bool>> predicate = null, params Expression<Func<ReturnSubmission, object>>[] includes);
         #endregion
 
         #region Background Service
@@ -52,6 +53,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         Task<bool> UpdateAsync(SubmissionRequest submission, string username);
 
         Task GenerateMissingSubmissionsAsync(DateTime today, CancellationToken ct);
+       
 
         #endregion
 

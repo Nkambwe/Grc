@@ -1,6 +1,7 @@
 ﻿using Grc.Middleware.Api.Data.Entities.Support;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
+using Grc.Middleware.Api.Http.Responses;
 using System.Linq.Expressions;
 
 namespace Grc.Middleware.Api.Services.Compliance.Support {
@@ -43,5 +44,6 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
         Task<PagedResult<Frequency>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<Frequency, object>>[] includes);
         Task<PagedResult<Frequency>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<Frequency, bool>> predicate = null);
         Task<PagedResult<Frequency>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<Frequency, bool>> predicate = null, bool includeDeleted = false);
+        Task<PagedResult<FrequencyResponse>> PageLookupAsync<FrequencyResponse>(int page, int size, bool includeDeleted, Expression<Func<Frequency, FrequencyResponse>> selector);
     }
 }

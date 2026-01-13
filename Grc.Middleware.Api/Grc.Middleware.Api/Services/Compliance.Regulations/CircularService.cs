@@ -8,6 +8,7 @@ using Grc.Middleware.Api.Utils;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Xml.Linq;
 
 namespace Grc.Middleware.Api.Services.Compliance.Regulations {
     public class CircularService : BaseService, ICircularService {
@@ -160,14 +161,17 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     SubmissionDate = request.SubmissionDate,
                     FilePath = request.FilePath,
                     SubmittedBy = request.SubmittedBy,
-                    Reference = request.Reference,
+                    Reference = request.SubmissionReference,
+                    IsBreached = request.IsBreached,
+                    BreachRisk = request.BreachRisk,
+                    BreachReason = request.BreachReason,
+                    Comments = request.Comments,
                     FrequencyId = request.FrequencyId,
                     AuthorityId = request.AuthorityId,
                     DepartmentId = request.DepartmentId,
                     IsDeleted = request.IsDeleted,
                     CreatedBy = $"{request.UserName}",
                     CreatedOn = DateTime.Now,
-                    Comments = request.Comments,
                     LastModifiedBy = $"{request.UserName}",
                     LastModifiedOn = DateTime.Now
                 };
@@ -211,7 +215,10 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     SubmissionDate = request.SubmissionDate,
                     FilePath = request.FilePath,
                     SubmittedBy = request.SubmittedBy,
-                    Reference = request.Reference,
+                    IsBreached = request.IsBreached,
+                    BreachRisk = request.BreachRisk,
+                    BreachReason = request.BreachReason,
+                    Reference = request.SubmissionReference,
                     FrequencyId = request.FrequencyId,
                     AuthorityId = request.AuthorityId,
                     DepartmentId = request.DepartmentId,
@@ -259,7 +266,6 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     //..update record
                     circular.CircularTitle = (request.CircularTitle ?? string.Empty).Trim();
                     circular.Requirement = (request.Requirement ?? string.Empty).Trim();
-                    circular.Comments = request.Comments ?? string.Empty;
                     circular.IsDeleted = request.IsDeleted;
                     circular.Status = request.Status;
                     circular.RecievedOn = request.RecievedOn;
@@ -267,10 +273,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     circular.SubmissionDate = request.SubmissionDate;
                     circular.FilePath = request.FilePath;
                     circular.SubmittedBy = request.SubmittedBy;
+                    circular.IsBreached = request.IsBreached;
+                    circular.BreachRisk = request.BreachRisk;
+                    circular.BreachReason = request.BreachReason;
+                    circular.Comments = request.Comments;
                     circular.AuthorityId = request.AuthorityId;
                     circular.FrequencyId = request.FrequencyId;
                     circular.DepartmentId = request.DepartmentId;
-                    circular.Reference = request.Reference;
+                    circular.Reference = request.SubmissionReference;
                     circular.LastModifiedOn = DateTime.Now;
                     circular.LastModifiedBy = $"{request.UserName}";
 
@@ -301,18 +311,21 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     //..update record
                     circular.CircularTitle = (request.CircularTitle ?? string.Empty).Trim();
                     circular.Requirement = (request.Requirement ?? string.Empty).Trim();
-                    circular.Comments = request.Comments ?? string.Empty;
                     circular.IsDeleted = request.IsDeleted;
                     circular.Status = request.Status;
                     circular.RecievedOn = request.RecievedOn;
                     circular.DeadlineOn = request.DeadlineOn;
                     circular.SubmissionDate = request.SubmissionDate;
                     circular.FilePath = request.FilePath;
+                    circular.BreachRisk = request.BreachRisk;
+                    circular.IsBreached = request.IsBreached;
+                    circular.BreachReason = request.BreachReason;
+                    circular.Comments = request.Comments;
                     circular.SubmittedBy = request.SubmittedBy;
                     circular.AuthorityId = request.AuthorityId;
                     circular.FrequencyId = request.FrequencyId;
                     circular.DepartmentId = request.DepartmentId;
-                    circular.Reference = request.Reference;
+                    circular.Reference = request.SubmissionReference;
                     circular.LastModifiedOn = DateTime.Now;
                     circular.LastModifiedBy = $"{request.UserName}";
 
@@ -328,6 +341,42 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
 
                 return false;
             } catch (Exception ex) {
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+        }
+
+        public async Task<bool> UpdateSubmissionAsync(CircularSubmissionRequest request, string username) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Update circular submission", "INFO");
+
+            try {
+                var record = await uow.CircularRepository.GetAsync(a => a.Id == request.Id);
+                if (record != null) {
+                    record.Reference = request.Reference;
+                    record.Status = (request.Status ?? string.Empty).Trim();
+                    record.FilePath = (request.FilePath ?? string.Empty).Trim();
+                    record.SubmittedBy = (request.SubmittedBy ?? string.Empty).Trim();
+                    record.Comments = request.Comments;
+                    record.SubmissionDate = DateTime.Now;
+                    record.IsBreached = !string.IsNullOrWhiteSpace(request.BreachReason);
+                    record.BreachReason = request.BreachReason;
+                    record.LastModifiedOn = DateTime.Now;
+                    record.LastModifiedBy = $"{username}";
+
+                    //..check entity state
+                    _ = await uow.CircularRepository.UpdateAsync(record, true);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(record).State;
+                    Logger.LogActivity($"Submission state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to update submission record: {ex.Message}", "ERROR");
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }

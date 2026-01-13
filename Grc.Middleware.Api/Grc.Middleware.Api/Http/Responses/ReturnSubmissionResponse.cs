@@ -6,6 +6,12 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
+        [JsonPropertyName("title")]
+        public string Title { get; set; }
+
+        [JsonPropertyName("article")]
+        public string Article { get; set; }
+
         [JsonPropertyName("report")]
         public string Report { get; set; }
 
@@ -15,11 +21,11 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("periodEnd")]
         public DateTime PeriodEnd { get; set; }
 
-        [JsonPropertyName("title")]
-        public string Title { get; set; }
-
         [JsonPropertyName("status")]
         public string Status { get; set; }
+
+        [JsonPropertyName("departmentId")]
+        public long DepartmentId { get; set; }
 
         [JsonPropertyName("department")]
         public string Department { get; set; }
@@ -38,6 +44,12 @@ namespace Grc.Middleware.Api.Http.Responses {
 
         [JsonPropertyName("breachReason")]
         public string BreachReason { get; set; }
+
+        [JsonPropertyName("submittedOn")]
+        public DateTime? SubmittedOn { get; set; }
+
+        [JsonPropertyName("submittedBy")]
+        public string SubmittedBy { get; set; }
 
     }
 }

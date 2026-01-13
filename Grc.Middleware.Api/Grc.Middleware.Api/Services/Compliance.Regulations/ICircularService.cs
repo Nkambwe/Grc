@@ -25,5 +25,6 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         Task<PagedResult<CircularResponse>> PageLookupAsync<CircularResponse>(int page, int size, bool includeDeleted, Expression<Func<Circular, CircularResponse>> selector);
         Task<PagedResult<Circular>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<Circular, object>>[] includes);
         Task<PagedResult<Circular>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<Circular, bool>> predicate = null);
+        Task<bool> UpdateSubmissionAsync(CircularSubmissionRequest request, string username);
     }
 }

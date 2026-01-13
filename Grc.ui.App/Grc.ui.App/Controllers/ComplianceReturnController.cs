@@ -10,6 +10,8 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
+using OpenXmlPowerTools;
+using System.Text.Json;
 using Activity = Grc.ui.App.Enums.Activity;
 
 namespace Grc.ui.App.Controllers {
@@ -305,6 +307,7 @@ namespace Grc.ui.App.Controllers {
             return Redirect(Url.Action("Dashboard", "Application"));
 
         }
+
         [LogActivityResult("Retrieve Return", "User retrieved return/report", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_RETURN, "StatutoryReturn")]
         public async Task<IActionResult> GetReturn(long id) {
             try {
@@ -467,37 +470,169 @@ namespace Grc.ui.App.Controllers {
             return Ok(new { message = "success" });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> GetFrequencyReturns([FromBody] TableListRequest request) {
+            try {
+
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    Logger.LogActivity($"FREQUENCY RETURNS DATA ERROR: Failed to get current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                //..update with user data
+                var currentUser = grcResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.RETRIEVEREGULATORYCATEGORIES.GetDescription();
+
+                //..get frequency data
+                var categoryData = await _returnService.GetFrequencyReturnsAsync(request);
+                PagedResponse<GrcFrequencyResponse> frequencyList = new();
+
+                if (categoryData.HasError) {
+                    Logger.LogActivity($"FREQUENCY RETURNS DATA ERROR: Failed to retrieve frquencu returns - {JsonSerializer.Serialize(categoryData)}");
+                } else {
+                    frequencyList = categoryData.Data;
+                    Logger.LogActivity($"FREQUENCY RETURNS DATA - {JsonSerializer.Serialize(frequencyList)}");
+                }
+
+                //..map to ajax object
+                var frequencies = frequencyList.Entities ??= new();
+                if (frequencies.Any()) {
+                    var tree = frequencies.Select(l => new {
+                        id = $"C_{l.Id}",
+                        text = l.FrequencyName,
+                        type = "frequency",
+                        children = l.Returns.Select(s => new { id = $"L_{s.Id}", text = s.Title, type = "report" }).ToArray()
+                    }).ToArray();
+
+                    return Ok(tree);
+                }
+
+                return Ok(Array.Empty<object>());
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving frequency returns items: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "RETURNS-CONTROLLER", ex.StackTrace);
+                return Ok(Array.Empty<object>());
+            }
+        }
+
+        [HttpPost]
         public async Task<IActionResult> GetPagedReturnsList([FromBody] TableListRequest request) {
             try {
+                //..get user IP address
                 var ipAddress = WebHelper.GetCurrentIpAddress();
-                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (userResponse.HasError) Logger.LogActivity("RETURNS DATA ERROR: Failed to get user");
 
-                var currentUser = userResponse.Data;
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    Logger.LogActivity($"RETURNS DATA ERROR: Failed to get current user record - {JsonSerializer.Serialize(grcResponse)}");
+                    return Ok(new { last_page = 0, data = new List<object>() });
+                }
+
+                //..update with user data
+                var currentUser = grcResponse.Data;
                 request.UserId = currentUser.UserId;
                 request.IPAddress = ipAddress;
                 request.Action = Activity.COMPLIANCE_RETURNS_RETRIEVE.GetDescription();
 
-                var result = await _returnService.GetPagedReturnsAsync(request);
-                PagedResponse<GrcReturnsResponse> returns = result.Data ?? new();
+                //..map to ajax object
+                var returnsData = await _returnService.GetReturnsListAsync(request);
+                PagedResponse<GrcReturnsResponse> returnsList = new();
 
-                var pagedEntities = (returns.Entities ?? new List<GrcReturnsResponse>())
-                    .Select(r => new {
-                        id = r.Id,
-                        reportName = r.ReportName ?? string.Empty,
-                        frequency = r.Frequency ?? string.Empty,
-                        department = r.Department ?? string.Empty,
-                        authority = r.Authority ?? string.Empty,
-                        article = r.Article ?? string.Empty,
-                        isDeleted = r.IsDeleted,
-                        comments = r.Comments ?? string.Empty
+                if (returnsData.HasError) {
+                    Logger.LogActivity($"RETURNS DATA ERROR: Failed to retrieve returns - {JsonSerializer.Serialize(returnsData)}");
+                    return Ok(new { last_page = 0, data = new List<object>() });
+                } else {
+                    returnsList = returnsData.Data;
+                    Logger.LogActivity($"RETURNS DATA - {JsonSerializer.Serialize(returnsList)}");
+                }
+
+                var pagedEntities = returnsList.Entities
+                    .Select(report => new {
+                        id = report.Id,
+                        reportName = report.ReportName ?? string.Empty,
+                        article = report.Article ?? string.Empty,
+                        authority = report.Authority ?? string.Empty,
+                        department = report.Department ?? string.Empty,
+                        status = report.IsDeleted ? "INACTIVE" : "ACTIVE",
                     }).ToList();
 
-                var totalPages = (int)Math.Ceiling((double)returns.TotalCount / returns.Size);
-                return Ok(new { last_page = totalPages, total_records = returns.TotalCount, data = pagedEntities });
+                var totalPages = (int)Math.Ceiling((double)returnsList.TotalCount / returnsList.Size);
+                return Ok(new {
+                    last_page = totalPages,
+                    total_records = returnsList.TotalCount,
+                    data = pagedEntities
+                });
             } catch (Exception ex) {
-                Logger.LogActivity($"Error retrieving returns: {ex.Message}", "ERROR");
-                await ProcessErrorAsync(ex.Message, "RETURNS-REGISTER", ex.StackTrace);
+                Logger.LogActivity($"Error retrieving regulatory categories: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "REGULATORY-SETTINGS-CONTROLLER", ex.StackTrace);
+                return Ok(new { last_page = 0, data = new List<object>() });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetPagedReturnSubmissions([FromBody] TableListRequest request) {
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    Logger.LogActivity($"RETURNS DATA ERROR: Failed to get current user record - {JsonSerializer.Serialize(grcResponse)}");
+                    return Ok(new { last_page = 0, data = new List<object>() });
+                }
+
+                //..update with user data
+                var currentUser = grcResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.COMPLIANCE_RETURNS_RETRIEVE.GetDescription();
+
+                //..map to ajax object
+                var returnsData = await _returnService.GetReturnSubmissionsAsync(request);
+                PagedResponse<GrcReturnSubmissionResponse> submissionList = new();
+
+                if (returnsData.HasError) {
+                    Logger.LogActivity($"RETURNS DATA ERROR: Failed to retrieve returns - {JsonSerializer.Serialize(returnsData)}");
+                    return Ok(new { last_page = 0, data = new List<object>() });
+                } else {
+                    submissionList = returnsData.Data;
+                    Logger.LogActivity($"RETURNS DATA - {JsonSerializer.Serialize(submissionList)}");
+                }
+
+                var pagedEntities = submissionList.Entities
+                    .Select(submission => new {
+                        id = submission.Id,
+                        article = submission.Article ?? string.Empty,
+                        reportName = submission.Report ?? string.Empty,
+                        reportTitle = submission.Title ?? string.Empty,
+                        periodStart = submission.PeriodStart,
+                        periodEnd = submission.PeriodEnd,
+                        status = submission.Status ?? string.Empty,
+                        risk = submission.Risk ?? string.Empty,
+                        isBreached = submission.IsBreached,
+                        reason= submission.BreachReason,
+                        submittedBy = submission.SubmittedBy ?? string.Empty,
+                        submittedOn = submission.SubmittedOn,
+                        departmentId = submission.DepartmentId,
+                        department = submission.Department ?? string.Empty
+                    }).OrderBy(s => s.status).ToList();
+
+                var totalPages = (int)Math.Ceiling((double)submissionList.TotalCount / submissionList.Size);
+                return Ok(new {
+                    last_page = totalPages,
+                    total_records = submissionList.TotalCount,
+                    data = pagedEntities
+                });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving return submissions: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "REGULATORY-SETTINGS-CONTROLLER", ex.StackTrace);
                 return Ok(new { last_page = 0, data = new List<object>() });
             }
         }
@@ -777,7 +912,7 @@ namespace Grc.ui.App.Controllers {
                     status = response.Status ?? string.Empty,
                     isDeleted = response.IsDeleted,
                     isBreached = response.IsBreached,
-                    ownerId = response.OwnerId,
+                    ownerId = response.DepartmentId,
                     riskAttached = response.Risk ?? string.Empty,
                     department = response.Department ?? string.Empty,
                     comments = response.Comment ?? string.Empty,
@@ -807,6 +942,102 @@ namespace Grc.ui.App.Controllers {
 
                 var updated = result.Data;
                 return Ok(new { success = true, message = "Submission updated successfully", data = new { }});
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error updating submission: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "RETURNS-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Unable to update submission. An error occurred" });
+            }
+        }
+
+        #endregion
+
+        #region Circular Submissions
+        public async Task<IActionResult> GetCircular(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0) {
+                    return BadRequest(new { success = false, message = "Policy Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.COMPLIANCE_GET_POLICY.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = false
+                };
+
+                var result = await _returnService.GetCircularSubmissionAsync(request);
+                if (result.HasError || result.Data == null) {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving policy";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var response = result.Data;
+                var circularRecord = new {
+                    id = response.Id,
+                    reference = response.Reference ?? string.Empty,
+                    circularTitle = response.CircularTitle ?? string.Empty,
+                    circularRequirement = response.CircularRequirement ?? string.Empty,
+                    recievedOn = $"{response.RecievedOn:yyyy-MM-dd}",
+                    deadline = response.Deadline.HasValue? response.Deadline.Value.ToString("yyyy-MM-dd"): "N/A",
+                    circularStatus = response.CircularStatus ?? string.Empty,
+                    isDeleted = response.IsDeleted,
+                    submittedOn = response.SubmittedOn,
+                    isBreached = response.IsBreached,
+                    submissionBreach = response.IsBreached ? "YES": "NO",
+                    breachReason = response.BreachReason ?? string.Empty,
+                    breachRisk = response.BreachRisk ?? string.Empty,
+                    ownerId = response.OwnerId,
+                    department = response.Department ?? string.Empty,
+                    frequency = string.IsNullOrWhiteSpace(response.Frequency) ? "N/A": response.Frequency,
+                    authority = response.Authority ?? string.Empty,
+                    comments = response.Comments ?? string.Empty,
+                    submittedBy = response.SubmittedBy,
+                    filePath = response.FilePath ?? string.Empty,
+                    issues = response.Issues != null && response.Issues.Count > 0
+                        ? response.Issues.Select(issue => new {
+                            id = issue.Id,
+                            issueDescription = issue.IssueDescription,
+                            resolution = issue.Resolution,
+                            status = issue.Status,
+                            resolvedOn = issue.ResolvedOn?.ToString("yyyy-MM-dd"),
+                            receivedOn = issue.ReceivedOn.ToString("yyyy-MM-dd")
+                        }).ToList()
+                        : Enumerable.Empty<object>()
+                };
+
+                return Ok(new { success = true, data = circularRecord });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error retrieving submission: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "RETURNS-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Unable to retrieving submission. An error occurred" });
+            }
+        }
+
+        public async Task<IActionResult> UpdateCircular([FromBody] CircularSubmissionViewModel submission) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                var result = await _returnService.UpdateCircularSubmissionAsync(submission, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update policy" });
+
+                var updated = result.Data;
+                return Ok(new { success = true, message = "Submission updated successfully", data = new { } });
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected error updating submission: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "RETURNS-CONTROLLER", ex.StackTrace);
