@@ -23,6 +23,14 @@ namespace Grc.ui.App.Factories {
         Task<CircularMiniStatisticViewModel> PrepareCircularAuthorityDashboardModelAsync(UserModel currentUser, string authority);
         #endregion
 
+        #region Audits
+
+        Task<AuditDashboardViewModel> PrepareAuditDashboardModelAsync(UserModel currentUser);
+
+        Task<AuditExtensionDashboardModel> PrepareAuditExtensionDashboardModelAsync(UserModel currentUser, string period);
+
+        #endregion
+
         #region Tasks
         Task<TaskDashboardModel> PrepareTasksDashboardModelAsync(UserModel data);
         Task<TaskMinDashboardModel> PrepareMinTaskDashboardStatisticModelAsync(UserModel currentUser, string status);

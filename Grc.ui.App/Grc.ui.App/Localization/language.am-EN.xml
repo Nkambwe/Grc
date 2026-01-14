@@ -2317,4 +2317,14 @@
 	<LocaleResource Name="Component.Table.Submitted.SubmittedOn">
 		<Value>Submitted On</Value>
 	</LocaleResource>
+
+	<LocaleResource Name="Component.Key.Audit.Types">
+		<Value>Audit Types</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Audit.MonthLess">
+		<Value>Exceptions due less than a month</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Audit.TwoMonthLess">
+		<Value>Exceptions due less than two month</Value>
+	</LocaleResource>
 </Language>

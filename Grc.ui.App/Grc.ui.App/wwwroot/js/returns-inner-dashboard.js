@@ -86,6 +86,7 @@ function openViewPanel(record) {
     $('#isBreached').prop('checked', record.isBreached);
     $('#submissionBreach').val(record.isBreached ? 'YES': 'NO');
     $('#riskAttached').val(record.riskAttached || '');
+    $('#submittedOn').val(record.submittedOn || '');
     $('#comments').val(record.comments || '');
     $('#reason').val(record.reason || '');
     $('#file').val(record.file || '');
@@ -112,7 +113,8 @@ function updateSubmission(e) {
     let recordData = {
         id: Number($('#submissionId').val()) || 0,
         ownerId: Number($('#ownerId').val()) || 0,
-        submissionBreach: $('#submissionBreach').val(),
+        submissionBreach: $('#submissionBreach').val(), 
+        submittedOn: $('#submittedOn').val(),
         isBreached: $('#isBreached').is(':checked') ? true : false,
         comments: $('#comments').val(),
         reason: $('#reason').val(),
@@ -213,7 +215,23 @@ function closeInnerPane() {
     $('#returnInnerPanel').removeClass('active');
 }
 
+let flatpickrInstances = {};
+
+function initReturnInnerSubmissionDate() {
+
+    flatpickrInstances["submittedOn"] = flatpickr("#submittedOn", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y",
+        defaultDate: null
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
+
+    initReturnInnerSubmissionDate();
+
     //..hide breach box
     $('#breachBox').hide();
 

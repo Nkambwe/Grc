@@ -16,5 +16,4 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("policies")]
         public Dictionary<string, int> Policies { get; set; } = new();
     }
-
 }

@@ -1677,6 +1677,28 @@
                 pattern: "/grc/compliance/support/category-export-full",
                 defaults: new { controller = "ComplianceSettings", action = "ExportAllCategories" }
             );
+
+
+            /*----------------------------------------------audits routes*/
+
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-audits",
+                pattern: "/grc/compliance/audit/dashboard",
+                defaults: new { controller = "ComplianceAudit", action = "AuditDashboard" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-audits",
+                pattern: "/grc/compliance/audit/exceptions",
+                defaults: new { controller = "ComplianceAudit", action = "AuditExceptions" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-audits",
+                pattern: "/grc/compliance/audit/types",
+                defaults: new { controller = "ComplianceAudit", action = "AuditTypes" }
+            );
+
+
+
             /*----------------------- Application login routes*/
             routeBuilder.MapControllerRoute(
                 name: "login",

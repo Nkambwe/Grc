@@ -10,16 +10,17 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
-using OpenXmlPowerTools;
 using System.Text.Json;
 using Activity = Grc.ui.App.Enums.Activity;
 
 namespace Grc.ui.App.Controllers {
+
     public class ComplianceReturnController : GrcBaseController {
+
         private readonly IAuthenticationService _authService;
-        private readonly ISystemAccessService _accessService;
         private readonly IDashboardFactory _dashboardFactory;
         private readonly IReturnsService _returnService;
+
         public ComplianceReturnController(IApplicationLoggerFactory loggerFactory,
                                     IDashboardFactory dashboardFactory,
                                     IEnvironmentProvider environment,
@@ -873,6 +874,7 @@ namespace Grc.ui.App.Controllers {
         #endregion
 
         #region Return Submissions
+
         public async Task<IActionResult> GetSubmission(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();

@@ -331,8 +331,7 @@
                                 <ul id="audits-menu" class="sidebar-submenu">
 
                                     <li class="sidebar-item">
-                                        @* <a asp-controller="ComplianceAudit" asp-action="ManageAudits"> *@
-                                        <a asp-controller="" asp-action="">
+                                        <a asp-controller="ComplianceAudit" asp-action="AuditDashboard">
                                             <span class="menu-icon">
                                                 <i class="mdi mdi-marker-check"></i>
                                             </span>
@@ -343,25 +342,23 @@
                                     </li>
 
                                     <li class="sidebar-item">
-                                        @* <a asp-controller="ComplianceAudit" asp-action="AuditTypes"> *@
-                                        <a asp-controller="" asp-action="">
-                                            <span class="menu-icon">
-                                                <i class="mdi mdi-checkbox-multiple-marked-circle-outline"></i>
-                                            </span>
-                                            <span class="sidebar-text">
-                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Audits.Types"))
-                                            </span>
-                                        </a>
-                                    </li>
-
-                                    <li class="sidebar-item">
-                                            @* <a asp-controller="ComplianceAudit" asp-action="AuditExceptions"> *@
-                                        <a asp-controller="" asp-action="">
+                                        <a asp-controller="ComplianceAudit" asp-action="AuditExceptions">
                                             <span class="menu-icon">
                                                 <i class="mdi mdi-wrench-check-outline"></i>
                                             </span>
                                             <span class="sidebar-text">
                                                 @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Audits.AuditExceptions"))
+                                            </span>
+                                        </a>
+                                    </li>
+
+                                    <li class="sidebar-item">
+                                    <a asp-controller="ComplianceAudit" asp-action="AuditTypes">
+                                            <span class="menu-icon">
+                                                <i class="mdi mdi-checkbox-multiple-marked-circle-outline"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Audits.Types"))
                                             </span>
                                         </a>
                                     </li>

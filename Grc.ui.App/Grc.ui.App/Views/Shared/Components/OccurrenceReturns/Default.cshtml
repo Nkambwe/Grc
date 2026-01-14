@@ -133,10 +133,30 @@
 
                 <!-- submitted -->
                 <div class="col-sm-12">
-                    <label for="submittedBy" class="form-label m-3">
-                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Submitted.SubmittedBy"))
-                    </label>
-                    <input class="form-control" id="submittedBy" name="submittedBy" />
+                    <div class="row m-3">
+                        <!-- Submission Date -->
+                        <div class="col-6">
+                            <div class="row mb-3">
+                                <label for="submittedOn" class="col-sm-12 col-form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Submitted.SubmittedOn"))
+                                </label>
+                                <div class="col-sm-12">
+                                    <input type="text" id="submittedOn" name="submittedOn" class="form-control datepicker" placeholder="MM/DD/YYYY" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row mb-3">
+                                <label for="submittedBy" class="col-sm-12 col-form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Submitted.SubmittedBy"))
+                                </label>
+                                <input class="form-control" id="submittedBy" name="submittedBy" />
+                            </div>
+
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- Comments -->

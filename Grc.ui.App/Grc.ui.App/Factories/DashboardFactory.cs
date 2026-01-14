@@ -17,31 +17,24 @@ namespace Grc.ui.App.Factories {
         private readonly SessionManager _sessionManager;
         private readonly IReturnsService _returnsService;
         private readonly IPolicyService _policyService;
+        private readonly IAuditService _auditService;
         public DashboardFactory(IMapper mapper,
                                 IQuickActionService quickActionService,
                                 IReturnsService returnsService,
                                 IPolicyService policyService,
+                                IAuditService auditService,
                                 SessionManager session) {  
             _quickActionService = quickActionService;
             _mapper = mapper;
             _sessionManager = session;
             _returnsService = returnsService;
             _policyService = policyService;
+            _auditService = auditService;
         }
 
         public async Task<UserDashboardModel>  PrepareUserDashboardModelAsync(UserModel currentUser) {
             //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
-            var quickActions = new List<QuickActionModel>();
-            if (!quicksData.HasError) {
-                var quickies = quicksData.Data;
-                if (quickies.Count > 0) {
-                    foreach (var action in quickies)
-                    {
-                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
-                    }
-                }
-            }
+            var quickActions = GetComplianceQuickActions();
 
             var grcResponse = await _returnsService.GetAllReturnsStatisticAsync(currentUser.UserId, currentUser.IPAddress);
             ComplianceGeneralStatistic stats = new();
@@ -70,16 +63,7 @@ namespace Grc.ui.App.Factories {
 
         public async Task<UserDashboardModel> PrepareUserModelAsync(UserModel currentUser) {
             //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
-            var quickActions = new List<QuickActionModel>();
-            if (!quicksData.HasError) {
-                var quickies = quicksData.Data;
-                if (quickies.Count > 0) {
-                    foreach (var action in quickies) {
-                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
-                    }
-                }
-            }
+            var quickActions = GetComplianceQuickActions();
 
             var model = new UserDashboardModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
@@ -207,16 +191,7 @@ namespace Grc.ui.App.Factories {
 
         public async Task<PolicyDashboardModel> PreparePolicyMinModelAsync(UserModel currentUser, string status) {
             //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
-            var quickActions = new List<QuickActionModel>();
-            if (!quicksData.HasError) {
-                var quickies = quicksData.Data;
-                if (quickies.Count > 0) {
-                    foreach (var action in quickies) {
-                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
-                    }
-                }
-            }
+            var quickActions = GetComplianceQuickActions();
 
             var grcResponse = await _returnsService.GetPolicyCountAsync(currentUser.UserId, currentUser.IPAddress, status);
             PolicyDashboardStatistic policyData = new();
@@ -249,16 +224,7 @@ namespace Grc.ui.App.Factories {
 
         public async Task<ComplianceGeneralStatisticViewModel> PrepareGeneralReturnsDashboardModelAsync(UserModel currentUser) {
             //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
-            var quickActions = new List<QuickActionModel>();
-            if (!quicksData.HasError) {
-                var quickies = quicksData.Data;
-                if (quickies.Count > 0) {
-                    foreach (var action in quickies) {
-                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
-                    }
-                }
-            }
+            var quickActions = GetComplianceQuickActions();
 
             var grcResponse = await _returnsService.GetAllReturnsStatisticAsync(currentUser.UserId, currentUser.IPAddress);
             ComplianceGeneralStatistic stats = new();
@@ -286,20 +252,66 @@ namespace Grc.ui.App.Factories {
             return await Task.FromResult(model);
         }
 
+        #region Audits
+        public async Task<AuditDashboardViewModel> PrepareAuditDashboardModelAsync(UserModel currentUser) {
+            //..get quick items
+            var quickActions = GetComplianceQuickActions();
+
+            var grcResponse = await _auditService.GetAuditStatisticAsync(currentUser.UserId, currentUser.IPAddress);
+            AuditStatistic stats = new();
+            if (grcResponse.HasError) {
+                stats.Findings = new();
+                stats.Completions = new();
+                stats.BarChart = new();
+            } else {
+                var data = grcResponse.Data;
+                stats.Findings = data.Findings;
+                stats.Completions = data.Completions;
+                stats.BarChart = data.BarChart;
+            }
+
+            var model = new AuditDashboardViewModel {
+                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
+                Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
+                QuickActions = quickActions,
+                Workspace = _sessionManager.GetWorkspace(),
+                Statistics = stats
+            };
+
+            return await Task.FromResult(model);
+        }
+
+        public async Task<AuditExtensionDashboardModel> PrepareAuditExtensionDashboardModelAsync(UserModel currentUser, string period) {
+
+            var grcResponse = await _auditService.GetAuditExtensionStatisticAsync(currentUser.UserId, currentUser.IPAddress, period);
+            AuditExtensionStatistics stats = new();
+            if (grcResponse.HasError) {
+                stats.Statuses = new();
+                stats.Reports = new();
+            } else {
+                var data = grcResponse.Data;
+                stats.Statuses = data.Statuses;
+                stats.Reports = data.Reports;
+            }
+
+            var model = new AuditExtensionDashboardModel {
+                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
+                Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
+                QuickActions = new(),
+                Workspace = _sessionManager.GetWorkspace(),
+                Statistics = stats
+            };
+
+            return await Task.FromResult(model);
+        }
+
+        #endregion
+
         #region Circulars
 
         public async Task<CircularDashboardModel> PrepareCircularDashboardModelAsync(UserModel currentUser) {
             //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
-            var quickActions = new List<QuickActionModel>();
-            if (!quicksData.HasError) {
-                var quickies = quicksData.Data;
-                if (quickies.Count > 0) {
-                    foreach (var action in quickies) {
-                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
-                    }
-                }
-            }
+            var quickActions = GetComplianceQuickActions();
 
             var grcResponse = await _returnsService.GetCircularStatisticAsync(currentUser.UserId, currentUser.IPAddress);
             CircularDashboardResponses circulars = new();
@@ -328,16 +340,7 @@ namespace Grc.ui.App.Factories {
 
         public async Task<CircularExtensionDashboardModel> PrepareCircularExtensionDashboardModelAsync(UserModel currentUser, string authority) {
             //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
-            var quickActions = new List<QuickActionModel>();
-            if (!quicksData.HasError) {
-                var quickies = quicksData.Data;
-                if (quickies.Count > 0) {
-                    foreach (var action in quickies) {
-                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
-                    }
-                }
-            }
+            var quickActions = GetComplianceQuickActions();
 
             var grcResponse = await _returnsService.GetCircularExtensionStatisticAsync(currentUser.UserId, currentUser.IPAddress, authority);
             CircularExtensionDashboardResponses circulars = new();
@@ -378,16 +381,7 @@ namespace Grc.ui.App.Factories {
 
         public async Task<CircularMiniStatisticViewModel> PrepareCircularAuthorityDashboardModelAsync(UserModel currentUser, string authority) {
             //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
-            var quickActions = new List<QuickActionModel>();
-            if (!quicksData.HasError) {
-                var quickies = quicksData.Data;
-                if (quickies.Count > 0) {
-                    foreach (var action in quickies) {
-                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
-                    }
-                }
-            }
+            var quickActions = GetComplianceQuickActions();
 
             var grcResponse = await _returnsService.GetAuthorityCircularCountAsync(currentUser.UserId, currentUser.IPAddress, authority);
             CircularDashboardStatistic circulars = new();
@@ -428,16 +422,7 @@ namespace Grc.ui.App.Factories {
         
         public async Task<ComplianceReturnStatisticViewModel> PrepareReturnsDashboardModelAsync(UserModel currentUser) {
             //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
-            var quickActions = new List<QuickActionModel>();
-            if (!quicksData.HasError) {
-                var quickies = quicksData.Data;
-                if (quickies.Count > 0) {
-                    foreach (var action in quickies) {
-                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
-                    }
-                }
-            }
+            var quickActions = GetComplianceQuickActions();
 
             var grcResponse = await _returnsService.GetReturnStatisticAsync(currentUser.UserId, currentUser.IPAddress);
             ComplianceReturnStatistic returns = new();
@@ -467,16 +452,7 @@ namespace Grc.ui.App.Factories {
 
         public async Task<ComplianceExtensionReturnStatisticViewModel> PrepareReturnExtensionDashboardModelAsync(UserModel currentUser, string period) {
             //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
-            var quickActions = new List<QuickActionModel>();
-            if (!quicksData.HasError) {
-                var quickies = quicksData.Data;
-                if (quickies.Count > 0) {
-                    foreach (var action in quickies) {
-                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
-                    }
-                }
-            }
+            var quickActions = GetComplianceQuickActions();
 
             var grcResponse = await _returnsService.GetReturnExtensionStatisticAsync(currentUser.UserId, currentUser.IPAddress, period);
             ComplianceExtensionReturnStatistic returns = new();
@@ -513,16 +489,7 @@ namespace Grc.ui.App.Factories {
 
         public async Task<ReturnMiniStatisticViewModel> PrepareReturnPeriodDashboardModelAsync(UserModel currentUser, string period) {
             //..get quick items
-            var quicksData = await _quickActionService.GetQuickActionsync(currentUser.UserId, currentUser.IPAddress);
-            var quickActions = new List<QuickActionModel>();
-            if (!quicksData.HasError) {
-                var quickies = quicksData.Data;
-                if (quickies.Count > 0) {
-                    foreach (var action in quickies) {
-                        quickActions.Add(_mapper.Map<QuickActionModel>(action));
-                    }
-                }
-            }
+            var quickActions = GetComplianceQuickActions();
 
             var grcResponse = await _returnsService.GrcReturnDashboardResponseAsync(currentUser.UserId, currentUser.IPAddress, period);
             ReturnDashboardStatistic returns = new();
@@ -648,6 +615,51 @@ namespace Grc.ui.App.Factories {
             }
             return report;
 
+        }
+
+        private static List<QuickActionModel> GetComplianceQuickActions() {
+            return new List<QuickActionModel>() {
+                new() {
+                    Label = "App.Menu.Home",
+                    IconClass = "mdi mdi-home-outline",
+                    Controller = "Application",
+                    Action = "Dashboard",
+                    Area = "",
+                    CssClass = "is-primary"
+                },
+                new() {
+                    Label = "App.Menu.Registers.Policies",
+                    IconClass = "mdi mdi-file-replace-outline",
+                    Controller = "CompliancePolicy",
+                    Action = "PoliciesRegisters",
+                    Area = "",
+                    CssClass = "is-primary"
+                },
+                new() {
+                    Label = "App.Menu.Circulars",
+                    IconClass = "mdi mdi-file-rotate-right-outline",
+                    Controller = "ComplianceReturn",
+                    Action = "CircularHome",
+                    Area = "",
+                    CssClass = "is-primary"
+                },
+                new() {
+                    Label = "App.Menu.Returns",
+                    IconClass = "mdi mdi-file-table-box-multiple-outline",
+                    Controller = "ComplianceReturn",
+                    Action = "ReturnsHome",
+                    Area = "",
+                    CssClass = "is-primary"
+                },
+                new() {
+                    Label = "App.Menu.Compliance.Audits.AuditExceptions",
+                    IconClass = "mdi mdi-marker-check",
+                    Controller = "ComplianceAudit",
+                    Action = "AuditDashboard",
+                    Area = "",
+                    CssClass = "is-primary"
+                }
+            };
         }
     }
 }

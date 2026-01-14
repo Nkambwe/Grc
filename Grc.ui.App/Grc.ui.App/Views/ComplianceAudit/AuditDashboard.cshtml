@@ -1,0 +1,68 @@
+﻿@model AuditDashboardViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "CIRCULAR RETURNS";
+
+    var chartsJson = JsonSerializer.Serialize(Model);
+}
+
+<div class="welcome-container">
+
+    <div class="welcome-container-message">
+        <span class="display-1">@Model.WelcomeMessage >> Audit Dashboard</span>
+    </div>
+
+    <div class="incon-container-expand">
+        <button id="expandBtn" type="button" class="icon-btn">
+            <span>
+                <i id="toggleIcon" class="mdi mdi-arrow-expand"></i>
+            </span>
+        </button>
+    </div>
+
+</div>
+
+<div class="action-box">
+    <div class="title-box">
+        <h3 class="display-1 action-box-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Quick"))</h3>
+        <span class="title-line"></span>
+    </div>
+
+    @await Component.InvokeAsync("QuickActions", new { model = Model.QuickActions })
+</div>
+
+<div class="dashboard-grid m-3">
+
+    <div class="stats-category-grid" id="auditCards"></div>
+
+    <div class="dashboard-bottom-row" style="display:flex; gap:20px; margin-top:30px;">
+
+        <div class="category-chart-container" style="flex:1">
+            <div class="chart-card-title">Exceptions By Status</div>
+            <canvas id="unitPieChart"></canvas>
+        </div>
+
+        <div class="category-chart-container" style="flex:1">
+            <canvas id="reportChart"></canvas>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    const excelUrl = '';
+    const auditData = @Html.Raw(chartsJson);
+
+     const reportRoutes = {
+        "Total": '@Url.Action("AuditDashboard", "ComplianceAudit")',
+        "< 1 Month": '@Url.Action("MonthLessDashboard", "ComplianceAudit")',
+        "1 to 2 Months": '@Url.Action("TwoMonthsLessDashboard", "ComplianceAudit")',
+        "> 3 Months": '@Url.Action("ThreeMonthsAboveDashboard", "ComplianceAudit")'
+    };
+</script>
+
+@{
+    Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/audit-dashboard-script.js");
+}

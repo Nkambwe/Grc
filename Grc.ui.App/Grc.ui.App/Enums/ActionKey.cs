@@ -162,5 +162,8 @@ namespace Grc.ui.App.Enums {
         CircularHome,
         [Description("excel-export")]
         ExportToExcel,
+
+        [Description("audit-home")]
+        AuditHome,
     }
 }

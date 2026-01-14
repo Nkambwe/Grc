@@ -82,7 +82,7 @@ function findCircularSubmission(id) {
 
 let flatpickrInstances = {};
 
-function initSubmissionDate() {
+function initCircularSubmissionDate() {
 
     flatpickrInstances["submittedOn"] = flatpickr("#submittedOn", {
         dateFormat: "Y-m-d",
@@ -277,7 +277,9 @@ function closeCircular() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    initSubmissionDate();
+
+    initCircularSubmissionDate();
+
     //..hide breach box
     $('#breachBox').hide();
 

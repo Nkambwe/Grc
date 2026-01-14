@@ -448,7 +448,6 @@ function closeProcessPanel() {
     $('#collapsePanel').removeClass('active');
 }
 
-
 function openTatDialog(tat) {
     console.log("Process name >> " + tat?.processName);
     $("#processName").text(tat?.processName || "");

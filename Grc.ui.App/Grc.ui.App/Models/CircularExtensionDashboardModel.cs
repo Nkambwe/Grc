@@ -2,6 +2,7 @@
 using Grc.ui.App.Dtos;
 
 namespace Grc.ui.App.Models {
+
     public class CircularExtensionDashboardModel {
         public string Banner { get; } = CommonDefaults.AppVersion;
         public string WelcomeMessage { get; set; } = string.Empty;
@@ -11,4 +12,5 @@ namespace Grc.ui.App.Models {
         public CircularExtensionStatistics Circulars { get; set; }
         public List<QuickActionModel> QuickActions { get; set; } = new();
     }
+
 }
