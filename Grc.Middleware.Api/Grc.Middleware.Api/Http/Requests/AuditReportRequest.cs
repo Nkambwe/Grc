@@ -1,5 +1,4 @@
-﻿using Grc.Middleware.Api.Data.Entities;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Grc.Middleware.Api.Http.Requests
 {
@@ -9,6 +8,9 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
+        [JsonPropertyName("reference")]
+        public string Reference { get; set; }
+
         [JsonPropertyName("reportName")]
         public string ReportName { get; set; }
 
@@ -17,6 +19,9 @@ namespace Grc.Middleware.Api.Http.Requests
 
         [JsonPropertyName("auditedOn")]
         public DateTime AuditedOn { get; set; }
+
+        [JsonPropertyName("exceptionCount")]
+        public int ExceptionCount { get; set; }
 
         [JsonPropertyName("status")]
         public string Status { get; set; }

@@ -71,6 +71,8 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IPermissionSetRepository, PermissionSetRepository>();
             services.AddScoped<IAuditExceptionRepository, AuditExceptionRepository>();
             services.AddScoped<IAuditReportRepository, AuditReportRepository>();
+            services.AddScoped<IAuditUpdateRepository, AuditUpdateRepository>();
+            services.AddScoped<IAuditTypeRepository, AuditTypeRepository>();
             services.AddScoped<IAuditRepository, AuditRepository>(); 
             services.AddScoped<IAuditTaskRepository, AuditTaskRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
@@ -137,6 +139,8 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IAuditReportService, AuditReportService>();
             services.AddScoped<IAuditService, AuditService>();
             services.AddScoped<IAuditTaskService, AuditTaskService>();
+            services.AddScoped<IAuditTypeService, AuditTypeService>();
+            services.AddScoped<IAuditUpdateService, AuditUpdateService>();
             services.AddScoped<ISystemConfigurationService, SystemConfigurationService>();
             services.AddScoped<IMailService, MailService>();
 

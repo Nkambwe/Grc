@@ -316,6 +316,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29tcGxpYW5jZUF1ZGl0XEF1ZGl0RXhjZXB0aW9ucy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/ComplianceAudit/AuditReports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29tcGxpYW5jZUF1ZGl0XEF1ZGl0UmVwb3J0cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/ComplianceAudit/AuditTypes.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29tcGxpYW5jZUF1ZGl0XEF1ZGl0VHlwZXMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -710,6 +714,14 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/AnnualReturns/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQW5udWFsUmV0dXJuc1xEZWZhdWx0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/AuditExceptionList/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQXVkaXRFeGNlcHRpb25MaXN0XERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/AuditReportList/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQXVkaXRSZXBvcnRMaXN0XERlZmF1bHQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Shared/Components/AuditTypesList/Default.cshtml]

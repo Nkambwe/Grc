@@ -197,7 +197,18 @@
         public const string COMPLIANCE_CREATE_RETURN = "Returns.Report.Create";
         public const string COMPLIANCE_EDITED_RETURN = "Returns.Report.Edited";
         public const string COMPLIANCE_DELETED_RETURN = "Returns.Report.Deleted";
-
+        public const string COMPLIANCE_RETRIEVE_AUDITS = "Audits.List.Retrieve";
+        public const string COMPLIANCE_CREATE_AUDIT = "Audits.Create.Audit";
+        public const string COMPLIANCE_EDITED_AUDIT = "Audits.Edit.Audit";
+        public const string COMPLIANCE_DELETED_AUDIT = "Audits.Delete.Audit";
+        public const string COMPLIANCE_RETRIEVE_AUDIT_TYPES = "Audits.Type.Retrieve";
+        public const string COMPLIANCE_CREATE_AUDIT_TYPE = "Audits.Create.Audit.Type";
+        public const string COMPLIANCE_EDITED_AUDIT_TYPE = "Audits.Edit.Audit.Type";
+        public const string COMPLIANCE_DELETED_AUDI_TYPE = "Audits.Delete.Audit.Type";
+        public const string COMPLIANCE_RETRIEVE_EXCEPTIONS = "Audits.Exceptions.Retrieve";
+        public const string COMPLIANCE_CREATE_EXCEPTION = "Audits.Exceptions.Create.Exception";
+        public const string COMPLIANCE_EDITED_EXCEPTION = "Audits.Exceptions.Edit.Exception";
+        public const string COMPLIANCE_DELETED_EXCEPTION = "Audits.Exceptions.Delete.Exception";
         #endregion
 
     }

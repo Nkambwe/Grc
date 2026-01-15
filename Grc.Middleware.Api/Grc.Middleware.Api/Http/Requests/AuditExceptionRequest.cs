@@ -28,14 +28,14 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("riskRating")]
         public float RiskRating { get; set; }
 
+        [JsonPropertyName("executioner")]
+        public string Executioner { get; set; }
+
         [JsonPropertyName("userId")]
         public string Status { get; set; }
 
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
-
-        [JsonPropertyName("lastUpdated")]
-        public DateTime? LastUpdated { get; set; }
 
         [JsonPropertyName("auditReportId")]
         public long AuditReportId { get; set; }

@@ -10,10 +10,12 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
         {
             builder.ToTable("TBL_GRC_AUDIT_REPORT");
             builder.HasKey(r => r.Id);
+            builder.Property(r => r.Reference).HasColumnName("report_ref").HasColumnType("NVARCHAR(100)").IsRequired(true);
             builder.Property(r => r.ReportName).HasColumnName("report_name").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
-            builder.Property(r => r.Subject).HasColumnName("report_Subject").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
+            builder.Property(r => r.Summery).HasColumnName("report_summery").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
             builder.Property(r => r.AuditedOn).HasColumnName("audited_on").IsRequired();
-            builder.Property(r => r.Status).HasColumnName("doc_status").HasColumnType("NVARCHAR(50)").IsRequired(true);
+            builder.Property(r => r.ExceptionCount).HasColumnName("exce_count").IsRequired(true);
+            builder.Property(r => r.Status).HasColumnName("audit_status").HasColumnType("NVARCHAR(50)").IsRequired(true);
             builder.Property(r => r.RespondedOn).HasColumnName("responded_on").IsRequired(false);
             builder.Property(r => r.ManagementComment).HasColumnName("mgt_comments").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(r => r.AdditionalNotes).HasColumnName("more_notes").HasColumnType("NVARCHAR(MAX)").IsRequired(false);

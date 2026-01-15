@@ -51,6 +51,8 @@ namespace Grc.Middleware.Api.Data.Containers {
         IAuditReportRepository AuditReportRepository { get; set; }
         IAuditRepository AuditRepository { get; set; }
         IAuditTaskRepository AuditTaskRepository { get; set; }
+        IAuditTypeRepository AuditTypeRepository { get; set; }
+        IAuditUpdateRepository AuditUpdateRepository { get; set; }
         INotificationRepository NotificationRepository { get; set; }
         ISystemConfigurationRepository SystemConfigurationRepository { get; set; }
         IPermissionRepository PermissionRepository { get; set; }

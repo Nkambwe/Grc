@@ -13,6 +13,10 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
             builder.Property(r => r.Id).HasColumnName("id"); 
             builder.Property(r => r.ReturnName).HasColumnName("return_name").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
             builder.Property(r => r.Risk).HasColumnName("return_risk").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
+            builder.Property(r => r.SendReminder).HasColumnName("send_reminder").IsRequired(true);
+            builder.Property(r => r.Interval).HasColumnName("reminder_interval").HasColumnType("NVARCHAR(50)").IsRequired(false);
+            builder.Property(r => r.IntervalType).HasColumnName("interval_type").HasColumnType("NVARCHAR(50)").IsRequired(false);
+            builder.Property(r => r.Reminder).HasColumnName("reminder_message").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(r => r.TypeId).HasColumnName("type_id");
             builder.Property(r => r.FrequencyId).HasColumnName("freq_id");
             builder.Property(r => r.ArticleId).HasColumnName("act_id");

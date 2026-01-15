@@ -4,6 +4,7 @@ using Grc.Middleware.Api.Http.Requests;
 using System.Linq.Expressions;
 
 namespace Grc.Middleware.Api.Services.Compliance.Audits {
+
     public interface IAuditTaskService {
         int Count();
         int Count(Expression<Func<AuditTask, bool>> predicate);
@@ -43,4 +44,5 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
         Task<PagedResult<AuditTask>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<AuditTask, bool>> where = null);
         Task<PagedResult<AuditTask>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<AuditTask, bool>> where = null, bool includeDeleted = false);
     }
+
 }

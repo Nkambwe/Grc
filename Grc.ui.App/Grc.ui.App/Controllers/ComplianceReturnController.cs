@@ -20,7 +20,7 @@ namespace Grc.ui.App.Controllers {
         private readonly IAuthenticationService _authService;
         private readonly IDashboardFactory _dashboardFactory;
         private readonly IReturnsService _returnService;
-
+        private readonly IRegulatonCategoryService _regulatoryCategoryService;
         public ComplianceReturnController(IApplicationLoggerFactory loggerFactory,
                                     IDashboardFactory dashboardFactory,
                                     IEnvironmentProvider environment,
@@ -29,6 +29,7 @@ namespace Grc.ui.App.Controllers {
                                     IReturnsService returnService,
                                     IErrorService errorService,
                                     IAuthenticationService authService,
+                                    IRegulatonCategoryService regulatoryCategoryService,
                                     IGrcErrorFactory errorFactory,
                                     SessionManager sessionManager)
                                     : base(loggerFactory, environment, webHelper,
@@ -39,6 +40,59 @@ namespace Grc.ui.App.Controllers {
             _authService = authService;
             _dashboardFactory = dashboardFactory;
             _returnService = returnService;
+            _regulatoryCategoryService = regulatoryCategoryService;
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> AllRegulatoryCategories([FromBody] TableListRequest request) {
+            try {
+
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    Logger.LogActivity($"REGULATORY CATEGORY DATA ERROR: Failed to get current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                //..update with user data
+                var currentUser = grcResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.RETRIEVEREGULATORYCATEGORIES.GetDescription();
+
+                //..get regulatory category data
+                var categoryData = await _regulatoryCategoryService.GetPagedCategoriesAsync(request);
+                PagedResponse<GrcRegulatoryCategoryResponse> categoryList = new();
+
+                if (categoryData.HasError) {
+                    Logger.LogActivity($"REGULATORY CATEGORY DATA ERROR: Failed to retrieve category items - {JsonSerializer.Serialize(categoryData)}");
+                } else {
+                    categoryList = categoryData.Data;
+                    Logger.LogActivity($"REGULATORY CATEGORY DATA - {JsonSerializer.Serialize(categoryList)}");
+                }
+
+                //..map to ajax object
+                var categories = categoryList.Entities ??= new();
+                if (categories.Any()) {
+                    var tree = categories.Select(l => new {
+                        id = $"C_{l.Id}",
+                        text = l.CategoryName,
+                        type = "category",
+                        children = l.Statutes.Select(s => new { id = $"L_{s.Id}", text = s.StatutoryLawName, type = "law" }).ToArray()
+                    }).ToArray();
+
+                    return Ok(tree);
+                }
+
+                return Ok(Array.Empty<object>());
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving regulatory category items: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "REGULATORY-CATEGORY-CONTROLLER", ex.StackTrace);
+                return Ok(Array.Empty<object>());
+            }
         }
 
         #region Regulatory Returns

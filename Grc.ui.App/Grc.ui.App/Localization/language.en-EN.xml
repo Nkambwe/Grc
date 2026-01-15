@@ -1557,6 +1557,9 @@
 	<LocaleResource Name="App.Menu.Compliance.Audits.Types">
 		<Value>Audit Types</Value>
 	</LocaleResource>
+	<LocaleResource Name="App.Menu.Compliance.Audits.AuditReports">
+		<Value>Audit Reports</Value>
+	</LocaleResource>
 	<LocaleResource Name="App.Menu.Compliance.Audits.AuditExceptions">
 		<Value>Audit Exceptions</Value>
 	</LocaleResource>
@@ -2316,5 +2319,47 @@
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Submitted.SubmittedOn">
 		<Value>Submitted On</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Audit.Types">
+		<Value>Audit Types</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Audit.Reports">
+		<Value>Audit Reports</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Audit.Exceptions">
+		<Value>Audit Findings</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Audit.MonthLess">
+		<Value>Exceptions due less than a month</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Audit.TwoMonthLess">
+		<Value>Exceptions due less than two month</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audit.Title.AuditReport">
+		<Value>Audit Report View</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audit.Label.Reference">
+		<Value>Reference</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audit.Label.ReportName">
+		<Value>Report Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audit.Label.AuditDate">
+		<Value>Audit Date</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audit.Label.Status">
+		<Value>Report Status</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audit.Label.Total">
+		<Value>Total Findings</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audit.Label.Open">
+		<Value>Open Findings</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audit.Label.Close">
+		<Value>Close Findings</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audit.Label.Overdue">
+		<Value>Overdue Findings</Value>
 	</LocaleResource>
 </Language>

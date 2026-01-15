@@ -1,4 +1,13 @@
-﻿<span class="display-1">Audit Types List</span>
+﻿<div class="grc-tabulator-container">
+
+    <div class="grc-tabulator-search">
+        <div class="field-search-group">
+            <label class="form-searchbox-label text-right">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.Types"))</label>
+            <input id="typeSearchbox" type="text" class="form-control searchbox-field">
+        </div>
+    </div>
+    <div id="auditTypetable"></div>
+</div>
 
 
 @{

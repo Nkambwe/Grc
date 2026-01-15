@@ -333,5 +333,29 @@ namespace Grc.ui.App.Enums {
         COMPLIANCE_DELETED_RETURN = 173,
         [Description("Export Return/Report")]
         COMPLIANCE_EXPORT_RETURN = 174,
+        [Description("Retrieve audit by ID")]
+        AUDIT_RETRIVE = 175,
+        [Description("Create audit")]
+        AUDIT_CREATE = 176,
+        [Description("Update audit")]
+        AUDIT_UPDATE = 177,
+        [Description("Delete audit")]
+        AUDIT_DELETE = 178,
+        [Description("Retrieve audit exception by ID")]
+        AUDIT_EXCEPTION_RETRIVE = 179,
+        [Description("Create audit exception")]
+        AUDIT_EXCEPTIONCREATE = 180,
+        [Description("Update audit exception")]
+        AUDIT_EXCEPTIONUPDATE = 181,
+        [Description("Delete audit exception")]
+        AUDIT_EXCEPTIONDELETE = 182,
+        [Description("Retrieve audit type")]
+        AUDIT_TYPE_RETRIVE = 183,
+        [Description("Create audit type")]
+        AUDIT_TYPE_CREATE = 184,
+        [Description("Update audit type")]
+        AUDIT_TYPE_UPDATE = 185,
+        [Description("Delete audit type")]
+        AUDIT_TYPE_DELETE = 186,
     }
 }

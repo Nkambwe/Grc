@@ -10,12 +10,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Grc.Middleware.Api.Services.Compliance.Audits {
-    public class AuditTaskService : BaseService, IAuditTaskService
-    {
-        public AuditTaskService(IServiceLoggerFactory loggerFactory, 
-                                IUnitOfWorkFactory uowFactory, 
-                                IMapper mapper) : base(loggerFactory, uowFactory, mapper)
-        {
+
+    public class AuditTaskService : BaseService, IAuditTaskService {
+        public AuditTaskService(IServiceLoggerFactory loggerFactory, IUnitOfWorkFactory uowFactory, IMapper mapper) : base(loggerFactory, uowFactory, mapper) {
         }
 
         public int Count()
@@ -30,29 +27,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count audit tasks in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -69,29 +44,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count audit tasks in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -108,29 +61,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count audit tasks in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -147,29 +78,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count audit tasks in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -186,29 +95,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count audit tasks in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -225,29 +112,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to count audit tasks in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -264,29 +129,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to check for audit task in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -303,29 +146,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to check for audit task in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -342,29 +163,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to check for audit tasks in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -381,29 +180,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve audit task: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -420,29 +197,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve audit task : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -459,29 +214,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve audit task : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -498,29 +231,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve audit tasks: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -537,29 +248,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve audit tasks: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -576,29 +265,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve audit task : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -615,29 +282,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve audit task: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -654,29 +299,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve audit task : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -693,29 +316,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve audits task: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -732,29 +333,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve audit tasks: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -771,29 +350,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve audit tasks : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -810,29 +367,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve audit task : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -888,29 +423,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve audit task : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -948,28 +461,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save audit task : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -1007,28 +499,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save audit task : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1047,6 +518,10 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                     auditTask.TaskName = (request.TaskName ?? string.Empty).Trim();
                     auditTask.Description = (request.Description ?? string.Empty).Trim();
                     auditTask.Status = (request.Status ?? string.Empty).Trim();
+                    auditTask.SendReminder = request.SendReminder;
+                    auditTask.Interval = (request.Interval ?? string.Empty).Trim();
+                    auditTask.IntervalType = (request.IntervalType ?? string.Empty).Trim();
+                    auditTask.Reminder = (request.Reminder ?? string.Empty).Trim();
                     auditTask.DueDate = request.DueDate;
                     auditTask.AuditId = request.AuditId;
                     auditTask.IsDeleted = request.IsDeleted;
@@ -1068,31 +543,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to update audit task record: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -1111,6 +562,10 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                     auditTask.TaskName = (request.TaskName ?? string.Empty).Trim();
                     auditTask.Description = (request.Description ?? string.Empty).Trim();
                     auditTask.Status = (request.Status ?? string.Empty).Trim();
+                    auditTask.SendReminder = request.SendReminder;
+                    auditTask.Interval = (request.Interval ?? string.Empty).Trim();
+                    auditTask.IntervalType = (request.IntervalType ?? string.Empty).Trim();
+                    auditTask.Reminder = (request.Reminder ?? string.Empty).Trim();
                     auditTask.DueDate = request.DueDate;
                     auditTask.AuditId = request.AuditId;
                     auditTask.IsDeleted = request.IsDeleted;
@@ -1132,31 +587,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to update audit task record: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASk-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1193,26 +624,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to delete Audit tgask : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
+                LogError(uow, ex);
                 throw;
             }
         }
@@ -1249,27 +661,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to delete Audit task : {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1290,26 +682,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to delete Audit: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1332,28 +705,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save audit : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1376,28 +728,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save audit task : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1420,28 +751,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to save audit tasks : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1458,28 +768,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve audit tasks: {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1496,28 +785,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve audit tasks: {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1534,28 +802,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve audit tasks: {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
@@ -1572,31 +819,66 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve audit tasks : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "AUDIT-TASK-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
+
+        #region Private Methods
+
+        private void LogError(IUnitOfWork uow, Exception ex) {
+            var currentEx = ex.InnerException;
+            while (currentEx != null) {
+                Logger.LogActivity($"Service Inner Exception: {currentEx.Message}", "ERROR");
+                currentEx = currentEx.InnerException;
+            }
+
+            // Get company ID efficiently
+            var company = uow.CompanyRepository.GetAll(c => true, false);
+            long companyId = company.FirstOrDefault()?.Id ?? 1L;
+
+            // Get innermost exception
+            var innermostException = ex;
+            while (innermostException.InnerException != null)
+                innermostException = innermostException.InnerException;
+
+            var errorObj = new SystemError {
+                ErrorMessage = innermostException.Message,
+                ErrorSource = "REGULATORY-RETURN-SERVICE",
+                StackTrace = ex.StackTrace,
+                Severity = "CRITICAL",
+                ReportedOn = DateTime.Now,
+                CompanyId = companyId
+            };
+
+            uow.SystemErrorRespository.Insert(errorObj);
+            uow.SaveChanges();
+        }
+
+        private async Task LogErrorAsync(IUnitOfWork uow, Exception ex) {
+            var innerEx = ex.InnerException;
+            while (innerEx != null) {
+                Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                innerEx = innerEx.InnerException;
+            }
+            Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+            var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+            long companyId = company != null ? company.Id : 1;
+            SystemError errorObj = new() {
+                ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                ErrorSource = "REGULATORY-RETURN-SERVICE",
+                StackTrace = ex.StackTrace,
+                Severity = "CRITICAL",
+                ReportedOn = DateTime.Now,
+                CompanyId = companyId
+            };
+
+            //..save error object to the database
+            _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+        }
+
+        #endregion
 
     }
 }

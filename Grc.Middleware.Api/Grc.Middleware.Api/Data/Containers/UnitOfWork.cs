@@ -65,6 +65,8 @@ namespace Grc.Middleware.Api.Data.Containers {
         public IAuditReportRepository AuditReportRepository { get; set; }
         public IAuditRepository AuditRepository { get; set; }
         public IAuditTaskRepository AuditTaskRepository { get; set; }
+        public IAuditTypeRepository AuditTypeRepository { get; set; }
+        public IAuditUpdateRepository AuditUpdateRepository { get; set; }
         public INotificationRepository NotificationRepository { get; set; }
         public ISystemConfigurationRepository SystemConfigurationRepository { get; set; }
         public IPermissionRepository PermissionRepository { get; set; }
@@ -131,6 +133,8 @@ namespace Grc.Middleware.Api.Data.Containers {
             AuditExceptionRepository = new AuditExceptionRepository(_loggerFactory, Context);
             AuditReportRepository = new AuditReportRepository(_loggerFactory, Context);
             AuditRepository = new AuditRepository(_loggerFactory, Context);
+            AuditTypeRepository = new AuditTypeRepository(_loggerFactory, Context);
+            AuditUpdateRepository = new AuditUpdateRepository(_loggerFactory, Context);
             AuditTaskRepository = new AuditTaskRepository(_loggerFactory, Context);
             NotificationRepository = new NotificationRepository(_loggerFactory, Context);
             PermissionRepository = new PermissionRepository(_loggerFactory, Context);
@@ -297,6 +301,8 @@ namespace Grc.Middleware.Api.Data.Containers {
                     AuditReportRepository = null;
                     AuditRepository = null;
                     AuditTaskRepository = null;
+                    AuditTypeRepository = null;
+                    AuditUpdateRepository = null;
                     NotificationRepository = null;
                     SystemConfigurationRepository = null;
                     PermissionRepository = null;

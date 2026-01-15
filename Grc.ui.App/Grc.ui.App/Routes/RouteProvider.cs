@@ -1632,13 +1632,13 @@
 
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-settings-support-categories-all",
-                pattern: "/grc/compliance/support/categories-all",
-                defaults: new { controller = "ComplianceSettings", action = "AllRegulatoryCategories" }
+                pattern: "grc/compliance/support/categories-all",
+                defaults: new { controller = "ComplianceReturn", action = "AllRegulatoryCategories" }
             );
 
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-settings-support-paged-categories-all",
-                pattern: "/grc/compliance/support/paged-categories-all",
+                pattern: "grc/compliance/support/paged-categories-all",
                 defaults: new { controller = "ComplianceSettings", action = "GetPagedCategories" }
             );
 
@@ -1678,13 +1678,27 @@
                 defaults: new { controller = "ComplianceSettings", action = "ExportAllCategories" }
             );
 
-
             /*----------------------------------------------audits routes*/
 
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-audits",
                 pattern: "/grc/compliance/audit/dashboard",
                 defaults: new { controller = "ComplianceAudit", action = "AuditDashboard" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-audits-mini-report-retrieve",
+               pattern: "/grc/compliance/audit/exceptions/mini-report-retrieve/{id:long}",
+               defaults: new { controller = "ComplianceAudit", action = "GetAuditExceptionReport" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-audits-mini-report-list",
+               pattern: "/grc/compliance/audit/exceptions/mini-report-list",
+               defaults: new { controller = "ComplianceAudit", action = "GetMiniExceptionReports" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-audit-reports",
+                pattern: "/grc/compliance/audit/reports",
+                defaults: new { controller = "ComplianceAudit", action = "AuditReports" }
             );
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-audits",
@@ -1696,8 +1710,6 @@
                 pattern: "/grc/compliance/audit/types",
                 defaults: new { controller = "ComplianceAudit", action = "AuditTypes" }
             );
-
-
 
             /*----------------------- Application login routes*/
             routeBuilder.MapControllerRoute(

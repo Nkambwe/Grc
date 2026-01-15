@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using Azure;
 using Grc.Middleware.Api.Data.Containers;
-using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
 using Grc.Middleware.Api.Data.Entities.Compliance.Returns;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Enums;
@@ -9,7 +7,6 @@ using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
-using RTools_NTS.Util;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;

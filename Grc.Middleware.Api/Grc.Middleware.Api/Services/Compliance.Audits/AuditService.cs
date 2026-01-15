@@ -1041,12 +1041,9 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 {
                     //..update audit record
                     audit.AuditName = (request.AuditName ?? string.Empty).Trim();
-                    audit.Priority = (request.Priority ?? string.Empty).Trim();
-                    audit.Category = (request.Category ?? string.Empty).Trim();
-                    audit.SubCategory = (request.SubCategory ?? string.Empty).Trim();
-                    audit.NumberOfReports = request.NumberOfReports;
-                    audit.Attachement = (request.Attachement ?? string.Empty).Trim();
+                    audit.Notes = (request.Notes ?? string.Empty).Trim();
                     audit.AuthorityId = request.AuthorityId;
+                    audit.AuditTypeId = request.TypeId;
                     audit.IsDeleted = request.IsDeleted;
                     audit.LastModifiedOn = DateTime.Now;
                     audit.LastModifiedBy = $"{request.UserId}";
@@ -1107,12 +1104,9 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 {
                     //..update audit record
                     audit.AuditName = (request.AuditName ?? string.Empty).Trim();
-                    audit.Priority = (request.Priority ?? string.Empty).Trim();
-                    audit.Category = (request.Category ?? string.Empty).Trim();
-                    audit.SubCategory = (request.SubCategory ?? string.Empty).Trim();
-                    audit.NumberOfReports = request.NumberOfReports;
-                    audit.Attachement = (request.Attachement ?? string.Empty).Trim();
+                    audit.Notes = (request.Notes ?? string.Empty).Trim();
                     audit.AuthorityId = request.AuthorityId;
+                    audit.AuditTypeId = request.TypeId;
                     audit.IsDeleted = request.IsDeleted;
                     audit.LastModifiedOn = DateTime.Now;
                     audit.LastModifiedBy = $"{request.UserId}";

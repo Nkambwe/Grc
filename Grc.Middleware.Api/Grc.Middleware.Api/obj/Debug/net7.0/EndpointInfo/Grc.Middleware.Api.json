@@ -8150,7 +8150,8 @@
           },
           "submittedOn": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "nullable": true
           },
           "submittedBy": {
             "type": "string",

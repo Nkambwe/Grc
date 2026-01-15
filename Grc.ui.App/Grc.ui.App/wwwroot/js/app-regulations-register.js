@@ -82,7 +82,6 @@ function loadRegulatoryTree() {
     });
 }
 
-
 let lawsTable = new Tabulator("#lawsTable", {
     ajaxURL: "/grc/compliance/register/laws-list",
     paginationMode: "remote",
@@ -1009,6 +1008,7 @@ function highlightErrorField(selector, hasError, message) {
         }
     }
 }
+
 function coverageIconFormatter(cell) {
     const isCovered = cell.getValue();
 

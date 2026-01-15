@@ -22,6 +22,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
             builder.Property(c => c.LastModifiedOn).HasColumnName("modified_on").IsRequired(false);
             builder.Property(c => c.LastModifiedBy).HasColumnName("modified_by").HasColumnType("NVARCHAR(50)").IsRequired(false); 
             builder.HasOne(c => c.Department).WithMany(d => d.Responsibilities).HasForeignKey(c => c.DepartmentId);
+            builder.HasMany(c=>c.Findings).WithOne(x => x.Responsability).HasForeignKey(x => x.ResponsabilityId);
         }
     }
 }

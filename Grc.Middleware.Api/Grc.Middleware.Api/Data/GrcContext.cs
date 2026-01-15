@@ -100,7 +100,9 @@ namespace Grc.Middleware.Api.Data {
             ReturnSubmissionEntityConfiguration.Configure(modelBuilder.Entity<ReturnSubmission>());
             SubmissionNotificationEntityConfiguration.Configure(modelBuilder.Entity<SubmissionNotification>());
             AuditEntityConfiguration.Configure(modelBuilder.Entity<Audit>());
+            AuditTypeEntityConfiguration.Configure(modelBuilder.Entity<AuditType>());
             AuditTaskEntityConfiguration.Configure(modelBuilder.Entity<AuditTask>());
+            AuditUpdateEntityConfiguration.Configure(modelBuilder.Entity<AuditUpdate>());
             AuditExceptionEntityConfiguration.Configure(modelBuilder.Entity<AuditException>());
             AuditReportEntityConfiguration.Configure(modelBuilder.Entity<AuditReport>());
             ProcessTagEntityConfiguration.Configure(modelBuilder.Entity<ProcessTag>());

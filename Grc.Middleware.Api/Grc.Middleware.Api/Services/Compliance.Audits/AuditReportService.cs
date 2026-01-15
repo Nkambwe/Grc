@@ -1037,8 +1037,10 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 if (report != null)
                 {
                     //..update audit report record
+                    report.Reference = (request.Reference ?? string.Empty).Trim();
                     report.ReportName = (request.ReportName ?? string.Empty).Trim();
-                    report.Subject = (request.Subject ?? string.Empty).Trim();
+                    report.Summery = (request.Subject ?? string.Empty).Trim();
+                    report.ExceptionCount = request.ExceptionCount;
                     report.AuditedOn = request.AuditedOn;
                     report.Status = (request.Status ?? string.Empty).Trim();
                     report.RespondedOn = request.RespondedOn;
@@ -1104,8 +1106,10 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 if (report != null)
                 {
                     //..update audit report record
+                    report.Reference = (request.Reference ?? string.Empty).Trim();
                     report.ReportName = (request.ReportName ?? string.Empty).Trim();
-                    report.Subject = (request.Subject ?? string.Empty).Trim();
+                    report.Summery = (request.Subject ?? string.Empty).Trim();
+                    report.ExceptionCount = request.ExceptionCount;
                     report.AuditedOn = request.AuditedOn;
                     report.Status = (request.Status ?? string.Empty).Trim();
                     report.RespondedOn = request.RespondedOn;

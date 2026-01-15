@@ -342,6 +342,17 @@
                                     </li>
 
                                     <li class="sidebar-item">
+                                        <a asp-controller="ComplianceAudit" asp-action="AuditReports">
+                                            <span class="menu-icon">
+                                                <i class="mdi mdi-chart-timeline"></i>
+                                            </span>
+                                            <span class="sidebar-text">
+                                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Audits.AuditReports"))
+                                            </span>
+                                        </a>
+                                    </li>
+
+                                    <li class="sidebar-item">
                                         <a asp-controller="ComplianceAudit" asp-action="AuditExceptions">
                                             <span class="menu-icon">
                                                 <i class="mdi mdi-wrench-check-outline"></i>

@@ -5,6 +5,10 @@ namespace Grc.Middleware.Api.Data.Entities.Compliance.Returns {
     public class ReturnReport: BaseEntity {
         public string ReturnName { get; set; }
         public string Risk { get; set; }
+        public bool SendReminder { get; set; }
+        public string Interval { get; set; }
+        public string IntervalType { get; set; }
+        public string Reminder { get; set; }
         public string Comments { get; set; }
         public long DepartmentId { get; set; }
         public virtual Department Department { get; set; }

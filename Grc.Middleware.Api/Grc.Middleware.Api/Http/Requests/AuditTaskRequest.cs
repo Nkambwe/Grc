@@ -17,7 +17,19 @@ namespace Grc.Middleware.Api.Http.Requests
         public string Status { get; set; }
 
         [JsonPropertyName("dueDate")]
-        public DateTime DueDate { get; set; }
+        public DateTime? DueDate { get; set; }
+
+        [JsonPropertyName("send_reminder")]
+        public bool SendReminder { get; set; }
+
+        [JsonPropertyName("interval")]
+        public string Interval { get; set; }
+
+        [JsonPropertyName("interval_type")]
+        public string IntervalType { get; set; }
+
+        [JsonPropertyName("reminder")]
+        public string Reminder { get; set; }
 
         [JsonPropertyName("auditId")]
         public long AuditId { get; set; }

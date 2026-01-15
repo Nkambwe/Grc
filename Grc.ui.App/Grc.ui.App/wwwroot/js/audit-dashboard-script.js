@@ -113,6 +113,7 @@ function renderReportChart(record) {
     });
 }
 
+
 $(document).ready(function () {
     console.log(`Audit Data >> `, auditData);
     generateAuditCards(auditData);

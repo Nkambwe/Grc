@@ -1004,15 +1004,15 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 if (audit != null)
                 {
                     //..update audit exception record
-                    audit.Obligation = request.Obligation;
+                    audit.AuditFinding = request.Obligation;
                     audit.CorrectiveAction = request.CorrectiveAction;
                     audit.ExceptionNoted = request.ExceptionNoted;
                     audit.RemediationPlan = request.RemediationPlan;
                     audit.TargetDate = request.TargetDate;
                     audit.RiskAssessment = request.RiskAssessment;
                     audit.RiskRating = request.RiskRating;
+                    audit.Executioner = request.Executioner;
                     audit.Status = request.Status;
-                    audit.LastUpdated = request.LastUpdated;
                     audit.AuditTaskId = request.AuditTaskId;
                     audit.AuditReportId = request.AuditReportId;
                     audit.IsDeleted = request.IsDeleted;
@@ -1073,15 +1073,15 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 if (audit != null)
                 {
                     //..update audit exception record
-                    audit.Obligation = request.Obligation;
+                    audit.AuditFinding = request.Obligation;
                     audit.CorrectiveAction = request.CorrectiveAction;
                     audit.ExceptionNoted = request.ExceptionNoted;
                     audit.RemediationPlan = request.RemediationPlan;
                     audit.TargetDate = request.TargetDate;
                     audit.RiskAssessment = request.RiskAssessment;
                     audit.RiskRating = request.RiskRating;
+                    audit.Executioner = request.Executioner;
                     audit.Status = request.Status;
-                    audit.LastUpdated = request.LastUpdated;
                     audit.AuditTaskId = request.AuditTaskId;
                     audit.AuditReportId = request.AuditReportId;
                     audit.IsDeleted = request.IsDeleted;

@@ -3,41 +3,20 @@
     Layout = "_Layout";
     ViewData["Title"] = "AUDIT EXCEPTIONS";
 
-    var chartsJson = JsonSerializer.Serialize(Model);
 }
-
-<div class="welcome-container">
-
-    <div class="welcome-container-message">
-        <span class="display-1">@Model.WelcomeMessage >> Audit Findings</span>
-    </div>
-
-    <div class="incon-container-expand">
-        <button id="expandBtn" type="button" class="icon-btn">
-            <span>
-                <i id="toggleIcon" class="mdi mdi-arrow-expand"></i>
-            </span>
-        </button>
-    </div>
-
-</div>
-
-<div class="action-box">
-    <div class="title-box">
-        <h3 class="display-1 action-box-title">@Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Dashboard.Labels.Quick"))</h3>
-        <span class="title-line"></span>
-    </div>
-
-    @await Component.InvokeAsync("QuickActions", new { model = Model.QuickActions })
-</div>
-
-<div class="dashboard-category-grid">
-
-    <span class="display-1">Audit Exceptions</span>
-
-</div>
 
 @{
-    Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
-    Html.AddScriptParts(ResourceLocation.Footer, "~/js/audit-exceptions-script.js");
+    var component = new PageComponentViewModel
+    {
+        ComponentId = $"0",
+        ComponentKey = "Audit.Types",
+        LeftActions = new List<ComponentAction>
+        {
+            new ComponentAction { ActionKey = ActionKey.AuditHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home") },
+            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
+            new ComponentAction { ActionKey = ActionKey.ExportToExcel.GetDescription(), Icon = "mdi mdi-file-excel-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Export") },
+        }
+    };
 }
+
+@await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("AuditExceptionList") })
