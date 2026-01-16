@@ -3718,6 +3718,905 @@
         }
       }
     },
+    "/grc/audits/audit-dashboard-statistics": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/exception-report": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/exception-extension-report": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditExtensionExceptionRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditExtensionExceptionRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditExtensionExceptionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/audit-mini-report": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditListRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditListRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditListRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/audit-retrieve": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/paged-audit-list": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/create-audit": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/update-audit": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/delete-audit": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/report-retrieve": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/paged-reports-list": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/create-report": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditReportRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditReportRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditReportRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/update-report": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditReportRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditReportRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditReportRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/delete-report": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/exception-retrieve": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/report-exceptions": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditCategoryRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditCategoryRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditCategoryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/create-exception": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditExceptionRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditExceptionRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditExceptionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/update-exception": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditExceptionRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditExceptionRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditExceptionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/delete-exception": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/type-retrieve": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/paged-types-list": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/create-type": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditTypeRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditTypeRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditTypeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/update-type": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditTypeRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditTypeRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditTypeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/delete-type": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/audit-task-retrieve": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/audit-tasks-list": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditMiniTaskRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditMiniTaskRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditMiniTaskRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/create-task": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditTaskRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditTaskRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditTaskRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/update-task": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditTaskRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditTaskRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.AuditTaskRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/audits/delete-task": {
+      "post": {
+        "tags": [
+          "Regulatory"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/grc/sam/users/validate-username": {
       "post": {
         "tags": [
@@ -5961,6 +6860,444 @@
           "modifiedOn": {
             "type": "string",
             "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Grc.Middleware.Api.Http.Requests.AuditCategoryRequest": {
+        "type": "object",
+        "properties": {
+          "reportId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "searchTerm": {
+            "type": "string",
+            "nullable": true
+          },
+          "pageIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sortBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "sortDirection": {
+            "type": "string",
+            "nullable": true
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Grc.Middleware.Api.Http.Requests.AuditExceptionRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "reportId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "findings": {
+            "type": "string",
+            "nullable": true
+          },
+          "recomendations": {
+            "type": "string",
+            "nullable": true
+          },
+          "proposedAction": {
+            "type": "string",
+            "nullable": true
+          },
+          "correctiveAction": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "responsibileId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "executioner": {
+            "type": "string",
+            "nullable": true
+          },
+          "targetDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "riskLevel": {
+            "type": "string",
+            "nullable": true
+          },
+          "riskRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Grc.Middleware.Api.Http.Requests.AuditExtensionExceptionRequest": {
+        "type": "object",
+        "properties": {
+          "period": {
+            "type": "string",
+            "nullable": true
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Grc.Middleware.Api.Http.Requests.AuditListRequest": {
+        "type": "object",
+        "properties": {
+          "reportId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "period": {
+            "type": "string",
+            "nullable": true
+          },
+          "searchTerm": {
+            "type": "string",
+            "nullable": true
+          },
+          "pageIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sortBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "sortDirection": {
+            "type": "string",
+            "nullable": true
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Grc.Middleware.Api.Http.Requests.AuditMiniTaskRequest": {
+        "type": "object",
+        "properties": {
+          "reportId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "searchTerm": {
+            "type": "string",
+            "nullable": true
+          },
+          "pageIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sortBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "sortDirection": {
+            "type": "string",
+            "nullable": true
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Grc.Middleware.Api.Http.Requests.AuditReportRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "reportName": {
+            "type": "string",
+            "nullable": true
+          },
+          "summery": {
+            "type": "string",
+            "nullable": true
+          },
+          "exceptionCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "auditedOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "respondedOn": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "managementComment": {
+            "type": "string",
+            "nullable": true
+          },
+          "additionalNotes": {
+            "type": "string",
+            "nullable": true
+          },
+          "auditId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Grc.Middleware.Api.Http.Requests.AuditRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "auditName": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "authorityId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "typeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Grc.Middleware.Api.Http.Requests.AuditTaskRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "taskName": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "sendReminder": {
+            "type": "boolean"
+          },
+          "interval": {
+            "type": "string",
+            "nullable": true
+          },
+          "intervalType": {
+            "type": "string",
+            "nullable": true
+          },
+          "reminder": {
+            "type": "string",
+            "nullable": true
+          },
+          "ownerId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "exceptionId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Grc.Middleware.Api.Http.Requests.AuditTypeRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "typeCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "typeName": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

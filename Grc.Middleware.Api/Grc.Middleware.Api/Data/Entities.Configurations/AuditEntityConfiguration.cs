@@ -21,7 +21,6 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
             builder.Property(a => a.AuthorityId).HasColumnName("auth_id");
             builder.HasOne(a => a.AuditType).WithMany(i => i.Audits).HasForeignKey(a => a.AuditTypeId);
             builder.HasOne(a => a.Authority).WithMany(i => i.Audits).HasForeignKey(a => a.AuthorityId);
-            builder.HasMany(a => a.Tasks).WithOne(t => t.Audit).HasForeignKey(a => a.AuditId);
             builder.HasMany(a => a.AuditReports).WithOne(r => r.Audit).HasForeignKey(a => a.AuditId);
         }
     }

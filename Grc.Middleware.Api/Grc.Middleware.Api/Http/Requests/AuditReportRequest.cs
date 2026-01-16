@@ -2,8 +2,7 @@
 
 namespace Grc.Middleware.Api.Http.Requests
 {
-    public class AuditReportRequest
-    {
+    public class AuditReportRequest {
 
         [JsonPropertyName("id")]
         public long Id { get; set; }
@@ -14,14 +13,14 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("reportName")]
         public string ReportName { get; set; }
 
-        [JsonPropertyName("subject")]
-        public string Subject { get; set; }
-
-        [JsonPropertyName("auditedOn")]
-        public DateTime AuditedOn { get; set; }
+        [JsonPropertyName("summery")]
+        public string Summery { get; set; }
 
         [JsonPropertyName("exceptionCount")]
         public int ExceptionCount { get; set; }
+
+        [JsonPropertyName("auditedOn")]
+        public DateTime AuditedOn { get; set; }
 
         [JsonPropertyName("status")]
         public string Status { get; set; }
@@ -41,18 +40,6 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 
-        [JsonPropertyName("createdBy")]
-        public string CreatedBy { get; set; }
-
-        [JsonPropertyName("ceatedOn")]
-        public DateTime CreatedOn { get; set; }
-
-        [JsonPropertyName("modifiedBy")]
-        public string ModifiedBy { get; set; }
-
-        [JsonPropertyName("modifiedOn")]
-        public DateTime ModifiedOn { get; set; }
-
         [JsonPropertyName("userId")]
         public long UserId { get; set; }
 
@@ -62,4 +49,5 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("action")]
         public string Action { get; set; }
     }
+
 }

@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Compliance.Audits;
+using Grc.Middleware.Api.Data.Entities.Compliance.Returns;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Utils;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -908,13 +910,29 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             }
         }
 
-        public bool Insert(AuditReportRequest request)
+        public bool Insert(AuditReportRequest request, string username)
         {
             using var uow = UowFactory.Create();
             try
             {
                 //..map exception request to exception entity
-                var auditReport = Mapper.Map<AuditReportRequest, AuditReport>(request);
+                var auditReport = new AuditReport() {
+                    Reference = (request.Reference ?? string.Empty).Trim(),
+                    ReportName = (request.ReportName ?? string.Empty).Trim(),
+                    Summery = (request.Summery ?? string.Empty).Trim(),
+                    ExceptionCount = request.ExceptionCount,
+                    AuditedOn = request.AuditedOn,
+                    Status = (request.Status ?? string.Empty).Trim(),
+                    RespondedOn = request.RespondedOn,
+                    ManagementComment = (request.ManagementComment ?? string.Empty).Trim(),
+                    AdditionalNotes = (request.AdditionalNotes ?? string.Empty).Trim(),
+                    AuditId = request.AuditId,
+                    IsDeleted = request.IsDeleted,
+                    CreatedOn = DateTime.Now,
+                    CreatedBy = $"{username}",
+                    LastModifiedOn = DateTime.Now,
+                    LastModifiedBy = $"{username}"
+                };
 
                 //..log the audit exception data being saved
                 var reportJson = JsonSerializer.Serialize(auditReport, new JsonSerializerOptions
@@ -967,13 +985,29 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             }
         }
 
-        public async Task<bool> InsertAsync(AuditReportRequest request)
+        public async Task<bool> InsertAsync(AuditReportRequest request, string username)
         {
             using var uow = UowFactory.Create();
             try
             {
                 //..map exception request to exception entity
-                var auditReport = Mapper.Map<AuditReportRequest, AuditReport>(request);
+                var auditReport = new AuditReport() {
+                    Reference = (request.Reference ?? string.Empty).Trim(),
+                    ReportName = (request.ReportName ?? string.Empty).Trim(),
+                    Summery = (request.Summery ?? string.Empty).Trim(),
+                    ExceptionCount = request.ExceptionCount,
+                    AuditedOn = request.AuditedOn,
+                    Status = (request.Status ?? string.Empty).Trim(),
+                    RespondedOn = request.RespondedOn,
+                    ManagementComment = (request.ManagementComment ?? string.Empty).Trim(),
+                    AdditionalNotes = (request.AdditionalNotes ?? string.Empty).Trim(),
+                    AuditId = request.AuditId,
+                    IsDeleted = request.IsDeleted,
+                    CreatedOn = DateTime.Now,
+                    CreatedBy = $"{username}",
+                    LastModifiedOn = DateTime.Now,
+                    LastModifiedBy = $"{username}"
+                };
 
                 //..log the audit exception data being saved
                 var reportJson = JsonSerializer.Serialize(auditReport, new JsonSerializerOptions
@@ -1026,7 +1060,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             }
         }
 
-        public bool Update(AuditReportRequest request, bool includeDeleted = false)
+        public bool Update(AuditReportRequest request, string username, bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update audit report", "INFO");
@@ -1039,7 +1073,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                     //..update audit report record
                     report.Reference = (request.Reference ?? string.Empty).Trim();
                     report.ReportName = (request.ReportName ?? string.Empty).Trim();
-                    report.Summery = (request.Subject ?? string.Empty).Trim();
+                    report.Summery = (request.Summery ?? string.Empty).Trim();
                     report.ExceptionCount = request.ExceptionCount;
                     report.AuditedOn = request.AuditedOn;
                     report.Status = (request.Status ?? string.Empty).Trim();
@@ -1049,7 +1083,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                     report.AuditId = request.AuditId;
                     report.IsDeleted = request.IsDeleted;
                     report.LastModifiedOn = DateTime.Now;
-                    report.LastModifiedBy = $"{request.UserId}";
+                    report.LastModifiedBy = $"{username}";
 
                     //..check entity state
                     _ = uow.AuditReportRepository.Update(report, includeDeleted);
@@ -1095,7 +1129,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             }
         }
 
-        public async Task<bool> UpdateAsync(AuditReportRequest request, bool includeDeleted = false)
+        public async Task<bool> UpdateAsync(AuditReportRequest request, string username, bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update audit report", "INFO");
@@ -1108,7 +1142,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                     //..update audit report record
                     report.Reference = (request.Reference ?? string.Empty).Trim();
                     report.ReportName = (request.ReportName ?? string.Empty).Trim();
-                    report.Summery = (request.Subject ?? string.Empty).Trim();
+                    report.Summery = (request.Summery ?? string.Empty).Trim();
                     report.ExceptionCount = request.ExceptionCount;
                     report.AuditedOn = request.AuditedOn;
                     report.Status = (request.Status ?? string.Empty).Trim();
@@ -1118,7 +1152,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                     report.AuditId = request.AuditId;
                     report.IsDeleted = request.IsDeleted;
                     report.LastModifiedOn = DateTime.Now;
-                    report.LastModifiedBy = $"{request.UserId}";
+                    report.LastModifiedBy = $"{username}";
 
                     //..check entity state
                     _ = await uow.AuditReportRepository.UpdateAsync(report, includeDeleted);
@@ -1232,11 +1266,29 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 });
                 Logger.LogActivity($"Audit reports data: {reportJson}", "DEBUG");
 
-                var exception = await uow.AuditReportRepository.GetAsync(t => t.Id == request.RecordId);
+                var exception = await uow.AuditReportRepository.GetAsync(t => t.Id == request.RecordId, false, r => r.AuditUpdates, r => r.AuditExceptions);
                 if (exception != null)
                 {
                     //..mark as delete this audit report
                     _ = await uow.AuditReportRepository.DeleteAsync(exception, request.markAsDeleted);
+
+                    //..soft delete AuditUpdates
+                    if (exception.AuditUpdates != null) {
+                        foreach (var update in exception.AuditUpdates) {
+                            update.IsDeleted = true;
+                            update.LastModifiedOn = DateTime.Now;
+                            uow.Context.Entry(update).State = EntityState.Modified;
+                        }
+                    }
+
+                    //..soft delete AuditExceptions
+                    if (exception.AuditExceptions != null) {
+                        foreach (var ex in exception.AuditExceptions) {
+                            ex.IsDeleted = true;
+                            ex.LastModifiedOn = DateTime.Now;
+                            uow.Context.Entry(exception).State = EntityState.Modified;
+                        }
+                    }
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(exception).State;

@@ -19,6 +19,18 @@ namespace Grc.ui.App.Dtos {
         [JsonPropertyName("taskStatus")]
         public string TaskStatus { get; set; }
 
+        [JsonPropertyName("sendReminder")]
+        public bool SendReminder { get; set; }
+
+        [JsonPropertyName("interval")]
+        public string Interval { get; set; }
+
+        [JsonPropertyName("intervalType")]
+        public string IntervalType { get; set; }
+
+        [JsonPropertyName("message")]
+        public string Message { get; set; }
+
         [JsonPropertyName("ownerId")]
         public long OwnerId { get; set; }
 

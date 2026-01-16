@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Grc.ui.App.Http.Requests {
-    public class AuditUpdateRequest {
+namespace Grc.Middleware.Api.Http.Responses {
+    public class AuditUpdateResponse {
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
@@ -10,9 +10,6 @@ namespace Grc.ui.App.Http.Requests {
 
         [JsonPropertyName("updateNotes")]
         public string UpdateNotes { get; set; }
-
-        [JsonPropertyName("addedDate")]
-        public DateTime AddedDate { get; set; }
 
         [JsonPropertyName("sendReminders")]
         public bool SendReminders { get; set; }
@@ -26,17 +23,11 @@ namespace Grc.ui.App.Http.Requests {
         [JsonPropertyName("sendToEmails")]
         public string SendToEmails { get; set; }
 
+        [JsonPropertyName("addedBy")]
+        public string AddedBy { get; set; }
+
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
-
-        [JsonPropertyName("userId")]
-        public long UserId { get; set; }
-
-        [JsonPropertyName("action")]
-        public string Action { get; set; }
-
-        [JsonPropertyName("ipAddress")]
-        public string IPAddress { get; set; }
     }
-
+  
 }

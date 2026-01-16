@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Compliance.Audits;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
+using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
-using System;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -18,6 +17,191 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                             IMapper mapper) : base(loggerFactory, uowFactory, mapper) {
         }
 
+        #region Statistics
+
+        public async Task<AuditDashboardResponse> GetAuditDashboardStatisticsAsync(bool includeDeletes) {
+            return await Task.FromResult(new AuditDashboardResponse() {
+                Findings = new() {
+                            {"Total", 80 },
+                            {"< 1 Month", 10 },
+                            {"1 to 2 Months", 50 },
+                            {"> 3 Months", 20 }
+                        },
+                Completions = new() {
+                            {"Closed", 70 },
+                            {"Open", 60 },
+                            {"Over Due", 30 }
+                        },
+                BarChart = new() {
+                            {"BOU", new Dictionary<string, int>(){
+                                {"Closed", 20 },
+                                {"Open", 30 },
+                                {"Over Due", 10 }
+                            } },
+                            {"KPMG",  new Dictionary<string, int>(){
+                                {"Closed", 20 },
+                                {"Open", 40 },
+                                {"Over Due",15 }
+                            } },
+                            {"IRA",  new Dictionary<string, int>(){
+                                {"Closed", 30 },
+                                {"Open", 10 },
+                                {"Over Due", 30 }
+                            } },
+                            {"ER",  new Dictionary<string, int>(){
+                                {"Closed", 8 },
+                                {"Open", 12 },
+                                {"Over Due", 5 }
+                            }}
+                        }
+            });
+
+        }
+
+        public async Task<AuditMiniReportResponse> GetAuditMiniStatisticsAsync(long recordId, bool includeDeleted) {
+            return await Task.FromResult(new AuditMiniReportResponse() {
+                Id = 1,
+                Reference = "BOU OUT/1",
+                ReportName = "Sample BOU Report",
+                Status = "Pending",
+                Total = 30,
+                Closed = 10,
+                Open = 12,
+                Overdue = 8,
+                AuditedOn = new DateTime(2024, 2, 15),
+                Completed = 80.0M,
+                Outstanding = 20.0M,
+                Exceptions = new List<AuditExceptionResponse> {
+                        new() {
+                            Id = 1,
+                            Finding = "Sample finding",
+                            ProposedAction = "Sample proposed fix",
+                            Notes = "Sample proposed notes",
+                            TargetDate = new DateTime(2026,4,12),
+                            RiskStatement = "CRITICAL",
+                            RiskRating = 70,
+                            Responsible = "MD's Office",
+                            Executioner = "Seccretary",
+                            Status = "CLOSED",
+                        },
+                        new() {
+                            Id = 1,
+                            Finding = "Sample finding 2",
+                            ProposedAction = "Sample proposed fix 2",
+                            Notes = "Sample proposed notes 2",
+                            TargetDate = new DateTime(2026,6,12),
+                            RiskStatement = "MEDIUM",
+                            RiskRating = 70,
+                            Responsible = "MD's Office",
+                            Executioner = "Seccretary",
+                            Status = "OPEN",
+                        }
+                        ,
+                        new() {
+                            Id = 1,
+                            Finding = "Sample finding 3",
+                            ProposedAction = "Sample proposed fix 3",
+                            Notes = "Sample proposed notes 3",
+                            TargetDate = new DateTime(2025,12,23),
+                            RiskStatement = "LOW",
+                            RiskRating = 70,
+                            Responsible = "MD's Office",
+                            Executioner = "Seccretary",
+                            Status = "OVER DUE",
+                        }
+                    }
+            });
+        }
+
+        public async Task<AuditExtensionStatistics> GetPeriodStatisticsAsync(string period, bool includeDeleted) {
+            var statuses = new Dictionary<string, int>() { { "Total", 80 }, { "Open", 10 }, { "Close", 50 }, { "Due", 20 } };
+            return await Task.FromResult(new AuditExtensionStatistics() {
+                Statuses = statuses,
+                Reports = new List<AuditMiniReportResponse>() {
+                        new () {
+                            Id =  1,
+                            Reference = "BOU OUT/1",
+                            ReportName = "Sample BOU Report",
+                            Total = 30,
+                            Closed = 10,
+                            Open = 12,
+                            Overdue = 8,
+                            AuditedOn = new DateTime(2024,2,15),
+                            Completed = 80.0M,
+                            Outstanding = 20.0M
+                        },
+                        new () {
+                            Id =  3,
+                            Reference = "KMGT EXT/1",
+                            ReportName = "Sample KMGT Report",
+                            Total = 20,
+                            Closed = 8,
+                            Open = 10,
+                            Overdue = 2,
+                            AuditedOn = new DateTime(2024,6,15),
+                            Completed = 40.0M,
+                            Outstanding = 20.0M
+                        },
+                        new () {
+                            Id =  3,
+                            Reference = "IR EXT/1",
+                            ReportName = "Sample IR Report",
+                            Total = 50,
+                            Closed = 50,
+                            Open = 0,
+                            Overdue = 0,
+                            AuditedOn = new DateTime(2024,3,15),
+                            Completed = 100.0M,
+                            Outstanding = 0.0M
+                        }
+                }
+            });
+        }
+
+        public async Task<List<AuditMiniReportResponse>> GetMiniPeriodStatisticsAsync(string period, bool includeDeleted) {
+            return await Task.FromResult(new List<AuditMiniReportResponse>() {
+                new () {
+                    Id =  1,
+                    Reference = "BOU OUT/1",
+                    ReportName = "Sample BOU Report",
+                    Total = 30,
+                    Closed = 10,
+                    Open = 12,
+                    Overdue = 8,
+                    AuditedOn = new DateTime(2024,2,15),
+                    Completed = 80.0M,
+                    Outstanding = 20.0M
+                },
+                new () {
+                    Id =  2,
+                    Reference = "KMGT EXT/1",
+                    ReportName = "Sample KMGT Report",
+                    Total = 20,
+                    Closed = 8,
+                    Open = 10,
+                    Overdue = 2,
+                    AuditedOn = new DateTime(2024,6,15),
+                    Completed = 40.0M,
+                    Outstanding = 20.0M
+                },
+                new () {
+                    Id =  3,
+                    Reference = "IR EXT/1",
+                    ReportName = "Sample IR Report",
+                    Total = 50,
+                    Closed = 50,
+                    Open = 0,
+                    Overdue = 0,
+                    AuditedOn = new DateTime(2024,3,15),
+                    Completed = 100.0M,
+                    Outstanding = 0.0M
+                }
+            });
+        }
+
+        #endregion
+
+        #region Queries
         public int Count() {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Count number of audits in the database", "INFO");
@@ -912,12 +1096,21 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             }
         }
 
-        public bool Insert(AuditRequest request)
+        public bool Insert(AuditRequest request, string username)
         {
             using var uow = UowFactory.Create();
             try {
                 //..map audit request to audit entity
-                var audit = Mapper.Map<AuditRequest, Audit>(request);
+                var audit = new Audit() { 
+                    AuditName = request.AuditName,
+                    Notes = request.Notes,
+                    AuditTypeId = request.TypeId,
+                    AuthorityId = request.AuthorityId,
+                    CreatedBy = username,
+                    CreatedOn = DateTime.Now,
+                    LastModifiedBy = username,
+                    LastModifiedOn = DateTime.Now
+                };
 
                 //..log the audit data being saved
                 var auditJson = JsonSerializer.Serialize(audit, new JsonSerializerOptions
@@ -970,13 +1163,22 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             }
         }
 
-        public async Task<bool> InsertAsync(AuditRequest request)
+        public async Task<bool> InsertAsync(AuditRequest request, string username)
         {
             using var uow = UowFactory.Create();
             try
             {
                 //..map audit request to audit entity
-                var audit = Mapper.Map<AuditRequest, Audit>(request);
+                var audit = new Audit() {
+                    AuditName = request.AuditName,
+                    Notes = request.Notes,
+                    AuditTypeId = request.TypeId,
+                    AuthorityId = request.AuthorityId,
+                    CreatedBy = username,
+                    CreatedOn = DateTime.Now,
+                    LastModifiedBy = username,
+                    LastModifiedOn = DateTime.Now
+                };
 
                 //..log the audit data being saved
                 var auditJson = JsonSerializer.Serialize(audit, new JsonSerializerOptions
@@ -1029,7 +1231,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             }
         }
 
-        public bool Update(AuditRequest request, bool includeDeleted = false)
+        public bool Update(AuditRequest request, string username, bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update audit", "INFO");
@@ -1046,7 +1248,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                     audit.AuditTypeId = request.TypeId;
                     audit.IsDeleted = request.IsDeleted;
                     audit.LastModifiedOn = DateTime.Now;
-                    audit.LastModifiedBy = $"{request.UserId}";
+                    audit.LastModifiedBy = $"{username}";
 
                     //..check entity state
                     _ = uow.AuditRepository.Update(audit, includeDeleted);
@@ -1092,7 +1294,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             }
         }
 
-        public async Task<bool> UpdateAsync(AuditRequest request, bool includeDeleted = false)
+        public async Task<bool> UpdateAsync(AuditRequest request, string username, bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update audit", "INFO");
@@ -1109,7 +1311,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                     audit.AuditTypeId = request.TypeId;
                     audit.IsDeleted = request.IsDeleted;
                     audit.LastModifiedOn = DateTime.Now;
-                    audit.LastModifiedBy = $"{request.UserId}";
+                    audit.LastModifiedBy = $"{username}";
 
                     //..check entity state
                     _ = await uow.AuditRepository.UpdateAsync(audit, includeDeleted);
@@ -1590,6 +1792,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 throw;
             }
         }
+
+        #endregion
 
     }
 }

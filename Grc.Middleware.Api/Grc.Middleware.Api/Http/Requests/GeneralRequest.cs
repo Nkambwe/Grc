@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace Grc.Middleware.Api.Http.Requests {
+
     public class GeneralRequest {
         /// <summary>
         /// Get or Set ID of user sending request
@@ -28,4 +29,5 @@ namespace Grc.Middleware.Api.Http.Requests {
         [JsonPropertyName("decrypts")]
         public string[] DecryptFields { get; set; }
     }
+
 }

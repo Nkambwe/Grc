@@ -6,12 +6,12 @@ using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Security;
 using Grc.Middleware.Api.Services;
+using Grc.Middleware.Api.Services.Compliance.Audits;
 using Grc.Middleware.Api.Services.Compliance.Regulations;
 using Grc.Middleware.Api.Services.Compliance.Support;
 using Grc.Middleware.Api.Services.Organization;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
 namespace Grc.Middleware.Api.Controllers {
@@ -37,6 +37,11 @@ namespace Grc.Middleware.Api.Controllers {
         private readonly ICircularIssueService _circularIssueService;
         private readonly IReturnsSubmissionService _submissionService;
         private readonly IFrequencyService _frequencyService;
+        private readonly IAuditService _auditService;
+        private readonly IAuditTypeService _auditTypeService;
+        private readonly IAuditReportService _auditReportService;
+        private readonly IAuditExceptionService _auditExceptionService;
+        private readonly IAuditTaskService _auditTaskService;
         public RegulatoryController(IObjectCypher cypher,
             IServiceLoggerFactory loggerFactory, 
             IMapper mapper, 
@@ -60,6 +65,11 @@ namespace Grc.Middleware.Api.Controllers {
             IEnvironmentProvider environment,
             IMailService mailService,
             IReturnsSubmissionService submissionService,
+            IAuditService auditService,
+            IAuditTypeService auditTypeService,
+            IAuditReportService auditReportService,
+            IAuditExceptionService auditExceptionService,
+            IAuditTaskService auditTaskService,
             IErrorNotificationService errorService, 
             ISystemErrorService systemErrorService) 
             : base(cypher, loggerFactory, mapper, companyService, environment, errorService, systemErrorService) {
@@ -81,6 +91,11 @@ namespace Grc.Middleware.Api.Controllers {
             _ownerService = ownerService;
             _mailService = mailService;
             _frequencyService = frequencyService;
+            _auditService = auditService;
+            _auditTypeService = auditTypeService;
+            _auditExceptionService = auditExceptionService;
+            _auditReportService = auditReportService;
+            _auditTaskService = auditTaskService;
         }
 
         #region Compliance Statistics
@@ -4193,6 +4208,1338 @@ namespace Grc.Middleware.Api.Controllers {
 
                 return Ok(new GrcResponse<GeneralResponse>(response));
             } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        #endregion
+
+        #region Audit-statistics
+
+        [HttpPost("audits/audit-dashboard-statistics")]
+        public async Task<IActionResult> GetAuditStatistic([FromBody] GeneralRequest request) {
+
+            try {
+                Logger.LogActivity("Retrieve compliance statistics", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<AuditDashboardResponse>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IPAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var statistics = await _auditService.GetAuditDashboardStatisticsAsync(false);
+                if (statistics == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could audit dashboard statistics. A system error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<AuditDashboardResponse>>(error));
+                }
+
+                return Ok(new GrcResponse<AuditDashboardResponse>(statistics));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<AuditDashboardResponse>(error));
+            }
+        }
+
+        [HttpPost("audits/exception-report")]
+        public async Task<IActionResult> GetExceptionStatistic([FromBody] IdRequest request) {
+
+            try {
+                Logger.LogActivity("Retrieve compliance statistics", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<AuditMiniReportResponse>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IPAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var statistics = await _auditService.GetAuditMiniStatisticsAsync(request.RecordId, false);
+                if (statistics == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could audit mini report. A system error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<AuditMiniReportResponse>(error));
+                }
+
+                return Ok(new GrcResponse<AuditMiniReportResponse>(statistics));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<AuditMiniReportResponse>(error));
+            }
+        }
+
+        [HttpPost("audits/exception-extension-report")]
+        public async Task<IActionResult> GetAuditExtensionStatistic([FromBody] AuditExtensionExceptionRequest request) {
+            try {
+
+                Logger.LogActivity("Retrieve compliance statistics", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<AuditMiniReportResponse>>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IpAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var statistics = await _auditService.GetPeriodStatisticsAsync(request.Period, false);
+                if (statistics == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could audit mini report. A system error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<AuditExtensionStatistics>(error));
+                }
+
+                return Ok(new GrcResponse<AuditExtensionStatistics>(statistics));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<AuditExtensionStatistics>(error));
+            }
+        }
+
+        [HttpPost("audits/audit-mini-report")]
+        public async Task<IActionResult> GetAuditMiniReport([FromBody] AuditListRequest request) {
+            try {
+
+                Logger.LogActivity("Retrieve compliance statistics", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<AuditMiniReportResponse>>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IpAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var statistics = await _auditService.GetMiniPeriodStatisticsAsync(request.Period, false);
+                if (statistics == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could audit mini report. A system error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<AuditMiniReportResponse>>(error));
+                }
+
+                return Ok(new GrcResponse<List<AuditMiniReportResponse>>(statistics));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<List<AuditMiniReportResponse>>(error));
+            }
+        }
+
+        #endregion
+
+        #region Audit
+
+        [HttpPost("audits/audit-retrieve")]
+        public async Task<IActionResult> GetAudit([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Get audit by ID", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<AuditResponse>(error));
+                }
+
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request audit ID is required", "Invalid audit request ID");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<AuditResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var result = await _auditService.GetAsync(d => d.Id == request.RecordId, false, a => a.Authority, a => a.AuditType);
+                if (result == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Audit not found", "No audit matched the provided ID");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<AuditResponse>(error));
+                }
+
+                //..return audit
+                var status = new AuditResponse {
+                    Id = result.Id,
+                    AuditName = result.AuditName ?? string.Empty,
+                    Notes = result.Notes ?? string.Empty,
+                    Authority = result.Authority?.AuthorityAlias ?? string.Empty,
+                    AuthorityId = result.AuthorityId,
+                    TypeId = result.AuditTypeId,
+                    TypeName = result.AuditType.TypeName ?? string.Empty,
+                    IsDeleted = result.IsDeleted
+                };
+
+                return Ok(new GrcResponse<AuditResponse>(status));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<AuditResponse>(error));
+            }
+        }
+
+        [HttpPost("audits/paged-audit-list")]
+        public async Task<IActionResult> GetPagedAuditList([FromBody] ListRequest request) {
+
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<AuditResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _auditService.PageAllAsync(request.PageIndex, request.PageSize, false, a => a.Authority, a => a.AuditType);
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No audit records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<AuditResponse>>(
+                        new PagedResponse<AuditResponse>(
+                        new List<AuditResponse>(), 0, pageResult.Page, pageResult.Size)));
+                }
+
+                List<AuditResponse> audits = new();
+                var records = pageResult.Entities.ToList();
+                if (records != null && records.Any()) {
+                    records.ForEach(audit => audits.Add(new AuditResponse() {
+                        Id = audit.Id,
+                        AuditName = audit.AuditName ?? string.Empty,
+                        Notes = audit.Notes ?? string.Empty,
+                        Authority = audit.Authority?.AuthorityAlias ?? string.Empty,
+                        AuthorityId = audit.AuthorityId,
+                        TypeId = audit.AuditTypeId,
+                        TypeName = audit.AuditType.TypeName ?? string.Empty,
+                        IsDeleted = audit.IsDeleted
+                    }));
+                }
+
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                    var searchTerm = request.SearchTerm.ToLower();
+                    audits = audits.Where(u =>
+                        (u.AuditName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.Authority?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.TypeName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) 
+                    ).ToList();
+                }
+
+                return Ok(new GrcResponse<PagedResponse<AuditResponse>>(new PagedResponse<AuditResponse>(audits, pageResult.Count, pageResult.Page, pageResult.Size)));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<AuditResponse>>(error));
+            }
+        }
+
+        [HttpPost("audits/create-audit")]
+        public async Task<IActionResult> CreateAudit([FromBody] AuditRequest request) {
+            try {
+                Logger.LogActivity("Creating new audit", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The audit record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!string.IsNullOrWhiteSpace(request.AuditName)) {
+                    if (await _auditService.ExistsAsync(t => t.AuditName == request.AuditName)) {
+                        var error = new ResponseError(ResponseCodes.DUPLICATE, "Duplicate Record", "Another audit found with similar name");
+                        Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<GeneralResponse>(error));
+                    }
+                } else {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The Audit name is required");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username;
+                if (currentUser != null) {
+                    username = currentUser.Username;
+                } else {
+                    username = $"{request.UserId}";
+                }
+
+                //..create audit
+                var result = await _auditService.InsertAsync(request, username);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Audit task saved successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to save audit record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("audits/update-audit")]
+        public async Task<IActionResult> UpdateAudit([FromBody] AuditRequest request) {
+            try {
+                Logger.LogActivity("Update auidt", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The audit record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _auditService.ExistsAsync(r => r.Id == request.Id)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "Audit record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username;
+                if (currentUser != null) {
+                    username = currentUser.Username;
+                } else {
+                    username = $"{request.UserId}";
+                }
+
+                //..update document type
+                var result = await _auditService.UpdateAsync(request, username, true);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Audit updated successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update audit record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("audits/delete-audit")]
+        public async Task<IActionResult> DeleteAudit([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
+
+                //..check if record exists
+                var response = new GeneralResponse();
+                if (!await _auditService.ExistsAsync(r => r.Id == request.RecordId)) {
+                    response.Status = false;
+                    response.StatusCode = (int)ResponseCodes.NOTFOUND;
+                    response.Message = $"Audi Not Found!";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    return Ok(new GrcResponse<GeneralResponse>(response));
+                }
+
+                //..delete audit type
+                var status = await _auditService.DeleteAsync(request);
+                if (!status) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Failed to regulatory audit", "An error occurred! could delete audit");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse() { Status = status }));
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error deleting audit by user {request.UserId}: {ex.Message}", "ERROR");
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        #endregion
+
+        #region Audit-Reports
+
+        [HttpPost("audits/report-retrieve")]
+        public async Task<IActionResult> GetAuditReport([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Get audit report by ID", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<DocumentTypeResponse>(error));
+                }
+
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request audit report ID is required", "Invalid audit type request ID");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<AuditReportResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var register = await _auditReportService.GetAsync(r => r.Id == request.RecordId, false, r => r.AuditExceptions, r => r.AuditUpdates);
+                if (register == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Audit report not found", "No audit report matched the provided ID");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<AuditReportResponse>(error));
+                }
+
+                //..return audit report
+                var report = new AuditReportResponse {
+                    Id = register.Id,
+                    Reference = register.Reference ?? string.Empty,
+                    ReportName = register.ReportName ?? string.Empty,
+                    Summery = register.Summery ?? string.Empty,
+                    ReportStatus = register.Status ?? string.Empty,
+                    ReportDate = register.AuditedOn,
+                    ExceptionCount = register.ExceptionCount,
+                    ResponseDate = register.RespondedOn,
+                    ManagementComments = register.ManagementComment ?? string.Empty,
+                    AdditionalNotes = register.AdditionalNotes ?? string.Empty,
+                    AuditType = register.AdditionalNotes ?? string.Empty,
+                    IsDeleted = register.IsDeleted,
+                    Findings = register.AuditExceptions != null && register.AuditExceptions.Any() ?
+                               register.AuditExceptions.Select(exec=> new AuditExceptionResponse() { 
+                                Id = exec.Id,
+                                ReportId = exec.AuditReportId,
+                                Finding = exec.AuditFinding ?? string.Empty,
+                                ProposedAction = exec.RemediationPlan ?? string.Empty,
+                                CorrectiveAction =exec.CorrectiveAction ?? string.Empty,
+                                Notes = exec.ExceptionNotes,
+                                TargetDate = exec.TargetDate,
+                                RiskRating = exec.RiskRating,
+                                RiskStatement = exec.RiskAssessment,
+                                ResponsibleId = exec.ResponsabilityId,
+                                Responsible = exec.Responseability?.ContactPosition ?? string.Empty,
+                                Executioner = exec.Executioner ?? string.Empty,
+                                Status = exec.Status ?? string.Empty,
+                                IsDeleted = exec.IsDeleted
+                               }).ToList():
+                               new List<AuditExceptionResponse>(),
+                    Updates = register.AuditUpdates != null && register.AuditUpdates.Any() ?
+                               register.AuditUpdates.Select(update => new AuditUpdateResponse() {
+                                   Id = update.Id,
+                                   ReportId = update.ReportId,
+                                   UpdateNotes = update.Notes ?? string.Empty,
+                                   ReminderMessage = update.ReminderMessage ?? string.Empty,
+                                   SendToEmails = update.SendTo ?? string.Empty,
+                                   SendReminders = update.SendReminder,
+                                   SendDate = update.SendReminderOn,
+                                   AddedBy = update.AddedBy ?? string.Empty,
+                                   IsDeleted = update.IsDeleted
+                               }).ToList() :
+                               new List<AuditUpdateResponse>(),
+                };
+
+                return Ok(new GrcResponse<AuditReportResponse>(report));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<AuditReportResponse>(error));
+            }
+        }
+
+        [HttpPost("audits/paged-reports-list")]
+        public async Task<IActionResult> GetPagedAuditReportList([FromBody] ListRequest request) {
+
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<AuditReportResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _auditReportService.PageAllAsync(request.PageIndex, request.PageSize, false);
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No audit report records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<AuditReportResponse>>(
+                        new PagedResponse<AuditReportResponse>(
+                        new List<AuditReportResponse>(), 0, pageResult.Page, pageResult.Size)));
+                }
+
+                List<AuditReportResponse> reports = new();
+                var records = pageResult.Entities.ToList();
+                if (records != null && records.Any()) {
+                    records.ForEach(report => reports.Add(new() {
+                        Id = report.Id,
+                        Reference = report.Reference ?? string.Empty,
+                        ReportName = report.ReportName ?? string.Empty,
+                        Summery = report.Summery ?? string.Empty,
+                        ReportStatus = report.Status ?? string.Empty,
+                        ReportDate = report.AuditedOn,
+                        ExceptionCount = report.ExceptionCount,
+                        ResponseDate = report.RespondedOn,
+                        ManagementComments = report.ManagementComment ?? string.Empty,
+                        AdditionalNotes = report.AdditionalNotes ?? string.Empty,
+                        AuditType = report.AdditionalNotes ?? string.Empty,
+                        IsDeleted = report.IsDeleted
+                    }));
+                }
+
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                    var searchTerm = request.SearchTerm.ToLower();
+                    reports = reports.Where(u =>
+                        (u.Reference?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)||
+                        (u.ReportName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)||
+                        (u.AuditType?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.ReportStatus?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                    ).ToList();
+                }
+
+                return Ok(new GrcResponse<PagedResponse<AuditReportResponse>>(
+                    new PagedResponse<AuditReportResponse>(reports, pageResult.Count, pageResult.Page, pageResult.Size)));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<AuditReportResponse>>(error));
+            }
+        }
+
+        [HttpPost("audits/create-report")]
+        public async Task<IActionResult> CreateAuditReport([FromBody] AuditReportRequest request) {
+            try {
+                Logger.LogActivity("Creating new audit report", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The audit report record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!string.IsNullOrWhiteSpace(request.ReportName)) {
+                    if (await _auditReportService.ExistsAsync(t => t.ReportName == request.ReportName)) {
+                        var error = new ResponseError(ResponseCodes.DUPLICATE, "Duplicate Record", "Another audit report found with similar name");
+                        Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<GeneralResponse>(error));
+                    }
+                } else {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The report name is required");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username;
+                if (currentUser != null) {
+                    username = currentUser.Username;
+                } else {
+                    username = $"{request.UserId}";
+                }
+
+                //..create audit report
+                var result = await _auditReportService.InsertAsync(request, username);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Audit report saved successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to save audit report record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("audits/update-report")]
+        public async Task<IActionResult> UpdateAuditRepor([FromBody] AuditReportRequest request) {
+            try {
+                Logger.LogActivity("Update auidt report", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The audit report record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} >> ${request.IpAddress}", "INFO");
+                if (!await _auditTypeService.ExistsAsync(r => r.Id == request.Id)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "Audit report record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username;
+                if (currentUser != null) {
+                    username = currentUser.Username;
+                } else {
+                    username = $"{request.UserId}";
+                }
+
+                //..update document type
+                var result = await _auditReportService.UpdateAsync(request, username, true);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Audit report updated successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update audit report record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("audits/delete-report")]
+        public async Task<IActionResult> DeleteAuditReport([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
+
+                //..check if record exists
+                var response = new GeneralResponse();
+                if (!await _auditReportService.ExistsAsync(r => r.Id == request.RecordId)) {
+                    response.Status = false;
+                    response.StatusCode = (int)ResponseCodes.NOTFOUND;
+                    response.Message = $"Audi report Not Found!";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    return Ok(new GrcResponse<GeneralResponse>(response));
+                }
+
+                //..delete audit report
+                var status = await _auditReportService.DeleteAsync(request);
+                if (!status) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Failed to regulatory audit report", "An error occurred! could delete audit report");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse() { Status = status }));
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error deleting audit report by user {request.UserId}: {ex.Message}", "ERROR");
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        #endregion
+
+        #region Audit-Excptions
+
+        [HttpPost("audits/exception-retrieve")]
+        public async Task<IActionResult> GetAuditException([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Get audit exception by ID", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<AuditExceptionResponse>(error));
+                }
+
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request audit result ID is required", "Invalid audit exception request ID");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<AuditExceptionResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var result = await _auditExceptionService.GetAsync(d => d.Id == request.RecordId, false, ex=> ex.AuditTasks, ex=> ex.Responseability);
+                if (result == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Audit result not found", "No audit exception matched the provided ID");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<AuditExceptionResponse>(error));
+                }
+
+                //..return audit exception
+                var exception = new AuditExceptionResponse {
+                    Id = result.Id,
+                    Finding = result.AuditFinding,
+                    ProposedAction = result.RemediationPlan,
+                    CorrectiveAction = result.CorrectiveAction,
+                    Notes = result.ExceptionNotes,
+                    TargetDate = result.TargetDate,
+                    RiskStatement = result.RiskAssessment,
+                    RiskRating = result.RiskRating,
+                    ResponsibleId = result.ResponsabilityId,
+                    Responsible = result.Responseability?.ContactName ?? string.Empty,
+                    Executioner = result.Executioner,
+                    Status = result.Status,
+                    ReportId = result.AuditReportId,
+                    IsDeleted = result.IsDeleted,
+                    Tasks = result.AuditTasks != null && result.AuditTasks.Any()?
+                        result.AuditTasks.Select(task => new AuditTaskResponse() {
+                            Id = task.Id,
+                            TaskName = task.TaskName ?? string.Empty,
+                            TaskDescription = task.Description ?? string.Empty,
+                            Duedate = task.DueDate,
+                            TaskStatus = task.Status ?? string.Empty,
+                            OwnerId = task.OwnerId,
+                            ExceptionId = task.ExceptionId,
+                            IsDeleted = task.IsDeleted
+
+                        }).ToList():
+                        new List<AuditTaskResponse>()
+                };
+
+                return Ok(new GrcResponse<AuditExceptionResponse>(exception));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<AuditExceptionResponse>(error));
+            }
+        }
+
+        [HttpPost("audits/report-exceptions")]
+        public async Task<IActionResult> GetPagedExceptionList([FromBody] AuditCategoryRequest request) {
+
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<AuditExceptionResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _auditExceptionService.PageAllAsync(request.PageIndex, request.PageSize, false, e => e.Responseability, e => e.AuditReportId == request.ReportId);
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No audit exception records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<AuditExceptionResponse>>(
+                        new PagedResponse<AuditExceptionResponse>(
+                        new List<AuditExceptionResponse>(), 0, pageResult.Page, pageResult.Size)));
+                }
+
+                List<AuditExceptionResponse> exceptions = new();
+                var records = pageResult.Entities.ToList();
+                if (records != null && records.Any()) {
+                    records.ForEach(exception => exceptions.Add(new() {
+                        Id = exception.Id,
+                        Finding = exception.AuditFinding,
+                        ProposedAction  = exception.RemediationPlan,
+                        CorrectiveAction = exception.CorrectiveAction,
+                        Notes = exception.ExceptionNotes,
+                        TargetDate = exception.TargetDate,
+                        RiskStatement = exception.RiskAssessment,
+                        RiskRating = exception.RiskRating,
+                        ResponsibleId = exception.ResponsabilityId,
+                        Responsible = exception.Responseability?.ContactName ?? string.Empty,
+                        Executioner = exception.Executioner,
+                        Status = exception.Status,
+                        ReportId = exception.AuditReportId,
+                        IsDeleted = exception.IsDeleted
+                    }));
+                }
+
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                    var searchTerm = request.SearchTerm.ToLower();
+                    exceptions = exceptions.Where(u =>
+                        (u.Finding?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)||
+                        (u.Responsible?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)||
+                        (u.ProposedAction?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)||
+                        (u.CorrectiveAction?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.Executioner?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                    ).ToList();
+                }
+
+                return Ok(new GrcResponse<PagedResponse<AuditExceptionResponse>>(
+                          new PagedResponse<AuditExceptionResponse>(exceptions, pageResult.Count, pageResult.Page, pageResult.Size)));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<AuditTypeResponse>>(error));
+            }
+        }
+
+        [HttpPost("audits/create-exception")]
+        public async Task<IActionResult> CreateAuditException([FromBody] AuditExceptionRequest request) {
+            try {
+                Logger.LogActivity("Creating new audit exception", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The audit exception record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!string.IsNullOrWhiteSpace(request.Findings)) {
+                    if (await _auditExceptionService.ExistsAsync(e => e.AuditFinding == request.Findings && e.Id == request.ReportId)) {
+                        var error = new ResponseError(ResponseCodes.DUPLICATE, "Duplicate Record", "Another finding with same description found on the same report");
+                        Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<GeneralResponse>(error));
+                    }
+                } else {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Exception findings cannot be empty", "The exception name is required");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username;
+                if (currentUser != null) {
+                    username = currentUser.Username;
+                } else {
+                    username = $"{request.UserId}";
+                }
+
+                //..create audit exception
+                var result = await _auditExceptionService.InsertAsync(request, username);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Audit exception saved successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to save audit exception record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("audits/update-exception")]
+        public async Task<IActionResult> UpdateAuditException([FromBody] AuditExceptionRequest request) {
+            try {
+                Logger.LogActivity("Update auidt exception", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The audit type record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _auditExceptionService.ExistsAsync(r => r.Id == request.Id)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "Audit exception record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username;
+                if (currentUser != null) {
+                    username = currentUser.Username;
+                } else {
+                    username = $"{request.UserId}";
+                }
+
+                //..update document type
+                var result = await _auditExceptionService.UpdateAsync(request, username, true);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Audit exception updated successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update audit exception record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("audits/delete-exception")]
+        public async Task<IActionResult> DeleteAuditException([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
+
+                //..check if record exists
+                var response = new GeneralResponse();
+                if (!await _auditExceptionService.ExistsAsync(r => r.Id == request.RecordId)) {
+                    response.Status = false;
+                    response.StatusCode = (int)ResponseCodes.NOTFOUND;
+                    response.Message = $"Audi exception Not Found!";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    return Ok(new GrcResponse<GeneralResponse>(response));
+                }
+
+                //..delete audit exception
+                var status = await _auditExceptionService.DeleteAsync(request);
+                if (!status) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Failed to regulatory audit exception", "An error occurred! could delete audit exception");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse() { Status = status }));
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error deleting audit exception by user {request.UserId}: {ex.Message}", "ERROR");
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        #endregion
+
+        #region Audit-Types
+
+        [HttpPost("audits/type-retrieve")]
+        public async Task<IActionResult> GetAuditType([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Get audit type by ID", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty","Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<AuditTypeResponse>(error));
+                }
+
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request audit type ID is required","Invalid audit type request ID");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<AuditTypeResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var result = await _auditTypeService.GetAsync(d => d.Id == request.RecordId, false);
+                if (result == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Audit type not found", "No audit type matched the provided ID");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<AuditTypeResponse>(error));
+                }
+
+                //..return audit type
+                var type = new AuditTypeResponse {
+                    Id = result.Id,
+                    TypeCode = result.TypeCode ?? string.Empty,
+                    TypeName = result.TypeName ?? string.Empty,
+                    Description = result.Description ?? string.Empty,
+                    IsDeleted = result.IsDeleted
+                };
+
+                return Ok(new GrcResponse<AuditTypeResponse>(type));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<AuditTypeResponse>(error));
+            }
+        }
+
+        [HttpPost("audits/paged-types-list")]
+        public async Task<IActionResult> GetPagedAuditTypeList([FromBody] ListRequest request) {
+
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty","Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<AuditTypeResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _auditTypeService.PageAllAsync(request.PageIndex, request.PageSize, false);
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No audit type records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<AuditTypeResponse>>(new PagedResponse<AuditTypeResponse>(new List<AuditTypeResponse>(), 0, pageResult.Page, pageResult.Size)));
+                }
+
+                List<AuditTypeResponse> types = new();
+                var records = pageResult.Entities.ToList();
+                if (records != null && records.Any()) {
+                    records.ForEach(type => types.Add(new() {
+                        Id = type.Id,
+                        TypeCode = type.TypeCode ?? string.Empty,
+                        TypeName = type.TypeName ?? string.Empty,
+                        Description = type.Description ?? string.Empty,
+                        IsDeleted = type.IsDeleted
+                    }));
+                }
+
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                    var searchTerm = request.SearchTerm.ToLower();
+                    types = types.Where(u =>
+                        (u.TypeName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                    ).ToList();
+                }
+
+                return Ok(new GrcResponse<PagedResponse<AuditTypeResponse>>(new PagedResponse<AuditTypeResponse>(types, pageResult.Count,pageResult.Page, pageResult.Size)));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<AuditTypeResponse>>(error));
+            }
+        }
+
+        [HttpPost("audits/create-type")]
+        public async Task<IActionResult> CreateAuditType([FromBody] AuditTypeRequest request) {
+            try {
+                Logger.LogActivity("Creating new audit type", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty", "The audit type record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!string.IsNullOrWhiteSpace(request.TypeName)) {
+                    if (await _auditTypeService.ExistsAsync(t => t.TypeName == request.TypeName)) {
+                        var error = new ResponseError(ResponseCodes.DUPLICATE,"Duplicate Record","Another audit type found with similar name");
+                        Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<GeneralResponse>(error));
+                    }
+                } else {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty","The type name is required");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username;
+                if (currentUser != null) {
+                    username = currentUser.Username;
+                } else {
+                    username = $"{request.UserId}";
+                }
+
+                //..create audit type
+                var result = await _auditTypeService.InsertAsync(request, username);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Audit type saved successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to save audit type record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("audits/update-type")]
+        public async Task<IActionResult> UpdateAuditType([FromBody] AuditTypeRequest request) {
+            try {
+                Logger.LogActivity("Update auidt type", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The audit type record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _auditTypeService.ExistsAsync(r => r.Id == request.Id)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "Audit type record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username;
+                if (currentUser != null) {
+                    username = currentUser.Username;
+                } else {
+                    username = $"{request.UserId}";
+                }
+
+                //..update document type
+                var result = await _auditTypeService.UpdateAsync(request, username, true);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Audit type updated successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update audit type record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("audits/delete-type")]
+        public async Task<IActionResult> DeleteAuditType([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
+
+                //..check if record exists
+                var response = new GeneralResponse();
+                if (!await _auditTypeService.ExistsAsync(r => r.Id == request.RecordId)) {
+                    response.Status = false;
+                    response.StatusCode = (int)ResponseCodes.NOTFOUND;
+                    response.Message = $"Audi type Not Found!";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    return Ok(new GrcResponse<GeneralResponse>(response));
+                }
+
+                //..delete audit type
+                var status = await _auditTypeService.DeleteAsync(request);
+                if (!status) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Failed to regulatory audit type","An error occurred! could delete audit type");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse() { Status = status }));
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error deleting audit type by user {request.UserId}: {ex.Message}", "ERROR");
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        #endregion
+
+        #region Audit-Tasks
+
+        [HttpPost("audits/audit-task-retrieve")]
+        public async Task<IActionResult> GetAuditTask([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Get audit task by ID", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<AuditTaskResponse>(error));
+                }
+
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request audit task ID is required", "Invalid audit type request ID");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<AuditTaskResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var result = await _auditTaskService.GetAsync(d => d.Id == request.RecordId, false);
+                if (result == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Audit task not found", "No audit task matched the provided ID");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<AuditTaskResponse>(error));
+                }
+
+                //..return audit type
+                var status = new AuditTaskResponse {
+                    Id = result.Id,
+                    TaskName = result.TaskName ?? string.Empty,
+                    TaskStatus = result.Status ?? string.Empty,
+                    TaskDescription = result.Description ?? string.Empty,
+                    Duedate = result.DueDate,
+                    OwnerId = result.OwnerId,
+                    Owner = result.ActionOwner.ContactPosition ?? string.Empty,
+                    ExceptionId = result.ExceptionId,
+                    Interval = result.Interval ?? string.Empty,
+                    IntervalType = result.IntervalType ?? string.Empty,
+                    SendReminder = result.SendReminder,
+                    Message = result.Reminder ?? string.Empty,
+                    IsDeleted = result.IsDeleted
+                };
+
+                return Ok(new GrcResponse<AuditTaskResponse>(status));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<AuditTaskResponse>(error));
+            }
+        }
+
+        [HttpPost("audits/audit-tasks-list")]
+        public async Task<IActionResult> GetPagedAuditTasksList([FromBody] AuditMiniTaskRequest request) {
+
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<AuditTaskResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _auditTaskService.PageAllAsync(request.PageIndex, request.PageSize, false);
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No audit task records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<AuditTaskResponse>>(
+                        new PagedResponse<AuditTaskResponse>(
+                        new List<AuditTaskResponse>(), 0, pageResult.Page, pageResult.Size)));
+                }
+
+                List<AuditTaskResponse> tasks = new();
+                var records = pageResult.Entities.ToList();
+                if (records != null && records.Any()) {
+                    records.ForEach(task => tasks.Add(new AuditTaskResponse() {
+                        Id = task.Id,
+                        TaskName = task.TaskName ?? string.Empty,
+                        TaskStatus = task.Status ?? string.Empty,
+                        TaskDescription = task.Description ?? string.Empty,
+                        Duedate = task.DueDate,
+                        OwnerId = task.OwnerId,
+                        Owner = task.ActionOwner.ContactPosition ?? string.Empty,
+                        ExceptionId = task.ExceptionId,
+                        Interval = task.Interval ?? string.Empty,
+                        IntervalType = task.IntervalType ?? string.Empty,
+                        SendReminder = task.SendReminder,
+                        Message = task.Reminder ?? string.Empty,
+                        IsDeleted = task.IsDeleted
+                    }));
+                }
+
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                    var searchTerm = request.SearchTerm.ToLower();
+                    tasks = tasks.Where(u =>
+                        (u.TaskName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.TaskStatus?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.TaskDescription?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.Owner?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                    ).ToList();
+                }
+
+                return Ok(new GrcResponse<PagedResponse<AuditTaskResponse>>(new PagedResponse<AuditTaskResponse>(tasks, pageResult.Count, pageResult.Page, pageResult.Size)));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<AuditTaskResponse>>(error));
+            }
+        }
+
+        [HttpPost("audits/create-task")]
+        public async Task<IActionResult> CreateAuditTask([FromBody] AuditTaskRequest request) {
+            try {
+                Logger.LogActivity("Creating new audit task", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The audit task record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!string.IsNullOrWhiteSpace(request.TaskName)) {
+                    if (await _auditTaskService.ExistsAsync(t => t.TaskName == request.TaskName)) {
+                        var error = new ResponseError(ResponseCodes.DUPLICATE, "Duplicate Record", "Another audit task found with similar name");
+                        Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<GeneralResponse>(error));
+                    }
+                } else {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The task name is required");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username;
+                if (currentUser != null) {
+                    username = currentUser.Username;
+                } else {
+                    username = $"{request.UserId}";
+                }
+
+                //..create audit type
+                var result = await _auditTaskService.InsertAsync(request, username);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Audit task saved successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to save audit task record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("audits/update-task")]
+        public async Task<IActionResult> UpdateAuditTask([FromBody] AuditTaskRequest request) {
+            try {
+                Logger.LogActivity("Update auidt task", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The audit task record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _auditTaskService.ExistsAsync(r => r.Id == request.Id)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "Audit task record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username;
+                if (currentUser != null) {
+                    username = currentUser.Username;
+                } else {
+                    username = $"{request.UserId}";
+                }
+
+                //..update document type
+                var result = await _auditTaskService.UpdateAsync(request, username, true);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Audit task updated successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update audit task record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("audits/delete-task")]
+        public async Task<IActionResult> DeleteAuditTask([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
+
+                //..check if record exists
+                var response = new GeneralResponse();
+                if (!await _auditTypeService.ExistsAsync(r => r.Id == request.RecordId)) {
+                    response.Status = false;
+                    response.StatusCode = (int)ResponseCodes.NOTFOUND;
+                    response.Message = $"Audi task Not Found!";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    return Ok(new GrcResponse<GeneralResponse>(response));
+                }
+
+                //..delete audit type
+                var status = await _auditTaskService.DeleteAsync(request);
+                if (!status) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Failed to regulatory audit task", "An error occurred! could delete audit task");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse() { Status = status }));
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error deleting audit task by user {request.UserId}: {ex.Message}", "ERROR");
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<GeneralResponse>(error));
             }

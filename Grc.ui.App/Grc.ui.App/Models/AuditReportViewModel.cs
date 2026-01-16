@@ -7,6 +7,9 @@ namespace Grc.ui.App.Models
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
+        [JsonPropertyName("auditId")]
+        public long AuditId { get; set; }
+
         [JsonPropertyName("reference")]
         public string Reference { get; set; }
 
@@ -33,9 +36,6 @@ namespace Grc.ui.App.Models
 
         [JsonPropertyName("additionalNotes")]
         public string AdditionalNotes { get; set; }
-
-        [JsonPropertyName("auditTypeId")]
-        public string AuditTypeId { get; set; }
 
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }

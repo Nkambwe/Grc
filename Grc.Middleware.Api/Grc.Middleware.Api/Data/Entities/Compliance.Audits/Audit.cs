@@ -10,7 +10,6 @@ namespace Grc.Middleware.Api.Data.Entities.Compliance.Audits {
         public long AuditTypeId { get; set; }
         public virtual AuditType AuditType { get; set; }
         public virtual ICollection<AuditReport> AuditReports { get; set; }
-        public virtual ICollection<AuditTask> Tasks { get; set; }
        
     }
 

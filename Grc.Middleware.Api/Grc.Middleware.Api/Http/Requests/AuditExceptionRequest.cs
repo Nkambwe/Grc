@@ -7,61 +7,52 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
-        [JsonPropertyName("obligation")]
-        public string Obligation { get; set; }
+        [JsonPropertyName("reportId")]
+        public long ReportId { get; set; }
+
+        [JsonPropertyName("findings")]
+        public string Findings { get; set; }
+
+        [JsonPropertyName("recomendations")]
+        public string Recomendations { get; set; }
+
+        [JsonPropertyName("proposedAction")]
+        public string ProposedAction { get; set; }
 
         [JsonPropertyName("correctiveAction")]
         public string CorrectiveAction { get; set; }
 
-        [JsonPropertyName("exceptionNoted")]
-        public string ExceptionNoted { get; set; }
+        [JsonPropertyName("notes")]
+        public string Notes { get; set; }
 
-        [JsonPropertyName("remediationPlan")]
-        public string RemediationPlan { get; set; }
-
-        [JsonPropertyName("targetDate")]
-        public DateTime TargetDate { get; set; }
-
-        [JsonPropertyName("riskAssessment")]
-        public string RiskAssessment { get; set; }
-
-        [JsonPropertyName("riskRating")]
-        public float RiskRating { get; set; }
+        [JsonPropertyName("responsibileId")]
+        public long ResponsibileId { get; set; }
 
         [JsonPropertyName("executioner")]
         public string Executioner { get; set; }
 
-        [JsonPropertyName("userId")]
+        [JsonPropertyName("targetDate")]
+        public DateTime TargetDate { get; set; }
+
+        [JsonPropertyName("riskLevel")]
+        public string RiskLevel { get; set; }
+
+        [JsonPropertyName("riskRate")]
+        public decimal RiskRate { get; set; }
+
+        [JsonPropertyName("status")]
         public string Status { get; set; }
 
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 
-        [JsonPropertyName("auditReportId")]
-        public long AuditReportId { get; set; }
-
-        [JsonPropertyName("auditTaskId")]
-        public long AuditTaskId { get; set; }
-
-        [JsonPropertyName("createdBy")]
-        public string CreatedBy { get; set; }
-
-        [JsonPropertyName("ceatedOn")]
-        public DateTime CreatedOn { get; set; }
-
-        [JsonPropertyName("modifiedBy")]
-        public string ModifiedBy { get; set; }
-
-        [JsonPropertyName("modifiedOn")]
-        public DateTime ModifiedOn { get; set; }
-
         [JsonPropertyName("userId")]
         public long UserId { get; set; }
 
-        [JsonPropertyName("ipAddress")]
-        public string IpAddress { get; set; }
-
         [JsonPropertyName("action")]
         public string Action { get; set; }
+
+        [JsonPropertyName("ipAddress")]
+        public string IPAddress { get; set; }
     }
 }

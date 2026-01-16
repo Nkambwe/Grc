@@ -344,11 +344,11 @@ namespace Grc.ui.App.Enums {
         [Description("Retrieve audit exception by ID")]
         AUDIT_EXCEPTION_RETRIVE = 179,
         [Description("Create audit exception")]
-        AUDIT_EXCEPTIONCREATE = 180,
+        AUDIT_EXCEPTION_CREATE = 180,
         [Description("Update audit exception")]
-        AUDIT_EXCEPTIONUPDATE = 181,
+        AUDIT_EXCEPTION_UPDATE = 181,
         [Description("Delete audit exception")]
-        AUDIT_EXCEPTIONDELETE = 182,
+        AUDIT_EXCEPTION_DELETE = 182,
         [Description("Retrieve audit type")]
         AUDIT_TYPE_RETRIVE = 183,
         [Description("Create audit type")]
@@ -357,5 +357,21 @@ namespace Grc.ui.App.Enums {
         AUDIT_TYPE_UPDATE = 185,
         [Description("Delete audit type")]
         AUDIT_TYPE_DELETE = 186,
+        [Description("Retrieve audit report")]
+        AUDIT_REPORT_RETRIVE = 187,
+        [Description("Create audit report")]
+        AUDIT_REPORT_CREATE = 188,
+        [Description("Update audit report")]
+        AUDIT_REPORT_UPDATE = 189,
+        [Description("Delete audit report")]
+        AUDIT_REPORT_DELETE = 190,
+        [Description("Retrieve audit task")]
+        AUDIT_TASK_RETRIVE = 191,
+        [Description("Create audit task")]
+        AUDIT_TASK_CREATE = 192,
+        [Description("Update audit task")]
+        AUDIT_TASK_UPDATE = 193,
+        [Description("Delete audit task")]
+        AUDIT_TASK_DELETE = 194,
     }
 }

@@ -11,10 +11,13 @@ namespace Grc.ui.App.Dtos {
         public long ReportId { get; set; }
 
         [JsonPropertyName("finding")]
-        public string Finding {  get; set; }
+        public string Finding { get; set; }
 
         [JsonPropertyName("proposedAction")]
         public string ProposedAction { get; set; }
+
+        [JsonPropertyName("correctiveAction")]
+        public string CorrectiveAction { get; set; }
 
         [JsonPropertyName("notes")]
         public string Notes { get; set; }
@@ -35,7 +38,7 @@ namespace Grc.ui.App.Dtos {
         public string Responsible { get; set; }
 
         [JsonPropertyName("excutioner")]
-        public string Excutioner { get; set; }
+        public string Executioner { get; set; }
 
         [JsonPropertyName("status")]
         public string Status { get; set; }
@@ -44,7 +47,8 @@ namespace Grc.ui.App.Dtos {
         public bool IsDeleted { get; set; }
 
         [JsonPropertyName("tasks")]
-        public List<GrcAuditTaskResponse> Tasks { get; set; }
+        public List<GrcAuditTaskResponse> Tasks { get; set; } = new();
+
     }
 
 }

@@ -9,14 +9,20 @@ namespace Grc.ui.App.Helpers {
         [JsonPropertyName("status")]
         public string Status { get; set; } = string.Empty;
 
-        [JsonPropertyName("userId")]
-        public long UserId { get; set; }
+        [JsonPropertyName("searchTerm")]
+        public string SearchTerm { get; set; }
 
-        [JsonPropertyName("ipAddress")]
-        public string IPAddress { get; set; }
+        [JsonPropertyName("pageIndex")]
+        public int PageIndex { get; set; }
 
-        [JsonPropertyName("action")]
-        public string Action { get; set; }
+        [JsonPropertyName("pageSize")]
+        public int PageSize { get; set; }
+
+        [JsonPropertyName("sortBy")]
+        public string SortBy { get; set; }
+
+        [JsonPropertyName("sortDirection")]
+        public string SortDirection { get; set; }
 
     }
 }

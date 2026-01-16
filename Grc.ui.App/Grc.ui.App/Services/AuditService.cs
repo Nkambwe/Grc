@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -11,6 +12,8 @@ using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
+using System;
+using System.Net;
 using System.Text.Json;
 
 namespace Grc.ui.App.Services {
@@ -29,200 +32,256 @@ namespace Grc.ui.App.Services {
         }
 
         #region Dashboard
-        public async Task<GrcResponse<AuditDashboardResponse>> GetAuditStatisticAsync(long userId, string iPAddress) {
-            return await Task.FromResult(new GrcResponse<AuditDashboardResponse>() {
-                HasError = false,
-                Data = new AuditDashboardResponse() { 
-                    Findings = new() {
-                        {"Total", 80 },
-                        {"< 1 Month", 10 },
-                        {"1 to 2 Months", 50 },
-                        {"> 3 Months", 20 }
-                    },
-                    Completions = new() {
-                        {"Closed", 70 },
-                        {"Open", 60 },
-                        {"Over Due", 30 }
-                    },
-                    BarChart = new() {
-                        {"BOU", new Dictionary<string, int>(){
-                            {"Closed", 20 },
-                            {"Open", 30 },
-                            {"Over Due", 10 }
-                        } },
-                        {"KPMG",  new Dictionary<string, int>(){
-                            {"Closed", 20 },
-                            {"Open", 40 },
-                            {"Over Due",15 }
-                        } },
-                        {"IRA",  new Dictionary<string, int>(){
-                            {"Closed", 30 },
-                            {"Open", 10 },
-                            {"Over Due", 30 }
-                        } },
-                        {"ER",  new Dictionary<string, int>(){
-                            {"Closed", 8 },
-                            {"Open", 12 },
-                            {"Over Due", 5 }
-                        } }
-                    }
-                }
-            });
+
+        public async Task<GrcResponse<GrcAuditDashboardResponse>> GetAuditStatisticAsync(long userId, string iPAddress) {
+            try {
+                var request = new GrcRequest() {
+                    UserId = userId,
+                    IPAddress = iPAddress,
+                    Action = "Audit dashboard statistics request",
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>()
+                };
+                var endpoint = $"{EndpointProvider.Compliance.AuditBase}/audit-dashboard-statistics";
+                return await HttpHandler.PostAsync<GrcRequest, GrcAuditDashboardResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "AUDIT-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<GrcAuditDashboardResponse>(error);
+            }
         }
 
         public async Task<GrcResponse<GrcAuditMiniReportResponse>> GetAuditExceptionReportAsync(GrcIdRequest request) {
-            return await Task.FromResult(new GrcResponse<GrcAuditMiniReportResponse>() {
-                Data = new() {
-                    Id = 1,
-                    Reference = "BOU OUT/1",
-                    ReportName = "Sample BOU Report",
-                    Status = "Pending",
-                    Total = 30,
-                    Closed = 10,
-                    Open = 12,
-                    Overdue = 8,
-                    AuditedOn = new DateTime(2024, 2, 15),
-                    Completed = 80.0M,
-                    Outstanding = 20.0M,
-                    Exceptions = new List<GrcAuditExceptionResponse> {
-                        new() {
-                            Id = 1,
-                            Finding = "Sample finding",
-                            ProposedAction = "Sample proposed fix",
-                            Notes = "Sample proposed notes",
-                            TargetDate = new DateTime(2026,4,12),
-                            RiskStatement = "CRITICAL",
-                            RiskRating = 70,
-                            Responsible = "MD's Office",
-                            Excutioner = "Seccretary",
-                            Status = "CLOSED",
-                        },
-                        new() {
-                            Id = 1,
-                            Finding = "Sample finding 2",
-                            ProposedAction = "Sample proposed fix 2",
-                            Notes = "Sample proposed notes 2",
-                            TargetDate = new DateTime(2026,6,12),
-                            RiskStatement = "MEDIUM",
-                            RiskRating = 70,
-                            Responsible = "MD's Office",
-                            Excutioner = "Seccretary",
-                            Status = "OPEN",
-                        }
-                        ,
-                        new() {
-                            Id = 1,
-                            Finding = "Sample finding 3",
-                            ProposedAction = "Sample proposed fix 3",
-                            Notes = "Sample proposed notes 3",
-                            TargetDate = new DateTime(2025,12,23),
-                            RiskStatement = "LOW",
-                            RiskRating = 70,
-                            Responsible = "MD's Office",
-                            Excutioner = "Seccretary",
-                            Status = "OVER DUE",
-                        }
-                    }
-                }
-            });
+            try {
+                var endpoint = $"{EndpointProvider.Compliance.AuditBase}/exception-report";
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcAuditMiniReportResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "AUDIT-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<GrcAuditMiniReportResponse>(error);
+            }
         }
 
         public async Task<GrcResponse<AuditExtensionStatistics>> GetAuditExtensionStatisticAsync(long userId, string iPAddress, string period) {
-            var statuses = new Dictionary<string, int>() { {"Total", 80 }, {"Open", 10 }, {"Close", 50 },{"Due", 20 }};
+            try {
+                var request = new GrcAuditExtensionExceptionRequest() {
+                    Period = period,
+                    UserId = userId,
+                    IpAddress = iPAddress,
+                    Action = $"Retrieve exception reports for the period {period}"
+                };
 
-            return await Task.FromResult(new GrcResponse<AuditExtensionStatistics>() {
-                Data = new AuditExtensionStatistics() {
-                    Statuses = statuses,
-                    Reports = new List<GrcAuditMiniReportResponse>() {
-                        new () { 
-                            Id =  1,
-                            Reference = "BOU OUT/1",
-                            ReportName = "Sample BOU Report",
-                            Total = 30,
-                            Closed = 10,
-                            Open = 12,
-                            Overdue = 8,
-                            AuditedOn = new DateTime(2024,2,15),
-                            Completed = 80.0M,
-                            Outstanding = 20.0M
-                        },
-                        new () {
-                            Id =  3,
-                            Reference = "KMGT EXT/1",
-                            ReportName = "Sample KMGT Report",
-                            Total = 20,
-                            Closed = 8,
-                            Open = 10,
-                            Overdue = 2,
-                            AuditedOn = new DateTime(2024,6,15),
-                            Completed = 40.0M,
-                            Outstanding = 20.0M
-                        },
-                        new () {
-                            Id =  3,
-                            Reference = "IR EXT/1",
-                            ReportName = "Sample IR Report",
-                            Total = 50,
-                            Closed = 50,
-                            Open = 0,
-                            Overdue = 0,
-                            AuditedOn = new DateTime(2024,3,15),
-                            Completed = 100.0M,
-                            Outstanding = 0.0M
-                        }
-                    }
-                }
-            });
+                var endpoint = $"{EndpointProvider.Compliance.AuditBase}/exception-extension-report";
+                return await HttpHandler.PostAsync<GrcAuditExtensionExceptionRequest, AuditExtensionStatistics>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "AUDIT-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<AuditExtensionStatistics>(error);
+            }
         }
 
-        public async Task<GrcResponse<PagedResponse<GrcAuditMiniReportResponse>>> GetAuditMiniReportAsync(AuditListViewModel request, long userId, string ipAddress) {
-            return await Task.FromResult(new GrcResponse<PagedResponse<GrcAuditMiniReportResponse>>() { 
-                Data = new PagedResponse<GrcAuditMiniReportResponse>() {
-                    Entities = new List<GrcAuditMiniReportResponse>() {
-                        new () {
-                            Id =  1,
-                            Reference = "BOU OUT/1",
-                            ReportName = "Sample BOU Report",
-                            Total = 30,
-                            Closed = 10,
-                            Open = 12,
-                            Overdue = 8,
-                            AuditedOn = new DateTime(2024,2,15),
-                            Completed = 80.0M,
-                            Outstanding = 20.0M
-                        },
-                        new () {
-                            Id =  2,
-                            Reference = "KMGT EXT/1",
-                            ReportName = "Sample KMGT Report",
-                            Total = 20,
-                            Closed = 8,
-                            Open = 10,
-                            Overdue = 2,
-                            AuditedOn = new DateTime(2024,6,15),
-                            Completed = 40.0M,
-                            Outstanding = 20.0M
-                        },
-                        new () {
-                            Id =  3,
-                            Reference = "IR EXT/1",
-                            ReportName = "Sample IR Report",
-                            Total = 50,
-                            Closed = 50,
-                            Open = 0,
-                            Overdue = 0,
-                            AuditedOn = new DateTime(2024,3,15),
-                            Completed = 100.0M,
-                            Outstanding = 0.0M
-                        }
-                    },
-                    Page = 1,
-                    TotalPages = 1,
-                    Size = 10,
-                    TotalCount = 10
+        public async Task<GrcResponse<List<GrcAuditMiniReportResponse>>> GetAuditMiniReportAsync(AuditListViewModel model, long userId, string ipAddress) {
+            try {
 
+                if (model == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object", "Request object cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<List<GrcAuditMiniReportResponse>>(error);
                 }
-            });
+
+                //..action message
+                string actionMsg = "Retrieving audit mini report for ";
+                actionMsg = string.IsNullOrWhiteSpace(model.PeportPeriod) ?
+                    $"{actionMsg} period {model.PeportPeriod}" :
+                    $"{actionMsg} Report ID {model.ReportId}";
+
+                var request = new GrcAuditListRequest() {
+                    ReportId = model.ReportId,
+                    Period = model.PeportPeriod?? string.Empty,
+                    SearchTerm = model.SearchTerm ?? string.Empty,
+                    PageIndex = model.PageIndex,
+                    PageSize = model.PageSize,
+                    SortBy  = model.SortBy ?? string.Empty,
+                    SortDirection   = model.SortDirection ?? string.Empty,
+                    UserId = userId,
+                    IpAddress = ipAddress,
+                    Action = actionMsg
+                };
+
+                var endpoint = $"{EndpointProvider.Compliance.AuditBase}/audit-mini-report";
+                return await HttpHandler.PostAsync<GrcAuditListRequest, List<GrcAuditMiniReportResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "AUDIT-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<List<GrcAuditMiniReportResponse>>(error);
+            }
+        }
+
+        #endregion
+
+        #region Audits
+
+        public async Task<GrcResponse<GrcAuditResponse>> GetAuditAsync(GrcIdRequest request) {
+            try {
+                var endpoint = $"{EndpointProvider.Compliance.AuditBase}/audit-retrieve";
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcAuditResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "AUDIT-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<GrcAuditResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<PagedResponse<GrcAuditResponse>>> GetAuditsAsync(TableListRequest request) {
+            try {
+
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object", "Request object cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<PagedResponse<GrcAuditResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.AuditBase}/paged-audit-list";
+                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<GrcAuditResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "AUDIT-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<PagedResponse<GrcAuditResponse>>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> CreateAuditAsync(AuditViewModel model, long userId, string ipAddress) {
+            try {
+                if (model == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Audit record cannot be null", "Invalid Audit record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..build request object
+                var request = new GrcAuditRequest() {
+                    AuditName = model.AuditName,
+                    Notes = model.Notes,
+                    AuthorityId = model.AuthorityId,
+                    TypeId = model.TypeId,
+                    IsDeleted = model.IsDeleted,
+                    UserId = userId,
+                    IPAddress = ipAddress,
+                    Action = Activity.AUDIT_CREATE.GetDescription()
+                };
+
+                //..map request
+                Logger.LogActivity($"CREATE AUDIT REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.AuditBase}/create-audit";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcAuditRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "AUDI-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "AUDIT-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> UpdateAuditAsync(AuditViewModel model, long userId, string ipAddress) {
+            try {
+                if (model == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Audit record cannot be null", "Invalid Audit record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..build request object
+                var request = new GrcAuditRequest() {
+                    Id = model.Id,
+                    AuditName = model.AuditName,
+                    Notes = model.Notes,
+                    AuthorityId = model.AuthorityId,
+                    TypeId = model.TypeId,
+                    IsDeleted = model.IsDeleted,
+                    UserId = userId,
+                    IPAddress = ipAddress,
+                    Action = Activity.AUDIT_UPDATE.GetDescription()
+                };
+
+                //..map request
+                Logger.LogActivity($"UPDATE AUDIT REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.AuditBase}/update-audit";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcAuditRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "AUDIT-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "AUDIT-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> DeleteAuditAsync(GrcIdRequest request) {
+            try {
+
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Audit record cannot be null", "Invalid Audit record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..map request
+                Logger.LogActivity($"DELETE AUDIT REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.AuditBase}/delete-audit";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcIdRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "AUDIT-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "AUDIT-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
+            }
         }
 
         #endregion
@@ -250,7 +309,7 @@ namespace Grc.ui.App.Services {
                     return new GrcResponse<PagedResponse<GrcAuditTypeResponse>>(error);
                 }
 
-                var endpoint = $"{EndpointProvider.Compliance.AuditBase}/types-list";
+                var endpoint = $"{EndpointProvider.Compliance.AuditBase}/paged-types-list";
                 return await HttpHandler.PostAsync<TableListRequest, PagedResponse<GrcAuditTypeResponse>>(endpoint, request);
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
@@ -407,7 +466,7 @@ namespace Grc.ui.App.Services {
                     return new GrcResponse<PagedResponse<GrcAuditReportResponse>>(error);
                 }
 
-                var endpoint = $"{EndpointProvider.Compliance.AuditBase}/reports-list";
+                var endpoint = $"{EndpointProvider.Compliance.AuditBase}/paged-reports-list";
                 return await HttpHandler.PostAsync<TableListRequest, PagedResponse<GrcAuditReportResponse>>(endpoint, request);
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
@@ -427,20 +486,20 @@ namespace Grc.ui.App.Services {
                 }
 
                 //..build request object
-                var request = new AuditReportRequest() {
+                var request = new GrcAuditReportRequest() {
                     Reference = model.Reference,
                     ReportName = model.ReportName,
                     Summery = model.Summery,
-                    ReportStatus = model.ReportStatus,
-                    ReportDate = model.ReportDate,
+                    Status = model.ReportStatus,
+                    AuditedOn = model.ReportDate,
                     ExceptionCount = model.ExceptionCount,
-                    ResponseDate = model.ResponseDate,
-                    ManagementComments = model.ManagementComments,
+                    RespondedOn = model.ResponseDate,
+                    ManagementComment = model.ManagementComments,
                     AdditionalNotes = model.AdditionalNotes,
-                    AuditTypeId = model.AuditTypeId,
+                    AuditId = model.AuditId,
                     IsDeleted = model.IsDeleted,
                     UserId = userId,
-                    IPAddress = ipAddress,
+                    IpAddress = ipAddress,
                     Action = Activity.AUDIT_CREATE.GetDescription()
                 };
 
@@ -451,7 +510,7 @@ namespace Grc.ui.App.Services {
                 var endpoint = $"{EndpointProvider.Compliance.AuditBase}/create-report";
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
-                return await HttpHandler.PostAsync<AuditReportRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcAuditReportRequest, ServiceResponse>(endpoint, request);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
                 Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
@@ -477,21 +536,21 @@ namespace Grc.ui.App.Services {
                 }
 
                 //..build request object
-                var request = new AuditReportRequest() {
+                var request = new GrcAuditReportRequest() {
                     Id = model.Id,
                     Reference = model.Reference,
                     ReportName = model.ReportName,
                     Summery = model.Summery,
-                    ReportStatus = model.ReportStatus,
-                    ReportDate = model.ReportDate,
+                    Status = model.ReportStatus,
+                    AuditedOn = model.ReportDate,
                     ExceptionCount = model.ExceptionCount,
-                    ResponseDate = model.ResponseDate,
-                    ManagementComments = model.ManagementComments,
+                    RespondedOn = model.ResponseDate,
+                    ManagementComment = model.ManagementComments,
                     AdditionalNotes = model.AdditionalNotes,
-                    AuditTypeId = model.AuditTypeId,
+                    AuditId = model.AuditId,
                     IsDeleted = model.IsDeleted,
                     UserId = userId,
-                    IPAddress = ipAddress,
+                    IpAddress = ipAddress,
                     Action = Activity.AUDIT_UPDATE.GetDescription()
                 };
 
@@ -502,7 +561,7 @@ namespace Grc.ui.App.Services {
                 var endpoint = $"{EndpointProvider.Compliance.AuditBase}/update-report";
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
-                return await HttpHandler.PostAsync<AuditReportRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcAuditReportRequest, ServiceResponse>(endpoint, request);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
                 Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
@@ -568,7 +627,7 @@ namespace Grc.ui.App.Services {
             }
         }
 
-        public async Task<GrcResponse<PagedResponse<GrcAuditExceptionResponse>>> GetAuditExceptionsAsync(AuditCategoryViewModel model) {
+        public async Task<GrcResponse<PagedResponse<GrcAuditExceptionResponse>>> GetAuditExceptionsAsync(AuditCategoryViewModel model, long userId, string ipAddress, string action) {
             try {
 
                 if (model == null) {
@@ -580,9 +639,14 @@ namespace Grc.ui.App.Services {
                 var request = new GrcAuditCategoryRequest() {
                     ReportId = model.ReportId,
                     Status = model.Status,
-                    UserId = model.UserId,
-                    IPAddress = model.IPAddress,
-                    Action = model.Action,
+                    SearchTerm = model.SearchTerm ?? string.Empty,
+                    SortDirection = model.SortDirection ?? string.Empty,
+                    SortBy = model.SortBy ?? string.Empty,
+                    PageIndex = model.PageIndex,
+                    PageSize = model.PageSize,
+                    UserId = userId,
+                    IPAddress = ipAddress,
+                    Action = action,
                 };
 
                 var endpoint = $"{EndpointProvider.Compliance.AuditBase}/report-exceptions";
@@ -605,7 +669,7 @@ namespace Grc.ui.App.Services {
                 }
 
                 //..build request object
-                var request = new AuditExceptionRequest() {
+                var request = new GrcAuditExceptionRequest() {
                     ReportId = model.ReportId,
                     Findings = model.Findings,
                     Recomendations = model.Recomendations,
@@ -620,7 +684,7 @@ namespace Grc.ui.App.Services {
                     IsDeleted = model.IsDeleted,
                     UserId = userId,
                     IPAddress = ipAddress,
-                    Action = Activity.AUDIT_EXCEPTIONCREATE.GetDescription()
+                    Action = Activity.AUDIT_EXCEPTION_CREATE.GetDescription()
                 };
 
                 //..map request
@@ -630,7 +694,7 @@ namespace Grc.ui.App.Services {
                 var endpoint = $"{EndpointProvider.Compliance.AuditBase}/create-exception";
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
-                return await HttpHandler.PostAsync<AuditExceptionRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcAuditExceptionRequest, ServiceResponse>(endpoint, request);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
                 Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
@@ -656,7 +720,7 @@ namespace Grc.ui.App.Services {
                 }
 
                 //..build request object
-                var request = new AuditExceptionRequest() {
+                var request = new GrcAuditExceptionRequest() {
                     Id = model.Id,
                     ReportId = model.ReportId,
                     Findings = model.Findings,
@@ -672,7 +736,7 @@ namespace Grc.ui.App.Services {
                     IsDeleted = model.IsDeleted,
                     UserId = userId,
                     IPAddress = ipAddress,
-                    Action = Activity.AUDIT_EXCEPTIONUPDATE.GetDescription()
+                    Action = Activity.AUDIT_EXCEPTION_UPDATE.GetDescription()
                 };
 
                 //..map request
@@ -682,7 +746,7 @@ namespace Grc.ui.App.Services {
                 var endpoint = $"{EndpointProvider.Compliance.AuditBase}/update-exception";
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
-                return await HttpHandler.PostAsync<AuditExceptionRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcAuditExceptionRequest, ServiceResponse>(endpoint, request);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
                 Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
@@ -749,7 +813,7 @@ namespace Grc.ui.App.Services {
             }
         }
 
-        public async Task<GrcResponse<PagedResponse<GrcAuditUpdateResponse>>> GetAuditUpdatesAsync(GrcAuditUpdateRequest request) {
+        public async Task<GrcResponse<PagedResponse<GrcAuditUpdateResponse>>> GetAuditUpdatesAsync(GrcAuditMiniUpdateRequest request) {
             try {
 
                 if (request == null) {
@@ -759,7 +823,7 @@ namespace Grc.ui.App.Services {
                 }
 
                 var endpoint = $"{EndpointProvider.Compliance.AuditBase}/exceptions-updates";
-                return await HttpHandler.PostAsync<GrcAuditUpdateRequest, PagedResponse<GrcAuditUpdateResponse>>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcAuditMiniUpdateRequest, PagedResponse<GrcAuditUpdateResponse>>(endpoint, request);
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
@@ -778,7 +842,7 @@ namespace Grc.ui.App.Services {
                 }
 
                 //..build request object
-                var request = new AuditUpdateRequest() {
+                var request = new GrcAuditUpdateRequest() {
                     ReportId = model.ReportId,
                     UpdateNotes = model.UpdateNotes,
                     AddedDate = model.AddedDate,
@@ -799,7 +863,7 @@ namespace Grc.ui.App.Services {
                 var endpoint = $"{EndpointProvider.Compliance.AuditBase}/create-exception-update";
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
-                return await HttpHandler.PostAsync<AuditUpdateRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcAuditUpdateRequest, ServiceResponse>(endpoint, request);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
                 Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
@@ -825,7 +889,7 @@ namespace Grc.ui.App.Services {
                 }
 
                 //..build request object
-                var request = new AuditUpdateRequest() {
+                var request = new GrcAuditUpdateRequest() {
                     Id = model.Id,
                     ReportId = model.ReportId,
                     UpdateNotes = model.UpdateNotes,
@@ -847,7 +911,7 @@ namespace Grc.ui.App.Services {
                 var endpoint = $"{EndpointProvider.Compliance.AuditBase}/update-exception";
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
-                return await HttpHandler.PostAsync<AuditUpdateRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcAuditUpdateRequest, ServiceResponse>(endpoint, request);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
                 Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
@@ -899,7 +963,7 @@ namespace Grc.ui.App.Services {
 
         #endregion
 
-        #region Audit Updates
+        #region Audit Tasks
 
         public async Task<GrcResponse<GrcAuditTaskResponse>> GetAuditTaskAsync(GrcIdRequest request) {
             try {
@@ -914,17 +978,29 @@ namespace Grc.ui.App.Services {
             }
         }
 
-        public async Task<GrcResponse<PagedResponse<GrcAuditTaskResponse>>> GetAuditTasksAsync(GrcAuditTaskRequest request) {
+        public async Task<GrcResponse<PagedResponse<GrcAuditTaskResponse>>> GetExceptionTasksAsync(GrcExceptionTaskViewModel model, long userId, string ipAddress) {
             try {
 
-                if (request == null) {
+                if (model == null) {
                     var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object", "Request object cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return new GrcResponse<PagedResponse<GrcAuditTaskResponse>>(error);
                 }
 
+                var request = new GrcAuditMiniTaskRequest() {
+                    ExceptionId = model.ExceptionId,
+                    SearchTerm = model.SearchTerm ?? string.Empty,
+                    UserId = userId,
+                    PageIndex = model.PageIndex,
+                    PageSize = model.PageSize,
+                    SortBy = model.SortBy ?? string.Empty,
+                    SortDirection = model.SortDirection ?? string.Empty,
+                    IPAddress = ipAddress ?? string.Empty,
+                    Action = Activity.AUDIT_TASK_RETRIVE.GetDescription()
+                };
+
                 var endpoint = $"{EndpointProvider.Compliance.AuditBase}/audit-tasks-list";
-                return await HttpHandler.PostAsync<GrcAuditTaskRequest, PagedResponse<GrcAuditTaskResponse>>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcAuditMiniTaskRequest, PagedResponse<GrcAuditTaskResponse>>(endpoint, request);
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
@@ -934,7 +1010,7 @@ namespace Grc.ui.App.Services {
             }
         }
 
-        public async Task<GrcResponse<ServiceResponse>> CreateAuditTaskAsync(AuditTaskViewModel model, long userId, string ipAddress) {
+        public async Task<GrcResponse<ServiceResponse>> CreateExceptionTaskAsync(GrcAuditTaskViewModel model, long userId, string ipAddress) {
             try {
                 if (model == null) {
                     var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Audit task record cannot be null", "Invalid Audit task record");
@@ -943,16 +1019,20 @@ namespace Grc.ui.App.Services {
                 }
 
                 //..build request object
-                var request = new AuditTaskRequest() {
+                var request = new GrcAuditTaskRequest() {
                     TaskName = model.TaskName,
-                    TaskDescription = model.TaskDescription,
-                    Duedate = model.Duedate,
-                    TaskStatus = model.TaskStatus,
+                    Description = model.Description,
+                    DueDate = model.DueDate,
+                    Status = model.Status,
                     OwnerId = model.OwnerId,
+                    Interval = model.Interval,
+                    IntervalType = model.IntervalType,
+                    Reminder = model.Reminder,
                     ExceptionId = model.ExceptionId,
                     IsDeleted = model.IsDeleted,
+                    SendReminder = model.SendReminder,
                     UserId = userId,
-                    IPAddress = ipAddress,
+                    IpAddress = ipAddress,
                     Action = "CREATE EXCPTION TASK"
                 };
 
@@ -963,7 +1043,7 @@ namespace Grc.ui.App.Services {
                 var endpoint = $"{EndpointProvider.Compliance.AuditBase}/create-task";
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
-                return await HttpHandler.PostAsync<AuditTaskRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcAuditTaskRequest, ServiceResponse>(endpoint, request);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
                 Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
@@ -980,7 +1060,7 @@ namespace Grc.ui.App.Services {
             }
         }
 
-        public async Task<GrcResponse<ServiceResponse>> UpdateAuditUpdateAsync(AuditTaskViewModel model, long userId, string ipAddress) {
+        public async Task<GrcResponse<ServiceResponse>> UpdateExceptionTaskAsync(GrcAuditTaskViewModel model, long userId, string ipAddress) {
             try {
                 if (model == null) {
                     var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Audit task record cannot be null", "Invalid Audit task record");
@@ -989,17 +1069,21 @@ namespace Grc.ui.App.Services {
                 }
 
                 //..build request object
-                var request = new AuditTaskRequest() {
+                var request = new GrcAuditTaskRequest() {
                     Id = model.Id,
                     TaskName = model.TaskName,
-                    TaskDescription = model.TaskDescription,
-                    Duedate = model.Duedate,
-                    TaskStatus = model.TaskStatus,
+                    Description = model.Description,
+                    DueDate = model.DueDate,
+                    Status = model.Status,
                     OwnerId = model.OwnerId,
+                    Interval = model.Interval,
+                    IntervalType = model.IntervalType,
+                    Reminder = model.Reminder,
                     ExceptionId = model.ExceptionId,
                     IsDeleted = model.IsDeleted,
+                    SendReminder = model.SendReminder,
                     UserId = userId,
-                    IPAddress = ipAddress,
+                    IpAddress = ipAddress,
                     Action = "UPDATE EXCPTION TASK"
                 };
 
@@ -1010,7 +1094,7 @@ namespace Grc.ui.App.Services {
                 var endpoint = $"{EndpointProvider.Compliance.AuditBase}/update-task";
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
-                return await HttpHandler.PostAsync<AuditTaskRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcAuditTaskRequest, ServiceResponse>(endpoint, request);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
                 Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
@@ -1027,7 +1111,7 @@ namespace Grc.ui.App.Services {
             }
         }
 
-        public async Task<GrcResponse<ServiceResponse>> DeleteAuditTaskAsync(GrcIdRequest request) {
+        public async Task<GrcResponse<ServiceResponse>> DeleteExceptionTaskAsync(GrcIdRequest request) {
             try {
 
                 if (request == null) {

@@ -18,14 +18,13 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
             builder.Property(t => t.IntervalType).HasColumnName("interval_type").HasColumnType("NVARCHAR(50)").IsRequired(false);
             builder.Property(t => t.Reminder).HasColumnName("reminder_message").HasColumnType("NVARCHAR(50)").IsRequired(false);
             builder.Property(t => t.OwnerId).HasColumnName("owner_id").IsRequired();
-            builder.Property(t => t.AuditId).HasColumnName("audit_id");
+            builder.Property(t => t.ExceptionId).HasColumnName("execep_id");
             builder.Property(t => t.CreatedOn).HasColumnName("created_on").IsRequired();
             builder.Property(t => t.CreatedBy).HasColumnName("created_by").HasColumnType("NVARCHAR(50)").IsRequired();
             builder.Property(t => t.LastModifiedOn).HasColumnName("modified_on").IsRequired(false);
             builder.Property(t => t.LastModifiedBy).HasColumnName("modified_by").HasColumnType("NVARCHAR(50)").IsRequired(false);
-            builder.HasOne(t => t.Audit).WithMany(o => o.Tasks).HasForeignKey(t => t.AuditId);
-            builder.HasOne(t => t.ActionOwner).WithMany(r => r.AuditTasks).HasForeignKey(t => t.AuditId);
-            builder.HasMany(t => t.AuditExceptions).WithOne(x => x.AuditTask).HasForeignKey(x => x.AuditTaskId);
+            builder.HasOne(t => t.ActionOwner).WithMany(r => r.AuditTasks).HasForeignKey(t => t.OwnerId);
+            builder.HasOne(t => t.AuditException).WithMany(x => x.AuditTasks).HasForeignKey(x => x.ExceptionId);
             
         }
     }

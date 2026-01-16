@@ -9,6 +9,21 @@ namespace Grc.ui.App.Http.Requests {
         [JsonPropertyName("status")]
         public string Status { get; set; }= string.Empty;
 
+        [JsonPropertyName("searchTerm")]
+        public string SearchTerm { get; set; }
+
+        [JsonPropertyName("pageIndex")]
+        public int PageIndex { get; set; }
+
+        [JsonPropertyName("pageSize")]
+        public int PageSize { get; set; }
+
+        [JsonPropertyName("sortBy")]
+        public string SortBy { get; set; }
+
+        [JsonPropertyName("sortDirection")]
+        public string SortDirection { get; set; }
+
         [JsonPropertyName("userId")]
         public long UserId { get; set; }
 

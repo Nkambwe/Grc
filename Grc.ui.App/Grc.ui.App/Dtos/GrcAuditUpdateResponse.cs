@@ -25,6 +25,9 @@ namespace Grc.ui.App.Dtos {
         [JsonPropertyName("sendToEmails")]
         public string SendToEmails { get; set; }
 
+        [JsonPropertyName("addedBy")]
+        public string AddedBy { get; set; }
+
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
     }

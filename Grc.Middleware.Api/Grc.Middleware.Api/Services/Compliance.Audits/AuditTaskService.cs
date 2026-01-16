@@ -428,13 +428,28 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             }
         }
 
-        public bool Insert(AuditTaskRequest request)
+        public bool Insert(AuditTaskRequest request, string username)
         {
             using var uow = UowFactory.Create();
             try
             {
                 //..map audit task request to audit task entity
-                var auditTask = Mapper.Map<AuditTaskRequest, AuditTask>(request);
+                var auditTask = new AuditTask() {
+                    TaskName = (request.TaskName ?? string.Empty).Trim(),
+                    Description = (request.Description ?? string.Empty).Trim(),
+                    Status = (request.Status ?? string.Empty).Trim(),
+                    SendReminder = request.SendReminder,
+                    Interval = (request.Interval ?? string.Empty).Trim(),
+                    IntervalType = (request.IntervalType ?? string.Empty).Trim(),
+                    Reminder = (request.Reminder ?? string.Empty).Trim(),
+                    DueDate = request.DueDate,
+                    OwnerId = request.OwnerId,
+                    IsDeleted = request.IsDeleted,
+                    CreatedBy = $"{username}",
+                    CreatedOn = DateTime.Now,
+                    LastModifiedOn = DateTime.Now,
+                    LastModifiedBy = $"{username}"
+                };
 
                 //..log the audit task data being saved
                 var auditTaskJson = JsonSerializer.Serialize(auditTask, new JsonSerializerOptions
@@ -466,13 +481,28 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             }
         }
 
-        public async Task<bool> InsertAsync(AuditTaskRequest request)
+        public async Task<bool> InsertAsync(AuditTaskRequest request, string username)
         {
             using var uow = UowFactory.Create();
             try
             {
                 //..map audit task request to audit task entity
-                var auditTask = Mapper.Map<AuditTaskRequest, AuditTask>(request);
+                var auditTask = new AuditTask() {
+                    TaskName = (request.TaskName ?? string.Empty).Trim(),
+                    Description = (request.Description ?? string.Empty).Trim(),
+                    Status = (request.Status ?? string.Empty).Trim(),
+                    SendReminder = request.SendReminder,
+                    Interval = (request.Interval ?? string.Empty).Trim(),
+                    IntervalType = (request.IntervalType ?? string.Empty).Trim(),
+                    Reminder = (request.Reminder ?? string.Empty).Trim(),
+                    DueDate = request.DueDate,
+                    IsDeleted = request.IsDeleted,
+                    OwnerId = request.OwnerId,
+                    CreatedBy = $"{username}",
+                    CreatedOn = DateTime.Now,
+                    LastModifiedOn = DateTime.Now,
+                    LastModifiedBy = $"{username}"
+                };
 
                 //..log the audit task data being saved
                 var auditTaaskJson = JsonSerializer.Serialize(auditTask, new JsonSerializerOptions
@@ -504,7 +534,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             }
         }
 
-        public bool Update(AuditTaskRequest request, bool includeDeleted = false)
+        public bool Update(AuditTaskRequest request, string username, bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update audit task ", "INFO");
@@ -523,10 +553,10 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                     auditTask.IntervalType = (request.IntervalType ?? string.Empty).Trim();
                     auditTask.Reminder = (request.Reminder ?? string.Empty).Trim();
                     auditTask.DueDate = request.DueDate;
-                    auditTask.AuditId = request.AuditId;
+                    auditTask.OwnerId = request.OwnerId;
                     auditTask.IsDeleted = request.IsDeleted;
                     auditTask.LastModifiedOn = DateTime.Now;
-                    auditTask.LastModifiedBy = $"{request.UserId}";
+                    auditTask.LastModifiedBy = $"{username}";
 
                     //..check entity state
                     _ = uow.AuditTaskRepository.Update(auditTask, includeDeleted);
@@ -548,7 +578,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             }
         }
 
-        public async Task<bool> UpdateAsync(AuditTaskRequest request, bool includeDeleted = false)
+        public async Task<bool> UpdateAsync(AuditTaskRequest request, string username, bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update audit task", "INFO");
@@ -567,10 +597,10 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                     auditTask.IntervalType = (request.IntervalType ?? string.Empty).Trim();
                     auditTask.Reminder = (request.Reminder ?? string.Empty).Trim();
                     auditTask.DueDate = request.DueDate;
-                    auditTask.AuditId = request.AuditId;
+                    auditTask.OwnerId = request.OwnerId;
                     auditTask.IsDeleted = request.IsDeleted;
                     auditTask.LastModifiedOn = DateTime.Now;
-                    auditTask.LastModifiedBy = $"{request.UserId}";
+                    auditTask.LastModifiedBy = $"{username}";
 
                     //..check entity state
                     _ = await uow.AuditTaskRepository.UpdateAsync(auditTask, includeDeleted);

@@ -1,6 +1,7 @@
 ﻿using Grc.Middleware.Api.Data.Entities.Compliance.Audits;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
+using Grc.Middleware.Api.Http.Responses;
 using System.Linq.Expressions;
 
 namespace Grc.Middleware.Api.Services.Compliance.Audits {
@@ -28,10 +29,10 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
         Task<IList<Audit>> GetAllAsync(Expression<Func<Audit, bool>> where, bool includeDeleted = false, params Expression<Func<Audit, object>>[] includes);
         Task<IList<Audit>> GetAllAsync(bool includeDeleted = false, params Expression<Func<Audit, object>>[] includes);
         Task<IList<Audit>> GetTopAsync(Expression<Func<Audit, bool>> where, int top, bool includeDeleted = false);
-        bool Insert(AuditRequest audit);
-        Task<bool> InsertAsync(AuditRequest audit);
-        bool Update(AuditRequest audit, bool includeDeleted = false);
-        Task<bool> UpdateAsync(AuditRequest audit, bool includeDeleted = false);
+        bool Insert(AuditRequest audit, string username);
+        Task<bool> InsertAsync(AuditRequest audit, string username);
+        bool Update(AuditRequest audit, string username, bool includeDeleted = false);
+        Task<bool> UpdateAsync(AuditRequest audit, string username, bool includeDeleted = false);
         bool Delete(IdRequest audit);
         Task<bool> DeleteAsync(IdRequest audit);
         Task<bool> DeleteAllAsync(IList<long> auditIds, bool markAsDeleted = false);
@@ -42,5 +43,9 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
         Task<PagedResult<Audit>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<Audit, object>>[] includes);
         Task<PagedResult<Audit>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<Audit, bool>> where = null);
         Task<PagedResult<Audit>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<Audit, bool>> where = null, bool includeDeleted = false);
+        Task<AuditDashboardResponse> GetAuditDashboardStatisticsAsync(bool includeDeletes);
+        Task<AuditMiniReportResponse> GetAuditMiniStatisticsAsync(long recordId, bool includeDeleted);
+        Task<AuditExtensionStatistics> GetPeriodStatisticsAsync(string period, bool includeDeleted);
+        Task<List<AuditMiniReportResponse>> GetMiniPeriodStatisticsAsync(string period, bool v);
     }
 }

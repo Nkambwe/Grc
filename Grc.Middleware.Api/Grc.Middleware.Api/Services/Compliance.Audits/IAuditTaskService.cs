@@ -29,10 +29,10 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
         Task<IList<AuditTask>> GetAllAsync(Expression<Func<AuditTask, bool>> where, bool includeDeleted = false, params Expression<Func<AuditTask, object>>[] includes);
         Task<IList<AuditTask>> GetAllAsync(bool includeDeleted = false, params Expression<Func<AuditTask, object>>[] includes);
         Task<IList<AuditTask>> GetTopAsync(Expression<Func<AuditTask, bool>> where, int top, bool includeDeleted = false);
-        bool Insert(AuditTaskRequest auditTask);
-        Task<bool> InsertAsync(AuditTaskRequest auditTask);
-        bool Update(AuditTaskRequest auditTask, bool includeDeleted = false);
-        Task<bool> UpdateAsync(AuditTaskRequest auditTask, bool includeDeleted = false);
+        bool Insert(AuditTaskRequest auditTask, string username);
+        Task<bool> InsertAsync(AuditTaskRequest auditTask, string username);
+        bool Update(AuditTaskRequest auditTask, string username, bool includeDeleted = false);
+        Task<bool> UpdateAsync(AuditTaskRequest auditTask, string username, bool includeDeleted = false);
         bool Delete(IdRequest auditTask);
         Task<bool> DeleteAsync(IdRequest auditTask);
         Task<bool> DeleteAllAsync(IList<long> auditTasks, bool markAsDeleted = false);

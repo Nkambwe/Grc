@@ -1,4 +1,5 @@
 ﻿using Grc.Middleware.Api.Data.Entities.Compliance.Audits;
+using Grc.Middleware.Api.Data.Entities.Support;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using System.Linq.Expressions;
@@ -29,10 +30,10 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
         Task<IList<AuditException>> GetAllAsync(Expression<Func<AuditException, bool>> where, bool includeDeleted = false, params Expression<Func<AuditException, object>>[] includes);
         Task<IList<AuditException>> GetAllAsync(bool includeDeleted = false, params Expression<Func<AuditException, object>>[] includes);
         Task<IList<AuditException>> GetTopAsync(Expression<Func<AuditException, bool>> where, int top, bool includeDeleted = false);
-        bool Insert(AuditExceptionRequest exception);
-        Task<bool> InsertAsync(AuditExceptionRequest exception);
-        bool Update(AuditExceptionRequest exception, bool includeDeleted = false);
-        Task<bool> UpdateAsync(AuditExceptionRequest exception, bool includeDeleted = false);
+        bool Insert(AuditExceptionRequest exception, string username);
+        Task<bool> InsertAsync(AuditExceptionRequest exception, string username);
+        bool Update(AuditExceptionRequest exception, string username, bool includeDeleted = false);
+        Task<bool> UpdateAsync(AuditExceptionRequest exception, string username, bool includeDeleted = false);
         bool Delete(IdRequest exception);
         Task<bool> DeleteAsync(IdRequest exception);
         Task<bool> DeleteAllAsync(IList<long> requestIds, bool markAsDeleted = false);
@@ -43,5 +44,6 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
         Task<PagedResult<AuditException>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<AuditException, object>>[] includes);
         Task<PagedResult<AuditException>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<AuditException, bool>> where = null);
         Task<PagedResult<AuditException>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<AuditException, bool>> where = null, bool includeDeleted = false);
+        Task<PagedResult<AuditExceptionResponse>> PageLookupAsync<AuditExceptionResponse>(int page, int size, bool includeDeleted, Expression<Func<AuditException, AuditExceptionResponse>> selector);
     }
 }

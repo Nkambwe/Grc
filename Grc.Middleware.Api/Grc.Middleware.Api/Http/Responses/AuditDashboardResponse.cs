@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Grc.ui.App.Http.Responses {
+namespace Grc.Middleware.Api.Http.Responses {
     public class AuditDashboardResponse {
 
         [JsonPropertyName("findings")]
@@ -11,7 +11,6 @@ namespace Grc.ui.App.Http.Responses {
 
         [JsonPropertyName("barChart")]
         public Dictionary<string, Dictionary<string, int>> BarChart { get; set; }
-
-
     }
+
 }

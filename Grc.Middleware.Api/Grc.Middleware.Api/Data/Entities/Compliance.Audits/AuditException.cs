@@ -10,7 +10,7 @@ namespace Grc.Middleware.Api.Data.Entities.Compliance.Audits
         /// <summary>
         /// Get or set observation by auditors
         /// </summary>
-        public string ExceptionNoted { get; set; }
+        public string ExceptionNotes { get; set; }
         /// <summary>
         /// Get or Set remediation plan to address the exception
         /// </summary>
@@ -30,7 +30,7 @@ namespace Grc.Middleware.Api.Data.Entities.Compliance.Audits
         /// <summary>
         /// Get or Set risk rating //CRITICAL, HIGH, MIDIUM, LOW
         /// </summary>
-        public float RiskRating { get; set; }
+        public decimal RiskRating { get; set; }
         /// <summary>
         /// Get or Set Person responsible
         /// </summary>
@@ -43,10 +43,10 @@ namespace Grc.Middleware.Api.Data.Entities.Compliance.Audits
         /// Get or Set reference to the associated Audit Report
         /// </summary>
         public long AuditReportId { get; set; }
-        public long? AuditTaskId { get; set; }
         public virtual AuditReport AuditReport { get; set; }
-        public virtual AuditTask AuditTask { get; set; }
         public long ResponsabilityId { get; set; }
-        public virtual Responsebility Responsability { get; set; }
+        public virtual Responsebility Responseability { get; set; }
+        public virtual ICollection<AuditTask> AuditTasks { get; set; }
+       
     }
 }

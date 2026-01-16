@@ -19,20 +19,17 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("dueDate")]
         public DateTime? DueDate { get; set; }
 
-        [JsonPropertyName("send_reminder")]
+        [JsonPropertyName("sendReminder")]
         public bool SendReminder { get; set; }
 
         [JsonPropertyName("interval")]
         public string Interval { get; set; }
 
-        [JsonPropertyName("interval_type")]
+        [JsonPropertyName("intervalType")]
         public string IntervalType { get; set; }
 
         [JsonPropertyName("reminder")]
         public string Reminder { get; set; }
-
-        [JsonPropertyName("auditId")]
-        public long AuditId { get; set; }
 
         [JsonPropertyName("ownerId")]
         public long OwnerId { get; set; }
@@ -40,17 +37,8 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 
-        [JsonPropertyName("createdBy")]
-        public string CreatedBy { get; set; }
-
-        [JsonPropertyName("ceatedOn")]
-        public DateTime CreatedOn { get; set; }
-
-        [JsonPropertyName("modifiedBy")]
-        public string ModifiedBy { get; set; }
-
-        [JsonPropertyName("modifiedOn")]
-        public DateTime ModifiedOn { get; set; }
+        [JsonPropertyName("exceptionId")]
+        public long ExceptionId { get; set; }
 
         [JsonPropertyName("userId")]
         public long UserId { get; set; }

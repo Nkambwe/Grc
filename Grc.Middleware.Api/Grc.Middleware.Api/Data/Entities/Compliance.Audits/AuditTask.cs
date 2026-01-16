@@ -14,10 +14,9 @@ namespace Grc.Middleware.Api.Data.Entities.Compliance.Audits {
         public string Interval { get; set; }
         public string IntervalType { get; set; }
         public string Reminder { get; set; }
-        public long AuditId { get; set; }
-        public virtual Audit Audit { get; set; }
         public long OwnerId { get; set; }
         public virtual Responsebility ActionOwner { get; set; }
-        public virtual ICollection<AuditException> AuditExceptions { get; set; }
+        public long ExceptionId { get; set; }
+        public virtual AuditException AuditException { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace Grc.ui.App.Http.Requests {
-    public class AuditExceptionRequest {
+    public class GrcAuditExceptionRequest {
 
         [JsonPropertyName("id")]
         public long Id { get; set; }

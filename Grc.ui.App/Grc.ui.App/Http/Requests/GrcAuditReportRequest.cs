@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace Grc.ui.App.Http.Requests {
-    public class AuditReportRequest {
+    public class GrcAuditReportRequest {
 
         [JsonPropertyName("id")]
         public long Id { get; set; }
@@ -15,26 +15,26 @@ namespace Grc.ui.App.Http.Requests {
         [JsonPropertyName("summery")]
         public string Summery { get; set; }
 
-        [JsonPropertyName("reportStatus")]
-        public string ReportStatus { get; set; }
-
-        [JsonPropertyName("reportDate")]
-        public DateTime ReportDate { get; set; }
-
         [JsonPropertyName("exceptionCount")]
         public int ExceptionCount { get; set; }
 
-        [JsonPropertyName("responseDate")]
-        public DateTime? ResponseDate { get; set; }
+        [JsonPropertyName("auditedOn")]
+        public DateTime AuditedOn { get; set; }
 
-        [JsonPropertyName("managementComments")]
-        public string ManagementComments { get; set; }
+        [JsonPropertyName("status")]
+        public string Status { get; set; }
+
+        [JsonPropertyName("respondedOn")]
+        public DateTime? RespondedOn { get; set; }
+
+        [JsonPropertyName("managementComment")]
+        public string ManagementComment { get; set; }
 
         [JsonPropertyName("additionalNotes")]
         public string AdditionalNotes { get; set; }
 
-        [JsonPropertyName("auditTypeId")]
-        public string AuditTypeId { get; set; }
+        [JsonPropertyName("auditId")]
+        public long AuditId { get; set; }
 
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
@@ -42,11 +42,11 @@ namespace Grc.ui.App.Http.Requests {
         [JsonPropertyName("userId")]
         public long UserId { get; set; }
 
+        [JsonPropertyName("ipAddress")]
+        public string IpAddress { get; set; }
+
         [JsonPropertyName("action")]
         public string Action { get; set; }
-
-        [JsonPropertyName("ipAddress")]
-        public string IPAddress { get; set; }
     }
 
 }

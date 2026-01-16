@@ -277,34 +277,24 @@ namespace Grc.Middleware.Api.Helpers {
 
             CreateMap<AuditExceptionRequest, AuditException>()
                 .ForMember(r => r.Id, reg => reg.MapFrom(o => o.Id))
-                .ForMember(r => r.AuditFinding, reg => reg.MapFrom(o => (o.Obligation ?? string.Empty).Trim()))
+                .ForMember(r => r.AuditFinding, reg => reg.MapFrom(o => (o.Findings ?? string.Empty).Trim()))
                 .ForMember(r => r.CorrectiveAction, reg => reg.MapFrom(o => (o.CorrectiveAction ?? string.Empty).Trim()))
-                .ForMember(r => r.ExceptionNoted, reg => reg.MapFrom(o => (o.ExceptionNoted ?? string.Empty).Trim()))
-                .ForMember(r => r.RemediationPlan, reg => reg.MapFrom(o => (o.RemediationPlan ?? string.Empty).Trim()))
+                .ForMember(r => r.ExceptionNotes, reg => reg.MapFrom(o => (o.Notes ?? string.Empty).Trim()))
+                .ForMember(r => r.RemediationPlan, reg => reg.MapFrom(o => (o.Recomendations ?? string.Empty).Trim()))
                 .ForMember(r => r.TargetDate, reg => reg.MapFrom(o => o.TargetDate))
-                .ForMember(r => r.RiskAssessment, reg => reg.MapFrom(o => (o.RiskAssessment ?? string.Empty).Trim()))
-                .ForMember(r => r.RiskRating, reg => reg.MapFrom(o => o.RiskRating))
+                .ForMember(r => r.RiskAssessment, reg => reg.MapFrom(o => (o.RiskLevel ?? string.Empty).Trim()))
+                .ForMember(r => r.RiskRating, reg => reg.MapFrom(o => o.RiskRate))
                 .ForMember(r => r.Executioner, reg => reg.MapFrom(o => (o.Executioner ?? string.Empty).Trim()))
                 .ForMember(r => r.Status, reg => reg.MapFrom(o => o.Status))
-                .ForMember(r => r.AuditTaskId, reg => reg.MapFrom(o => o.AuditTaskId))
-                .ForMember(r => r.AuditReportId, reg => reg.MapFrom(o => o.AuditReportId))
-                .ForMember(r => r.CreatedBy, reg => reg.MapFrom(o => (o.CreatedBy ?? string.Empty).Trim()))
-                .ForMember(r => r.CreatedOn, reg => reg.MapFrom(o => o.CreatedOn))
-                .ForMember(r => r.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
-                .ForMember(r => r.LastModifiedBy, reg => reg.MapFrom(o => o.ModifiedBy))
-                .ForMember(r => r.LastModifiedOn, reg => reg.MapFrom(o => o.ModifiedOn));
+                .ForMember(r => r.AuditReportId, reg => reg.MapFrom(o => o.ReportId))
+                .ForMember(r => r.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted));
 
             CreateMap<AuditRequest, Audit>()
                 .ForMember(r => r.Id, reg => reg.MapFrom(o => o.Id))
                 .ForMember(r => r.AuditName, reg => reg.MapFrom(o => (o.AuditName ?? string.Empty).Trim()))
                 .ForMember(r => r.Notes, reg => reg.MapFrom(o => (o.Notes ?? string.Empty).Trim()))
                 .ForMember(r => r.AuditTypeId, reg => reg.MapFrom(o => o.TypeId))
-                .ForMember(r => r.AuthorityId, reg => reg.MapFrom(o => o.AuthorityId))
-                .ForMember(r => r.CreatedBy, reg => reg.MapFrom(o => (o.CreatedBy ?? string.Empty).Trim()))
-                .ForMember(r => r.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
-                .ForMember(r => r.CreatedOn, reg => reg.MapFrom(o => o.CreatedOn))
-                .ForMember(r => r.LastModifiedBy, reg => reg.MapFrom(o => o.ModifiedBy))
-                .ForMember(r => r.LastModifiedOn, reg => reg.MapFrom(o => o.ModifiedOn));
+                .ForMember(r => r.AuthorityId, reg => reg.MapFrom(o => o.AuthorityId));
 
             CreateMap<AuditTaskRequest, AuditTask>()
                 .ForMember(r => r.Id, reg => reg.MapFrom(o => o.Id))
@@ -316,13 +306,7 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(r => r.IntervalType, reg => reg.MapFrom(o => (o.IntervalType ?? string.Empty).Trim()))
                 .ForMember(r => r.Reminder, reg => reg.MapFrom(o => (o.Reminder ?? string.Empty).Trim()))
                 .ForMember(r => r.DueDate, reg => reg.MapFrom(o => o.DueDate))
-                .ForMember(r => r.AuditId, reg => reg.MapFrom(o => o.AuditId))
-                .ForMember(r => r.OwnerId, reg => reg.MapFrom(o => o.OwnerId))
-                .ForMember(r => r.CreatedBy, reg => reg.MapFrom(o => (o.CreatedBy ?? string.Empty).Trim()))
-                .ForMember(r => r.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted))
-                .ForMember(r => r.CreatedOn, reg => reg.MapFrom(o => o.CreatedOn))
-                .ForMember(r => r.LastModifiedBy, reg => reg.MapFrom(o => o.ModifiedBy))
-                .ForMember(r => r.LastModifiedOn, reg => reg.MapFrom(o => o.ModifiedOn));
+                .ForMember(r => r.OwnerId, reg => reg.MapFrom(o => o.OwnerId));
 
             CreateMap<StatutoryRegulationRequest, StatutoryRegulation>()
                 .ForMember(r => r.Id, reg => reg.MapFrom(o => o.Id))
