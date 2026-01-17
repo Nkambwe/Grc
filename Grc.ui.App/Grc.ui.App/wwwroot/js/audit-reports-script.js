@@ -1,5 +1,11 @@
-﻿$(document).ready(function () {
+﻿
 
+
+
+
+
+
+$(document).ready(function () {
     //..route to home
     $('.action-btn-audit-home').on('click', function () {
         try {
@@ -9,7 +15,6 @@
             showToast(error, type = 'error');
         }
     });
-
 
     $('#auditForm').on('submit', function (e) {
         e.preventDefault();

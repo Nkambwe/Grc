@@ -2362,4 +2362,87 @@
 	<LocaleResource Name="Component.Table.Audit.Label.Overdue">
 		<Value>Overdue Findings</Value>
 	</LocaleResource>
+
+	<LocaleResource Name="Component.Table.Policy.Additional">
+		<Value>Additional Information</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circular.Header">
+		<Value>Manage Circulars</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circular.Label.Reference">
+		<Value>Reference</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circular.Label.Title">
+		<Value>Circular Title</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circular.Label.Requirement">
+		<Value>Circular Requirement</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circular.Label.ReceiveDate">
+		<Value>Receive Date</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circular.Label.Deadline">
+		<Value>Deadline On</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circular.Label.Status">
+		<Value>Circular Status</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circular.Label.Select.Status">
+		<Value>Select status...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circular.Label.SubmitDate">
+		<Value>Submission Date</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circular.Label.BreachReason">
+		<Value>Reason For Breach</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circular.Label.Owner">
+		<Value>Responsible Office</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circular.Label.Select.Owner">
+		<Value>Select office...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circular.Label.Frequency">
+		<Value>Submission Frequency</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circular.Label.Select.Frequency">
+		<Value>Select frequency...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circular.Label.Authority">
+		<Value>Issuing Authority</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circular.Label.Select.Authority">
+		<Value>Select authority...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circular.Label.Risk">
+		<Value>Breach Risk</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circular.Label.Comments">
+		<Value>Comment</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circular.Label.Resolved">
+		<Value>Resolved On</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circular.Label.Status">
+		<Value>Status</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Circular.Label.Select.Status">
+		<Value>Select status...</Value>
+	</LocaleResource>
+
+	<LocaleResource Name="Component.Key.audit-home">
+		<Value>Audit Types</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Type.Header">
+		<Value>Manage Audit Types</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Type.Code">
+		<Value>Type Code</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Type.Name">
+		<Value>Type Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Type.Description">
+		<Value>Type Description</Value>
+	</LocaleResource>
 </Language>

@@ -5,6 +5,9 @@ namespace Grc.ui.App.Http.Requests {
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
+        [JsonPropertyName("circularId")]
+        public long CircularId { get; set; }
+
         [JsonPropertyName("issueDescription")]
         public string IssueDescription { get; set; }
 
@@ -15,16 +18,10 @@ namespace Grc.ui.App.Http.Requests {
         public string Status { get; set; }
 
         [JsonPropertyName("receivedOn")]
-        public DateTime ReceivedOn { get; set; }
+        public DateTime RecievedOn { get; set; }
 
         [JsonPropertyName("resolvedOn")]
         public DateTime? ResolvedOn { get; set; }
-
-        [JsonPropertyName("ownerId")]
-        public long OwnerId { get; set; }
-
-        [JsonPropertyName("circularId")]
-        public long CircularId { get; set; }
 
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }

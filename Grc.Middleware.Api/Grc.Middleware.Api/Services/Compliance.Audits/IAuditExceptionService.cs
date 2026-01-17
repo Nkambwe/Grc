@@ -44,6 +44,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
         Task<PagedResult<AuditException>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<AuditException, object>>[] includes);
         Task<PagedResult<AuditException>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<AuditException, bool>> where = null);
         Task<PagedResult<AuditException>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<AuditException, bool>> where = null, bool includeDeleted = false);
+        Task<PagedResult<AuditException>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<AuditException, bool>> predicate = null, params Expression<Func<AuditException, object>>[] includes);
         Task<PagedResult<AuditExceptionResponse>> PageLookupAsync<AuditExceptionResponse>(int page, int size, bool includeDeleted, Expression<Func<AuditException, AuditExceptionResponse>> selector);
     }
 }

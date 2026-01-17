@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.EMMA;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -761,6 +762,25 @@ namespace Grc.ui.App.Services {
 
         #region Circulars
 
+        public async Task<GrcResponse<GrcCircularsResponse>> GetCircularAsync(GrcIdRequest request){
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object", "Request object cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<GrcCircularsResponse>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.CircularBase}/retrieve-circular-record";
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcCircularsResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<GrcCircularsResponse>(error);
+            }
+        }
+
         public async Task<GrcResponse<PagedResponse<GrcCircularsResponse>>> GetPagedCircularAsync(TableListRequest request) {
             try {
                 if (request == null) {
@@ -777,6 +797,338 @@ namespace Grc.ui.App.Services {
                 await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<PagedResponse<GrcCircularsResponse>>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> CreateCircularRecordAsync(CircularViewModel model, long userId, string ipAddress) {
+            try {
+
+                if (model == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Circular issue record cannot be null", "Invalid circular issue");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                var request = new GrcCircularRequest {
+                    Reference = (model.Reference ?? string.Empty).Trim(),
+                    CircularTitle = model.CircularTitle ?? string.Empty,
+                    Requirement = model.Requirement ?? string.Empty,
+                    OwnerId = model.OwnerId,
+                    AuthorityId = model.AuthorityId,
+                    FrequencyId = model.FrequencyId,
+                    Status = model.Status ?? "UNKNOWN",
+                    RecievedOn = model.RecievedOn,
+                    DeadlineOn = model.DeadlineOn,
+                    BreachRisk = model.BreachRisk ?? string.Empty,
+                    Comments = model.Comments ?? string.Empty,
+                    IsDeleted = model.IsDeleted,
+                    UserId = userId,
+                    IpAddress = ipAddress,
+                    Action = "Create circular record"
+                };
+
+                //..map request
+                Logger.LogActivity($"CREATE CIRCULAR REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.CircularBase}/create-circular";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcCircularRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "RETURNS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> UpdateCircularAsync(CircularViewModel model, long userId, string ipAddress) {
+            try {
+
+                if (model == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Circular request cannot be null", "Invalid Issue record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                var request = new GrcCircularRequest {
+                    Id = model.Id,
+                    Reference = (model.Reference ?? string.Empty).Trim(),
+                    CircularTitle = model.CircularTitle ?? string.Empty,
+                    Requirement = model.Requirement ?? string.Empty,
+                    OwnerId = model.OwnerId,
+                    AuthorityId = model.AuthorityId,
+                    FrequencyId = model.FrequencyId,
+                    Status = model.Status ?? "UNKNOWN",
+                    RecievedOn = model.RecievedOn,
+                    DeadlineOn = model.DeadlineOn,
+                    BreachRisk = model.BreachRisk ?? string.Empty,
+                    Comments = model.Comments ?? string.Empty,
+                    IsDeleted = model.IsDeleted,
+                    UserId = userId,
+                    IpAddress = ipAddress,
+                    Action = "Create circular record"
+                };
+
+                //..map request
+                Logger.LogActivity($"UPDATE CIRCULAR REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.CircularBase}/update-circular";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcCircularRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "RETURNS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> DeleteCircularAsync(GrcIdRequest request) {
+            try {
+
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Circular record cannot be null", "Invalid Request record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..map request
+                Logger.LogActivity($"DELETE CIRCULAR REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.CircularBase}/delete-circular";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcIdRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "RETURNS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        #endregion
+
+        #region Circular Issues
+
+        public async Task<GrcResponse<GrcCircularIssueResponse>> GetIssueAsyncAsync(GrcIdRequest request) {
+            try {
+
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Circular issue record cannot be null", "Invalid Request record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<GrcCircularIssueResponse>(error);
+                }
+
+                //..map request
+                Logger.LogActivity($"GET CIRCULAR ISSUE REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.CircularBase}/circular-issue-retrieve";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcCircularIssueResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "RETURNS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<GrcCircularIssueResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<GrcCircularIssueResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<List<GrcCircularIssueResponse>>> GetCircularIssuesAsyncAsync(GrcCircularIssueListRequest request) {
+            try {
+
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Circular issue request cannot be null", "Invalid Request record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<List<GrcCircularIssueResponse>>(error);
+                }
+
+                //..map request
+                Logger.LogActivity($"GET LIST OF CIRCULAR ISSUE REQUESTS : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.CircularBase}/circular-issues";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcCircularIssueListRequest, List<GrcCircularIssueResponse>>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "RETURNS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<List<GrcCircularIssueResponse>>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<List<GrcCircularIssueResponse>>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> CreateIssueAsync(CircularIssueViewModel model, long userId, string ipAddress) {
+            try {
+
+                if (model == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Circular issue record cannot be null", "Invalid circular issue");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                var request = new GrcCircularIssueRequest {
+                    CircularId = model.CircularId,
+                    IssueDescription = (model.IssueDescription ?? string.Empty).Trim(),
+                    Resolution = model.Resolution ?? string.Empty,
+                    IsDeleted = model.IsDeleted,
+                    Status = model.Status,
+                    RecievedOn = model.RecievedOn,
+                    ResolvedOn = model.ResolvedOn,
+                    UserId = userId,
+                    IpAddress = ipAddress,
+                    Action = Activity.COMPLIANCE_ISSUE_CREATE.GetDescription()
+                };
+
+                //..map request
+                Logger.LogActivity($"CREATE CIRCULAR ISSUE REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.CircularBase}/create-circular-issue";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcCircularIssueRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "RETURNS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> UpdateIssueAsync(CircularIssueViewModel model, long userId, string ipAddress) {
+            try {
+
+                if (model == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Circular issue request cannot be null", "Invalid Issue record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                var request = new GrcCircularIssueRequest {
+                    Id = model.Id,
+                    CircularId = model.CircularId,
+                    IssueDescription = (model.IssueDescription ?? string.Empty).Trim(),
+                    Resolution = model.Resolution ?? string.Empty,
+                    IsDeleted = model.IsDeleted,
+                    Status = model.Status,
+                    RecievedOn = model.RecievedOn,
+                    ResolvedOn = model.ResolvedOn,
+                    UserId = userId,
+                    IpAddress = ipAddress,
+                    Action = Activity.COMPLIANCE_ISSUE_UPDATE.GetDescription()
+                };
+
+                //..map request
+                Logger.LogActivity($"UPDATE CIRCULAR ISSUE REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.CircularBase}/update-circular-issue";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcCircularIssueRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "RETURNS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> DeleteIssueAsync(GrcIdRequest request) {
+            try {
+
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Circular issue record cannot be null", "Invalid Request record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..map request
+                Logger.LogActivity($"DELETE CIRCULAR ISSUE REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.CircularBase}/delete-circular-issue";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcIdRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "RETURNS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
             }
         }
 

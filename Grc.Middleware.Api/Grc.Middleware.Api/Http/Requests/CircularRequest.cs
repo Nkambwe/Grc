@@ -6,14 +6,17 @@ namespace Grc.Middleware.Api.Http.Requests {
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
+        [JsonPropertyName("reference")]
+        public string SubmissionReference { get; set; }
+
         [JsonPropertyName("circularTitle")]
         public string CircularTitle { get; set; }
 
-        [JsonPropertyName("requirement")]
+        [JsonPropertyName("circularRequirement")]
         public string Requirement { get; set; }
 
-        [JsonPropertyName("departmentId")]
-        public long DepartmentId { get; set; }
+        [JsonPropertyName("ownerId")]
+        public long OwnerId { get; set; }
 
         [JsonPropertyName("authorityId")]
         public long AuthorityId { get; set; }
@@ -21,7 +24,7 @@ namespace Grc.Middleware.Api.Http.Requests {
         [JsonPropertyName("frequencyId")]
         public long FrequencyId { get; set; }
 
-        [JsonPropertyName("receivedOn")]
+        [JsonPropertyName("recievedOn")]
         public DateTime RecievedOn { get; set; }
 
         [JsonPropertyName("deadlineOn")]
@@ -29,9 +32,6 @@ namespace Grc.Middleware.Api.Http.Requests {
 
         [JsonPropertyName("status")]
         public string Status { get; set; }
-
-        [JsonPropertyName("reference")]
-        public string SubmissionReference { get; set; }
 
         [JsonPropertyName("filePath")]
         public string FilePath { get; set; }
@@ -59,9 +59,6 @@ namespace Grc.Middleware.Api.Http.Requests {
 
         [JsonPropertyName("userId")]
         public long UserId { get; set; }
-
-        [JsonPropertyName("userName")]
-        public string UserName { get; set; }
 
         [JsonPropertyName("ipAddress")]
         public string IpAddress { get; set; }

@@ -45,6 +45,7 @@ namespace Grc.ui.App.Services {
 
         #region Audit Exception
         Task<GrcResponse<GrcAuditExceptionResponse>> GetAuditExceptionAsync(GrcIdRequest request);
+        Task<GrcResponse<PagedResponse<GrcAuditExceptionResponse>>> GetOpenExceptionsAsync(TableListRequest request);
         Task<GrcResponse<PagedResponse<GrcAuditExceptionResponse>>> GetAuditExceptionsAsync(AuditCategoryViewModel request, long userId, string ipAddress, string action);
         Task<GrcResponse<ServiceResponse>> CreateAuditExceptionAsync(AuditExceptionViewModel model, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> UpdateAuditExceptionAsync(AuditExceptionViewModel model, long userId, string ipAddress);
@@ -63,7 +64,6 @@ namespace Grc.ui.App.Services {
         #endregion
 
         #region Audit Tasks
-
         Task<GrcResponse<GrcAuditTaskResponse>> GetAuditTaskAsync(GrcIdRequest request);
         Task<GrcResponse<PagedResponse<GrcAuditTaskResponse>>> GetExceptionTasksAsync(GrcExceptionTaskViewModel request, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> CreateExceptionTaskAsync(GrcAuditTaskViewModel model, long userId, string ipAddress);

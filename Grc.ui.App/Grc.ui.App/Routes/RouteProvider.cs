@@ -1002,13 +1002,32 @@
                 name: "app-compliance-circular-returns-register",
                 pattern: "/grc/returns/circular-returns/register",
                 defaults: new { controller = "ComplianceReturn", action = "CircularRegister" }
-           );
+            );
             routeBuilder.MapControllerRoute(
                  name: "app-compliance-circular-returns-register-paged",
                  pattern: "/grc/returns/circular-returns/circular-register",
                  defaults: new { controller = "ComplianceReturn", action = "GetPagedCircularList" }
             );
-
+            routeBuilder.MapControllerRoute(
+              name: "app-compliance-circulars-retrieve",
+              pattern: "/grc/compliance/circulars/retrieve-circular/{id:long}",
+              defaults: new { controller = "ComplianceReturn", action = "GetCircularRecord" }
+            );
+            routeBuilder.MapControllerRoute(
+                 name: "app-operations-register-controls-create",
+                pattern: "/grc/compliance/circulars/create-circular",
+                defaults: new { controller = "ComplianceReturn", action = "CreateCircularRecord" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-operations-register-controls-update",
+                pattern: "/grc/compliance/circulars/update-circular",
+                defaults: new { controller = "ComplianceReturn", action = "UpdateCircularRecord" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-operations-register-controls-update",
+                pattern: "/grc/compliance/circulars/update-circular/{id:long}",
+                defaults: new { controller = "ComplianceReturn", action = "DeleteCircularRecord" }
+            );
             routeBuilder.MapControllerRoute(
                   name: "app-compliance-register-circular-returns-innerDashboard-bou",
                   pattern: "/grc/returns/circular-returns/inner-dashboard-bou",
@@ -1084,7 +1103,6 @@
                  pattern: "/grc/returns/circular-returns/inner-dashboard-otr",
                  defaults: new { controller = "ComplianceReturn", action = "OtherInnerDashboard" }
             );
-
 
             routeBuilder.MapControllerRoute(
                name: "app-compliance-register-circular-returns-retrieve",
@@ -1226,6 +1244,31 @@
                 name: "app-compliance-register-issues-delete",
                 pattern: "/grc/compliance/register/issues/delete-issue/{id:long}",
                 defaults: new { controller = "Register", action = "DeleteIssue" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-circular-issues-retrieve",
+                pattern: "/grc/compliance/circular/issues/retrieve-issue/{id:long}",
+                defaults: new { controller = "ComplianceReturn", action = "GetCircularIssue" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-circular-issues-retrieve-list",
+                pattern: "/grc/compliance/circular/issues/retrieve-issue-list",
+                defaults: new { controller = "ComplianceReturn", action = "GetAllCircularIssues" }
+            );
+            routeBuilder.MapControllerRoute(
+                 name: "app-operations-circular-issues-create",
+                pattern: "/grc/compliance/circular/issues/create-issue",
+                defaults: new { controller = "ComplianceReturn", action = "CreateCircularIssue" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-circular-issues-update",
+                pattern: "/grc/compliance/circular/issues/update-issue",
+                defaults: new { controller = "ComplianceReturn", action = "UpdateCircularIssue" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-circular-issues-delete",
+                pattern: "/grc/compliance/circular/issues/delete-issue/{id:long}",
+                defaults: new { controller = "ComplianceReturn", action = "DeleteCircularIssue" }
             );
 
             /*----------------------------------------------Law routes*/
@@ -1698,19 +1741,39 @@
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-audit-reports",
                 pattern: "/grc/compliance/audit/reports",
-                defaults: new { controller = "ComplianceAudit", action = "AuditReports" }
+                defaults: new { controller = "ComplianceAudit", action = "GeAuditReport" }
             );
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-audits",
                 pattern: "/grc/compliance/audit/exceptions",
-                defaults: new { controller = "ComplianceAudit", action = "AuditExceptions" }
+                defaults: new { controller = "ComplianceAudit", action = "GetAuditExceptions" }
             );
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-audits",
                 pattern: "/grc/compliance/audit/types",
-                defaults: new { controller = "ComplianceAudit", action = "AuditTypes" }
+                defaults: new { controller = "ComplianceAudit", action = "GetAuditTypes" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-audits-type-retrieve",
+               pattern: "/grc/compliance/audit/types/type-retrieve/{id:long}",
+               defaults: new { controller = "ComplianceAudit", action = "GetAuditType" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-audits-type-create",
+                pattern: "/grc/compliance/audit/types/type-create",
+                defaults: new { controller = "ComplianceSettings", action = "CreateAuditType" }
             );
 
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-audits-type-update",
+                pattern: "/grc/compliance/audit/types/type-update",
+                defaults: new { controller = "ComplianceSettings", action = "UpdateAuditType" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-audits-typedelete",
+                pattern: "/grc/compliance/audit/types/type-delete/{id:long}",
+                defaults: new { controller = "ComplianceSettings", action = "DeleteAuditType" }
+            );
             /*----------------------- Application login routes*/
             routeBuilder.MapControllerRoute(
                 name: "login",

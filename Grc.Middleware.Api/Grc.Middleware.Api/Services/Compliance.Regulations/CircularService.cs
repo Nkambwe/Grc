@@ -148,7 +148,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public bool Insert(CircularRequest request) {
+        public bool Insert(CircularRequest request, string username) {
             using var uow = UowFactory.Create();
             try {
                 //..map record to entity
@@ -168,11 +168,11 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     Comments = request.Comments,
                     FrequencyId = request.FrequencyId,
                     AuthorityId = request.AuthorityId,
-                    DepartmentId = request.DepartmentId,
+                    DepartmentId = request.OwnerId,
                     IsDeleted = request.IsDeleted,
-                    CreatedBy = $"{request.UserName}",
+                    CreatedBy = $"{username}",
                     CreatedOn = DateTime.Now,
-                    LastModifiedBy = $"{request.UserName}",
+                    LastModifiedBy = $"{username}",
                     LastModifiedOn = DateTime.Now
                 };
 
@@ -202,7 +202,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<bool> InsertAsync(CircularRequest request) {
+        public async Task<bool> InsertAsync(CircularRequest request, string username) {
             using var uow = UowFactory.Create();
             try {
                 //..map record to entity
@@ -221,12 +221,12 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     Reference = request.SubmissionReference,
                     FrequencyId = request.FrequencyId,
                     AuthorityId = request.AuthorityId,
-                    DepartmentId = request.DepartmentId,
+                    DepartmentId = request.OwnerId,
                     IsDeleted = request.IsDeleted,
-                    CreatedBy = $"{request.UserName}",
+                    CreatedBy = $"{username}",
                     CreatedOn = DateTime.Now,
                     Comments = request.Comments,
-                    LastModifiedBy = $"{request.UserName}",
+                    LastModifiedBy = $"{username}",
                     LastModifiedOn = DateTime.Now
                 };
 
@@ -256,7 +256,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public bool Update(CircularRequest request, bool includeDeleted = false) {
+        public bool Update(CircularRequest request, string username, bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update Circular request", "INFO");
 
@@ -279,10 +279,10 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     circular.Comments = request.Comments;
                     circular.AuthorityId = request.AuthorityId;
                     circular.FrequencyId = request.FrequencyId;
-                    circular.DepartmentId = request.DepartmentId;
+                    circular.DepartmentId = request.OwnerId;
                     circular.Reference = request.SubmissionReference;
                     circular.LastModifiedOn = DateTime.Now;
-                    circular.LastModifiedBy = $"{request.UserName}";
+                    circular.LastModifiedBy = $"{username}";
 
                     //..check entity state
                     _ = uow.CircularRepository.Update(circular, includeDeleted);
@@ -301,7 +301,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<bool> UpdateAsync(CircularRequest request, bool includeDeleted = false) {
+        public async Task<bool> UpdateAsync(CircularRequest request, string username, bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update Circular request", "INFO");
 
@@ -324,10 +324,10 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     circular.SubmittedBy = request.SubmittedBy;
                     circular.AuthorityId = request.AuthorityId;
                     circular.FrequencyId = request.FrequencyId;
-                    circular.DepartmentId = request.DepartmentId;
+                    circular.DepartmentId = request.OwnerId;
                     circular.Reference = request.SubmissionReference;
                     circular.LastModifiedOn = DateTime.Now;
-                    circular.LastModifiedBy = $"{request.UserName}";
+                    circular.LastModifiedBy = $"{username}";
 
                     //..check entity state
                     _ = await uow.CircularRepository.UpdateAsync(circular, includeDeleted);

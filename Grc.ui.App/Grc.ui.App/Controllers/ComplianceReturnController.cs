@@ -1,4 +1,6 @@
-﻿using Grc.ui.App.Defaults;
+﻿using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Wordprocessing;
+using Grc.ui.App.Defaults;
 using Grc.ui.App.Extensions;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Filters;
@@ -10,6 +12,7 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Cryptography.Xml;
 using System.Text.Json;
 using Activity = Grc.ui.App.Enums.Activity;
 
@@ -1019,7 +1022,7 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 if (id == 0) {
-                    return BadRequest(new { success = false, message = "Policy Id is required", data = new { } });
+                    return BadRequest(new { success = false, message = "Circular Id is required", data = new { } });
                 }
 
                 var currentUser = userResponse.Data;
@@ -1033,7 +1036,7 @@ namespace Grc.ui.App.Controllers {
 
                 var result = await _returnService.GetCircularSubmissionAsync(request);
                 if (result.HasError || result.Data == null) {
-                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving policy";
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving circular";
                     Logger.LogActivity(errMsg);
                     return Ok(new { success = false, message = errMsg, data = new { } });
                 }
@@ -1074,9 +1077,74 @@ namespace Grc.ui.App.Controllers {
 
                 return Ok(new { success = true, data = circularRecord });
             } catch (Exception ex) {
-                Logger.LogActivity($"Unexpected error retrieving submission: {ex.Message}", "ERROR");
+                Logger.LogActivity($"Unexpected error retrieving circular: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "RETURNS-CONTROLLER", ex.StackTrace);
-                return Ok(new { success = false, message = "Unable to retrieving submission. An error occurred" });
+                return Ok(new { success = false, message = "Unable to retrieving circular. An error occurred" });
+            }
+        }
+
+        public async Task<IActionResult> GetCircularInfo(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0) {
+                    return BadRequest(new { success = false, message = "Circular Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.COMPLIANCE_GET_POLICY.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = false
+                };
+
+                var result = await _returnService.GetCircularSubmissionAsync(request);
+                if (result.HasError || result.Data == null) {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving circular";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var response = result.Data;
+                var circularRecord = new {
+                    id = response.Id,
+                    reference = response.Reference ?? string.Empty,
+                    circularTitle = response.CircularTitle ?? string.Empty,
+                    circularRequirement = response.CircularRequirement ?? string.Empty,
+                    recievedOn = response.RecievedOn,
+                    deadline = response.Deadline,
+                    circularStatus = response.CircularStatus ?? string.Empty,
+                    isDeleted = response.IsDeleted,
+                    breachRisk = response.BreachRisk ?? string.Empty,
+                    ownerId = response.OwnerId,
+                    frequencyId = response.FrequencyId,
+                    authorityId = response.AuthorityId,
+                    comments = response.Comments ?? string.Empty,
+                    issues = response.Issues != null && response.Issues.Count > 0
+                        ? response.Issues.Select(issue => new {
+                            id = issue.Id,
+                            issueDescription = issue.IssueDescription,
+                            resolution = issue.Resolution,
+                            status = issue.Status,
+                            resolvedOn = issue.ResolvedOn?.ToString("yyyy-MM-dd") ?? string.Empty,
+                            receivedOn = issue.ReceivedOn.ToString("yyyy-MM-dd") ?? string.Empty
+                        }).ToList()
+                        : Enumerable.Empty<object>()
+                };
+
+                return Ok(new { success = true, data = circularRecord });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error retrieving circular: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "RETURNS-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Unable to retrieving circular. An error occurred" });
             }
         }
 
@@ -1427,6 +1495,77 @@ namespace Grc.ui.App.Controllers {
             return Redirect(Url.Action("Dashboard", "Application"));
         }
 
+        #endregion
+
+        #region Circular
+
+       public async Task<IActionResult> GetCircularRecord(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0) {
+                    return BadRequest(new { success = false, message = "Circular Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.COMPLIANCE_CIRCULAR_RETRIEVE.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = false
+                };
+
+                var result = await _returnService.GetCircularAsync(request);
+                if (result.HasError || result.Data == null) {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving circular";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var circular = result.Data;
+                var circularRecord = new {
+                    id = circular.Id,
+                    reference = circular.Reference ?? string.Empty,
+                    circularTitle = circular.CircularTitle ?? string.Empty,
+                    circularRequirement = circular.Requirement ?? string.Empty,
+                    ownerId = circular.DepartmentId,
+                    authorityId = circular.AuthorityId,
+                    frequencyId = circular.FrequencyId,
+                    recievedOn = circular.RecievedOn,
+                    deadline = circular.DeadlineOn ?? DateTime.Now.AddYears(30),
+                    status = circular.Status ?? string.Empty,
+                    breachRisk = circular.BreachRisk ?? string.Empty,
+                    comments = circular.Comments ?? string.Empty,
+                    isDeleted = circular.IsDeleted,
+                    issues = circular.Issues != null && circular.Issues.Any()?
+                             circular.Issues.Select( issue => new { 
+                                 id = issue.Id,
+                                 circularId = issue.CircularId,
+                                 issueDescription = (issue.IssueDescription ?? string.Empty).Trim(),
+                                 issueResolution = issue.Resolution ?? string.Empty,
+                                 issueDeleted = issue.IsDeleted,
+                                 issueStatus = issue.Status ?? "UNKNOWN",
+                                 issueRecieved = issue.ReceivedOn,
+                                 issueResolved = issue.ResolvedOn ?? DateTime.Now.AddYears(30),
+                             }).ToArray():
+                             Array.Empty<object>()
+                };
+
+                return Ok(new { success = true, data = circularRecord });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error retrieving circular: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "RETURN-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Failed to retrieve circular issue, an Unexpected error occurred", data = new { } });
+            }
+        }
+
         public async Task<IActionResult> GetPagedCircularList([FromBody] TableListRequest request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1441,10 +1580,11 @@ namespace Grc.ui.App.Controllers {
                 var result = await _returnService.GetPagedCircularAsync(request);
                 PagedResponse<GrcCircularsResponse> circulars = result.Data ?? new();
 
-                var pagedEntities = (circulars.Entities ?? new List<GrcCircularsResponse>())
+                var pagedEntities = (circulars.Entities ?? new())
                     .Select(circular => new {
                         id = circular.Id,
                         circularTitle = circular.CircularTitle ?? string.Empty,
+                        requirement = circular.Requirement ?? string.Empty,
                         authority = circular.Authority ?? string.Empty,
                         frequency = circular.Frequency ?? string.Empty,
                         department = circular.Department ?? string.Empty,
@@ -1455,6 +1595,7 @@ namespace Grc.ui.App.Controllers {
                         hasIssues = circular.Issues.Count > 0,
                         file = circular.FilePath ?? string.Empty,
                         submittedBy = circular.SubmittedBy ?? string.Empty,
+                        breachRisk = circular.BreachRisk ?? string.Empty,
                         reference = circular.Reference ?? string.Empty,
                         comments = circular.Comments ?? string.Empty,
                     }).ToList();
@@ -1465,6 +1606,299 @@ namespace Grc.ui.App.Controllers {
                 Logger.LogActivity($"Error retrieving circulars: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "RETURNS-REGISTER", ex.StackTrace);
                 return Ok(new { last_page = 0, data = new List<object>() });
+            }
+        }
+
+        public async Task<IActionResult> CreateCircularRecord([FromBody] CircularViewModel request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (request == null) {
+                    var msg = "Invalid request data";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                //..set system fields
+                var currentUser = userResponse.Data;
+                var result = await _returnService.CreateCircularRecordAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create circular" });
+
+                var created = result.Data;
+                if (!created.Status)
+                    return Ok(new { success = created.Status, message = created.Message ?? "Failed to create circular", data = new { } });
+
+                return Ok(new { success = true, message = "Circular created successfully", data = new { } });
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error creating circular: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "RETURN-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Failed to create circular, an Unexpected error occurred", data = new { } });
+            }
+        }
+
+        public async Task<IActionResult> UpdateCircularRecord([FromBody] CircularViewModel request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                var result = await _returnService.UpdateCircularAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update circular" });
+
+                var updated = result.Data;
+                return Ok(new { success = true, message = "Circular updated successfully", data = new { } });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error updating circular: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "RETURNS-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Unable to update circular. An error occurred" });
+            }
+        }
+
+        public async Task<IActionResult> DeleteCircularRecord(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                if (id == 0) return BadRequest(new { success = false, message = "Circular Id is required" });
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.COMPLIANCE_ISSUE_DELETE.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = true
+                };
+
+                var result = await _returnService.DeleteCircularAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to delete circular" });
+
+                var resultData = result.Data;
+                if (!resultData.Status)
+                    return Ok(new { success = resultData.Status, message = resultData.Message ?? "Failed to delete circular", data = new { } });
+
+                return Ok(new { success = result.Data.Status, message = result.Data.Message });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error deleting circular: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "RETURNS-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = true, data = new { } });
+            }
+        }
+
+        #endregion
+
+        #region Circular Issues
+
+        [LogActivityResult("Retrieve Circular Issue", "User retrieved circular issue", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_ISSUE, "CircularIssue")]
+        public async Task<IActionResult> GetCircularIssue(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0) {
+                    return BadRequest(new { success = false, message = "Issue Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.COMPLIANCE_ISSUE_RETRIEVE.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = false
+                };
+
+                var result = await _returnService.GetIssueAsyncAsync(request);
+                if (result.HasError || result.Data == null) {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving circular issue";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var response = result.Data;
+                var actRecord = new {
+                    id = response.Id,
+                    circularId = response.CircularId,
+                    issueDescription = (response.IssueDescription ?? string.Empty).Trim(),
+                    issueResolution = response.Resolution ?? string.Empty,
+                    issueDeleted = response.IsDeleted,
+                    issueStatus = response.Status ?? "UNKNOWN",
+                    issueRecieved = response.ReceivedOn,
+                    issueResolved = response.ResolvedOn
+                };
+
+                return Ok(new { success = true, data = actRecord });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error retrieving circular issuet: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "RIGISTER-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Failed to retrieve circular issue, an Unexpected error occurred", data = new { } });
+            }
+        }
+
+        [LogActivityResult("Retrieve list of circular Issue", "User retrieved list of circular issues", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_ISSUE, "CircularIssue")]
+        public async Task<IActionResult> GetAllCircularIssues(GrcCircularIssueListRequest request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (request == null) {
+                    return BadRequest(new { success = false, message = "Issue Id is required", data = new { } });
+                }
+
+                var result = await _returnService.GetCircularIssuesAsyncAsync(request);
+                if (result.HasError || result.Data == null) {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving circular issues";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var response = result.Data;
+                var issues = response
+                    .Select(issue => new {
+                        circularId = issue.CircularId,
+                        issueDescription = (issue.IssueDescription ?? string.Empty).Trim(),
+                        issueResolution = issue.Resolution ?? string.Empty,
+                        issueDeleted = issue.IsDeleted,
+                        issueStatus = issue.Status ?? "UNKNOWN",
+                        issueRecieved = issue.ReceivedOn,
+                        issueResolved = issue.ResolvedOn
+                    }).OrderBy(s => s.issueStatus).ToList();
+
+                return Ok(new { success = true, message = "Success", data = issues});
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error retrieving circular issues: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "RIGISTER-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Failed to retrieve circular issues, an Unexpected error occurred", data = new { } });
+            }
+        }
+
+        [LogActivityResult("Create Circular Issue", "User added new circular issue", ActivityTypeDefaults.COMPLIANCE_CREATE_ISSUE, "CircularIssue")]
+        public async Task<IActionResult> CreateCircularIssue([FromBody] CircularIssueViewModel request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (request == null) {
+                    var msg = "Invalid request data";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                //..set system fields
+                var currentUser = userResponse.Data;
+                var result = await _returnService.CreateIssueAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create issue" });
+
+                var created = result.Data;
+                if (!created.Status)
+                    return Ok(new { success = created.Status, message = created.Message ?? "Failed to update issue", data = new { } });
+
+                return Ok(new { success = true, message = "Issue created successfully", data = new { } });
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error creating issue: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "RETURN-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Failed to create issue, an Unexpected error occurred", data = new { } });
+            }
+        }
+
+        [LogActivityResult("Update Circular issue", "User updated circular issue", ActivityTypeDefaults.COMPLIANCE_EDITED_ISSUE, "CircularIssue")]
+        public async Task<IActionResult> UpdateCircularIssue([FromBody] CircularIssueViewModel request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (request == null) {
+                    var msg = "Invalid request data";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                //..set system fields
+                var currentUser = userResponse.Data;
+                var result = await _returnService.UpdateIssueAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update issue" });
+
+                var updated = result.Data;
+                if (!updated.Status)
+                    return Ok(new { success = updated.Status, message = updated.Message ?? "Failed to update issue", data = new { } });
+
+                return Ok(new { success = true, message = "Issue created successfully", data = new { } });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error updating issue: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "RETURN-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, data = new { } });
+            }
+        }
+
+        [LogActivityResult("Delete Circular Issue", "User deleted circular issue", ActivityTypeDefaults.COMPLIANCE_DELETED_ISSUE, "CircularIssue")]
+        public async Task<IActionResult> DeleteCircularIssue(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                if (id == 0) return BadRequest(new { success = false, message = "Issue Id is required" });
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.COMPLIANCE_ISSUE_DELETE.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = true
+                };
+
+                var result = await _returnService.DeleteIssueAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to delete issue" });
+
+                var resultData = result.Data;
+                if (!resultData.Status)
+                    return Ok(new { success = resultData.Status, message = resultData.Message ?? "Failed to delete issue", data = new { } });
+
+                return Ok(new { success = result.Data.Status, message = result.Data.Message });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error deleting issue: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "RETURNS-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = true, data = new { } });
             }
         }
 

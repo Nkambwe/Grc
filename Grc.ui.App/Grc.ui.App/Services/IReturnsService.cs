@@ -56,10 +56,23 @@ namespace Grc.ui.App.Services {
         Task<GrcResponse<PagedResponse<GrcFrequencyResponse>>> GetFrequencyReturnsAsync(TableListRequest request);
         #endregion
 
-        #region Circular Queries
-        Task<GrcResponse<PagedResponse<GrcCircularsResponse>>> GetPagedCircularAsync(TableListRequest request);
-        
+        #region Circulars
 
+        Task<GrcResponse<GrcCircularsResponse>> GetCircularAsync(GrcIdRequest request);
+        Task<GrcResponse<PagedResponse<GrcCircularsResponse>>> GetPagedCircularAsync(TableListRequest request);
+        Task<GrcResponse<ServiceResponse>> CreateCircularRecordAsync(CircularViewModel model, long userId, string ipAddress);
+        Task<GrcResponse<ServiceResponse>> UpdateCircularAsync(CircularViewModel model, long userId, string ipAddress);
+        Task<GrcResponse<ServiceResponse>> DeleteCircularAsync(GrcIdRequest request);
+
+        #endregion
+
+        #region Circular Isseus
+
+        Task<GrcResponse<GrcCircularIssueResponse>> GetIssueAsyncAsync(GrcIdRequest request);
+        Task<GrcResponse<List<GrcCircularIssueResponse>>> GetCircularIssuesAsyncAsync(GrcCircularIssueListRequest request);
+        Task<GrcResponse<ServiceResponse>> CreateIssueAsync(CircularIssueViewModel request, long userId, string ipAddress);
+        Task<GrcResponse<ServiceResponse>> UpdateIssueAsync(CircularIssueViewModel request, long userId, string ipAddress);
+        Task<GrcResponse<ServiceResponse>> DeleteIssueAsync(GrcIdRequest request);
         #endregion
     }
 }

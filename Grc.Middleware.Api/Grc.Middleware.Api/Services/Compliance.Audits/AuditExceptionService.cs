@@ -7,6 +7,7 @@ using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Utils;
 using Microsoft.EntityFrameworkCore;
+using RTools_NTS.Util;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -1572,6 +1573,38 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 long companyId = conpany != null ? conpany.Id : 1;
                 SystemError errorObj = new()
                 {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "AUDIT-EXCEPTION-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<AuditException>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<AuditException, bool>> predicate = null, params Expression<Func<AuditException, object>>[] includes) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve paged audit exceptions", "INFO");
+
+            try {
+                return await uow.AuditExceptionRepository.PageAllAsync(page, size, includeDeleted, predicate, includes);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve audit exception: {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new() {
                     ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
                     ErrorSource = "AUDIT-EXCEPTION-SERVICE",
                     StackTrace = ex.StackTrace,

@@ -3883,6 +3883,70 @@ namespace Grc.Middleware.Api.Controllers {
 
         #region Circulars
 
+        [HttpPost("circulars/retrieve-circular-record")]
+        public async Task<IActionResult> GetCircularRecord([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Get circular by ID", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<CircularsResponse>(error));
+                }
+
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request circular ID is required", "Invalid circular request ID");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<CircularsResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var circular = await _circularService.GetAsync(d => d.Id == request.RecordId, false,
+                    c => c.Issues,c => c.Department, c => c.Authority, c => c.Frequency);
+                if (circular == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Circular not found", "No circular matched the provided ID");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<CircularsResponse>(error));
+                }
+
+                //..return circular record
+                var result = new CircularsResponse {
+                    Id = circular.Id,
+                    CircularTitle = circular.CircularTitle ?? string.Empty,
+                    Requirement = circular.Requirement ?? string.Empty,
+                    FilePath = circular.FilePath ?? string.Empty,
+                    Reference = circular.Reference ?? string.Empty,
+                    AuthorityId = circular.AuthorityId,
+                    Authority = circular.Authority?.AuthorityAlias ?? string.Empty,
+                    FrequencyId = circular.FrequencyId,
+                    Frequency = circular.Frequency?.FrequencyName ?? "N/A",
+                    DepartmentId = circular.DepartmentId,
+                    Department = circular.Department?.DepartmentName ?? string.Empty,
+                    Status = circular.Status ?? string.Empty,
+                    IsBreached = circular.IsBreached,
+                    BreachReason = circular.BreachReason,
+                    BreachRisk = circular.BreachRisk,
+                    Comments = circular.Comments ?? string.Empty,
+                    RecievedOn = circular.RecievedOn,
+                    DeadlineOn = circular.DeadlineOn,
+                    SubmissionDate = circular.SubmissionDate,
+                    SubmittedBy = circular.SubmittedBy ?? string.Empty,
+                    Issues = circular.Issues != null && circular.Issues.Count > 0
+                            ? circular.Issues.Select(issue => new CircularIssueResponse {
+                                Id = issue.Id,
+                                IssueDescription = issue.IssueDescription,
+                                Resolution = issue.Resolution,
+                                Status = issue.Status,
+                            }).ToList()
+                            : new List<CircularIssueResponse>()
+                };
+
+                return Ok(new GrcResponse<CircularsResponse>(result));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<CircularsResponse>(error));
+            }
+        }
+
         [HttpPost("circulars/paged-circulars-list")]
         public async Task<IActionResult> GetPagedCircularList([FromBody] ListRequest request) {
 
@@ -3913,9 +3977,12 @@ namespace Grc.Middleware.Api.Controllers {
                         CircularTitle = circular.CircularTitle ?? string.Empty,
                         Requirement = circular.Requirement ?? string.Empty,
                         FilePath = circular.FilePath ?? string.Empty,
-                        RefNumber = circular.Reference ?? string.Empty,
+                        Reference = circular.Reference ?? string.Empty,
+                        AuthorityId = circular.AuthorityId,
                         Authority = circular.Authority?.AuthorityAlias ?? string.Empty,
+                        FrequencyId = circular.FrequencyId,
                         Frequency = circular.Frequency?.FrequencyName ?? "N/A",
+                        DepartmentId = circular.DepartmentId,
                         Department = circular.Department?.DepartmentName ?? string.Empty,
                         Status = circular.Status ?? string.Empty,
                         IsBreached = circular.IsBreached,
@@ -3951,6 +4018,388 @@ namespace Grc.Middleware.Api.Controllers {
             } catch (Exception ex) {
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<PagedResponse<CircularsResponse>>(error));
+            }
+        }
+
+        [HttpPost("circulars/create-circular")]
+        public async Task<IActionResult> CreateCircularRecord([FromBody] CircularRequest request) {
+            try {
+                Logger.LogActivity("Creating new circular", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The circular record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!string.IsNullOrWhiteSpace(request.CircularTitle)) {
+                    if (await _circularService.ExistsAsync(t => t.CircularTitle == request.CircularTitle)) {
+                        var error = new ResponseError(ResponseCodes.DUPLICATE, "Duplicate Record", "Another circular found with similar name");
+                        Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<GeneralResponse>(error));
+                    }
+                } else {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The circular name is required");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                if (!string.IsNullOrWhiteSpace(request.Requirement)) {
+                    if (await _circularService.ExistsAsync(t => t.Requirement == request.Requirement)) {
+                        var error = new ResponseError(ResponseCodes.DUPLICATE, "Duplicate Record", "Another requirement found with similar description");
+                        Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<GeneralResponse>(error));
+                    }
+                } else {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The circular requirement is required");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username;
+                if (currentUser != null) {
+                    username = currentUser.Username;
+                } else {
+                    username = $"{request.UserId}";
+                }
+
+                //..create audit type
+                var result = await _circularService.InsertAsync(request, username);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Circular saved successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to save circular record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("circulars/update-circular")]
+        public async Task<IActionResult> UpdateCircularRecord([FromBody] CircularRequest request) {
+            try {
+                Logger.LogActivity("Update circular", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The circular record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _circularService.ExistsAsync(r => r.Id == request.Id)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "Circular record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username;
+                if (currentUser != null) {
+                    username = currentUser.Username;
+                } else {
+                    username = $"{request.UserId}";
+                }
+
+                //..update circular
+                var result = await _circularService.UpdateAsync(request, username, true);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Circular updated successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update circular record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("circulars/delete-circular")]
+        public async Task<IActionResult> DeleteCircularRecord([FromBody] IdRequest request) {
+            try {
+
+                //..check if record exists
+                var response = new GeneralResponse();
+                if (!await _circularService.ExistsAsync(r => r.Id == request.RecordId)) {
+                    response.Status = false;
+                    response.StatusCode = (int)ResponseCodes.NOTFOUND;
+                    response.Message = $"Circular Not Found!";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    return Ok(new GrcResponse<GeneralResponse>(response));
+                }
+
+                Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
+
+                //..delete circular
+                var status = await _circularService.DeleteAsync(request);
+                if (!status) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Failed to regulatory circular", "An error occurred! could delete circular");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse() { Status = status }));
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error deleting circular by user {request.UserId}: {ex.Message}", "ERROR");
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        #endregion
+
+        #region Compliance Issues
+
+        [HttpPost("circulars/circular-issue-retrieve")]
+        public async Task<IActionResult> GetCircularIssue([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Get circular Issue by ID", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<CircularIssueResponse>(error));
+                }
+
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request circular Issue ID is required", "Invalid Control Item request ID");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<CircularIssueResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var issue = await _circularIssueService.GetAsync(d => d.Id == request.RecordId, true);
+                if (issue == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Circular Issue not found", "No circular issue matched the provided ID");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<CircularIssueResponse>(error));
+                }
+
+                //..map response
+                var response = new CircularIssueResponse {
+                    Id = issue.Id,
+                    CircularId = issue.CircularId,
+                    IssueDescription = issue.IssueDescription ?? string.Empty,
+                    Status = issue.Status ?? string.Empty,
+                    Resolution = issue.Resolution ?? string.Empty,
+                    ReceivedOn = issue.RecievedOn,
+                    ResolvedOn = issue.ResolvedOn,
+                    OwnerId = issue.Circular?.DepartmentId ?? 0,
+                    Owner = issue.Circular?.Department?.DepartmentName ?? string.Empty,
+                    IsDeleted = issue.IsDeleted
+                };
+
+                return Ok(new GrcResponse<CircularIssueResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<CircularIssueResponse>(error));
+            }
+        }
+
+        [HttpPost("circulars/circular-issues")]
+        public async Task<IActionResult> GetCircularIssues([FromBody] CircularIssueListRequest request) {
+
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ListResponse<ComplianceIssueResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var result = await _circularIssueService.GetAllAsync(i => i.CircularId == request.CircularId, false, c => c.Circular, c => c.Circular.Department);
+                if (result == null || !result.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No article issues found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<ComplianceIssueResponse>>(new List<ComplianceIssueResponse>()));
+                }
+
+                List<CircularIssueResponse> issues = new();
+                result.ToList().ForEach(issue => issues.Add(new CircularIssueResponse() {
+                    Id = issue.Id,
+                    CircularId = issue.CircularId,
+                    IssueDescription = issue.IssueDescription ?? string.Empty,
+                    Status = issue.Status ?? string.Empty,
+                    Resolution = issue.Resolution ?? string.Empty,
+                    ReceivedOn = issue.RecievedOn,
+                    ResolvedOn = issue.ResolvedOn,
+                    OwnerId = issue.Circular?.DepartmentId ?? 0,
+                    Owner = issue.Circular?.Department?.DepartmentName ?? string.Empty,
+                    IsDeleted = issue.IsDeleted
+                }));
+
+                return Ok(new GrcResponse<List<CircularIssueResponse>>(issues));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<ListResponse<CircularIssueResponse>>(error));
+            }
+        }
+
+        [HttpPost("circulars/create-circular-issue")]
+        public async Task<IActionResult> CreateCircularIssue([FromBody] CircularIssueRequest request) {
+            try {
+                Logger.LogActivity("Creating new circular issue", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The circular issue record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!string.IsNullOrWhiteSpace(request.IssueDescription)) {
+                    if (await _circularIssueService.ExistsAsync(i => i.IssueDescription == request.IssueDescription)) {
+                        var error = new ResponseError(ResponseCodes.DUPLICATE, "Duplicate Record", "Another issue found with similar description");
+                        Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<GeneralResponse>(error));
+                    }
+                } else {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Issue description cannot be empty", "The description is required");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                if (string.IsNullOrWhiteSpace(request.Resolution)) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Issue resolution cannot be empty", "The resolution is required");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser == null) {
+                    var error = new ResponseError(ResponseCodes.RESTRICTED, "Authentication Error", "User ID could not be verified");
+                    Logger.LogActivity($"RESTRICTED: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+                request.UserName = currentUser.Username;
+
+                //..create document type
+                var result = await _circularIssueService.InsertAsync(request);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Issue saved successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to save issue record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("circulars/update-circular-issue")]
+        public async Task<IActionResult> UpdateCircularIssue([FromBody] CircularIssueRequest request) {
+            try {
+                Logger.LogActivity("Update circular issue", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The circular issue record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _circularIssueService.ExistsAsync(r => r.Id == request.Id)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "Circular issue record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                if (string.IsNullOrWhiteSpace(request.IssueDescription)) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Issue description cannot be empty", "The description is required");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                if (string.IsNullOrWhiteSpace(request.Resolution)) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Issue resolution cannot be empty", "The resolution is required");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser == null) {
+                    var error = new ResponseError(ResponseCodes.RESTRICTED, "Authentication Error", "User ID could not be verified");
+                    Logger.LogActivity($"RESTRICTED: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+                request.UserName = currentUser.Username;
+
+                //..update circular issue
+                var result = await _circularIssueService.UpdateAsync(request);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Circular issue updated successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update circular issue record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("circulars/delete-circular-issue")]
+        public async Task<IActionResult> DeleteCircularIssue([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
+
+                //..check if record exists
+                var response = new GeneralResponse();
+                if (!await _circularIssueService.ExistsAsync(r => r.Id == request.RecordId)) {
+                    response.Status = false;
+                    response.StatusCode = (int)ResponseCodes.NOTFOUND;
+                    response.Message = $"Circular issue Not Found!";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    return Ok(new GrcResponse<GeneralResponse>(response));
+                }
+
+                //..delete issue
+                var status = await _circularIssueService.DeleteAsync(request);
+                if (!status) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Failed to circular issue", "An error occurred! could delete circular issue");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse() { Status = status }));
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error deleting circular issue by user {request.UserId}: {ex.Message}", "ERROR");
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
             }
         }
 
@@ -4892,6 +5341,73 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
+
+        [HttpPost("audits/exceptions-list")]
+        public async Task<IActionResult> GetAllPagedExceptionList([FromBody] ListRequest request) {
+
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<AuditExceptionResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _auditExceptionService.PageAllAsync(request.PageIndex, request.PageSize, false,
+                    e => e.Status != "CLOSED" || e.Status != "NA",
+                    e => e.Responseability,
+                    e => e.AuditReport,
+                    e => e.Responseability);
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No audit exception records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<AuditExceptionResponse>>(
+                        new PagedResponse<AuditExceptionResponse>(
+                        new List<AuditExceptionResponse>(), 0, pageResult.Page, pageResult.Size)));
+                }
+
+                List<AuditExceptionResponse> exceptions = new();
+                var records = pageResult.Entities.ToList();
+                if (records != null && records.Any()) {
+                    records.ForEach(exception => exceptions.Add(new() {
+                        Id = exception.Id,
+                        Finding = exception.AuditFinding,
+                        ProposedAction = exception.RemediationPlan,
+                        CorrectiveAction = exception.CorrectiveAction,
+                        Notes = exception.ExceptionNotes,
+                        TargetDate = exception.TargetDate,
+                        RiskStatement = exception.RiskAssessment,
+                        RiskRating = exception.RiskRating,
+                        ResponsibleId = exception.ResponsabilityId,
+                        Responsible = exception.Responseability?.ContactName ?? string.Empty,
+                        Executioner = exception.Executioner,
+                        Status = exception.Status,
+                        ReportId = exception.AuditReportId,
+                        IsDeleted = exception.IsDeleted
+                    }));
+                }
+
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                    var searchTerm = request.SearchTerm.ToLower();
+                    exceptions = exceptions.Where(u =>
+                        (u.Finding?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.Responsible?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.ProposedAction?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.CorrectiveAction?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.Executioner?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                    ).ToList();
+                }
+
+                return Ok(new GrcResponse<PagedResponse<AuditExceptionResponse>>(
+                          new PagedResponse<AuditExceptionResponse>(exceptions, pageResult.Count, pageResult.Page, pageResult.Size)));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<AuditTypeResponse>>(error));
+            }
+        }
+
+
         [HttpPost("audits/report-exceptions")]
         public async Task<IActionResult> GetPagedExceptionList([FromBody] AuditCategoryRequest request) {
 
@@ -4904,7 +5420,9 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                var pageResult = await _auditExceptionService.PageAllAsync(request.PageIndex, request.PageSize, false, e => e.Responseability, e => e.AuditReportId == request.ReportId);
+                var pageResult = await _auditExceptionService.PageAllAsync(request.PageIndex, request.PageSize, false, 
+                    e => e.Responseability, 
+                    e => e.AuditReportId == request.ReportId);
                 if (pageResult.Entities == null || !pageResult.Entities.Any()) {
                     var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No audit exception records found");
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");

@@ -576,7 +576,7 @@ namespace Grc.ui.App.Controllers {
                 var pagedEntities = returnsList.Entities
                     .Select(report => new {
                         id = report.Id,
-                        TypeCode = report.TypeCode ?? string.Empty,
+                        typeCode = report.TypeCode ?? string.Empty,
                         typeName = report.TypeName ?? string.Empty,
                         description = report.Description ?? string.Empty,
                         isDeleted = report.IsDeleted 
@@ -1019,7 +1019,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetAuditExceptions([FromBody] AuditCategoryViewModel request) {
+        public async Task<IActionResult> GetAuditExceptions([FromBody] TableListRequest request) {
             try {
                 //..get user IP address
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1033,7 +1033,7 @@ namespace Grc.ui.App.Controllers {
 
                 //..update with user data
                 var currentUser = grcResponse.Data;
-                var returnsData = await _auditService.GetAuditExceptionsAsync(request, currentUser.UserId, ipAddress, Activity.AUDIT_TYPE_RETRIVE.GetDescription());
+                var returnsData = await _auditService.GetOpenExceptionsAsync(request);
                 PagedResponse<GrcAuditExceptionResponse> returnsList = new();
 
                 if (returnsData.HasError) {

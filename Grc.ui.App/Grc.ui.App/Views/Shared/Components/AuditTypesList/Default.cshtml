@@ -9,6 +9,87 @@
     <div id="auditTypetable"></div>
 </div>
 
+<!-- Overlay -->
+<div id="auditTypeOverlay" class="obligation-panel-overlay"></div>
+
+<!-- Section Panel -->
+<div id="auditTypePanel" class="obligation-side-panel" onclick="event.stopPropagation()">
+
+    <div class="obligation-side-panel-header">
+        <h5 id="auditTypeTitle">
+            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Type.Header"))
+        </h5>
+        <button class="panel-close" onclick="closeAuditTypePane()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div class="obligation-side-panel-body">
+
+        <form id="auditTypeForm" class="grc-law-form">
+            <input type="hidden" id="typeId" name="typeId" />
+            <input type="hidden" id="isTypeEdit" name="isTypeEdit" />
+
+            <div class="row m-3">
+
+                <!-- code -->
+                <div class="col-sm-12">
+                    <label for="typeCode" class="form-label m-3">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Type.Code"))
+                    </label>
+                    <input class="form-control" id="typeCode" name="typeCode" />
+                </div>
+
+                <!-- typeName -->
+                <div class="col-sm-12">
+                    <label for="typeName" class="form-label m-3">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Type.Name"))
+                    </label>
+                    <input class="form-control" id="typeName" name="typeName" />
+                </div>
+
+                <!-- deleted -->
+                <div class="col-sm-6">
+                    <div class="row field-group mt-5 mb-5">
+                        <div class="col-6">
+                            <div class="form-check">
+                                <input class="form-check-input pe-none" type="checkbox" id="isDeleted" onclick="return false;">
+                                <label class="form-check-label" for="isDeleted">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Type.Deleted"))
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- description -->
+                <div class="col-sm-12 mt-3 mb-3">
+                    <label for="description" class="form-label m-3">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Type.Description"))
+                    </label>
+                    <textarea class="form-control" id="description" name="description" rows="2"></textarea>
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+                        <div class="col-sm-2">
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveAuditTypePane(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeAuditTypePane()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                        </div>
+                        <div class="col-sm-8"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
 
 @{
     Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");

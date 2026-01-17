@@ -16,10 +16,10 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         Task<Circular> GetAsync(Expression<Func<Circular, bool>> predicate, bool includeDeleted = false, params Expression<Func<Circular, object>>[] includes);
         Task<IList<Circular>> GetAllAsync(Expression<Func<Circular, bool>> predicate, bool includeDeleted);
         Task<IList<Circular>> GetAllAsync(Expression<Func<Circular, bool>> predicate, bool includeDeleted = false, params Expression<Func<Circular, object>>[] includes);
-        bool Insert(CircularRequest request);
-        Task<bool> InsertAsync(CircularRequest request);
-        bool Update(CircularRequest request, bool includeDeleted = false);
-        Task<bool> UpdateAsync(CircularRequest request, bool includeDeleted = false);
+        bool Insert(CircularRequest request, string username);
+        Task<bool> InsertAsync(CircularRequest request, string username);
+        bool Update(CircularRequest request, string username, bool includeDeleted = false);
+        Task<bool> UpdateAsync(CircularRequest request, string username, bool includeDeleted = false);
         bool Delete(IdRequest request);
         Task<bool> DeleteAsync(IdRequest request);
         Task<PagedResult<CircularResponse>> PageLookupAsync<CircularResponse>(int page, int size, bool includeDeleted, Expression<Func<Circular, CircularResponse>> selector);

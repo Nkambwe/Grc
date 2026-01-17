@@ -162,8 +162,13 @@ namespace Grc.ui.App.Enums {
         CircularHome,
         [Description("excel-export")]
         ExportToExcel,
-
         [Description("audit-home")]
         AuditHome,
+        [Description("audit-type-new")]
+        AuditType,
+        [Description("audit-exec-new")]
+        AuditExce,
+        [Description("audit-report-new")]
+        AuditReport,
     }
 }

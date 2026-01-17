@@ -1,9 +1,5 @@
 ﻿let circularTable;
 
-$(document).ready(function () {
-    initCircularTable();
-});
-
 function initCircularTable() {
     circularTable = new Tabulator("#circular-register-table", {
         ajaxURL: "/grc/returns/circular-returns/circular-register",
@@ -216,15 +212,592 @@ function initReturnSearch() {
 
 }
 
-function viewCircular(id) {
-    alert("View circular with ID >> " + id);
+$('.action-btn-return-new').on('click', function () {
+    addCircular();
+});
+
+function addCircular() {
+    openCircular2Panel('Add New Circular', {
+        id: 0,
+        reference: '',
+        circularTitle: '',
+        circularRequirement: '',
+        recievedOn: '',
+        deadline: '',
+        isDeleted: false,
+        ownerId: 0,
+        frequencyId: 0,
+        authorityId: 0,
+        breachRisk: '',
+        comments: '',
+        issues:[]
+    }, false);
 }
 
-function viewIssues(id) {
-    alert("View Issues for ID >> " + id)
+function openCircular2Panel(title, record, isEdit) {
+    $('#isCircularEdit').val(isEdit);
+    $('#circularId').val(record.id);
+    $('#reference').val(record.reference || '');
+    $('#circularTitle').val(record.circularTitle || '');
+    $('#circularRequirement').val(record.circularRequirement || '');
+    $('#deadline').val(record.deadline || '');
+    $('#isDeleted').prop('checked', record.isDeleted);
+    $('#ownerId').val(record.ownerId || '0').trigger('change');
+    $('#frequencyId').val(record.frequencyId || '0').trigger('change');
+    $('#authorityId').val(record.authorityId || '0').trigger('change');
+    $('#breachRisk').val(record.breachRisk || '');
+    $('#comments').val(record.comments || '');
+
+    const receivedOn = normalizeDate(record.recievedOn);
+    const deadline = normalizeDate(record.deadline);
+
+    // Clear first (important when re-opening dialog)
+    flatpickrInstances["recievedOn"]?.clear();
+    flatpickrInstances["deadline"]?.clear();
+
+    if (receivedOn && flatpickrInstances["recievedOn"]) {
+        flatpickrInstances["recievedOn"].setDate(receivedOn, true);
+    }
+
+    if (deadline && flatpickrInstances["deadline"]) {
+        flatpickrInstances["deadline"].setDate(deadline, true);
+    } else {
+        record.deadline = "";
+    }
+
+    //..add issues
+    renderCirIssues(record.issues);
+
+    //load dialog window
+    $('#paneTitle').text(title);
+    $('#circularOverlay').addClass('active');
+    $('#circularPanel').addClass('active');
+}
+
+function normalizeDate(value) {
+    return value && value.trim() !== '' ? value : null;
+}
+
+function findCircularRecord(id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/grc/compliance/circulars/retrieve-circular/${id}`,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success && response.data) {
+                    resolve(response.data);
+                } else {
+                    resolve(null);
+                }
+            },
+            error: function () {
+                reject();
+            }
+        });
+    });
+}
+
+function viewCircular(id) {
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving Circular...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    console.log("ID >> " + id);
+    findCircularRecord(id)
+        .then(record => {
+            Swal.close();
+            if (record) {
+                openCircular2Panel('Edit Circular', record, true);
+            } else {
+                Swal.fire({ title: 'NOT FOUND', text: 'Circular not found' });
+            }
+        })
+        .catch(() => {
+            Swal.close();
+            Swal.fire({ title: 'Error', text: 'Failed to load circular details.' });
+        });
+}
+
+function saveCircular(e) {
+    e.preventDefault();
+    let id = Number($('#circularId').val()) || 0;
+    let ownerId = Number($('#ownerId').val()) || 0;
+    let frequencyId = Number($('#frequencyId').val()) || 0;
+    let authorityId = Number($('#authorityId').val()) || 0;
+    let isEdit = $('#isCircularEdit').val() || false;
+
+    //..build record payload from form
+    let recordData = {
+        id: id,
+        reference: $('#reference').val()?.trim(),
+        circularTitle: $('#circularTitle').val()?.trim(),
+        circularRequirement: $('#circularRequirement').val()?.trim(),
+        recievedOn: $('#recievedOn').val()?.trim(),
+        deadline: $('#deadline').val()?.trim(),
+        ownerId: ownerId,
+        frequencyId: frequencyId,
+        authorityId: authorityId,
+        breachRisk: $('#breachRisk').val()?.trim(),
+        isDeleted: $('#isDeleted').is(':checked') ? true : false,
+        comments: $('#comments').val()?.trim()
+    };
+
+    //..validate required fields
+    let errors = [];
+    if (!recordData.reference)
+        errors.push("Reference field is required.");
+
+    if (!recordData.circularTitle)
+        errors.push("Circular Title field is required.");
+
+    if (!recordData.recievedOn)
+        errors.push("Receive date field is required.");
+
+    if (!recordData.circularRequirement)
+        errors.push("Circular requirement field is required.");
+
+    if (recordData.ownerId == 0)
+        errors.push("Owner Field is required.");
+
+    if (recordData.authorityId == 0)
+        errors.push("Authority Field is required.");
+
+    if (errors.length > 0) {
+        highlightInnerField("#issueDescription", !recordData.reference);
+        highlightInnerField("#issueResolution", !recordData.circularTitle);
+        highlightInnerField("#circularRequirement", !recordData.circularRequirement);
+        highlightInnerField("#circularRequirement", !recordData.circularRequirement);
+        highlightInnerField("#authorityId", recordData.authorityId === 0);
+        highlightInnerField("#ownerId", recordData.ownerId === 0);
+        Swal.fire({
+            title: "Circular issue Validation",
+            html: `<div style="text-align:left;">${errors.join("<br>")}</div>`,
+        });
+        return;
+    }
+
+    //..call backend
+    saveCircular2Record(isEdit, recordData);
+}
+
+function saveCircular2Record(isEdit, record) {
+
+    console.log(`IS EDIT >> `, isEdit);
+    const url = (isEdit === true || isEdit === "true")
+        ? "/grc/compliance/circulars/update-circular"
+        : "/grc/compliance/circulars/create-circular";
+
+    Swal.fire({
+        title: isEdit ? "Updating circular..." : "Saving circular...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(record),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getCircularAntiForgeryToken()
+        },
+        success: function (res) {
+            Swal.close();
+            if (!res.success) {
+                Swal.fire({
+                    title: "Invalid record",
+                    html: res.message.replaceAll("; ", "<br>")
+                });
+                return;
+            }
+
+            Swal.fire(res.message || "Circular saved successfully")
+                .then(() => {
+                    //..close panel
+                    closeCircularPanel();
+                    window.location.reload();
+                });
+        },
+        error: function (xhr) {
+            Swal.close();
+
+            let errorMessage = "Unexpected error occurred.";
+            try {
+                let response = JSON.parse(xhr.responseText);
+                if (response.message) errorMessage = response.message;
+            } catch (e) { }
+
+            Swal.fire({
+                title: isEdit ? "Update Failed" : "Save Failed",
+                text: errorMessage
+            });
+        }
+    });
+}
+
+function closeCircularPanel() {
+    $('#circularOverlay').removeClass('active');
+    $('#circularPanel').removeClass('active');
+}
+
+function addIssue(e) {
+    e.preventDefault();
+    let circularId = Number($('#circularId').val()) || 0;
+    openCircularIssue("New Issue", {
+        id: 0,
+        circularId: circularId,
+        issueDescription: '',
+        issueResolution: '',
+        issueStatus: '',
+        issueRecieved: '',
+        issueResolved: '',
+        issueDeleted: false,
+    }, false);
+}
+
+function openCircularIssue(title, record, isEdit) {
+    $('#issueId').val(record.id);
+    $('#issueEdit').val(isEdit);
+    $('#parentId').val(record.circularId);
+    $('#issueDescription').val(record.issueDescription || '');
+    $('#issueResolution').val(record.issueResolution || '');
+    $('#issueStatus').val(record.circularStatus || 'UNKNOWN').trigger('change');
+    $('#issueDeleted').prop('checked', record.issueDeleted);
+    $('#issueRecieved').val(record.issueRecieved || '');
+    $('#issueResolved').val(record.issueResolved || '');
+
+    if (record.issueRecieved) {
+        flatpickrInstances["issueRecieved"].setDate(record.issueRecieved, true);
+    }
+
+    if (record.issueResolved) {
+        flatpickrInstances["issueResolved"].setDate(record.issueResolved, true);
+    }
+
+    //..open panel
+    $('#issueTitle').text(title);
+    $('.map-panel-overlay').addClass('active');
+    $('#issuePanel').addClass('active');
+
+    restoreCircularActiveTab();
+}
+
+function saveFormIssue(e) {
+    e.preventDefault();
+    let id = Number($('#issueId').val()) || 0;
+    let circularId = Number($('#parentId').val()) || 0;
+    let isEdit = $('#issueEdit').val() || false;
+
+    //..build record payload from form
+    let recordData = {
+        id: id,
+        circularId: circularId,
+        issueDescription: $('#issueDescription').val()?.trim(),
+        issueResolution: $('#issueResolution').val()?.trim(),
+        issueStatus: $('#issueStatus').val()?.trim(),
+        issueRecieved: $('#issueRecieved').val()?.trim(),
+        issueResolved: $('#issueResolved').val()?.trim(),
+        issueDeleted: $('#isIssueDeleted').is(':checked') ? true : false,
+    };
+
+    //..validate required fields
+    let errors = [];
+    if (!recordData.issueDescription)
+        errors.push("Description field is required.");
+
+    if (!recordData.issueRecieved)
+        errors.push("Recieve date field is required.");
+
+    if (!recordData.issueResolution)
+        errors.push("Resolution field is required.");
+
+    if (recordData.circularId == 0)
+        errors.push("Circular ID is required.");
+
+    if (errors.length > 0) {
+        highlightInnerField("#issueDescription", !recordData.issueDescription);
+        highlightInnerField("#issueResolution", !recordData.issueResolution);
+        Swal.fire({
+            title: "Circular issue Validation",
+            html: `<div style="text-align:left;">${errors.join("<br>")}</div>`,
+        });
+        return;
+    }
+
+    //..call backend
+    saveCircularIssue(isEdit, recordData);
+}
+
+function saveCircularIssue(isEdit, record) {
+    const url = (isEdit === true || isEdit === "true")
+        ? "/grc/compliance/circular/issues/update-issue"
+        : "/grc/compliance/circular/issues/create-issue";
+
+    Swal.fire({
+        title: isEdit ? "Updating issue..." : "Saving issue...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(record),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getCircularAntiForgeryToken()
+        },
+        success: function (res) {
+            Swal.close();
+            if (!res.success) {
+                Swal.fire({
+                    title: "Invalid record",
+                    html: res.message.replaceAll("; ", "<br>")
+                });
+                return;
+            }
+
+            //..add issue to list
+            addIssueToList(record);
+
+            Swal.fire(res.message || (isEdit ? "Issue updated successfully" : "Issue created successfully"));
+
+            //..close panel
+            closeCircularIssue();
+        },
+        error: function (xhr) {
+            Swal.close();
+
+            let errorMessage = "Unexpected error occurred.";
+            try {
+                let response = JSON.parse(xhr.responseText);
+                if (response.message) errorMessage = response.message;
+            } catch (e) { }
+
+            Swal.fire({
+                title: isEdit ? "Update Failed" : "Save Failed",
+                text: errorMessage
+            });
+        }
+    });
+}
+
+$(document).on('click', '.grc-edit-issue', function () {
+    const id = $(this).data('id');
+    editCircularIssue(id);
+    return false;
+});
+
+function viewCircularIssue(id) {
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving issue...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    findCircularIssue(id)
+        .then(record => {
+            Swal.close();
+            if (record) {
+                openCircularIssue('ISSUE DETAILS', record, true);
+            } else {
+                Swal.fire({ title: 'NOT FOUND', text: 'Issue record not found' });
+            }
+        })
+        .catch(() => {
+            Swal.close();
+            Swal.fire({ title: 'Error', text: 'Failed to load issue details.' });
+        });
+}
+
+function findCircularIssue(id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/grc/compliance/circular/issues/retrieve-issue/${id}`,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success && response.data) {
+                    resolve(response.data);
+                    resolve(null);
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire("Error", error);
+                return;
+            }
+        });
+    });
+}
+
+function closeCircularIssue() {
+    $('.map-panel-overlay').removeClass('active');
+    $('#issuePanel').removeClass('active');
+}
+
+function restoreCircularActiveTab() {
+
+    const tab = sessionStorage.getItem('obligationActiveTab');
+    if (!tab) return;
+
+    const trigger = document.querySelector(`button[data-bs-target="${tab}"]`);
+    if (!trigger) return;
+
+    //..ensure bootstrap is available
+    if (typeof bootstrap === 'undefined' || !bootstrap.Tab) return;
+
+    bootstrap.Tab.getOrCreateInstance(trigger).show();
 }
 
 function deleteCircular(id) {
     alert("Delete circular with ID >> " + id);
 }
+
+function getCircularAntiForgeryToken() {
+    return $('meta[name="csrf-token"]').attr('content');
+}
+
+function renderCirIssues(issues) {
+    const $list = $('.issues-list');
+    $list.empty();
+
+    if (issues.length === 0) {
+        $list.append('<li class="text-muted no-control-items">No issues reported</li>');
+        return;
+    }
+
+    issues.forEach(issue => {
+        const isChecked = true;
+        const nameClass = issue.isDeleted ? 'text-decoration-line-through' : '';
+
+        const listItem = `
+            <li class="control-item mb-2">
+                <div class="form-check">
+                    <input class="form-check-input" 
+                           type="checkbox" 
+                           id="item_${issue.id}" 
+                           data-item-id="${issue.id}"
+                           ${isChecked ? 'checked' : ''}>
+                    <label class="form-check-label ${nameClass}" for="item_${issue.id}">
+                        ${issue.description}
+                    </label>
+                </div>
+                <div class="text-muted small">
+                    <button type="button" 
+                            class="grc-table-btn grc-view-action grc-edit-issue" 
+                            data-id="${issue.id}">
+                        <span><i class="mdi mdi-pencil-outline" aria-hidden="true"></i></span>
+                    </button>
+                </div>
+            </li>`;
+        $list.append(listItem);
+    });
+
+    //..attach handler
+    attachEditIssue2Handlers();
+}
+
+function attachEditIssue2Handlers() {
+    //..remove any existing handlers first
+    $('.grc-edit-issue').off('click.editIssue');
+
+    //..attach directly to each button
+    $('.grc-edit-issue').on('click.editIssue', function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        const id = $(this).data('id');
+        //..call your edit function
+        editIssue(id);
+
+        return false;
+    });
+}
+
+let flatpickrInstances = {};
+
+function initDates() {
+
+    flatpickrInstances["recievedOn"] = flatpickr("#recievedOn", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y",
+        defaultDate: null
+    });
+
+    flatpickrInstances["deadline"] = flatpickr("#deadline", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y",
+        defaultDate: null
+    });
+
+    flatpickrInstances["issueRecieved"] = flatpickr("#issueRecieved", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y",
+        defaultDate: null
+    });
+
+    flatpickrInstances["issueResolved"] = flatpickr("#issueResolved", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y",
+        defaultDate: null
+    });
+
+}
+
+function highlightInnerField(selector, hasError, message) {
+    const $field = $(selector);
+    const $formGroup = $field.closest('.form-group, .mb-3, .col-sm-8');
+
+    // Remove existing error
+    $field.removeClass('is-invalid');
+    $formGroup.find('.field-error').remove();
+
+    if (hasError) {
+        $field.addClass('is-invalid');
+        if (message) {
+            $formGroup.append(`<div class="field-error text-danger small mt-1">${message}</div>`);
+        }
+    }
+}
+
+$(document).ready(function () {
+    initCircularTable();
+    initDates();
+
+    $('#frequencyId ,#ownerId, #authorityId, #issueStatus').select2({
+        width: '100%',
+        dropdownParent: $('#circularPanel')
+    });
+
+    $('#circularForm').on('submit', function (e) {
+        e.preventDefault();
+    });
+
+});
 

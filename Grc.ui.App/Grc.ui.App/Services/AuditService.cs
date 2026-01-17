@@ -299,7 +299,7 @@ namespace Grc.ui.App.Services {
                 return new GrcResponse<GrcAuditTypeResponse>(error);
             }
         }
-
+       
         public async Task<GrcResponse<PagedResponse<GrcAuditTypeResponse>>> GetAuditTypesAsync(TableListRequest request) {
             try {
 
@@ -614,6 +614,7 @@ namespace Grc.ui.App.Services {
         #endregion
 
         #region Audit Exceptions
+
         public async Task<GrcResponse<GrcAuditExceptionResponse>> GetAuditExceptionAsync(GrcIdRequest request) {
             try {
                 var endpoint = $"{EndpointProvider.Compliance.AuditBase}/exception-retrieve";
@@ -624,6 +625,26 @@ namespace Grc.ui.App.Services {
                 await ProcessErrorAsync(ex.Message, "AUDIT-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<GrcAuditExceptionResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<PagedResponse<GrcAuditExceptionResponse>>> GetOpenExceptionsAsync(TableListRequest request) {
+            try {
+
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object", "Request object cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<PagedResponse<GrcAuditExceptionResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.AuditBase}/exceptions-list";
+                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<GrcAuditExceptionResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "AUDIT-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<PagedResponse<GrcAuditExceptionResponse>>(error);
             }
         }
 

@@ -377,7 +377,7 @@ function openPolicyDocPanel(title, record, isEdit) {
 
     //load dialog window
     $('#panelTitle').text(title);
-    $('.overlay').addClass('active');
+    $('#policyOverlay').addClass('active');
     $('#slidePanel').addClass('active');
 }
 
@@ -536,7 +536,7 @@ function highlightField(selector, isError) {
 }
 
 function closePolicyPanel() {
-    $('.overlay').removeClass('active');
+    $('#policyOverlay').removeClass('active');
     $('#slidePanel').removeClass('active');
 }
 
