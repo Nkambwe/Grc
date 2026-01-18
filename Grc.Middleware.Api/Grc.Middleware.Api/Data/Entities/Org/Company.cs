@@ -7,7 +7,7 @@
         public string SystemLanguage { get; set; }
         public override string ToString() => $"{CompanyName}";
 
-        public virtual ICollection<Branch> Branches { get; set; }
+        public virtual ICollection<Branch> Branches { get; set; }= new List<Branch>();
 
         public override bool Equals(object obj) {
 

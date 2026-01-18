@@ -5346,23 +5346,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Mark.Nkambwe\\.nuget\\packages\\": {},
+    "C:\\Users\\Macjohnan\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Projects\\CS\\GRC\\grc-suite-github\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj",
+      "projectUniqueName": "C:\\Projects\\Grc\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj",
       "projectName": "Grc.Middleware.Api",
-      "projectPath": "C:\\Projects\\CS\\GRC\\grc-suite-github\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj",
-      "packagesPath": "C:\\Users\\Mark.Nkambwe\\.nuget\\packages\\",
-      "outputPath": "C:\\Projects\\CS\\GRC\\grc-suite-github\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\obj\\",
+      "projectPath": "C:\\Projects\\Grc\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj",
+      "packagesPath": "C:\\Users\\Macjohnan\\.nuget\\packages\\",
+      "outputPath": "C:\\Projects\\Grc\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Mark.Nkambwe\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Macjohnan\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -5384,7 +5384,13 @@
         "warnAsError": [
           "NU1605"
         ]
-      }
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      },
+      "SdkAnalysisLevel": "9.0.100"
     },
     "frameworks": {
       "net7.0": {
@@ -5448,7 +5454,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101\\RuntimeIdentifierGraph.json"
       }
     }
   }

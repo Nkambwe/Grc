@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "GRTMTvX27+s=",
+  "dgSpecHash": "44aPCqOs7jg=",
   "success": true,
-  "projectFilePath": "C:\\Projects\\Grc_Project\\Grc\\Grc.ui.App\\Grc.ui.App\\Grc.ui.App.csproj",
+  "projectFilePath": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Grc.ui.App.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Macjohnan\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\Macjohnan\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\7.0.0\\microsoft.extensions.dependencyinjection.7.0.0.nupkg.sha512",

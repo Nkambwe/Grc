@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Grc.Middleware.Api.props" />
+</Project>

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ivyy2ABG6as=",
+  "dgSpecHash": "9hteK9wjbMw=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Macjohnan\\source\\repos\\Nkambwe\\Grc\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj",
+  "projectFilePath": "C:\\Projects\\Grc\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Macjohnan\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\Macjohnan\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
