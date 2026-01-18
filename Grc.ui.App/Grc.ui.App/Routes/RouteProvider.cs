@@ -89,6 +89,18 @@
                 defaults: new { area = "Admin", controller = "Support", action = "DeleteUser" }
             );
 
+            routeBuilder.MapControllerRoute(
+                name: "admin-role-groups-mini",
+                pattern: "admin/support/role-groups/mini-list/{id:long}",
+                defaults: new { area = "Admin", controller = "Support", action = "GetRoleGroupsMiniList" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                name: "admin-departments-units-mini",
+                pattern: "admin/support/department-units/mini-list/{id:long}",
+                defaults: new { area = "Admin", controller = "Support", action = "GetUnitsMiniList" }
+            );
+
             /*----------------------- Role routes*/
             routeBuilder.MapControllerRoute(
                 name: "admin-roles",

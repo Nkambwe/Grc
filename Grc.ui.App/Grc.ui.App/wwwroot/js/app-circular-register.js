@@ -387,7 +387,6 @@ function saveCircular(e) {
 
 function saveCircular2Record(isEdit, record) {
 
-    console.log(`IS EDIT >> `, isEdit);
     const url = (isEdit === true || isEdit === "true")
         ? "/grc/compliance/circulars/update-circular"
         : "/grc/compliance/circulars/create-circular";

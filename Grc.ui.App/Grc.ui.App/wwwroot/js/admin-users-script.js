@@ -202,11 +202,281 @@ function initUserSearch() {
 
 }
 
-function viewRecord(userId) {
-    alert("View record for user ID: " + userId);
+function addUser() {
+    openUserPane("Add new user", {
+        id: 0,
+        solId:0,
+        roleId:0,
+        roleGroupId:0,
+        departmentId:0,
+        isVerify:  false,
+        isApprove:  false,
+        firstName: '',
+        lastName: '',
+        middleName: '',
+        userName: '',
+        emailAddress: '',
+        displayName: '',
+        phoneNumber: '',
+        pfNumber: '',
+        unitCode: '',
+        isActive:  false,
+    }, false);
 }
 
-function highlightField(selector, hasError, message) {
+function openUserPane(title, record, isEdit) {
+
+    $('#isEdit').val(isEdit);
+    $('#recordId').val(record?.id || '');
+    $('#isVerify').val(record?.isVerify || false);
+    $('#isApprove').val(record?.isApprove || false);
+
+    $('#firstName').val(record?.firstName || '');
+    $('#lastName').val(record?.lastName || '');
+    $('#middleName').val(record?.middleName || '');
+    $('#userName').val(record?.userName || '');
+    $('#emailAddress').val(record?.emailAddress || '');
+    $('#displayName').val(record?.displayName || '');
+    $('#phoneNumber').val(record?.phoneNumber || '');
+    $('#pfNumber').val(record?.pfNumber || '');
+
+    $('#isActive').prop('checked', record?.isActive || false);
+
+    $('#solId').val(record?.solId || 'Unknown').trigger('change');
+
+    if (isEdit) {
+        $('#roleId').val(record.roleId).trigger('change');
+        $('#departmentId').val(record.departmentId).trigger('change');
+
+        setTimeout(() => {
+            $('#roleGroupId').val(record.roleGroupId || '0').trigger('change');
+            $('#unitCode').val(record.unitCode || '0').trigger('change');
+        }, 300);
+    } else {
+        $('#roleId').val('0');
+        $('#departmentId').val('0');
+        $('#roleGroupId').val('0').empty();
+        $('#unitCode').val('0').empty();
+    }
+
+    $('#userTitle').text(title);
+    $('#adminUserOverLay').addClass('active');
+    $('#newUserContainer').addClass('active');
+}
+
+
+function viewRecord(id) {
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving user...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    console.log("ID >> " + id);
+    findUser(id)
+        .then(record => {
+            Swal.close();
+            if (record) {
+                openUserPane('Edit User', record, true);
+            } else {
+                Swal.fire({ title: 'NOT FOUND', text: 'User not found' });
+            }
+        })
+        .catch(() => {
+            Swal.close();
+            Swal.fire({ title: 'Error', text: 'Failed to load user details.' });
+        });
+}
+
+function findUser(id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/admin/support/users-retrieve/${id}`,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success && response.data) {
+                    resolve(response.data);
+                    resolve(null);
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire("Error", error);
+                return;
+            }
+        });
+    });
+}
+
+function saveUser(e) {
+    e.preventDefault();
+    let id = Number($('#recordId').val()) || 0;
+    let roleId = Number($('#roleId').val()) || 0;
+    let departmentId = Number($('#departmentId').val()) || 0;
+    let roleGroupId = Number($('#roleGroupId').val()) || 0;
+
+    let solval = $('#solId').val();
+
+    let isEdit = $('#isEdit').val() || false;
+    let isVerify = $('#isVerify').val() || true;
+    let isApprove = $('#isApprove').val() || true;
+
+    //..build record payload from form
+    let recordData = {
+        id: id,
+        isVerify: isVerify,
+        isApprove: isApprove,
+        solId: solval,
+        firstName: $('#firstName').val()?.trim(),
+        middleName: $('#middleName').val()?.trim(),
+        lastName: $('#lastName').val()?.trim(),
+        userName: $('#userName').val()?.trim(),
+        emailAddress: $('#emailAddress').val()?.trim(),
+        pfNumber: $('#pfNumber').val()?.trim(),
+        phoneNumber: $('#phoneNumber').val()?.trim(),
+        displayName: $('#displayName').val()?.trim(),
+        isActive: $('#isActive').is(':checked') ? true : false,
+        roleId: roleId,
+        departmentId: departmentId,
+        roleGroupId: roleGroupId,
+        unitCode: $('#unitCode').val()?.trim()
+    };
+
+    //..validate required fields
+    let errors = [];
+    if (!recordData.firstName)
+        errors.push("First Name field is required.");
+
+    if (!recordData.lastName)
+        errors.push("Last Name field is required.");
+
+    if (!recordData.userName)
+        errors.push("Username field is required.");
+
+    if (!recordData.emailAddress)
+        errors.push("Email address field is required.");
+        
+    if (!recordData.pfNumber)
+        errors.push("PF Number field is required.");
+
+    if (!recordData.solId || recordData.solId === 'Unknown')
+        errors.push("Branch Field is required.");
+        
+    if (recordData.roleId == 0)
+        errors.push("Role Field is required.");
+        
+    if (recordData.roleGroupId == 0)
+        errors.push("Role group Field is required.");
+
+    if (recordData.departmentId == 0)
+        errors.push("Department Field is required.");
+
+    console.log(recordData);
+
+    if (errors.length > 0) {
+        errorMakerField("#firstName", !recordData.firstName);
+        errorMakerField("#lastName", !recordData.lastName);
+        errorMakerField("#userName", !recordData.userName);
+        errorMakerField("#emailAddress", !recordData.emailAddress);
+        errorMakerField("#pfNumber", !recordData.pfNumber);
+        errorMakerField("#authorityId", recordData.solId === 0);
+        errorMakerField("#ownerId", recordData.roleId === 0);
+        errorMakerField("#authorityId", recordData.departmentId === 0);
+        errorMakerField("#ownerId", recordData.roleGroupId === 0);
+        Swal.fire({
+            title: "User data Validation",
+            html: `<div style="text-align:left;">${errors.join("<br>")}</div>`,
+        });
+        return;
+    }
+
+    //..call backend
+    saveUserRecord(isEdit, recordData);
+}
+
+function saveUserRecord(isEdit, record) {
+    const url = (isEdit === true || isEdit === "true")
+        ? "/admin/support/users-modify"
+        : "/admin/support/users-create";
+
+    Swal.fire({
+        title: isEdit ? "Updating user record..." : "Saving user record...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    console.log("User record >> ", record);
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(record),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getPostToken()
+        },
+        success: function (res) {
+            Swal.close();
+            if (!res.success) {
+                Swal.fire({
+                    title: "Invalid record",
+                    html: res.message.replaceAll("; ", "<br>")
+                });
+                return;
+            }
+
+            Swal.fire(res.message || "User record saved successfully")
+                .then(() => {
+                    //..close panel
+                    closeUserPanel();
+                    window.location.reload();
+                });
+        },
+        error: function (xhr) {
+            Swal.close();
+
+            let errorMessage = "Unexpected error occurred.";
+            try {
+                let response = JSON.parse(xhr.responseText);
+                if (response.message) errorMessage = response.message;
+            } catch (e) { }
+
+            Swal.fire({
+                title: isEdit ? "Update Failed" : "Save Failed",
+                text: errorMessage
+            });
+        }
+    });
+}
+
+function exportUsers() {
+    alert("Export Users");
+}
+
+function approveUsers() {
+    alert("Approve user button clicked")
+}
+
+function lockUsers() {
+    alert("Lock account button clicked");
+}
+
+function managePassword() {
+     alert("User password button clicked");
+}
+
+function closeUserPanel() {
+      $('#adminUserOverLay').removeClass('active');
+      $('#newUserContainer').removeClass('active');
+}
+
+function errorMakerField(selector, hasError, message) {
     const $field = $(selector);
     const $formGroup = $field.closest('.form-group, .mb-3, .col-sm-8');
 
@@ -222,35 +492,136 @@ function highlightField(selector, hasError, message) {
     }
 }
 
+function getPostToken() {
+    return $('meta[name="csrf-token"]').attr('content');
+}
+
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 $(document).ready(function () {
     initUserTable();
+
+    $('#userForm').on('submit', function (e) {
+        e.preventDefault();
+    });
+
+     $('#roleId ,#roleGroupId, #departmentId, #unitCode, #solId, #unitCode').select2({
+        width: '100%',
+        dropdownParent: $('#newUserContainer'),
+        placeholder: 'Select an option',
+        allowClear: true
+    });
+
+    $('#departmentId').on('change', function () {
+        const id = $(this).val();
+
+        // Reset unit code
+        $('#unitCode').empty().trigger('change');
+
+        if (!id) return;
+       
+        $.ajax({
+            url: `/admin/support/department-units/mini-list/${id}`,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success && response.data) {
+
+                    const $units = $('#unitCode');
+                    $units.empty();
+                    $units.append(new Option('Select unit...', 'Unknown', false, false));
+
+                    response.data.forEach(item => {
+                        $units.append(
+                            new Option(item.unitName, item.code, false, false)
+                        );
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire("Error", error);
+            }
+        });
+    });
+
+    $(document).on('change', '#roleId', function () {
+        const id = $(this).val();
+
+        $('#roleGroupId').empty().trigger('change');
+
+        if (!id || id === "0") return;
+
+        $.ajax({
+            url: `/admin/support/role-groups/mini-list/${id}`,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success && response.data) {
+
+                    const $roleGroup = $('#roleGroupId');
+                    $roleGroup.empty();
+                    $roleGroup.append(new Option('Select group...', '0', false, false));
+
+                    response.data.forEach(item => {
+                        $roleGroup.append(
+                            new Option(item.groupName, item.id, false, false)
+                        );
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire("Error", error);
+            }
+        });
+    });
 
     $(".action-btn-admin-home").on("click", function () {
         window.location.href = '/admin/support';
     });
 
     $(".action-btn-new-user").on("click", function () {
-        alert("new user button clicked")
+        addUser();
+    });
+    $(document).on('input', '#phoneNumber', function () {
+        this.value = this.value.replace(/\D/g, '').slice(0, 12);
     });
 
-    $(".action-btn-edit-user").on("click", function () {
-        alert("Edit user button clicked")
+    $(document).on('input', '#pfNumber', function () {
+        this.value = this.value.replace(/\D/g, '');
     });
 
-    $(".action-btn-delete-user").on("click", function () {
-        alert("Delete user button clicked")
+    $(document).on('input', '#emailAddress', function () {
+        this.value = this.value.replace(/[^a-zA-Z0-9@.]/g, '');
+    });
+
+    $(document).on('input', '#userName', function () {
+        this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+    });
+
+    $(document).on('input', '#firstName, #middleName, #lastName', function () {
+        this.value = this.value.replace(/[^a-zA-Z]/g, '');
+    });
+
+    $(document).on('input', '#firstName', function () {
+        $('#displayName').val(this.value);
+    });
+
+    $(".action-btn-excel-export").on("click", function () {
+        exportUsers();
     });
 
     $(".action-btn-approve-user").on("click", function () {
-        alert("Approve user button clicked")
+        approveUsers();
     });
 
     $(".action-btn-lock-account").on("click", function () {
-        alert("Lock account button clicked")
+        lockUsers();
     });
 
     $(".action-btn-password-user").on("click", function () {
-        alert("User password button clicked")
+        managePassword();
     });
 
 });

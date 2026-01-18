@@ -9,6 +9,7 @@ using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -478,6 +479,173 @@ namespace Grc.Middleware.Api.Services {
         #endregion
 
         #region System Users
+        public async Task<UserSupportResponse> GetUserSupportItemsAsync() {
+             using var uow = UowFactory.Create();
+            Logger.LogActivity($"Get user support items", "INFO");
+
+            try
+            {
+                //..map response
+                var supportItems = new UserSupportResponse() {
+                    Branches = new(),
+                    Departments = new(),
+                    Roles = new(),
+                };
+
+                var roles = await uow.RoleRepository.GetAllAsync();
+                var departments = await uow.DepartmentRepository.GetAllAsync();
+                var branches = await uow.BranchRepository.GetAllAsync();
+
+                 if(roles != null && roles.Any()) {
+                    supportItems.Roles = roles.Select(r => new RoleItemResponse() {
+                        Id = r.Id,
+                        Name = r.RoleName
+                    }).ToList();
+                 }
+
+                 if(departments != null && departments.Any()) {
+                    supportItems.Departments = departments.Select(r => new DepartmentItemResponse() {
+                        Id = r.Id,
+                        Name = r.DepartmentName
+                    }).ToList();
+                 }
+
+                 if(branches != null && branches.Any()) {
+                    supportItems.Branches = branches.Select(r => new BranchItemResponse() {
+                        Id = r.Id,
+                        SolId = r.SolId,
+                        Name = r.BranchName
+                    }).ToList();
+                 }
+                
+                return supportItems;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to check for System User in the database: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<List<RoleGroupItemResponse>> GetGroupItemsAsync(long roleId, bool includeDelete) {
+             using var uow = UowFactory.Create();
+            Logger.LogActivity($"Get role role groups", "INFO");
+
+            try {
+                //..map response
+                var groups = new List<RoleGroupItemResponse>();
+                var role = await uow.RoleRepository.GetAsync(r => r.Id == roleId, false, r=>r.Group);
+                 if(role != null && role.Group != null) {
+                    groups.Add(new RoleGroupItemResponse() {
+                        Id = role.Group.Id,
+                        GroupName = role.Group.GroupName
+                    });
+                 }
+
+                
+                return groups;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrieve role groups in the database: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<List<UnitItemResponse>> GetUnitItemsAsync(long departmentId, bool includeDelete) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Get user support items", "INFO");
+
+            try
+            {
+                //..map response
+                var units = new List<UnitItemResponse>();
+                var unitdata = await uow.DepartmentUnitRepository.GetAllAsync(u => u.DepartmentId == departmentId);
+                 if(unitdata != null && unitdata.Any()) {
+                    units = unitdata.Select(r => new UnitItemResponse() {
+                        Id = r.Id,
+                        UnitCode = r.UnitCode,
+                        UnitName = r.UnitName
+                    }).ToList();
+                 }
+
+                return units;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to retrive units the database: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
+        }
 
         public bool UserExists(Expression<Func<SystemUser, bool>> predicate, bool excludeDeleted = false)
         {

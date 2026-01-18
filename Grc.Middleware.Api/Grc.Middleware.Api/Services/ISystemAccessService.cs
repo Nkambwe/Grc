@@ -1,4 +1,5 @@
-﻿using Grc.Middleware.Api.Data.Entities.Logging;
+﻿using Azure.Core;
+using Grc.Middleware.Api.Data.Entities.Logging;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
@@ -51,6 +52,10 @@ namespace Grc.Middleware.Api.Services {
         #endregion
 
         #region System Access
+        Task<UserSupportResponse> GetUserSupportItemsAsync();
+        Task<List<RoleGroupItemResponse>> GetGroupItemsAsync(long roleId, bool includeDelete);
+        Task<List<UnitItemResponse>> GetUnitItemsAsync(long departmentId, bool includeDelete);
+
         Task<UsernameValidationResponse> ValidateUsernameAsync(string username);
 
         Task<AuthenticationResponse> AuthenticateUserAsync(string username);
@@ -184,7 +189,7 @@ namespace Grc.Middleware.Api.Services {
         Task<ActivityLog> GetActivityLogAsync(IdRequest request);
 
         Task<PagedResult<ActivityLog>> GetPagedActivityLogAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false);
-
+        
         #endregion
 
     }

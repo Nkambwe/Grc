@@ -1,5 +1,6 @@
-﻿<div class="grc-tabulator-container">
+﻿@model UserSupportViewModel
 
+<div class="grc-tabulator-container">
     <div class="grc-tabulator-search">
         <div class="field-search-group">
             <label class="form-searchbox-label text-right">
@@ -16,15 +17,244 @@
     <div id="adminUsersTable"></div>
 </div>
 
-<div id="adminUserOverLay" class="user-overlay"></div>
+<div id="adminUserOverLay" class="obligation-panel-overlay"></div>
 
-<div id="newUserContainer" class="admin-user-container">
-    <form id="userForm">
-        <input type="hidden" id="recordId">
-        <input type="hidden" id="isVerify">
-        <input type="hidden" id="isApprove">
-        <!--- add controls to create or moify user-->
-    </form>
+
+<div id="newUserContainer" class="obligation-side-panel">
+
+    <div class="obligation-side-panel-header">
+        <h3 id="userTitle">Manage Users</h3>
+        <button class="panel-close" onclick="closeUserPanel()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div class="obligation-side-panel-body">
+
+        <form id="userForm" class="grc-law-form m-3">
+            <input type="hidden" id="recordId">
+            <input type="hidden" id="isVerify">
+            <input type="hidden" id="isApprove">
+
+            <div class="row mb-3">
+
+                <div class="col-12">
+
+                    <div class="row mb-3">
+
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="firstName" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.User.Label.FirstName"))
+                                </label>
+                                <div class="col-12">
+                                    <input type="text" class="form-control" id="firstName">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="middleName" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.User.Label.Middlename"))
+                                </label>
+                                <div class="col-12">
+                                    <input type="text" class="form-control" id="middleName">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="lastName" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.User.Label.LastName"))
+                                </label>
+                                <div class="col-12">
+                                    <input type="text" class="form-control" id="lastName">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="row">
+                                <label for="userName" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.User.Label.Username"))
+                                </label>
+                                <div class="col-6">
+                                    <input type="text" class="form-control" id="userName">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="displayName" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.User.Label.DisplayName"))
+                                </label>
+                                <div class="col-12">
+                                    <input type="text" class="form-control" id="displayName" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="emailAddress" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.User.Label.Email"))
+                                </label>
+                                <div class="col-12">
+                                    <input type="text" class="form-control" id="emailAddress">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="pfNumber" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.User.Label.PFNumber"))
+                                </label>
+                                <div class="col-12">
+                                    <input type="text" class="form-control" id="pfNumber">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="phoneNumber" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.User.Label.Phone"))
+                                </label>
+                                <div class="col-12">
+                                    <input type="text" class="form-control" id="phoneNumber">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="solId" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Type.Branch"))
+                                </label>
+                                <div class="col-12">
+                                    <select class="js-act-sol-id form-control" id="solId" name="solId">
+                                        <option value="Unknown">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.User.Label.Branch.Select"))</option>
+                                        @if (Model?.Branches != null && Model.Branches.Any())
+                                        {
+                                            foreach (var branch in Model.Branches)
+                                            {
+                                                <option value="@branch.SolId">@branch.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-6">
+                            <div class="row field-group mt-1 mb-1">
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input pe-none" type="checkbox" id="isActive" onclick="return false;">
+                                        <label class="form-check-label" for="isActive">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.User.Label.Deactivate"))
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+
+                        <div class="col-6">
+
+                            <div class="row">
+                                <label for="roleId" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.User.Label.Role"))
+                                </label>
+                                <div class="col-12">
+                                    <select class="js-act-role-id form-control" id="roleId" name="roleId">
+                                        <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.User.Label.Role.Select"))</option>
+                                        @if (Model?.Roles != null && Model.Roles.Any())
+                                        {
+                                            foreach (var role in Model.Roles)
+                                            {
+                                                <option value="@role.Id">@role.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="roleGroupId" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.User.Label.RoleGroup"))
+                                </label>
+                                <div class="col-12">
+                                    <select class="js-act-group-id form-control" id="roleGroupId" name="roleGroupId"></select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="departmentId" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.User.Label.Department"))
+                                </label>
+                                <div class="col-12">
+                                    <select class="js-act-department-id form-control" id="departmentId" name="departmentId">
+                                        <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.User.Label.Department.Select"))</option>
+                                        @if (Model?.Departments != null && Model.Departments.Any())
+                                        {
+                                            foreach (var dept in Model.Departments)
+                                            {
+                                                <option value="@dept.Id">@dept.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="unitCode" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.User.Label.Unit"))
+                                </label>
+                                <div class="col-12">
+                                    <select class="js-act-unit-code form-control" id="unitCode" name="unitCode"></select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+                        <div class="col-sm-2">
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveUser(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeUserPanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                        </div>
+                        <div class="col-sm-8"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
 </div>
 
 @{

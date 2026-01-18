@@ -29,19 +29,7 @@ namespace Grc.Middleware.Api.Http.Requests {
         [JsonPropertyName("decrypts")]
         public string[] DecryptFields { get; set; }
 
-        public string[] EncryptHashedFields { get; set; } = new string[] { "UserName" };
+        public string[] EncryptHashedFields { get; set; } = new string[] { "EmailAddress" };
 
-    }
-
-    public class TestUser : MiddlewareRequest { 
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string MiddleName { get; set; }
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        public string PFNumber { get; set; }
-        public string UserName { get; set; }
-        public string UserNameHashed { get; set; }
-        public string Password { get; set; }
     }
 }

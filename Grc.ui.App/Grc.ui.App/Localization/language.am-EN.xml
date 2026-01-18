@@ -2430,6 +2430,60 @@
 		<Value>Select status...</Value>
 	</LocaleResource>
 
+    <LocaleResource Name="Component.Table.User.Label.FirstName">
+        <Value>First Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Middlename">
+        <Value>Middle Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.LastName">
+        <Value>Last Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Username">
+        <Value>Username</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.DisplayName">
+        <Value>Display Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Email">
+        <Value>Email Address</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.PFNumber">
+        <Value>PF Number</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Phone">
+        <Value>Phone Number</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Deactivate">
+        <Value>Active Account</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Role">
+        <Value>System Role</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Role.Select">
+        <Value>Select role...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.RoleGroup">
+        <Value>Role Group</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Department">
+        <Value>Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Department.Select">
+        <Value>Select department...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Unit">
+        <Value>Department Unit</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Unit.Select">
+        <Value>Select unit..</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Branch">
+        <Value>Branch</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Branch.Select">
+        <Value>Select branch...</Value>
+    </LocaleResource>
 	<LocaleResource Name="Component.Key.audit-home">
 		<Value>Audit Types</Value>
 	</LocaleResource>
@@ -2441,8 +2495,5 @@
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Audits.Type.Name">
 		<Value>Type Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Audits.Type.Description">
-		<Value>Type Description</Value>
 	</LocaleResource>
 </Language>

@@ -126,6 +126,12 @@ namespace Grc.ui.App.Services {
         /// <param name="ipAddress">IP Address for current user</param>
         /// <returns>Task containing update status of this user</returns>
         Task<GrcResponse<ServiceResponse>> UpdateUserAsync(UserViewModel userRecord, long userId, string ipAddress);
+       
+        Task<GrcResponse<GrcUserSupportResponse>> GetUserSupportAsync(long userId, string iPAddress);
+        
+        Task<GrcResponse<List<RoleGroupItemResponse>>> GetSelectedRoleGroupsAsync(long userId, long id, string ipAddress);
+        Task<GrcResponse<List<UnitItemResponse>>> GetSelectedUnitsAsync(long userId, long id, string ipAddress);
+
         #endregion
 
         #region Roles
@@ -285,7 +291,7 @@ namespace Grc.ui.App.Services {
         Task<GrcResponse<ServiceResponse>> UpdatePermissionSetAsync(GrcPermissionSetViewModel roleRecord, long userId, string ipAddress);
 
         Task<GrcResponse<ServiceResponse>> DeletePermissionSetAsync(GrcIdRequest request);
-       
+
         #endregion
 
     }

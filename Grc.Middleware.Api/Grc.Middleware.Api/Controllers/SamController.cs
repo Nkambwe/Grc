@@ -381,6 +381,72 @@ namespace Grc.Middleware.Api.Controllers {
         #endregion
 
         #region User Records
+        
+        [HttpPost("sam/users/user-support")]
+        public async Task<IActionResult> GetUserSupport([FromBody] GeneralRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RecordCountResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+
+                var supportItems = await _accessService.GetUserSupportItemsAsync();
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(supportItems)}");
+                return Ok(new GrcResponse<UserSupportResponse>(supportItems));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<UserSupportResponse>(error));
+            }
+        }
+
+        [HttpPost("sam/users/role-rolegroup-list")]
+        public async Task<IActionResult> GetSelectedRoleGroups([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<RoleGroupItemResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+
+                var roleGroups = await _accessService.GetGroupItemsAsync(request.RecordId, false);
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {roleGroups.Count}");
+                return Ok(new GrcResponse<List<RoleGroupItemResponse>>(roleGroups));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<List<RoleGroupItemResponse>>(error));
+            }
+        }
+
+        [HttpPost("sam/users/department-units-mini-list")]
+        public async Task<IActionResult> GetSelectedUnits([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<UnitItemResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+
+                var units = await _accessService.GetUnitItemsAsync(request.RecordId, false);
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {units.Count}");
+                return Ok(new GrcResponse<List<UnitItemResponse>>(units));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<List<UnitItemResponse>>(error));
+            }
+        }
 
         [HttpPost("sam/users/getById")]
         public async Task<IActionResult> GetUserByIdAsync([FromBody] UserRequest request) {
@@ -414,7 +480,7 @@ namespace Grc.Middleware.Api.Controllers {
                     var userRecord = Mapper.Map<UserResponse>(response);
                     request.DecryptFields = new string[] { "FirstName", "LastName", "MiddleName", "EmailAddress", "PhoneNumber", "PFNumber" };
                     userRecord = Cypher.DecryptProperties(userRecord, request.DecryptFields);
-
+                    userRecord.DisplayName = userRecord.FirstName ?? string.Empty;
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
                     return Ok(new GrcResponse<UserResponse>(userRecord));
                 } else {
@@ -704,6 +770,11 @@ namespace Grc.Middleware.Api.Controllers {
                 var userRecord = Mapper.Map<SystemUser>(request);
 
                 //..hash the password
+                userRecord.PasswordHash ="Password10!";
+                userRecord.IsDeleted = false;
+                userRecord.IsActive=true;
+;               userRecord.IsApproved = true;
+                userRecord.IsVerified = true;
                 userRecord.PasswordHash = ExtendedHashMapper.HashPassword(userRecord.PasswordHash);
                 //..encrypt fields
                 Cypher.EncryptProperties(userRecord, request.EncryptFields);
