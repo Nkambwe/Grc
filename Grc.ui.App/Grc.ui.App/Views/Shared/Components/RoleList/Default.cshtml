@@ -18,14 +18,20 @@
     <div id="adminRolesTable"></div>
 </div>
 
-<div id="adminRoleOverLay" class="role-overlay" onclick="closeRolePanel()">
+<div id="adminRoleOverLay" class="circular-outer-panel-overlay"></div>
 
-    <div id="rolePanel" class="set-panel" onclick="event.stopPropagation()">
+<div id="rolePanel" class="circular-side-panel" onclick="event.stopPropagation()">
 
-        <div class="panel-header">
-            <h3 id="rolePanelTitle">System Role</h3>
-            <button class="panel-close" onclick="closeRolePanel()">&times;</button>
-        </div>
+    <div class="circular-side-panel-header">
+        <h5 id="rolePanelTitle">
+            System Role
+        </h5>
+        <button class="panel-close" onclick="closeRolePanel()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div class="circular-side-panel-body">
 
         <form id="roleForm" class="grc-set-form">
             <input type="hidden" id="roleId">
@@ -76,8 +82,10 @@
                                             aria-labelledby="dpRoleGroups-label"
                                             aria-describedby="dpRoleGroups-description">
                                         <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Role.List.Select"))</option>
-                                        @if (Model?.RoleGroups != null && Model.RoleGroups.Any()) {
-                                            foreach (var group in Model.RoleGroups) {
+                                        @if (Model?.RoleGroups != null && Model.RoleGroups.Any())
+                                        {
+                                            foreach (var group in Model.RoleGroups)
+                                            {
                                                 <option value="@group.Id">@group.GroupName</option>
                                             }
                                         }
@@ -165,85 +173,88 @@
 
 </div>
 
-<div class="groupOverlay" onclick="closeGroupPanel()">
+<div id="groupPanel" class="circular-side-panel" onclick="event.stopPropagation()">
 
-    <div id="groupPanel" class="set-panel" onclick="event.stopPropagation()">
+    <div class="circular-side-panel-header">
+        <h5 id="groupPanelTitle">
+            Role Group
+        </h5>
+        <button class="panel-close" onclick="closeGroupPanel()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
 
-        <div class="panel-header">
-            <h3 id="groupPanelTitle">Role Group</h3>
-            <button class="panel-close" onclick="closeGroupPanel()">&times;</button>
-        </div>
-        <div class="set-panel-body">
-            <form id="groupInnerForm" class="grc-set-form">
-                <input type="hidden" id="groupId">
-                <input type="hidden" id="isEdit">
+    <<div class="circular-side-panel-body">
+        <form id="groupInnerForm" class="grc-set-form">
+            <input type="hidden" id="groupId">
+            <input type="hidden" id="isEdit">
 
-                <div class="row main-row">
-                    <!-- Top section - form fields -->
-                    <div class="col-sm-12 form-fields-section">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <!-- Group Name -->
-                                <div class="row mb-3">
-                                    <label for="groupName" class="col-sm-4 col-form-label text-sm-end">
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Role.Group.Name"))
-                                    </label>
-                                    <div class="col-sm-8">
-                                        <input type="text" id="groupName" name="groupName" class="form-control" />
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- group description-->
-                            <div class="col-sm-6">
-                                <div class="row mb-3">
-                                    <label for="groupDescription" class="col-sm-4 col-form-label text-sm-end">
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Role.Group.Description"))
-                                    </label>
-                                    <div class="col-sm-8">
-                                        <input type="text" id="groupDescription" name="groupDescription" class="form-control" />
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Active status -->
-                            <div class="col-sm-6 d-flex justify-content-end">
-                                <div class="form-check form-switch mt-2">
-                                    <input class="form-check-input" type="checkbox" id="isDeleted" name="isDeleted">
-                                    <label class="form-check-label" for="isDeleted">
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Role.Group.Deleted"))
-                                    </label>
+            <div class="row main-row">
+                <!-- Top section - form fields -->
+                <div class="col-sm-12 form-fields-section">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <!-- Group Name -->
+                            <div class="row mb-3">
+                                <label for="groupName" class="col-sm-4 col-form-label text-sm-end">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Role.Group.Name"))
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="groupName" name="groupName" class="form-control" />
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Middle section - permission list -->
-                    <div class="col-sm-12 permission-list-section">
-                        <div id="groupListContainer" class="permission-setList-container"></div>
-                    </div>
-
-                    <!-- Bottom section - buttons -->
-                    <div class="col-sm-12 button-section">
-                        <div class="row mb-3">
-                            <div class="col-sm-1">
-                                <button class="btn btn-grc-primary w-100 disabled" disabled onclick="saveGroup(event)">
-                                    @Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))
-                                </button>
+                        <!-- group description-->
+                        <div class="col-sm-6">
+                            <div class="row mb-3">
+                                <label for="groupDescription" class="col-sm-4 col-form-label text-sm-end">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Role.Group.Description"))
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="groupDescription" name="groupDescription" class="form-control" />
+                                </div>
                             </div>
-                            <div class="col-sm-1">
-                                <button class="btn btn-grc-secondary w-100" onclick="closeGroupPanel()">
-                                    @Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))
-                                </button>
+                        </div>
+                        <!-- Active status -->
+                        <div class="col-sm-6 d-flex justify-content-end">
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" id="isDeleted" name="isDeleted">
+                                <label class="form-check-label" for="isDeleted">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Role.Group.Deleted"))
+                                </label>
                             </div>
-                            <div class="col-sm-10"></div>
                         </div>
                     </div>
                 </div>
 
-            </form>
-        </div>
+                <!-- Middle section - permission list -->
+                <div class="col-sm-12 permission-list-section">
+                    <div id="groupListContainer" class="permission-setList-container"></div>
+                </div>
+
+                <!-- Bottom section - buttons -->
+                <div class="col-sm-12 button-section">
+                    <div class="row mb-3">
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-primary w-100 disabled" disabled onclick="saveGroup(event)">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))
+                            </button>
+                        </div>
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-secondary w-100" onclick="closeGroupPanel()">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))
+                            </button>
+                        </div>
+                        <div class="col-sm-10"></div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
     </div>
 
 </div>
+
 @{
     Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
     Html.AddScriptParts(ResourceLocation.Footer, "~/lib/select-2/js/select2.min.js");
