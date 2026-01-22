@@ -1,836 +1,836 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Language Name="English-UK" IsDefault="false" IsRightToLeft="false">
-	<LocaleResource Name="App.Version">
-		<Value>GRC SUITE 1.2</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Registration.Header">
-		<Value>System Setup</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.System.Language">
-		<Value>System Language</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Example">
-		<Value>For Example. </Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Welcome">
-		<Value>Welcome</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Signin">
-		<Value>Sign in</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.New">
-		<Value>New</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Role">
-		<Value>Role</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Role.Group">
-		<Value>Role Group</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Lock">
-		<Value>Lock</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Edit">
-		<Value>Edit</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Delete">
-		<Value>Delete</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Approve.User">
-		<Value>Approve</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.User.Password">
-		<Value>Password Reset</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Lock.User">
-		<Value>Lock</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Search">
-		<Value>Search</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Units">
-		<Value>Units</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Department">
-		<Value>Department</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Department.Code">
-		<Value>Department Code</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Branch.Code">
-		<Value>Branch Code</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Department.Name">
-		<Value>Department Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Branch.Name">
-		<Value>Branch Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Department.Deactivate">
-		<Value>Deactivate Department</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Departments">
-		<Value>Departments</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Branch.Deactivate">
-		<Value>Deactivate Branch</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Department.Branch">
-		<Value>Attached Branch</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Department.Tag">
-		<Value>Department Tag</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Update">
-		<Value>Update</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Unit.Code">
-		<Value>Unit Code</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Unit.Name">
-		<Value>Unit Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Unit.Deactivate">
-		<Value>Deactivate Unit</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Close">
-		<Value>Close</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Email">
-		<Value>Mail</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Export">
-		<Value>Export</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.ExportFiltered">
-		<Value>Filtered</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Policy.Task">
-		<Value>Tasks</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Policies.Compliance.Tasks">
-		<Value>Policy Task</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Policies.Compliance.Controls">
-		<Value>Compliance Controls</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Responsibility">
-		<Value>Responsibility</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Mail.Send">
-		<Value>Send Mail</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.AllUsers">
-		<Value>All</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Units">
-		<Value>Units</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.TotalProcesses.Proposed">
-		<Value>Proposed</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.TotalProcesses.Unchanged">
-		<Value>Unchanged</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.TotalProcesses.DueReview">
-		<Value>Due Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.TotalProcesses.Dormant">
-		<Value>Dormant</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.TotalProcesses.Cancelled">
-		<Value>Cancelled</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.TotalProcesses.Completed">
-		<Value>Completed</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.TotalProcesses">
-		<Value>All Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.Cancelled">
-		<Value>Cancelled Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.Completed">
-		<Value>Completed Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.Completed">
-		<Value>Completed Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.proposed">
-		<Value>Proposed Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.Dormant">
-		<Value>Dormant Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.Unchanged">
-		<Value>Unchanged Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.Due">
-		<Value>Due Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.AccountServices">
-		<Value>AccountService Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.Reconciliation">
-		<Value>Reconciliation Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.RecordsManagement">
-		<Value>Records Management Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.Wallets">
-		<Value>Wallets Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.Cash">
-		<Value>Cash Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.Payment">
-		<Value>Payment Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.Channels">
-		<Value>Channel Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.CustomerExperience">
-		<Value>Customer Experience Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.Initiate.Title">
-		<Value>Initiate Process Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.Initiate.Warning">
-		<Value>WARNING ! Initiating a review will unlock this process and sets it up for approval process</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Initiate.Process">
-		<Value>Initiate Comments</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.Hold.Title">
-		<Value>Hold Process Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.Hold.Warning">
-		<Value>Holding a process will change the status to 'HOLD' and remove it from active processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Hold.Reason">
-		<Value>Reason for Putting Process on hold</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Home">
-		<Value>Home</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.ComplianceHome">
-		<Value>Compliance Home</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.CategoryNew">
-		<Value>New Category</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Organization.Departments">
-		<Value>Departments</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Organization">
-		<Value>Organization</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Organization.Info">
-		<Value>Company</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Organization.Branches">
-		<Value>Branches</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Organization.Departments">
-		<Value>Departments</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Organization.Department.Unit">
-		<Value>Department Units</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Organization.Department.Heads">
-		<Value>Department Heads</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.UserRoles">
-		<Value>Roles</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.UserGroups">
-		<Value>Groups</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.srOnly.ArrowKeys">
-		<Value>Use arrow keys to navigate options. Press Enter to select</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Password">
-		<Value>Password Reset</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Departments">
-		<Value>Departments</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.DepartmentUnits">
-		<Value>All Units</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.ObligationRegister">
-		<Value>Compliance Obligations</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.GroupName">
-		<Value>Group Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.GroupDescription">
-		<Value>Group Description</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.TagName">
-		<Value>Tag Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.TagpDescription">
-		<Value>Tag Description</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.ProcessApproval">
-		<Value>Process Approvals</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.NewProcesses">
-		<Value>New Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.ProcessReviews">
-		<Value>Process Reviews</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.PolicyRegister">
-		<Value>Policies and Procedures</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.PermissionSets">
-		<Value>Permission Sets</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.DocumentManagement">
-		<Value>Document Management</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.PolicyTasks">
-		<Value>Task Assignment</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.CircularReturns">
-		<Value>Circular Returns</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.Circular-register">
-		<Value>Search circulars...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.RegulatoryReturns">
-		<Value>Regulatory Returns</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.Returns-register">
-		<Value>Search returns...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.SettingAuthorities">
-		<Value>Regulatory Authorities</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.SettingResponsibilities">
-		<Value>Responsilities</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.SettingUsers">
-		<Value>Users</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.SettingDelegation">
-		<Value>User Delegation</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.SettingDepartments">
-		<Value>Departments</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.SettingDocumentType">
-		<Value>Document Types</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.TotalProcesses">
-		<Value>Total Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.CompletedProcesses">
-		<Value>Completed Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.CancelledProcesses">
-		<Value>Cancelled Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.DormantProcesses">
-		<Value>Dormant Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.DueProcesses">
-		<Value>Due Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.UnchangedProcesses">
-		<Value>Unchanged Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.ProposedProcesses">
-		<Value>Proposed Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Users">
-		<Value>Users</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Roles">
-		<Value>Roles</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Permissions">
-		<Value>Permission Sets</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.RoleGroup">
-		<Value>Groups</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Branches">
-		<Value>Branches</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.PermissionSet">
-		<Value>Permission Sets</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.RolePermissions">
-		<Value>Role Permissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.RoleGroupPermissions">
-		<Value>Role Groups</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Delegations">
-		<Value>Delegation</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Users">
-		<Value>All Users</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Encryption">
-		<Value>Entity Encryption</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Activities">
-		<Value>System Activities</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Configuration">
-		<Value>Configuration</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.BugTracker">
-		<Value>Bug Tracker</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.CompletedProcesses">
-		<Value>Completed Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.CompletedProcesses">
-		<Value>Completed Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.CancelledProcesses">
-		<Value>Cancelled Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.DormantProcesses">
-		<Value>Dormant Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.DueProcesses">
-		<Value>Due Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.UnchangedProcesses">
-		<Value>Unchanged Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.ProposedProcesses">
-		<Value>Proposed Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.WalletProcesses">
-		<Value>Wallet Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.CashProcesses">
-		<Value>Cash Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.ReconProcesses">
-		<Value>Reconciliation Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.CustomerExProcesses">
-		<Value>Customer Experience Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.RecordMgtProcesses">
-		<Value>Records Management Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.ChannelProcesses">
-		<Value>Channel Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.AccountSvcProcesses">
-		<Value>Account Services Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.PaymentProcesses">
-		<Value>Payment Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.SupportRegulatoryTypes">
-		<Value>Regulatory Types</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.SupportRegulatoryCategories">
-		<Value>Regulatory Caregories</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.RegulatoryRegister">
-		<Value>Regulations,Guidelines and Laws</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.RegulatoryMaps">
-		<Value>Requirements/Obligations</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.ComplianceControl">
-		<Value>Compliance Controls</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.ActiveUsers">
-		<Value>Active Users</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.LockedUsers">
-		<Value>Locked Users</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.UnapprovedUsers">
-		<Value>Unapproved Users</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.UnverifiedUsers">
-		<Value>Unverified Users</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.DeletedUsers">
-		<Value>Deleted Users</Value>
-	</LocaleResource>
+    <LocaleResource Name="App.Version">
+        <Value>GRC SUITE 1.2</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Registration.Header">
+        <Value>System Setup</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.System.Language">
+        <Value>System Language</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Example">
+        <Value>For Example. </Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Welcome">
+        <Value>Welcome</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Signin">
+        <Value>Sign in</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.New">
+        <Value>New</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Role">
+        <Value>Role</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Role.Group">
+        <Value>Role Group</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Lock">
+        <Value>Lock</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Edit">
+        <Value>Edit</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Delete">
+        <Value>Delete</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Approve.User">
+        <Value>Approve</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.User.Password">
+        <Value>Password Reset</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Lock.User">
+        <Value>Lock</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Search">
+        <Value>Search</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Units">
+        <Value>Units</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Department">
+        <Value>Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Department.Code">
+        <Value>Department Code</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Branch.Code">
+        <Value>Branch Code</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Department.Name">
+        <Value>Department Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Branch.Name">
+        <Value>Branch Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Department.Deactivate">
+        <Value>Deactivate Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Departments">
+        <Value>Departments</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Branch.Deactivate">
+        <Value>Deactivate Branch</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Department.Branch">
+        <Value>Attached Branch</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Department.Tag">
+        <Value>Department Tag</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Update">
+        <Value>Update</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Unit.Code">
+        <Value>Unit Code</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Unit.Name">
+        <Value>Unit Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Unit.Deactivate">
+        <Value>Deactivate Unit</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Close">
+        <Value>Close</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Email">
+        <Value>Mail</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Export">
+        <Value>Export</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.ExportFiltered">
+        <Value>Filtered</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Policy.Task">
+        <Value>Tasks</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Policies.Compliance.Tasks">
+        <Value>Policy Task</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Policies.Compliance.Controls">
+        <Value>Compliance Controls</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Responsibility">
+        <Value>Responsibility</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Mail.Send">
+        <Value>Send Mail</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.AllUsers">
+        <Value>All</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Units">
+        <Value>Units</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.TotalProcesses.Proposed">
+        <Value>Proposed</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.TotalProcesses.Unchanged">
+        <Value>Unchanged</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.TotalProcesses.DueReview">
+        <Value>Due Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.TotalProcesses.Dormant">
+        <Value>Dormant</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.TotalProcesses.Cancelled">
+        <Value>Cancelled</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.TotalProcesses.Completed">
+        <Value>Completed</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.TotalProcesses">
+        <Value>All Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.Cancelled">
+        <Value>Cancelled Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.Completed">
+        <Value>Completed Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.Completed">
+        <Value>Completed Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.proposed">
+        <Value>Proposed Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.Dormant">
+        <Value>Dormant Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.Unchanged">
+        <Value>Unchanged Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.Due">
+        <Value>Due Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.AccountServices">
+        <Value>AccountService Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.Reconciliation">
+        <Value>Reconciliation Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.RecordsManagement">
+        <Value>Records Management Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.Wallets">
+        <Value>Wallets Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.Cash">
+        <Value>Cash Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.Payment">
+        <Value>Payment Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.Channels">
+        <Value>Channel Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.CustomerExperience">
+        <Value>Customer Experience Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.Initiate.Title">
+        <Value>Initiate Process Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.Initiate.Warning">
+        <Value>WARNING ! Initiating a review will unlock this process and sets it up for approval process</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Initiate.Process">
+        <Value>Initiate Comments</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.Hold.Title">
+        <Value>Hold Process Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.Hold.Warning">
+        <Value>Holding a process will change the status to 'HOLD' and remove it from active processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Hold.Reason">
+        <Value>Reason for Putting Process on hold</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Home">
+        <Value>Home</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.ComplianceHome">
+        <Value>Compliance Home</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.CategoryNew">
+        <Value>New Category</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Organization.Departments">
+        <Value>Departments</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Organization">
+        <Value>Organization</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Organization.Info">
+        <Value>Company</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Organization.Branches">
+        <Value>Branches</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Organization.Departments">
+        <Value>Departments</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Organization.Department.Unit">
+        <Value>Department Units</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Organization.Department.Heads">
+        <Value>Department Heads</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.UserRoles">
+        <Value>Roles</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.UserGroups">
+        <Value>Groups</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.srOnly.ArrowKeys">
+        <Value>Use arrow keys to navigate options. Press Enter to select</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Password">
+        <Value>Password Reset</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Departments">
+        <Value>Departments</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.DepartmentUnits">
+        <Value>All Units</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.ObligationRegister">
+        <Value>Compliance Obligations</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.GroupName">
+        <Value>Group Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.GroupDescription">
+        <Value>Group Description</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.TagName">
+        <Value>Tag Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.TagpDescription">
+        <Value>Tag Description</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.ProcessApproval">
+        <Value>Process Approvals</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.NewProcesses">
+        <Value>New Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.ProcessReviews">
+        <Value>Process Reviews</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.PolicyRegister">
+        <Value>Policies and Procedures</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.PermissionSets">
+        <Value>Permission Sets</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.DocumentManagement">
+        <Value>Document Management</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.PolicyTasks">
+        <Value>Task Assignment</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.CircularReturns">
+        <Value>Circular Returns</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.Circular-register">
+        <Value>Search circulars...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.RegulatoryReturns">
+        <Value>Regulatory Returns</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.Returns-register">
+        <Value>Search returns...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.SettingAuthorities">
+        <Value>Regulatory Authorities</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.SettingResponsibilities">
+        <Value>Responsilities</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.SettingUsers">
+        <Value>Users</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.SettingDelegation">
+        <Value>User Delegation</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.SettingDepartments">
+        <Value>Departments</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.SettingDocumentType">
+        <Value>Document Types</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.TotalProcesses">
+        <Value>Total Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.CompletedProcesses">
+        <Value>Completed Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.CancelledProcesses">
+        <Value>Cancelled Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.DormantProcesses">
+        <Value>Dormant Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.DueProcesses">
+        <Value>Due Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.UnchangedProcesses">
+        <Value>Unchanged Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.ProposedProcesses">
+        <Value>Proposed Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Users">
+        <Value>Users</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Roles">
+        <Value>Roles</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Permissions">
+        <Value>Permission Sets</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.RoleGroup">
+        <Value>Groups</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Branches">
+        <Value>Branches</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.PermissionSet">
+        <Value>Permission Sets</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.RolePermissions">
+        <Value>Role Permissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.RoleGroupPermissions">
+        <Value>Role Groups</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Delegations">
+        <Value>Delegation</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Users">
+        <Value>All Users</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Encryption">
+        <Value>Entity Encryption</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Activities">
+        <Value>System Activities</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Configuration">
+        <Value>Configuration</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.BugTracker">
+        <Value>Bug Tracker</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.CompletedProcesses">
+        <Value>Completed Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.CompletedProcesses">
+        <Value>Completed Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.CancelledProcesses">
+        <Value>Cancelled Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.DormantProcesses">
+        <Value>Dormant Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.DueProcesses">
+        <Value>Due Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.UnchangedProcesses">
+        <Value>Unchanged Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.ProposedProcesses">
+        <Value>Proposed Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.WalletProcesses">
+        <Value>Wallet Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.CashProcesses">
+        <Value>Cash Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.ReconProcesses">
+        <Value>Reconciliation Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.CustomerExProcesses">
+        <Value>Customer Experience Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.RecordMgtProcesses">
+        <Value>Records Management Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.ChannelProcesses">
+        <Value>Channel Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.AccountSvcProcesses">
+        <Value>Account Services Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.PaymentProcesses">
+        <Value>Payment Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.SupportRegulatoryTypes">
+        <Value>Regulatory Types</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.SupportRegulatoryCategories">
+        <Value>Regulatory Caregories</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.RegulatoryRegister">
+        <Value>Regulations,Guidelines and Laws</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.RegulatoryMaps">
+        <Value>Requirements/Obligations</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.ComplianceControl">
+        <Value>Compliance Controls</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.ActiveUsers">
+        <Value>Active Users</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.LockedUsers">
+        <Value>Locked Users</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.UnapprovedUsers">
+        <Value>Unapproved Users</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.UnverifiedUsers">
+        <Value>Unverified Users</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.DeletedUsers">
+        <Value>Deleted Users</Value>
+    </LocaleResource>
 
-	<LocaleResource Name="Component.Table.Status.Active">
-		<Value>Deactivate this item?</Value>
-	</LocaleResource>
+    <LocaleResource Name="Component.Table.Status.Active">
+        <Value>Deactivate this item?</Value>
+    </LocaleResource>
 
-	<LocaleResource Name="Component.Key.ReturnRegister">
-		<Value>Returns Register</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.CircularRegister">
-		<Value>Circular Register</Value>
-	</LocaleResource>
+    <LocaleResource Name="Component.Key.ReturnRegister">
+        <Value>Returns Register</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.CircularRegister">
+        <Value>Circular Register</Value>
+    </LocaleResource>
 
-	<LocaleResource Name="Component.Label.Branch">
-		<Value>Add Branch</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Branch.Select">
-		<Value>Select Branch...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.QuickAction">
-		<Value>Add to Quick Action</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Shortcut">
-		<Value>Create Shortcut</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Export">
-		<Value>Export Data</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Share">
-		<Value>Share View</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Back">
-		<Value>Back</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Close">
-		<Value>Close</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.FullScreen">
-		<Value>Full Screen</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Header.New.Unit">
-		<Value>New Unit</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Header.Edit.Unit">
-		<Value>Edit Unit</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Header.New.Department">
-		<Value>New Department</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Header.New.Branch">
-		<Value>New Branch</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Header.Edit.Department">
-		<Value>Edit Department</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Header.Edit.Branch">
-		<Value>Edit Branch</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Departments.Select">
-		<Value>Select Department..</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Label.Header.Filter">
-		<Value>Filter List By</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Task.Header">
-		<Value>Task Assignment</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Users.DisplayName">
-		<Value>FULL NAME</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Users.Username">
-		<Value>ACCOUNT NAME</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Users.Email">
-		<Value>EMAIL ADDRESS</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Users.RoleName">
-		<Value>USER ROLE</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Users.RoleGroup">
-		<Value>ROLE GROUP</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Users.PFNumber">
-		<Value>PF NUMBER</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Users.Verified">
-		<Value>VERIFIED</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Users.Active">
-		<Value>ACCOUNT STATUS</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Users.Created">
-		<Value>CREATED ON</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Code">
-		<Value>Code</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Unit">
-		<Value>Unit</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Unit.Name">
-		<Value>Unit Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Department">
-		<Value>Department</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Department.Name">
-		<Value>Department Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Branch.Name">
-		<Value>BRANCH NAME</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Branch.Solid">
-		<Value>SOLID</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Branch.Active">
-		<Value>DELETED STATUS</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Branch.Created">
-		<Value>CREATED ON</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Department.Alias">
-		<Value>Short Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Active">
-		<Value>Active</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Status">
-		<Value>Status</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Created">
-		<Value>Created On</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.Filter">
-		<Value>Filter</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Label.MoreAction">
-		<Value>More Action</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.Categories">
-		<Value>Search categories... </Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.Types">
-		<Value>Search types... </Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.Authority">
-		<Value>Search authorities... </Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.DocTypes">
-		<Value>Search types... </Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.Controls">
-		<Value>Search for control... </Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.Policy-register">
-		<Value>Search register... </Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.Bugs">
-		<Value>Search bugs... </Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.Acts">
-		<Value>Search laws.. </Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.ProcessGroups">
-		<Value>Search groups.. </Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.ProcessTags">
-		<Value>Search tags.. </Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.Processes">
-		<Value>Search processes.. </Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.TAT">
-		<Value>Search processes.. </Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.User">
-		<Value>Search users.. </Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.Role">
-		<Value>Search roles.. </Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.Role.Group">
-		<Value>Search role groups..</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.User.Activity">
-		<Value>Search activities..</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.User.Active">
-		<Value>Search users..</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.User.Locked">
-		<Value>Search users..</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.User.Unapproved">
-		<Value>Search users..</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.User.Unverified">
-		<Value>Search users..</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.User.Deleted">
-		<Value>Search users..</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.Permission.Set">
-		<Value>Search permissions..</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.role.groups">
-		<Value>Search groups..</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.RoleGroup.Permission.Sets">
-		<Value>Search permissions..</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.Role.Permissions">
-		<Value>Search permissions..</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.Entity">
-		<Value>Search entities.. </Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Search.Obligation">
-		<Value>Search obligations.. </Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Category.Header">
-		<Value>Regulatory Category</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Type.Header">
-		<Value>Regulatory Type</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Authority.Header">
-		<Value>Regulatory Authorities</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Doctypes.Header">
-		<Value>Document Types</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.PolRegister.Header">
-		<Value>Policy/Procedure Register</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.PolRegister.Owner">
-		<Value>Person Responsible</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.PolRegister.Review.Period">
-		<Value>Review Period</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.PolRegister.Select.Responsible">
-		<Value>Select owner...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Department.Name">
-		<Value>Attached Department</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Aligned">
-		<Value>Aligned with Policy</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Deleted">
-		<Value>Not Used</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Locked">
-		<Value>Locked Documnent</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Revision.LastDate">
-		<Value>Last Revision Date</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Revision.NextDate">
-		<Value>Next Revision Date</Value>
-	</LocaleResource>
+    <LocaleResource Name="Component.Label.Branch">
+        <Value>Add Branch</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Branch.Select">
+        <Value>Select Branch...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.QuickAction">
+        <Value>Add to Quick Action</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Shortcut">
+        <Value>Create Shortcut</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Export">
+        <Value>Export Data</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Share">
+        <Value>Share View</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Back">
+        <Value>Back</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Close">
+        <Value>Close</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.FullScreen">
+        <Value>Full Screen</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Header.New.Unit">
+        <Value>New Unit</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Header.Edit.Unit">
+        <Value>Edit Unit</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Header.New.Department">
+        <Value>New Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Header.New.Branch">
+        <Value>New Branch</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Header.Edit.Department">
+        <Value>Edit Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Header.Edit.Branch">
+        <Value>Edit Branch</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Departments.Select">
+        <Value>Select Department..</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Label.Header.Filter">
+        <Value>Filter List By</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Task.Header">
+        <Value>Task Assignment</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Users.DisplayName">
+        <Value>FULL NAME</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Users.Username">
+        <Value>ACCOUNT NAME</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Users.Email">
+        <Value>EMAIL ADDRESS</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Users.RoleName">
+        <Value>USER ROLE</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Users.RoleGroup">
+        <Value>ROLE GROUP</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Users.PFNumber">
+        <Value>PF NUMBER</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Users.Verified">
+        <Value>VERIFIED</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Users.Active">
+        <Value>ACCOUNT STATUS</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Users.Created">
+        <Value>CREATED ON</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Code">
+        <Value>Code</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Unit">
+        <Value>Unit</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Unit.Name">
+        <Value>Unit Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Department">
+        <Value>Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Department.Name">
+        <Value>Department Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Branch.Name">
+        <Value>BRANCH NAME</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Branch.Solid">
+        <Value>SOLID</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Branch.Active">
+        <Value>DELETED STATUS</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Branch.Created">
+        <Value>CREATED ON</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Department.Alias">
+        <Value>Short Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Active">
+        <Value>Active</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Status">
+        <Value>Status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Created">
+        <Value>Created On</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.Filter">
+        <Value>Filter</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Label.MoreAction">
+        <Value>More Action</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.Categories">
+        <Value>Search categories... </Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.Types">
+        <Value>Search types... </Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.Authority">
+        <Value>Search authorities... </Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.DocTypes">
+        <Value>Search types... </Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.Controls">
+        <Value>Search for control... </Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.Policy-register">
+        <Value>Search register... </Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.Bugs">
+        <Value>Search bugs... </Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.Acts">
+        <Value>Search laws.. </Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.ProcessGroups">
+        <Value>Search groups.. </Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.ProcessTags">
+        <Value>Search tags.. </Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.Processes">
+        <Value>Search processes.. </Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.TAT">
+        <Value>Search processes.. </Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.User">
+        <Value>Search users.. </Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.Role">
+        <Value>Search roles.. </Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.Role.Group">
+        <Value>Search role groups..</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.User.Activity">
+        <Value>Search activities..</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.User.Active">
+        <Value>Search users..</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.User.Locked">
+        <Value>Search users..</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.User.Unapproved">
+        <Value>Search users..</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.User.Unverified">
+        <Value>Search users..</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.User.Deleted">
+        <Value>Search users..</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.Permission.Set">
+        <Value>Search permissions..</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.role.groups">
+        <Value>Search groups..</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.RoleGroup.Permission.Sets">
+        <Value>Search permissions..</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.Role.Permissions">
+        <Value>Search permissions..</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.Entity">
+        <Value>Search entities.. </Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Search.Obligation">
+        <Value>Search obligations.. </Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Category.Header">
+        <Value>Regulatory Category</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Type.Header">
+        <Value>Regulatory Type</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Authority.Header">
+        <Value>Regulatory Authorities</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Doctypes.Header">
+        <Value>Document Types</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.PolRegister.Header">
+        <Value>Policy/Procedure Register</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.PolRegister.Owner">
+        <Value>Person Responsible</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.PolRegister.Review.Period">
+        <Value>Review Period</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.PolRegister.Select.Responsible">
+        <Value>Select owner...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Department.Name">
+        <Value>Attached Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Aligned">
+        <Value>Aligned with Policy</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Deleted">
+        <Value>Not Used</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Locked">
+        <Value>Locked Documnent</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Revision.LastDate">
+        <Value>Last Revision Date</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Revision.NextDate">
+        <Value>Next Revision Date</Value>
+    </LocaleResource>
 
-	<LocaleResource Name="Component.Table.Policy.Name">
-		<Value>Policy/Procedure Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Description">
-		<Value>Policy/Procedure Notes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Type">
-		<Value>Policy/Procedure Category</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Type.Select">
-		<Value>Select category...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Department">
-		<Value>Department Responsible</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Department.Select">
-		<Value>Select department...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Responsible">
-		<Value>Contact Designation</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Responsible.Select">
-		<Value>Select designation...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Deactivate">
-		<Value>Mark as deleted?</Value>
-	</LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Name">
+        <Value>Policy/Procedure Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Description">
+        <Value>Policy/Procedure Notes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Type">
+        <Value>Policy/Procedure Category</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Type.Select">
+        <Value>Select category...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Department">
+        <Value>Department Responsible</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Department.Select">
+        <Value>Select department...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Responsible">
+        <Value>Contact Designation</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Responsible.Select">
+        <Value>Select designation...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Deactivate">
+        <Value>Mark as deleted?</Value>
+    </LocaleResource>
 
-	<LocaleResource Name="Component.Table.Policy.Task.DueDate">
-		<Value>Due Date</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Task.Interval">
-		<Value>Send reminders every(days)</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Task.Start">
-		<Value>Start Reminders on</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Comments">
-		<Value>Policy Comments</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Name">
-		<Value>Document Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Authority.Name">
-		<Value>Authority Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Doctypes.Name">
-		<Value>Document Type</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Authority.Alias">
-		<Value>Short Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Category.Status">
-		<Value>Category Status</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Type">
-		<Value>Document Type</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Select">
-		<Value>Select type</Value>
-	</LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Task.DueDate">
+        <Value>Due Date</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Task.Interval">
+        <Value>Send reminders every(days)</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Task.Start">
+        <Value>Start Reminders on</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Comments">
+        <Value>Policy Comments</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Name">
+        <Value>Document Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Authority.Name">
+        <Value>Authority Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Doctypes.Name">
+        <Value>Document Type</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Authority.Alias">
+        <Value>Short Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Category.Status">
+        <Value>Category Status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Type">
+        <Value>Document Type</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Select">
+        <Value>Select type</Value>
+    </LocaleResource>
 
-	<LocaleResource Name="Component.Table.Law.Categories">
-		<Value>Law\Regulation Categories</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Law.Button.Category">
-		<Value>+ Category</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Law.Header.Top">
-		<Value>Select a Category or Law from the left panel</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Law.Button.Law">
-		<Value>+ Law/Regulation</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Law.Header.Act">
-		<Value>Acts / Sections</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Law.Button.Section">
-		<Value>+ Add Section</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Law.Header.Category">
-		<Value>Select a category</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Law.Title.Category">
-		<Value>Manage Regulatory Category</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Law.Label.Category">
-		<Value>Category Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Law.Label.Comments">
-		<Value>Comments</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Law.Title.Laws">
-		<Value>Manage Law/Regulations</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Law.Label.Reference">
-		<Value>Law/Regulation Reference</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Law.Label.LawName">
-		<Value>Law/Regulation Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Law.Label.Authority">
-		<Value>Issuing Authority</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Select.Authority">
-		<Value>Select authority...</Value>
-	</LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Categories">
+        <Value>Law\Regulation Categories</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Button.Category">
+        <Value>+ Category</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Header.Top">
+        <Value>Select a Category or Law from the left panel</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Button.Law">
+        <Value>+ Law/Regulation</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Header.Act">
+        <Value>Acts / Sections</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Button.Section">
+        <Value>+ Add Section</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Header.Category">
+        <Value>Select a category</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Title.Category">
+        <Value>Manage Regulatory Category</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Label.Category">
+        <Value>Category Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Label.Comments">
+        <Value>Comments</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Title.Laws">
+        <Value>Manage Law/Regulations</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Label.Reference">
+        <Value>Law/Regulation Reference</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Label.LawName">
+        <Value>Law/Regulation Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Label.Authority">
+        <Value>Issuing Authority</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Select.Authority">
+        <Value>Select authority...</Value>
+    </LocaleResource>
 
 	<LocaleResource Name="Component.Table.Law.Label.ControlName">
 		<Value>Choose control to add</Value>
@@ -874,1493 +874,1532 @@
 	<LocaleResource Name="Component.Table.Law.Label.ControlName">
 		<Value>Control Name</Value>
 	</LocaleResource>
-
-	<LocaleResource Name="Component.Table.Law.Label.IssueDescription">
-		<Value>Issue Description</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Law.Label.IssueNotes">
-		<Value>Notes</Value>
-	</LocaleResource>
-
-	<LocaleResource Name="Component.Table.Law.Label.ControlNotes">
-		<Value>Comment</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Law.Label.itemName">
-		<Value>Item Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Law.Label.itemNotes">
-		<Value>Comment</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Select.Frequency">
-		<Value>Select frequency...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Law.Header.Controls">
-		<Value>Control Category</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Law.Header.Items">
-		<Value>Control Item</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Select.Status">
-		<Value>Select document status</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Status.Due">
-		<Value>Due for Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Status.Notapp">
-		<Value>Not Applicable</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Status.Onhold">
-		<Value>On hold</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Status.BoSignoff">
-		<Value>Pending-Board Signoff</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Status.SmSignOff">
-		<Value>Pending-SMT Signoff</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Status.DeptReview">
-		<Value>Under Department Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Status.Uptodate">
-		<Value>Uptodate</Value>
-	</LocaleResource>
-
-	<LocaleResource Name="Component.Table.Policy.Select.doctype">
-		<Value>Select document type</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Task.OwnerName">
-		<Value>Assigned To</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Task.OwnerEmail">
-		<Value>Assignee Email</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Task.OwnerPhone">
-		<Value>Assignee Contact</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Task.OwnerDept">
-		<Value>Assignee Department</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Task.OwnerPos">
-		<Value>Assignee  Position</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Document">
-		<Value>Policy/Procedure document</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Select.Document">
-		<Value>Select document</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Task.Description">
-		<Value>Task Description</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Task.Owner">
-		<Value>Task Owner</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Set.Name">
-		<Value>Set Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Set.Description">
-		<Value>Set Description</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Set.Deleted">
-		<Value>Deactivated</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Set.Deleted">
-		<Value>Deactivated</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Select.Placeholder">
-		<Value>Select Frequency...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Procedure.Description">
-		<Value>Procedure Description</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Procedure.Authority">
-		<Value>Issuer Authority</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Select.Authority">
-		<Value>Select Authority..</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Procedure.Responsible">
-		<Value>Responsible Person</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Select.Responsible">
-		<Value>Select Responsible..</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Select.Frequency">
-		<Value>Report Frequency</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.ApprovedBy">
-		<Value>Approved By</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.ApprovedBy.Select">
-		<Value>Select approver</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Details">
-		<Value>Policy/Regulation Info</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Review">
-		<Value>Policy Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Task.LastDate">
-		<Value>Last Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Task.NextDate">
-		<Value>Next Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Procedure.Department">
-		<Value>Responsible Department</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Select.Department">
-		<Value>Select department...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Procedure.Status">
-		<Value>Policy Status</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Select.Status">
-		<Value>Select status...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Procedure.Type">
-		<Value>Regulatory Type</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Select.Type">
-		<Value>Select type...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Procedure.IsApproved">
-		<Value>Board Approval</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Select.Approval">
-		<Value>Select approval...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Select.Yes">
-		<Value>YES</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Select.No">
-		<Value>NO</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.ApprovalDate">
-		<Value>Approval Date</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Review">
-		<Value>Board Approval</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Aligned">
-		<Value>Is Policy Aligned? </Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.MRC">
-		<Value>MRC Approval</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Board">
-		<Value>Board Approval</Value>
-	</LocaleResource>
-
-	<LocaleResource Name="Component.Process.CollapsablePane.Hod">
-		<Value>Head Of Operations</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.CollapsablePane.Risk">
-		<Value>Head Risk</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.CollapsablePane.Compliance">
-		<Value>Head Compliance</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.CollapsablePane.Bop">
-		<Value>Branch Operations Manager</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.CollapsablePane.Treasury">
-		<Value>Head Treasury</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.CollapsablePane.Fintech">
-		<Value>Head Fintech</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.CollapsablePane.Credit">
-		<Value>Head Credit</Value>
-	</LocaleResource>
-
-	<LocaleResource Name="Component.Process.CollapsablePane.Basic">
-		<Value>Basic Information</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.CollapsablePane.File">
-		<Value>Process Files</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.CollapsablePane.Status">
-		<Value>Process Status</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.CollapsablePane.Owenership">
-		<Value>Process Ownership</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.onholdReason">
-		<Value>Holding Reason</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.Lock">
-		<Value>Lock Process</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.CollapsablePane.BranchOperationsApprovals">
-		<Value>Branch Operations Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.CollapsablePane.CreditApprovals">
-		<Value>Credit Department Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.CollapsablePane.TreasuryApprovals">
-		<Value>Treasury Department Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.CollapsablePane.FintechApprovals">
-		<Value>Fintech Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.CollapsablePane.AdditionalReview">
-		<Value>Additional Reviews</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.BranchOPerationsReview">
-		<Value>Requires Branch Operations Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.NeedsCreditReview">
-		<Value>Requires Credit Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.NeedsTreasuryReview">
-		<Value>Requires Treasury Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.NeedsTreasuryReview">
-		<Value>Requires Treasury Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.NeedsFintechReview">
-		<Value>Requires Fintech Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.Name">
-		<Value>Process Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.Description">
-		<Value>Process Description</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.Owner">
-		<Value>Process Owner</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.Owner.Select">
-		<Value>Select owner...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.Responsible">
-		<Value>Process Manager</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.Responsible.Select">
-		<Value>Select manager...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.Unit">
-		<Value>Process Unit</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.Unit.Select">
-		<Value>Select unit...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.Type">
-		<Value>Process Type</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.Type.Select">
-		<Value>Select type...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.Status.Select">
-		<Value>Select status...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.IsDeleted">
-		<Value>Deactive</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.Status">
-		<Value>Current Status</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.Approvals.DeadOfDepartment">
-		<Value>HOD Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.Approvals.BranchManager">
-		<Value>Branch Manager Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.Approvals.Compliance">
-		<Value>Compliance And Risk Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.Approvals.LevelApprovals">
-		<Value>Review Status</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.Approvals.LevelApprovals.Pending">
-		<Value>Pending</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.Approvals.LevelApprovals.Approved">
-		<Value>Approved</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Process.Approvals.LevelApprovals.Rejected">
-		<Value>Needs Attention</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.Status.Select">
-		<Value>Select status...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.OrginalOnFile">
-		<Value>Is orginal copy on File?</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.Comments">
-		<Value>Comments</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.FileName">
-		<Value>Current Process File</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.FileVersion">
-		<Value>Current File Version</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.FileDrag">
-		<Value>Drag and drop files here or click to browse</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Role.Group.Name">
-		<Value>Group Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Role.Group.Description">
-		<Value>Group Description</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Role.Group.Deleted">
-		<Value>Deactivated</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.ApprovalStatus">
-		<Value>Approval Status</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.Status.Select">
-		<Value>Select status...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.Effectivedate">
-		<Value>Effective Date</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Process.Status.onholdReason">
-		<Value>Reason For Holding Process</Value>
-	</LocaleResource>
-
-	<LocaleResource Name="Component.Table.Role.Name">
-		<Value>Role Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Role.Description">
-		<Value>Role Description</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Role.Deleted">
-		<Value>Deactivated</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Role.Approved">
-		<Value>Approved</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Role.Verified">
-		<Value>Verified</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Role.List.Name">
-		<Value>Role Groups</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Role.List.Select">
-		<Value>Select Group...</Value>
-	</LocaleResource>
-
-	<LocaleResource Name="Component.Table.Policy.Select.Owner">
-		<Value>Select person to assign to</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Task.Document">
-		<Value>Document Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Task.Comment">
-		<Value>Document comments</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Select.Catalogue">
-		<Value>Catalogue</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Select.Framework">
-		<Value>Framework</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Select.Manual">
-		<Value>Manual</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Select.Plan">
-		<Value>Plan</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Select.Ploicy">
-		<Value>Policy</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Select.Procedure">
-		<Value>Procedure</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Select.SLA">
-		<Value>SLA</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Select.Blank">
-		<Value>Unclassified</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Type.Status">
-		<Value>Type Status</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Item.Status">
-		<Value>Active Status</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Document.Status">
-		<Value>Document Status</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Staus.Select">
-		<Value>Select status</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Type.Select">
-		<Value>Select type</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Category.Select">
-		<Value>Select Status</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Status.Active">
-		<Value>Active</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Status.InActive">
-		<Value>Inactive</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.User.Views">
-		<Value>Views</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.User.Settings">
-		<Value>Settings</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.User.Logout">
-		<Value>Logout</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Home">
-		<Value>Home</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Recent">
-		<Value>Recent</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Pinned">
-		<Value>Pinned</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Workbench">
-		<Value>Workbench</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Departments">
-		<Value>Departments</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Users">
-		<Value>System Users</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Users.Accounts">
-		<Value>User Accounts</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Permissions">
-		<Value>Permissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Permissions.Roles">
-		<Value>Role Permissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Permissions.Group">
-		<Value>Group Permissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Permissions.Sets">
-		<Value>Permission Sets</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.Security">
-		<Value>Security</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.Passwords">
-		<Value>Passwords</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Reports">
-		<Value>Reports</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Permissions.Delegation">
-		<Value>Role Delegation</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Permissions.Role">
-		<Value>Role Permissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Permissions.AddRole">
-		<Value>Role</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Permissions.AddSet">
-		<Value>New Set</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations">
-		<Value>Configurations</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.Settings">
-		<Value>User settings</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.IP">
-		<Value>IP Addresses</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.Data">
-		<Value>User data</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.Groups">
-		<Value>User Groups</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.SystemRoles">
-		<Value>System Roles</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.Roles">
-		<Value>Roles</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.RoleGroups">
-		<Value>Role Groups</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.Departments">
-		<Value>Departments</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.Units">
-		<Value>Units</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.Authentication">
-		<Value>Authentication</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.Encryption">
-		<Value>Entity Encryption</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.Errors">
-		<Value>System Errors</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.Activities">
-		<Value>System Activities</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.AddUser">
-		<Value>User</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configurations.PermissionSet">
-		<Value>Permission Set</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Home">
-		<Value>Home</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Processes">
-		<Value>Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Processes.Register">
-		<Value>Register</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Processes.Groups">
-		<Value>Groups</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Processes.Tags">
-		<Value>Tags</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Tasks">
-		<Value>Process Tasks</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Tasks.Approvals">
-		<Value>Approvals</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Tasks.Pending">
-		<Value>New Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Tasks.Revisions">
-		<Value>Under Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Tasks.TAT">
-		<Value>TAT</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Configurations.Access">
-		<Value>System Access</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Configurations.Teams">
-		<Value>Teams</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Configurations.Departments">
-		<Value>Departments</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Configurations.Units">
-		<Value>Department Units</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Configurations.Users">
-		<Value>Users</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Configurations.Guests">
-		<Value>Guests</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Configurations.Delegation">
-		<Value>Delegation</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Configurations.Settings">
-		<Value>Settings</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Configurations.General">
-		<Value>General Settings</Value>
-	</LocaleResource>
-	<LocaleResource Name="Operations.Menu.Configurations.Additional">
-		<Value>Other Settings</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Registers">
-		<Value>Registers</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Registers.List">
-		<Value>Statutes/Regulations</Value>
-	</LocaleResource>
-
-	<LocaleResource Name="App.Menu.Returns">
-		<Value>Returns</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Returns.Dashboard">
-		<Value>Returns Dashboard</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Returns.Register">
-		<Value>Returns Register</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Circulars">
-		<Value>Circular Returns</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Circulars.Dashboard">
-		<Value>Circular Dashboard</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Circulars.Register">
-		<Value>Circular List</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Returns.Tasks">
-		<Value>Return Tasks</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Returns.Tasks.Dashboard">
-		<Value>Task Dashboard</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Returns.Tasks.List">
-		<Value>Open Tasks</Value>
-	</LocaleResource>
-
-	<LocaleResource Name="App.Menu.Registers.Obligations">
-		<Value>Regulatory Obligations</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Registers.Policies">
-		<Value>Policies and Procedures</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Regulatory.Obligations">
-		<Value>Requirements/Obligation</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Obligations.Register">
-		<Value>Compliance Mapping</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Registers.Circular">
-		<Value>Circular Returns</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Regulations">
-		<Value>Regulatory Returns</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Regulation.Standards">
-		<Value>General Returns</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Regulation.Maps">
-		<Value>Compliance Maps</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Regulation.Authorites">
-		<Value>Authorities</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Policies.Compliance.Procedures">
-		<Value>Policies and Procedures</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Policies.Compliance.Manage">
-		<Value>Guide Register</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Policies.Compliance.Documents">
-		<Value>Sharepoint Documents</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Policies.Compliance.DocumentType">
-		<Value>Document Types</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Audits">
-		<Value>Audit</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Audits.Manage">
-		<Value>Manage Audits</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Audits.Types">
-		<Value>Audit Types</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Audits.AuditReports">
-		<Value>Audit Reports</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Audits.AuditExceptions">
-		<Value>Audit Exceptions</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Responsibilites">
-		<Value>Responsibilities</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Dashboard.Circular">
-		<Value>Circular Returns</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Circular.Received">
-		<Value>Received</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Circular.Open">
-		<Value>Open</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Circular.Closed">
-		<Value>Submitted</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Circular.Closed">
-		<Value>Submitted</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Circular.Breach">
-		<Value>Breached</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Dashboard.RegulationStandards">
-		<Value>Compliance Obligations</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Dashboard.Returns">
-		<Value>Compliance Returns</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Returns.Totals">
-		<Value>Total Returns</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Returns.Submitted">
-		<Value>Returns Submitted</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Returns.Open">
-		<Value>Returns Open</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Returns.Breach">
-		<Value>Returns Breached</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Dashboard.Tasks">
-		<Value>Compliance Tasks</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Tasks.Totals">
-		<Value>Total Tasks</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Tasks.Open">
-		<Value>Open Tasks</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Tasks.Closed">
-		<Value>Closed Tasks</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Tasks.Failed">
-		<Value>Failed Tasks</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Support">
-		<Value>Support</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Regulatory.Support">
-		<Value>Regulatory Support</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Regulatory.Support.Categories">
-		<Value>Regulatory Categories</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Support.Regulatory.Types">
-		<Value>Regulatory Types</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Regulation.Authorites">
-		<Value>Regulatory Authorities</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Support">
-		<Value>Support Items</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Policies.Support.DocumentType">
-		<Value>Document Types</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Support.Departments">
-		<Value>Departments</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Support.Responsibilites">
-		<Value>Responsibility</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Policies">
-		<Value>Policy</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Policies.Changes">
-		<Value>Policy Changes</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Policies.ShortTerm">
-		<Value>Short-Term Policies</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Policies.PolicyEscalation">
-		<Value>Policy Escalations</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Policies.Notification">
-		<Value>Policy Notifications</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Obligations">
-		<Value>Obligations</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Obligations.Audits">
-		<Value>Audits</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Obligations.AuditRegister">
-		<Value>Audit Register</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Obligations.AuditIssues">
-		<Value>Audits Issues</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Obligations.AssignTask">
-		<Value>Tasks</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Obligations.CircularTracking">
-		<Value>Circular Tracking</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Obligations.Notification">
-		<Value>Notification</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Obligations.Escalation">
-		<Value>Escalations</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Returns">
-		<Value>Returns</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Returns.List">
-		<Value>All Returns</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Returns.FiledReturns">
-		<Value>Filed Returns</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Returns.UnfiledReturns">
-		<Value>Unfiled Returns</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.obligations.Returns.Notification">
-		<Value>Notification</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Returns.Escalation">
-		<Value>Escalations</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Reports">
-		<Value>Reports</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Reports.Unfiled">
-		<Value>Unfiled Returns</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Reports.TAT">
-		<Value>TAT Report</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Reports.Penalities">
-		<Value>Penalities</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Reports.PeriodicIssueReport">
-		<Value>Periodic Issues</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Reports.Audit.AnnualAuditReport">
-		<Value>Audit Report</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Configuration">
-		<Value>Settings</Value>
-	</LocaleResource>
-	<LocaleResource Name=" App.Menu.Compliance.Configuration">
-		<Value>General Settings</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Configuration.General">
-		<Value>General Settings</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Settings.Users">
-		<Value>Users</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Settings.Delegation">
-		<Value>Delegation</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Compliance.Settings.Departments">
-		<Value>Departments</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Dashboard.SeeMore">
-		<Value>See More..</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Dashboard.Labels.Quick">
-		<Value>Quick Actions</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Dashboard.Labels.Processes">
-		<Value>Processes</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Dashboard.Labels.Completed">
-		<Value>Completed</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Dashboard.Labels.Proposed">
-		<Value>Proposed</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Dashboard.Labels.Unchanged">
-		<Value>Unchanged</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Dashboard.Labels.DueForReview">
-		<Value>Due For Review</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Dashboard.Labels.Dormant">
-		<Value>Dormant</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Dashboard.Labels.Cancelled">
-		<Value>Cancelled</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Dashboard.Labels.TotalProcesses">
-		<Value>Total Processes</Value>
-	</LocaleResource>
-
-	<LocaleResource Name="Component.Key.ProcesseGroups">
-		<Value>Process Groups</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.ProcesseTags">
-		<Value>Process Tags</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Universe">
-		<Value>Process Register</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.ProcesseTAT">
-		<Value>TAT REPORT</Value>
-	</LocaleResource>
-
-	<LocaleResource Name="App.Admin.Dashboard.Labels.PendingApproval">
-		<Value>PENDING APPROVAL</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Admin.Dashboard.Labels.SystemUsers">
-		<Value>System Users</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Admin.Dashboard.Labels.TotalUsers">
-		<Value>TOTAL USERS</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Admin.Dashboard.Labels.ActiveUsers">
-		<Value>ACTIVE USERS</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Admin.Dashboard.Labels.DisabledUsers">
-		<Value>LOCKED USERS</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Admin.Dashboard.Labels.PendingVerification">
-		<Value>UNVERIFIED</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Admin.Dashboard.Labels.DeletedAccounts">
-		<Value>DELETED ACCOUNTS</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Admin.Dashboard.Labels.BugTracking">
-		<Value>Bug Tracking</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Admin.Dashboard.Labels.TotalBugs">
-		<Value>TOTAL BUGS</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Admin.Dashboard.Labels.NewBugs">
-		<Value>NEW BUGS</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Admin.Dashboard.Labels.FixingBugs">
-		<Value>BUG IN FIXING</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Admin.Dashboard.Labels.Fixed">
-		<Value>BUGS RESOLVED</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Admin.Dashboard.Labels.UserReported">
-		<Value>USER REPORTED</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Admin.Dashboard.Labels.RecentActivities">
-		<Value>Recent Activities</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Dashboard.Labels.Units">
-		<Value>Units</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Dashboard.Labels.Units.AccountServices">
-		<Value>Accounts Management</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Dashboard.Labels.Units.Reconciliation">
-		<Value>Reconciliation</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Dashboard.Labels.Units.Records">
-		<Value>Records Management</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Dashboard.Labels.Units.Wallets">
-		<Value>Wallets</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Dashboard.Labels.Units.Cash">
-		<Value>Cash</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Dashboard.Labels.Units.Payments">
-		<Value>Payments</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Dashboard.Labels.Units.CustomerExperience">
-		<Value>Customer Experience</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Menu.Dashboard.Labels.Units.Channels">
-		<Value>Channels</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Tables.Headers.User">
-		<Value>User</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Tables.Headers.Email">
-		<Value>Email</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Tables.Headers.Action">
-		<Value>Action</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Tables.Headers.Time">
-		<Value>Time</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Tables.Headers.Description">
-		<Value>Description</Value>
-	</LocaleResource>
-	<LocaleResource Name="Registration.Title">
-		<Value>Company Registration</Value>
-	</LocaleResource>
-	<LocaleResource Name="Registration.Admin.Info">
-		<Value>System Administrator Details</Value>
-	</LocaleResource>
-	<LocaleResource Name="Registration.Admin.Access">
-		<Value>System Login Details</Value>
-	</LocaleResource>
-	<LocaleResource Name="Register.Company.Fields.CompanyName">
-		<Value>Company Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Register.Company.Fields.Alias">
-		<Value>Alias</Value>
-	</LocaleResource>
-	<LocaleResource Name="Register.Company.Fields.RegistrationNumber">
-		<Value>Registration Number</Value>
-	</LocaleResource>
-	<LocaleResource Name="Registration.Error.General">
-		<Value>Please correct the errors in the current step before proceeding.</Value>
-	</LocaleResource>
-	<LocaleResource Name="Registration.Error.Failed">
-		<Value>Registration failed. Please try again.</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.FirstName">
-		<Value>First Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.MidlleName">
-		<Value>Middle Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.Surname">
-		<Value>Surname</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.UserName">
-		<Value>Username</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.Email">
-		<Value>Email</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.PhoneNumber">
-		<Value>Phone Number</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.Password">
-		<Value>Password</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.ConfirmPassword">
-		<Value>Confirm Password</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.PFNumber">
-		<Value>PF Number</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.SolId">
-		<Value>Branch SolID</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.Department">
-		<Value>Department</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.DepartmentUnit">
-		<Value>Department Unit</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.Role">
-		<Value>System Role</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.IsActive">
-		<Value>Is Active</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.IsDeleted">
-		<Value>Mark As Deleted</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Fields.IsVerified">
-		<Value>Is Verified</Value>
-	</LocaleResource>
-	<LocaleResource Name="Company.Error.CompanyNameRequired">
-		<Value>Company name Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="Company.Error.AliasRequired">
-		<Value>Provide an Alias (Short name) for the company</Value>
-	</LocaleResource>
-	<LocaleResource Name="Company.Error.RegNumberRequired">
-		<Value>Provide company Registration Number</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.EmailRequired">
-		<Value>Email Address Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.FirstNameRequired">
-		<Value>FirstName Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.SurnameRequired">
-		<Value>Surname Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.UserameRequired">
-		<Value>Username Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.PasswordRequired">
-		<Value>Password Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.ConfirmPasswordRequired">
-		<Value>Confirm Password Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.PFNumberRequired">
-		<Value>PF Number Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.SolIdRequired">
-		<Value>Sol ID Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.DepartmentRequired">
-		<Value>Department Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="User.Error.SystemRoleRequired">
-		<Value>User Role Field is required</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.TAT.Title">
-		<Value>PROCESS TAT DETAILS</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.TAT.ProcessName">
-		<Value>PROCESS NAME</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.TAT.ProcessStatus">
-		<Value>PROCESS STATUS</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.TAT.RequestData">
-		<Value>REQUEST DATA</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.Approval.ProcessName">
-		<Value>PROCESS NAME</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Processes.Approval.RequestDate">
-		<Value>APPROVAL REQUEST DATE</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Previous">
-		<Value>Previous</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Next">
-		<Value>Next</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Delete">
-		<Value>Delete</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Cancel">
-		<Value>Cancel</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Confirm">
-		<Value>Confirm</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Push">
-		<Value>Push</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.On">
-		<Value>On</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Off">
-		<Value>Off</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Okay">
-		<Value>OK</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Yes">
-		<Value>Yes</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.No">
-		<Value>No</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Submit">
-		<Value>Save</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Update">
-		<Value>Update</Value>
-	</LocaleResource>
-	<LocaleResource Name="Button.Signin">
-		<Value>Sign In</Value>
-	</LocaleResource>
-	<LocaleResource Name="Login.Enter.Username">
-		<Value>Enter Username</Value>
-	</LocaleResource>
-	<LocaleResource Name="Login.Enter.Password">
-		<Value>Enter Password</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Message.EnterPassword">
-		<Value>Password required for login</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Message.InvalidUsername">
-		<Value>Invalid username! Please correct your name and try again</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Message.EnterUsername">
-		<Value>Username required for login</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Message.InvalidPassword">
-		<Value>Password provided is not correct</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Authentication.Failed">
-		<Value>Authentication failed. Please try again.</Value>
-	</LocaleResource>
-	<LocaleResource Name="Error.Occurance">
-		<Value>Error Ocuurred! System error has occurred</Value>
-	</LocaleResource>
-	<LocaleResource Name="Error.Clear">
-		<Value>Please clear the errors and Try again</Value>
-	</LocaleResource>
-	<LocaleResource Name="Error.Unknown">
-		<Value>Unknown error has occurred</Value>
-	</LocaleResource>
-	<LocaleResource Name="Error.Service.Unavailable">
-		<Value>Service unavailable. Please try again later.</Value>
-	</LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Label.ControlName">
+        <Value>Choose control to add</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Select.ControlName">
+        <Value>Select control...</Value>
+    </LocaleResource>
 
 
-	<LocaleResource Name="App.Label.Open">
-		<Value>OPEN</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Closed">
-		<Value>CLOSSED</Value>
-	</LocaleResource>
-	<LocaleResource Name="App.Label.Totals">
-		<Value>TOTAL</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Returns.Triennial">
-		<Value>Triennial Submissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Returns.Periodic">
-		<Value>Periodic Submissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Returns.Biannual">
-		<Value>Biannual Submissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Returns.Occurrence">
-		<Value>On Occurrence Submissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Returns.Biennial">
-		<Value>Biennial Submissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Returns.Oneoff">
-		<Value>One-Off Submissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Returns.Annual">
-		<Value>Annual Submissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Returns.NoReturn">
-		<Value>No Returns</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Returns.Quartery">
-		<Value>Quartery Submissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Returns.Monthly">
-		<Value>Monthly Submissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Returns.Weekly">
-		<Value>Weekly Submissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Returns.Daily">
-		<Value>Daily Submissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Circulars.Mofed">
-		<Value>MoFED Circulars</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Circulars.Ura">
-		<Value>URA Circulars</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Circulars.Pdpo">
-		<Value>PDPO Circulars</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Circulars.Bou">
-		<Value>BOU Circulars</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Circulars.Cma">
-		<Value>CMA Circulars</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Circulars.Ag">
-		<Value>AG Circulars</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Circulars.Umra">
-		<Value>UMRA Circulars</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Circulars.Uib">
-		<Value>UIB Circulars</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Circulars.Irau">
-		<Value>IRAU Circulars</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Circulars.Nira">
-		<Value>NIRA Circulars</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Circulars.Fia">
-		<Value>FIA Circulars</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Circulars.Dpf">
-		<Value>DPF Circulars</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Circulars.Ppda">
-		<Value>PPDA Circulars</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Circulars.Urbra">
-		<Value>URBA Circulars</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Circulars.Other">
-		<Value>Other Circulars</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Returns.Header.Register">
-		<Value>Add new Return/Report</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Returns.Law">
-		<Value>Guiding Law/Regulation</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Returns.Select.Law">
-		<Value>Select guiding law...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Returns.Name">
-		<Value>Return/Report Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Return.Type">
-		<Value>Return/Report Type</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Returns.Select.Type">
-		<Value>Select type...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Returns.Deleted">
-		<Value>Remove Return/Report</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Returns.Risk">
-		<Value>Risk in case of breach</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Returns.Comments">
-		<Value>Comment</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Submitted.Title">
-		<Value>Report/Return Title</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Submitted.Period">
-		<Value>Report/Return Period</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Submitted.Select">
-		<Value>Report Status</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Submitted.Select.Status">
-		<Value>Select status...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Submitted.Breached">
-		<Value>Is Breached</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Submitted.Reason">
-		<Value>Reason for delayed submisstion</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Submitted.SubmittedBy">
-		<Value>Submitted By</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Submitted.Department">
-		<Value>Responsible Department</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Submitted.Header">
-		<Value>Report/Return Submission Update</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Submitted.FileName">
-		<Value>Add file path</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Submission.Circular">
-		<Value>Circular Title</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Submission.Status">
-		<Value>Status</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Submission.Risk">
-		<Value>Risk</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Submission.Department">
-		<Value>Department</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Submission.Action">
-		<Value>Action</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Submission.Header">
-		<Value>Circular Submission</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Submission.Details">
-		<Value>Submission Details</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Submission.Issues">
-		<Value>Submission Issues</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Submission.Breach-info">
-		<Value>This Circular was not submitted in time and acquired a risk to the bank. You MUST give a reason why submission period was breached.</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Submission.Label.Title">
-		<Value>Circular Title</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Submission.Label.Requirement">
-		<Value>Circular Requirement</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Submission.Label.Receive-date">
-		<Value>Recieve Date</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Submission.Label.Deadline-date">
-		<Value>Deadline</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Submission.Label.IsBreached">
-		<Value>Is Breached</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Submission.Label.Breach-Reason">
-		<Value>Reason For Breached</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Submission.Label.Submitted-By">
-		<Value>Submitted By</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Submission.Label.Comments">
-		<Value>Comments</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Submitted.Reference">
-		<Value>Submission Reference</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Submissions.Label.Status">
-		<Value>Submission Status</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Issues.Label.Comments">
-		<Value>Comments</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Issues.Label.Recieved-on">
-		<Value>Recieve Date</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Issues.Label.IsDeleted">
-		<Value>Mark as deleted</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Issues.Label.Status">
-		<Value>Issue Status</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Issues.Label.Status.Select">
-		<Value>Select status...</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Issues.Label.Resolved-on">
-		<Value>Resolve Date</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Issues.Label.Resolution">
-		<Value>Proposed Resolution</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Submission.Label.Department">
-		<Value>Responsible Department/Unit</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Circulars.Submission.Label.Frequency">
-		<Value>Reporting Frequency</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Returns.Header.Frequency.Returns">
-		<Value>Frequency Returns/Reports</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Returns.Header.Frequency.Reports.List">
-		<Value>Returns/Report List</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Returns.Header.Frequency.Reports.Add">
-		<Value>Add Returns/Report</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Returns.Header.Frequency.Reports.Submissions">
-		<Value>Returns/Report Submissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Returns.Header.Frequency.Reports.Submissions.Add">
-		<Value>New Submissions</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Submitted.SubmittedOn">
-		<Value>Submitted On</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Audit.Types">
-		<Value>Audit Types</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Audit.Reports">
-		<Value>Audit Reports</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Audit.Exceptions">
-		<Value>Audit Findings</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Audit.MonthLess">
-		<Value>Exceptions due less than a month</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Key.Audit.TwoMonthLess">
-		<Value>Exceptions due less than two month</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Audit.Title.AuditReport">
-		<Value>Audit Report View</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Audit.Label.Reference">
-		<Value>Reference</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Audit.Label.ReportName">
-		<Value>Report Name</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Audit.Label.AuditDate">
-		<Value>Audit Date</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Audit.Label.Status">
-		<Value>Report Status</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Audit.Label.Total">
-		<Value>Total Findings</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Audit.Label.Open">
-		<Value>Open Findings</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Audit.Label.Close">
-		<Value>Close Findings</Value>
-	</LocaleResource>
-	<LocaleResource Name="Component.Table.Audit.Label.Overdue">
-		<Value>Overdue Findings</Value>
-	</LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Label.Type">
+        <Value>Law/Regulation Type</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Select.Type">
+        <Value>Select type...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Header.Acts">
+        <Value> Manage Act/Section</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Label.Number">
+        <Value>Section/Act Number</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Label.Summery">
+        <Value>Section/Act Summery</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Label.Obligation">
+        <Value>Compliance obligation</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Label.Coverage">
+        <Value>Percentage Covered</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Label.Mandatory">
+        <Value>Is Mandatory?</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Label.Comments">
+        <Value>Comments</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Label.Assurance">
+        <Value>Compliance Assurance</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Label.Frequency">
+        <Value>Obligation Frequency</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Label.ControlName">
+        <Value>Control Name</Value>
+    </LocaleResource>
 
+    <LocaleResource Name="Component.Table.Law.Label.IssueDescription">
+        <Value>Issue Description</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Label.IssueNotes">
+        <Value>Notes</Value>
+    </LocaleResource>
+
+    <LocaleResource Name="Component.Table.Law.Label.ControlNotes">
+        <Value>Comment</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Label.itemName">
+        <Value>Item Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Label.itemNotes">
+        <Value>Comment</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Select.Frequency">
+        <Value>Select frequency...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Header.Controls">
+        <Value>Control Category</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Law.Header.Items">
+        <Value>Control Item</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Select.Status">
+        <Value>Select document status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Status.Due">
+        <Value>Due for Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Status.Notapp">
+        <Value>Not Applicable</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Status.Onhold">
+        <Value>On hold</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Status.BoSignoff">
+        <Value>Pending-Board Signoff</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Status.SmSignOff">
+        <Value>Pending-SMT Signoff</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Status.DeptReview">
+        <Value>Under Department Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Status.Uptodate">
+        <Value>Uptodate</Value>
+    </LocaleResource>
+
+    <LocaleResource Name="Component.Table.Policy.Select.doctype">
+        <Value>Select document type</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Task.OwnerName">
+        <Value>Assigned To</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Task.OwnerEmail">
+        <Value>Assignee Email</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Task.OwnerPhone">
+        <Value>Assignee Contact</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Task.OwnerDept">
+        <Value>Assignee Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Task.OwnerPos">
+        <Value>Assignee  Position</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Document">
+        <Value>Policy/Procedure document</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Select.Document">
+        <Value>Select document</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Task.Description">
+        <Value>Task Description</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Task.Owner">
+        <Value>Task Owner</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Set.Name">
+        <Value>Set Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Set.Description">
+        <Value>Set Description</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Set.Deleted">
+        <Value>Deactivated</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Set.Deleted">
+        <Value>Deactivated</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Select.Placeholder">
+        <Value>Select Frequency...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Procedure.Description">
+        <Value>Procedure Description</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Procedure.Authority">
+        <Value>Issuer Authority</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Select.Authority">
+        <Value>Select Authority..</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Procedure.Responsible">
+        <Value>Responsible Person</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Select.Responsible">
+        <Value>Select Responsible..</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Select.Frequency">
+        <Value>Report Frequency</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.ApprovedBy">
+        <Value>Approved By</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.ApprovedBy.Select">
+        <Value>Select approver</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Details">
+        <Value>Policy/Regulation Info</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Review">
+        <Value>Policy Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Task.LastDate">
+        <Value>Last Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Task.NextDate">
+        <Value>Next Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Procedure.Department">
+        <Value>Responsible Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Select.Department">
+        <Value>Select department...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Procedure.Status">
+        <Value>Policy Status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Select.Status">
+        <Value>Select status...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Procedure.Type">
+        <Value>Regulatory Type</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Select.Type">
+        <Value>Select type...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Procedure.IsApproved">
+        <Value>Board Approval</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Select.Approval">
+        <Value>Select approval...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Select.Yes">
+        <Value>YES</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Select.No">
+        <Value>NO</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.ApprovalDate">
+        <Value>Approval Date</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Review">
+        <Value>Board Approval</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Aligned">
+        <Value>Is Policy Aligned? </Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.MRC">
+        <Value>MRC Approval</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Board">
+        <Value>Board Approval</Value>
+    </LocaleResource>
+
+    <LocaleResource Name="Component.Process.CollapsablePane.Hod">
+        <Value>Head Of Operations</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.CollapsablePane.Risk">
+        <Value>Head Risk</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.CollapsablePane.Compliance">
+        <Value>Head Compliance</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.CollapsablePane.Bop">
+        <Value>Branch Operations Manager</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.CollapsablePane.Treasury">
+        <Value>Head Treasury</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.CollapsablePane.Fintech">
+        <Value>Head Fintech</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.CollapsablePane.Credit">
+        <Value>Head Credit</Value>
+    </LocaleResource>
+
+    <LocaleResource Name="Component.Process.CollapsablePane.Basic">
+        <Value>Basic Information</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.CollapsablePane.File">
+        <Value>Process Files</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.CollapsablePane.Status">
+        <Value>Process Status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.CollapsablePane.Owenership">
+        <Value>Process Ownership</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.onholdReason">
+        <Value>Holding Reason</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.Lock">
+        <Value>Lock Process</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.CollapsablePane.BranchOperationsApprovals">
+        <Value>Branch Operations Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.CollapsablePane.CreditApprovals">
+        <Value>Credit Department Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.CollapsablePane.TreasuryApprovals">
+        <Value>Treasury Department Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.CollapsablePane.FintechApprovals">
+        <Value>Fintech Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.CollapsablePane.AdditionalReview">
+        <Value>Additional Reviews</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.BranchOPerationsReview">
+        <Value>Requires Branch Operations Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.NeedsCreditReview">
+        <Value>Requires Credit Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.NeedsTreasuryReview">
+        <Value>Requires Treasury Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.NeedsTreasuryReview">
+        <Value>Requires Treasury Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.NeedsFintechReview">
+        <Value>Requires Fintech Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.Name">
+        <Value>Process Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.Description">
+        <Value>Process Description</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.Owner">
+        <Value>Process Owner</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.Owner.Select">
+        <Value>Select owner...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.Responsible">
+        <Value>Process Manager</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.Responsible.Select">
+        <Value>Select manager...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.Unit">
+        <Value>Process Unit</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.Unit.Select">
+        <Value>Select unit...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.Type">
+        <Value>Process Type</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.Type.Select">
+        <Value>Select type...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.Status.Select">
+        <Value>Select status...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.IsDeleted">
+        <Value>Deactive</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.Status">
+        <Value>Current Status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.Approvals.DeadOfDepartment">
+        <Value>HOD Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.Approvals.BranchManager">
+        <Value>Branch Manager Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.Approvals.Compliance">
+        <Value>Compliance And Risk Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.Approvals.LevelApprovals">
+        <Value>Review Status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.Approvals.LevelApprovals.Pending">
+        <Value>Pending</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.Approvals.LevelApprovals.Approved">
+        <Value>Approved</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Process.Approvals.LevelApprovals.Rejected">
+        <Value>Needs Attention</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.Status.Select">
+        <Value>Select status...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.OrginalOnFile">
+        <Value>Is original copy on File?</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.Comments">
+        <Value>Comments</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.FileName">
+        <Value>Current Process File</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.FileVersion">
+        <Value>Current File Version</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.FileDrag">
+        <Value>Drag and drop files here or click to browse</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Role.Group.Name">
+        <Value>Group Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Role.Group.Description">
+        <Value>Group Description</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Role.Group.Deleted">
+        <Value>Deactivated</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.ApprovalStatus">
+        <Value>Approval Status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.Status.Select">
+        <Value>Select status...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.Effectivedate">
+        <Value>Effective Date</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Process.Status.onholdReason">
+        <Value>Reason For Holding Process</Value>
+    </LocaleResource>
+
+    <LocaleResource Name="Component.Table.Role.Name">
+        <Value>Role Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Role.Description">
+        <Value>Role Description</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Role.Deleted">
+        <Value>Deactivated</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Role.Approved">
+        <Value>Approved</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Role.Verified">
+        <Value>Verified</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Role.List.Name">
+        <Value>Role Groups</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Role.List.Select">
+        <Value>Select Group...</Value>
+    </LocaleResource>
+
+    <LocaleResource Name="Component.Table.Policy.Select.Owner">
+        <Value>Select person to assign to</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Task.Document">
+        <Value>Document Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Task.Comment">
+        <Value>Document comments</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Select.Catalogue">
+        <Value>Catalogue</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Select.Framework">
+        <Value>Framework</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Select.Manual">
+        <Value>Manual</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Select.Plan">
+        <Value>Plan</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Select.Ploicy">
+        <Value>Policy</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Select.Procedure">
+        <Value>Procedure</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Select.SLA">
+        <Value>SLA</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Select.Blank">
+        <Value>Unclassified</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Type.Status">
+        <Value>Type Status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Item.Status">
+        <Value>Active Status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Document.Status">
+        <Value>Document Status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Staus.Select">
+        <Value>Select status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Type.Select">
+        <Value>Select type</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Category.Select">
+        <Value>Select Status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Status.Active">
+        <Value>Active</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Status.InActive">
+        <Value>Inactive</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.User.Views">
+        <Value>Views</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.User.Settings">
+        <Value>Settings</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.User.Logout">
+        <Value>Logout</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Home">
+        <Value>Home</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Recent">
+        <Value>Recent</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Pinned">
+        <Value>Pinned</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Workbench">
+        <Value>Workbench</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Departments">
+        <Value>Departments</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Users">
+        <Value>System Users</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Users.Accounts">
+        <Value>User Accounts</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions">
+        <Value>Permissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions.Roles">
+        <Value>Role Permissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions.Group">
+        <Value>Group Permissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions.Sets">
+        <Value>Permission Sets</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Security">
+        <Value>Security</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Passwords">
+        <Value>Passwords</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Reports">
+        <Value>Reports</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions.Delegation">
+        <Value>Role Delegation</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions.Role">
+        <Value>Role Permissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions.AddRole">
+        <Value>Role</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Permissions.AddSet">
+        <Value>New Set</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations">
+        <Value>Configurations</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Settings">
+        <Value>User settings</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.IP">
+        <Value>IP Addresses</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Data">
+        <Value>User data</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Groups">
+        <Value>User Groups</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.SystemRoles">
+        <Value>System Roles</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Roles">
+        <Value>Roles</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.RoleGroups">
+        <Value>Role Groups</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Departments">
+        <Value>Departments</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Units">
+        <Value>Units</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Authentication">
+        <Value>Authentication</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Encryption">
+        <Value>Entity Encryption</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Errors">
+        <Value>System Errors</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.Activities">
+        <Value>System Activities</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.AddUser">
+        <Value>User</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configurations.PermissionSet">
+        <Value>Permission Set</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Home">
+        <Value>Home</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Processes">
+        <Value>Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Processes.Register">
+        <Value>Register</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Processes.Groups">
+        <Value>Groups</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Processes.Tags">
+        <Value>Tags</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Tasks">
+        <Value>Process Tasks</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Tasks.Approvals">
+        <Value>Approvals</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Tasks.Pending">
+        <Value>New Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Tasks.Revisions">
+        <Value>Under Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Tasks.TAT">
+        <Value>TAT</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Configurations.Access">
+        <Value>System Access</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Configurations.Teams">
+        <Value>Teams</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Configurations.Departments">
+        <Value>Departments</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Configurations.Units">
+        <Value>Department Units</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Configurations.Users">
+        <Value>Users</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Configurations.Guests">
+        <Value>Guests</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Configurations.Delegation">
+        <Value>Delegation</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Configurations.Settings">
+        <Value>Settings</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Configurations.General">
+        <Value>General Settings</Value>
+    </LocaleResource>
+    <LocaleResource Name="Operations.Menu.Configurations.Additional">
+        <Value>Other Settings</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Registers">
+        <Value>Registers</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Registers.List">
+        <Value>Statutes/Regulations</Value>
+    </LocaleResource>
+
+    <LocaleResource Name="App.Menu.Returns">
+        <Value>Returns</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Returns.Dashboard">
+        <Value>Returns Dashboard</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Returns.Register">
+        <Value>Returns Register</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Circulars">
+        <Value>Circular Returns</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Circulars.Dashboard">
+        <Value>Circular Dashboard</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Circulars.Register">
+        <Value>Circular List</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Returns.Tasks">
+        <Value>Return Tasks</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Returns.Tasks.Dashboard">
+        <Value>Task Dashboard</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Returns.Tasks.List">
+        <Value>Open Tasks</Value>
+    </LocaleResource>
+
+    <LocaleResource Name="App.Menu.Registers.Obligations">
+        <Value>Regulatory Obligations</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Registers.Policies">
+        <Value>Policies and Procedures</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Regulatory.Obligations">
+        <Value>Requirements/Obligation</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Obligations.Register">
+        <Value>Compliance Mapping</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Registers.Circular">
+        <Value>Circular Returns</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Regulations">
+        <Value>Regulatory Returns</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Regulation.Standards">
+        <Value>General Returns</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Regulation.Maps">
+        <Value>Compliance Maps</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Regulation.Authorites">
+        <Value>Authorities</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Policies.Compliance.Procedures">
+        <Value>Policies and Procedures</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Policies.Compliance.Manage">
+        <Value>Guide Register</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Policies.Compliance.Documents">
+        <Value>Sharepoint Documents</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Policies.Compliance.DocumentType">
+        <Value>Document Types</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Audits">
+        <Value>Audit</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Audits.Manage">
+        <Value>Manage Audits</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Audits.Types">
+        <Value>Audit Types</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Audits.AuditReports">
+        <Value>Audit Reports</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Audits.AuditExceptions">
+        <Value>Audit Exceptions</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Responsibilites">
+        <Value>Responsibilities</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Dashboard.Circular">
+        <Value>Circular Returns</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Circular.Received">
+        <Value>Received</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Circular.Open">
+        <Value>Open</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Circular.Closed">
+        <Value>Submitted</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Circular.Closed">
+        <Value>Submitted</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Circular.Breach">
+        <Value>Breached</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Dashboard.RegulationStandards">
+        <Value>Compliance Obligations</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Dashboard.Returns">
+        <Value>Compliance Returns</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Returns.Totals">
+        <Value>Total Returns</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Returns.Submitted">
+        <Value>Returns Submitted</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Returns.Open">
+        <Value>Returns Open</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Returns.Breach">
+        <Value>Returns Breached</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Dashboard.Tasks">
+        <Value>Compliance Tasks</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Tasks.Totals">
+        <Value>Total Tasks</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Tasks.Open">
+        <Value>Open Tasks</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Tasks.Closed">
+        <Value>Closed Tasks</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Tasks.Failed">
+        <Value>Failed Tasks</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Support">
+        <Value>Support</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Regulatory.Support">
+        <Value>Regulatory Support</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Regulatory.Support.Categories">
+        <Value>Regulatory Categories</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Support.Regulatory.Types">
+        <Value>Regulatory Types</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Regulation.Authorites">
+        <Value>Regulatory Authorities</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Support">
+        <Value>Support Items</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Policies.Support.DocumentType">
+        <Value>Document Types</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Support.Departments">
+        <Value>Departments</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Support.Responsibilites">
+        <Value>Responsibility</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Policies">
+        <Value>Policy</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Policies.Changes">
+        <Value>Policy Changes</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Policies.ShortTerm">
+        <Value>Short-Term Policies</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Policies.PolicyEscalation">
+        <Value>Policy Escalations</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Policies.Notification">
+        <Value>Policy Notifications</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Obligations">
+        <Value>Obligations</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Obligations.Audits">
+        <Value>Audits</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Obligations.AuditRegister">
+        <Value>Audit Register</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Obligations.AuditIssues">
+        <Value>Audits Issues</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Obligations.AssignTask">
+        <Value>Tasks</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Obligations.CircularTracking">
+        <Value>Circular Tracking</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Obligations.Notification">
+        <Value>Notification</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Obligations.Escalation">
+        <Value>Escalations</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Returns">
+        <Value>Returns</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Returns.List">
+        <Value>All Returns</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Returns.FiledReturns">
+        <Value>Filed Returns</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Returns.UnfiledReturns">
+        <Value>Unfilled Returns</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.obligations.Returns.Notification">
+        <Value>Notification</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Returns.Escalation">
+        <Value>Escalations</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Reports">
+        <Value>Reports</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Reports.Unfiled">
+        <Value>Unfilled Returns</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Reports.TAT">
+        <Value>TAT Report</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Reports.Penalities">
+        <Value>Penalities</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Reports.PeriodicIssueReport">
+        <Value>Periodic Issues</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Reports.Audit.AnnualAuditReport">
+        <Value>Audit Report</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Configuration">
+        <Value>Settings</Value>
+    </LocaleResource>
+    <LocaleResource Name=" App.Menu.Compliance.Configuration">
+        <Value>General Settings</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Configuration.General">
+        <Value>General Settings</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Settings.Users">
+        <Value>Users</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Settings.Delegation">
+        <Value>Delegation</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Compliance.Settings.Departments">
+        <Value>Departments</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Dashboard.SeeMore">
+        <Value>See More..</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Dashboard.Labels.Quick">
+        <Value>Quick Actions</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Dashboard.Labels.Processes">
+        <Value>Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Dashboard.Labels.Completed">
+        <Value>Completed</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Dashboard.Labels.Proposed">
+        <Value>Proposed</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Dashboard.Labels.Unchanged">
+        <Value>Unchanged</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Dashboard.Labels.DueForReview">
+        <Value>Due For Review</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Dashboard.Labels.Dormant">
+        <Value>Dormant</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Dashboard.Labels.Cancelled">
+        <Value>Cancelled</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Dashboard.Labels.TotalProcesses">
+        <Value>Total Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.ProcesseGroups">
+        <Value>Process Groups</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.ProcesseTags">
+        <Value>Process Tags</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Universe">
+        <Value>Process Register</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.ProcesseTAT">
+        <Value>TAT REPORT</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Admin.Dashboard.Labels.PendingApproval">
+        <Value>PENDING APPROVAL</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Admin.Dashboard.Labels.SystemUsers">
+        <Value>System Users</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Admin.Dashboard.Labels.TotalUsers">
+        <Value>TOTAL USERS</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Admin.Dashboard.Labels.ActiveUsers">
+        <Value>ACTIVE USERS</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Admin.Dashboard.Labels.DisabledUsers">
+        <Value>LOCKED USERS</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Admin.Dashboard.Labels.PendingVerification">
+        <Value>UNVERIFIED</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Admin.Dashboard.Labels.DeletedAccounts">
+        <Value>DELETED ACCOUNTS</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Admin.Dashboard.Labels.BugTracking">
+        <Value>Bug Tracking</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Admin.Dashboard.Labels.TotalBugs">
+        <Value>TOTAL BUGS</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Admin.Dashboard.Labels.NewBugs">
+        <Value>NEW BUGS</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Admin.Dashboard.Labels.FixingBugs">
+        <Value>BUG IN FIXING</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Admin.Dashboard.Labels.Fixed">
+        <Value>BUGS RESOLVED</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Admin.Dashboard.Labels.UserReported">
+        <Value>USER REPORTED</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Admin.Dashboard.Labels.RecentActivities">
+        <Value>Recent Activities</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Dashboard.Labels.Units">
+        <Value>Units</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Dashboard.Labels.Units.AccountServices">
+        <Value>Accounts Management</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Dashboard.Labels.Units.Reconciliation">
+        <Value>Reconciliation</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Dashboard.Labels.Units.Records">
+        <Value>Records Management</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Dashboard.Labels.Units.Wallets">
+        <Value>Wallets</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Dashboard.Labels.Units.Cash">
+        <Value>Cash</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Dashboard.Labels.Units.Payments">
+        <Value>Payments</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Dashboard.Labels.Units.CustomerExperience">
+        <Value>Customer Experience</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Dashboard.Labels.Units.Channels">
+        <Value>Channels</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Tables.Headers.User">
+        <Value>User</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Tables.Headers.Email">
+        <Value>Email</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Tables.Headers.Action">
+        <Value>Action</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Tables.Headers.Time">
+        <Value>Time</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Tables.Headers.Description">
+        <Value>Description</Value>
+    </LocaleResource>
+    <LocaleResource Name="Registration.Title">
+        <Value>Company Registration</Value>
+    </LocaleResource>
+    <LocaleResource Name="Registration.Admin.Info">
+        <Value>System Administrator Details</Value>
+    </LocaleResource>
+    <LocaleResource Name="Registration.Admin.Access">
+        <Value>System Login Details</Value>
+    </LocaleResource>
+    <LocaleResource Name="Register.Company.Fields.CompanyName">
+        <Value>Company Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Register.Company.Fields.Alias">
+        <Value>Alias</Value>
+    </LocaleResource>
+    <LocaleResource Name="Register.Company.Fields.RegistrationNumber">
+        <Value>Registration Number</Value>
+    </LocaleResource>
+    <LocaleResource Name="Registration.Error.General">
+        <Value>Please correct the errors in the current step before proceeding.</Value>
+    </LocaleResource>
+    <LocaleResource Name="Registration.Error.Failed">
+        <Value>Registration failed. Please try again.</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.FirstName">
+        <Value>First Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.MidlleName">
+        <Value>Middle Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.Surname">
+        <Value>Surname</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.UserName">
+        <Value>Username</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.Email">
+        <Value>Email</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.PhoneNumber">
+        <Value>Phone Number</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.Password">
+        <Value>Password</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.ConfirmPassword">
+        <Value>Confirm Password</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.PFNumber">
+        <Value>PF Number</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.SolId">
+        <Value>Branch SolID</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.Department">
+        <Value>Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.DepartmentUnit">
+        <Value>Department Unit</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.Role">
+        <Value>System Role</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.IsActive">
+        <Value>Is Active</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.IsDeleted">
+        <Value>Mark As Deleted</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Fields.IsVerified">
+        <Value>Is Verified</Value>
+    </LocaleResource>
+    <LocaleResource Name="Company.Error.CompanyNameRequired">
+        <Value>Company name Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="Company.Error.AliasRequired">
+        <Value>Provide an Alias (Short name) for the company</Value>
+    </LocaleResource>
+    <LocaleResource Name="Company.Error.RegNumberRequired">
+        <Value>Provide company Registration Number</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.EmailRequired">
+        <Value>Email Address Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.FirstNameRequired">
+        <Value>FirstName Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.SurnameRequired">
+        <Value>Surname Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.UserameRequired">
+        <Value>Username Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.PasswordRequired">
+        <Value>Password Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.ConfirmPasswordRequired">
+        <Value>Confirm Password Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.PFNumberRequired">
+        <Value>PF Number Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.SolIdRequired">
+        <Value>Sol ID Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.DepartmentRequired">
+        <Value>Department Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="User.Error.SystemRoleRequired">
+        <Value>User Role Field is required</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.TAT.Title">
+        <Value>PROCESS TAT DETAILS</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.TAT.ProcessName">
+        <Value>PROCESS NAME</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.TAT.ProcessStatus">
+        <Value>PROCESS STATUS</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.TAT.RequestData">
+        <Value>REQUEST DATA</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.Approval.ProcessName">
+        <Value>PROCESS NAME</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Processes.Approval.RequestDate">
+        <Value>APPROVAL REQUEST DATE</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Previous">
+        <Value>Previous</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Next">
+        <Value>Next</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Delete">
+        <Value>Delete</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Cancel">
+        <Value>Cancel</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Confirm">
+        <Value>Confirm</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Push">
+        <Value>Push</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.On">
+        <Value>On</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Off">
+        <Value>Off</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Okay">
+        <Value>OK</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Yes">
+        <Value>Yes</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.No">
+        <Value>No</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Submit">
+        <Value>Save</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Update">
+        <Value>Update</Value>
+    </LocaleResource>
+    <LocaleResource Name="Button.Signin">
+        <Value>Sign In</Value>
+    </LocaleResource>
+    <LocaleResource Name="Login.Enter.Username">
+        <Value>Enter Username</Value>
+    </LocaleResource>
+    <LocaleResource Name="Login.Enter.Password">
+        <Value>Enter Password</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Message.EnterPassword">
+        <Value>Password required for login</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Message.InvalidUsername">
+        <Value>Invalid username! Please correct your name and try again</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Message.EnterUsername">
+        <Value>Username required for login</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Message.InvalidPassword">
+        <Value>Password provided is not correct</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Authentication.Failed">
+        <Value>Authentication failed. Please try again.</Value>
+    </LocaleResource>
+    <LocaleResource Name="Error.Occurance">
+        <Value>Error Occurred! System error has occurred</Value>
+    </LocaleResource>
+    <LocaleResource Name="Error.Clear">
+        <Value>Please clear the errors and Try again</Value>
+    </LocaleResource>
+    <LocaleResource Name="Error.Unknown">
+        <Value>Unknown error has occurred</Value>
+    </LocaleResource>
+    <LocaleResource Name="Error.Service.Unavailable">
+        <Value>Service unavailable. Please try again later.</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Open">
+        <Value>OPEN</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Closed">
+        <Value>CLOSED</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Label.Totals">
+        <Value>TOTAL</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Returns.Triennial">
+        <Value>Triennial Submissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Returns.Periodic">
+        <Value>Periodic Submissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Returns.Biannual">
+        <Value>Biannual Submissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Returns.Occurrence">
+        <Value>On Occurrence Submissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Returns.Biennial">
+        <Value>Biennial Submissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Returns.Oneoff">
+        <Value>One-Off Submissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Returns.Annual">
+        <Value>Annual Submissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Returns.NoReturn">
+        <Value>No Returns</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Returns.Quartery">
+        <Value>Quarterly Submissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Returns.Monthly">
+        <Value>Monthly Submissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Returns.Weekly">
+        <Value>Weekly Submissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Returns.Daily">
+        <Value>Daily Submissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Circulars.Mofed">
+        <Value>MoFED Circulars</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Circulars.Ura">
+        <Value>URA Circulars</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Circulars.Pdpo">
+        <Value>PDPO Circulars</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Circulars.Bou">
+        <Value>BOU Circulars</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Circulars.Cma">
+        <Value>CMA Circulars</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Circulars.Ag">
+        <Value>AG Circulars</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Circulars.Umra">
+        <Value>UMRA Circulars</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Circulars.Uib">
+        <Value>UIB Circulars</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Circulars.Irau">
+        <Value>IRAU Circulars</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Circulars.Nira">
+        <Value>NIRA Circulars</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Circulars.Fia">
+        <Value>FIA Circulars</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Circulars.Dpf">
+        <Value>DPF Circulars</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Circulars.Ppda">
+        <Value>PPDA Circulars</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Circulars.Urbra">
+        <Value>URBA Circulars</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Circulars.Other">
+        <Value>Other Circulars</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Returns.Header.Register">
+        <Value>Add new Return/Report</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Returns.Law">
+        <Value>Guiding Law/Regulation</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Returns.Select.Law">
+        <Value>Select guiding law...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Returns.Name">
+        <Value>Return/Report Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Return.Type">
+        <Value>Return/Report Type</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Returns.Select.Type">
+        <Value>Select type...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Returns.Deleted">
+        <Value>Remove Return/Report</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Returns.Risk">
+        <Value>Risk in case of breach</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Returns.Comments">
+        <Value>Comment</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Submitted.Title">
+        <Value>Report/Return Title</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Submitted.Period">
+        <Value>Report/Return Period</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Submitted.Select">
+        <Value>Report Status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Submitted.Select.Status">
+        <Value>Select status...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Submitted.Breached">
+        <Value>Is Breached</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Submitted.Reason">
+        <Value>Reason for delayed submisstion</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Submitted.SubmittedBy">
+        <Value>Submitted By</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Submitted.Department">
+        <Value>Responsible Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Submitted.Header">
+        <Value>Report/Return Submission Update</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Submitted.FileName">
+        <Value>Add file path</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Submission.Circular">
+        <Value>Circular Title</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Submission.Status">
+        <Value>Status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Submission.Risk">
+        <Value>Risk</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Submission.Department">
+        <Value>Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Submission.Action">
+        <Value>Action</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Submission.Header">
+        <Value>Circular Submission</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Submission.Details">
+        <Value>Submission Details</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Submission.Issues">
+        <Value>Submission Issues</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Submission.Breach-info">
+        <Value>This Circular was not submitted in time and acquired a risk to the bank. You MUST give a reason why submission period was breached.</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Submission.Label.Title">
+        <Value>Circular Title</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Submission.Label.Requirement">
+        <Value>Circular Requirement</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Submission.Label.Receive-date">
+        <Value>Recieve Date</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Submission.Label.Deadline-date">
+        <Value>Deadline</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Submission.Label.IsBreached">
+        <Value>Is Breached</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Submission.Label.Breach-Reason">
+        <Value>Reason For Breached</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Submission.Label.Submitted-By">
+        <Value>Submitted By</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Submission.Label.Comments">
+        <Value>Comments</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Submitted.Reference">
+        <Value>Submission Reference</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Submissions.Label.Status">
+        <Value>Submission Status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Issues.Label.Comments">
+        <Value>Comments</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Issues.Label.Recieved-on">
+        <Value>Recieve Date</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Issues.Label.IsDeleted">
+        <Value>Mark as deleted</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Issues.Label.Status">
+        <Value>Issue Status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Issues.Label.Status.Select">
+        <Value>Select status...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Issues.Label.Resolved-on">
+        <Value>Resolve Date</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Issues.Label.Resolution">
+        <Value>Proposed Resolution</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Submission.Label.Department">
+        <Value>Responsible Department/Unit</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circulars.Submission.Label.Frequency">
+        <Value>Reporting Frequency</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Returns.Header.Frequency.Returns">
+        <Value>Frequency Returns/Reports</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Returns.Header.Frequency.Reports.List">
+        <Value>Returns/Report List</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Returns.Header.Frequency.Reports.Add">
+        <Value>Add Returns/Report</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Returns.Header.Frequency.Reports.Submissions">
+        <Value>Returns/Report Submissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Returns.Header.Frequency.Reports.Submissions.Add">
+        <Value>New Submissions</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Submitted.SubmittedOn">
+        <Value>Submitted On</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Audit.Types">
+        <Value>Audit Types</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Audit.Reports">
+        <Value>Audit Reports</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Audit.Exceptions">
+        <Value>Audit Findings</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Audit.MonthLess">
+        <Value>Exceptions due less than a month</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.Audit.TwoMonthLess">
+        <Value>Exceptions due less than two month</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Audit.Title.AuditReport">
+        <Value>Audit Report View</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Audit.Label.Reference">
+        <Value>Reference</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Audit.Label.ReportName">
+        <Value>Report Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Audit.Label.AuditDate">
+        <Value>Audit Date</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Audit.Label.Status">
+        <Value>Report Status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Audit.Label.Total">
+        <Value>Total Findings</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Audit.Label.Open">
+        <Value>Open Findings</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Audit.Label.Close">
+        <Value>Close Findings</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Audit.Label.Overdue">
+        <Value>Overdue Findings</Value>
+    </LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.Additional">
 		<Value>Additional Information</Value>
 	</LocaleResource>
@@ -2567,7 +2606,7 @@
 		<Value>Select responsible...</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Audits.Exceptions.Label.Recomendations">
-		<Value>Recomendation</Value>
+		<Value>Recommendation</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Audits.Exceptions.Label.RiskLevel">
 		<Value>Risk Level</Value>
@@ -2614,4 +2653,138 @@
 	<LocaleResource Name="Component.Table.Audits.Type.Deleted">
 		<Value>Remove type</Value>
 	</LocaleResource>
+    <LocaleResource Name="Component.Table.Policy.Additional">
+        <Value>Additional Information</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circular.Header">
+        <Value>Manage Circulars</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circular.Label.Reference">
+        <Value>Reference</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circular.Label.Title">
+        <Value>Circular Title</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circular.Label.Requirement">
+        <Value>Circular Requirement</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circular.Label.ReceiveDate">
+        <Value>Receive Date</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circular.Label.Deadline">
+        <Value>Deadline On</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circular.Label.Status">
+        <Value>Circular Status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circular.Label.Select.Status">
+        <Value>Select status...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circular.Label.SubmitDate">
+        <Value>Submission Date</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circular.Label.BreachReason">
+        <Value>Reason For Breach</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circular.Label.Owner">
+        <Value>Responsible Office</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circular.Label.Select.Owner">
+        <Value>Select office...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circular.Label.Frequency">
+        <Value>Submission Frequency</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circular.Label.Select.Frequency">
+        <Value>Select frequency...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circular.Label.Authority">
+        <Value>Issuing Authority</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circular.Label.Select.Authority">
+        <Value>Select authority...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circular.Label.Risk">
+        <Value>Breach Risk</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circular.Label.Comments">
+        <Value>Comment</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circular.Label.Resolved">
+        <Value>Resolved On</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circular.Label.Status">
+        <Value>Status</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Circular.Label.Select.Status">
+        <Value>Select status...</Value>
+    </LocaleResource>
+
+    <LocaleResource Name="Component.Table.User.Label.FirstName">
+        <Value>First Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Middlename">
+        <Value>Middle Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.LastName">
+        <Value>Last Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Username">
+        <Value>Username</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.DisplayName">
+        <Value>Display Name</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Email">
+        <Value>Email Address</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.PFNumber">
+        <Value>PF Number</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Phone">
+        <Value>Phone Number</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Deactivate">
+        <Value>Deactivate Account</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Role">
+        <Value>System Role</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Role.Select">
+        <Value>Select role...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.RoleGroup">
+        <Value>Role Group</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Department">
+        <Value>Department</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Department.Select">
+        <Value>Select department...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Unit">
+        <Value>Department Unit</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Unit.Select">
+        <Value>Select unit..</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Branch">
+        <Value>Branch</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.User.Label.Branch.Select">
+        <Value>Select branch...</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Key.audit-home">
+        <Value>Audit Types</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Audits.Type.Header">
+        <Value>Manage Audit Types</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Audits.Type.Code">
+        <Value>Type Code</Value>
+    </LocaleResource>
+    <LocaleResource Name="Component.Table.Audits.Type.Name">
+        <Value>Type Name</Value>
+    </LocaleResource>
+
 </Language>

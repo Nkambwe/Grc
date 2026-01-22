@@ -3541,6 +3541,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "GetSelectedUnits",
+    "RelativePath": "grc/sam/users/department-units-mini-list",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
     "Method": "GetPagedActivities",
     "RelativePath": "grc/sam/users/getactivities",
     "HttpMethod": "POST",
@@ -3717,6 +3733,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "GetSelectedRoleGroups",
+    "RelativePath": "grc/sam/users/role-rolegroup-list",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
     "Method": "Statistics",
     "RelativePath": "grc/sam/users/statistics",
     "HttpMethod": "POST",
@@ -3742,6 +3774,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.UserRecordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "GetUserSupport",
+    "RelativePath": "grc/sam/users/user-support",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
         "IsRequired": true
       }
     ],

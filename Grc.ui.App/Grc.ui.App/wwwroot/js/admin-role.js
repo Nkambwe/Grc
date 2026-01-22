@@ -613,12 +613,12 @@ function initRoleSearch() {
 }
 
 function closeRolePanel() {
-    $('.role-overlay').removeClass('active');
+    $('#adminRoleOverLay').removeClass('active');
     $('#rolePanel').removeClass('active');
 }
 
 function closeGroupPanel() {
-    $('.groupOverlay').removeClass('active');
+    $('#adminRoleOverLay').removeClass('active');
     $('#groupPanel').removeClass('active');
 }
 

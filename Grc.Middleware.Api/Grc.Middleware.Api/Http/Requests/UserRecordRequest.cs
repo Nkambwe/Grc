@@ -9,11 +9,11 @@ namespace Grc.Middleware.Api.Http.Requests {
         [JsonPropertyName("firstName")]
         public string FirstName { get; set; }
 
-        [JsonPropertyName("lastName")]
-        public string LastName { get; set; }
-
         [JsonPropertyName("middleName")]
         public string MiddleName { get; set; }
+        
+        [JsonPropertyName("lastName")]
+        public string LastName { get; set; }
 
         [JsonPropertyName("userName")]
         public string UserName { get; set; }

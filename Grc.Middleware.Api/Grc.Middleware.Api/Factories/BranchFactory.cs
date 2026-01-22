@@ -53,7 +53,7 @@ namespace Grc.Middleware.Api.Factories {
                             new() {
                                 FirstName = HashGenerator.EncryptString("Grc"),
                                 LastName = HashGenerator.EncryptString("System"),
-                                Username = HashGenerator.EncryptString("Super"),
+                                Username = "Super",
                                 EmailAddress = HashGenerator.EncryptString("grc.system@pearlbank.co.ug"),
                                 PasswordHash = HashGenerator.EncryptString(ExtendedHashMapper.HashPassword("super390@pbu")),
                                 PFNumber = HashGenerator.EncryptString("00001"),

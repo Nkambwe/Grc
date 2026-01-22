@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
 using Grc.ui.App.Factories;
@@ -8,6 +9,7 @@ using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
+using System.Net;
 using System.Text.Json;
 
 namespace Grc.ui.App.Services {
@@ -184,6 +186,69 @@ namespace Grc.ui.App.Services {
         #endregion
 
         #region Users
+
+        public async Task<GrcResponse<GrcUserSupportResponse>> GetUserSupportAsync(long userId, string ipAddress) {
+            try {
+
+                var request = new GrcRequest() {
+                    UserId = userId,
+                    Action = Activity.RETRIVEUSERBYEMAIL.GetDescription(),
+                    IPAddress = ipAddress,
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>(),
+                };
+
+                var endpoint = $"{EndpointProvider.Sam.Users}/user-support";
+                return await HttpHandler.PostAsync<GrcRequest, GrcUserSupportResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve user support items: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "ACCESS-SERVICE", ex.StackTrace);
+                throw new GRCException("Uanble to retrieve user support items.", ex);
+            }
+        }
+
+        public async Task<GrcResponse<List<RoleGroupItemResponse>>> GetSelectedRoleGroupsAsync(long userId, long id, string ipAddress) {
+            try {
+
+                var request = new GrcIdRequest() {
+                    RecordId = id,
+                    UserId = userId,
+                    Action = Activity.RETRIVEUSERBYEMAIL.GetDescription(),
+                    IPAddress = ipAddress,
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>(),
+                };
+
+                var endpoint = $"{EndpointProvider.Sam.Users}/role-rolegroup-list";
+                return await HttpHandler.PostAsync<GrcIdRequest, List<RoleGroupItemResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve department units: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "ACCESS-SERVICE", ex.StackTrace);
+                throw new GRCException("Uanble to retrieve role groups.", ex);
+            }
+        }
+
+        public async Task<GrcResponse<List<UnitItemResponse>>> GetSelectedUnitsAsync(long userId, long id, string ipAddress) {
+            try {
+
+                var request = new GrcIdRequest() {
+                    RecordId = id,
+                    UserId = userId,
+                    Action = Activity.RETRIVEUSERBYEMAIL.GetDescription(),
+                    IPAddress = ipAddress,
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>(),
+                };
+
+                var endpoint = $"{EndpointProvider.Sam.Users}/department-units-mini-list";
+                return await HttpHandler.PostAsync<GrcIdRequest, List<UnitItemResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve department units: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "ACCESS-SERVICE", ex.StackTrace);
+                throw new GRCException("Uanble to retrieve department units.", ex);
+            }
+        }
+
 
         public async Task<GrcResponse<UserResponse>> GetUserByEmailAsync(string email, long requestingUserId, string ipAddress)
         {

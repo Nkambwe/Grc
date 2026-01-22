@@ -415,7 +415,6 @@ function persistPermissionSet(isEdit, payload) {
 }
 
 function closeSetPanel() {
-    console.log('Button clicked');
     $('.overlay').removeClass('active');
     $('#setPanel').removeClass('active');
 }
@@ -478,7 +477,6 @@ $(document).ready(function () {
 
     //..new permission set
     $(".action-btn-new-set").on("click", function () {
-        console.log(`Clicked new set`);
         addPermissionSetRecord();
     });
 

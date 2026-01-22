@@ -289,7 +289,7 @@ function openGroupEditor(title, group, isEdit) {
     }
 
     $('#panelTitle').text(title);
-    $('.overlay').addClass('active');
+    $('.circular-outer-panel-overlay').addClass('active');
     $('#setPanel').addClass('active');
 }
 
@@ -367,7 +367,7 @@ function saveGroup(e) {
     if (!recordData.groupDescription)
         errors.push("Role Group description is required.");
 
-    if (recordData.permissions.length == 0)
+    if (recordData.permissionSets.length == 0)
         errors.push("Please select set roles.");
 
     // --- stop if validation fails ---
@@ -456,7 +456,7 @@ function persistGroup(isEdit, payload) {
 
 function closeGroupPanel() {
     console.log('Button clicked');
-    $('.overlay').removeClass('active');
+    $('.circular-outer-panel-overlay').removeClass('active');
     $('#setPanel').removeClass('active');
 }
 

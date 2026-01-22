@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -186,6 +187,41 @@ namespace Grc.ui.App.Factories {
             });
         }
 
+        public async Task<UserSupportViewModel> PrepareUserSupportModelAsync(UserModel currentUser) {
+            // Get recents from session
+            var recents = _sessionManager.Get<List<RecentModel>>(SessionKeys.RecentItems.GetDescription()) ?? new List<RecentModel>();
+
+            //..get pinned items
+            var response = await _accessService.GetUserSupportAsync(currentUser.UserId, currentUser.IPAddress);
+            GrcUserSupportResponse data;
+            if (response.HasError) {
+                data = new GrcUserSupportResponse() {
+                    Branches = new(),
+                    Roles = new(),
+                    Departments = new()
+                };
+            } else {
+                data = response.Data;
+            }
+
+            return new UserSupportViewModel() {
+                Branches = data.Branches.Any()?
+                           data.Branches.Select(b => new BranchItemViewModel(){ 
+                               Id = b.Id,
+                               SolId = b.SolId,
+                               Name = b.Name}
+                           ).ToList(): new(),
+                Roles = data.Roles.Any()?
+                        data.Roles.Select(b => new RoleItemViewModel(){ 
+                               Id = b.Id,
+                               Name = b.Name}).ToList(): new(),
+                Departments = data.Departments.Any()?
+                              data.Departments.Select(b => new DepartmentItemViewModel(){ 
+                               Id = b.Id,
+                               Name = b.Name}).ToList(): new(),
+            };
+        }
+
         public async Task<RoleGroupListModel> PrepareRoleGroupListModelAsync(UserModel currentUser) {
             RoleGroupListModel roleGroupModel = new();
             GrcRequest request = new()
@@ -200,7 +236,7 @@ namespace Grc.ui.App.Factories {
             var rolesData = await _accessService.GetRoleGroupsAsync(request);
             List<GrcRoleGroupResponse> roleGroups;
 
-            List<RoleGroupItem> items = new();
+            List<RoleGroupItemResponse> items = new();
             if (!rolesData.HasError) {
                 roleGroups = rolesData.Data.Data;
             } else {
@@ -209,7 +245,7 @@ namespace Grc.ui.App.Factories {
 
             if(roleGroups.Any()){ 
                 foreach(var roleGroup in roleGroups){
-                    items.Add(new RoleGroupItem
+                    items.Add(new RoleGroupItemResponse
                     {
                         Id = roleGroup.Id,
                         GroupName = roleGroup.GroupName
