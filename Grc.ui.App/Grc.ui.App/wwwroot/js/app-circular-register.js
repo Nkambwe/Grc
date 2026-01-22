@@ -681,7 +681,7 @@ function renderCirIssues(issues) {
     $list.empty();
 
     if (issues.length === 0) {
-        $list.append('<li class="text-muted no-control-items">No issues reported</li>');
+        $list.append('<li class="text-muted no-control-items"><div class="message">No issues reported</div></li>');
         return;
     }
 

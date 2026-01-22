@@ -224,7 +224,7 @@ function openRegulatoryCategoryPanel(title, record, isEdit) {
 
     //..open panel
     $('#panelTitle').text(title);
-    $('.overlay').addClass('active');
+    $('#catOverlay').addClass('active');
     $('#slidePanel').addClass('active');
 }
 
@@ -424,7 +424,7 @@ function findRegulatoryCategoryRecord(id) {
 
 //..close panel
 function closeRegulatoryCategoryPanel() {
-    $('.overlay').removeClass('active');
+    $('#catOverlay').removeClass('active');
     $('#slidePanel').removeClass('active');
 }
 

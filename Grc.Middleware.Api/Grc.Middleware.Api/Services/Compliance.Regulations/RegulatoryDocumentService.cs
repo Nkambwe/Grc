@@ -648,7 +648,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 if (statute != null)
                 {
                     //..mark as delete this Regulatory Document
-                    _ = uow.RegulatoryDocumentRepository.Delete(statute, request.markAsDeleted);
+                    _ = uow.RegulatoryDocumentRepository.Delete(statute, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(statute).State;
@@ -686,7 +686,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 if (documents != null)
                 {
                     //..mark as delete this Regulatory Document
-                    _ = await uow.RegulatoryDocumentRepository.DeleteAsync(documents, request.markAsDeleted);
+                    _ = await uow.RegulatoryDocumentRepository.DeleteAsync(documents, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(documents).State;

@@ -6,6 +6,9 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
+        [JsonPropertyName("auditId")]
+        public long AuditId { get; set; }
+
         [JsonPropertyName("reference")]
         public string Reference { get; set; }
 
@@ -32,9 +35,6 @@ namespace Grc.Middleware.Api.Http.Responses {
 
         [JsonPropertyName("additionalNotes")]
         public string AdditionalNotes { get; set; }
-
-        [JsonPropertyName("auditType")]
-        public string AuditType { get; set; }
 
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }

@@ -1,12 +1,868 @@
-﻿<div class="grc-tabulator-container">
+﻿@model AuditSupportViewModel
 
-    <div class="grc-tabulator-search">
-        <div class="field-search-group">
-            <label class="form-searchbox-label text-right">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.Types"))</label>
-            <input id="typeSearchbox" type="text" class="form-control searchbox-field">
+<div class="container-fluid regulatory-container">
+
+    <div class="row regulatory-inner-container">
+
+        <!------jtree----->
+        <div class="col-md-3 border-end hierarchy-panel">
+
+            <div class="category-list-box d-flex justify-content-between align-items-center mb-2">
+                <strong class="category-list-box-title">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Audit.Category"))</strong>
+                <button class="btn btn-sm grc-btn-outline-primary" id="btnAddCategory">
+                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Button.Category"))
+                </button>
+            </div>
+
+            <div id="categoryTree" class="hierarchy-tree"></div>
+
         </div>
+
+        <div class="col-md-9 content-panel">
+
+            <!------breadcrubs----->
+            <nav class="bread-crumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb small mb-2" id="auditBreadcrumb">
+                    <li class="breadcrumb-item">
+                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Category.Audits"))
+                    </li>
+                </ol>
+            </nav>
+
+            <div id="contentArea">
+                <!------audit table----->
+                <div class="empty-state text-muted text-start p-2" style="border-bottom: solid 1px #CED4DA!important">
+                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Header.Top"))
+                </div>
+
+                <div id="auditView" class="d-none">
+                    <div class="d-flex justify-content-between p-2">
+                        <h6 class="p-2 m-0">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Header.Audit"))
+                        </h6>
+                        <button class="btn btn-sm btn-primary" id="btnAddAudit">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Button.Audit"))
+                        </button>
+                    </div>
+
+                    <div id="auditTable"></div>
+                </div>
+
+                <!------report table----->
+                <div id="reportView" class="d-none">
+                    <div class="d-flex justify-content-between p-2">
+                        <h6 class="p-2 m-0">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Header.Reports"))
+                        </h6>
+                        <button class="btn btn-sm btn-primary" id="btnAddReport">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Button.Report"))
+                        </button>
+                    </div>
+
+                    <div id="reportsTable"></div>
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
-    <div id="auditReportTable"></div>
+
+</div>
+
+<!-- Overlay -->
+<div id="auditTypeOverlay" class="law-panel-overlay"></div>
+
+<!-- Type Panel -->
+<div id="auditTypePanel" class="law-side-panel" onclick="event.stopPropagation()">
+
+    <div class="law-side-panel-header">
+        <h5 id="auditTypeTitle">
+            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Type.Header"))
+        </h5>
+        <button class="panel-close" onclick="closeAuditCategory()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div class="law-side-panel-body">
+
+        <form id="categoryForm" class="grc-law-form">
+            <input type="hidden" id="auditTypeId" name="auditTypeId">
+            <input type="hidden" id="isAuditTypeEdit" name="isAuditTypeEdit">
+
+            <div class="col-12">
+
+                <div class="row mb-3">
+                    <div class="mb-3">
+                        <label for="typeCode" class="form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Type.Code"))
+                        </label>
+                        <input type="text" class="form-control" id="typeCode" name="typeCode" required>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="mb-3">
+                        <label for="typeName" class="form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Type.Name"))
+                        </label>
+                        <input type="text" class="form-control" id="typeName" name="typeName">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="mb-3">
+                        <label for="description" class="form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Type.Description"))
+                        </label>
+                        <textarea class="form-control" id="description" rows="3"></textarea>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-sm-12">
+                <div class="row mb-3">
+                    <div class="col-sm-2">
+                        <button class="btn btn-grc-primary" style="width:100%;" onclick="saveAuditType(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                    </div>
+                    <div class="col-sm-2">
+                        <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeAuditCategory()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                    </div>
+                    <div class="col-sm-8"></div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+</div>
+
+<!-- Audit Panel -->
+<div id="auditPanel" class="law-side-panel" onclick="event.stopPropagation()">
+
+    <div class="law-side-panel-header">
+        <h5 id="auditTitle">
+            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Audit.Header"))
+        </h5>
+        <button class="panel-close" onclick="closeAudit()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div class="law-side-panel-body">
+
+        <form id="lawForm" class="grc-law-form">
+            <input type="hidden" id="auditId" name="auditId">
+            <input type="hidden" id="isAuditEdit" name="isAuditEdit">
+
+            <div class="row">
+
+                <div class="col-12">
+
+                    <div class="row mb-3">
+                        <label for="auditName" class="col-12 form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Audit.Label.Name"))
+                        </label>
+                        <div class="col-12">
+                            <input type="text" class="form-control" id="auditName" name="auditName">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-6">
+
+                    <div class="row mb-3">
+                        <label for="authorityId" class="col-12 col-form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Select.Authority"))
+                        </label>
+                        <div class="col-12">
+                            <select class="js-act-authority-id form-control" id="authorityId" name="authorityId">
+                                <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Select.Authority"))</option>
+                                @if (Model?.Authorities != null && Model.Authorities.Any()) {
+                                    foreach (var authority in Model.Authorities) {
+                                        <option value="@authority.Id">@authority.AuthorityName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="row field-group mt-5 mb-5">
+                        <div class="col-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="isAuditDeleted">
+                                <label class="form-check-label" for="isAuditDeleted">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Audit.Label.Deleted"))
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-6">
+
+                    <div class="row mb-3">
+                        <label for="typeId" class="col-12 col-form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Audit.Label.Type"))
+                        </label>
+                        <div class="col-12">
+                            <select class="js-act-law-type-id form-control" id="typeId" name="typeId">
+                                <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Select.Type"))</option>
+                                @if (Model?.Types != null && Model.Types.Any()) {
+                                    foreach (var type in Model.Types) {
+                                        <option value="@type.Id">@type.TypeName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-12">
+                    <div class="row mb-3">
+                        <label for="description" class="col-12 form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Audit.Label.Description"))
+                        </label>
+                        <div class="col-12">
+                            <textarea class="form-control" id="description" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveAudit(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                        </div>
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeAudit()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                        </div>
+                        <div class="col-sm-10"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- Audit Report Panel -->
+<div id="reportPanel" class="law-side-panel" onclick="event.stopPropagation()">
+
+    <div class="law-side-panel-header">
+        <h5 id="reportTitle">
+            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits Report.Header"))
+        </h5>
+        <button class="panel-close" onclick="closeAuditReport()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div class="law-side-panel-body">
+
+        <form id="reportForm" class="grc-law-form">
+
+            <input type="hidden" id="reportId" name="reportId">
+            <input type="hidden" id="selectedAudit" name="selectedAudit">
+            <input type="hidden" id="isReportEdit" name="isReportEdit">
+
+            <!-- Tabs header -->
+            <ul class="nav nav-tabs" id="reportTabs" role="tablist">
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">
+                        REPORT DETAILS
+                    </button>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="exceptions-tab" data-bs-toggle="tab" data-bs-target="#exceptions" type="button" role="tab">
+                        REPORT EXCEPTIONS
+                    </button>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="controls-tab" data-bs-toggle="tab" data-bs-target="#updates" type="button" role="tab">
+                        REPORT UPDATES
+                    </button>
+                </li>
+
+            </ul>
+
+            <div class="tab-content">
+
+                <!--details tab -->
+                <div class="tab-pane fade show active" id="details" role="tabpanel">
+
+                    <div class="row">
+
+                        <div class="col-12">
+
+                            <div class="tab-page-content">
+                            
+                                <div class="tab-page-content-inner">
+
+                                    <div class="row">
+
+                                        <div class="col-12">
+
+                                            <div class="row mb-3">
+                                                <label for="reference" class="col-12 form-label">
+                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Report.Label.Reference"))
+                                                </label>
+                                                <div class="col-12">
+                                                    <input type="text" class="form-control" id="reference" name="reference">
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <label for="reportName" class="col-12 form-label">
+                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Report.Label.Name"))
+                                                </label>
+                                                <div class="col-12">
+                                                    <input type="text" class="form-control" id="reportName" name="reportName">
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <label for="summery" class="col-12 form-label">
+                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Report.Label.Summery"))
+                                                </label>
+                                                <div class="col-12">
+                                                    <textarea class="form-control" id="summery" name="summery" rows="4"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+
+                                                <div class="col-6">
+                                                    <div class="row mb-3">
+                                                        <label for="reportDate" class="col-sm-12 col-form-label">
+                                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Report.Label.ReportDate"))
+                                                        </label>
+                                                        <div class="col-sm-12">
+                                                            <input type="text" id="reportDate" name="reportDate" class="form-control datepicker" placeholder="MM/DD/YYYY" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-6">
+                                                    <div class="row mb-3">
+                                                        <label for="responseDate" class="col-12 form-label">
+                                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Report.Label.ResolveDate"))
+                                                        </label>
+                                                        <div class="col-12">
+                                                            <input type="text" id="responseDate" name="responseDate" class="form-control datepicker" placeholder="MM/DD/YYYY" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <div class="col-sm-6">
+                                                    <div class="row mb-3">
+                                                        <label for="exceptionCount" class="col-12 form-label">
+                                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Report.Label.Findings"))
+                                                        </label>
+                                                        <div class="col-12">
+                                                            <input type="number" id="exceptionCount" name="exceptionCount" class="form-control" min="0" step="1" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="row field-group mt-1 mb-1">
+                                                        <div class="col-6">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="checkbox" id="isReportDeleted">
+                                                                <label class="form-check-label" for="isReportDeleted">
+                                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Report.Label.Deleted"))
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="row m-3">
+
+                                                <div class="col-6">
+                                                    <div class="row">
+                                                        <label for="auditId" class="col-12 col-form-label">
+                                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Report.Label.Type"))
+                                                        </label>
+                                                        <div class="col-12">
+                                                            <select class="js-act-audit-id form-control" id="auditId" name="auditId">
+                                                                <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Report.Select.Type"))</option>
+                                                                @if (Model?.Types != null && Model.Audits.Any()) {
+                                                                    foreach (var audit in Model.Audits) {
+                                                                        <option value="@audit.Id">@audit.AuditName</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-6">
+                                                    <div class="row mb-3">
+                                                        <label for="reportStatus" class="col-sm-12 col-form-label">
+                                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Report.Label.Status"))
+                                                        </label>
+                                                        <div>
+                                                            <select class="js-report-status form-control" id="reportStatus" name="reportStatus">
+                                                                <option value="UNKNOWN">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Report.Select.Status"))</option>
+                                                                <option value="CLOSED">Closed</option>
+                                                                <option value="PENDING">Pending</option>
+                                                                <option value="DUE">Due</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <label for="additionalNotes" class="col-12 form-label">
+                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Report.Label.Additional"))
+                                                </label>
+                                                <div class="col-12">
+                                                    <textarea class="form-control" id="additionalNotes" name="additionalNotes" rows="2"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <label for="managementComments" class="col-12 form-label">
+                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Report.Label.Management"))
+                                                </label>
+                                                <div class="col-12">
+                                                    <textarea class="form-control" id="managementComments" name="managementComments" rows="2"></textarea>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <div class="row mb-3">
+                                                <div class="col-sm-1">
+                                                    <button class="btn btn-grc-primary" style="width:100%;" onclick="saveReport(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                                                </div>
+                                                <div class="col-sm-1">
+                                                    <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeAuditReport()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                                                </div>
+                                                <div class="col-sm-10"></div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!--exceptions tab -->
+                <div class="tab-pane fade show" id="exceptions" role="tabpanel">
+
+                    <div class="row">
+
+                        <div class="col-12">
+
+                            <div class="tab-page-header">
+                                <button class="tab-header-button" onclick="addException(event)">
+                                    <span><i class="mdi mdi-plus"></i></span>
+                                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Exceptions.Button.New"))</span>
+                                </button>
+                            </div>
+
+                            <div class="tab-page-content">
+                                <ul class="exceptions-list"></ul>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!--updates tab -->
+                <div class="tab-pane fade show" id="updates" role="tabpanel">
+
+                    <div class="row">
+
+                        <div class="col-12">
+
+                            <div class="tab-page-header">
+                                <button class="tab-header-button" onclick="addUpdate(event)">
+                                    <span><i class="mdi mdi-plus"></i></span>
+                                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Updates.Button.New"))</span>
+                                </button>
+                            </div>
+
+                            <div class="tab-page-content">
+                                <ul class="update-list"></ul>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div> 
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- Overlay -->
+<div id="outerOverlay" class="map-panel-overlay"></div>
+
+<div id="exceptionPanel" class="issue-side-panel " onclick="event.stopPropagation()">
+
+    <div class="issue-side-panel-header">
+        <h5 id="exceptionTitle">
+            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Exceptions.Header.Title"))
+        </h5>
+        <button class="panel-close" onclick="closeException()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div class="issue-side-panel-body">
+
+        <form id="exceptionForm" class="grc-law-form">
+            <input type="hidden" id="exceptionId" name="exceptionId">
+            <input type="hidden" id="parentId" name="parentId">
+            <input type="hidden" id="isExceptionEdit" name="isExceptionEdit">
+            <div class="row">
+
+                <div class="col-12">
+
+                    <div class="row mb-3">
+                        <label for="findings" class="col-12 form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Exceptions.Label.Findings"))
+                        </label>
+                        <div class="col-12">
+                            <input type="text" class="form-control" id="findings" name="findings">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+
+                        <label for="recomendations" class="col-12 form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Exceptions.Label.Recomendations"))
+                        </label>
+                        <div class="col-12">
+                            <textarea class="form-control" id="recomendations" name="recomendations" rows="2"></textarea>
+                        </div>
+
+                    </div>
+
+                    <div class="row mb-3">
+
+                        <label for="proposedAction" class="col-12 form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Exceptions.Label.Proposal"))
+                        </label>
+                        <div class="col-12">
+                            <textarea class="form-control" id="proposedAction" name="proposedAction" rows="2"></textarea>
+                        </div>
+
+                    </div>
+
+                    <div class="row mb-3">
+
+                        <label for="correctiveAction" class="col-12 form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Exceptions.Label.Corrective"))
+                        </label>
+                        <div class="col-12">
+                            <textarea class="form-control" id="correctiveAction" name="correctiveAction" rows="2"></textarea>
+                        </div>
+
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-3">
+                            <div class="form-check form-switch mt-4">
+                                <input class="form-check-input" type="checkbox" id="execDeleted">
+                                <label class="form-check-label" for="execDeleted">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Exceptions.Label.Deleted"))
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-9"></div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-6">
+                            <div class="row"> 
+                                <label for="execptionStatus" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Exceptions.Label.Status"))
+                                </label>
+                                <div class="col-12">
+                                    <select class="js-exception-status form-control" id="execptionStatus" name="execptionStatus">
+                                        <option value="UNKNOWN">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Exceptions.Label.Status.Select"))</option>
+                                        <option value="NA">Not Applicable</option>
+                                        <option value="OPEN">On Going</option>
+                                        <option value="CLOSED">Closed</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="row mb-3">
+                                <label for="targetDate" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Exceptions.Label.Target"))
+                                </label>
+                                <div class="col-12">
+                                    <input type="text" id="targetDate" name="targetDate" class="form-control datepicker" placeholder="MM/DD/YYYY" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row mb-3">
+
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <label for="riskLevel" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Exceptions.Label.RiskLevel"))
+                                </label>
+                                <div class="col-12">
+                                    <select class="js-risk-level form-control" id="riskLevel" name="riskLevel">
+                                        <option value="NONE">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Exceptions.Label.RiskLevel.Select"))</option>
+                                        <option value="LOW">Low</option>
+                                        <option value="MEDIUM">Medium</option>
+                                        <option value="HIGH">High</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="row mb-3">
+                                <label for="riskRate" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Exceptions.Label.RiskRate"))
+                                </label>
+                                <div class="col-12">
+                                    <input type="number" id="riskRate" name="riskRate" class="form-control" min="0" step="1" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row mb-3">
+
+                        <div class="col-6">
+                            <div class="row mb-3">
+                                <label for="responsibileId" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Exceptions.Label.Responsibility"))
+                                </label>
+                                <div class="col-12">
+                                    <select class="js-responsible form-control" id="responsibileId" name="responsibileId">
+                                        <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Exceptions.Label.Responsibility.Select"))</option>
+                                        @if (Model?.Responsibilities != null && Model.Responsibilities.Any()) {
+                                            foreach (var resp in Model.Responsibilities) {
+                                                <option value="@resp.Id" data-executioner="@resp.ResponsibleRole">@resp.DepartmentName</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row mb-3">
+                                <label for="executioner" class="col-sm-12 col-form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Exceptions.Label.Executioner"))
+                                </label>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" id="executioner" name="executioner" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row mb-3">
+
+                        <label for="notes" class="col-12 form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Exceptions.Label.Notes"))
+                        </label>
+                        <div class="col-12">
+                            <textarea class="form-control" id="notes" name="notes" rows="2"></textarea>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveException(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                        </div>
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeException()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                        </div>
+                        <div class="col-sm-10"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+<div id="updatePanel" class="issue-side-panel " onclick="event.stopPropagation()">
+
+    <div class="issue-side-panel-header">
+        <h5 id="updateTitle">
+            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Update.Header.Title"))
+        </h5>
+        <button class="panel-close" onclick="closeUpdate()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div class="issue-side-panel-body">
+
+        <form id="updateForm" class="grc-law-form">
+            <input type="hidden" id="updateId" name="updateId">
+            <input type="hidden" id="updateReportId" name="updateReportId">
+            <input type="hidden" id="isUpdateEdit" name="isUpdateEdit">
+            <div class="row">
+
+                <div class="col-12">
+                    <div class="row mb-3">
+                        <label for="updateNotes" class="col-12 form-label">
+                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Update.Label.Notes"))
+                        </label>
+                        <div class="col-12">
+                            <textarea class="form-control" id="updateNotes" name="updateNotes" rows="2"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="addedBy" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Update.Label.AddedBy"))
+                                </label>
+                                <div class="col-12">
+                                    <input type="text" class="form-control" id="addedBy" name="addedBy">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-3">
+                            <div class="form-check form-switch mt-4">
+                                <input class="form-check-input" type="checkbox" id="upDeleted">
+                                <label class="form-check-label" for="upDeleted">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Update.Label.Delete"))
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-3"></div>
+                    </div>
+
+                    <div class="row mb-3">
+
+                        <div class="col-12">
+                            <div class="row mb-3">
+                                <div class="col-3">
+                                    <div class="form-check form-switch mt-4">
+                                        <input class="form-check-input" type="checkbox" id="sendReminders">
+                                        <label class="form-check-label" for="sendReminders">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Update.Label.SendReminder"))
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-9"></div>
+                            </div>
+                        </div>
+
+                        <div id="notificationBox" class="col-12">
+
+                            <div class="row mb-3">
+                                <div class="col-sm-6">
+                                    <div class="row mb-3">
+                                        <label for="sendDate" class="col-12 form-label">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Update.Label.SendDate"))
+                                        </label>
+                                        <div class="col-12">
+                                            <input type="text" id="sendDate" name="sendDate" class="form-control datepicker" placeholder="MM/DD/YYYY" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="sendToEmails" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Update.Label.EmailList"))
+                                </label>
+                                <div class="col-12">
+                                    <input type="text" class="form-control" id="sendToEmails" name="sendToEmails">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+
+                                <label for="reminderMessage" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Update.Label.Reminder"))
+                                </label>
+                                <div class="col-12">
+                                    <textarea class="form-control" id="reminderMessage" name="reminderMessage" rows="2"></textarea>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveUpdate(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                        </div>
+                        <div class="col-sm-1">
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeUpdate()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                        </div>
+                        <div class="col-sm-10"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+
 </div>
 
 @{

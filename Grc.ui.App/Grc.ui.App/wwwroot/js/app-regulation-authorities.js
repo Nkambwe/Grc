@@ -219,7 +219,7 @@ function openRegulatoryAuthorityPanel(title, record, isEdit) {
 
     //..open panel
     $('#panelTitle').text(title);
-    $('.overlay').addClass('active');
+    $('#authOverlay').addClass('active');
     $('#slidePanel').addClass('active');
 }
 
@@ -393,7 +393,7 @@ function findRegulatoryAuthorityRecord(id) {
 
 //..close panel
 function closeRegulatoryAuthorityPanel() {
-    $('.overlay').removeClass('active');
+    $('#authOverlay').removeClass('active');
     $('#slidePanel').removeClass('active');
 }
 

@@ -1,189 +1,192 @@
 ﻿
-let exceptionsTable = new Tabulator("#exceptionsTable", {
-    ajaxURL: "/grc/compliance/audit/exceptions/mini-report-list",
-    paginationMode: "remote",
-    filterMode: "remote",
-    sortMode: "remote",
-    pagination: true,
-    paginationSize: 10,
-    paginationSizeSelector: [10, 20, 35, 40, 50],
-    paginationCounter: "rows",
-    ajaxConfig: {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
+let exceptionsTable;
+
+function initExceptionTable() {
+    exceptionsTable = new Tabulator("#exceptionsTable", {
+        ajaxURL: "/grc/compliance/audit/exceptions/mini-report-list",
+        paginationMode: "remote",
+        filterMode: "remote",
+        sortMode: "remote",
+        pagination: true,
+        paginationSize: 10,
+        paginationSizeSelector: [10, 20, 35, 40, 50],
+        paginationCounter: "rows",
+        ajaxConfig: {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
         },
-    },
-    ajaxContentType: "json",
-    paginationDataSent: {
-        "page": "page",
-        "size": "size",
-        "sorters": "sort",
-        "filters": "filter"
-    },
-    paginationDataReceived: {
-        "last_page": "last_page",
-        "data": "data",
-        "total_records": "total_records"
-    },
-    ajaxRequestFunc: function (url, config, params) {
-        return new Promise((resolve, reject) => {
-            let requestBody = {
-                pageIndex: params.page || 1,
-                pageSize: params.size || 10,
-                searchTerm: "",
-                sortBy: "",
-                sortDirection: "Ascending"
-            };
+        ajaxContentType: "json",
+        paginationDataSent: {
+            "page": "page",
+            "size": "size",
+            "sorters": "sort",
+            "filters": "filter"
+        },
+        paginationDataReceived: {
+            "last_page": "last_page",
+            "data": "data",
+            "total_records": "total_records"
+        },
+        ajaxRequestFunc: function (url, config, params) {
+            return new Promise((resolve, reject) => {
+                let requestBody = {
+                    pageIndex: params.page || 1,
+                    pageSize: params.size || 10,
+                    searchTerm: "",
+                    sortBy: "",
+                    sortDirection: "Ascending"
+                };
 
-            if (params.sort && params.sort.length > 0) {
-                requestBody.sortBy = params.sort[0].field;
-                requestBody.sortDirection = params.sort[0].dir === "asc" ? "Ascending" : "Descending";
-            }
-
-            $.ajax({
-                url: url,
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(requestBody),
-                success: function (response) {
-                    resolve(response);
-                },
-                error: function (xhr, status, error) {
-                    console.error("AJAX Error:", error);
-                    reject(error);
+                if (params.sort && params.sort.length > 0) {
+                    requestBody.sortBy = params.sort[0].field;
+                    requestBody.sortDirection = params.sort[0].dir === "asc" ? "Ascending" : "Descending";
                 }
-            });
-        });
-    },
-    ajaxResponse: function (url, params, response) {
-        return {
-            data: response.data || [],
-            last_page: response.last_page || 1,
-            total_records: response.total_records || 0
-        };
-    },
-    ajaxError: function (error) {
-        Swal.fire("Error", "Failed to load audit exception reports. Please try again.", "error");
-    },
-    layout: "fitColumns",
-    responsiveLayout: "hide",
-    layoutColumnsOnNewData: false,
-    columns: [
-        {
-            title: "REF",
-            field: "reference",
-            width: 200,
-            headerSort: true,
-            resizable: false, 
-            formatter: function (cell) {
-                const id = cell.getRow().getData().id;
-                console.log(id);
-                return `<span class="clickable-title" onclick="viewReport(${id})">${cell.getValue()}</span>`;
-            }
-        },
-        {
-            title: "AUDIT REPORT",
-            field: "reportName",
-            widthGrow: 2,
-            minWidth: 200,
-            resizable: false, 
-            headerSort: true
-        },
-        {
-            title: "REPORT DATE",
-            field: "auditedOn",
-            minWidth: 200,
-            headerSort: true,
-            resizable: false, 
-            formatter: function (cell) {
-                const date = new Date(cell.getValue());
-                return date.toLocaleDateString('en-GB', {
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric'
+
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(requestBody),
+                    success: function (response) {
+                        resolve(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error:", error);
+                        reject(error);
+                    }
                 });
-            }
+            });
         },
-        {
-            title: "AUDIT TYPE",
-            field: "auditType",
-            minWidth: 200,
-            headerSort: true,
-            resizable: false,
-            hozAlign: "center",
-            formatter: function (cell) {
-                const ref = cell.getRow().getData().reference || "";
-                const type = ref.split('/')[0]?.trim() || "N/A";
-
-                const el = cell.getElement();
-                el.style.backgroundColor = "#0d6efd";
-                el.style.color = "#fff";
-                el.style.fontWeight = "600";
-                el.style.borderRadius = "4px";
-
-                return type;
-            }
+        ajaxResponse: function (url, params, response) {
+            return {
+                data: response.data || [],
+                last_page: response.last_page || 1,
+                total_records: response.total_records || 0
+            };
         },
-        {
-            title: "FINDINGS",
-            field: "total",
-            minWidth: 150,
-            hozAlign: "center",
-            headerHozAlign: "center",
-            resizable: false, 
-            headerSort: true,
-            formatter: function (cell) {
-                return `<span class="fw-bold">${cell.getValue() || 0}</span>`;
-            }
+        ajaxError: function (error) {
+            Swal.fire("Error", "Failed to load audit exception reports. Please try again.", "error");
         },
-        {
-            title: "CLOSED",
-            field: "closed",
-            minWidth: 150,
-            hozAlign: "center",
-            headerHozAlign: "center",
-            resizable: false,
-            headerSort: true,
-            formatter: function (cell) {
-                const el = cell.getElement();
-                el.classList.add("closed-cell");
-                return cell.getValue() || 0;
-            }
-        },
-        {
-            title: "OPEN",
-            field: "open",
-            minWidth: 150,
-            hozAlign: "center",
-            headerHozAlign: "center",
-            resizable: false,
-            headerSort: true,
-            formatter: function (cell) {
-                const el = cell.getElement();
-                el.classList.remove("open-danger", "open-warning");
-                const overdue = cell.getRow().getData().overdue || 0;
-
-                if (overdue > 0) {
-                    el.classList.add("open-danger");
-                } else {
-                    el.classList.add("open-warning");
+        layout: "fitColumns",
+        responsiveLayout: "hide",
+        layoutColumnsOnNewData: false,
+        columns: [
+            {
+                title: "REF",
+                field: "reference",
+                width: 200,
+                headerSort: true,
+                resizable: false,
+                formatter: function (cell) {
+                    const id = cell.getRow().getData().id;
+                    console.log(id);
+                    return `<span class="clickable-title" onclick="viewReport(${id})">${cell.getValue()}</span>`;
                 }
+            },
+            {
+                title: "AUDIT REPORT",
+                field: "reportName",
+                widthGrow: 2,
+                minWidth: 200,
+                resizable: false,
+                headerSort: true
+            },
+            {
+                title: "REPORT DATE",
+                field: "auditedOn",
+                minWidth: 200,
+                headerSort: true,
+                resizable: false,
+                formatter: function (cell) {
+                    const date = new Date(cell.getValue());
+                    return date.toLocaleDateString('en-GB', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric'
+                    });
+                }
+            },
+            {
+                title: "AUDIT TYPE",
+                field: "auditType",
+                minWidth: 200,
+                headerSort: true,
+                resizable: false,
+                hozAlign: "center",
+                formatter: function (cell) {
+                    const ref = cell.getRow().getData().reference || "";
+                    const type = ref.split('/')[0]?.trim() || "N/A";
 
-                return cell.getValue() || 0;
-            }
-        },
-        {
-            title: "% COMPLETED",
-            field: "completed",
-            minWidth: 200,
-            hozAlign: "center",
-            resizable: false, 
-            headerSort: true,
-            formatter: function (cell) {
-                const value = parseFloat(cell.getValue() || 0);
-                const color = value >= 80 ? "success" : value >= 50 ? "warning" : "danger";
-                return `
+                    const el = cell.getElement();
+                    el.style.backgroundColor = "#0d6efd";
+                    el.style.color = "#fff";
+                    el.style.fontWeight = "600";
+                    el.style.borderRadius = "4px";
+
+                    return type;
+                }
+            },
+            {
+                title: "FINDINGS",
+                field: "total",
+                minWidth: 150,
+                hozAlign: "center",
+                headerHozAlign: "center",
+                resizable: false,
+                headerSort: true,
+                formatter: function (cell) {
+                    return `<span class="fw-bold">${cell.getValue() || 0}</span>`;
+                }
+            },
+            {
+                title: "CLOSED",
+                field: "closed",
+                minWidth: 150,
+                hozAlign: "center",
+                headerHozAlign: "center",
+                resizable: false,
+                headerSort: true,
+                formatter: function (cell) {
+                    const el = cell.getElement();
+                    el.classList.add("closed-cell");
+                    return cell.getValue() || 0;
+                }
+            },
+            {
+                title: "OPEN",
+                field: "open",
+                minWidth: 150,
+                hozAlign: "center",
+                headerHozAlign: "center",
+                resizable: false,
+                headerSort: true,
+                formatter: function (cell) {
+                    const el = cell.getElement();
+                    el.classList.remove("open-danger", "open-warning");
+                    const overdue = cell.getRow().getData().overdue || 0;
+
+                    if (overdue > 0) {
+                        el.classList.add("open-danger");
+                    } else {
+                        el.classList.add("open-warning");
+                    }
+
+                    return cell.getValue() || 0;
+                }
+            },
+            {
+                title: "% COMPLETED",
+                field: "completed",
+                minWidth: 200,
+                hozAlign: "center",
+                resizable: false,
+                headerSort: true,
+                formatter: function (cell) {
+                    const value = parseFloat(cell.getValue() || 0);
+                    const color = value >= 80 ? "success" : value >= 50 ? "warning" : "danger";
+                    return `
                     <div class="progress" style="height: 20px;">
                         <div class="progress-bar bg-${color}" role="progressbar" 
                              style="width: ${value}%" 
@@ -194,19 +197,19 @@ let exceptionsTable = new Tabulator("#exceptionsTable", {
                         </div>
                     </div>
                 `;
-            }
-        },
-        {
-            title: "% OUTSTANDING",
-            field: "outstanding",
-            minWidth: 200,
-            hozAlign: "center",
-            resizable: false, 
-            headerSort: true,
-            formatter: function (cell) {
-                const value = parseFloat(cell.getValue() || 0);
-                const color = value > 50 ? "danger" : value > 20 ? "warning" : "success";
-                return `
+                }
+            },
+            {
+                title: "% OUTSTANDING",
+                field: "outstanding",
+                minWidth: 200,
+                hozAlign: "center",
+                resizable: false,
+                headerSort: true,
+                formatter: function (cell) {
+                    const value = parseFloat(cell.getValue() || 0);
+                    const color = value > 50 ? "danger" : value > 20 ? "warning" : "success";
+                    return `
                     <div class="progress" style="height: 20px;">
                         <div class="progress-bar bg-${color}" role="progressbar" 
                              style="width: ${value}%" 
@@ -217,10 +220,11 @@ let exceptionsTable = new Tabulator("#exceptionsTable", {
                         </div>
                     </div>
                 `;
+                }
             }
-        }
-    ]
-});
+        ]
+    });
+}
 
 function viewReport(id) {
     Swal.fire({
@@ -295,7 +299,7 @@ function openAuditReportPanel(record) {
     addExceptions(record.exceptions);
 
     //..load dialog window
-    closeAuditReport();
+    closeExceptionePanel();
     $('#auditPanel').addClass('active');
     $('#auditOverlay').addClass('active');
     $('body').css('overflow', 'hidden');
@@ -352,7 +356,7 @@ function addExceptions(exceptions) {
     });
 }
 
-function closeAuditReport() {
+function closeExceptionePanel() {
     $('#auditPanel').removeClass('active');
     $('#auditOverlay').removeClass('active');
     $('body').css('overflow', '');
@@ -370,9 +374,12 @@ $('.action-btn-audit-home').on('click', function () {
 
 
 $(document).ready(function () {
+    initExceptionTable();
 
+    console.log("Dom started");
     $('#auditForm').on('submit', function (e) {
         e.preventDefault();
     });
 
 });
+

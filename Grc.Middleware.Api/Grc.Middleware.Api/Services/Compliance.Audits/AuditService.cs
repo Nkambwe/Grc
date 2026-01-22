@@ -11,6 +11,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Grc.Middleware.Api.Services.Compliance.Audits {
+
     public class AuditService : BaseService, IAuditService {
         public AuditService(IServiceLoggerFactory loggerFactory, 
                             IUnitOfWorkFactory uowFactory, 
@@ -18,6 +19,109 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
         }
 
         #region Statistics
+
+        public async Task<AuditSupportResponse> GetAuditSupportItemsAsync(bool includeDeleted) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve support items for audits", "INFO");
+
+            try {
+
+                AuditSupportResponse response = new() {
+                    Types = new(),
+                    Authorities = new(),
+                    Audits = new(),
+                    Responsibilities = new()
+                };
+
+
+                // get audit types
+                var types = await uow.AuditTypeRepository.GetAllAsync(includeDeleted);
+
+                //..get audits
+                var audits = await uow.AuditRepository.GetAllAsync(includeDeleted);
+
+                // get authorities
+                var authorities = await uow.AuthoritiesRepository.GetAllAsync(includeDeleted);
+
+                // get authorities
+                var responsibilities = await uow.ResponsebilityRepository.GetAllAsync(includeDeleted, r => r.Department);
+
+                //..authorities
+                if (authorities != null && authorities.Count > 0) {
+                    response.Authorities.AddRange(
+                        from authority in authorities
+                        select new RegulatoryAuthorityResponse {
+                            Id = authority.Id,
+                            AuthorityAlias = authority.AuthorityAlias,
+                            AuthorityName = authority.AuthorityName,
+                            IsDeleted = authority.IsDeleted,
+                            CreatedOn = authority.CreatedOn,
+                            UpdatedOn = authority.LastModifiedOn ?? DateTime.Now
+                        });
+                    Logger.LogActivity($"Authorities found: {authorities.Count}", "DEBUG");
+                }
+
+                //..responsibilities
+                if (responsibilities != null && responsibilities.Count > 0) {
+                    response.Responsibilities.AddRange(
+                        from resp in responsibilities
+                        select new ResponsibilityItemResponse {
+                            Id = resp.Id,
+                            ResponsibilityRole = resp.ContactPosition,
+                            DepartmentName = resp.Department?.DepartmentName ?? string.Empty
+                        });
+                    Logger.LogActivity($"Responsibilities found: {authorities.Count}", "DEBUG");
+                }
+
+                //..audit types
+                if (types != null && types.Count > 0) {
+                    response.Types.AddRange(
+                        from type in types
+                        select new AuditMiniTypeResponse {
+                            Id = type.Id,
+                            TypeName = type.TypeName
+                        });
+                    Logger.LogActivity($"Audit types found: {types.Count}", "DEBUG");
+                }
+
+                //..audit
+                if (audits != null && audits.Count > 0) {
+                    response.Audits.AddRange(
+                        from name in audits
+                        select new MiniAuditResponse {
+                            Id = name.Id,
+                            AuditName = name.AuditName
+                        });
+                    Logger.LogActivity($"Audits found: {types.Count}", "DEBUG");
+                }
+
+                return response;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve support items in the database: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new() {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "AUDIT-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
+        }
 
         public async Task<AuditDashboardResponse> GetAuditDashboardStatisticsAsync(bool includeDeletes) {
             return await Task.FromResult(new AuditDashboardResponse() {
@@ -1372,7 +1476,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 if (audit != null)
                 {
                     //..mark as delete this audit
-                    _ = uow.AuditRepository.Delete(audit, request.markAsDeleted);
+                    _ = uow.AuditRepository.Delete(audit, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(audit).State;
@@ -1428,7 +1532,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 if (exception != null)
                 {
                     //..mark as delete this audit
-                    _ = await uow.AuditRepository.DeleteAsync(exception, request.markAsDeleted);
+                    _ = await uow.AuditRepository.DeleteAsync(exception, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(exception).State;
@@ -1779,6 +1883,38 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 long companyId = conpany != null ? conpany.Id : 1;
                 SystemError errorObj = new()
                 {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "AUDIT-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<Audit>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<Audit, bool>> predicate = null, params Expression<Func<Audit, object>>[] includes) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve paged audits", "INFO");
+
+            try {
+                return await uow.AuditRepository.PageAllAsync(page, size, includeDeleted, predicate, includes);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve audits : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new() {
                     ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
                     ErrorSource = "AUDIT-SERVICE",
                     StackTrace = ex.StackTrace,

@@ -10,8 +10,14 @@ namespace Grc.ui.App.Dtos {
         [JsonPropertyName("reportId")]
         public long ReportId { get; set; }
 
+        [JsonPropertyName("reference")]
+        public string Reference { get; set; }
+
         [JsonPropertyName("finding")]
         public string Finding { get; set; }
+
+        [JsonPropertyName("recomendations")]
+        public string Recomendations { get; set; }
 
         [JsonPropertyName("proposedAction")]
         public string ProposedAction { get; set; }

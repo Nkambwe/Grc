@@ -11,6 +11,9 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("updateNotes")]
         public string UpdateNotes { get; set; }
 
+        [JsonPropertyName("noteDate")]
+        public DateTime NoteDate { get; set; }
+
         [JsonPropertyName("sendReminders")]
         public bool SendReminders { get; set; }
 

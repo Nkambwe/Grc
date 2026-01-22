@@ -632,38 +632,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29tcGxpYW5jZVJldHVyblxXZWVrbHlJbm5lckRhc2hib2FyZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/ComplianceSettings/ComplianceAuthorities.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29tcGxpYW5jZVNldHRpbmdzXENvbXBsaWFuY2VBdXRob3JpdGllcy5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/ComplianceSettings/ComplianceDelegation.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29tcGxpYW5jZVNldHRpbmdzXENvbXBsaWFuY2VEZWxlZ2F0aW9uLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/ComplianceSettings/ComplianceDepartments.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29tcGxpYW5jZVNldHRpbmdzXENvbXBsaWFuY2VEZXBhcnRtZW50cy5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/ComplianceSettings/ComplianceDocumentType.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29tcGxpYW5jZVNldHRpbmdzXENvbXBsaWFuY2VEb2N1bWVudFR5cGUuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/ComplianceSettings/ComplianceRegulatoryCategories.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29tcGxpYW5jZVNldHRpbmdzXENvbXBsaWFuY2VSZWd1bGF0b3J5Q2F0ZWdvcmllcy5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/ComplianceSettings/ComplianceRegulatoryTypes.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29tcGxpYW5jZVNldHRpbmdzXENvbXBsaWFuY2VSZWd1bGF0b3J5VHlwZXMuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/ComplianceSettings/ComplianceResponsibilities.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29tcGxpYW5jZVNldHRpbmdzXENvbXBsaWFuY2VSZXNwb25zaWJpbGl0aWVzLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/ComplianceSettings/ComplianceUsers.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29tcGxpYW5jZVNldHRpbmdzXENvbXBsaWFuY2VVc2Vycy5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Error/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXJyb3JcRXJyb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -676,8 +644,40 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXJyb3JcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Register/ComplianceAuthorities.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJcQ29tcGxpYW5jZUF1dGhvcml0aWVzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Register/ComplianceControl.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJcQ29tcGxpYW5jZUNvbnRyb2wuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Register/ComplianceDelegation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJcQ29tcGxpYW5jZURlbGVnYXRpb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Register/ComplianceDepartments.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJcQ29tcGxpYW5jZURlcGFydG1lbnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Register/ComplianceDocumentType.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJcQ29tcGxpYW5jZURvY3VtZW50VHlwZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Register/ComplianceRegulatoryCategories.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJcQ29tcGxpYW5jZVJlZ3VsYXRvcnlDYXRlZ29yaWVzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Register/ComplianceRegulatoryTypes.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJcQ29tcGxpYW5jZVJlZ3VsYXRvcnlUeXBlcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Register/ComplianceResponsibilities.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJcQ29tcGxpYW5jZVJlc3BvbnNpYmlsaXRpZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Register/ComplianceUsers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJcQ29tcGxpYW5jZVVzZXJzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Register/ManageRegulations.cshtml]

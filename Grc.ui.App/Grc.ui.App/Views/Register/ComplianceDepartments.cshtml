@@ -1,10 +1,11 @@
-﻿@{
+﻿@* @model UserDashboardModel *@
+@{
     Layout = "_Layout";
-    ViewData["Title"] = "COMPLIANCE - DELEGATION";
+    ViewData["Title"] = "COMPLIANCE - DEPARTMENTS";
     var component = new PageComponentViewModel
     {
         ComponentId = "0",
-        ComponentKey = "SettingDelegation",
+        ComponentKey = "SettingDepartments",
         LeftActions = new List<ComponentAction> {
             new ComponentAction {ActionKey = ActionKey.ComplianceHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home")},
             new ComponentAction { ActionKey = ActionKey.Search.GetDescription(), Icon = "mdi mdi-magnify", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Search") },
@@ -14,4 +15,4 @@
     };
 }
 
-@await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("ComplianceUserDeligation") })
+@await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("ComplianceUserDepartments") })

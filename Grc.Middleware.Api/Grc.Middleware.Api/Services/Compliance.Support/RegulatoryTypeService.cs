@@ -1175,7 +1175,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
                 if (types != null)
                 {
                     //..mark as delete this  Regulatory Type
-                    _ = uow.RegulatoryTypeRepository.Delete(types, request.markAsDeleted);
+                    _ = uow.RegulatoryTypeRepository.Delete(types, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(types).State;
@@ -1232,7 +1232,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
                 if (typestask != null)
                 {
                     //..mark as delete this  Regulatory Type
-                    _ = await uow.RegulatoryTypeRepository.DeleteAsync(typestask, request.markAsDeleted);
+                    _ = await uow.RegulatoryTypeRepository.DeleteAsync(typestask, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(typestask).State;

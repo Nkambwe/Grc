@@ -315,7 +315,7 @@ namespace Grc.Middleware.Api.Services.Organization {
                 var branch = await uow.BranchRepository.GetAsync(t => t.Id == request.RecordId);
                 if(branch != null){ 
                     //..mark as delete this branch
-                    _= await uow.BranchRepository.DeleteAsync(branch, request.markAsDeleted);
+                    _= await uow.BranchRepository.DeleteAsync(branch, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(branch).State;

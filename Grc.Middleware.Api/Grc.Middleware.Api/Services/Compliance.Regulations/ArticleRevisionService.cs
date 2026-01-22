@@ -516,7 +516,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 var statute = uow.ArticleRevisionRepository.Get(t => t.Id == idRequest.RecordId);
                 if (statute != null) {
                     //..mark as delete this article revision
-                    _ = uow.ArticleRevisionRepository.Delete(statute, idRequest.markAsDeleted);
+                    _ = uow.ArticleRevisionRepository.Delete(statute, idRequest.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(statute).State;
@@ -547,7 +547,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 var statute = await uow.ArticleRevisionRepository.GetAsync(t => t.Id == idRequest.RecordId);
                 if (statute != null) {
                     //..mark as delete this article revision
-                    _ = await uow.ArticleRevisionRepository.DeleteAsync(statute, idRequest.markAsDeleted);
+                    _ = await uow.ArticleRevisionRepository.DeleteAsync(statute, idRequest.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(statute).State;

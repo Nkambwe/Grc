@@ -10,7 +10,6 @@ using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
-using System.Net;
 using System.Text.Json;
 
 namespace Grc.ui.App.Services {
@@ -45,6 +44,26 @@ namespace Grc.ui.App.Services {
                 await ProcessErrorAsync(ex.Message, "STATUTE-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<GrcStatuteSupportResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<GrcAuditSupportResponse>> GetAuditSupportItemsAsync(GrcRequest request) {
+            try {
+
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object", "Request object cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<GrcAuditSupportResponse>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.AuditBase}/audit-support-items";
+                return await HttpHandler.PostAsync<GrcRequest, GrcAuditSupportResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "AUDIT-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<GrcAuditSupportResponse>(error);
             }
         }
 

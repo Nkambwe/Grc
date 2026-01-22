@@ -13,9 +13,6 @@ namespace Grc.ui.App.Models
         [JsonPropertyName("updateNotes")]
         public string UpdateNotes { get; set; }
 
-        [JsonPropertyName("addedDate")]
-        public DateTime AddedDate { get; set; }
-
         [JsonPropertyName("sendReminders")]
         public bool SendReminders { get; set; }
 
@@ -30,6 +27,10 @@ namespace Grc.ui.App.Models
 
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
+
+        [JsonPropertyName("addedBy")]
+        public string AddedBy { get; set; }
+
 
     }
 }

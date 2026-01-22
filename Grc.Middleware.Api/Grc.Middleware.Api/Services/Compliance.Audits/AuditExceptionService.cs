@@ -896,12 +896,12 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
 
         public bool Insert(AuditExceptionRequest request, string username) {
             using var uow = UowFactory.Create();
-            try
-            {
+            try {
                 //..map exception request to exception entity
                 var exception = new AuditException() {
                     AuditFinding = request.Findings,
-                    RemediationPlan = request.ProposedAction,
+                    RemediationPlan = request.Recomendations,
+                    ProposedAction = request.ProposedAction,
                     CorrectiveAction = request.CorrectiveAction,
                     ExceptionNotes = request.Notes,
                     TargetDate = request.TargetDate,
@@ -912,8 +912,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                     Status = request.Status,
                     AuditReportId = request.ReportId,
                     IsDeleted = request.IsDeleted,
-                    LastModifiedOn = DateTime.Now,
-                    LastModifiedBy = $"{username}"
+                    CreatedOn = DateTime.Now,
+                    CreatedBy = $"{username}"
                 };
 
                 //..log the audit exception data being saved
@@ -968,7 +968,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
             try {
                 var exception = new AuditException() {
                     AuditFinding = request.Findings,
-                    RemediationPlan = request.ProposedAction,
+                    RemediationPlan = request.Recomendations,
+                    ProposedAction = request.ProposedAction,
                     CorrectiveAction = request.CorrectiveAction,
                     ExceptionNotes = request.Notes,
                     TargetDate = request.TargetDate,
@@ -979,8 +980,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                     Status = request.Status,
                     AuditReportId = request.ReportId,
                     IsDeleted = request.IsDeleted,
-                    LastModifiedOn = DateTime.Now,
-                    LastModifiedBy = $"{username}"
+                    CreatedOn = DateTime.Now,
+                    CreatedBy= $"{username}"
                 };
 
                 //..log the object data being saved
@@ -1035,8 +1036,9 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 if (audit != null) {
                     //..update audit exception record
                     audit.AuditFinding = request.Findings;
-                    audit.RemediationPlan = request.ProposedAction;
+                    audit.RemediationPlan = request.Recomendations;
                     audit.CorrectiveAction = request.CorrectiveAction;
+                    audit.ProposedAction = request.ProposedAction;
                     audit.ExceptionNotes = request.Notes;
                     audit.TargetDate = request.TargetDate;
                     audit.RiskAssessment = request.RiskLevel;
@@ -1103,8 +1105,9 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 if (audit != null) {
                     //..update audit exception record
                     audit.AuditFinding = request.Findings;
-                    audit.RemediationPlan = request.ProposedAction;
+                    audit.RemediationPlan = request.Recomendations;
                     audit.CorrectiveAction = request.CorrectiveAction;
+                    audit.ProposedAction = request.ProposedAction;
                     audit.ExceptionNotes = request.Notes;
                     audit.TargetDate = request.TargetDate;
                     audit.RiskAssessment = request.RiskLevel;
@@ -1173,7 +1176,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 var exception = uow.AuditExceptionRepository.Get(t => t.Id == request.RecordId);
                 if (exception != null) {
                     //..mark as delete this audit exception
-                   _ = uow.AuditExceptionRepository.Delete(exception, request.markAsDeleted);
+                   _ = uow.AuditExceptionRepository.Delete(exception, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(exception).State;
@@ -1226,7 +1229,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 if (exception != null)
                 {
                     //..mark as delete this audit exception
-                    _ = await uow.AuditExceptionRepository.DeleteAsync(exception, request.markAsDeleted);
+                    _ = await uow.AuditExceptionRepository.DeleteAsync(exception, request.MarkAsDeleted);
 
                     if (exception.AuditTasks != null) {
                         foreach (var ex in exception.AuditTasks) {

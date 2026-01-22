@@ -21,7 +21,7 @@
         <h5 id="auditTitle">
             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audit.Title.AuditReport"))
         </h5>
-        <button class="panel-close" onclick="closeAuditReport()">
+        <button class="panel-close" onclick="closeExceptionePanel()">
             <i class="mdi mdi-close"></i>
         </button>
     </div>
@@ -141,7 +141,7 @@
                 <div class="col-sm-12">
                     <div class="row mb-3">
                         <div class="col-sm-2">
-                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeAuditReport()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeExceptionePanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
                         </div>
                         <div class="col-sm-10"></div>
                     </div>

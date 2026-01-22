@@ -3,11 +3,11 @@
     "Name": "New Profile",
     "Projects": [
       {
-        "Path": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj",
+        "Path": "Grc.ui.App\\Grc.ui.App.csproj",
         "Action": "Start"
       },
       {
-        "Path": "Grc.ui.App\\Grc.ui.App.csproj",
+        "Path": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj",
         "Action": "Start"
       }
     ]

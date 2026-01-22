@@ -373,5 +373,13 @@ namespace Grc.ui.App.Enums {
         AUDIT_TASK_UPDATE = 193,
         [Description("Delete audit task")]
         AUDIT_TASK_DELETE = 194,
+        [Description("Retrieve audit notes")]
+        AUDIT_NOTES_RETRIVE = 195,
+        [Description("Create audit notes")]
+        AUDIT_NOTES_CREATE = 196,
+        [Description("Update audit notes")]
+        AUDIT_NOTES_UPDATE = 197,
+        [Description("Delete audit notes")]
+        AUDIT_NOTES_DELETE = 198
     }
 }

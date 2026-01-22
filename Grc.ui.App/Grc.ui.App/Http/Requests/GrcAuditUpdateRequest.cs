@@ -11,8 +11,8 @@ namespace Grc.ui.App.Http.Requests {
         [JsonPropertyName("updateNotes")]
         public string UpdateNotes { get; set; }
 
-        [JsonPropertyName("addedDate")]
-        public DateTime AddedDate { get; set; }
+        [JsonPropertyName("addedBy")]
+        public string AddedBy { get; set; }
 
         [JsonPropertyName("sendReminders")]
         public bool SendReminders { get; set; }

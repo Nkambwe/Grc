@@ -576,7 +576,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 if (statute != null)
                 {
                     //..mark as delete this submission
-                    _ = uow.RegulatorySubmissionRepository.Delete(statute, request.markAsDeleted);
+                    _ = uow.RegulatorySubmissionRepository.Delete(statute, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(statute).State;
@@ -613,7 +613,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 if (tasktask != null)
                 {
                     //..mark as delete this submission
-                    _ = await uow.RegulatorySubmissionRepository.DeleteAsync(tasktask, request.markAsDeleted);
+                    _ = await uow.RegulatorySubmissionRepository.DeleteAsync(tasktask, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(tasktask).State;

@@ -5,14 +5,17 @@ using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Filters;
-using Grc.ui.App.Helpers;
 using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using OpenXmlPowerTools;
+using System.Composition;
+using System.Security.Cryptography.Xml;
 using System.Text.Json;
 
 namespace Grc.ui.App.Controllers {
@@ -219,6 +222,7 @@ namespace Grc.ui.App.Controllers {
                     exceptions = response.Exceptions.Select(a => new {
                         id = a.Id,
                         findings = a.Finding,
+                        recomendations = a.Recomendations,
                         proposedAction = a.ProposedAction,
                         status = a.Status,
                         notes = a.Notes,
@@ -239,7 +243,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetMiniExceptionReports([FromBody] AuditListViewModel request) {
+        public async Task<IActionResult> GetMiniExceptionReports([FromBody] Models.AuditListViewModel request) {
             try {
 
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -395,7 +399,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Add Audit", "User added audit", ActivityTypeDefaults.COMPLIANCE_CREATE_AUDIT, "Audit")]
-        public async Task<IActionResult> CreateAuditType([FromBody] AuditViewModel request) {
+        public async Task<IActionResult> CreateAudit([FromBody] AuditViewModel request) {
             try {
                 if (!ModelState.IsValid) {
                     var errors = ModelState.Values
@@ -739,19 +743,33 @@ namespace Grc.ui.App.Controllers {
                     responseDate = response.ResponseDate,
                     managementComments = response.ManagementComments ?? string.Empty,
                     AdditionalNotes = response.AdditionalNotes ?? string.Empty,
-                    typeId = response.AuditTypeId,
-                    type = response.AuditType ?? string.Empty,
+                    auditId = response.AuditId,
+                    auditType = response.AuditType ?? string.Empty,
                     isDeleted = response.IsDeleted,
-                    update = response.Updates != null && response.Updates.Any() ?
-                            response.Updates.Select( update => new {
+                    findings = response.Findings != null && response.Findings.Any() ?
+                            response.Findings.Select( update => new {
                                 id = update.Id,
                                 reportId = update.ReportId,
-                                notes = update.UpdateNotes ?? string.Empty,
-                                sendReminder = update.SendReminders,
+                                finding = update.Finding ?? string.Empty,
+                                proposedAction = update.ProposedAction,
+                                targetDate = update.TargetDate,
+                                isDeleted = update.IsDeleted,
+                                responsible = update.Responsible ?? string.Empty,
+                                excutioner = update.Executioner ?? string.Empty,
+                                status = update.Status ?? string.Empty,
+                            }).ToArray() :
+                            Array.Empty<object>(),
+                    updates = response.Updates != null && response.Updates.Any() ?
+                            response.Updates.Select(update => new {
+                                id = update.Id,
+                                reportId = update.ReportId,
+                                updateNotes = update.UpdateNotes ?? string.Empty,
+                                addedOn = update.NoteDate,
+                                sendReminders = update.SendReminders,
                                 sendDate = update.SendDate,
                                 isDeleted = update.IsDeleted,
-                                message = update.ReminderMessage ?? string.Empty,
-                                emails = update.SendToEmails ?? string.Empty,
+                                reminderMessage = update.ReminderMessage ?? string.Empty,
+                                sendToEmails = update.SendToEmails ?? string.Empty,
                                 addedBy = update.AddedBy ?? string.Empty,
                             }).ToArray() :
                             Array.Empty<object>(),
@@ -806,9 +824,9 @@ namespace Grc.ui.App.Controllers {
                         reportDate = report.ReportDate,
                         exceptionCount = report.ExceptionCount,
                         responseDate = report.ResponseDate,
-                        ManagementComments = report.ManagementComments ?? string.Empty,
-                        AdditionalNotes = report.AdditionalNotes ?? string.Empty,
-                        AuditType = report.AuditType ?? string.Empty,
+                        managementComments = report.ManagementComments ?? string.Empty,
+                        additionalNotes = report.AdditionalNotes ?? string.Empty,
+                        auditId = report.AuditId,
                         isDeleted = report.IsDeleted,
                         findings = report.Findings != null && report.Findings.Any()?
                                 report.Findings.Select(exception => new { 
@@ -827,8 +845,14 @@ namespace Grc.ui.App.Controllers {
                                 report.Updates.Select(notes => new {
                                     id = notes.Id,
                                     reportId = notes.ReportId,
-                                    notes = notes.UpdateNotes ?? string.Empty,
-                                    isDeleted = notes.IsDeleted
+                                    updateNotes = notes.UpdateNotes ?? string.Empty,
+                                    addedOn = notes.NoteDate,
+                                    sendReminders = notes.SendReminders,
+                                    sendDate = notes.SendDate,
+                                    isDeleted = notes.IsDeleted,
+                                    reminderMessage = notes.ReminderMessage ?? string.Empty,
+                                    sendToEmails = notes.SendToEmails ?? string.Empty,
+                                    addedBy = notes.AddedBy ?? string.Empty,
 
                                 }).ToArray() :
                                 Array.Empty<object>(),
@@ -947,6 +971,147 @@ namespace Grc.ui.App.Controllers {
 
         #endregion
 
+        #region Categories
+
+        [HttpPost]
+        public async Task<IActionResult> AllCategories([FromBody] TableListRequest request) {
+            try {
+
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    Logger.LogActivity($"AUDIT TYPES DATA ERROR: Failed to get current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                //..update with user data
+                var currentUser = grcResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.RETRIEVEREGULATORYCATEGORIES.GetDescription();
+
+                //..get audit types data
+                var auditTypesData = await _auditService.GetAuditTypesAsync(request);
+                PagedResponse<GrcAuditTypeResponse> typeList = new();
+
+                if (auditTypesData.HasError) {
+                    Logger.LogActivity($"AUDIT TYPES DATA ERROR: Failed to retrieve category items - {JsonSerializer.Serialize(auditTypesData)}");
+                } else {
+                    typeList = auditTypesData.Data;
+                    Logger.LogActivity($"AUDIT TYPES DATA - {JsonSerializer.Serialize(typeList)}");
+                }
+
+                //..map to ajax object
+                var types = typeList.Entities ??= new();
+                if (types.Any()) {
+                    var tree = types.Select(l => new {
+                        id = $"C_{l.Id}",
+                        text = $"{l.TypeCode} - {l.TypeName}",
+                        type = "category",
+                        children = l.Audits.Select(s => new { id = $"L_{s.Id}", text = s.AuditName, type = "audit" }).ToArray()
+                    }).ToArray();
+
+                    return Ok(tree);
+                }
+
+                return Ok(Array.Empty<object>());
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving regulatory category items: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "AUDIT-CONTROLLER", ex.StackTrace);
+                return Ok(Array.Empty<object>());
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetAuditLists([FromBody] AuditListViewModel request) {
+
+            try {
+
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError) {
+                    Logger.LogActivity($"AUDIT DATA ERROR: Failed to get current user record - {JsonSerializer.Serialize(userResponse)}");
+                }
+
+                var currentUser = userResponse.Data;
+                var result = await _auditService.GetTypeAuditsAsync(request, currentUser.UserId, ipAddress);
+                PagedResponse<GrcAuditResponse> list = new();
+                if (result.HasError) {
+                    Logger.LogActivity($"STATUTE DATA ERROR: Failed to retrieve category statutes - {JsonSerializer.Serialize(result)}");
+                } else {
+                    list = result.Data;
+                    Logger.LogActivity($"CATEGORY STATUTES DATA - {list.TotalCount}");
+                }
+
+                var auditData = list.Entities ?? new();
+                if (auditData.Any()) {
+                    var audits = auditData.Select(audit => new {
+                        id = audit.Id,
+                        auditName = audit.AuditName ?? string.Empty,
+                        authority = audit.Authority ?? string.Empty,
+                        typeName = audit.TypeName ?? string.Empty,
+                        notes = audit.Notes ?? string.Empty
+                    }).ToList();
+                    return Ok(new { last_page = 1, total_records = audits.Count, data = audits });
+                }
+
+                return Ok(new { last_page = 0, total_records = 0, data = Array.Empty<object>() });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving regulatory acts: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "RIGISTER-CONTROLLER", ex.StackTrace);
+                return Ok(new { last_page = 0, data = new List<object>() });
+            }
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetAuditReportsList([FromBody] AuditListViewModel request) {
+            try {
+
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError) {
+                    Logger.LogActivity($"REPORT DATA ERROR: Failed to get current user record - {JsonSerializer.Serialize(userResponse)}");
+                }
+
+                var currentUser = userResponse.Data;
+                var result = await _auditService.GetAuditTentativeReportsAsync(request, currentUser.UserId, ipAddress);
+                PagedResponse<GrcAuditReportResponse> list = new();
+                if (result.HasError) {
+                    Logger.LogActivity($"REPORT DATA ERROR: Failed to retrieve audit reports - {JsonSerializer.Serialize(result)}");
+                } else {
+                    list = result.Data;
+                    Logger.LogActivity($"REPORT DATA - {list.TotalCount}");
+                }
+
+                var reportData = list.Entities ?? new();
+                if (reportData.Any()) {
+                    var reports = reportData.Select(report => new {
+                        id = report.Id,
+                        reference = report.Reference ?? string.Empty,
+                        auditType = report.AuditType ?? string.Empty,
+                        reportName = report.ReportName ?? string.Empty,
+                        summery = report.Summery ?? string.Empty,
+                        reportStatus = report.ReportStatus ?? string.Empty,
+                        reportDate = report.ReportDate,
+                        exceptionCount = report.ExceptionCount,
+                        responseDate = report.ResponseDate,
+                    }).ToList();
+                    return Ok(new { last_page = 1, total_records = reports.Count, data = reports });
+                }
+
+                return Ok(new { last_page = 0, total_records = 0, data = Array.Empty<object>() });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving audit reports: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "AUDIT-ACTS", ex.StackTrace);
+                return Ok(new { last_page = 0, data = new List<object>() });
+            }
+        }
+
+        #endregion
+
         #region Audit Exceptions
 
         [LogActivityResult("Retrieve Audit exception", "User retrieved audit exception", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_EXCEPTIONS, "AuditException")]
@@ -983,17 +1148,19 @@ namespace Grc.ui.App.Controllers {
                 var exception = new {
                     id = response.Id,
                     reportId = response.ReportId,
-                    finding = response.Finding ?? string.Empty,
+                    reference = response.Reference ?? string.Empty,
+                    findings = response.Finding ?? string.Empty,
+                    recomendations = response.Recomendations ?? string.Empty,
                     proposedAction = response.ProposedAction ?? string.Empty,
                     correctiveAction = response.CorrectiveAction ?? string.Empty,
                     notes = response.Notes ?? string.Empty,
                     targetDate = response.TargetDate,
-                    riskStatement = response.RiskStatement ?? string.Empty,
+                    riskLevel = response.RiskStatement ?? string.Empty,
                     riskRating = response.RiskRating,
-                    responsibleId = response.ResponsibleId,
-                    responsible = response.Responsible ?? string.Empty,
+                    responsibileId = response.ResponsibleId,
                     executioner = response.Executioner ?? string.Empty,
                     isDeleted = response.IsDeleted,
+                    status = response.Status ?? "UNKNOWN",
                     tasks = response.Tasks != null && response.Tasks.Any() ?
                         response.Tasks.Select(task => new { 
                             id = task.Id,
@@ -1048,17 +1215,20 @@ namespace Grc.ui.App.Controllers {
                     .Select(report => new {
                         id = report.Id,
                         reportId = report.ReportId,
+                        reference = report.Reference ?? string.Empty,
                         finding = report.Finding ?? string.Empty,
+                        recomendations = report.Recomendations ?? string.Empty,
+                        correctiveAction = report.CorrectiveAction ?? string.Empty,
                         proposedAction = report.ProposedAction ?? string.Empty,
                         notes = report.Notes ?? string.Empty,
                         targetDate = report.TargetDate,
-                        riskStatement = report.RiskStatement ?? string.Empty,
+                        riskLevel = report.RiskStatement ?? "NONE",
                         riskRating = report.RiskRating,
-                        status = report.Status ?? string.Empty,
+                        status = report.Status ?? "UNKNOWN",
                         responsibleId = report.ResponsibleId,
                         excutioner = report.Executioner ?? string.Empty,
                         isDeleted = report.IsDeleted,
-                        tasks = report.Tasks != null ? 0 : report.Tasks.Count
+                        tasks = report.Tasks == null ? 0 : report.Tasks.Count
                     }).ToList();
 
                 var totalPages = (int)Math.Ceiling((double)returnsList.TotalCount / returnsList.Size);
@@ -1374,6 +1544,217 @@ namespace Grc.ui.App.Controllers {
                 Logger.LogActivity($"Unexpected error updating audit task: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "AUDIT-CONTROLLER", ex.StackTrace);
                 return Ok(new { success = false, message = "Unable to updating audit task.Something went wrong" });
+            }
+        }
+
+        #endregion
+
+        #region Audit Notes
+
+        [LogActivityResult("Retrieve Audit notes", "User retrieved audit notes", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_AUDIT_NOTES, "AuditNotes")]
+        public async Task<IActionResult> GetAuditNotes(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0) {
+                    return BadRequest(new { success = false, message = "Notes Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    IPAddress = ipAddress,
+                    IsDeleted = false
+                };
+
+                var result = await _auditService.GetAuditUpdateAsync(request);
+                if (result.HasError || result.Data == null) {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving audit notes";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var response = result.Data;
+                var notes = new {
+                    id = response.Id,
+                    reportId = response.ReportId,
+                    updateNotes = response.UpdateNotes ?? string.Empty,
+                    sendReminders = response.SendReminders,
+                    reminderMessage = response.ReminderMessage ?? string.Empty,
+                    sendToEmails = response.SendToEmails ?? string.Empty,
+                    isDeleted = response.IsDeleted,
+                    sendDate = response.SendDate,
+                    addedOn = response.NoteDate.ToString("yyyy-MM-dd"),
+                    addedBy = response.AddedBy ?? string.Empty
+                };
+
+                return Ok(new { success = true, data = notes });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error retrieving audit notes: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "AUDIT-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Unable to retrieve audit notes.Something went wrong" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetReportNotes([FromBody] GrcAuditMiniUpdateRequest request) {
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    Logger.LogActivity($"AUDIT NOTES DATA ERROR: Failed to get current user record - {JsonSerializer.Serialize(grcResponse)}");
+                    return Ok(new { last_page = 0, data = Array.Empty<object>() });
+                }
+
+                //..update with user data
+                var currentUser = grcResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.AUDIT_TYPE_RETRIVE.GetDescription();
+
+                //..map to ajax object
+                var returnsData = await _auditService.GetReportNotesAsync(request);
+                PagedResponse<GrcAuditUpdateResponse> returnsList = new();
+
+                if (returnsData.HasError) {
+                    Logger.LogActivity($"AUDIT NOTES DATA ERROR: Failed to retrieve audit notes - {JsonSerializer.Serialize(returnsData)}");
+                    return Ok(new { last_page = 0, data = Array.Empty<object>() });
+                } else {
+                    returnsList = returnsData.Data;
+                    Logger.LogActivity($"AUDIT NOTES DATA - {JsonSerializer.Serialize(returnsList)}");
+                }
+
+                var pagedEntities = returnsList.Entities
+                    .Select(notes => new {
+                        id = notes.Id,
+                        reportId = notes.ReportId,
+                        updateNotes = notes.UpdateNotes ?? string.Empty,
+                        sendReminders = notes.SendReminders,
+                        reminderMessage = notes.ReminderMessage ?? string.Empty,
+                        sendToEmails = notes.SendToEmails ?? string.Empty,
+                        isDeleted = notes.IsDeleted,
+                        addedOn = notes.NoteDate.ToString("yyyy-MM-dd"),
+                        addedBy = notes.AddedBy ?? string.Empty
+                    }).ToList();
+
+                var totalPages = (int)Math.Ceiling((double)returnsList.TotalCount / returnsList.Size);
+                return Ok(new {
+                    last_page = totalPages,
+                    total_records = returnsList.TotalCount,
+                    data = pagedEntities
+                });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving audit notes: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "AUDIT-CONTROLLER", ex.StackTrace);
+                return Ok(new { last_page = 0, data = Array.Empty<object>() });
+            }
+        }
+
+        [HttpPost]
+        [LogActivityResult("Add Audit notes", "User added audit notes", ActivityTypeDefaults.COMPLIANCE_CREATE_AUDIT_NOTES, "AuditNotes")]
+        public async Task<IActionResult> CreateNotes([FromBody] AuditUpdateViewModel request) {
+            try {
+                if (!ModelState.IsValid) {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+
+                    string combinedErrors = string.Join("; ", errors);
+                    return Ok(new { success = false, message = $"Please correct these errors: {combinedErrors}", data = (object)null });
+                }
+
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                if (request == null) {
+                    return Ok(new { success = false, message = "Invalid audit notes data" });
+                }
+
+
+                var result = await _auditService.CreateAuditUpdateAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create audit notes" });
+
+                var created = result.Data;
+                return Ok(new { success = true, message = "Audit type created successfully", data = new { } });
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error retrieving audit notes: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "AUDIT-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Unable to create audit notes.Something went wrong" });
+            }
+        }
+
+        [HttpPost]
+        [LogActivityResult("Update audit notes", "User updated audit notes", ActivityTypeDefaults.COMPLIANCE_EDITED_AUDIT_NOTES, "AuditNotes")]
+        public async Task<IActionResult> UpdateNotes([FromBody] AuditUpdateViewModel request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                var result = await _auditService.UpdateAuditUpdateAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update audit notes" });
+
+                var updated = result.Data;
+                return Ok(new {
+                    success = true,
+                    message = "Audit notes updated successfully",
+                    data = new { }
+                });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error updating audit notes: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "AUDIT-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Unable to updating audit notes.Something went wrong" });
+            }
+        }
+
+        [HttpPost]
+        [LogActivityResult("Delete Audit notes", "User delete audit notes", ActivityTypeDefaults.COMPLIANCE_DELETED_AUDIT_NOTES, "AuditNotes")]
+        public async Task<IActionResult> DeleteNotes(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                if (id == 0) return BadRequest(new { success = false, message = "Audit notes Id is required" });
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.AUDIT_NOTES_DELETE.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = true
+                };
+
+                var result = await _auditService.DeleteAuditUpdateAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to delete audit notes" });
+
+                return Ok(new { success = result.Data.Status, message = result.Data.Message });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error updating audit notes: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "AUDIT-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Unable to updating audit notes.Something went wrong" });
             }
         }
 

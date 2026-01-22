@@ -63,7 +63,6 @@ function initRegulatoryTypeTable() {
                     contentType: "application/json",
                     data: JSON.stringify(requestBody),
                     success: function (response) {
-                        console.log("=== AJAX RESPONSE ===", response);
                         resolve(response);
                     },
                     error: function (xhr, status, error) {
@@ -135,7 +134,6 @@ function initRegulatoryTypeTable() {
 
 //..route to home
 $('.action-btn-complianceHome').on('click', function () {
-    console.log("Home Button clicked");
     try {
         window.location.href = '/grc/compliance';
     } catch (error) {
@@ -200,7 +198,7 @@ $('.action-btn-newType').on('click', function () {
 });
 
 //..open slide panel
-function openDocumentTypePanel(title, record, isEdit) {
+function openRegulatoryTypePanel(title, record, isEdit) {
     $('#recordId').val(record.id);
     $('#typeName').val(record.typeName || '');
     $('#isEdit').val(isEdit);
@@ -208,7 +206,7 @@ function openDocumentTypePanel(title, record, isEdit) {
 
     //..open window
     $('#panelTitle').text(title);
-    $('.overlay').addClass('active');
+    $('#rtOverlay').addClass('active');
     $('#slidePanel').addClass('active');
 }
 
@@ -342,6 +340,7 @@ function viewRegulatoryTypeRecord(id) {
         }
     });
 
+    console.log(`Retrieving type ${id}`);
     findRegulatoryTypeRecord(id)
         .then(record => {
             Swal.close();
@@ -356,6 +355,8 @@ function viewRegulatoryTypeRecord(id) {
             }
         })
         .catch(error => {
+
+            console.log("Regulatory error >> ", error);
             Swal.close();
             Swal.fire({
                 title: 'Error',
@@ -373,12 +374,18 @@ function findRegulatoryTypeRecord(id) {
             type: "GET",
             dataType: "json",
             success: function (response) {
+
+                console.log("Response >> ", response);
+
                 if (response.success && response.data) {
-                    resolve(response.data);
-                    resolve(null);
+                    console.log("Data >> ", response.data);
+                    resolve(response.data);  
+                } else {
+                    resolve(null);           
                 }
             },
             error: function (xhr, status, error) {
+                reject(error);  
                 Swal.fire("Error", error);
             }
         });
@@ -387,7 +394,7 @@ function findRegulatoryTypeRecord(id) {
 
 //..close panel
 function closeRegulatoryTypePanel() {
-    $('.overlay').removeClass('active');
+    $('#rtOverlay').removeClass('active');
     $('#slidePanel').removeClass('active');
 }
 

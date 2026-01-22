@@ -69,7 +69,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 var categories = uow.ControlCategoryRepository.Get(t => t.Id == request.RecordId);
                 if (categories != null) {
                     //..mark as delete this Control Category
-                    _ = uow.ControlCategoryRepository.Delete(categories, request.markAsDeleted);
+                    _ = uow.ControlCategoryRepository.Delete(categories, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(categories).State;
@@ -102,13 +102,13 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     if(categories.ControlItems != null && categories.ControlItems.Count > 0) {
                         Logger.LogActivity($"Control Category has {categories.ControlItems.Count} related Control Items. Deleting them first.", "INFO");
                         foreach(var item in categories.ControlItems) {
-                            _ = await uow.ControlItemRepository.DeleteAsync(item, request.markAsDeleted);
+                            _ = await uow.ControlItemRepository.DeleteAsync(item, request.MarkAsDeleted);
                             Logger.LogActivity($"Deleted Control Item with ID: {item.Id}", "INFO");
                         }
                     }
 
                     //..mark as delete this Control Category
-                    _ = await uow.ControlCategoryRepository.DeleteAsync(categories, request.markAsDeleted);
+                    _ = await uow.ControlCategoryRepository.DeleteAsync(categories, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(categories).State;

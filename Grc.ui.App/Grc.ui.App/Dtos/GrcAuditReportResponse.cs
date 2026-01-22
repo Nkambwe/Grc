@@ -35,8 +35,8 @@ namespace Grc.ui.App.Dtos {
         [JsonPropertyName("additionalNotes")]
         public string AdditionalNotes { get; set; }
 
-        [JsonPropertyName("auditTypeId")]
-        public long AuditTypeId { get; set; }
+        [JsonPropertyName("auditId")]
+        public long AuditId { get; set; }
 
         [JsonPropertyName("auditType")]
         public string AuditType { get; set; }

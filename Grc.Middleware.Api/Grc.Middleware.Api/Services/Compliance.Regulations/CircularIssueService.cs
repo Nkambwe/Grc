@@ -316,7 +316,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 var issue = uow.CircularIssueRepository.Get(t => t.Id == request.RecordId);
                 if (issue != null) {
                     //..mark as delete this issue
-                    _ = uow.CircularIssueRepository.Delete(issue, request.markAsDeleted);
+                    _ = uow.CircularIssueRepository.Delete(issue, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(issue).State;
@@ -347,7 +347,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 var issue = await uow.CircularIssueRepository.GetAsync(t => t.Id == request.RecordId);
                 if (issue != null) {
                     //..mark as delete this issue
-                    _ = await uow.CircularIssueRepository.DeleteAsync(issue, request.markAsDeleted);
+                    _ = await uow.CircularIssueRepository.DeleteAsync(issue, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(issue).State;

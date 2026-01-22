@@ -368,7 +368,7 @@ namespace Grc.Middleware.Api.Services.Organization {
                 var department = await uow.DepartmentRepository.GetAsync(t => t.Id == request.RecordId);
                 if(department != null){ 
                     //..mark as delete this department
-                    _= await uow.DepartmentRepository.DeleteAsync(department, request.markAsDeleted);
+                    _= await uow.DepartmentRepository.DeleteAsync(department, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(department).State;

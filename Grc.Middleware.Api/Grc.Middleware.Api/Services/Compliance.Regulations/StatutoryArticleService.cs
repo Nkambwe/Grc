@@ -539,7 +539,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 var statute = uow.StatutoryArticleRepository.Get(t => t.Id == request.RecordId);
                 if (statute != null) {
                     //..mark as delete this Statutory article
-                    _ = uow.StatutoryArticleRepository.Delete(statute, request.markAsDeleted);
+                    _ = uow.StatutoryArticleRepository.Delete(statute, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(statute).State;
@@ -571,7 +571,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 var tasktask = await uow.StatutoryArticleRepository.GetAsync(t => t.Id == request.RecordId);
                 if (tasktask != null) {
                     //..mark as delete this Statutory Regulation
-                    _ = await uow.StatutoryArticleRepository.DeleteAsync(tasktask, request.markAsDeleted);
+                    _ = await uow.StatutoryArticleRepository.DeleteAsync(tasktask, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(tasktask).State;

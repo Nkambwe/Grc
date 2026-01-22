@@ -41,7 +41,8 @@ namespace Grc.ui.App.Extensions.Mvc {
             services.AddScoped<IProcessesService, ProcessesService>(); 
             services.AddScoped<IReturnsService, ReturnsService>();
             services.AddScoped<IRegulatonCategoryService, RegulatonCategoryService>(); 
-            services.AddScoped<IRegulatonTypeService, RegulatonTypeService>(); 
+            services.AddScoped<IRegulatonTypeService, RegulatonTypeService>();
+            services.AddScoped<IRegulatonAuthorityService, RegulatonAuthorityService>();
             services.AddScoped<IAuditService, AuditService>(); 
             services.AddScoped<IPolicyService, PolicyService>();
             services.AddScoped<IPolicyService, PolicyService>();

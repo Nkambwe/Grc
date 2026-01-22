@@ -7,4 +7,5 @@ namespace Grc.ui.App.Models {
         public List<DepartmentViewModel> Departments { get; set; } = new();
         public List<ResponsibilityViewModel> Responsibilities { get; set; } = new();
     }
+
 }

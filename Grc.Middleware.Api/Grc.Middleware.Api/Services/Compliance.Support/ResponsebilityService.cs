@@ -1178,7 +1178,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
                 if (responsebility != null)
                 {
                     //..mark as delete this Responsebility
-                    _ = uow.ResponsebilityRepository.Delete(responsebility, request.markAsDeleted);
+                    _ = uow.ResponsebilityRepository.Delete(responsebility, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(responsebility).State;
@@ -1234,7 +1234,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
                 if (responsebilitytask != null)
                 {
                     //..mark as delete this Responsebility
-                    _ = await uow.ResponsebilityRepository.DeleteAsync(responsebilitytask, request.markAsDeleted);
+                    _ = await uow.ResponsebilityRepository.DeleteAsync(responsebilitytask, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(responsebilitytask).State;

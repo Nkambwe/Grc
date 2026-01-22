@@ -68,7 +68,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 var categories = uow.ComplianceIssueRepository.Get(t => t.Id == request.RecordId);
                 if (categories != null) {
                     //..mark as delete this Compliance issue
-                    _ = uow.ComplianceIssueRepository.Delete(categories, request.markAsDeleted);
+                    _ = uow.ComplianceIssueRepository.Delete(categories, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(categories).State;
@@ -99,7 +99,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 var categories = await uow.ComplianceIssueRepository.GetAsync(t => t.Id == request.RecordId);
                 if (categories != null) {
                     //..mark as delete this Compliance issue
-                    _ = await uow.ComplianceIssueRepository.DeleteAsync(categories, request.markAsDeleted);
+                    _ = await uow.ComplianceIssueRepository.DeleteAsync(categories, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(categories).State;

@@ -459,7 +459,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
                 var categories = uow.RegulatoryCategoryRepository.Get(t => t.Id == request.RecordId);
                 if (categories != null) {
                     //..mark as delete this  Regulatory Category
-                    _ = uow.RegulatoryCategoryRepository.Delete(categories, request.markAsDeleted);
+                    _ = uow.RegulatoryCategoryRepository.Delete(categories, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(categories).State;
@@ -490,7 +490,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
                 var typestask = await uow.RegulatoryCategoryRepository.GetAsync(t => t.Id == request.RecordId);
                 if (typestask != null) {
                     //..mark as delete this  Regulatory Category
-                    _ = await uow.RegulatoryCategoryRepository.DeleteAsync(typestask, request.markAsDeleted);
+                    _ = await uow.RegulatoryCategoryRepository.DeleteAsync(typestask, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(typestask).State;

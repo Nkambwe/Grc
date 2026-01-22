@@ -13,6 +13,9 @@ namespace Grc.ui.App.Dtos {
         [JsonPropertyName("updateNotes")]
         public string UpdateNotes { get; set; }
 
+        [JsonPropertyName("noteDate")]
+        public DateTime NoteDate { get; set; }
+
         [JsonPropertyName("sendReminders")]
         public bool SendReminders { get; set; }
 

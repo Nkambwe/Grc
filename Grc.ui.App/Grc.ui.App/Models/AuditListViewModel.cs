@@ -11,7 +11,7 @@ namespace Grc.ui.App.Models {
         /// Get or Set report period
         /// </summary>
         [JsonPropertyName("reportPeriod")]
-        public string PeportPeriod { get; set; } = string.Empty;
+        public string ReportPeriod { get; set; } = string.Empty;
         /// <summary>
         /// Get or Set Intended action
         /// </summary>

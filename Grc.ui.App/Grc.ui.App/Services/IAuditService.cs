@@ -1,6 +1,5 @@
 ﻿
 using Grc.ui.App.Dtos;
-using Grc.ui.App.Helpers;
 using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Models;
@@ -12,7 +11,7 @@ namespace Grc.ui.App.Services {
         #region Statistics
         Task<GrcResponse<GrcAuditMiniReportResponse>> GetAuditExceptionReportAsync(GrcIdRequest request);
         Task<GrcResponse<AuditExtensionStatistics>> GetAuditExtensionStatisticAsync(long userId, string iPAddress, string period);
-        Task<GrcResponse<List<GrcAuditMiniReportResponse>>> GetAuditMiniReportAsync(AuditListViewModel request, long userId, string ipAddress);
+        Task<GrcResponse<List<GrcAuditMiniReportResponse>>> GetAuditMiniReportAsync(Models.AuditListViewModel request, long userId, string ipAddress);
         Task<GrcResponse<GrcAuditDashboardResponse>> GetAuditStatisticAsync(long userId, string iPAddress);
 
         #endregion
@@ -20,6 +19,7 @@ namespace Grc.ui.App.Services {
         #region Audits
         Task<GrcResponse<GrcAuditResponse>> GetAuditAsync(GrcIdRequest request);
         Task<GrcResponse<PagedResponse<GrcAuditResponse>>> GetAuditsAsync(TableListRequest request);
+        Task<GrcResponse<PagedResponse<GrcAuditResponse>>> GetTypeAuditsAsync(AuditListViewModel model, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> CreateAuditAsync(AuditViewModel request, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> UpdateAuditAsync(AuditViewModel request, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> DeleteAuditAsync(GrcIdRequest request);
@@ -38,6 +38,7 @@ namespace Grc.ui.App.Services {
         #region Audit Report
         Task<GrcResponse<GrcAuditReportResponse>> GetAuditReportAsync(GrcIdRequest request);
         Task<GrcResponse<PagedResponse<GrcAuditReportResponse>>> GetAuditReportsAsync(TableListRequest request);
+        Task<GrcResponse<PagedResponse<GrcAuditReportResponse>>> GetAuditTentativeReportsAsync(AuditListViewModel request, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> CreateAuditReportAsync(AuditReportViewModel model, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> UpdateAuditReportAsync(AuditReportViewModel model, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> DeleteReportAsync(GrcIdRequest request);
@@ -56,7 +57,7 @@ namespace Grc.ui.App.Services {
         #region Audit Updates
 
         Task<GrcResponse<GrcAuditUpdateResponse>> GetAuditUpdateAsync(GrcIdRequest request);
-        Task<GrcResponse<PagedResponse<GrcAuditUpdateResponse>>> GetAuditUpdatesAsync(GrcAuditMiniUpdateRequest request);
+        Task<GrcResponse<PagedResponse<GrcAuditUpdateResponse>>> GetReportNotesAsync(GrcAuditMiniUpdateRequest request);
         Task<GrcResponse<ServiceResponse>> CreateAuditUpdateAsync(AuditUpdateViewModel model, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> UpdateAuditUpdateAsync(AuditUpdateViewModel model, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> DeleteAuditUpdateAsync(GrcIdRequest request);
@@ -64,11 +65,14 @@ namespace Grc.ui.App.Services {
         #endregion
 
         #region Audit Tasks
+
         Task<GrcResponse<GrcAuditTaskResponse>> GetAuditTaskAsync(GrcIdRequest request);
         Task<GrcResponse<PagedResponse<GrcAuditTaskResponse>>> GetExceptionTasksAsync(GrcExceptionTaskViewModel request, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> CreateExceptionTaskAsync(GrcAuditTaskViewModel model, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> UpdateExceptionTaskAsync(GrcAuditTaskViewModel model, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> DeleteExceptionTaskAsync(GrcIdRequest request);
+       
+
         #endregion
     }
 

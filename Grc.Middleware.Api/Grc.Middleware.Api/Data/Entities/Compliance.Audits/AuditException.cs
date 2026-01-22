@@ -18,6 +18,10 @@ namespace Grc.Middleware.Api.Data.Entities.Compliance.Audits
         /// <summary>
         /// Get or Set Collective action to be taken
         /// </summary>
+        public string ProposedAction { get; set; }
+        /// <summary>
+        /// Get or Set Collective action to be taken
+        /// </summary>
         public string CorrectiveAction { get; set; }
         /// <summary>
         /// Get or Set target date for remediation completion

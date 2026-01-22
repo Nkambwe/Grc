@@ -258,7 +258,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 var circular = uow.AuditTypeRepository.Get(t => t.Id == request.RecordId);
                 if (circular != null) {
                     //..mark as delete this type
-                    _ = uow.AuditTypeRepository.Delete(circular, request.markAsDeleted);
+                    _ = uow.AuditTypeRepository.Delete(circular, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(circular).State;
@@ -289,7 +289,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 var task = await uow.AuditTypeRepository.GetAsync(t => t.Id == request.RecordId);
                 if (task != null) {
                     //..mark as delete this type
-                    _ = await uow.AuditTypeRepository.DeleteAsync(task, request.markAsDeleted);
+                    _ = await uow.AuditTypeRepository.DeleteAsync(task, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(task).State;

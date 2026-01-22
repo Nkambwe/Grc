@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Grc.ui.App.Helpers {
+namespace Grc.ui.App.Models {
     public class AuditCategoryViewModel {
 
         [JsonPropertyName("reportId")]

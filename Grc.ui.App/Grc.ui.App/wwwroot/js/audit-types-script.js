@@ -1,6 +1,6 @@
 ﻿let auditTypeTable;
 
-function initAuditTypeTable() {
+function initAuditType2Table() {
     auditTypeTable = new Tabulator("#auditTypetable", {
         ajaxURL: "/grc/compliance/audit/types",
         paginationMode: "remote",
@@ -189,7 +189,49 @@ function findTypeRecord(id) {
 }
 
 function deleteAuditType(id) {
-    alert(`delete type with ID >> ${id}`)
+    if (!id && id !== 0) {
+        toastr.error("Invalid id for delete.");
+        return;
+    }
+
+    Swal.fire({
+        title: "Delete audit type",
+        text: "Are you sure you want to delete this type?",
+        showCancelButton: true,
+        confirmButtonColor: "#450354",
+        confirmButtonText: "Delete",
+        cancelButtonColor: "#f41369",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        const url = `/grc/compliance/audits/types/type-delete/${encodeURIComponent(id)}`;
+        $.ajax({
+            url: url,
+            type: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getTypeToken()
+            },
+            success: function (res) {
+
+                if (res && res.success) {
+                    toastr.success(res.message || "Type deleted successfully.");
+                    auditTypeTable.replaceData();
+                } else {
+                    toastr.error(res?.message || "Delete failed.");
+                }
+            },
+            error: function (xhr, status, error) {
+                let msg = "Request failed.";
+                try {
+                    const json = xhr.responseJSON || JSON.parse(xhr.responseText || "{}");
+                    if (json && json.message) msg = json.message;
+                } catch (e) { }
+                toastr.error(msg);
+            }
+        });
+    });
 }
 
 function saveAuditTypePane(e) {
@@ -228,10 +270,10 @@ function saveAuditTypePane(e) {
     saveAuditTypeRecord(isEdit, recordData);
 }
 
-function saveAuditTypeRecord(e) {
+function saveAuditTypeRecord(isEdit, record) {
     const url = (isEdit === true || isEdit === "true")
-        ? "/grc/compliance/audit/types/type-update"
-        : "/grc/compliance/audit/types/type-create";
+        ? "/grc/compliance/audits/types/type-update"
+        : "/grc/compliance/audits/types/type-create";
 
     Swal.fire({
         title: isEdit ? "Updating type..." : "Saving type...",
@@ -250,7 +292,7 @@ function saveAuditTypeRecord(e) {
         data: JSON.stringify(record),
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': initAuditTypeTable()
+            'X-CSRF-TOKEN': getTypeToken()
         },
         success: function (res) {
             Swal.close();
@@ -264,8 +306,12 @@ function saveAuditTypeRecord(e) {
 
             Swal.fire(res.message || (isEdit ? "Type updated successfully" : "Type created successfully"));
 
+            // reload table
+            auditTypeTable.replaceData();
+
             //..close panel
             closeAuditTypePane();
+
         },
         error: function (xhr) {
             Swal.close();
@@ -284,6 +330,10 @@ function saveAuditTypeRecord(e) {
     });
 }
 
+function getTypeToken() {
+    return $('meta[name="csrf-token"]').attr('content');
+}
+
 function closeAuditTypePane() {
     $('#auditTypeOverlay').removeClass('active');
     $('#auditTypePanel').removeClass('active');
@@ -299,7 +349,7 @@ $('.action-btn-audit-home').on('click', function () {
 });
 
 $(document).ready(function () {
-    initAuditTypeTable();
+    initAuditType2Table();
 
     $('#auditTypeForm').on('submit', function (e) {
         e.preventDefault();

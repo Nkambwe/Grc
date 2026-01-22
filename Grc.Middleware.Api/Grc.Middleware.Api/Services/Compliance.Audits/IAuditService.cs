@@ -43,9 +43,11 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
         Task<PagedResult<Audit>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<Audit, object>>[] includes);
         Task<PagedResult<Audit>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<Audit, bool>> where = null);
         Task<PagedResult<Audit>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<Audit, bool>> where = null, bool includeDeleted = false);
+        Task<PagedResult<Audit>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<Audit, bool>> predicate = null, params Expression<Func<Audit, object>>[] includes);
         Task<AuditDashboardResponse> GetAuditDashboardStatisticsAsync(bool includeDeletes);
         Task<AuditMiniReportResponse> GetAuditMiniStatisticsAsync(long recordId, bool includeDeleted);
         Task<AuditExtensionStatistics> GetPeriodStatisticsAsync(string period, bool includeDeleted);
-        Task<List<AuditMiniReportResponse>> GetMiniPeriodStatisticsAsync(string period, bool v);
+        Task<List<AuditMiniReportResponse>> GetMiniPeriodStatisticsAsync(string period, bool includeDeleted);
+        Task<AuditSupportResponse> GetAuditSupportItemsAsync(bool includeDeleted);
     }
 }

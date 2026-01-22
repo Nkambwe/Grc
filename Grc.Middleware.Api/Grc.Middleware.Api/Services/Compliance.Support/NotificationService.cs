@@ -1176,7 +1176,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
                 if (notification != null)
                 {
                     //..mark as delete this Notifications
-                    _ = uow.NotificationRepository.Delete(notification, request.markAsDeleted);
+                    _ = uow.NotificationRepository.Delete(notification, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(notification).State;
@@ -1232,7 +1232,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
                 if (notification != null)
                 {
                     //..mark as delete this Notifications
-                    _ = await uow.NotificationRepository.DeleteAsync(notification, request.markAsDeleted);
+                    _ = await uow.NotificationRepository.DeleteAsync(notification, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(notification).State;

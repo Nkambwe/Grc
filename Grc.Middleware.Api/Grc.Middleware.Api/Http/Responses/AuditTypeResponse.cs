@@ -17,5 +17,8 @@ namespace Grc.Middleware.Api.Http.Responses {
 
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
+
+        [JsonPropertyName("audits")]
+        public List<AuditResponse> Audits { get; set; } = new();
     }
 }

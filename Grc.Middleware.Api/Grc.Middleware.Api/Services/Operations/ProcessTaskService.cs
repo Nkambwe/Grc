@@ -1178,7 +1178,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                 if (task != null)
                 {
                     //..mark as delete this process task
-                    _ = uow.ProcessTaskRepository.Delete(task, request.markAsDeleted);
+                    _ = uow.ProcessTaskRepository.Delete(task, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(task).State;
@@ -1234,7 +1234,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                 if (tasktask != null)
                 {
                     //..mark as delete this process task
-                    _ = await uow.ProcessTaskRepository.DeleteAsync(tasktask, request.markAsDeleted);
+                    _ = await uow.ProcessTaskRepository.DeleteAsync(tasktask, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(tasktask).State;

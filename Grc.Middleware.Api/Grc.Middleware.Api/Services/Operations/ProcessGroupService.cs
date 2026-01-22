@@ -635,7 +635,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                 if (groups != null)
                 {
                     //..mark as delete this Process Group
-                    _ = uow.ProcessGroupRepository.Delete(groups, request.markAsDeleted);
+                    _ = uow.ProcessGroupRepository.Delete(groups, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(groups).State;
@@ -673,7 +673,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                 if (group != null)
                 {
                     //..mark as delete this Process Group
-                    _ = await uow.ProcessGroupRepository.DeleteAsync(group, request.markAsDeleted);
+                    _ = await uow.ProcessGroupRepository.DeleteAsync(group, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(group).State;

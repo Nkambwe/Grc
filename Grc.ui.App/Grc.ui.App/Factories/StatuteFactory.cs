@@ -5,6 +5,7 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 
 namespace Grc.ui.App.Factories {
+
     public class StatuteFactory : IStatuteFactory {
 
         private readonly IRegulatoryStatuteService _statuteService;
@@ -98,6 +99,79 @@ namespace Grc.ui.App.Factories {
             }
 
             return statuteModel;
+        }
+
+        public async Task<AuditSupportViewModel> PrepareAuditSupportViewModelAsync(UserModel currentUser) {
+            AuditSupportViewModel supportModel = new() {
+                Authorities = new(),
+                Types = new()
+            };
+
+            GrcRequest request = new() {
+                UserId = currentUser.UserId,
+                IPAddress = currentUser.IPAddress,
+                Action = Activity.LAW_RETRIEVE_SUPPORT.GetDescription(),
+                EncryptFields = Array.Empty<string>(),
+                DecryptFields = Array.Empty<string>()
+            };
+
+            //..get lists of process support items  
+            var response = await _statuteService.GetAuditSupportItemsAsync(request);
+            if (response.HasError) {
+                return supportModel;
+            }
+
+            var supportItems = response.Data;
+            if (supportItems == null) {
+                return supportModel;
+            }
+
+            //..get authorities
+            if (supportItems.Authorities != null && supportItems.Authorities.Any()) {
+                supportModel.Authorities.AddRange(
+                    from authority in supportItems.Authorities
+                    select new AuthorityViewModel {
+                        Id = authority.Id,
+                        AuthorityName = authority.AuthorityName
+                    }
+                );
+            }
+
+            //..get audit types
+            if (supportItems.Types != null && supportItems.Types.Any()) {
+                supportModel.Types.AddRange(
+                    from type in supportItems.Types
+                    select new AuditTypeMiniViewModel {
+                        Id = type.Id,
+                        TypeName = type.TypeName
+                    }
+                );
+            }
+
+            //..get audits
+            if (supportItems.Audits != null && supportItems.Audits.Any()) {
+                supportModel.Audits.AddRange(
+                    from audit in supportItems.Audits
+                    select new AuditMiniViewModel {
+                        Id = audit.Id,
+                        AuditName = audit.AuditName
+                    }
+                );
+            }
+
+            //..get responsibiliyies
+            if (supportItems.Responsibilities != null && supportItems.Responsibilities.Any()) {
+                supportModel.Responsibilities.AddRange(
+                    from resp in supportItems.Responsibilities
+                    select new ResponsibilityViewModel {
+                        Id = resp.Id,
+                        ResponsibleRole = resp.ResponsibilityRole,
+                        DepartmentName = resp.DepartmentName,
+                    }
+                );
+            }
+
+            return supportModel;
         }
     }
 }

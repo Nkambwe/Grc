@@ -1,9 +1,9 @@
 ﻿//..route to home
 let auditReportTable;
 
-function initAuditTypeTable() {
-    auditTypeTable = new Tabulator("#auditExceprionTable", {
-        ajaxURL: "/grc/compliance/audit/types",
+function initAuditExceptionTable() {
+    auditReportTable = new Tabulator("#auditExceptionTable", {
+        ajaxURL: "/grc/compliance/audit/exceptions",
         paginationMode: "remote",
         filterMode: "remote",
         sortMode: "remote",
@@ -46,7 +46,7 @@ function initAuditTypeTable() {
                 //..filtering
                 if (params.filter && params.filter.length > 0) {
                     let filter = params.filter.find(f =>
-                        ["typeCode", "typeName", "description"].includes(f.field)
+                        ["finding", "recomendations", "proposedAction", "correctiveAction", "riskLevel"].includes(f.field)
                     );
                     if (filter) requestBody.searchTerm = filter.value;
                 }
@@ -75,27 +75,89 @@ function initAuditTypeTable() {
         },
         ajaxError: function (error) {
             console.error("Tabulator AJAX Error:", error);
-            alert("Failed to load audit types. Please try again.");
+            alert("Failed to load audit exceptions. Please try again.");
         },
         layout: "fitColumns",
         responsiveLayout: "hide",
         columns: [
-            { title: "TYPE CODE", field: "typeCode", minWidth: 200, frozen: true, headerSort: true },
+            { title: "REF-NO", field: "reference", width: 200 },
             {
-                title: "TYPE NAME",
-                field: "typeName",
+                title: "FINDING",
+                field: "finding",
                 minWidth: 200,
                 widthGrow: 2,
                 headerSort: true,
                 frozen: true,
-                formatter: (cell) => `<span class="clickable-title" onclick="viewAuditType(${cell.getRow().getData().id})">${cell.getValue()}</span>`
+                formatter: (cell) => `<span class="clickable-title" onclick="viewAuditException(${cell.getRow().getData().id})">${cell.getValue()}</span>`
             },
-            { title: "DESCRIPTION", field: "description", minWidth: 200, widthGrow: 3 },
+            { title: "RECOMMENDATION", field: "recomendations", minWidth: 200, widthGrow: 3 },
+            { title: "EXCUTIONER", field: "excutioner", minWidth: 200, widthGrow: 3 },
+            {
+                title: "RISK LEVEL",
+                field: "riskLevel",
+                minWidth: 200,
+                widthGrow: 3,
+                formatter: function (cell) {
+                    const value = (cell.getValue() || "").toUpperCase();
+                    const el = cell.getElement();
+
+                    let bg = "#6c757d"; 
+                    let fg = "#fff";
+
+                    switch (value) {
+                        case "NONE":
+                            bg = "#adb5bd"; 
+                            fg = "#000";
+                            break;
+                        case "LOW":
+                            bg = "#198754"; 
+                            break;
+                        case "MEDIUM":
+                            bg = "#fd7e14"; 
+                            break;
+                        case "HIGH":
+                            bg = "#dc3545"; 
+                            break;
+                    }
+
+                    el.style.backgroundColor = bg;
+                    el.style.color = fg;
+                    el.style.fontWeight = "600";
+
+                    return value || "-";
+                }
+            },
+            {
+                title: "RISK RATING",
+                field: "riskRating",
+                minWidth: 200,
+                widthGrow: 3,
+                hozAlign: "center",
+                formatter: function (cell) {
+                    const value = Number(cell.getValue());
+                    const el = cell.getElement();
+
+                    let bg = "#198754"; 
+                    let fg = "#fff";
+
+                    if (value >= 50) {
+                        bg = "#dc3545"; 
+                    } else if (value >= 30) {
+                        bg = "#fd7e14"; 
+                    }
+
+                    el.style.backgroundColor = bg;
+                    el.style.color = fg;
+                    el.style.fontWeight = "700";
+
+                    return isNaN(value) ? "-" : value;
+                }
+            },
             {
                 title: "ACTION",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                    return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteAuditType(${rowData.id})">
+                    return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteException(${rowData.id})">
                             <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
                             <span>DELETE</span>
                         </button>`;
@@ -109,10 +171,20 @@ function initAuditTypeTable() {
     });
 
     //..initialize search
-    initAuditTypeSearch();
+    initAuditExceptionSearch();
 }
 
+//function viewAuditException(id) {
+//    alert(`View Exception by ID >> ${id}`)
+//}
 
+//function deleteException(id) {
+//    alert(`Delete Exception by ID >> ${id}`)
+//}
+
+function initAuditExceptionSearch() {
+
+}
 
 $('.action-btn-audit-home').on('click', function () {
     try {
@@ -123,15 +195,22 @@ $('.action-btn-audit-home').on('click', function () {
     }
 });
 
-$(document).ready(function () {
+$('.action-btn-excel-export').on('click', function () {
+    alert("New Exception");
+});
 
-    $('#auditForm').on('submit', function (e) {
-        e.preventDefault();
-    });
+$(document).ready(function () {
+    console.log("DOM Loged");
+   initAuditExceptionTable();
+
+
+//    console.log("Dom started");
+//    $('#auditForm').on('submit', function (e) {
+//        e.preventDefault();
+//    });
 
 });
 
-
-function getAuditTypeToken() {
+function getExcToken() {
     return $('meta[name="csrf-token"]').attr('content');
 }

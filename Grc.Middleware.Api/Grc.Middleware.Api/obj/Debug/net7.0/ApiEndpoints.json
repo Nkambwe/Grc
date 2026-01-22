@@ -43,6 +43,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetAuditReportList",
+    "RelativePath": "grc/audits/audit-audit-reports-list",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.TentaiveReportsRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "GetAuditStatistic",
     "RelativePath": "grc/audits/audit-dashboard-statistics",
     "HttpMethod": "POST",
@@ -75,6 +91,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetAuditNotes",
+    "RelativePath": "grc/audits/audit-notes-retrieve",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "GetAudit",
     "RelativePath": "grc/audits/audit-retrieve",
     "HttpMethod": "POST",
@@ -84,6 +116,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetAuditvSupportItems",
+    "RelativePath": "grc/audits/audit-support-items",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
         "IsRequired": true
       }
     ],
@@ -132,6 +180,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.AuditRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "CreateAuditNotes",
+    "RelativePath": "grc/audits/create-audit-notes",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.AuditUpdateRequest",
         "IsRequired": true
       }
     ],
@@ -205,6 +269,22 @@
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "DeleteAudit",
     "RelativePath": "grc/audits/delete-audit",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "DeleteAuditNotes",
+    "RelativePath": "grc/audits/delete-audit-notes",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -331,6 +411,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetAllPagedExceptionList",
+    "RelativePath": "grc/audits/exceptions-list",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "GetPagedAuditList",
     "RelativePath": "grc/audits/paged-audit-list",
     "HttpMethod": "POST",
@@ -395,6 +491,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetReportNotes",
+    "RelativePath": "grc/audits/report-notes",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.AuditMiniUpdateRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "GetAuditReport",
     "RelativePath": "grc/audits/report-retrieve",
     "HttpMethod": "POST",
@@ -404,6 +516,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetTypeAuditList",
+    "RelativePath": "grc/audits/type-audits-list",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.TypeAuditListRequest",
         "IsRequired": true
       }
     ],
@@ -436,6 +564,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.AuditRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "UpdateAuditNotes",
+    "RelativePath": "grc/audits/update-audit-notes",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.AuditUpdateRequest",
         "IsRequired": true
       }
     ],

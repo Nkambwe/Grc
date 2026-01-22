@@ -412,7 +412,7 @@ namespace Grc.Middleware.Api.Services {
                 var process = uow.ProcessApprovalRepository.Get(t => t.Id == request.RecordId);
                 if (process != null) {
                     //..mark as delete this OperationProcess
-                    _ = uow.ProcessApprovalRepository.Delete(process, request.markAsDeleted);
+                    _ = uow.ProcessApprovalRepository.Delete(process, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(process).State;
@@ -449,7 +449,7 @@ namespace Grc.Middleware.Api.Services {
                 if (approval != null)
                 {
                     //..mark as delete this Process Approval
-                    _ = await uow.ProcessApprovalRepository.DeleteAsync(approval, request.markAsDeleted);
+                    _ = await uow.ProcessApprovalRepository.DeleteAsync(approval, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(approval).State;

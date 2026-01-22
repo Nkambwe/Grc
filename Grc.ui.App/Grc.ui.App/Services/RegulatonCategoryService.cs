@@ -10,8 +10,8 @@ using System.Text.Json;
 
 namespace Grc.ui.App.Services
 {
-    public class RegulatonCategoryService : GrcBaseService, IRegulatonCategoryService
-    {
+    public class RegulatonCategoryService : GrcBaseService, IRegulatonCategoryService {
+
         public RegulatonCategoryService(IApplicationLoggerFactory loggerFactory, 
             IHttpHandler httpHandler, 
             IEnvironmentProvider environment, 

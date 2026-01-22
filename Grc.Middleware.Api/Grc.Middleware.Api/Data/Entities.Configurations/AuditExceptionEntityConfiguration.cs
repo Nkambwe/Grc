@@ -9,6 +9,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
             builder.ToTable("TBL_GRC_AUDIT_EXCEPTION");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.AuditFinding).HasColumnName("audit_finding").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
+            builder.Property(x => x.ProposedAction).HasColumnName("audit_proposed").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(x => x.CorrectiveAction).HasColumnName("audit_action").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
             builder.Property(x => x.ExceptionNotes).HasColumnName("audit_notes").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
             builder.Property(x => x.RemediationPlan).HasColumnName("audit_remediation").HasColumnType("NVARCHAR(MAX)").IsRequired(true);

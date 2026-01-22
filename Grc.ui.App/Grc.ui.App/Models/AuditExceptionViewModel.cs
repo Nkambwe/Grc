@@ -19,6 +19,9 @@ namespace Grc.ui.App.Models
         [JsonPropertyName("proposedAction")]
         public string ProposedAction { get; set; }
 
+        [JsonPropertyName("correctiveAction")]
+        public string CorrectiveAction { get; set; }
+
         [JsonPropertyName("notes")]
         public string Notes { get; set; }
 

@@ -903,7 +903,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                 if (process != null)
                 {
                     //..mark as delete this OperationProcess
-                    _ = uow.OperationProcessRepository.Delete(process, request.markAsDeleted);
+                    _ = uow.OperationProcessRepository.Delete(process, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(process).State;
@@ -941,7 +941,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                 if (process != null)
                 {
                     //..mark as delete this OperationProcess
-                    _ = await uow.OperationProcessRepository.DeleteAsync(process, request.markAsDeleted);
+                    _ = await uow.OperationProcessRepository.DeleteAsync(process, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(process).State;

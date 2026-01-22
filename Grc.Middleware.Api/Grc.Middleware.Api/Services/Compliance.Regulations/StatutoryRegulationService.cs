@@ -602,7 +602,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 if (statute != null)
                 {
                     //..mark as delete this Statutory Regulation
-                    _ = uow.StatutoryRegulationRepository.Delete(statute, request.markAsDeleted);
+                    _ = uow.StatutoryRegulationRepository.Delete(statute, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(statute).State;
@@ -640,7 +640,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 if (tasktask != null)
                 {
                     //..mark as delete this Statutory Regulation
-                    _ = await uow.StatutoryRegulationRepository.DeleteAsync(tasktask, request.markAsDeleted);
+                    _ = await uow.StatutoryRegulationRepository.DeleteAsync(tasktask, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(tasktask).State;

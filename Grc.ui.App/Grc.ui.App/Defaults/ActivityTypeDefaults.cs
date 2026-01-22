@@ -218,6 +218,11 @@
         public const string COMPLIANCE_CREATE_EXCEPTION = "Audits.Exceptions.Create.Exception";
         public const string COMPLIANCE_EDITED_EXCEPTION = "Audits.Exceptions.Edit.Exception";
         public const string COMPLIANCE_DELETED_EXCEPTION = "Audits.Exceptions.Delete.Exception";
+        public const string COMPLIANCE_RETRIEVE_AUDIT_NOTES = "Audits.Notes.Retrieve";
+        public const string COMPLIANCE_CREATE_AUDIT_NOTES = "Audits.Create.Audit.Notes";
+        public const string COMPLIANCE_EDITED_AUDIT_NOTES = "Audits.Edit.Audit.Notes";
+        public const string COMPLIANCE_DELETED_AUDIT_NOTES = "Audits.Delete.Audit.Notes";
+
         #endregion
 
     }

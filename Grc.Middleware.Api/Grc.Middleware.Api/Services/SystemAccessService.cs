@@ -1040,7 +1040,7 @@ namespace Grc.Middleware.Api.Services {
                 if (user != null)
                 {
                     //..mark as delete this System User
-                    _ = uow.UserRepository.Delete(user, request.markAsDeleted);
+                    _ = uow.UserRepository.Delete(user, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
@@ -1096,7 +1096,7 @@ namespace Grc.Middleware.Api.Services {
                 if (user != null)
                 {
                     //..mark as delete this System User
-                    _ = await uow.UserRepository.DeleteAsync(user, request.markAsDeleted);
+                    _ = await uow.UserRepository.DeleteAsync(user, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
@@ -1692,7 +1692,7 @@ namespace Grc.Middleware.Api.Services {
                 if (user != null)
                 {
                     //..mark as delete this System Role
-                    _ = uow.UserRepository.Delete(user, request.markAsDeleted);
+                    _ = uow.UserRepository.Delete(user, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
@@ -1748,7 +1748,7 @@ namespace Grc.Middleware.Api.Services {
                 if (role != null)
                 {
                     //..mark as delete this System Role
-                    _ = await uow.RoleRepository.DeleteAsync(role, request.markAsDeleted);
+                    _ = await uow.RoleRepository.DeleteAsync(role, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(role).State;
@@ -2387,7 +2387,7 @@ namespace Grc.Middleware.Api.Services {
                 if (user != null)
                 {
                     //..mark as delete this Role Group
-                    _ = uow.RoleGroupRepository.Delete(user, request.markAsDeleted);
+                    _ = uow.RoleGroupRepository.Delete(user, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
@@ -2443,7 +2443,7 @@ namespace Grc.Middleware.Api.Services {
                 if (roleGroup != null)
                 {
                     //..mark as delete this Role Group
-                    _ = await uow.RoleGroupRepository.DeleteAsync(roleGroup, request.markAsDeleted);
+                    _ = await uow.RoleGroupRepository.DeleteAsync(roleGroup, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(roleGroup).State;
@@ -2569,7 +2569,7 @@ namespace Grc.Middleware.Api.Services {
 
             try
             {
-                var roleGroup = await uow.RoleGroupRepository.GetAsync(ps => ps.Id == request.RecordId, request.markAsDeleted, p => p.PermissionSets);
+                var roleGroup = await uow.RoleGroupRepository.GetAsync(ps => ps.Id == request.RecordId, request.MarkAsDeleted, p => p.PermissionSets);
 
                 if (roleGroup == null)
                     return null;
@@ -2702,7 +2702,7 @@ namespace Grc.Middleware.Api.Services {
                 //..load the Role with its Group and their PermissionSets
                 var roles = await uow.RoleRepository.GetAllAsync(
                     r => r.Id == request.RecordId,
-                    request.markAsDeleted,
+                    request.MarkAsDeleted,
                     r => r.Group,
                     r => r.PermissionSets,
                     r => r.Group.PermissionSets
@@ -2769,7 +2769,7 @@ namespace Grc.Middleware.Api.Services {
             try {
                 var roles = await uow.RoleRepository.GetAllAsync(
                     r => r.Id == request.RecordId,
-                    request.markAsDeleted,
+                    request.MarkAsDeleted,
                     r => r.Group,
                     r => r.PermissionSets,
                     r => r.Group.PermissionSets
@@ -3139,7 +3139,7 @@ namespace Grc.Middleware.Api.Services {
                 // Load the permission set with join table
                 var sets = await uow.PermissionSetRepository.GetAllAsync(
                     ps => ps.Id == request.RecordId,
-                    request.markAsDeleted,
+                    request.MarkAsDeleted,
                     ps => ps.Permissions
                 );
 
@@ -3157,7 +3157,7 @@ namespace Grc.Middleware.Api.Services {
                 // Load ALL permissions
                 var allPermissions = await uow.PermissionRepository.GetAllAsync(
                     p => true,
-                    request.markAsDeleted
+                    request.MarkAsDeleted
                 );
 
                 //..map to response
@@ -3440,7 +3440,7 @@ namespace Grc.Middleware.Api.Services {
                     return false;
                 }
 
-                if (request.markAsDeleted) {
+                if (request.MarkAsDeleted) {
                     // Soft delete
                     set.IsDeleted = true;
                     set.LastModifiedOn = DateTime.UtcNow;
@@ -3491,7 +3491,7 @@ namespace Grc.Middleware.Api.Services {
                     return false;
                 }
 
-                if (request.markAsDeleted)
+                if (request.MarkAsDeleted)
                 {
                     // Soft delete
                     set.IsDeleted = true;

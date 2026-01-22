@@ -1,6 +1,6 @@
 ﻿
 $(document).ready(function () {
-    initDocTypeTable();
+     initDocTypeTable();
 });
 
 let regulatoryTypeTable;
@@ -132,7 +132,6 @@ function initDocTypeTable() {
 
 //..route to home
 $('.action-btn-complianceHome').on('click', function () {
-    console.log("Home Button clicked");
     try {
         window.location.href = '/grc/compliance';
     } catch (error) {
@@ -185,7 +184,7 @@ $('.action-btn-type-export').on('click', function () {
 
 //..add type
 function addDocTypeRootRecord() {
-    openDocumentTypePanel('New document type', {
+    openDocumentType2Panel('New document type', {
         id: 0,
         typeName: '',
         isActive: false
@@ -193,7 +192,7 @@ function addDocTypeRootRecord() {
 }
 
 //..open slide panel
-function openDocumentTypePanel(title, record, isEdit) {
+function openDocumentType2Panel(title, record, isEdit) {
     $('#recordId').val(record.id);
     $('#typeName').val(record.typeName || '');
     $('#isEdit').val(isEdit);
@@ -201,7 +200,7 @@ function openDocumentTypePanel(title, record, isEdit) {
 
     //..open panel
     $('#panelTitle').text(title);
-    $('.overlay').addClass('active');
+    $('#docOverlay').addClass('active');
     $('#slidePanel').addClass('active');
 }
 
@@ -327,12 +326,12 @@ function viewDocTypeRecord(id) {
             Swal.showLoading();
         }
     });
-
+    console.log("Finding document");
     findDoctypeRecord(id)
         .then(record => {
             Swal.close();
             if (record) {
-                openDocumentTypePanel('Edit document type', record, true);
+                openDocumentType2Panel('Edit document type', record, true);
             } else {
                 Swal.fire({
                     title: 'NOT FOUND',
@@ -343,7 +342,6 @@ function viewDocTypeRecord(id) {
         })
         .catch(error => {
             Swal.close();
-
             Swal.fire({
                 title: 'Document Type',
                 text: 'Failed to load type details. Please try again.',
@@ -374,7 +372,7 @@ function findDoctypeRecord(id) {
 
 //..close panel
 function closeDoctypePanel() {
-    $('.overlay').removeClass('active');
+    $('#docOverlay').removeClass('active');
     $('#slidePanel').removeClass('active');
 }
 

@@ -18,6 +18,9 @@ namespace Grc.ui.App.Http.Responses
 
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
+
+        [JsonPropertyName("audits")]
+        public List<GrcAuditResponse> Audits { get; set; } = new();
     }
 
 }

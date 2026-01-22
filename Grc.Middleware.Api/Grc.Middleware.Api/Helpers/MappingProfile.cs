@@ -281,6 +281,7 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(r => r.CorrectiveAction, reg => reg.MapFrom(o => (o.CorrectiveAction ?? string.Empty).Trim()))
                 .ForMember(r => r.ExceptionNotes, reg => reg.MapFrom(o => (o.Notes ?? string.Empty).Trim()))
                 .ForMember(r => r.RemediationPlan, reg => reg.MapFrom(o => (o.Recomendations ?? string.Empty).Trim()))
+                .ForMember(r => r.ProposedAction, reg => reg.MapFrom(o => (o.ProposedAction ?? string.Empty).Trim()))
                 .ForMember(r => r.TargetDate, reg => reg.MapFrom(o => o.TargetDate))
                 .ForMember(r => r.RiskAssessment, reg => reg.MapFrom(o => (o.RiskLevel ?? string.Empty).Trim()))
                 .ForMember(r => r.RiskRating, reg => reg.MapFrom(o => o.RiskRate))

@@ -773,6 +773,10 @@ div#contentArea {
     overflow-x: hidden;
 }
 
+.obligation-side-panel-body {
+    overflow-y: hidden!important;
+}
+
 .tab-pane {
     max-height: calc(100vh - 120px);
     overflow-y: auto;
@@ -1073,6 +1077,126 @@ div:where(.swal2-container).swal2-center > .swal2-popup {
         .tabulator-row .tabulator-cell.open-warning:last-of-type {
             border-bottom: 2px solid #b5b5b5 !important;
         }
+
+ul.exceptions-list,
+ul.update-list {
+    list-style: none;
+    width: 100%;
+    margin: 0;
+    padding: 10px;
+    font-size: 1.2em;
+}
+
+li.no-report-items {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+    cursor:pointer;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+/* Card container */
+.audit-card {
+    list-style: none;
+    background: #fff;
+    cursor: pointer;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+    .audit-card:hover {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        transform: translateY(-1px);
+    }
+
+
+
+/* Header */
+.audit-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.audit-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #111827;
+}
+
+/* Status badges */
+.audit-status {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    text-transform: uppercase;
+}
+
+.status-open {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.status-progress {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-closed {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-default {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+/* Body */
+.audit-card-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.audit-action {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #374151;
+    line-height: 1.4;
+}
+
+/* Icon button */
+.grc-btn-icon {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    color: #2563eb;
+}
+
+    .grc-btn-icon:hover {
+        background: #eff6ff;
+        color: #1d4ed8;
+    }
+
+    .grc-btn-icon i {
+        font-size: 1.1rem;
+    }
 
 
 @media (max-width: 768px) {

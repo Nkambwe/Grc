@@ -1173,7 +1173,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
                 if (statute != null)
                 {
                     //..mark as delete this Authority
-                    _ = uow.AuthoritiesRepository.Delete(statute, request.markAsDeleted);
+                    _ = uow.AuthoritiesRepository.Delete(statute, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(statute).State;
@@ -1230,7 +1230,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Support {
                 if (tasktask != null)
                 {
                     //..mark as delete this Authority
-                    _ = await uow.AuthoritiesRepository.DeleteAsync(tasktask, request.markAsDeleted);
+                    _ = await uow.AuthoritiesRepository.DeleteAsync(tasktask, request.MarkAsDeleted);
 
                     //..check entity state
                     var entityState = ((UnitOfWork)uow).Context.Entry(tasktask).State;

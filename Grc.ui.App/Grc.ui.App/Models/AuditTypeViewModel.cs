@@ -21,5 +21,4 @@ namespace Grc.ui.App.Models
         public bool IsDeleted { get; set; }
 
     }
-
 }
