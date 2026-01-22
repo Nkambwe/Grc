@@ -91,44 +91,151 @@ function renderPiechart(record) {
 }
 
 function viewPolicy(id) {
-    alert(`Policy ID >> ${id}`)
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving document details...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    findDocument(id)
+        .then(record => {
+            Swal.close();
+            if (record) {
+                OpenDocumentView(record);
+            } else {
+                Swal.fire({
+                    title: 'NOT FOUND',
+                    text: 'Document details not found',
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            Swal.close();
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to load document details. Please try again.',
+                confirmButtonText: 'OK'
+            });
+        });
+}
+
+function findDocument(id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/grc/compliance/register/policies-retrieve/${id}`,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success && response.data) {
+                    resolve(response.data);
+                } else {
+                    resolve(null);
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire("Error", error);
+            }
+        });
+    });
+}
+
+function OpenDocumentView(record) {
+    $('#documentName').val(record.documentName || '');
+    $('#documentTypeName').val(record.documentTypeName || '');
+    $('#departmentName').val(record.departmentName || '');
+    $('#responsibilityName').val(record.responsibilityName || '');
+    $('#lastReview').val(record.lastReview || '');
+    $('#nextReview').val(record.nextReview || '');
+    $('#frequencyName').val(record.frequencyName || '');
+    $('#documentStatus').val(record.documentStatus || '');
+    $('#comments').val(record.comments || '');
+
+    $('#polOverlay').addClass('active');
+    $('#polPanel').addClass('active');
+}
+
+function closePolPanel() {
+    $('#polOverlay').removeClass('active');
+    $('#polPanel').removeClass('active');
 }
 
 document.addEventListener('DOMContentLoaded', function () {
     generateCards(policyData);
     renderPiechart(policyData);
 
-    // Table of processes
-    const tableBody = document.querySelector('#processTable tbody');
-    tableBody.innerHTML = '';
+
+    $('#recordForm').on('submit', function (e) {
+        e.preventDefault();
+    })
 
     const policies = policyData.PolicyData.Policies;
     const cardColorList = Object.values(cardColors);
-    policies.forEach((policy, index) => {
-        const tr = document.createElement('tr');
 
-        const color = cardColorList[index % cardColorList.length].bg;
+    new Tabulator("#processTable", {
+        data: policies,
+        layout: "fitColumns",
+        pagination: "local",
+        paginationSize: 10,
+        paginationSizeSelector: [10, 25, 50],
+        movableColumns: false,
+        responsiveLayout: "hide",
 
-        tr.innerHTML = `
-        <td>${policy.Title}</td>
-        <td>${policy.Department ?? 'Unassigned'}</td>
-        <td>${new Date(policy.ReviewDate).toLocaleDateString()}</td>
-        <td>
-            <button class="btn btn-category-button" onclick="viewPolicy('${policy.id}')">
-                <span style="
-                    display:inline-block;
-                    width:15px;
-                    height:15px;
-                    border-radius:50%;
-                    background-color:${color};">
-                </span>
-                <span style="margin-left:10px;">
-                    <i class="mdi mdi-eye"></i>
-                </span>
-            </button>
-        </td>
-    `;
+        columns: [
+            {
+                title: "DOCUMENT TITLE",
+                field: "Title",
+                headerFilter: "input"
+            },
+            {
+                title: "REVIEW DATE",
+                field: "ReviewDate",
+                formatter: cell => {
+                    const v = cell.getValue();
+                    return v
+                        ? new Date(v).toLocaleDateString('en-GB', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric'
+                        })
+                        : '';
+                }
+            },
+            {
+                title: "DEPARTMENT",
+                field: "Department",
+                headerFilter: "input"
+            },
+            {
+                title: "VIEW",
+                hozAlign: "center",
+                formatter: function (cell) {
+                    const report = cell.getRow().getData();
+                    const index = cell.getRow().getPosition();
+                    const color = cardColorList[index % cardColorList.length].bg;
 
-        tableBody.appendChild(tr);
+                    return `
+                        <button class="btn btn-category-button"
+                                onclick="viewPolicy('${report.Id}')">
+                            <span style="
+                                display:inline-block;
+                                width:15px;
+                                height:15px;
+                                border-radius:50%;
+                                background-color:${color};">
+                            </span>
+                            <span style="margin-left:10px;">
+                                <i class="mdi mdi-eye"></i>
+                            </span>
+                        </button>
+                    `;
+                }
+            }
+        ]
     });
+    
 });

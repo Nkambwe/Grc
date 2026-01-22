@@ -76,6 +76,7 @@ function initExceptionTable() {
             {
                 title: "REF",
                 field: "reference",
+                headerFilter: "input",
                 width: 200,
                 headerSort: true,
                 resizable: false,
@@ -88,6 +89,7 @@ function initExceptionTable() {
             {
                 title: "AUDIT REPORT",
                 field: "reportName",
+                headerFilter: "input",
                 widthGrow: 2,
                 minWidth: 200,
                 resizable: false,
@@ -96,6 +98,7 @@ function initExceptionTable() {
             {
                 title: "REPORT DATE",
                 field: "auditedOn",
+                headerFilter: "input",
                 minWidth: 200,
                 headerSort: true,
                 resizable: false,
@@ -111,6 +114,7 @@ function initExceptionTable() {
             {
                 title: "AUDIT TYPE",
                 field: "auditType",
+                headerFilter: "input",
                 minWidth: 200,
                 headerSort: true,
                 resizable: false,
@@ -131,6 +135,7 @@ function initExceptionTable() {
             {
                 title: "FINDINGS",
                 field: "total",
+                headerFilter: "input",
                 minWidth: 150,
                 hozAlign: "center",
                 headerHozAlign: "center",

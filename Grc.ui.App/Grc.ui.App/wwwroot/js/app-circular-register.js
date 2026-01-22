@@ -82,17 +82,19 @@ function initCircularTable() {
             {
                 title: "REPORT/RETURN NAME",
                 field: "circularTitle",
+                headerFilter: "input",
                 minWidth: 200,
                 widthGrow: 4,
                 headerSort: true,
                 frozen: true,
                 formatter: (cell) => `<span class="clickable-title" onclick="viewCircular(${cell.getRow().getData().id})">${cell.getValue()}</span>`
             },
-            { title: "AUTHORITY", field: "authority", minWidth: 200, frozen: true, headerSort: true },
-            { title: "DEPARTMENT", field: "department", minWidth: 200 },
+            { title: "AUTHORITY", field: "authority", minWidth: 200, frozen: true, headerSort: true, headerFilter: "input" },
+            { title: "DEPARTMENT", field: "department", minWidth: 200, headerFilter: "input" },
             {
                 title: "RECIEVE DATE",
                 field: "recievedOn",
+                headerFilter: "input",
                 minWidth: 200,
                 formatter: function (cell) {
                     const value = cell.getValue();
@@ -109,6 +111,7 @@ function initCircularTable() {
             {
                 title: "DEADLINE",
                 field: "deadlineOn",
+                headerFilter: "input",
                 minWidth: 200,
                 formatter: function (cell) {
                     const value = cell.getValue();
@@ -125,38 +128,38 @@ function initCircularTable() {
             {
                 title: "STATUS",
                 field: "status",
-                formatter: function (cell) {
-                    const value = cell.getValue();
-                    const cellEl = cell.getElement();
-
-                    // Default color
-                    let bg = "#C2B70B";
-                    let clr = "#FFFFFF";
-                    if (value === "CLOSED") {
-                        bg = "#28C232";
+                headerFilter: "input",
+                headerFilterParams: {
+                    values: {
+                        "": "All",
+                        "ON-GOING": "ON GOING",
+                        "CLOSED": "CLOSED",
+                        "DUE": "DUE UPDATE"
                     }
-                    else if (value === "DUE") {
-                        bg = "#F50C0C";
-                    } else { //ON-GOING
-                        bg = "#C2B70B";
-                    }
-                    
-                    cellEl.style.backgroundColor = bg;
-                    cellEl.style.color = clr;
-                    cellEl.style.fontWeight = "bold";
-                    cellEl.style.textAlign = "center";
-
-                    return value;
                 },
-                widthGrow: 1,
                 hozAlign: "center",
-                headerHozAlign: "center",
-                minWidth: 200,
-                headerSort: true
+                formatter: function (cell) {
+                    const status = cell.getValue();
+                    const el = cell.getElement();
+
+                    let bg = "#FF2413";
+                    if (status === "CLOSED") bg = "#28C232";
+                    else if (status === "ON-GOING") bg = "#C2B70B";
+                    else if (status === "DUE") bg = "#F50C0C";
+
+                    // color the whole cell
+                    el.style.backgroundColor = bg;
+                    el.style.color = "#FFFFFF";
+                    el.style.fontWeight = "600";
+                    el.style.textAlign = "center";
+
+                    return status;
+                }
             },
             {
                 title: "CLOSE DATE",
                 field: "submissionDate",
+                headerFilter: "input",
                 minWidth: 200,
                 formatter: function (cell) {
                     const value = cell.getValue();
@@ -173,6 +176,7 @@ function initCircularTable() {
             {
                 title: "VIEW ISSUES",
                 field: "hasIssues",
+                headerFilter: "input",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
                     let value = rowData.hasIssues;

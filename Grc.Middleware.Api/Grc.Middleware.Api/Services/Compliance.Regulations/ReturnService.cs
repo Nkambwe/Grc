@@ -116,21 +116,37 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 //..get frequency name from enum
                 var frequencyName = MapReturnStatusToFilter(period);
 
-                //..get records
+                //..get returns with submissions
                 var reports = await uow.ReturnRepository.GetAllAsync(
-                    p => p.Frequency.FrequencyName == frequencyName, includeDeleted,
-                    p => p.Department,p => p.ReturnType,p => p.Frequency);
-                if (reports?.Any() == true) {
-                    //..department statistics
-                    response.Statistics = reports.GroupBy(d => d.Department?.DepartmentName ?? "Unassigned")
-                                                 .ToDictionary(g => g.Key, g => g.Count());
+                    p => p.Frequency.FrequencyName == frequencyName,
+                    includeDeleted,
+                    p => p.Department,
+                    p => p.ReturnType,
+                    p => p.Frequency,
+                    p => p.Submissions
+                );
 
-                    //..returns list
-                    response.Reports = reports.Select(r => new ReturnReportResponse {
-                        Id = r.Id,
-                        Title = r.ReturnName,
-                        Department = r.Department?.DepartmentName,
-                        Type = r.ReturnType?.TypeName,
+                //..only process returns that have submissions
+                var submissions = reports?
+                    .Where(r => r.Submissions != null && r.Submissions.Any())
+                    .SelectMany(r => r.Submissions.Select(s => new {
+                        Submission = s,
+                        Return = r
+                    }))
+                    .ToList();
+
+                if (submissions?.Any() == true) {
+                    //..department statistics based on submissions
+                    response.Statistics = submissions
+                        .GroupBy(x => x.Return.Department?.DepartmentName ?? "Unassigned")
+                        .ToDictionary(g => g.Key, g => g.Count());
+
+                    // Submission-based report list
+                    response.Reports = submissions.Select(x => new ReturnReportResponse {
+                        Id = x.Submission.Id,              
+                        Title = x.Return.ReturnName,        
+                        Department = x.Return.Department?.DepartmentName,
+                        Type = x.Return.ReturnType?.TypeName
                     }).ToList();
                 }
 

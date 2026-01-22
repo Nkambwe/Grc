@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     initReturnInnerSubmissionDate();
 
-    //..hide breach box
+    // hide breach box
     $('#breachBox').hide();
 
     $('#status').select2({
@@ -240,53 +240,95 @@ document.addEventListener('DOMContentLoaded', function () {
         dropdownParent: $('#returnInnerPanel')
     });
 
-    //..load table data
-    const tableBody = document.querySelector('#returnsTable tbody');
-    tableBody.innerHTML = '';
     const returns = returnsData.Returns.Reports;
     const cardColorList = Object.values(cardColors);
-    returns.forEach((report, index) => {
-        const tr = document.createElement('tr');
 
-        const color = cardColorList[index % cardColorList.length].bg;
-        let statusColor = "#FF2413"; 
-        if (report.Status === "CLOSED") {
-            statusColor = "#09B831";
-        } else if (report.Status === "OPEN") {
-            statusColor = "#FF8503";
-        } else {
-            statusColor = "#FF2413"; 
-        }
+    new Tabulator("#returnsTable", {
+        data: returns,
+        layout: "fitColumns",
+        pagination: "local",
+        paginationSize: 10,
+        paginationSizeSelector: [10, 25, 50],
+        responsiveLayout: "hide",
+        height: "100%",
 
-        tr.innerHTML = `
-            <td>${report.Title}</td>
-            <td>${report.Period}</td>
-            <td style="
-                background-color:${statusColor};
-                color:#FFFFFF;
-                font-weight:600;
-                text-align:center;">
-                ${report.Status}
-            </td>
-            <td>${report.Risk}</td>
-            <td>${report.Department}</td>
-            <td>
-                <button class="btn btn-category-button" onclick="viewReport('${report.Id}')">
-                    <span style="
-                        display:inline-block;
-                        width:15px;
-                        height:15px;
-                        border-radius:50%;
-                        text-align:left;
-                        background-color:${color};">
-                    </span>
-                    <span style="margin-left:10px;">
-                        <i class="mdi mdi-eye"></i>
-                    </span>
-                </button>
-            </td>
-        `;
-        tableBody.appendChild(tr);
+        columns: [
+            {
+                title: "RETURN / REPORT",
+                field: "Title",
+                headerFilter: "input"
+            },
+            {
+                title: "FOR PERIOD",
+                field: "Period",
+                headerFilter: "input"
+            },
+            {
+                title: "STATUS",
+                field: "Status",
+                headerFilter: "select",
+                headerFilterParams: {
+                    values: {
+                        "": "All",
+                        "OPEN": "OPEN",
+                        "CLOSED": "CLOSED"
+                    }
+                },
+                hozAlign: "center",
+                formatter: function (cell) {
+                    const status = cell.getValue();
+                    const el = cell.getElement();
+
+                    let bg = "#FF2413"; 
+                    if (status === "CLOSED") bg = "#09B831";
+                    else if (status === "OPEN") bg = "#FF8503";
+
+                    // color the whole cell
+                    el.style.backgroundColor = bg;
+                    el.style.color = "#FFFFFF";
+                    el.style.fontWeight = "600";
+                    el.style.textAlign = "center";
+
+                    return status;
+                }
+            },
+            {
+                title: "RISK",
+                field: "Risk",
+                headerFilter: "input"
+            },
+            {
+                title: "DEPARTMENT",
+                field: "Department",
+                headerFilter: "input"
+            },
+            {
+                title: "VIEW",
+                hozAlign: "center",
+                formatter: function (cell) {
+                    const row = cell.getRow();
+                    const data = row.getData();
+                    const index = row.getPosition();
+                    const color = cardColorList[index % cardColorList.length].bg;
+
+                    return `
+                        <button class="btn btn-category-button"
+                                onclick="viewReport('${data.Id}')">
+                            <span style="
+                                display:inline-block;
+                                width:15px;
+                                height:15px;
+                                border-radius:50%;
+                                background-color:${color};">
+                            </span>
+                            <span style="margin-left:10px;">
+                                <i class="mdi mdi-eye"></i>
+                            </span>
+                        </button>
+                    `;
+                }
+            }
+        ]
     });
 });
 

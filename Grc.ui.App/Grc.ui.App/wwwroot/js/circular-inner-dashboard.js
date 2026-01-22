@@ -293,50 +293,89 @@ document.addEventListener('DOMContentLoaded', function () {
         dropdownParent: $('#issuePanel')
     });
 
-    const tableBody = document.querySelector('#circularTable tbody');
-    tableBody.innerHTML = '';
-   
     const circulars = circularData.Circulars.Reports;;
     const cardColorList = Object.values(cardColors);
-    circulars.forEach((report, index) => {
-        const tr = document.createElement('tr');
+    new Tabulator("#circularTable", {
+        data: circulars,
+        layout: "fitColumns",
+        pagination: "local",
+        paginationSize: 10,
+        paginationSizeSelector: [10, 25, 50],
+        responsiveLayout: "hide",
+        height: "100%",
 
-        const color = cardColorList[index % cardColorList.length].bg;
-        let statusColor = "#FF2413";
-        if (report.Status === "CLOSED") {
-            statusColor = "#09B831";
-        } else if (report.Status === "OPEN") {
-            statusColor = "#FF8503";
-        }
+        columns: [
+            {
+                title: "CIRCULAR TITLE",
+                field: "Title",
+                headerFilter: "input"
+            },
+            {
+                title: "STATUS",
+                field: "Status",
+                headerFilter: "select",
+                headerFilterParams: {
+                    values: {
+                        "": "All",
+                        "OPEN": "OPEN",
+                        "CLOSED": "CLOSED"
+                    }
+                },
+                hozAlign: "center",
+                formatter: function (cell) {
+                    const status = cell.getValue();
+                    const el = cell.getElement();
 
-        tr.innerHTML = `
-        <td>${report.Title}</td>
-        <td style="
-            background-color:${statusColor};
-            color:#FFFFFF;
-            font-weight:600;
-            text-align:center;">
-            ${report.Status}
-        </td>
-        <td>${report.BreachRisk}</td>
-        <td>${report.Department}</td>
-        <td>
-            <button class="btn btn-category-button" onclick="viewCircular('${report.Id}')">
-                <span style="
-                    display:inline-block;
-                    width:15px;
-                    height:15px;
-                    border-radius:50%;
-                    background-color:${color};">
-                </span>
-                <span style="margin-left:10px;">
-                    <i class="mdi mdi-eye"></i>
-                </span>
-            </button>
-        </td>
-    `;
+                    let bg = "#FF2413";
+                    if (status === "CLOSED") bg = "#09B831";
+                    else if (status === "OPEN") bg = "#FF8503";
 
-        tableBody.appendChild(tr);
+                    // color the whole cell
+                    el.style.backgroundColor = bg;
+                    el.style.color = "#FFFFFF";
+                    el.style.fontWeight = "600";
+                    el.style.textAlign = "center";
+
+                    return status;
+                }
+            },
+            {
+                title: "ASSOCIATED RISK",
+                field: "BreachRisk",
+                headerFilter: "input"
+            },
+            {
+                title: "DEPARTMENT",
+                field: "Department",
+                headerFilter: "input"
+            },
+            {
+                title: "VIEW",
+                hozAlign: "center",
+                formatter: function (cell) {
+                    const row = cell.getRow();
+                    const data = row.getData();
+                    const index = row.getPosition();
+                    const color = cardColorList[index % cardColorList.length].bg;
+
+                    return `
+                        <button class="btn btn-category-button"
+                                onclick="viewCircular('${data.Id}')">
+                            <span style="
+                                display:inline-block;
+                                width:15px;
+                                height:15px;
+                                border-radius:50%;
+                                background-color:${color};">
+                            </span>
+                            <span style="margin-left:10px;">
+                                <i class="mdi mdi-eye"></i>
+                            </span>
+                        </button>
+                    `;
+                }
+            }
+        ]
     });
 });
 

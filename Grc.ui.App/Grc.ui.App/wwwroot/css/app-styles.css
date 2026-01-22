@@ -39,7 +39,6 @@ body {
 }
 .inner-dashboard-container {
     border-radius: 8px;
-    padding: 1.5rem;
     position: relative;
     height: auto;
     background: var(--background-color);

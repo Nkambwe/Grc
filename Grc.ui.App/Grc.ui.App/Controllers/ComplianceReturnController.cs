@@ -967,12 +967,13 @@ namespace Grc.ui.App.Controllers {
                     report = response.Report ?? string.Empty,
                     title = response.Title ?? string.Empty,
                     period = $"{response.PeriodStart:yyyy-MM-dd} TO {response.PeriodEnd:yyyy-MM-dd}",
+                    deadline = $"{response.PeriodEnd:yyyy-MM-dd}",
                     status = response.Status ?? string.Empty,
                     isDeleted = response.IsDeleted,
                     isBreached = response.IsBreached,
                     ownerId = response.DepartmentId,
-                    riskAttached = response.Risk ?? string.Empty,
                     department = response.Department ?? string.Empty,
+                    riskAttached = response.Risk ?? string.Empty,
                     comments = response.Comment ?? string.Empty,
                     submittedBy = response.SubmittedBy,
                     reason = response.BreachReason ?? string.Empty
@@ -1535,14 +1536,21 @@ namespace Grc.ui.App.Controllers {
                     circularTitle = circular.CircularTitle ?? string.Empty,
                     circularRequirement = circular.Requirement ?? string.Empty,
                     ownerId = circular.DepartmentId,
+                    owner = circular.Department,
                     authorityId = circular.AuthorityId,
+                    authority = circular.Authority,
                     frequencyId = circular.FrequencyId,
                     recievedOn = circular.RecievedOn,
+                    received = circular.RecievedOn.ToString("yyyy-MM-dd"),
                     deadline = circular.DeadlineOn ?? DateTime.Now.AddYears(30),
+                    lastDate = circular.DeadlineOn.HasValue ?
+                    circular.RecievedOn.ToString("yyyy-MM-dd") :
+                    "NO DEADLINE",
                     status = circular.Status ?? string.Empty,
                     breachRisk = circular.BreachRisk ?? string.Empty,
                     comments = circular.Comments ?? string.Empty,
                     isDeleted = circular.IsDeleted,
+                    issueCount = circular.Issues == null ? 0 : circular.Issues.Count,
                     issues = circular.Issues != null && circular.Issues.Any()?
                              circular.Issues.Select( issue => new { 
                                  id = issue.Id,

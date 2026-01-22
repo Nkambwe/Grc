@@ -43,18 +43,114 @@
 
         <!-- Right: Table of processes -->
         <div class="category-chart-container" style="flex:1">
-            <div class="chart-card-title">Types of Returns and Departments responsible</div>
-            <table class="table is-fullwidth is-striped" id="processTable">
-                <thead>
-                    <tr>
-                        <th>REPORT/RETURN</th>
-                        <th>DEPARTMENT</th>
-                        <th>VIEW</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div id="processTable"></div>
         </div>
+
+    </div>
+
+</div>
+
+<div id="rtnOverlay" class="obligation-panel-overlay"></div>
+
+<div id="rtnPanel" class="obligation-side-panel" onclick="event.stopPropagation()">
+
+    <div class="collapse-panel-header">
+        <h3 id="panelTitle">SUBMISSION SUMMERY</h3>
+        <button class="panel-close" onclick="closeRtnPanel()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div class="collapse-panel-body">
+
+        <form id="recordForm" class="grc-form row g-3">
+            <div class="row g-3">
+
+                <div class="col-6">
+
+                    <div class="row mb-3">
+                        <label for="report" class="col-sm-12 col-form-label text-sm-start">REPORT TYPE</label>
+                        <div class="col-sm-12">
+                            <input type="text" id="report" name="report" class="form-control" readonly />
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-6">
+                    <div class="row mb-3">
+                        <label for="title" class="col-sm-12 col-form-label">REPORT TITLE</label>
+                        <div class="col-sm-12">
+                            <input type="text" id="title" name="title" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+
+                    <div class="row mb-3">
+                        <label for="period" class="col-sm-12 col-form-label">REPORTING PERIOD</label>
+                        <div class="col-sm-12">
+                            <input type="text" id="period" name="period" class="form-control" readonly />
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-6">
+                    <div class="row mb-3">
+                        <label for="department" class="col-sm-12 col-form-label">DEP'T RESPONSIBLE</label>
+                        <div class="col-sm-12">
+                            <input type="text" id="department" name="owdepartmentner" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-6">
+
+                    <div class="row mb-3">
+                        <label for="deadline" class="col-sm-12 col-form-label text-sm-end">SUBMISSION DEADLINE</label>
+                        <div class="col-sm-12">
+                            <input type="text" id="deadline" name="deadline" class="form-control" readonly />
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-12">
+
+                    <div class="row mb-3">
+                        <label for="riskAttached" class="col-sm-12 col-form-label text-sm-start">RISK ASSOCIATED WITH BREACH OF DEADLINE</label>
+                        <div class="col-sm-12">
+                            <textarea id="riskAttached" name="riskAttached" class="form-control" rows="3" readonly></textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-12">
+
+                    <div class="row mb-3">
+                        <label for="comments" class="col-sm-12 col-form-label text-sm-start">COMMENTS</label>
+                        <div class="col-sm-12">
+                            <textarea id="comments" name="comments" class="form-control" rows="3" readonly></textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-sm-12">
+                <div class="row mb-3">
+                    <div class="col-sm-2">
+                        <button type="button" class="btn btn-grc-secondary" onclick="closeRtnPanel()">Close</button>
+                    </div>
+                    <div class="col-sm-10"></div>
+                </div>
+            </div>
+
+        </form>
 
     </div>
 

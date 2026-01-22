@@ -4,24 +4,13 @@
 }
 
 <div class="dashboard-category-grid">
-    <div class="dashboard-bottom-row" style="display:flex; gap:20px; margin-top:30px;">
+    <div class="dashboard-bottom-row" style="display:flex;">
+
         <div class="inner-dashboard-container" style="flex:1">
-            <table class="table is-fullwidth is-striped" id="circularTable">
-                <thead>
-                    <tr>
-                        <th> @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Circular"))</th>
-                        <th> @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Status"))</th>
-                        <th> @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Risk"))</th>
-                        <th> @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Department"))</th>
-                        <th> @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circulars.Submission.Action"))</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div id="circularTable"></div>
         </div>
 
     </div>
-
 </div>
 
 <!-- Outer-Overlay -->

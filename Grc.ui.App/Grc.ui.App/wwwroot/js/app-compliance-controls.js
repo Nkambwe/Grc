@@ -104,6 +104,7 @@ function initControlList() {
             {
                 title: "COMPLIANCE CONTROL",
                 field: "categoryName",
+                headerFilter: "input",
                 minWidth: 250,
                 widthGrow: 2,
                 formatter: function (cell) {
@@ -122,6 +123,7 @@ function initControlList() {
             {
                 title: "EXCLUDED",
                 field: "isExcluded",
+                headerFilter: "input",
                 minWidth: 150,
                 formatter: yesNoFormatter,
                 hozAlign: "left"
@@ -136,6 +138,7 @@ function initControlList() {
             {
                 title: "NOTES",
                 field: "notes",
+                headerFilter: "input",
                 minWidth: 250,
                 widthGrow: 2,
             },

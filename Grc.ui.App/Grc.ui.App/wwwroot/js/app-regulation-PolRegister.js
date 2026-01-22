@@ -89,13 +89,32 @@ function initPolicyGuidTable() {
                 minWidth: 200,
                 widthGrow: 4,
                 headerSort: true,
+                headerFilter: "input",
                 frozen: true,
                 formatter: (cell) => `<span class="clickable-title" onclick="viewPolicyRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`
             },
-            { title: "DOCUMENT TYPE", field: "documentType", widthGrow: 1, minWidth: 200, frozen: true, headerSort: true },
+            {
+                title: "DOCUMENT TYPE",
+                field: "documentType",
+                widthGrow: 1,
+                minWidth: 200,
+                frozen: true,
+                headerFilter: "input",
+                headerSort: true
+            },
             {
                 title: "STATUS",
                 field: "documentStatus",
+                headerFilter: "select",
+                headerFilterParams: {
+                    values: {
+                        "": "All",
+                        "ON-HOLD": "ON HOLD",
+                        "PENDING-BOARD": "PENDING BOARD APPROVAL",
+                        "DEPT-REVIEW": "PENDING DEP'T APPROVAL",
+                        "DUE": "DUE REVIEW",
+                    }
+                },
                 formatter: function (cell) {
                     const value = cell.getValue();
                     const cellEl = cell.getElement();
@@ -135,8 +154,8 @@ function initPolicyGuidTable() {
                 minWidth: 200,
                 headerSort: true
             },
-            { title: "DOCUMENT OWNER", field: "documentOwner", minWidth: 280 },
-            { title: "DEPARTMENT", field: "department", minWidth: 200 },
+            { title: "DOCUMENT OWNER", field: "documentOwner", minWidth: 280, headerFilter: "input" },
+            { title: "DEPARTMENT", field: "department", minWidth: 200, headerFilter: "input" },
             {
                 title: "LAST REVIEW",
                 field: "lastReview",
@@ -156,6 +175,7 @@ function initPolicyGuidTable() {
             {
                 title: "NEXT REVIEW",
                 field: "nextReview",
+                headerFilter: "input",
                 minWidth: 200,
                 formatter: function (cell) {
                     const value = cell.getValue();
@@ -169,10 +189,11 @@ function initPolicyGuidTable() {
                     return `${day}-${month}-${year}`;
                 }
             },
-            { title: "APPROVED BY", field: "approvedBy", minWidth: 200 },
+            { title: "APPROVED BY", field: "approvedBy", minWidth: 200, headerFilter: "input", },
             {
                 title: "ALIGNED",
                 field: "isAligned",
+                headerFilter: "input",
                 formatter: function (cell) {
                     const cellEl = cell.getElement();
 

@@ -301,16 +301,24 @@ namespace Grc.ui.App.Controllers {
                 var policyRecord = new
                 {
                     id = response.Id,
-                    documentName = response.DocumentName,
-                    comments = response.Comments,
+                    documentName = response.DocumentName ?? string.Empty,
                     documentTypeId = response.DocumentTypeId,
+                    documentTypeName = response.DocumentTypeName ?? string.Empty,
                     ownerId = response.ResponsibilityId,
+                    responsibilityName = response.ResponsibilityName ?? string.Empty,
                     departmentId = response.DepartmentId,
+                    departmentName = response.DepartmentName ?? string.Empty,
                     isDeleted = response.IsDeleted,
                     lastReviewDate = response.LastRevisionDate,
-                    nextReviewDate = response.NextRevisionDate,
+                    lastReview = response.LastRevisionDate.ToString("yyyy-MM-dd"),
+                    nextReviewDate = response.NextRevisionDate.HasValue ? 
+                    ((DateTime)response.NextRevisionDate).ToString("yyyy-MM-dd"):
+                    string.Empty,
+                    nextReview = response.NextRevisionDate,
                     frequencyId = response.FrequencyId,
+                    frequencyName = response.FrequencyName ?? string.Empty,
                     documentStatus = response.Status ?? string.Empty,
+                    comments = response.Comments ?? string.Empty,
                     isAligned = response.IsAligned,
                     isLocked = response.IsLocked,
                     isApproved = string.IsNullOrWhiteSpace(response.ApprovedBy) ? 2 : 1,

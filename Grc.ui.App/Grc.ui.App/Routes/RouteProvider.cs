@@ -1688,7 +1688,7 @@
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-settings-support-categories-all",
                 pattern: "grc/compliance/support/categories-all",
-                defaults: new { controller = "Register", action = "AllRegulatoryCategories" }
+                defaults: new { controller = "ComplianceReturn", action = "AllRegulatoryCategories" }
             );
 
             routeBuilder.MapControllerRoute(

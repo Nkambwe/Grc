@@ -90,7 +90,79 @@ function renderPiechart(record) {
 }
 
 function viewReport(id) {
-    alert(`Report ID >> ${id}`)
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving circular details...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    findCircular(id)
+        .then(record => {
+            Swal.close();
+            if (record) {
+                OpenCircularView(record);
+            } else {
+                Swal.fire({
+                    title: 'NOT FOUND',
+                    text: 'Circular details not found',
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            Swal.close();
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to load circular details. Please try again.',
+                confirmButtonText: 'OK'
+            });
+        });
+}
+
+function findCircular(id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/grc/compliance/circulars/retrieve-circular/${id}`,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success && response.data) {
+                    resolve(response.data);
+                } else {
+                    resolve(null);
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire("Error", error);
+            }
+        });
+    });
+}
+
+function OpenCircularView(record) {
+    $('#reference').val(record.reference || '');
+    $('#circularTitle').val(record.circularTitle || '');
+    $('#circularRequirement').val(record.circularRequirement || '');
+    $('#owner').val(record.owner || '');
+    $('#authority').val(record.authority || '');
+    $('#received').val(record.received || '');
+    $('#lastDate').val(record.lastDate || '');
+    $('#status').val(record.status || '');
+    $('#issueCount').val(record.issueCount || '0');
+    $('#breachRisk').val(record.breachRisk || '');
+    $('#comments').val(record.comments || '');
+
+    $('#circOverlay').addClass('active');
+    $('#circPanel').addClass('active');
+}
+
+function closeCircPanel() {
+    $('#circOverlay').removeClass('active');
+    $('#circPanel').removeClass('active');
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -98,36 +170,60 @@ document.addEventListener('DOMContentLoaded', function () {
     renderPiechart(circularData);
 
     // Table of processes
-    const tableBody = document.querySelector('#processTable tbody');
-    tableBody.innerHTML = '';
-
     const returns = circularData.Circulars.Reports;
     const cardColorList = Object.values(cardColors);
-    returns.forEach((report, index) => {
-        const tr = document.createElement('tr');
 
-        const color = cardColorList[index % cardColorList.length].bg;
+    new Tabulator("#processTable", {
+        data: returns,
+        layout: "fitColumns",
+        pagination: "local",
+        paginationSize: 10,
+        paginationSizeSelector: [10, 25, 50],
+        movableColumns: false,
+        responsiveLayout: "hide",
 
-        tr.innerHTML = `
-        <td>${report.Title}</td>
-        <td>${report.Status}</td>
-        <td>${report.Department}</td>
-        <td>
-            <button class="btn btn-category-button" onclick="viewReport('${report.Id}')">
-                <span style="
-                    display:inline-block;
-                    width:15px;
-                    height:15px;
-                    border-radius:50%;
-                    background-color:${color};">
-                </span>
-                <span style="margin-left:10px;">
-                    <i class="mdi mdi-eye"></i>
-                </span>
-            </button>
-        </td>
-    `;
+        columns: [
+            {
+                title: "CIRCULAR TITLE",
+                field: "Title",
+                headerFilter: "input"
+            },
+            {
+                title: "CIRCULAR STATUS",
+                field: "Status",
+                headerFilter: "input"
+            },
+            {
+                title: "DEPARTMENT",
+                field: "Department",
+                headerFilter: "input"
+            },
+            {
+                title: "VIEW",
+                hozAlign: "center",
+                formatter: function (cell) {
+                    const report = cell.getRow().getData();
+                    const index = cell.getRow().getPosition();
+                    const color = cardColorList[index % cardColorList.length].bg;
 
-        tableBody.appendChild(tr);
+                    return `
+                        <button class="btn btn-category-button"
+                                onclick="viewReport('${report.Id}')">
+                            <span style="
+                                display:inline-block;
+                                width:15px;
+                                height:15px;
+                                border-radius:50%;
+                                background-color:${color};">
+                            </span>
+                            <span style="margin-left:10px;">
+                                <i class="mdi mdi-eye"></i>
+                            </span>
+                        </button>
+                    `;
+                }
+            }
+        ]
     });
+
 });

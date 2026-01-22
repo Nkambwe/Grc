@@ -256,6 +256,7 @@ let actsTable = new Tabulator("#actsTable", {
         {
             title: "Section",
             field: "sectionNumber",
+            headerFilter: "input",
             width: 120,
             formatter: function (cell) {
                 const id = cell.getRow().getData().id;
@@ -268,6 +269,7 @@ let actsTable = new Tabulator("#actsTable", {
         {
             title: "Title",
             field: "title",
+            headerFilter: "input",
             widthGrow: 4,
             minWidth: 280
         },

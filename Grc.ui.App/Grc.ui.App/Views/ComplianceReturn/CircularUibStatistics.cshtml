@@ -44,19 +44,150 @@
 
         <!-- Right: Table of processes -->
         <div class="category-chart-container" style="flex:1">
-            <div class="chart-card-title">Returns and departments responsible</div>
-            <table class="table is-fullwidth is-striped" id="processTable">
-                <thead>
-                    <tr>
-                        <th>TITLE</th>
-                        <th>STATUS</th>
-                        <th>DEPARTMENT</th>
-                        <th>VIEW</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div id="processTable"></div>
         </div>
+
+    </div>
+
+</div>
+
+<div id="circPanel" class="obligation-side-panel" onclick="event.stopPropagation()">
+
+    <div class="collapse-panel-header">
+        <h3 id="panelTitle">CIRCULAR SUMMERY</h3>
+        <button class="panel-close" onclick="closeCircPanel()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div class="collapse-panel-body">
+
+        <form id="recordForm" class="grc-form row g-3">
+            <div class="row g-3">
+
+                <div class="col-6">
+
+                    <div class="row mb-3">
+                        <label for="reference" class="col-sm-12 col-form-label text-sm-start">REF</label>
+                        <div class="col-sm-12">
+                            <input type="text" id="reference" name="reference" class="form-control" readonly />
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-6">
+                    <div class="row mb-3">
+                        <label for="lastReview" class="col-sm-12 col-form-label">ISSUER AUTHORITY</label>
+                        <div class="col-sm-12">
+                            <input type="text" id="authority" name="authority" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+
+                    <div class="row mb-3">
+                        <label for="circularTitle" class="col-sm-12 col-form-label">CIRCULAR TITLE</label>
+                        <div class="col-sm-12">
+                            <input type="text" id="circularTitle" name="circularTitle" class="form-control" readonly />
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-12">
+                    <div class="row mb-3">
+                        <label for="circularRequirement" class="col-sm-12 col-form-label">REQUIREMENT</label>
+                        <div class="col-sm-12">
+                            <textarea id="circularRequirement" name="circularRequirement" class="form-control" rows="3" readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <div class="row mb-3">
+                        <label for="received" class="col-sm-12 col-form-label">RECEIVE DATE</label>
+                        <div class="col-sm-12">
+                            <input type="text" id="received" name="received" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <div class="row mb-3">
+                        <label for="lastDate" class="col-sm-12 col-form-label">DEADLINE DATE</label>
+                        <div class="col-sm-12">
+                            <input type="text" id="lastDate" name="lastDate" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="row mb-3">
+                        <label for="owner" class="col-sm-12 col-form-label">DEP'T RESPONSIBLE</label>
+                        <div class="col-sm-12">
+                            <input type="text" id="owner" name="owner" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-6">
+
+                    <div class="row mb-3">
+                        <label for="status" class="col-sm-12 col-form-label text-sm-end">SUBMISSION STATUS</label>
+                        <div class="col-sm-12">
+                            <input type="text" id="status" name="status" class="form-control" readonly />
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-6">
+
+                    <div class="row mb-3">
+                        <label for="issueCount" class="col-sm-12 col-form-label text-sm-end">ISSUES HOLDING SUBMISSION</label>
+                        <div class="col-sm-12">
+                            <input type="text" id="issueCount" name="issueCount" class="form-control" readonly />
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-12">
+
+                    <div class="row mb-3">
+                        <label for="breachRisk" class="col-sm-12 col-form-label text-sm-start">RISK ASSOCIATED WITH BREACH OF DEADLINE</label>
+                        <div class="col-sm-12">
+                            <textarea id="breachRisk" name="breachRisk" class="form-control" rows="3" readonly></textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-12">
+
+                    <div class="row mb-3">
+                        <label for="comments" class="col-sm-12 col-form-label text-sm-start">COMMENTS</label>
+                        <div class="col-sm-12">
+                            <textarea id="comments" name="comments" class="form-control" rows="3" readonly></textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-sm-12">
+                <div class="row mb-3">
+                    <div class="col-sm-2">
+                        <button type="button" class="btn btn-grc-secondary" onclick="closeCircPanel()">Close</button>
+                    </div>
+                    <div class="col-sm-10"></div>
+                </div>
+            </div>
+
+        </form>
 
     </div>
 

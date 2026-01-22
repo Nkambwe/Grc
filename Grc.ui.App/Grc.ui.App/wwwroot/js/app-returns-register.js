@@ -253,6 +253,7 @@ let submissionsTable = new Tabulator("#submissionsTable", {
         {
             title: "Report Title",
             field: "reportTitle",
+            headerFilter: "input",
             widthGrow: 4,
             minWidth: 280,
             formatter: function (cell) {
@@ -263,6 +264,7 @@ let submissionsTable = new Tabulator("#submissionsTable", {
         {
             title: "PERIOD(FROM)",
             field: "periodStart",
+            headerFilter: "input",
             minWidth: 200,
             formatter: function (cell) {
                 const value = cell.getValue();
@@ -279,6 +281,7 @@ let submissionsTable = new Tabulator("#submissionsTable", {
         {
             title: "PERIOD(TO)",
             field: "periodEnd",
+            headerFilter: "input",
             minWidth: 200,
             formatter: function (cell) {
                 const value = cell.getValue();
@@ -295,34 +298,36 @@ let submissionsTable = new Tabulator("#submissionsTable", {
         {
             title: "STATUS",
             field: "status",
-            formatter: function (cell) {
-                const cellEl = cell.getElement();
-
-                let rowData = cell.getRow().getData();
-                let text = rowData.status;
-                let bg = "#FF2413";
-                let clr = "#FFFFFF";
-                if (text === "OPEN") {
-                    bg = "#FF8503";
-                } else if (text === "CLOSED") {
-                    bg = "#09B831";
-                } else {
-                    bg = "#FF2413";
+            headerFilter: "select",
+            headerFilterParams: {
+                values: {
+                    "": "All",
+                    "OPEN": "OPEN",
+                    "CLOSED": "CLOSED"
                 }
-                cellEl.style.backgroundColor = bg;
-                cellEl.style.color = clr;
-                cellEl.style.fontWeight = "bold";
-                cellEl.style.textAlign = "center";
-
-                return text;
             },
             hozAlign: "center",
-            headerHozAlign: "center",
-            maxWidth: 250
+            formatter: function (cell) {
+                const status = cell.getValue();
+                const el = cell.getElement();
+
+                let bg = "#FF2413";
+                if (status === "CLOSED") bg = "#09B831";
+                else if (status === "OPEN") bg = "#FF8503";
+
+                // color the whole cell
+                el.style.backgroundColor = bg;
+                el.style.color = "#FFFFFF";
+                el.style.fontWeight = "600";
+                el.style.textAlign = "center";
+
+                return status;
+            }
         },
         {
             title: "SUBMITTED ON",
             field: "submittedOn",
+            headerFilter: "input",
             widthGrow: 2,
             minWidth: 200,
             formatter: function (cell) {
@@ -340,12 +345,14 @@ let submissionsTable = new Tabulator("#submissionsTable", {
         {
             title: "SUBMITTED BY",
             field: "department",
+            headerFilter: "input",
             widthGrow: 2,
             minWidth: 150
         },
         {
             title: "BREACH RISK",
             field: "risk",
+            headerFilter: "input",
             widthGrow: 4,
             minWidth: 280
         }

@@ -84,26 +84,35 @@ function initAuditExceptionTable() {
             {
                 title: "FINDING",
                 field: "finding",
+                headerFilter: "input",
                 minWidth: 200,
                 widthGrow: 2,
                 headerSort: true,
                 frozen: true,
                 formatter: (cell) => `<span class="clickable-title" onclick="viewAuditException(${cell.getRow().getData().id})">${cell.getValue()}</span>`
             },
-            { title: "RECOMMENDATION", field: "recomendations", minWidth: 200, widthGrow: 3 },
-            { title: "EXCUTIONER", field: "excutioner", minWidth: 200, widthGrow: 3 },
+            { title: "RECOMMENDATION", field: "recomendations", minWidth: 200, widthGrow: 3, headerFilter: "input" },
+            { title: "EXCUTIONER", field: "excutioner", minWidth: 200, widthGrow: 3, headerFilter: "input" },
             {
                 title: "RISK LEVEL",
                 field: "riskLevel",
+                headerFilter: "select",
+                headerFilterParams: {
+                    values: {
+                        "NONE": "All",
+                        "LOW": "Low",
+                        "MEDIUM": "Medium",
+                        "HIGH": "High"
+                    }
+                },
                 minWidth: 200,
                 widthGrow: 3,
                 formatter: function (cell) {
                     const value = (cell.getValue() || "").toUpperCase();
                     const el = cell.getElement();
 
-                    let bg = "#6c757d"; 
+                    let bg = "#FF2413";
                     let fg = "#fff";
-
                     switch (value) {
                         case "NONE":
                             bg = "#adb5bd"; 
@@ -130,6 +139,7 @@ function initAuditExceptionTable() {
             {
                 title: "RISK RATING",
                 field: "riskRating",
+                headerFilter: "input",
                 minWidth: 200,
                 widthGrow: 3,
                 hozAlign: "center",

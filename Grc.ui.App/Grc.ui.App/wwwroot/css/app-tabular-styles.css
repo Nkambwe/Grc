@@ -23,6 +23,40 @@
     padding: 15px;
 }
 
+/* Header filter focus */
+.tabulator .tabulator-header-filter input:focus,
+.tabulator .tabulator-header-filter select:focus {
+    border-color: var(--purple-dark-accent);
+    box-shadow: 0 0 0 2px color-mix( in srgb, var(--purple-dark-accent) 40%, transparent );
+    outline: none;
+}
+
+/* Dropdown hover */
+.tabulator .tabulator-header-filter option:hover {
+    background-color: var(--pearl-purple-dark-40) !important;
+    color: var(--white-base) !important;
+}
+
+/* Selected option */
+.tabulator .tabulator-header-filter option:checked {
+    background-color: var(--pearl-purple-dark-40) !important;
+    color: var(--white-base) !important;
+}
+
+.tabulator .tabulator-header-filter input::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+
+.tabulator .tabulator-header .tabulator-col .tabulator-header-filter input:focus {
+    color: #495057;
+    background-color: var(--white-base) !important;
+    border: solid 1px var(--pearl-purple-dark-40) !important;
+    outline:0;
+}
+
+
     .tabulator .tabulator-footer .tabulator-page-size {
         display: inline-block;
         margin: 0 5px;
@@ -43,7 +77,6 @@
 
     .tabulator .tabulator-footer .tabulator-page.active:hover {
         color: var(--black-base) !important;
-        /*background-color: var(--pearl-purple-dark-40) !important;*/
     }
 
     /*..custom Page Size Selector Styles */

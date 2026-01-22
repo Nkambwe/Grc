@@ -90,43 +90,129 @@ function renderPiechart(record) {
 }
 
 function viewReport(id) {
-    alert(`Report ID >> ${id}`)
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving submission details...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    findSubmissionRescord(id)
+        .then(record => {
+            Swal.close();
+            if (record) {
+                OpenSubmissionView(record);
+            } else {
+                Swal.fire({
+                    title: 'NOT FOUND',
+                    text: 'Submission details not found',
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            Swal.close();
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to load submission details. Please try again.',
+                confirmButtonText: 'OK'
+            });
+        });
+}
+
+function findSubmissionRescord(id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/grc/returns/compliance-returns/submissions/retrieve/${id}`,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success && response.data) {
+                    resolve(response.data);
+                } else {
+                    resolve(null);
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire("Error", error);
+            }
+        });
+    });
+}
+
+function OpenSubmissionView(record) {
+    $('#report').val(record.report || '');
+    $('#title').val(record.title || '');
+    $('#period').val(record.period || '');
+    $('#department').val(record.department || '');
+    $('#deadline').val(record.deadline || '');
+    $('#riskAttached').val(record.riskAttached || '');
+    $('#comments').val(record.comments || '');
+
+    $('#rtnOverlay').addClass('active');
+    $('#rtnPanel').addClass('active');
+}
+
+function closeRtnPanel() {
+    $('#rtnOverlay').removeClass('active');
+    $('#rtnPanel').removeClass('active');
 }
 
 document.addEventListener('DOMContentLoaded', function () {
     generateCards(returnData);
     renderPiechart(returnData);
 
-    // Table of processes
-    const tableBody = document.querySelector('#processTable tbody');
-    tableBody.innerHTML = '';
-
     const returns = returnData.Returns.Reports;
     const cardColorList = Object.values(cardColors);
-    returns.forEach((report, index) => {
-        const tr = document.createElement('tr');
 
-        const color = cardColorList[index % cardColorList.length].bg;
+    new Tabulator("#processTable", {
+        data: returns,             
+        layout: "fitColumns",
+        pagination: "local",        
+        paginationSize: 10,
+        paginationSizeSelector: [10, 25, 50],
+        movableColumns: false,
+        responsiveLayout: "hide",
 
-        tr.innerHTML = `
-        <td>${report.Title}</td>
-        <td>${report.Department}</td>
-        <td>
-            <button class="btn btn-category-button" onclick="viewReport('${report.Id}')">
-                <span style="
-                    display:inline-block;
-                    width:15px;
-                    height:15px;
-                    border-radius:50%;
-                    background-color:${color};">
-                </span>
-                <span style="margin-left:10px;">
-                    <i class="mdi mdi-eye"></i>
-                </span>
-            </button>
-        </td>
-    `;
+        columns: [
+            {
+                title: "REPORT / RETURN",
+                field: "Title",
+                headerFilter: "input"
+            },
+            {
+                title: "DEPARTMENT",
+                field: "Department",
+                headerFilter: "input"
+            },
+            {
+                title: "VIEW",
+                hozAlign: "center",
+                formatter: function (cell) {
+                    const report = cell.getRow().getData();
+                    const index = cell.getRow().getPosition();
+                    const color = cardColorList[index % cardColorList.length].bg;
 
-        tableBody.appendChild(tr);
+                    return `
+                        <button class="btn btn-category-button"
+                                onclick="viewReport('${report.Id}')">
+                            <span style="
+                                display:inline-block;
+                                width:15px;
+                                height:15px;
+                                border-radius:50%;
+                                background-color:${color};">
+                            </span>
+                            <span style="margin-left:10px;">
+                                <i class="mdi mdi-eye"></i>
+                            </span>
+                        </button>
+                    `;
+                }
+            }
+        ]
     });
 });
