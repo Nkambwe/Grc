@@ -2328,10 +2328,16 @@
 		<Value>Audit Findings</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.Audit.MonthLess">
-		<Value>Exceptions due less than a month</Value>
+		<Value>Due less than a month</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.Audit.TwoMonthLess">
-		<Value>Exceptions due less than two month</Value>
+		<Value>Due in a month</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Audit.TwoToThreeMonthLess">
+		<Value>Due two to six months</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Audit.AboveSixMonthLess">
+		<Value>Due less than a month</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Audit.Title.AuditReport">
 		<Value>Audit Report View</Value>
@@ -2360,7 +2366,6 @@
 	<LocaleResource Name="Component.Table.Audit.Label.Overdue">
 		<Value>Overdue Findings</Value>
 	</LocaleResource>
-
 	<LocaleResource Name="Component.Table.Policy.Additional">
 		<Value>Additional Information</Value>
 	</LocaleResource>

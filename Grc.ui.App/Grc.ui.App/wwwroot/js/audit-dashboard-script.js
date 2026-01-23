@@ -1,8 +1,9 @@
 ﻿const auditColors = {
-    "Total": { bg: "#8B5CF6", class1: "stat-card-light", class2: "stat-separator-primary" },
-    "< 1 Month": { bg: "#8B5CF6", class: "stat-card-light", class2: "stat-separator-primary" },
-    "1 to 2 Months": { bg: "#F59E0B", class: "stat-card-light", class2: "stat-separator-cancelled" },
-    "> 3 Months": { bg: "#F59E0B", class: "stat-card-light", class2: "stat-separator-cancelled" }
+    "Total Exceptions": { bg: "#8B5CF6", class1: "stat-card-light", class2: "stat-separator-primary" },
+    "Due less than a Month": { bg: "#8B5CF6", class: "stat-card-light", class2: "stat-separator-primary" },
+    "Due in a Month": { bg: "#F59E0B", class: "stat-card-light", class2: "stat-separator-cancelled" },
+    "Due 2 to 6 Months": { bg: "#F59E0B", class: "stat-card-light", class2: "stat-separator-cancelled" },
+    "Due above 6 months": { bg: "#F59E0B", class: "stat-card-light", class2: "stat-separator-cancelled" }
 };
 
 const chartColors = {

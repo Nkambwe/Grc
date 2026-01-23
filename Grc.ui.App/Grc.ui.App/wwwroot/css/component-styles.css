@@ -1078,6 +1078,18 @@ div:where(.swal2-container).swal2-center > .swal2-popup {
             border-bottom: 2px solid #b5b5b5 !important;
         }
 
+.open-warning {
+    color: #FF8503;
+}
+
+.open-danger {
+    color: #FF2413;
+}
+
+.open-success {
+    color: #09B831;
+}
+
 ul.exceptions-list,
 ul.update-list {
     list-style: none;

@@ -63,6 +63,10 @@ namespace Grc.ui.App.Controllers {
             return Redirect(Url.Action("Login", "Application"));
         }
 
+        /// <summary>
+        /// Method retrieve statistics due less than a Month 
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> MonthLessDashboard() {
             if (User.Identity?.IsAuthenticated == true) {
                 //..try getting current user logged in
@@ -82,6 +86,10 @@ namespace Grc.ui.App.Controllers {
             return Redirect(Url.Action("Dashboard", "Application"));
         }
 
+        /// <summary>
+        /// Method retrieve statistics due in a Month
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> TwoMonthsLessDashboard() {
             if (User.Identity?.IsAuthenticated == true) {
                 //..try getting current user logged in
@@ -94,13 +102,17 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareAuditExtensionDashboardModelAsync(grcResponse.Data, "TWOMONTHSLESS"));
+                return View(await _dashboardFactory.PrepareAuditExtensionDashboardModelAsync(grcResponse.Data, "ONEMONTH"));
             }
 
             //..redirect to login
             return Redirect(Url.Action("Dashboard", "Application"));
         }
 
+        /// <summary>
+        /// Method retrieve statistics due 2 to 6 Months
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> ThreeMonthsAboveDashboard() {
             if (User.Identity?.IsAuthenticated == true) {
                 //..try getting current user logged in
@@ -113,7 +125,30 @@ namespace Grc.ui.App.Controllers {
                 }
 
                 //..redirect to dashboard
-                return View(await _dashboardFactory.PrepareAuditExtensionDashboardModelAsync(grcResponse.Data, "THREEMONTHSABOVE"));
+                return View(await _dashboardFactory.PrepareAuditExtensionDashboardModelAsync(grcResponse.Data, "TWOSIXMONTHS"));
+            }
+
+            //..redirect to login
+            return Redirect(Url.Action("Dashboard", "Application"));
+        }
+
+        /// <summary>
+        /// Method retrieve statistics due above 6 months
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> AboveSixMonthsDashboard() {
+            if (User.Identity?.IsAuthenticated == true) {
+                //..try getting current user logged in
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    //..log error to database
+                    _ = await ProcessErrorAsync(grcResponse.Error.Message, "AUDIT-CONTROLLER", "Unable to process user information");
+                    return Redirect(Url.Action("Dashboard", "Application"));
+                }
+
+                //..redirect to dashboard
+                return View(await _dashboardFactory.PrepareAuditExtensionDashboardModelAsync(grcResponse.Data, "ABOVESIXMONTHS"));
             }
 
             //..redirect to login

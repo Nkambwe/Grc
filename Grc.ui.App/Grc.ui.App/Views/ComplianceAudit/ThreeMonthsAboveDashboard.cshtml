@@ -2,14 +2,14 @@
 @model AuditExtensionDashboardModel
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "EXCEPTIONS ABOVE THREE MONTH";
+    ViewData["Title"] = "DUE TWO TO SIX MONTHS";
 }
 
 @{
     var component = new PageComponentViewModel
     {
         ComponentId = $"0",
-        ComponentKey = "Audit.TwoMonthLess",
+        ComponentKey = "Audit.TwoToThreeMonthLess",
         LeftActions = new List<ComponentAction>
         {
             new ComponentAction { ActionKey = ActionKey.AuditHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home") },

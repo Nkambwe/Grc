@@ -853,9 +853,39 @@ h1.title {
                 margin-right: 5px;
             }
 
+/*--------------------- audit cards*/
+
+.audit-header-container {
+    display: flex;
+    align-items: center;
+    height: 100px;
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.audit-stat {
+    flex: 0 0 120px;
+    padding: 12px;
+    text-align: center;
+    border-right: 1px solid #e5e7eb;
+}
+
+    .audit-stat:last-child {
+        border-right: none;
+    }
+
+    .audit-stat .value {
+        font-size: 22px;
+        font-weight: 600;
+    }
+
+    .audit-stat .label {
+        font-size: 12px;
+        color: #6b7280;
+        text-transform: uppercase;
+    }
 
 /*--------------------- data input controls*/
-
 label.select2-field-row {
     display: flex !important;
     flex-direction: row;

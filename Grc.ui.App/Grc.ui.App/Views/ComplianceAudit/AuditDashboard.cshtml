@@ -55,10 +55,11 @@
     const auditData = @Html.Raw(chartsJson);
 
      const reportRoutes = {
-        "Total": '@Url.Action("AuditDashboard", "ComplianceAudit")',
-        "< 1 Month": '@Url.Action("MonthLessDashboard", "ComplianceAudit")',
-        "1 to 2 Months": '@Url.Action("TwoMonthsLessDashboard", "ComplianceAudit")',
-        "> 3 Months": '@Url.Action("ThreeMonthsAboveDashboard", "ComplianceAudit")'
+        "Total Exceptions": '@Url.Action("AuditDashboard", "ComplianceAudit")',
+        "Due less than a Month": '@Url.Action("MonthLessDashboard", "ComplianceAudit")',
+        "Due in a Month": '@Url.Action("TwoMonthsLessDashboard", "ComplianceAudit")',
+        "Due 2 to 6 Months": '@Url.Action("ThreeMonthsAboveDashboard", "ComplianceAudit")',
+        "Due above 6 months": '@Url.Action("AboveSixMonthsDashboard", "ComplianceAudit")'
     };
 </script>
 

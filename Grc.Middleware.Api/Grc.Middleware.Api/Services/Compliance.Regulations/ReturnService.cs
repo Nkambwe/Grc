@@ -241,7 +241,6 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     }
                 );
 
-
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve statistics: {ex.Message}", "ERROR");
                 LogError(uow, ex);

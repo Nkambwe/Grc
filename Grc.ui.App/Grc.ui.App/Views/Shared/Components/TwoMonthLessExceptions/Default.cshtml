@@ -4,6 +4,9 @@
 }
 
 <div class="dashboard-category-grid">
+
+    <div id="auditCard" class="audit-header-container"></div>
+
     <div class="dashboard-bottom-row" style="display:flex;">
         <div class="exception-dashboard-container" style="flex:1">
             <div id="exceptionsTable"></div>
@@ -21,7 +24,7 @@
         <h5 id="auditTitle">
             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audit.Title.AuditReport"))
         </h5>
-        <button class="panel-close" onclick="closeAuditReport()">
+        <button class="panel-close" onclick="closeExceptioneInnerPanel()">
             <i class="mdi mdi-close"></i>
         </button>
     </div>
@@ -141,7 +144,7 @@
                 <div class="col-sm-12">
                     <div class="row mb-3">
                         <div class="col-sm-2">
-                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeAuditReport()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeExceptioneInnerPanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
                         </div>
                         <div class="col-sm-10"></div>
                     </div>
@@ -156,7 +159,7 @@
 
 @{
     Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
-    Html.AddScriptParts(ResourceLocation.Footer, "~/js/audit-exceptions-script.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/audit-inner-dashboard.js");
 }
 
 <script>

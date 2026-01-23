@@ -82,7 +82,6 @@ function initExceptionTable() {
                 resizable: false,
                 formatter: function (cell) {
                     const id = cell.getRow().getData().id;
-                    console.log(id);
                     return `<span class="clickable-title" onclick="viewReport(${id})">${cell.getValue()}</span>`;
                 }
             },
