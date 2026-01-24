@@ -31,6 +31,18 @@ namespace Grc.ui.App.Models
         [JsonPropertyName("riskAttached")]
         public string RiskAttached { get; set; }
 
+        [JsonPropertyName("sendReminder")]
+        public bool SendReminder { get; set; }
+
+        [JsonPropertyName("interval")]
+        public string Interval { get; set; }
+
+        [JsonPropertyName("intervalType")]
+        public string IntervalType { get; set; }
+
+        [JsonPropertyName("reminder")]
+        public string Reminder { get; set; }
+
         [JsonPropertyName("comments")]
         public string Comments { get; set; }
 

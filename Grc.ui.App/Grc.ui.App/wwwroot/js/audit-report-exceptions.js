@@ -162,20 +162,6 @@ function initAuditExceptionTable() {
 
                     return isNaN(value) ? "-" : value;
                 }
-            },
-            {
-                title: "ACTION",
-                formatter: function (cell) {
-                    let rowData = cell.getRow().getData();
-                    return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteException(${rowData.id})">
-                            <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
-                            <span>DELETE</span>
-                        </button>`;
-                },
-                width: 200,
-                hozAlign: "center",
-                headerHozAlign: "center",
-                headerSort: false
             }
         ]
     });
@@ -184,16 +170,87 @@ function initAuditExceptionTable() {
     initAuditExceptionSearch();
 }
 
-//function viewAuditException(id) {
-//    alert(`View Exception by ID >> ${id}`)
-//}
+function viewAuditException(id) {
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving Exception Report...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
 
-//function deleteException(id) {
-//    alert(`Delete Exception by ID >> ${id}`)
-//}
+    findView(id)
+        .then(record => {
+            console.log(`Then >> `, record);
+            Swal.close();
+            if (record) {
+                openViewPanel(record);
+            } else {
+                Swal.fire({
+                    title: 'NOT FOUND',
+                    text: 'Exception record not found',
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error loading exception record :', error);
+            Swal.close();
+
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to load exception record  details. Please try again.',
+                confirmButtonText: 'OK'
+            });
+        });
+}
+
+function findView(id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/grc/compliance/audit/exceptions/exception-retrieve/${id}`,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success && response.data) {
+                    resolve(response.data);
+                    resolve(null);
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire("Error", error);
+            }
+        });
+    });
+}
+
+function openViewPanel(record) {
+    $('#reference').val(record.reference || '');
+    $('#findings').val(record.findings || '');
+    $('#recomendations').val(record.recomendations || '');
+    $('#proposedAction').val(record.proposedAction || '');
+    $('#correctiveAction').val(record.correctiveAction || '');
+    $('#executioner').val(record.executioner || '');
+    $('#isDeleted').prop('isDeleted', record.sendReminders).trigger('change');
+    $('#execptionStatus').val(record.status || '');
+    $('#targetDate').val(record.targetDate || '');
+    $('#riskLevel').val(record.riskLevel || '');
+    $('#notes').val(record.notes || '');
+   
+    $('#exceptionViewPanel').addClass('active');
+    $('#exceptionViewOverlay').addClass('active');
+}
 
 function initAuditExceptionSearch() {
 
+}
+
+function closeViewException() {
+    $('#exceptionViewPanel').removeClass('active');
+    $('#exceptionViewOverlay').removeClass('active');
+    $('body').css('overflow', '');
 }
 
 $('.action-btn-audit-home').on('click', function () {
@@ -205,20 +262,12 @@ $('.action-btn-audit-home').on('click', function () {
     }
 });
 
-$('.action-btn-excel-export').on('click', function () {
-    alert("New Exception");
-});
-
 $(document).ready(function () {
     console.log("DOM Loged");
    initAuditExceptionTable();
-
-
-//    console.log("Dom started");
-//    $('#auditForm').on('submit', function (e) {
-//        e.preventDefault();
-//    });
-
+    $('#exceptionViewForm').on('submit', function (e) {
+        e.preventDefault();
+    });
 });
 
 function getExcToken() {

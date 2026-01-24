@@ -1579,7 +1579,7 @@
         }
       }
     },
-    "/grc/registers/delete-document": {
+    "/grc/registers/lock-document": {
       "post": {
         "tags": [
           "Regulatory"
@@ -1588,17 +1588,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.LockPolicyDocumentRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.LockPolicyDocumentRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.LockPolicyDocumentRequest"
               }
             }
           }
@@ -1610,7 +1610,7 @@
         }
       }
     },
-    "/grc/registers/lock-document": {
+    "/grc/registers/delete-document": {
       "post": {
         "tags": [
           "Regulatory"
@@ -9022,6 +9022,31 @@
         },
         "additionalProperties": false
       },
+      "Grc.Middleware.Api.Http.Requests.LockPolicyDocumentRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "isLocked": {
+            "type": "boolean"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "Grc.Middleware.Api.Http.Requests.LoginRequest": {
         "type": "object",
         "properties": {
@@ -9320,9 +9345,28 @@
             "format": "date-time",
             "nullable": true
           },
-          "documentOwner": {
+          "sendNotification": {
+            "type": "boolean"
+          },
+          "interval": {
+            "type": "string",
+            "nullable": true
+          },
+          "intervalType": {
+            "type": "string",
+            "nullable": true
+          },
+          "sentMessages": {
             "type": "integer",
-            "format": "int64"
+            "format": "int32"
+          },
+          "nextSendAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "reminderMessage": {
+            "type": "string",
+            "nullable": true
           },
           "comments": {
             "type": "string",
@@ -10369,6 +10413,21 @@
             "format": "int64"
           },
           "risk": {
+            "type": "string",
+            "nullable": true
+          },
+          "sendReminder": {
+            "type": "boolean"
+          },
+          "interval": {
+            "type": "string",
+            "nullable": true
+          },
+          "intervalType": {
+            "type": "string",
+            "nullable": true
+          },
+          "reminder": {
             "type": "string",
             "nullable": true
           },

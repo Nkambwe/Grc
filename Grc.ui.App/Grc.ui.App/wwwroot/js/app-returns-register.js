@@ -425,12 +425,250 @@ function showFrequencyBreadcrubs(frequencyName) {
 }
 
 function viewReturn(id) {
-    alert(`Selected ID ${id}`);
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving return Report...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    find2Report(id)
+        .then(record => {
+            console.log(`Then >> `, record);
+            Swal.close();
+            if (record) {
+                open2Panel('Edit Return', record, true);
+            } else {
+                Swal.fire({
+                    title: 'NOT FOUND',
+                    text: 'Return Report not found',
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error loading Return Report:', error);
+            Swal.close();
+
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to load Return Report details. Please try again.',
+                confirmButtonText: 'OK'
+            });
+        });
+}
+
+function find2Report(id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/grc/returns/compliance-returns/request/${id}`,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success && response.data) {
+                    resolve(response.data);
+                    resolve(null);
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire("Error", error);
+            }
+        });
+    });
+}
+
+function open2Panel(title, record, isEdit) {
+    $('#returnEdit').val(isEdit);
+
+    console.log(record);
+    //..initialize form fields
+    $('#returnId').val(record.id);
+    $('#statuteId').val(record.statuteId || 0).trigger('change');
+    $('#returnName').val(record.returnName || '');
+    $('#returnTypeId').val(record.returnTypeId || 0).trigger('change');
+    $('#frequencyId').val(record.frequencyId || 0);
+    $('#authorityId').val(record.authorityId || 0).trigger('change');
+    $('#departmentId').val(record.departmentId || 0).trigger('change');
+    $('#returnRisk').val(record.riskAttached || '');
+    $('#sendReminder').prop('checked', record.sendReminder);
+    $('#interval').val(record.interval || '0');
+    $('#intervalType').val(record.intervalType || 'NA').trigger('change');
+    $('#sendReminders').prop('checked', record.sendReminders).trigger('change');
+    $('#reminderMessage').val(record.reminderMessage || '');
+    $('#reportDeleted').prop('checked', record.isDeleted).trigger('change');
+    $('#reportComments').val(record.comments || '');
+
+    //..load dialog window
+    closeReportPane();
+    
+    $('#returnReportTitle').text(title);
+    $('#returnReportPanel').addClass('active');
+    $('#returnInnerOverlay').addClass('active');
+    $('body').css('overflow', 'hidden');
+}
+
+function closeReportPane() {
+    $('#returnReportPanel').removeClass('active');
+    $('#returnInnerOverlay').removeClass('active');
 }
 
 $('#btnAddReturn').on('click', function () {
-    alert(`Add Report to ${selectedFrequency}`);
+    open2Panel('Add Return', {
+        id: 0,
+        statuteId: 0,
+        returnName: '',
+        returnTypeId:0,
+        frequencyId: selectedFrequency,
+        authorityId:0,
+        status: 'UNKNOWN',
+        riskAttached: '',
+        sendReminder: true,
+        interval: 1,
+        intervalType: 'NA',
+        reminderMessage:'',
+        isDeleted: false,
+        comments:''
+    }, false);
 });
+
+function saveAuditReport(e) {
+    e.preventDefault();
+
+    let isEdit = $('#returnEdit').val();
+    //..build record payload from form
+    let recordData = {
+        id: Number($('#returnId').val()) || 0,
+        sectionId: Number($('#statuteId').val()) || 0,
+        returnName: $('#returnName').val(),
+        returnTypeId: Number($('#returnTypeId').val()) || 0,
+        departmentId: Number($('#departmentId').val()) || 0,
+        frequencyId: Number($('#frequencyId').val()) || 0,
+        authorityId: Number($('#authorityId').val()) || 0,
+        riskAttached: $('#returnRisk').val(),
+        sendReminder: $('#reportDeleted').is(':checked') ? true : false,
+        interval: $('#interval').val() || 1,
+        intervalType: $('#intervalType').val(),
+        reminder: $('#reminderMessage').val(),
+        isDeleted: $('#reportDeleted').is(':checked') ? true : false,
+        comments: $('#reportComments').val()
+        
+    };
+
+    //..validate required fields
+    let errors = [];
+    if (recordData.sectionId === 0) {
+        errors.push("Enforcing law field is required"); 
+    }
+
+    if (recordData.returnTypeId === 0) {
+        errors.push("Return type field is required");
+    }  
+
+    if (recordData.departmentId === 0) {
+        errors.push("Responsible department field is required");
+    }
+
+    if (recordData.frequencyId === 0)
+        errors.push("Reporting frequency field is required");
+
+    if (!recordData.comments)
+        errors.push("Provide a note for the return");
+
+    if (!recordData.riskAttached)
+        errors.push("Provide risk resulting from breach of submission");
+
+    if (recordData.sendReminders) {
+        if (!recordData.reminderMessage)
+            errors.push("Reminder message field is required");
+
+        if (!recordData.intervalType || recordData.intervalType === 'NA')
+            errors.push("Interval type is required.");
+
+        if (!recordData.interval)
+            errors.push("Interval field is required.");
+    }
+
+    if (errors.length > 0) {
+        highlightReturnSubmissionField("#statuteId", recordData.sectionId === 0);
+        highlightReturnSubmissionField("#returnTypeId", recordData.returnTypeId === 0);
+        highlightReturnSubmissionField("#departmentId", recordData.departmentId === 0);
+        highlightReturnSubmissionField("#frequencyId", recordData.frequencyId === 0);
+        highlightReturnSubmissionField("#returnName", !recordData.returnName);
+        highlightReturnSubmissionField("#returnRisk", !recordData.riskAttached);
+        highlightReturnSubmissionField("#reportComments", !recordData.comments);
+
+        if (recordData.sendReminders) {
+            highlightAuditField("#reminderMessage", !recordData.reminderMessage);
+            highlightAuditField("#intervalType", !recordData.intervalType || recordData.intervalType === 'NA');
+            highlightAuditField("#interval", !recordData.interval);
+        }
+
+        Swal.fire({
+            title: "Return validation Validation",
+            html: `<div style="text-align:left;">${errors.join("<br>")}</div>`,
+        });
+        return;
+    }
+
+    //..call backend
+    saveReturnReportRecord(isEdit, recordData);
+}
+
+function saveReturnReportRecord(isEdit, payload) {
+    let url = isEdit === true || isEdit === "true"
+        ? "/grc/returns/compliance-returns/update-return"
+        : "/grc/returns/compliance-returns/create-return";
+
+    Swal.fire({
+        title: "Processing your request...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(payload),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getReturnSubmissionToken()
+        },
+        success: function (res) {
+            if (!res || res.success !== true) {
+                Swal.fire(res?.message || "Operation failed");
+                return;
+            }
+
+            Swal.fire(res.message || (isEdit ? "Return report updated successfully" : "Return report created successfully"));
+            closeReportPane();
+
+            // reload table
+            reportsTable.replaceData();
+        },
+        error: function (xhr, status, error) {
+            var errorMessage = error;
+            try {
+                var response = JSON.parse(xhr.responseText);
+                if (response.message) {
+                    errorMessage = response.message;
+                }
+            } catch (e) {
+                //..if parsing fails, use the default error
+                errorMessage = "Unexpected error occurred";
+            }
+
+            Swal.fire(isEdit ? "Update return report" : "Save return report", errorMessage);
+        }
+    });
+}
 
 function viewSubmission(id) {
     Swal.fire({
@@ -545,8 +783,6 @@ function updateSubmission(e) {
         submittedBy: $('#submittedBy').val(),
         submittedOn: $('#submittedOn').val()
     };
-
-    console.log(recordData);
 
     //..validate required fields
     let errors = [];
@@ -678,15 +914,34 @@ $(document).ready(function () {
         dropdownParent: $('#returnInnerPanel')
     });
 
+    $('#intervalType, #departmentId, #authorityId, #statuteId, #returnTypeId').select2({
+        width: '100%',
+        dropdownParent: $('#returnReportPanel')
+    });
+
     $('.action-btn-complianceHome').on('click', function () {
         window.location.href = '/grc/compliance';
     });
-
 
     $('#innerSubForm').on('submit', function (e) {
         e.preventDefault();
     });
 
+    //..hide update message reminder
+    const $sendReminders = $('#sendReminders');
+    const $notificationBox = $('#notificationBox');
+
+    //..ensure initial state
+    $notificationBox.toggle($sendReminders.is(':checked'));
+
+    //..toggle on change
+    $sendReminders.on('change', function () {
+        if (this.checked) {
+            $notificationBox.slideDown(200);
+        } else {
+            $notificationBox.slideUp(200);
+        }
+    });
 
 });
 

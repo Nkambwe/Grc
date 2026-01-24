@@ -46,6 +46,24 @@ namespace Grc.Middleware.Api.Http.Responses
         [JsonPropertyName("departmentName")]
         public string DepartmentName { get; set; }
 
+        [JsonPropertyName("sendNotification")]
+        public bool SendNotification { get; set; }
+
+        [JsonPropertyName("interval")]
+        public string Interval { get; set; }
+
+        [JsonPropertyName("intervalType")]
+        public string IntervalType { get; set; }
+
+        [JsonPropertyName("sentMessages")]
+        public int SentMessages { get; set; }
+
+        [JsonPropertyName("nextSendAt")]
+        public string NextSendAt { get; set; }
+
+        [JsonPropertyName("reminderMessage")]
+        public string ReminderMessage {get; set;}
+
         [JsonPropertyName("comments")]
         public string Comments { get; set; }
 

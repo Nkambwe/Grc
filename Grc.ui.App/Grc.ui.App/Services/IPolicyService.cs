@@ -11,6 +11,7 @@ namespace Grc.ui.App.Services {
         Task<GrcResponse<GrcPolicySupportResponse>> GetPolicySupportItemsAsync(GrcRequest request);
         Task<GrcResponse<ServiceResponse>> CreateDocumentAsync(PolicyViewModel request, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> UpdateDocumentAsync(PolicyViewModel request, long userId, string ipAddress);
+        Task<GrcResponse<ServiceResponse>> LockDocumentAsync(PolicyLockViewModel request, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> DeletePolicyAsync(GrcIdRequest deleteRequest);
         Task<GrcResponse<ServiceResponse>> LockPolicyAsync(GrcIdRequest request);
 

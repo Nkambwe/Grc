@@ -2303,6 +2303,34 @@
 	<LocaleResource Name="Component.Table.Returns.Header.Frequency.Returns">
 		<Value>Frequency Returns/Reports</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Label.Name">
+		<Value>Return Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Label.Type">
+		<Value>Return Type</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Label.Type.Select">
+		<Value>Select type...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Label.Type">
+		<Value>Return Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Label.Statute.Select">
+		<Value>Select law...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Statute">
+		<Value>Enforcement Law</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Label.Status.Select">
+		<Value>Select law...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Status">
+		<Value>Statue</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Deleted">
+		<Value>Remove Report</Value>
+	</LocaleResource>
+
 	<LocaleResource Name="Component.Table.Returns.Header.Frequency.Reports.List">
 		<Value>Returns/Report List</Value>
 	</LocaleResource>
@@ -2659,7 +2687,7 @@
 		<Value>Notification Mailing List(Enter emails separated by commas)</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Audits.Update.Label.Reminder">
-		<Value>Notification Message(Enter body content only)</Value>
+		<Value>Notification Message (Enter body content only)</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Audits.Update.Label.SendDate">
 		<Value>Send Date</Value>

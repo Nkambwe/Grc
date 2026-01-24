@@ -11,6 +11,12 @@ namespace Grc.Middleware.Api.Data.Entities.Compliance.Regulations {
         public long FrequencyId { get; set; }
         public DateTime LastRevisionDate { get; set; }
         public DateTime? NextRevisionDate { get; set; }
+        public bool SendNotification { get; set; }
+        public string Interval { get; set; }
+        public string IntervalType { get; set; }
+        public int SentMessages { get; set; }
+        public string NextSendAt {  get; set; }
+        public string ReminderMessage { get; set; }
         public long DocumentTypeId { get; set; }
         public long ResponsibilityId { get; set; }
         public string Comments { get; set; }

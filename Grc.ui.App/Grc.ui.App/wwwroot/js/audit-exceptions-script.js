@@ -376,11 +376,8 @@ $('.action-btn-audit-home').on('click', function () {
     }
 });
 
-
 $(document).ready(function () {
     initExceptionTable();
-
-    console.log("Dom started");
     $('#auditForm').on('submit', function (e) {
         e.preventDefault();
     });

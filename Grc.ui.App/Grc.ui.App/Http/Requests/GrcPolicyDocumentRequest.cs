@@ -44,11 +44,26 @@ namespace Grc.ui.App.Http.Requests {
         [JsonPropertyName("nextReview")]
         public DateTime? NextRevisionDate { get; set; }
 
-        [JsonPropertyName("documentOwner")]
-        public long OwnerId { get; set; }
-
         [JsonPropertyName("comments")]
         public string Comments { get; set; }
+
+        [JsonPropertyName("sendNotification")]
+        public bool SendNotification { get; set; }
+
+        [JsonPropertyName("interval")]
+        public string Interval { get; set; }
+
+        [JsonPropertyName("intervalType")]
+        public string IntervalType { get; set; }
+
+        [JsonPropertyName("sentMessages")]
+        public int SentMessages { get; set; }
+
+        [JsonPropertyName("nextSendAt")]
+        public string NextSendAt { get; set; }
+
+        [JsonPropertyName("reminderMessage")]
+        public string ReminderMessage { get; set; }
 
         [JsonPropertyName("userId")]
         public long UserId { get; set; }

@@ -343,20 +343,22 @@ function addPolicyDocument() {
         ownerId: 0,
         departmentId: 0,
         isDeleted: false,
-        lastReviewDate: "",
-        nextReviewDate: "",
+        lastReviewDate: '',
+        nextReviewDate: '',
         frequencyId: 0,
         documentStatus: 'NONE',
         isAligned: false,
         isLocked: false,
         isApproved: 0,
-        approvalDate: "",
-        approvedBy: "NONE"
+        approvalDate: '',
+        approvedBy: 'NONE',
+        interval: '0',
+        intervalType: 'NA',
+        reminderMessage:''
     }, false);
 }
 
 function openPolicyDocPanel(title, record, isEdit) {
-    
     $('#isEdit').val(isEdit);
     $('#recordId').val(record.id);
     $('#documentName').val(record.documentName || '');
@@ -367,6 +369,9 @@ function openPolicyDocPanel(title, record, isEdit) {
     $('#frequencyId').val(record.frequencyId).trigger('change');
     $('#ownerId').val(record.ownerId).trigger('change');
     $('#isDeleted').prop('checked', record.isDeleted);
+    $('#intervalType').val(record.intervalType).trigger('change');
+    $('#interval').val(record.interval || '0');
+    $('#reminderMessage').val(record.reminderMessage || '');
 
     //..use setDate
     const today = new Date();
@@ -396,6 +401,13 @@ function openPolicyDocPanel(title, record, isEdit) {
     //..lock fields is document is locked
     setPolicyPanelReadOnly(record.isLocked === true);
 
+    //..show lock box
+    if (isEdit) {
+        $('#lockSection').show();
+    } else {
+        $('#lockSection').hide();
+    }
+
     //load dialog window
     $('#panelTitle').text(title);
     $('#policyOverlay').addClass('active');
@@ -405,7 +417,6 @@ function openPolicyDocPanel(title, record, isEdit) {
 function savePolicyDocument(e) {
     if (e) e.preventDefault();
     let isEdit = $('#isEdit').val();
-
     // --- gather form values ---
     let recordData = {
         id: parseInt($('#recordId').val()) || 0,
@@ -423,7 +434,10 @@ function savePolicyDocument(e) {
         aligned: $('#isAligned').is(':checked') ? true : false,
         isApproved: Number($('#isApproved').val()),
         approvalDate: flatpickrInstances["approvalDate"].input.value || null,
-        approvedBy: $('#approvedBy').val()?.trim()
+        approvedBy: $('#approvedBy').val()?.trim(),
+        interval: $('#interval').val()?.trim(),
+        intervalType: $('#intervalType').val()?.trim(),
+        reminderMessage: $('#reminderMessage').val()?.trim()
     };
    
     // --- validate required fields ---
@@ -503,7 +517,7 @@ function savePolicy(isEdit, payload) {
         data: JSON.stringify(payload),
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': getPolicyAntiForgeryToken()
+            'X-CSRF-TOKEN': getPolicyAnti2ForgeryToken()
         },
         success: function (res) {
             //..lose loader and show success message
@@ -716,7 +730,7 @@ function initPolicyDocSearch() {
     });
 }
 
-function getPolicyAntiForgeryToken() {
+function getPolicyAnti2ForgeryToken() {
     return $('meta[name="csrf-token"]').attr('content');
 }
 
@@ -725,7 +739,7 @@ function setPolicyPanelReadOnly(isLocked) {
     const $form = $("#recordForm");
 
     // Disable all standard inputs
-    $form.find("input, textarea, select").prop("disabled", isLocked);
+    $form.find("input:not(#isLocked), textarea, select").prop("disabled", isLocked);
 
     // Allow hidden fields
     $form.find("input[type='hidden']").prop("disabled", false);
@@ -744,9 +758,6 @@ function setPolicyPanelReadOnly(isLocked) {
     $form.find("button[onclick='savePolicyDocument()']")
         .prop("disabled", isLocked)
         .toggleClass("disabled", isLocked);
-
-    // Optional: visual lock state
-    $("#slidePanel").toggleClass("locked", isLocked);
 }
 
 function toggleSection(header) {
@@ -756,18 +767,104 @@ function toggleSection(header) {
     toggle.classList.toggle('expanded');
 }
 
+function lockPolicyDocument(id, isLocked) {
+    let payload = {
+        id: id,
+        isLocked: isLocked
+    };
+
+    const url = "/grc/compliance/register/policies-lock";
+    Swal.fire({
+        title: isLocked ? "Locking policy document record..." : "Unlocking policy document record...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(payload),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getPolicyAnti2ForgeryToken()
+        },
+        success: function (res) {
+            Swal.close();
+            if (!res.success) {
+                //..error from the server
+                Swal.fire({
+                    title: "Invalid record",
+                    html: res.message.replaceAll("; ", "<br>")
+                });
+                return;
+            }
+
+            if (res && res.data) {
+                if (isEdit) {
+                    policyRegisterTable.updateData([res.data]);
+                } else {
+                    policyRegisterTable.addData([res.data], true);
+                }
+            }
+
+            Swal.fire({
+                title: isLocked ? "Locking policy document" : "Unlocking policy document",
+                text: res.message || "Saved successfully.",
+                timer: 2000,
+                showConfirmButton: false
+            });
+
+            closePolicyPanel();
+        },
+        error: function (xhr) {
+            Swal.close();
+
+            let errorMessage = "Unexpected error occurred.";
+            try {
+                let response = JSON.parse(xhr.responseText);
+                if (response.message) errorMessage = response.message;
+            } catch (e) { }
+
+            Swal.fire({
+                title: isEdit ? "Update Failed" : "Save Failed",
+                text: errorMessage
+            });
+        }
+    });
+}
+
 $(document).ready(function () {
     initLastReviewDatePickers();
     initNextReviewDatePickers();
     initApprovalDatePickers();
 
-    $('#documentTypeId, #departmentId, #ownerId, #frequencyId ,#documentStatus, #isApproved, #approvedBy').select2({
+    $('#documentTypeId, #departmentId, #ownerId, #frequencyId ,#documentStatus, #isApproved, #approvedBy, #intervalType').select2({
         width: '100%',
         dropdownParent: $('#slidePanel')
     });
 
     $('#recordForm').on('submit', function (e) {
         e.preventDefault();
+    });
+
+    //..render document readonly
+    const $isLocked = $('#isLocked');
+
+    // Initial state
+    setPolicyPanelReadOnly($isLocked.prop('checked'));
+
+    // Toggle on change
+    $isLocked.on('change', function () {
+        const isLocked = this.checked;
+        const id = $('#recordId').val();
+
+        setPolicyPanelReadOnly(isLocked);
+        lockPolicyDocument(id, isLocked);
     });
 
 });

@@ -13,7 +13,6 @@ using Grc.Middleware.Api.Services.Organization;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Grc.Middleware.Api.Controllers {
 
@@ -393,6 +392,7 @@ namespace Grc.Middleware.Api.Controllers {
                     IsAligned = register.PolicyAligned,
                     FrequencyId = register.FrequencyId,
                     IsLocked = register.IsLocked ?? false,
+                    IsDeleted = register.IsDeleted,
                     FrequencyName = register.Frequency?.FrequencyName ?? string.Empty,
                     DocumentTypeId = register.DocumentTypeId,
                     DocumentTypeName = register.DocumentType?.DocumentType ?? string.Empty,
@@ -400,8 +400,15 @@ namespace Grc.Middleware.Api.Controllers {
                     ResponsibilityName = register.Owner?.ContactPosition ?? string.Empty,
                     DepartmentId = register.Owner?.DepartmentId ?? 0,
                     DepartmentName = register.Owner?.Department?.DepartmentName ?? string.Empty,
+                    SendNotification = register.SendNotification,
+                    Interval = register.Interval ?? string.Empty,
+                    IntervalType = register.IntervalType ?? string.Empty,
+                    SentMessages = register.SentMessages,
+                    NextSendAt = register.NextSendAt ?? string.Empty,
+                    ReminderMessage = register.ReminderMessage ?? string.Empty,
                     Comments = register.Comments ?? string.Empty,
                     ApprovedBy = register.ApprovedBy ?? string.Empty,
+                    ApprovalDate = register.ApprovalDate ?? DateTime.MinValue,
                     LastRevisionDate = register.LastRevisionDate,
                     NextRevisionDate = register.NextRevisionDate
                 };
@@ -456,6 +463,12 @@ namespace Grc.Middleware.Api.Controllers {
                     ResponsibilityName = register.Owner?.ContactPosition ?? string.Empty,
                     DepartmentId = register.Owner?.DepartmentId ?? 0,
                     DepartmentName = register.Owner?.Department?.DepartmentName ?? string.Empty,
+                    SendNotification = register.SendNotification,
+                    Interval = register.Interval ?? string.Empty,
+                    IntervalType = register.IntervalType ?? string.Empty,
+                    SentMessages = register.SentMessages,
+                    NextSendAt = register.NextSendAt ?? string.Empty,
+                    ReminderMessage = register.ReminderMessage ?? string.Empty,
                     Comments = register.Comments ?? string.Empty,
                     ApprovedBy = register.ApprovedBy ?? string.Empty,
                     ApprovalDate = register.ApprovalDate ?? DateTime.MinValue,
@@ -512,6 +525,7 @@ namespace Grc.Middleware.Api.Controllers {
                         Status = register.Status ?? string.Empty,
                         IsAligned = register.PolicyAligned,
                         IsLocked = register.IsLocked ?? false,
+                        IsDeleted = register.IsDeleted,
                         FrequencyId = register.FrequencyId,
                         FrequencyName = register.Frequency?.FrequencyName ?? string.Empty,
                         DocumentTypeId = register.DocumentTypeId,
@@ -520,6 +534,12 @@ namespace Grc.Middleware.Api.Controllers {
                         ResponsibilityName = register.Owner?.ContactPosition ?? string.Empty,
                         DepartmentId = register.Owner?.DepartmentId ?? 0,
                         DepartmentName = register.Owner?.Department?.DepartmentName ?? string.Empty,
+                        SendNotification = register.SendNotification,
+                        Interval = register.Interval ?? string.Empty,
+                        IntervalType = register.IntervalType ?? string.Empty,
+                        SentMessages = register.SentMessages,
+                        NextSendAt = register.NextSendAt ?? string.Empty,
+                        ReminderMessage = register.ReminderMessage ?? string.Empty,
                         Comments = register.Comments ?? string.Empty,
                         ApprovedBy = register.ApprovedBy ?? string.Empty,
                         ApprovalDate = register.ApprovalDate ?? DateTime.MinValue,
@@ -587,12 +607,11 @@ namespace Grc.Middleware.Api.Controllers {
 
                 //..get username
                 var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username;
                 if (currentUser != null) {
-                    request.CreatedBy = currentUser.Username;
-                    request.ModifiedBy = currentUser.Username;
+                    username = currentUser.Username;
                 } else {
-                    request.CreatedBy = $"{request.UserId}";
-                    request.ModifiedBy = $"{request.UserId}";
+                    username = $"{request.UserId}";
                 }
 
                 //..add dates
@@ -600,7 +619,7 @@ namespace Grc.Middleware.Api.Controllers {
                 request.ModifiedOn = DateTime.Now;
 
                 //..create policy document
-                var result = await _regulatoryDocuments.InsertAsync(request);
+                var result = await _regulatoryDocuments.InsertAsync(request, username);
                 var response = new GeneralResponse();
                 if (result) {
                     response.Status = true;
@@ -650,17 +669,66 @@ namespace Grc.Middleware.Api.Controllers {
 
                 //..get username
                 var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username;
                 if (currentUser != null) {
-                    request.ModifiedBy = currentUser.Username;
+                    username = currentUser.Username;
                 } else {
-                    request.ModifiedBy = $"{request.UserId}";
+                    username = $"{request.UserId}";
                 }
 
                 //..add dates
                 request.ModifiedOn = DateTime.Now;
 
                 //..update policy document
-                var result = await _regulatoryDocuments.UpdateAsync(request);
+                var result = await _regulatoryDocuments.UpdateAsync(request, username);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Policy document updated successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update policy document record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("registers/lock-document")]
+        public async Task<IActionResult> LockDocument([FromBody] LockPolicyDocumentRequest request) {
+            try {
+                Logger.LogActivity("Lock policy document", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The policy document request cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _regulatoryDocuments.ExistsAsync(r => r.Id == request.Id)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "Policy document record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username;
+                if (currentUser != null) {
+                    username = currentUser.Username;
+                } else {
+                    username = $"{request.UserId}";
+                }
+
+                //..update policy document
+                var result = await _regulatoryDocuments.LockDocumentAsync(request, username);
                 var response = new GeneralResponse();
                 if (result) {
                     response.Status = true;
@@ -706,48 +774,6 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
                 return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse() { Status = status }));
-            } catch (Exception ex) {
-                Logger.LogActivity($"Error deleting policy document by user {request.UserId}: {ex.Message}", "ERROR");
-                var error = await HandleErrorAsync(ex);
-                return Ok(new GrcResponse<GeneralResponse>(error));
-            }
-        }
-
-        [HttpPost("registers/lock-document")]
-        public async Task<IActionResult> LockDocument([FromBody] IdRequest request) {
-            try {
-                Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
-
-                //..check if record exists
-                var response = new GeneralResponse();
-                var record = await _regulatoryDocuments.GetAsync(r => r.Id == request.RecordId);   
-                if (record == null) {
-                    response.Status = false;
-                    response.StatusCode = (int)ResponseCodes.NOTFOUND;
-                    response.Message = $"Policy document Not Found!";
-                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
-                    return Ok(new GrcResponse<GeneralResponse>(response));
-                }
-
-                if (record.Status.Equals("UPTODATE") || record.Status.Equals("NA")) {
-                    //..lock policy document
-                    var status = await _regulatoryDocuments.LockAsync(request);
-                    if (!status) {
-                        var error = new ResponseError(
-                            ResponseCodes.FAILED,
-                            "Failed to lock policy document",
-                            "An error occurred! could lock policy document");
-                        return Ok(new GrcResponse<GeneralResponse>(error));
-                    }
-                    return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse() { Status = status }));
-                } else {
-                    response.Status = false;
-                    response.StatusCode = (int)ResponseCodes.POLICYVIOLATION;
-                    response.Message = $"Policy Violation! You cannot lock a document that is not uptodate";
-                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
-                    return Ok(new GrcResponse<GeneralResponse>(response));
-                }
-
             } catch (Exception ex) {
                 Logger.LogActivity($"Error deleting policy document by user {request.UserId}: {ex.Message}", "ERROR");
                 var error = await HandleErrorAsync(ex);
@@ -3525,6 +3551,12 @@ namespace Grc.Middleware.Api.Controllers {
                     AuthorityId = request.AuthorityId,
                     FrequencyId = request.FrequencyId,
                     DepartmentId = request.DepartmentId,
+                    Risk = request.Risk,
+                    SendReminder = request.SendReminder,
+                    Interval = request.Interval,
+                    IntervalType = request.IntervalType,
+                    Reminder = request.Reminder,
+                    StatuteId = request.StatuteId,
                     UserName = currentUser.Username,
                     Action = request.Action,
                     IpAddress = request.IPAddress,
@@ -3565,7 +3597,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
-                if (!await _issueService.ExistsAsync(r => r.Id == request.Id)) {
+                if (!await _returnService.ExistsAsync(r => r.Id == request.Id)) {
                     var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "Return/Report record not found in the database");
                     Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
@@ -3599,6 +3631,12 @@ namespace Grc.Middleware.Api.Controllers {
                     AuthorityId = request.AuthorityId,
                     FrequencyId = request.FrequencyId,
                     DepartmentId = request.DepartmentId,
+                    Risk = request.Risk,
+                    SendReminder = request.SendReminder,
+                    Interval = request.Interval,
+                    IntervalType = request.IntervalType,
+                    Reminder = request.Reminder,
+                    StatuteId = request.StatuteId,
                     UserName = currentUser.Username,
                     Action = request.Action,
                     IpAddress = request.IPAddress,

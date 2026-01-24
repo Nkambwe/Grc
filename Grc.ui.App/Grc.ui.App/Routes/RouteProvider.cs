@@ -1530,14 +1530,14 @@
                 defaults: new { controller = "CompliancePolicy", action = "UpdatePolicy" }
             );
             routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-policies-lock",
+                pattern: "/grc/compliance/register/policies-lock",
+                defaults: new { controller = "CompliancePolicy", action = "LockPolicy" }
+            );
+            routeBuilder.MapControllerRoute(
                 name: "app-compliance-register-policies-delete",
                 pattern: "/grc/compliance/register/policies-delete/{id:long}",
                 defaults: new { controller = "CompliancePolicy", action = "DeletePolicy" }
-            );
-            routeBuilder.MapControllerRoute(
-                name: "app-compliance-register-policies-lock",
-                pattern: "/grc/compliance/register/policies-lock/{id:long}",
-                defaults: new { controller = "CompliancePolicy", action = "LockPolicy" }
             );
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-register-policies-export",
@@ -1780,6 +1780,16 @@
                 name: "app-compliance-audits-exceptions",
                 pattern: "/grc/compliance/audit/exceptions",
                 defaults: new { controller = "ComplianceAudit", action = "GetAuditExceptions" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-audits-exceptions-open",
+                pattern: "/grc/compliance/audit/exceptions/all-open",
+                defaults: new { controller = "ComplianceAudit", action = "AuditExceptions" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-audits-exceptions-reports",
+                pattern: "/grc/compliance/audit/exceptions/reports",
+                defaults: new { controller = "ComplianceAudit", action = "AuditReports" }
             );
             routeBuilder.MapControllerRoute(
                name: "app-compliance-audits-exceptions-retrieve",

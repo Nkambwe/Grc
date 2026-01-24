@@ -725,12 +725,17 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     AuthorityId = request.AuthorityId,
                     FrequencyId = request.FrequencyId,
                     DepartmentId = request.DepartmentId,
+                    Risk = request.Risk,
+                    Interval = request.Interval,
+                    IntervalType = request.IntervalType,
+                    SendReminder = request.SendReminder,
+                    Reminder = request.Reminder,
                     CreatedBy = request.UserName,
                     CreatedOn = DateTime.Now,
                     LastModifiedBy = request.UserName,
                     LastModifiedOn = DateTime.Now,
                     Comments = request.Comments,
-                    IsDeleted = request.IsDeleted,
+                    IsDeleted = request.IsDeleted
                 };
 
                 //..log the Regulatory Return data being saved
@@ -772,12 +777,17 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     AuthorityId = request.AuthorityId,
                     FrequencyId = request.FrequencyId,
                     DepartmentId = request.DepartmentId,
+                    Risk = request.Risk,
+                    Interval = request.Interval,
+                    IntervalType = request.IntervalType,
+                    SendReminder = request.SendReminder,
+                    Reminder = request.Reminder,
                     CreatedBy = request.UserName,
                     CreatedOn = DateTime.Now,
                     LastModifiedBy = request.UserName,
                     LastModifiedOn = DateTime.Now,
                     Comments = request.Comments,
-                    IsDeleted = request.IsDeleted,
+                    IsDeleted = request.IsDeleted
                 };
 
                 //..log the Regulatory Return data being saved
@@ -820,6 +830,11 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     regReturn.ArticleId = request.ArticleId;
                     regReturn.AuthorityId = request.AuthorityId;
                     regReturn.DepartmentId = request.DepartmentId;
+                    regReturn.Risk = request.Risk;
+                    regReturn.Interval = request.Interval;
+                    regReturn.IntervalType = request.IntervalType;
+                    regReturn.SendReminder = request.SendReminder;
+                    regReturn.Reminder = request.Reminder;
                     regReturn.Comments = (request.Comments ?? string.Empty).Trim();
                     regReturn.IsDeleted = request.IsDeleted;
                     regReturn.LastModifiedOn = DateTime.Now;
@@ -857,6 +872,11 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     regReturn.ArticleId = request.ArticleId;
                     regReturn.AuthorityId = request.AuthorityId;
                     regReturn.DepartmentId = request.DepartmentId;
+                    regReturn.Risk = request.Risk;
+                    regReturn.Interval = request.Interval;
+                    regReturn.IntervalType = request.IntervalType;
+                    regReturn.SendReminder = request.SendReminder;
+                    regReturn.Reminder = request.Reminder;
                     regReturn.Comments = (request.Comments ?? string.Empty).Trim();
                     regReturn.IsDeleted = request.IsDeleted;
                     regReturn.LastModifiedOn = DateTime.Now;

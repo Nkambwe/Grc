@@ -271,6 +271,12 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(dest => dest.ResponsibilityId, opt => opt.MapFrom(src => src.ResponsibilityId))
                 .ForMember(dest => dest.DepartmentId, opt => opt.MapFrom(src => src.DepartmentId))
                 .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments))
+                .ForMember(dest => dest.SendNotification, opt => opt.MapFrom(src => src.SendNotification))
+                .ForMember(dest => dest.Interval, opt => opt.MapFrom(src => src.Interval))
+                .ForMember(dest => dest.IntervalType, opt => opt.MapFrom(src => src.IntervalType))
+                .ForMember(dest => dest.SentMessages, opt => opt.MapFrom(src => src.SentMessages))
+                .ForMember(dest => dest.NextSendAt, opt => opt.MapFrom(src => src.NextSendAt))
+                .ForMember(dest => dest.ReminderMessage, opt => opt.MapFrom(src => src.ReminderMessage))
                 .ForMember(dest => dest.LastRevisionDate, opt => opt.MapFrom(src => src.LastRevisionDate))
                 .ForMember(dest => dest.NextRevisionDate, opt => opt.MapFrom(src => src.NextRevisionDate));
 

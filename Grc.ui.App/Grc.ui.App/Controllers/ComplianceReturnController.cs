@@ -399,15 +399,22 @@ namespace Grc.ui.App.Controllers {
                 var response = result.Data;
                 var report = new {
                     id = response.Id,
-                    sectionId = response.StatuteId,
+                    statuteId = response.StatuteId,
                     returnName = response.ReturnName ?? string.Empty,
                     returnTypeId = response.TypeId,
+                    returnType = response.Type ?? string.Empty,
                     authorityId = response.AuthorityId,
+                    authority = response.Authority ?? string.Empty,
                     departmentId = response.DepartmentId,
-                    isDeleted = response.IsDeleted,
+                    department = response.Department ?? string.Empty,
                     frequencyId = response.FrequencyId,
-                    documentTypeId = response.DepartmentId,
+                    frequency = response.Frequency ?? string.Empty,
                     riskAttached = response.Risk ?? string.Empty,
+                    sendReminder = response.SendReminder,
+                    interval = response.Interval,
+                    intervalType = response.IntervalType,
+                    reminderMessage = response.Reminder,
+                    isDeleted = response.IsDeleted,
                     comments = response.Comments ?? string.Empty
                 };
 

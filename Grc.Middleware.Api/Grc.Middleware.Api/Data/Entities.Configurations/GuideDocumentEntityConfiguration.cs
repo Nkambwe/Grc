@@ -18,6 +18,12 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
             builder.Property(t => t.LastRevisionDate).HasColumnName("last_revision_on").IsRequired();
             builder.Property(t => t.FrequencyId).HasColumnName("frequency_id").IsRequired();
             builder.Property(t => t.NextRevisionDate).HasColumnName("next_revision_on").IsRequired(false);
+            builder.Property(t => t.SendNotification).HasColumnName("send_interval_notice").IsRequired();
+            builder.Property(t => t.Interval).HasColumnName("interval").HasColumnType("NVARCHAR(50)").IsRequired();
+            builder.Property(t => t.IntervalType).HasColumnName("interval_type").HasColumnType("NVARCHAR(50)").IsRequired();
+            builder.Property(t => t.SentMessages).HasColumnName("notice_send").IsRequired();
+            builder.Property(t => t.NextSendAt).HasColumnName("next_send_at").HasColumnType("NVARCHAR(50)").IsRequired(false);
+            builder.Property(t => t.ReminderMessage).HasColumnName("reminder_message").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(t => t.DocumentTypeId).HasColumnName("doc_type_id");
             builder.Property(t => t.ResponsibilityId).HasColumnName("doc_owner_id"); 
             builder.Property(t => t.ApprovalDate).HasColumnName("approval_date").IsRequired(false);

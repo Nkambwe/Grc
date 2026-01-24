@@ -318,6 +318,12 @@ namespace Grc.ui.App.Controllers {
                     frequencyId = response.FrequencyId,
                     frequencyName = response.FrequencyName ?? string.Empty,
                     documentStatus = response.Status ?? string.Empty,
+                    sendNotification = response.SendNotification,
+                    interval = response.Interval ?? string.Empty,
+                    intervalType = response.IntervalType ?? string.Empty,
+                    sentMessages = response.SentMessages,
+                    nextSendAt = response.NextSendAt ?? string.Empty,
+                    reminderMessage = response.ReminderMessage ?? string.Empty,
                     comments = response.Comments ?? string.Empty,
                     isAligned = response.IsAligned,
                     isLocked = response.IsLocked,
@@ -420,34 +426,27 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Lock Policy", "User locked policy document", ActivityTypeDefaults.COMPLIANCE_LOCK_POLICY, "Policy")]
-        public async Task<IActionResult> LockPolicy(long id) {
+        [LogActivityResult("Lock Policy", "User locked policy", ActivityTypeDefaults.COMPLIANCE_LOCK_POLICY, "Policy")]
+        public async Task<IActionResult> LockPolicy([FromBody] PolicyLockViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
                 var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (userResponse.HasError || userResponse.Data == null)
                     return Ok(new { success = false, message = "Unable to resolve current user" });
 
-                if (id == 0) return BadRequest(new { success = false, message = "Policy Id is required" });
-
                 var currentUser = userResponse.Data;
-                GrcIdRequest request = new() {
-                    RecordId = id,
-                    UserId = currentUser.UserId,
-                    Action = Activity.COMPLIANCE_LOCK_POLCIY.GetDescription(),
-                    IPAddress = ipAddress,
-                    IsDeleted = true
-                };
-
-                var result = await _policyService.LockPolicyAsync(request);
+                var result = await _policyService.LockDocumentAsync(request, currentUser.UserId, ipAddress);
                 if (result.HasError || result.Data == null)
-                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to lock policy document" });
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to lock/unlock policy" });
 
-                return Ok(new { success = result.Data.Status, message = result.Data.Message });
-            }
-            catch (Exception ex)
-            {
-                Logger.LogActivity($"Unexpected error lock policy document: {ex.Message}", "ERROR");
+                var updated = result.Data;
+                return Ok(new {
+                    success = true,
+                    message = "Policy updated successfully",
+                    data = new { }
+                });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error updating policy: {ex.Message}", "ERROR");
                 _ = await ProcessErrorAsync(ex.Message, "POLICY-REGISTER", ex.StackTrace);
                 return Redirect(Url.Action("PoliciesRegisters", "ComplianceSettings"));
             }

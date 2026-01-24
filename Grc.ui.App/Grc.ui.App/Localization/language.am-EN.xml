@@ -609,6 +609,9 @@
 	<LocaleResource Name="Component.Table.Search.Authority">
 		<Value>Search authorities... </Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Authority">
+		<Value>Report Authority</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Search.DocTypes">
 		<Value>Search types... </Value>
 	</LocaleResource>
@@ -708,6 +711,10 @@
 	<LocaleResource Name="Component.Table.Policy.Department.Name">
 		<Value>Attached Department</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Department.Select">
+		<Value>Select department...</Value>
+	</LocaleResource>
+	
 	<LocaleResource Name="Component.Table.Policy.Aligned">
 		<Value>Aligned with Policy</Value>
 	</LocaleResource>
@@ -999,6 +1006,12 @@
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.Review">
 		<Value>Policy Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Approval">
+		<Value>Policy Approval</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Notification">
+		<Value>Policy Notifications</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.Task.LastDate">
 		<Value>Last Review</Value>
@@ -2303,6 +2316,34 @@
 	<LocaleResource Name="Component.Table.Returns.Header.Frequency.Returns">
 		<Value>Frequency Returns/Reports</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Label.Name">
+		<Value>Return Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Label.Type">
+		<Value>Return Type</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Label.Type.Select">
+		<Value>Select type...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Label.Type">
+		<Value>Return Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Label.Statute.Select">
+		<Value>Select law...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Statute">
+		<Value>Enforcement Law</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Label.Status.Select">
+		<Value>Select law...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Status">
+		<Value>Statue</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Deleted">
+		<Value>Remove Report</Value>
+	</LocaleResource>
+	
 	<LocaleResource Name="Component.Table.Returns.Header.Frequency.Reports.List">
 		<Value>Returns/Report List</Value>
 	</LocaleResource>
@@ -2366,8 +2407,8 @@
 	<LocaleResource Name="Component.Table.Audit.Label.Overdue">
 		<Value>Overdue Findings</Value>
 	</LocaleResource>
-	<LocaleResource Name="Component.Table.Policy.Additional">
-		<Value>Additional Information</Value>
+	<LocaleResource Name="Component.Table.Policy.Aligned">
+		<Value>Policy is aligned</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Circular.Header">
 		<Value>Manage Circulars</Value>

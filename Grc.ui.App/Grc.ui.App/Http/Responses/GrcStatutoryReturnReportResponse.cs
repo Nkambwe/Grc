@@ -10,6 +10,18 @@ namespace Grc.ui.App.Http.Responses
         [JsonPropertyName("returnName")]
         public string ReturnName { get; set; }
 
+        [JsonPropertyName("send_reminder")]
+        public bool SendReminder { get; set; }
+
+        [JsonPropertyName("interval")]
+        public string Interval { get; set; }
+
+        [JsonPropertyName("interval_type")]
+        public string IntervalType { get; set; }
+
+        [JsonPropertyName("reminder")]
+        public string Reminder { get; set; }
+
         [JsonPropertyName("typeId")]
         public long TypeId { get; set; }
 

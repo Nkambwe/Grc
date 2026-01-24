@@ -19,6 +19,9 @@ namespace Grc.ui.App.Http.Responses
         [JsonPropertyName("locked")]
         public bool IsLocked { get; set; }
 
+        [JsonPropertyName("isDeleted")]
+        public bool IsDeleted { get; set; }
+
         [JsonPropertyName("frequencyId")]
         public long FrequencyId { get; set; }
 
@@ -43,6 +46,24 @@ namespace Grc.ui.App.Http.Responses
         [JsonPropertyName("departmentName")]
         public string DepartmentName { get; set; }
 
+        [JsonPropertyName("sendNotification")]
+        public bool SendNotification { get; set; }
+
+        [JsonPropertyName("interval")]
+        public string Interval { get; set; }
+
+        [JsonPropertyName("intervalType")]
+        public string IntervalType { get; set; }
+
+        [JsonPropertyName("sentMessages")]
+        public int SentMessages { get; set; }
+
+        [JsonPropertyName("nextSendAt")]
+        public string NextSendAt { get; set; }
+
+        [JsonPropertyName("reminderMessage")]
+        public string ReminderMessage { get; set; }
+
         [JsonPropertyName("comments")]
         public string Comments { get; set; }
 
@@ -51,9 +72,6 @@ namespace Grc.ui.App.Http.Responses
 
         [JsonPropertyName("aprovalDate")]
         public DateTime? ApprovalDate { get; set; }
-
-        [JsonPropertyName("isDeleted")]
-        public bool IsDeleted { get; set; }
 
         [JsonPropertyName("lastReview")]
         public DateTime LastRevisionDate { get; set; }

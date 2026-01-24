@@ -2301,7 +2301,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "Type": "Grc.Middleware.Api.Http.Requests.LockPolicyDocumentRequest",
         "IsRequired": true
       }
     ],

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.EMMA;
 using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -225,6 +226,48 @@ namespace Grc.ui.App.Services {
                     "An unexpected error occurred",
                     "Cannot proceed! An error occurred, please try again later"
                 );
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> LockDocumentAsync(PolicyLockViewModel model, long userId, string ipAddress) {
+            try {
+
+                if (model == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST,"Process record cannot be null","Invalid process record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..build request object
+                var request = new GrcLockPolicyDocumentRequest {
+                    Id = model.Id,
+                    IsLocked = model.IsLocked,
+                    UserId = userId,
+                    IpAddress = ipAddress,
+                    Action = Activity.COMPLIANCE_LOCK_POLCIY.GetDescription()
+                };
+
+                //..map request
+                Logger.LogActivity($"LOCK POLICY DOCUMENT REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/lock-document";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcLockPolicyDocumentRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "PROCESSES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY,"Network error occurred",httpEx.Message);
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR,"An unexpected error occurred","Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<ServiceResponse>(error);
             }
         }

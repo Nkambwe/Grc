@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
 using Grc.Middleware.Api.Data.Entities.Support;
@@ -432,7 +433,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public bool Insert(PolicyDocumentRequest request)
+        public bool Insert(PolicyDocumentRequest request, string username)
         {
             using var uow = UowFactory.Create();
             try
@@ -448,6 +449,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 });
                 Logger.LogActivity($"Regulatory Document data: {documentJson}", "DEBUG");
 
+                document.CreatedBy = username;
+                document.CreatedOn = DateTime.Now;
                 var added = uow.RegulatoryDocumentRepository.Insert(document);
                 if (added)
                 {
@@ -471,7 +474,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<bool> InsertAsync(PolicyDocumentRequest request) {
+        public async Task<bool> InsertAsync(PolicyDocumentRequest request, string username) {
             using var uow = UowFactory.Create();
             try {
                 //..map Regulatory Document request to Regulatory Document entity
@@ -491,6 +494,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 });
                 Logger.LogActivity($"Regulatory Document data: {documentJson}", "DEBUG");
 
+                document.CreatedBy = username;
+                document.CreatedOn = DateTime.Now;
                 var added = await uow.RegulatoryDocumentRepository.InsertAsync(document);
                 if (added)
                 {
@@ -529,7 +534,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             return dateTime;
         }
 
-        public bool Update(PolicyDocumentRequest request, bool includeDeleted = false) {
+        public bool Update(PolicyDocumentRequest request, string username, bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update Regulatory Document request", "INFO");
 
@@ -554,9 +559,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     document.DocumentTypeId = request.DocumentTypeId;
                     document.ResponsibilityId = request.ResponsibilityId;
                     document.Comments = (request.Comments ?? string.Empty).Trim();
+                    document.SendNotification = request.SendNotification;
+                    document.Interval = (request.Interval ?? string.Empty).Trim();
+                    document.IntervalType = (request.IntervalType ?? string.Empty).Trim();
+                    document.SentMessages = request.SentMessages;
+                    document.ReminderMessage = request.ReminderMessage;
                     document.IsDeleted = request.IsDeleted;
                     document.LastModifiedOn = DateTime.Now;
-                    document.LastModifiedBy = $"{request.UserId}";
+                    document.LastModifiedBy = $"{username}";
 
                     //..check entity state
                     _ = uow.RegulatoryDocumentRepository.Update(document, includeDeleted);
@@ -579,7 +589,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<bool> UpdateAsync(PolicyDocumentRequest request, bool includeDeleted = false)
+        public async Task<bool> UpdateAsync(PolicyDocumentRequest request, string username, bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update Regulatory Document", "INFO");
@@ -606,10 +616,15 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     document.DocumentTypeId = request.DocumentTypeId;
                     document.ResponsibilityId = request.ResponsibilityId;
                     document.Comments = (request.Comments ?? string.Empty).Trim();
+                    document.SendNotification = request.SendNotification;
+                    document.Interval = (request.Interval ?? string.Empty).Trim();
+                    document.IntervalType = (request.IntervalType ?? string.Empty).Trim();
+                    document.SentMessages = request.SentMessages;
+                    document.ReminderMessage = request.ReminderMessage;
                     document.IsDeleted = request.IsDeleted;
                     document.LastModifiedOn = DateTime.Now;
                     document.ApprovalDate = request.ApprovalDate;
-                    document.LastModifiedBy = $"{request.UserId}";
+                    document.LastModifiedBy = $"{username}";
 
                     //..check entity state
                     _ = await uow.RegulatoryDocumentRepository.UpdateAsync(document, includeDeleted);
@@ -625,6 +640,36 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
             catch (Exception ex)
             {
+                Logger.LogActivity($"Failed to update Regulatory Document record: {ex.Message}", "ERROR");
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+        }
+
+        public async Task<bool> LockDocumentAsync(LockPolicyDocumentRequest request, string username) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Lock Regulatory Document", "INFO");
+
+            try {
+                var document = await uow.RegulatoryDocumentRepository.GetAsync(a => a.Id == request.Id);
+                if (document != null) {
+                    document.IsLocked = request.IsLocked;
+                    document.LastModifiedOn = DateTime.Now;
+                    document.LastModifiedBy = $"{username}";
+
+                    //..check entity state
+                    _ = await uow.RegulatoryDocumentRepository.UpdateAsync(document, true);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(document).State;
+                    Logger.LogActivity($"Regulatory Document state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to update Regulatory Document record: {ex.Message}", "ERROR");
                 //..save error object to the database
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
