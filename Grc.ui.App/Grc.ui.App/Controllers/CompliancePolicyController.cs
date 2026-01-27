@@ -327,6 +327,9 @@ namespace Grc.ui.App.Controllers {
                     comments = response.Comments ?? string.Empty,
                     isAligned = response.IsAligned,
                     isLocked = response.IsLocked,
+                    mcrApproval = response.NeedMcrApproval,
+                    boardApproval = response.NeedBoardApproval,
+                    onIntranet = response.OnIntranet,
                     isApproved = string.IsNullOrWhiteSpace(response.ApprovedBy) ? 2 : 1,
                     approvalDate = response.ApprovalDate,
                     approvedBy = response.ApprovedBy ?? string.Empty
@@ -587,7 +590,7 @@ namespace Grc.ui.App.Controllers {
 
             var result = await _policyService.GetPolicyReportAsync(request);
             if (result.HasError || result.Data == null)
-                return Ok(new { success = false, message = "Failed to retrieve policy data" });
+                return Ok(new { success = false, message = result.Error.Message ?? "Failed to retrieve return data" });
 
             using var workbook = new XLWorkbook();
             var ws = workbook.Worksheets.Add("Policies");
@@ -610,6 +613,10 @@ namespace Grc.ui.App.Controllers {
             header.Style.Font.Bold = true;
             header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            //..resize header
+            ws.Row(1).Height = 30;
+            var countHeaderCell = ws.Cell(1, 3);
 
             //..worksheet data
             int row = 2;
@@ -637,13 +644,18 @@ namespace Grc.ui.App.Controllers {
                 row++;
             }
 
-            //..status formating
+            //..status formating 
             var statusRange = ws.Range(2, 3, row - 1, 3);
             statusRange.AddConditionalFormat().WhenEquals("DUE").Fill.SetBackgroundColor(XLColor.Red);
-            statusRange.AddConditionalFormat().WhenEquals("PENDING-BOARD").Fill.SetBackgroundColor(XLColor.Orange);
+            statusRange.AddConditionalFormat().WhenEquals("PENDING-BOARD").Fill.SetBackgroundColor(XLColor.Orange); 
             statusRange.AddConditionalFormat().WhenEquals("PENDING-SM").Fill.SetBackgroundColor(XLColor.Orange);
-            statusRange.AddConditionalFormat() .WhenEquals("DPT-REVIEW").Fill.SetBackgroundColor(XLColor.LightGreen);
+            statusRange.AddConditionalFormat() .WhenEquals("DEPT-REVIEW").Fill.SetBackgroundColor(XLColor.LightGreen);
             statusRange.AddConditionalFormat().WhenEquals("UPTODATE").Fill.SetBackgroundColor(XLColor.Green);
+            statusRange.AddConditionalFormat().WhenEquals("ON-HOLD").Fill.SetBackgroundColor(XLColor.Amber);
+
+            var aligRange = ws.Range(2, 10, row - 1, 10);
+            aligRange.AddConditionalFormat().WhenEquals("NO").Fill.SetBackgroundColor(XLColor.Red);
+            aligRange.AddConditionalFormat().WhenEquals("YES").Fill.SetBackgroundColor(XLColor.Green);
 
             // Enable filters
             ws.Range(1, 1, 1, 11).SetAutoFilter();
@@ -683,7 +695,7 @@ namespace Grc.ui.App.Controllers {
 
             var result = await _policyService.GetPolicySummeryAsync(request);
             if (result.HasError || result.Data == null)
-                return Ok(new { success = false, message = "Failed to retrieve policy data" });
+                return Ok(new { success = false, message = result.Error.Message ?? "Failed to retrieve return data" });
 
             using var workbook = new XLWorkbook();
             var ws = workbook.Worksheets.Add("Summery");
@@ -691,15 +703,14 @@ namespace Grc.ui.App.Controllers {
             var data = result.Data;
 
             var summaryRows = new[] {
-                "Upto date",
+                "Uptodate",
                 "Pending SMT signoff",
                 "Under departmental review",
                 "Pending Board signoff",
                 "To be presented to MRC",
-                "Pending upload to intranet",
                 "Due for review",
                 "Not Applicable",
-                "On-Hold"
+                "On Hold"
             };
             //..define headers
             ws.Cell(1, 1).Value = "NO";
@@ -707,11 +718,19 @@ namespace Grc.ui.App.Controllers {
             ws.Cell(1, 3).Value = "COUNT";
             ws.Cell(1, 4).Value = "PERCENTAGE";
 
-            // Header styling (optional but recommended)
+            //..header styling
             var header = ws.Range(1, 1, 1, 4);
             header.Style.Font.Bold = true;
             header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            //..increase header height
+            ws.Row(1).Height = 30;
+            var countHeaderCell = ws.Cell(1, 3);
+
+            countHeaderCell.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            countHeaderCell.Style.Border.RightBorder = XLBorderStyleValues.Thin;
 
             int row = 2;
             int no = 1;
@@ -720,8 +739,9 @@ namespace Grc.ui.App.Controllers {
             decimal totalPercentage = 0;
 
             foreach (var label in summaryRows) {
-                var count = data.Count.TryGetValue(label, out var c) ? c : 0;
-                var percentage = data.Percentage.TryGetValue(label, out var p) ? p : 0;
+
+                var count = data.Count.TryGetValue(GetKey(label), out var c) ? c : 0;
+                var percentage = data.Percentage.TryGetValue(GetKey(label), out var p) ? p : 0;
                 ws.Cell(row, 1).Value = no;
                 ws.Cell(row, 2).Value = label;
                 ws.Cell(row, 3).Value = count;
@@ -743,8 +763,47 @@ namespace Grc.ui.App.Controllers {
 
             //..adjust details column
             ws.Columns().AdjustToContents();
-            ws.Column(2).Width = 35; 
+            foreach (var col in ws.ColumnsUsed()) {
+                if (col.Width > 40)
+                    col.Width = 40;
+                else col.Width = 40;
+            }
+
+            // Cap row height
+            foreach (var rowUsed in ws.RowsUsed()) {
+                if (rowUsed.Height > 20)
+                    rowUsed.Height = 20;
+                else rowUsed.Height = 20;
+            }
+
             ws.SheetView.FreezeRows(1);
+
+            //..exclude headers and totals
+            var dataRange = ws.Range(2, 3, row - 2, 4);
+
+            //..count column
+            //ws.Range(2, 3, row - 2, 3).Style.Font.FontColor = XLColor.Gray;
+            ws.Range(2, 3, row - 2, 3).Style.Fill.BackgroundColor = XLColor.Gray;
+
+            //..percentagelight gray
+            //ws.Range(2, 4, row - 2, 4).Style.Font.FontColor = XLColor.LightGray;
+            ws.Range(2, 4, row - 2, 4).Style.Fill.BackgroundColor = XLColor.LightGray;
+            ws.Range(2, 3, row, 4).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell(row, 4).Style.NumberFormat.Format = "0%";
+
+            //..total row styling
+            var totalRow = ws.Range(row, 1, row, 4);
+            totalRow.Style.Font.Bold = true;
+            totalRow.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            //..header height
+            ws.Row(1).Height = 30;   
+
+            //..totals height
+            int totalRowNumber = row;
+            ws.Row(totalRowNumber).Height = 28;
+            ws.Range(1, 3, totalRowNumber, 3).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            ws.Range(1, 3, totalRowNumber, 3).Style.Border.RightBorder = XLBorderStyleValues.Thin;
 
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);
@@ -770,10 +829,14 @@ namespace Grc.ui.App.Controllers {
 
             var result = await _policyService.GetPolicyReportAsync(request);
             if (result.HasError || result.Data == null)
-                return Ok(new { success = false, message = "Failed to retrieve policy data" });
+                return Ok(new { success = false, message = result.Error.Message ?? "Failed to retrieve return data" });
 
             using var workbook = new XLWorkbook();
             var ws = workbook.Worksheets.Add("Policies");
+
+            //..resize header
+            ws.Row(1).Height = 30;
+            var countHeaderCell = ws.Cell(1, 3);
 
             //..define headers
             ws.Cell(1, 1).Value = "POLICY/PROCEDURE NAME";
@@ -827,6 +890,10 @@ namespace Grc.ui.App.Controllers {
             statusRange.AddConditionalFormat().WhenEquals("PENDING-SM").Fill.SetBackgroundColor(XLColor.Orange);
             statusRange.AddConditionalFormat() .WhenEquals("DPT-REVIEW").Fill.SetBackgroundColor(XLColor.LightGreen);
             statusRange.AddConditionalFormat().WhenEquals("UPTODATE").Fill.SetBackgroundColor(XLColor.Green);
+
+            var aligRange = ws.Range(2, 10, row - 1, 10);
+            aligRange.AddConditionalFormat().WhenEquals("NO").Fill.SetBackgroundColor(XLColor.Red);
+            aligRange.AddConditionalFormat().WhenEquals("YES").Fill.SetBackgroundColor(XLColor.Green);
 
             // Enable filters
             ws.Range(1, 1, 1, 11).SetAutoFilter();
@@ -869,7 +936,7 @@ namespace Grc.ui.App.Controllers {
             var result = await _policyService.GetPolicyReportAsync(request);
 
             if (result.HasError || result.Data == null)
-                return Ok(new { success = false, message = "Failed to retrieve policy data" });
+                return Ok(new { success = false, message = result.Error.Message ?? "Failed to retrieve return data" });
 
             using var workbook = new XLWorkbook();
             var ws = workbook.Worksheets.Add("Policies");
@@ -892,6 +959,10 @@ namespace Grc.ui.App.Controllers {
             header.Style.Font.Bold = true;
             header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            //..resize header
+            ws.Row(1).Height = 30;
+            var countHeaderCell = ws.Cell(1, 3);
 
             //..worksheet data
             //..worksheet data
@@ -927,6 +998,10 @@ namespace Grc.ui.App.Controllers {
             statusRange.AddConditionalFormat().WhenEquals("PENDING-SM").Fill.SetBackgroundColor(XLColor.Orange);
             statusRange.AddConditionalFormat() .WhenEquals("DPT-REVIEW").Fill.SetBackgroundColor(XLColor.LightGreen);
             statusRange.AddConditionalFormat().WhenEquals("UPTODATE").Fill.SetBackgroundColor(XLColor.Green);
+
+            var aligRange = ws.Range(2, 10, row - 1, 10);
+            aligRange.AddConditionalFormat().WhenEquals("NO").Fill.SetBackgroundColor(XLColor.Red);
+            aligRange.AddConditionalFormat().WhenEquals("YES").Fill.SetBackgroundColor(XLColor.Green);
 
             //..format data
             // Enable filters
@@ -969,9 +1044,9 @@ namespace Grc.ui.App.Controllers {
 
             var result = await _policyService.GetPolicyReportAsync(request);
             if (result.HasError || result.Data == null)
-                return Ok(new { success = false, message = "Failed to retrieve policy data" });
+                return Ok(new { success = false, message = result.Error.Message ?? "Failed to retrieve return data" });
 
-           using var workbook = new XLWorkbook();
+            using var workbook = new XLWorkbook();
             var ws = workbook.Worksheets.Add("Policies");
 
             //..define headers
@@ -992,6 +1067,10 @@ namespace Grc.ui.App.Controllers {
             header.Style.Font.Bold = true;
             header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            //..resize header
+            ws.Row(1).Height = 30;
+            var countHeaderCell = ws.Cell(1, 3);
 
             //..worksheet data
             //..worksheet data
@@ -1027,6 +1106,10 @@ namespace Grc.ui.App.Controllers {
             statusRange.AddConditionalFormat().WhenEquals("PENDING-SM").Fill.SetBackgroundColor(XLColor.Orange);
             statusRange.AddConditionalFormat() .WhenEquals("DPT-REVIEW").Fill.SetBackgroundColor(XLColor.LightGreen);
             statusRange.AddConditionalFormat().WhenEquals("UPTODATE").Fill.SetBackgroundColor(XLColor.Green);
+
+            var aligRange = ws.Range(2, 10, row - 1, 10);
+            aligRange.AddConditionalFormat().WhenEquals("NO").Fill.SetBackgroundColor(XLColor.Red);
+            aligRange.AddConditionalFormat().WhenEquals("YES").Fill.SetBackgroundColor(XLColor.Green);
 
             //..format data
             // Enable filters
@@ -1069,7 +1152,7 @@ namespace Grc.ui.App.Controllers {
 
             var result = await _policyService.GetPolicyReportAsync(request);
             if (result.HasError || result.Data == null)
-                return Ok(new { success = false, message = "Failed to retrieve policy data" });
+                return Ok(new { success = false, message = result.Error.Message ?? "Failed to retrieve return data" });
 
             using var workbook = new XLWorkbook();
             var ws = workbook.Worksheets.Add("Policies");
@@ -1092,6 +1175,10 @@ namespace Grc.ui.App.Controllers {
             header.Style.Font.Bold = true;
             header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            //..resize header
+            ws.Row(1).Height = 30;
+            var countHeaderCell = ws.Cell(1, 3);
 
             //..worksheet data
             //..worksheet data
@@ -1127,6 +1214,10 @@ namespace Grc.ui.App.Controllers {
             statusRange.AddConditionalFormat().WhenEquals("PENDING-SM").Fill.SetBackgroundColor(XLColor.Orange);
             statusRange.AddConditionalFormat() .WhenEquals("DPT-REVIEW").Fill.SetBackgroundColor(XLColor.LightGreen);
             statusRange.AddConditionalFormat().WhenEquals("UPTODATE").Fill.SetBackgroundColor(XLColor.Green);
+
+            var aligRange = ws.Range(2, 10, row - 1, 10);
+            aligRange.AddConditionalFormat().WhenEquals("NO").Fill.SetBackgroundColor(XLColor.Red);
+            aligRange.AddConditionalFormat().WhenEquals("YES").Fill.SetBackgroundColor(XLColor.Green);
 
             //..format data
             // Enable filters
@@ -1169,7 +1260,7 @@ namespace Grc.ui.App.Controllers {
 
             var result = await _policyService.GetSmtSummeryAsync(request);
             if (result.HasError || result.Data == null)
-                return Ok(new { success = false, message = "Failed to retrieve policy data" });
+                return Ok(new { success = false, message = result.Error.Message ?? "Failed to retrieve return data" });
 
             using var workbook = new XLWorkbook();
             var ws = workbook.Worksheets.Add("Summery");
@@ -1177,15 +1268,14 @@ namespace Grc.ui.App.Controllers {
             var data = result.Data;
 
             var summaryRows = new[] {
-                "Upto date",
+                "Uptodate",
                 "Pending SMT signoff",
                 "Under departmental review",
                 "Pending Board signoff",
                 "To be presented to MRC",
-                "Pending upload to intranet",
                 "Due for review",
                 "Not Applicable",
-                "On-Hold"
+                "On Hold"
             };
             //..define headers
             ws.Cell(1, 1).Value = "NO";
@@ -1197,7 +1287,15 @@ namespace Grc.ui.App.Controllers {
             var header = ws.Range(1, 1, 1, 4);
             header.Style.Font.Bold = true;
             header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            // Increase header height
+            ws.Row(1).Height = 30;
+            var countHeaderCell = ws.Cell(1, 3);
+
+            countHeaderCell.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            countHeaderCell.Style.Border.RightBorder = XLBorderStyleValues.Thin;
 
             int row = 2;
             int no = 1;
@@ -1206,12 +1304,13 @@ namespace Grc.ui.App.Controllers {
             decimal totalPercentage = 0;
 
             foreach (var label in summaryRows) {
-                var count = data.Count.TryGetValue(label, out var c) ? c : 0;
-                var percentage = data.Percentage.TryGetValue(label, out var p) ? p : 0;
+
+                var count = data.Count.TryGetValue(GetKey(label), out var c) ? c : 0;
+                var percentage = data.Percentage.TryGetValue(GetKey(label), out var p) ? p : 0;
                 ws.Cell(row, 1).Value = no;
                 ws.Cell(row, 2).Value = label;
                 ws.Cell(row, 3).Value = count;
-                ws.Cell(row, 4).Value = percentage / 100; 
+                ws.Cell(row, 4).Value = percentage / 100;
                 ws.Cell(row, 4).Style.NumberFormat.Format = "0%";
                 totalCount += count;
                 totalPercentage += percentage;
@@ -1222,15 +1321,54 @@ namespace Grc.ui.App.Controllers {
             //..add totals
             ws.Cell(row, 2).Value = "Total";
             ws.Cell(row, 3).Value = totalCount;
-            ws.Cell(row, 4).Value = 1; 
+            ws.Cell(row, 4).Value = 1;
 
             ws.Range(row, 2, row, 4).Style.Font.Bold = true;
             ws.Cell(row, 4).Style.NumberFormat.Format = "0%";
 
             //..adjust details column
             ws.Columns().AdjustToContents();
-            ws.Column(2).Width = 35; 
+            foreach (var col in ws.ColumnsUsed()) {
+                if (col.Width > 40)
+                    col.Width = 40;
+                else col.Width = 40;
+            }
+
+            // Cap row height (~100px ≈ 75 points)
+            foreach (var rowUsed in ws.RowsUsed()) {
+                if (rowUsed.Height > 20)
+                    rowUsed.Height = 20;
+                else rowUsed.Height = 20;
+            }
+
             ws.SheetView.FreezeRows(1);
+
+            //..exclude headers and totals
+            var dataRange = ws.Range(2, 3, row - 2, 4);
+
+            //..count column
+            //ws.Range(2, 3, row - 2, 3).Style.Font.FontColor = XLColor.Gray;
+            ws.Range(2, 3, row - 2, 3).Style.Fill.BackgroundColor = XLColor.Gray;
+
+            //..percentagelight gray
+            //ws.Range(2, 4, row - 2, 4).Style.Font.FontColor = XLColor.LightGray;
+            ws.Range(2, 4, row - 2, 4).Style.Fill.BackgroundColor = XLColor.LightGray;
+            ws.Range(2, 3, row, 4).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell(row, 4).Style.NumberFormat.Format = "0%";
+
+            //..total row styling
+            var totalRow = ws.Range(row, 1, row, 4);
+            totalRow.Style.Font.Bold = true;
+            totalRow.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            //..header height
+            ws.Row(1).Height = 30;
+
+            //..totals height
+            int totalRowNumber = row;
+            ws.Row(totalRowNumber).Height = 28;
+            ws.Range(1, 3, totalRowNumber, 3).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            ws.Range(1, 3, totalRowNumber, 3).Style.Border.RightBorder = XLBorderStyleValues.Thin;
 
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);
@@ -1256,7 +1394,7 @@ namespace Grc.ui.App.Controllers {
 
             var result = await _policyService.GetPolicyReportAsync(request);
             if (result.HasError || result.Data == null)
-                return Ok(new { success = false, message = "Failed to retrieve policy data" });
+                return Ok(new { success = false, message = result.Error.Message ?? "Failed to retrieve return data" });
 
             using var workbook = new XLWorkbook();
             var ws = workbook.Worksheets.Add("Policies");
@@ -1279,6 +1417,10 @@ namespace Grc.ui.App.Controllers {
             header.Style.Font.Bold = true;
             header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            //..resize header
+            ws.Row(1).Height = 30;
+            var countHeaderCell = ws.Cell(1, 3);
 
             //..worksheet data
             int row = 2;
@@ -1313,6 +1455,10 @@ namespace Grc.ui.App.Controllers {
             statusRange.AddConditionalFormat().WhenEquals("PENDING-SM").Fill.SetBackgroundColor(XLColor.Orange);
             statusRange.AddConditionalFormat() .WhenEquals("DPT-REVIEW").Fill.SetBackgroundColor(XLColor.LightGreen);
             statusRange.AddConditionalFormat().WhenEquals("UPTODATE").Fill.SetBackgroundColor(XLColor.Green);
+
+            var aligRange = ws.Range(2, 10, row - 1, 10);
+            aligRange.AddConditionalFormat().WhenEquals("NO").Fill.SetBackgroundColor(XLColor.Red);
+            aligRange.AddConditionalFormat().WhenEquals("YES").Fill.SetBackgroundColor(XLColor.Green);
 
             //..format data
             // Enable filters
@@ -1354,23 +1500,23 @@ namespace Grc.ui.App.Controllers {
 
             var result = await _policyService.GetBodSummeryAsync(request);
             if (result.HasError || result.Data == null)
-                return Ok(new { success = false, message = "Failed to retrieve policy data" });
+                return Ok(new { success = false, message = result.Error.Message ?? "Failed to retrieve return data" });
 
             using var workbook = new XLWorkbook();
             var ws = workbook.Worksheets.Add("Summery");
 
             var data = result.Data;
             var summaryRows = new[] {
-                "Upto date",
+                "Uptodate",
                 "Pending SMT signoff",
                 "Under departmental review",
                 "Pending Board signoff",
                 "To be presented to MRC",
-                "Pending upload to intranet",
                 "Due for review",
                 "Not Applicable",
-                "On-Hold"
+                "On Hold"
             };
+
             //..define headers
             ws.Cell(1, 1).Value = "NO";
             ws.Cell(1, 2).Value = "DETAILS";
@@ -1381,7 +1527,15 @@ namespace Grc.ui.App.Controllers {
             var header = ws.Range(1, 1, 1, 4);
             header.Style.Font.Bold = true;
             header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            // Increase header height
+            ws.Row(1).Height = 30;
+            var countHeaderCell = ws.Cell(1, 3);
+
+            countHeaderCell.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            countHeaderCell.Style.Border.RightBorder = XLBorderStyleValues.Thin;
 
             int row = 2;
             int no = 1;
@@ -1390,12 +1544,13 @@ namespace Grc.ui.App.Controllers {
             decimal totalPercentage = 0;
 
             foreach (var label in summaryRows) {
-                var count = data.Count.TryGetValue(label, out var c) ? c : 0;
-                var percentage = data.Percentage.TryGetValue(label, out var p) ? p : 0;
+
+                var count = data.Count.TryGetValue(GetKey(label), out var c) ? c : 0;
+                var percentage = data.Percentage.TryGetValue(GetKey(label), out var p) ? p : 0;
                 ws.Cell(row, 1).Value = no;
                 ws.Cell(row, 2).Value = label;
                 ws.Cell(row, 3).Value = count;
-                ws.Cell(row, 4).Value = percentage / 100; 
+                ws.Cell(row, 4).Value = percentage / 100;
                 ws.Cell(row, 4).Style.NumberFormat.Format = "0%";
                 totalCount += count;
                 totalPercentage += percentage;
@@ -1406,15 +1561,54 @@ namespace Grc.ui.App.Controllers {
             //..add totals
             ws.Cell(row, 2).Value = "Total";
             ws.Cell(row, 3).Value = totalCount;
-            ws.Cell(row, 4).Value = 1; 
+            ws.Cell(row, 4).Value = 1;
 
             ws.Range(row, 2, row, 4).Style.Font.Bold = true;
             ws.Cell(row, 4).Style.NumberFormat.Format = "0%";
 
             //..adjust details column
             ws.Columns().AdjustToContents();
-            ws.Column(2).Width = 35; 
+            foreach (var col in ws.ColumnsUsed()) {
+                if (col.Width > 40)
+                    col.Width = 40;
+                else col.Width = 40;
+            }
+
+            // Cap row height (~100px ≈ 75 points)
+            foreach (var rowUsed in ws.RowsUsed()) {
+                if (rowUsed.Height > 20)
+                    rowUsed.Height = 20;
+                else rowUsed.Height = 20;
+            }
+
             ws.SheetView.FreezeRows(1);
+
+            //..exclude headers and totals
+            var dataRange = ws.Range(2, 3, row - 2, 4);
+
+            //..count column
+            //ws.Range(2, 3, row - 2, 3).Style.Font.FontColor = XLColor.Gray;
+            ws.Range(2, 3, row - 2, 3).Style.Fill.BackgroundColor = XLColor.Gray;
+
+            //..percentagelight gray
+            //ws.Range(2, 4, row - 2, 4).Style.Font.FontColor = XLColor.LightGray;
+            ws.Range(2, 4, row - 2, 4).Style.Fill.BackgroundColor = XLColor.LightGray;
+            ws.Range(2, 3, row, 4).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell(row, 4).Style.NumberFormat.Format = "0%";
+
+            //..total row styling
+            var totalRow = ws.Range(row, 1, row, 4);
+            totalRow.Style.Font.Bold = true;
+            totalRow.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            //..header height
+            ws.Row(1).Height = 30;
+
+            //..totals height
+            int totalRowNumber = row;
+            ws.Row(totalRowNumber).Height = 28;
+            ws.Range(1, 3, totalRowNumber, 3).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            ws.Range(1, 3, totalRowNumber, 3).Style.Border.RightBorder = XLBorderStyleValues.Thin;
 
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);
@@ -1515,6 +1709,9 @@ namespace Grc.ui.App.Controllers {
                         documentStatus = p.Status ?? string.Empty,
                         isAligned = p.IsAligned,
                         isLocked = p.IsLocked,
+                        mcrApproval = p.NeedMcrApproval,
+                        boardApproval = p.NeedBoardApproval,
+                        onIntranet = p.OnIntranet,
                         isApproved = !string.IsNullOrWhiteSpace(p.ApprovedBy) && p.ApprovedBy.ToUpper() != "NONE",
                         approvalDate = p.ApprovalDate,
                         approvedBy = p.ApprovedBy ?? string.Empty
@@ -2076,7 +2273,19 @@ namespace Grc.ui.App.Controllers {
             cell.Style.DateFormat.Format = "dd-MMM-yyyy";
         }
 
-        #endregion
+        private static string GetKey(string label) {
+            return label switch {
+                "On Hold" => "On Hold",
+                "Under departmental review" => "Department Review",
+                "Due for review" => "Not Uptodate",
+                "Pending Board signoff" => "Board Review",
+                "Uptodate" => "Uptodate",
+                "To be presented to MRC" => "MRC Review",
+                "Pending SMT signoff" => "SMT Review",
+                _ => "Standard"
+            };
+        }
+            #endregion
     }
 
 }

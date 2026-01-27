@@ -15,7 +15,7 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("documentStatus")]
         public string DocumentStatus { get; set; }
 
-        [JsonPropertyName("aligned")]
+        [JsonPropertyName("isAligned")]
         public bool IsAligned { get; set; }
 
         [JsonPropertyName("isDeleted")]
@@ -24,14 +24,26 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("locked")]
         public bool IsLocked { get; set; }
 
+        [JsonPropertyName("mcrApproval")]
+        public bool NeedMcrApproval { get; set; }
+
+        [JsonPropertyName("boardApproval")]
+        public bool NeedBoardApproval { get; set; }
+
+        [JsonPropertyName("onIntranet")]
+        public bool OnIntranet { get; set; }
+
+        [JsonPropertyName("isApproved")]
+        public bool IsApproved { get; set; }
+
         [JsonPropertyName("frequencyId")]
         public long FrequencyId { get; set; }
 
         [JsonPropertyName("responsibilityId")]
         public long ResponsibilityId { get;set;}
 
-        [JsonPropertyName("approvedBy")]
-        public string ApprovedBy { get; set; }
+        [JsonPropertyName("approver")]
+        public string Approver { get; set; }
 
         [JsonPropertyName("aprovalDate")]
         public DateTime? ApprovalDate { get; set; }

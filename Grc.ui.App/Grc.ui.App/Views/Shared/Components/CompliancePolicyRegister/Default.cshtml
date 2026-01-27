@@ -242,10 +242,12 @@
                                                 <option value="NA">Not Applicable</option>
                                                 <option value="ON-HOLD">On hold</option>
                                                 <option value="PENDING-BOARD">Pending Board Signoff</option>
+                                                <option value="PENDING-MCR">Pending MCR</option>
                                                 <option value="PENDING-SMT">Pending SMT Signoff</option>
                                                 <option value="DEPT-REVIEW">Department Review</option>
                                                 <option value="DUE">Due For Review</option>
                                                 <option value="UPTODATE">Uptodate</option>
+                                                
                                             </select>
                                         </div>
                                     </div>
@@ -289,6 +291,33 @@
                                     </div>
                                 </div>
 
+                                <div id="boardCheck" class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="needBoardApproval">
+                                        <label class="form-check-label" for="needBoardApproval">
+                                            Need Board Approval
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div id="mcrCheck" class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="needMcrApproval">
+                                        <label class="form-check-label" for="needMcrApproval">
+                                            Need MCR Approval
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div id="intranetCheck" class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="onIntranet">
+                                        <label class="form-check-label" for="onIntranet">
+                                            Need MCR Approval
+                                        </label>
+                                    </div>
+                                </div>
+
                                 <!-- Approval Status -->
                                 <div class="col-6">
 
@@ -322,14 +351,15 @@
                                 <div class="col-6">
 
                                     <div class="row mb-3">
-                                        <label for="approvedBy" class="col-sm-12 col-form-label">
+                                        <label for="approver" class="col-sm-12 col-form-label">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.ApprovedBy"))
                                         </label>
                                         <div class="col-sm-12">
-                                            <select class="js-act-approval-by form-control" id="approvedBy" name="approvedBy">
+                                            <select class="js-act-approval-by form-control" id="approver" name="approver">
                                                 <option value="NONE">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.ApprovedBy.Select"))</option>
-                                                <option value="BOARD">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Board"))</option>
-                                                <option value="MRC">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.MRC"))</option>
+                                                <option value="BOARD">Board Approval</option>
+                                                <option value="MRC">MCR Approval</option>
+                                                <option value="SMT">SMT Approval</option>
                                             </select>
                                         </div>
                                     </div>

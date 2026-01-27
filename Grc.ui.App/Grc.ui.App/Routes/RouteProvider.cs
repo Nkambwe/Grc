@@ -854,21 +854,6 @@
                defaults: new { controller = "ComplianceReturn", action = "GetPagedReturnSubmissions" }
             );
             routeBuilder.MapControllerRoute(
-                name: "app-compliance-register-returns-export-filtered",
-                pattern: "/grc/returns/compliance-returns/export-filtered",
-                defaults: new { controller = "Register", action = "ExportReturnsFiltered" }
-            );
-            routeBuilder.MapControllerRoute(
-                name: "app-compliance-register-returns-export-all",
-                pattern: "/grc/returns/compliance-returns/export-all",
-                defaults: new { controller = "Register", action = "ExportReturnsAll" }
-            );
-            routeBuilder.MapControllerRoute(
-               name: "app-compliance-register-returns-innerDashboard-na",
-               pattern: "/grc/returns/compliance-returns/inner-dashboard-na",
-               defaults: new { controller = "ComplianceReturn", action = "NaInnerDashboard" }
-            );
-            routeBuilder.MapControllerRoute(
                name: "app-compliance-register-returns-innerDashboard-na",
                pattern: "/grc/returns/compliance-returns/inner-dashboard-one",
                defaults: new { controller = "ComplianceReturn", action = "OneInnerDashboard" }
@@ -934,6 +919,53 @@
                pattern: "/grc/returns/compliance-returns/submissions/update",
                defaults: new { controller = "ComplianceReturn", action = "UpdateSubmission" }
            );
+
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-returns-reports-daily",
+                pattern: "/grc/returns/compliance-returns/reports/daily",
+                defaults: new { controller = "ComplianceReturn", action = "DailyReturnsReport" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-returns-reports-weekly",
+               pattern: "/grc/returns/compliance-returns/reports/weekly",
+               defaults: new { controller = "ComplianceReturn", action = "WeeklyReturnsReport" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-returns-reports-quarterly",
+               pattern: "/grc/returns/compliance-returns/reports/quarterly",
+               defaults: new { controller = "ComplianceReturn", action = "QuarterlyReturnsReport" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-returns-reports-monthly",
+               pattern: "/grc/returns/compliance-returns/reports/monthly",
+               defaults: new { controller = "ComplianceReturn", action = "MonthlyReturnsReport" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-returns-reports-annually",
+               pattern: "/grc/returns/compliance-returns/reports/annually",
+               defaults: new { controller = "ComplianceReturn", action = "AnnuallyReturnsReport" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-returns-reports-breached",
+               pattern: "/grc/returns/compliance-returns/reports/breached",
+               defaults: new { controller = "ComplianceReturn", action = "BreachedReport" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-returns-reports-monthly-summery",
+               pattern: "/grc/returns/compliance-returns/reports/monthly-summery",
+               defaults: new { controller = "ComplianceReturn", action = "MonthlySummeryReport" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-returns-reports-breached-aging",
+               pattern: "/grc/returns/compliance-returns/reports/breached-aging",
+               defaults: new { controller = "ComplianceReturn", action = "BreachedAgingReport" }
+            );
+
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-returns-innerDashboard-na",
+               pattern: "/grc/returns/compliance-returns/inner-dashboard-na",
+               defaults: new { controller = "ComplianceReturn", action = "NaInnerDashboard" }
+            );
             /*----------------------------------------------Circular returns Routes*/
             routeBuilder.MapControllerRoute(
               name: "app-compliance-circular-returns-home",

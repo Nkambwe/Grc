@@ -380,6 +380,8 @@ namespace Grc.ui.App.Enums {
         [Description("Update audit notes")]
         AUDIT_NOTES_UPDATE = 197,
         [Description("Delete audit notes")]
-        AUDIT_NOTES_DELETE = 198
+        AUDIT_NOTES_DELETE = 198,
+        [Description("Retrieve return report data")]
+        RETURNS_REPORT_DATA = 199,
     }
 }

@@ -46,6 +46,7 @@ namespace Grc.Middleware.Api.Services {
                 errorObj.CreatedOn = DateTime.Now;
                 errorObj.IsDeleted = false;
                 errorObj.CreatedBy = errorObj.CreatedBy ?? "SYSTEM";
+                errorObj.FixStatus = "OPEN";
 
                 //..log the error data being saved
                 var errorJson = JsonSerializer.Serialize(errorObj, new JsonSerializerOptions { 

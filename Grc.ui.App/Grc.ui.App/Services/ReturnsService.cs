@@ -1141,5 +1141,65 @@ namespace Grc.ui.App.Services {
 
         #endregion
 
+        #region Reports
+
+        public async Task<GrcResponse<List<ReturnReportResponse>>> GetPeriodReturnReportAsync(GrcPeriodStatisticRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object", "Request object cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<List<ReturnReportResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.ReturnBase}/periodic-report";
+                return await HttpHandler.PostAsync<GrcPeriodStatisticRequest, List<ReturnReportResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<List<ReturnReportResponse>>(error);
+            }
+        }
+
+        public async Task<GrcResponse<List<PeriodSummeryResponse>>> GetMonthlySummeryAsync(GrcRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object", "Request object cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<List<PeriodSummeryResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.ReturnBase}/monthly-summary";
+                return await HttpHandler.PostAsync<GrcRequest, List<PeriodSummeryResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<List<PeriodSummeryResponse>>(error);
+            }
+        }
+
+        public async Task<GrcResponse<List<BreachAgeResponse>>> GetAgingReportAsync(GrcRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object", "Request object cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<List<BreachAgeResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.ReturnBase}/breach-summary";
+                return await HttpHandler.PostAsync<GrcRequest, List<BreachAgeResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<List<BreachAgeResponse>>(error);
+            }
+        }
+
+        #endregion
     }
 }

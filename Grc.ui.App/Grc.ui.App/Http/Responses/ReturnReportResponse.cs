@@ -12,25 +12,31 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("type")]
         public string Type { get; set; }
 
-        [JsonPropertyName("articleNo")]
-        public string ArticleNo { get; set; }
+        [JsonPropertyName("authority")]
+        public string Authority { get; set; }
 
-        [JsonPropertyName("articleSummery")]
-        public string ArticleSummery { get; set; }
+        [JsonPropertyName("periodStart")]
+        public DateTime PeriodStart { get; set; }
 
-        [JsonPropertyName("departmentId")]
-        public long DepartmentId { get; set; }
+        [JsonPropertyName("periodEnd")]
+        public DateTime? PeriodEnd { get; set; }
+
+        [JsonPropertyName("status")]
+        public string Status { get; set; }
 
         [JsonPropertyName("department")]
         public string Department { get; set; }
 
-        [JsonPropertyName("authorityId")]
-        public long AuthorityId { get; set; }
+        [JsonPropertyName("executioner")]
+        public string Executioner { get; set; }
 
-        [JsonPropertyName("authority")]
-        public string Authority { get; set; }
+        [JsonPropertyName("isBreached")]
+        public bool IsBreached { get; set; }
 
         [JsonPropertyName("breachRisk")]
         public string BreachRisk { get; set; }
+
+        [JsonPropertyName("breachReason")]
+        public string BreachReason { get; set; }
     }
 }

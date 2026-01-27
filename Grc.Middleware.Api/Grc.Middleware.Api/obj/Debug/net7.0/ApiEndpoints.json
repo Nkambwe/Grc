@@ -1781,6 +1781,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetBodSummery",
+    "RelativePath": "grc/registers/bod-report-summery",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ReportRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "GetCategoryList",
     "RelativePath": "grc/registers/category-list",
     "HttpMethod": "POST",
@@ -2501,8 +2517,40 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
-    "Method": "GetPolicyreport",
+    "Method": "GetPolicyReport",
     "RelativePath": "grc/registers/report-data",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ReportRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetPolicySummery",
+    "RelativePath": "grc/registers/report-summery",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ReportRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetSmtSummery",
+    "RelativePath": "grc/registers/smt-report-summery",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -2837,6 +2885,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetPeriodMonthlySummery",
+    "RelativePath": "grc/returns/monthly-summary",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.PeriodStatisticRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "GetPagedReturnsList",
     "RelativePath": "grc/returns/paged-returns-list",
     "HttpMethod": "POST",
@@ -2855,6 +2919,22 @@
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "GetReturnsStatistics",
     "RelativePath": "grc/returns/period-returns",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.PeriodStatisticRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetPeriodReport",
+    "RelativePath": "grc/returns/periodic-report",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,

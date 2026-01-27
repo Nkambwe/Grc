@@ -394,6 +394,10 @@ namespace Grc.Middleware.Api.Controllers {
                     IsAligned = register.PolicyAligned,
                     FrequencyId = register.FrequencyId,
                     IsLocked = register.IsLocked ?? false,
+                    NeedMcrApproval = register.NeedMcrApproval,
+                    NeedBoardApproval = register.NeedBoardApproval,
+                    OnIntranet = register.OnIntranet,
+                    IsApproved = register.IsApproved,
                     IsDeleted = register.IsDeleted,
                     FrequencyName = register.Frequency?.FrequencyName ?? string.Empty,
                     DocumentTypeId = register.DocumentTypeId,
@@ -409,7 +413,7 @@ namespace Grc.Middleware.Api.Controllers {
                     NextSendAt = register.NextSendAt ?? string.Empty,
                     ReminderMessage = register.ReminderMessage ?? string.Empty,
                     Comments = register.Comments ?? string.Empty,
-                    ApprovedBy = register.ApprovedBy ?? string.Empty,
+                    ApprovedBy = register.Approver ?? string.Empty,
                     ApprovalDate = register.ApprovalDate ?? DateTime.MinValue,
                     LastRevisionDate = register.LastRevisionDate,
                     NextRevisionDate = register.NextRevisionDate
@@ -456,7 +460,11 @@ namespace Grc.Middleware.Api.Controllers {
                     Status = register.Status ?? string.Empty,
                     IsAligned = register.PolicyAligned,
                     IsLocked = register.IsLocked ?? false,
+                    NeedMcrApproval = register.NeedMcrApproval,
+                    NeedBoardApproval = register.NeedBoardApproval,
+                    OnIntranet = register.OnIntranet,
                     IsDeleted = register.IsDeleted,
+                    IsApproved = register.IsApproved,
                     FrequencyId = register.FrequencyId,
                     FrequencyName = register.Frequency?.FrequencyName ?? string.Empty,
                     DocumentTypeId = register.DocumentTypeId,
@@ -472,7 +480,7 @@ namespace Grc.Middleware.Api.Controllers {
                     NextSendAt = register.NextSendAt ?? string.Empty,
                     ReminderMessage = register.ReminderMessage ?? string.Empty,
                     Comments = register.Comments ?? string.Empty,
-                    ApprovedBy = register.ApprovedBy ?? string.Empty,
+                    ApprovedBy = register.Approver ?? string.Empty,
                     ApprovalDate = register.ApprovalDate ?? DateTime.MinValue,
                     LastRevisionDate = register.LastRevisionDate,
                     NextRevisionDate = register.NextRevisionDate
@@ -527,7 +535,7 @@ namespace Grc.Middleware.Api.Controllers {
                 if (summeryData == null) {
                     var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could retrieve report data. A system error occurred");
                     Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<List<PolicySummeryResponse>>(error));
+                    return Ok(new GrcResponse<PolicySummeryResponse>(error));
                 }
 
                 return Ok(new GrcResponse<PolicySummeryResponse>(summeryData));
@@ -553,7 +561,7 @@ namespace Grc.Middleware.Api.Controllers {
                 if (summeryData == null) {
                     var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could retrieve report data. A system error occurred");
                     Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<List<PolicySummeryResponse>>(error));
+                    return Ok(new GrcResponse<PolicySummeryResponse>(error));
                 }
 
                 return Ok(new GrcResponse<PolicySummeryResponse>(summeryData));
@@ -592,6 +600,10 @@ namespace Grc.Middleware.Api.Controllers {
                     Status = register.Status ?? string.Empty,
                     IsAligned = register.PolicyAligned,
                     IsLocked = register.IsLocked ?? false,
+                    NeedMcrApproval = register.NeedMcrApproval,
+                    NeedBoardApproval = register.NeedBoardApproval,
+                    OnIntranet = register.OnIntranet,
+                    IsApproved = register.IsApproved,
                     IsDeleted = register.IsDeleted,
                     FrequencyId = register.FrequencyId,
                     FrequencyName = register.Frequency?.FrequencyName ?? string.Empty,
@@ -608,7 +620,7 @@ namespace Grc.Middleware.Api.Controllers {
                     NextSendAt = register.NextSendAt ?? string.Empty,
                     ReminderMessage = register.ReminderMessage ?? string.Empty,
                     Comments = register.Comments ?? string.Empty,
-                    ApprovedBy = register.ApprovedBy ?? string.Empty,
+                    ApprovedBy = register.Approver ?? string.Empty,
                     ApprovalDate = register.ApprovalDate ?? DateTime.MinValue,
                     LastRevisionDate = register.LastRevisionDate,
                     NextRevisionDate = register.NextRevisionDate
@@ -663,6 +675,10 @@ namespace Grc.Middleware.Api.Controllers {
                         Status = register.Status ?? string.Empty,
                         IsAligned = register.PolicyAligned,
                         IsLocked = register.IsLocked ?? false,
+                        NeedMcrApproval = register.NeedMcrApproval,
+                        NeedBoardApproval = register.NeedBoardApproval,
+                        OnIntranet = register.OnIntranet,
+                        IsApproved = register.IsApproved,
                         IsDeleted = register.IsDeleted,
                         FrequencyId = register.FrequencyId,
                         FrequencyName = register.Frequency?.FrequencyName ?? string.Empty,
@@ -679,7 +695,7 @@ namespace Grc.Middleware.Api.Controllers {
                         NextSendAt = register.NextSendAt ?? string.Empty,
                         ReminderMessage = register.ReminderMessage ?? string.Empty,
                         Comments = register.Comments ?? string.Empty,
-                        ApprovedBy = register.ApprovedBy ?? string.Empty,
+                        ApprovedBy = register.Approver ?? string.Empty,
                         ApprovalDate = register.ApprovalDate ?? DateTime.MinValue,
                         LastRevisionDate = register.LastRevisionDate,
                         NextRevisionDate = register.NextRevisionDate
@@ -4059,6 +4075,57 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
+        [HttpPost("returns/periodic-report")]
+        public async Task<IActionResult> GetPeriodReport([FromBody] PeriodStatisticRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<SummeryReturnResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var records = await _returnService.GetPeriodReportAsync(request.Period);
+                if (records == null || !records.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No report records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<SummeryReturnResponse>>(new List<SummeryReturnResponse>()));
+                }
+
+                return Ok(new GrcResponse<List<SummeryReturnResponse>>(records));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<List<SummeryReturnResponse>>(error));
+            }
+        }
+
+
+        [HttpPost("returns/monthly-summary")]
+        public async Task<IActionResult> GetPeriodMonthlySummery([FromBody] PeriodStatisticRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<PeriodSummeryResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var records = await _returnService.GetMonthlySummeryAsync();
+                if (records == null || !records.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No report records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<PeriodSummeryResponse>>(new List<PeriodSummeryResponse>()));
+                }
+
+                return Ok(new GrcResponse<List<PeriodSummeryResponse>>(records));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<List<PeriodSummeryResponse>>(error));
+            }
+        }
+
         #endregion
 
         #region Circulars
@@ -5402,7 +5469,6 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
-
         [HttpPost("audits/audit-audit-reports-list")]
         public async Task<IActionResult> GetAuditReportList([FromBody] TentaiveReportsRequest request) {
 
@@ -6666,13 +6732,11 @@ namespace Grc.Middleware.Api.Controllers {
 
             return ReportPeriod.NA;
         }
-        
-        #endregion
 
         private static string GetPolicyStatus(string filter) {
             string status = filter switch {
-                "BOD"=> "PENDING-BOARD",
-                "SMT"=> "PENDING-SMT",
+                "BOD" => "PENDING-BOARD",
+                "SMT" => "PENDING-SMT",
                 "DUE" => "DUE",
                 "UPTODATE" => "UPTODATE",
                 "REVIEW" => "DEPT-REVIEW",
@@ -6680,6 +6744,8 @@ namespace Grc.Middleware.Api.Controllers {
             };
             return status;
         }
+
+        #endregion
 
     }
 }

@@ -481,6 +481,9 @@ function addPolicyDocument() {
         frequencyId: 0,
         documentStatus: 'NONE',
         isAligned: false,
+        needBoardApproval: false,
+        needMcrApproval: false,
+        onIntranet:false,
         isLocked: false,
         isApproved: 0,
         approvalDate: '',
@@ -523,13 +526,16 @@ function openPolicyDocPanel(title, record, isEdit) {
     $('#documentStatus').val(record.documentStatus).trigger('change');
     $('#isAligned').prop('checked', record.isAligned);
     $('#isApproved').val(record.isApproved).trigger('change');
+    $('#needMcrApproval').val(record.mcrApproval).trigger('change');
+    $('#needBoardApproval').val(record.boardApproval).trigger('change');
+    $('#onIntranet').val(record.onIntranet).trigger('change');
 
     if (record.approvalDate) {
         flatpickrInstances["approvalDate"].setDate(record.approvalDate, true, "Y-m-d");
     } else {
         flatpickrInstances["approvalDate"].setDate(today, true, "Y-m-d");
     }
-    $('#approvedBy').val(record.approvedBy).trigger('change');
+    $('#approver').val(record.approver).trigger('change');
 
     //..lock fields is document is locked
     setPolicyPanelReadOnly(record.isLocked === true);
@@ -561,13 +567,15 @@ function savePolicyDocument(e) {
         responsibilityId: Number($('#ownerId').val()),
         documentStatus: $('#documentStatus').val()?.trim(),
         isDeleted: $('#isDeleted').is(':checked') ? true : false,
+        boardApproval: $('#needBoardApproval').is(':checked') ? true : false,
+        mcrApproval: $('#needMcrApproval').is(':checked') ? true : false,
+        onIntranet: $('#onIntranet').is(':checked') ? true : false,
         lastReview: flatpickrInstances["lastReviewDate"].input.value || null,
         nextReview: flatpickrInstances["nextReviewDate"].input.value || null,
-        isAligned: $('#isAligned').val(),
-        aligned: $('#isAligned').is(':checked') ? true : false,
+        isAligned: $('#isAligned').is(':checked') ? true : false,
         isApproved: Number($('#isApproved').val()),
         approvalDate: flatpickrInstances["approvalDate"].input.value || null,
-        approvedBy: $('#approvedBy').val()?.trim(),
+        approver: $('#approver').val()?.trim(),
         interval: $('#interval').val()?.trim(),
         intervalType: $('#intervalType').val()?.trim(),
         reminderMessage: $('#reminderMessage').val()?.trim()
@@ -597,7 +605,6 @@ function savePolicyDocument(e) {
     //..date validation
     if (!recordData.lastReview || recordData.lastReview === null)
         errors.push("Last review date is required.");
-
 
     //..date validation
     if (!recordData.nextReview || recordData.nextReview === null)
@@ -976,7 +983,7 @@ $(document).ready(function () {
     initNextReviewDatePickers();
     initApprovalDatePickers();
 
-    $('#documentTypeId, #departmentId, #ownerId, #frequencyId ,#documentStatus, #isApproved, #approvedBy, #intervalType').select2({
+    $('#documentTypeId, #departmentId, #ownerId, #frequencyId ,#documentStatus, #isApproved, #approver, #intervalType').select2({
         width: '100%',
         dropdownParent: $('#slidePanel')
     });

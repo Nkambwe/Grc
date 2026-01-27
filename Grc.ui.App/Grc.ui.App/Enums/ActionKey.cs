@@ -187,6 +187,22 @@ namespace Grc.ui.App.Enums {
         [Description("pol-report-smt-summery")]
         PolReportSmtSummery,
         [Description("pol-report-summery")]
-        PolReportSummery
+        PolReportSummery,
+        [Description("returns-report-daily")]
+        ReturnsDailyExport,
+        [Description("returns-report-weekly")]
+        ReturnsWeeklyExport,
+        [Description("returns-report-quarterly")]
+        ReturnsQuarterlyExport,
+        [Description("returns-report-monthly")]
+        ReturnsMonthlyExport,
+        [Description("returns-report-annually")]
+        ReturnsAnnualExport,
+        [Description("returns-report-monthly-summery")]
+        ReturnsMonthlySummeryExport,
+        [Description("returns-report-breached")]
+        ReturnsBreachedExport,
+        [Description("returns-report-breached-aging")]
+        ReturnsBreachedAgingExport
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace Grc.ui.App.Http.Requests {
+
     public class GrcPolicyDocumentRequest {
+
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
@@ -20,8 +22,17 @@ namespace Grc.ui.App.Http.Requests {
         [JsonPropertyName("departmentId")]
         public long DepartmentId { get; set; }
 
-        [JsonPropertyName("aligned")]
+        [JsonPropertyName("isAligned")]
         public bool IsAligned { get; set; }
+
+        [JsonPropertyName("mcrApproval")]
+        public bool NeedMcrApproval { get; set; }
+
+        [JsonPropertyName("boardApproval")]
+        public bool NeedBoardApproval { get; set; }
+
+        [JsonPropertyName("onIntranet")]
+        public bool OnIntranet { get; set; }
 
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
@@ -29,8 +40,11 @@ namespace Grc.ui.App.Http.Requests {
         [JsonPropertyName("locked")]
         public bool IsLocked { get; set; }
 
-        [JsonPropertyName("approvedBy")]
-        public string ApprovedBy { get; set; }
+        [JsonPropertyName("isApproved")]
+        public bool IsApproved { get; set; }
+
+        [JsonPropertyName("approver")]
+        public string Approver { get; set; }
 
         [JsonPropertyName("approvalDate")]
         public DateTime? ApprovalDate { get; set; }

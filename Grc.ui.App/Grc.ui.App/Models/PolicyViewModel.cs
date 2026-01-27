@@ -25,17 +25,29 @@ namespace Grc.ui.App.Models
         [JsonPropertyName("departmentId")]
         public long DepartmentId { get; set; }
 
-        [JsonPropertyName("aligned")]
+        [JsonPropertyName("isAligned")]
         public bool IsAligned { get; set; }
 
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 
+        [JsonPropertyName("mcrApproval")]
+        public bool NeedMcrApproval { get; set; }
+
+        [JsonPropertyName("boardApproval")]
+        public bool NeedBoardApproval { get; set; }
+
+        [JsonPropertyName("onIntranet")]
+        public bool OnIntranet { get; set; }
+
         [JsonPropertyName("locked")]
         public bool IsLocked { get; set; }
 
-        [JsonPropertyName("approvedBy")]
-        public string ApprovedBy { get; set; }
+        [JsonPropertyName("isApproved")]
+        public int IsApproved { get; set; }
+
+        [JsonPropertyName("approver")]
+        public string Approver { get; set; }
 
         [JsonPropertyName("approvalDate")]
         public DateTime? ApprovalDate { get; set; }

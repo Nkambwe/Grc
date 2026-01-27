@@ -298,7 +298,7 @@ let submissionsTable = new Tabulator("#submissionsTable", {
         {
             title: "STATUS",
             field: "status",
-            headerFilter: "select",
+            headerFilter: "list",
             headerFilterParams: {
                 values: {
                     "": "All",
@@ -400,6 +400,162 @@ $('#frequencyTree').on("select_node.jstree", function (e, data) {
         showReturnView(node.text);
         loadSubmissions(selectedLaw);
     }
+});
+
+$('.action-btn-returns-report-daily').on('click', function () {
+    $.ajax({
+        url: '/grc/returns/compliance-returns/reports/daily',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(reportsTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Daily_Returns.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Failed to download report. Please try again.");
+        }
+    });
+});
+
+$('.action-btn-returns-report-weekly').on('click', function () {
+    $.ajax({
+        url: '/grc/returns/compliance-returns/reports/weekly',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(reportsTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Weekly_Returns.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Failed to download report. Please try again.");
+        }
+    });
+});
+
+$('.action-btn-returns-report-quarterly').on('click', function () {
+    $.ajax({
+        url: '/grc/returns/compliance-returns/reports/quarterly',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(reportsTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Quarterly_Returns.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Failed to download report. Please try again.");
+        }
+    });
+});
+
+$('.action-btn-returns-report-monthly').on('click', function () {
+    $.ajax({
+        url: '/grc/returns/compliance-returns/reports/monthly',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(reportsTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Monthly_Returns.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Failed to download report. Please try again.");
+        }
+    });
+});
+
+$('.action-btn-returns-report-annually').on('click', function () {
+    $.ajax({
+        url: '/grc/returns/compliance-returns/reports/annually',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(reportsTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Annually_Returns.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Failed to download report. Please try again.");
+        }
+    });
+});
+
+$('.action-btn-returns-report-breached').on('click', function () {
+    $.ajax({
+        url: '/grc/returns/compliance-returns/reports/breached',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(reportsTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Breached_Returns.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Failed to download report. Please try again.");
+        }
+    });
+});
+
+$('.action-btn-returns-report-breached-aging').on('click', function () {
+    $.ajax({
+        url: '/grc/returns/compliance-returns/reports/breached-aging',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(reportsTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Breached_Age.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Failed to download report. Please try again.");
+        }
+    });
+});
+
+$('.action-btn-returns-report-monthly-summery').on('click', function () {
+    $.ajax({
+        url: '/grc/returns/compliance-returns/reports/monthly-summery',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(reportsTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Breached_Monthly.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Failed to download report. Please try again.");
+        }
+    });
+});
+
+$('.action-btn-returns-home').on('click', function () {
+    window.location.href = '/grc/returns/compliance-returns/returns-dashboard';
 });
 
 function loadReturns(frequencyId) {
@@ -917,10 +1073,6 @@ $(document).ready(function () {
     $('#intervalType, #departmentId, #authorityId, #statuteId, #returnTypeId').select2({
         width: '100%',
         dropdownParent: $('#returnReportPanel')
-    });
-
-    $('.action-btn-complianceHome').on('click', function () {
-        window.location.href = '/grc/compliance';
     });
 
     $('#innerSubForm').on('submit', function (e) {

@@ -5,9 +5,17 @@
         ComponentId = $"0",
         ComponentKey = "ReturnRegister",
         LeftActions = new List<ComponentAction> {
-            new ComponentAction {ActionKey = ActionKey.ComplianceHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home")},
+            new ComponentAction {ActionKey = ActionKey.ReturnsHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home")},
             new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
-            new ComponentAction { ActionKey = ActionKey.Excel.GetDescription(), Icon = "mdi mdi-microsoft-excel", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Export") }
+            new ComponentAction { ActionKey = ActionKey.ReturnsDailyExport.GetDescription(), Icon = "mdi mdi-file-excel-outline", Tooltip = "Daily"},
+            new ComponentAction { ActionKey = ActionKey.ReturnsWeeklyExport.GetDescription(), Icon = "mdi mdi-file-excel-outline", Tooltip = "Weekly"},
+            new ComponentAction { ActionKey = ActionKey.ReturnsQuarterlyExport.GetDescription(), Icon = "mdi mdi-file-excel-outline", Tooltip = "Quartely" },
+            new ComponentAction { ActionKey = ActionKey.ReturnsAnnualExport.GetDescription(), Icon = "mdi mdi-file-excel-outline", Tooltip = "Annual" },
+            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
+            new ComponentAction { ActionKey = ActionKey.ReturnsMonthlyExport.GetDescription(), Icon = "mdi mdi-file-excel-outline", Tooltip = "Monthly" },
+            new ComponentAction { ActionKey = ActionKey.ReturnsBreachedAgingExport.GetDescription(), Icon = "mdi mdi-file-excel", Tooltip = "Breached Aging" },
+            new ComponentAction { ActionKey = ActionKey.ReturnsBreachedExport.GetDescription(), Icon = "mdi mdi-file-excel-box", Tooltip = "Monthly Breach" },
+            new ComponentAction { ActionKey = ActionKey.ReturnsMonthlySummeryExport.GetDescription(), Icon = "mdi mdi-microsoft-excel", Tooltip = "Monthly Summery" }
         }
     };
 }

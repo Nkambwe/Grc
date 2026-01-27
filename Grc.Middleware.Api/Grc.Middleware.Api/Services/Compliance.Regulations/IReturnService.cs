@@ -61,6 +61,12 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         Task<PagedResult<ReturnReport>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<ReturnReport, bool>> where = null);
         Task<PagedResult<ReturnReport>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<ReturnReport, bool>> where = null, bool includeDeleted = false);
         Task<PagedResult<ReturnReport>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<ReturnReport, bool>> predicate = null, params Expression<Func<ReturnReport, object>>[] includes);
+
+        #endregion
+
+        #region Reports
+        Task<List<SummeryReturnResponse>> GetPeriodReportAsync(string period);
+        Task<List<PeriodSummeryResponse>> GetMonthlySummeryAsync();
         #endregion
 
     }

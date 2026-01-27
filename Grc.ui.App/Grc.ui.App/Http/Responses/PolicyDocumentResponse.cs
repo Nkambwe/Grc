@@ -18,6 +18,15 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("locked")]
         public bool IsLocked { get; set; }
 
+        [JsonPropertyName("mcrApproval")]
+        public bool NeedMcrApproval { get; set; }
+
+        [JsonPropertyName("boardApproval")]
+        public bool NeedBoardApproval { get; set; }
+
+        [JsonPropertyName("onIntranet")]
+        public bool OnIntranet { get; set; }
+
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 

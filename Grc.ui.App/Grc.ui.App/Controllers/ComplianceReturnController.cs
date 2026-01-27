@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.EMMA;
-using DocumentFormat.OpenXml.Wordprocessing;
+﻿using ClosedXML.Excel;
 using Grc.ui.App.Defaults;
 using Grc.ui.App.Extensions;
 using Grc.ui.App.Factories;
@@ -11,7 +10,7 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography.Xml;
+using OpenXmlPowerTools;
 using System.Text.Json;
 using Activity = Grc.ui.App.Enums.Activity;
 
@@ -522,16 +521,6 @@ namespace Grc.ui.App.Controllers {
                 _ = await ProcessErrorAsync(ex.Message, "RETURNS-CONTROLLER", ex.StackTrace);
                 return Ok(new { success = false, message = "Unable to updating return/report.Something went wrong" });
             }
-        }
-
-        [HttpPost]
-        public IActionResult ExportReturnsFiltered([FromBody] List<GrcStatutoryReturnReportResponse> data) {
-            return Ok(new { data = data });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ExportReturnsAll() {
-            return Ok(new { message = "success" });
         }
 
         [HttpPost]
@@ -2320,5 +2309,884 @@ namespace Grc.ui.App.Controllers {
 
         #endregion
 
+        #region Reports
+
+        [HttpPost]
+        public async Task<IActionResult> DailyReturnsReport() {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+                return Ok(new { success = false, message = "Unable to resolve current user" });
+
+            var request = new GrcPeriodStatisticRequest {
+                UserId = userResponse.Data.UserId,
+                IPAddress = ipAddress,
+                Period = "WEEKLY",
+                Action = Activity.RETURNS_REPORT_DATA.GetDescription()
+            };
+
+            var result = await _returnService.GetPeriodReturnReportAsync(request);
+            if (result.HasError || result.Data == null)
+                return Ok(new { success = false, message = result.Error.Message ?? "Failed to retrieve return data" });
+
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("Daily Return For the Month");
+
+
+            //..headers
+            string[] headers =
+            {
+                "RETURN TITLE",
+                "RETURN TYPE",
+                "AUTHORITY",
+                "DUE DATE",
+                "STATUS",
+                "BREACHED",
+                "DEPARTMENT",
+                "EXECUTIONER"
+            };
+
+            for (int col = 0; col < headers.Length; col++) {
+                ws.Cell(1, col + 1).Value = headers[col];
+            }
+
+            // Header styling
+            var header = ws.Range(1, 1, 1, headers.Length);
+            header.Style.Font.Bold = true;
+            header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            // Header height
+            ws.Row(1).Height = 30;
+
+
+            //..add data
+            int row = 2;
+            foreach (var p in result.Data) {
+                ws.Cell(row, 1).Value = p.Title;
+                ws.Cell(row, 2).Value = p.Type;
+                ws.Cell(row, 3).Value = p.Authority;
+
+                SetSafeDate(ws.Cell(row, 4), p.PeriodEnd);
+
+                ws.Cell(row, 5).Value = p.Status;
+                ws.Cell(row, 6).Value = p.IsBreached ? "YES" : "NO";
+                ws.Cell(row, 7).Value = p.Department;
+                ws.Cell(row, 8).Value = p.Executioner;
+
+                row++;
+            }
+
+            int lastDataRow = row - 1;
+
+
+            //..style columns
+            ws.Column(1).Width = 70; //..title
+            ws.Column(5).Width = 15; //..status
+
+            for (int col = 2; col <= 8; col++) {
+                if (col != 5)
+                    ws.Column(col).Width = 20;
+            }
+
+            ws.Range(2, 1, lastDataRow, 1).Style.Fill.BackgroundColor = XLColor.LightGray;
+            ws.Range(2, 4, lastDataRow, 4).Style.Fill.BackgroundColor = XLColor.Gray;
+            ws.Range(1, 4, lastDataRow, 4).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+
+            //..status
+            var statusRange = ws.Range(2, 5, lastDataRow, 5);
+            statusRange.AddConditionalFormat().WhenEquals("BREACHED").Fill.SetBackgroundColor(XLColor.Red);
+            statusRange.AddConditionalFormat().WhenEquals("CLOSED").Fill.SetBackgroundColor(XLColor.Green);
+            statusRange.AddConditionalFormat().WhenEquals("OPEN").Fill.SetBackgroundColor(XLColor.Orange);
+
+            //..status
+            var breachRange = ws.Range(2, 6, lastDataRow, 6);
+            breachRange.AddConditionalFormat().WhenEquals("YES").Fill.SetBackgroundColor(XLColor.Red);
+            breachRange.AddConditionalFormat().WhenEquals("NO").Fill.SetBackgroundColor(XLColor.Green);
+
+            //..add header filtersfilters
+            ws.Range(1, 1, 1, headers.Length).SetAutoFilter();
+
+            //..freeze header
+            ws.SheetView.FreezeRows(1);
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream.ToArray(), 
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+                $"DailyReturns-{DateTime.Today:yyyy-MM}.xlsx");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> WeeklyReturnsReport() {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+                return Ok(new { success = false, message = "Unable to resolve current user" });
+
+            var request = new GrcPeriodStatisticRequest {
+                UserId = userResponse.Data.UserId,
+                IPAddress = ipAddress,
+                Period = "WEEKLY",
+                Action = Activity.RETURNS_REPORT_DATA.GetDescription()
+            };
+
+            var result = await _returnService.GetPeriodReturnReportAsync(request);
+            if (result.HasError || result.Data == null)
+                return Ok(new { success = false, message = result.Error.Message ?? "Failed to retrieve return data" });
+
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("Daily Return For the Month");
+
+
+            //..headers
+            string[] headers =
+            {
+                "RETURN TITLE",
+                "RETURN TYPE",
+                "AUTHORITY",
+                "START DATE",
+                "DUE DATE",
+                "STATUS",
+                "BREACHED",
+                "DEPARTMENT",
+                "EXECUTIONER"
+            };
+
+            for (int col = 0; col < headers.Length; col++) {
+                ws.Cell(1, col + 1).Value = headers[col];
+            }
+
+            // Header styling
+            var header = ws.Range(1, 1, 1, headers.Length);
+            header.Style.Font.Bold = true;
+            header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            // Header height
+            ws.Row(1).Height = 30;
+
+
+            //..add data
+            int row = 2;
+            foreach (var p in result.Data) {
+                ws.Cell(row, 1).Value = p.Title;
+                ws.Cell(row, 2).Value = p.Type;
+                ws.Cell(row, 3).Value = p.Authority;
+
+                SetSafeDate(ws.Cell(row, 4), p.PeriodEnd);
+                SetSafeDate(ws.Cell(row, 5), p.PeriodEnd);
+
+                ws.Cell(row, 6).Value = p.Status;
+                ws.Cell(row, 7).Value = p.IsBreached ? "YES" : "NO";
+                ws.Cell(row, 8).Value = p.Department;
+                ws.Cell(row, 9).Value = p.Executioner;
+
+                row++;
+            }
+
+            int lastDataRow = row - 1;
+
+
+            //..style columns
+            ws.Column(1).Width = 70; //..title
+            ws.Column(5).Width = 15; //..status
+
+            for (int col = 2; col <= 8; col++) {
+                if (col != 5)
+                    ws.Column(col).Width = 20;
+            }
+
+            ws.Range(2, 1, lastDataRow, 1).Style.Fill.BackgroundColor = XLColor.LightGray;
+            ws.Range(2, 4, lastDataRow, 5).Style.Fill.BackgroundColor = XLColor.Gray;
+            ws.Range(1, 5, lastDataRow, 5).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+
+            //..status
+            var statusRange = ws.Range(2, 6, lastDataRow, 6);
+            statusRange.AddConditionalFormat().WhenEquals("BREACHED").Fill.SetBackgroundColor(XLColor.Red);
+            statusRange.AddConditionalFormat().WhenEquals("CLOSED").Fill.SetBackgroundColor(XLColor.Green);
+            statusRange.AddConditionalFormat().WhenEquals("OPEN").Fill.SetBackgroundColor(XLColor.Orange);
+
+            //..status
+            var breachRange = ws.Range(2, 7, lastDataRow, 7);
+            breachRange.AddConditionalFormat().WhenEquals("YES").Fill.SetBackgroundColor(XLColor.Red);
+            breachRange.AddConditionalFormat().WhenEquals("NO").Fill.SetBackgroundColor(XLColor.Green);
+
+            //..add header filtersfilters
+            ws.Range(1, 1, 1, headers.Length).SetAutoFilter();
+
+            //..freeze header
+            ws.SheetView.FreezeRows(1);
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"WeeklyReturns-{DateTime.Today:yyyy-MM}.xlsx");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> QuarterlyReturnsReport() {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+                return Ok(new { success = false, message = "Unable to resolve current user" });
+
+            var request = new GrcPeriodStatisticRequest {
+                UserId = userResponse.Data.UserId,
+                IPAddress = ipAddress,
+                Period = "QUARTERLY",
+                Action = Activity.RETURNS_REPORT_DATA.GetDescription()
+            };
+
+            var result = await _returnService.GetPeriodReturnReportAsync(request);
+            if (result.HasError || result.Data == null)
+                return Ok(new { success = false, message = result.Error.Message ?? "Failed to retrieve return data" });
+
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("Quarterly Return For the Month");
+
+
+            //..headers
+            string[] headers =
+            {
+                "RETURN TITLE",
+                "RETURN TYPE",
+                "AUTHORITY",
+                "DUE DATE",
+                "STATUS",
+                "BREACHED",
+                "DEPARTMENT",
+                "EXECUTIONER"
+            };
+
+            for (int col = 0; col < headers.Length; col++) {
+                ws.Cell(1, col + 1).Value = headers[col];
+            }
+
+            // Header styling
+            var header = ws.Range(1, 1, 1, headers.Length);
+            header.Style.Font.Bold = true;
+            header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            // Header height
+            ws.Row(1).Height = 30;
+
+
+            //..add data
+            int row = 2;
+            foreach (var p in result.Data) {
+                ws.Cell(row, 1).Value = p.Title;
+                ws.Cell(row, 2).Value = p.Type;
+                ws.Cell(row, 3).Value = p.Authority;
+
+                SetSafeDate(ws.Cell(row, 4), p.PeriodEnd);
+
+                ws.Cell(row, 5).Value = p.Status;
+                ws.Cell(row, 6).Value = p.IsBreached ? "YES" : "NO";
+                ws.Cell(row, 7).Value = p.Department;
+                ws.Cell(row, 8).Value = p.Executioner;
+
+                row++;
+            }
+
+            int lastDataRow = row - 1;
+
+
+            //..style columns
+            ws.Column(1).Width = 70; //..title
+            ws.Column(5).Width = 15; //..status
+
+            for (int col = 2; col <= 8; col++) {
+                if (col != 5)
+                    ws.Column(col).Width = 20;
+            }
+
+            ws.Range(2, 1, lastDataRow, 1).Style.Fill.BackgroundColor = XLColor.LightGray;
+            ws.Range(2, 4, lastDataRow, 4).Style.Fill.BackgroundColor = XLColor.Gray;
+            ws.Range(1, 4, lastDataRow, 4).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+
+            //..status
+            var statusRange = ws.Range(2, 5, lastDataRow, 5);
+            statusRange.AddConditionalFormat().WhenEquals("BREACHED").Fill.SetBackgroundColor(XLColor.Red);
+            statusRange.AddConditionalFormat().WhenEquals("CLOSED").Fill.SetBackgroundColor(XLColor.Green);
+            statusRange.AddConditionalFormat().WhenEquals("OPEN").Fill.SetBackgroundColor(XLColor.Orange);
+
+            //..status
+            var breachRange = ws.Range(2, 6, lastDataRow, 6);
+            breachRange.AddConditionalFormat().WhenEquals("YES").Fill.SetBackgroundColor(XLColor.Red);
+            breachRange.AddConditionalFormat().WhenEquals("NO").Fill.SetBackgroundColor(XLColor.Green);
+
+            //..add header filtersfilters
+            ws.Range(1, 1, 1, headers.Length).SetAutoFilter();
+
+            //..freeze header
+            ws.SheetView.FreezeRows(1);
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"QuarterlyReturns-{DateTime.Today:yyyy-MM}.xlsx");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MonthlyReturnsReport() {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+                return Ok(new { success = false, message = "Unable to resolve current user" });
+
+            var request = new GrcPeriodStatisticRequest {
+                UserId = userResponse.Data.UserId,
+                IPAddress = ipAddress,
+                Period = "MONTHLY",
+                Action = Activity.RETURNS_REPORT_DATA.GetDescription()
+            };
+
+            var result = await _returnService.GetPeriodReturnReportAsync(request);
+            if (result.HasError || result.Data == null)
+                return Ok(new { success = false, message = result.Error.Message ?? "Failed to retrieve return data" });
+
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("Monthly Return For the Month");
+
+
+            //..headers
+            string[] headers =
+            {
+                "RETURN TITLE",
+                "RETURN TYPE",
+                "AUTHORITY",
+                "START DATE",
+                "DUE DATE",
+                "STATUS",
+                "BREACHED",
+                "DEPARTMENT",
+                "EXECUTIONER"
+            };
+
+            for (int col = 0; col < headers.Length; col++) {
+                ws.Cell(1, col + 1).Value = headers[col];
+            }
+
+            // Header styling
+            var header = ws.Range(1, 1, 1, headers.Length);
+            header.Style.Font.Bold = true;
+            header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            // Header height
+            ws.Row(1).Height = 30;
+
+
+            //..add data
+            int row = 2;
+            foreach (var p in result.Data) {
+                ws.Cell(row, 1).Value = p.Title;
+                ws.Cell(row, 2).Value = p.Type;
+                ws.Cell(row, 3).Value = p.Authority;
+
+                SetSafeDate(ws.Cell(row, 4), p.PeriodEnd);
+                SetSafeDate(ws.Cell(row, 5), p.PeriodEnd);
+
+                ws.Cell(row, 6).Value = p.Status;
+                ws.Cell(row, 7).Value = p.IsBreached ? "YES" : "NO";
+                ws.Cell(row, 8).Value = p.Department;
+                ws.Cell(row, 9).Value = p.Executioner;
+
+                row++;
+            }
+
+            int lastDataRow = row - 1;
+
+
+            //..style columns
+            ws.Column(1).Width = 70; //..title
+            ws.Column(5).Width = 15; //..status
+
+            for (int col = 2; col <= 8; col++) {
+                if (col != 5)
+                    ws.Column(col).Width = 20;
+            }
+
+            ws.Range(2, 1, lastDataRow, 1).Style.Fill.BackgroundColor = XLColor.LightGray;
+            ws.Range(2, 4, lastDataRow, 5).Style.Fill.BackgroundColor = XLColor.Gray;
+            ws.Range(1, 5, lastDataRow, 5).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+
+            //..status
+            var statusRange = ws.Range(2, 6, lastDataRow, 6);
+            statusRange.AddConditionalFormat().WhenEquals("BREACHED").Fill.SetBackgroundColor(XLColor.Red);
+            statusRange.AddConditionalFormat().WhenEquals("CLOSED").Fill.SetBackgroundColor(XLColor.Green);
+            statusRange.AddConditionalFormat().WhenEquals("OPEN").Fill.SetBackgroundColor(XLColor.Orange);
+
+            //..status
+            var breachRange = ws.Range(2, 7, lastDataRow, 7);
+            breachRange.AddConditionalFormat().WhenEquals("YES").Fill.SetBackgroundColor(XLColor.Red);
+            breachRange.AddConditionalFormat().WhenEquals("NO").Fill.SetBackgroundColor(XLColor.Green);
+
+            //..add header filtersfilters
+            ws.Range(1, 1, 1, headers.Length).SetAutoFilter();
+
+            //..freeze header
+            ws.SheetView.FreezeRows(1);
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"MonthlyReturns-{DateTime.Today:yyyy-MM}.xlsx");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AnnuallyReturnsReport() {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+                return Ok(new { success = false, message = "Unable to resolve current user" });
+
+            var request = new GrcPeriodStatisticRequest {
+                UserId = userResponse.Data.UserId,
+                IPAddress = ipAddress,
+                Period = "ANNUAL",
+                Action = Activity.RETURNS_REPORT_DATA.GetDescription()
+            };
+
+            var result = await _returnService.GetPeriodReturnReportAsync(request);
+            if (result.HasError || result.Data == null)
+                return Ok(new { success = false, message = result.Error.Message ?? "Failed to retrieve return data" });
+
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("Annual Returns");
+            //..headers
+            string[] headers =
+            {
+                "RETURN TITLE",
+                "RETURN TYPE",
+                "AUTHORITY",
+                "START DATE",
+                "DUE DATE",
+                "STATUS",
+                "BREACHED",
+                "DEPARTMENT",
+                "EXECUTIONER"
+            };
+
+            for (int col = 0; col < headers.Length; col++) {
+                ws.Cell(1, col + 1).Value = headers[col];
+            }
+
+            // Header styling
+            var header = ws.Range(1, 1, 1, headers.Length);
+            header.Style.Font.Bold = true;
+            header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            // Header height
+            ws.Row(1).Height = 30;
+
+
+            //..add data
+            int row = 2;
+            foreach (var p in result.Data) {
+                ws.Cell(row, 1).Value = p.Title;
+                ws.Cell(row, 2).Value = p.Type;
+                ws.Cell(row, 3).Value = p.Authority;
+
+                SetSafeDate(ws.Cell(row, 4), p.PeriodEnd);
+                SetSafeDate(ws.Cell(row, 5), p.PeriodEnd);
+
+                ws.Cell(row, 6).Value = p.Status;
+                ws.Cell(row, 7).Value = p.IsBreached ? "YES" : "NO";
+                ws.Cell(row, 8).Value = p.Department;
+                ws.Cell(row, 9).Value = p.Executioner;
+
+                row++;
+            }
+
+            int lastDataRow = row - 1;
+
+
+            //..style columns
+            ws.Column(1).Width = 70; //..title
+            ws.Column(5).Width = 15; //..status
+
+            for (int col = 2; col <= 8; col++) {
+                if (col != 5)
+                    ws.Column(col).Width = 20;
+            }
+
+            ws.Range(2, 1, lastDataRow, 1).Style.Fill.BackgroundColor = XLColor.LightGray;
+            ws.Range(2, 4, lastDataRow, 5).Style.Fill.BackgroundColor = XLColor.Gray;
+            ws.Range(1, 5, lastDataRow, 5).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+
+            //..status
+            var statusRange = ws.Range(2, 6, lastDataRow, 6);
+            statusRange.AddConditionalFormat().WhenEquals("BREACHED").Fill.SetBackgroundColor(XLColor.Red);
+            statusRange.AddConditionalFormat().WhenEquals("CLOSED").Fill.SetBackgroundColor(XLColor.Green);
+            statusRange.AddConditionalFormat().WhenEquals("OPEN").Fill.SetBackgroundColor(XLColor.Orange);
+
+            //..status
+            var breachRange = ws.Range(2, 7, lastDataRow, 7);
+            breachRange.AddConditionalFormat().WhenEquals("YES").Fill.SetBackgroundColor(XLColor.Red);
+            breachRange.AddConditionalFormat().WhenEquals("NO").Fill.SetBackgroundColor(XLColor.Green);
+
+            //..add header filtersfilters
+            ws.Range(1, 1, 1, headers.Length).SetAutoFilter();
+
+            //..freeze header
+            ws.SheetView.FreezeRows(1);
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"AnnuallyReturns-{DateTime.Today:yyyy-MM}.xlsx");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BreachedReport() {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+                return Ok(new { success = false, message = "Unable to resolve current user" });
+
+            var request = new GrcPeriodStatisticRequest {
+                UserId = userResponse.Data.UserId,
+                IPAddress = ipAddress,
+                Period = "ANNUAL",
+                Action = Activity.RETURNS_REPORT_DATA.GetDescription()
+            };
+
+            var result = await _returnService.GetPeriodReturnReportAsync(request);
+            if (result.HasError || result.Data == null)
+                return Ok(new { success = false, message = result.Error.Message ?? "Failed to retrieve return data" });
+
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("Annual Returns");
+
+
+            //..headers
+            string[] headers =
+            {
+                "RETURN TITLE",
+                "RETURN TYPE",
+                "AUTHORITY",
+                "START DATE",
+                "DUE DATE",
+                "STATUS",
+                "BREACHED",
+                "DEPARTMENT",
+                "EXECUTIONER"
+            };
+
+            for (int col = 0; col < headers.Length; col++) {
+                ws.Cell(1, col + 1).Value = headers[col];
+            }
+
+            // Header styling
+            var header = ws.Range(1, 1, 1, headers.Length);
+            header.Style.Font.Bold = true;
+            header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            // Header height
+            ws.Row(1).Height = 30;
+
+
+            //..add data
+            int row = 2;
+            foreach (var p in result.Data) {
+                ws.Cell(row, 1).Value = p.Title;
+                ws.Cell(row, 2).Value = p.Type;
+                ws.Cell(row, 3).Value = p.Authority;
+
+                SetSafeDate(ws.Cell(row, 4), p.PeriodEnd);
+                SetSafeDate(ws.Cell(row, 5), p.PeriodEnd);
+
+                ws.Cell(row, 6).Value = p.Status;
+                ws.Cell(row, 7).Value = p.IsBreached ? "YES" : "NO";
+                ws.Cell(row, 8).Value = p.Department;
+                ws.Cell(row, 9).Value = p.Executioner;
+
+                row++;
+            }
+
+            int lastDataRow = row - 1;
+
+
+            //..style columns
+            ws.Column(1).Width = 70; //..title
+            ws.Column(5).Width = 15; //..status
+
+            for (int col = 2; col <= 8; col++) {
+                if (col != 5)
+                    ws.Column(col).Width = 20;
+            }
+
+            ws.Range(2, 1, lastDataRow, 1).Style.Fill.BackgroundColor = XLColor.LightGray;
+            ws.Range(2, 4, lastDataRow, 5).Style.Fill.BackgroundColor = XLColor.Gray;
+            ws.Range(1, 5, lastDataRow, 5).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+
+            //..status
+            var statusRange = ws.Range(2, 6, lastDataRow, 6);
+            statusRange.AddConditionalFormat().WhenEquals("BREACHED").Fill.SetBackgroundColor(XLColor.Red);
+            statusRange.AddConditionalFormat().WhenEquals("CLOSED").Fill.SetBackgroundColor(XLColor.Green);
+            statusRange.AddConditionalFormat().WhenEquals("OPEN").Fill.SetBackgroundColor(XLColor.Orange);
+
+            //..status
+            var breachRange = ws.Range(2, 7, lastDataRow, 7);
+            breachRange.AddConditionalFormat().WhenEquals("YES").Fill.SetBackgroundColor(XLColor.Red);
+            breachRange.AddConditionalFormat().WhenEquals("NO").Fill.SetBackgroundColor(XLColor.Green);
+
+            //..add header filtersfilters
+            ws.Range(1, 1, 1, headers.Length).SetAutoFilter();
+
+            //..freeze header
+            ws.SheetView.FreezeRows(1);
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"AnnuallyReturns-{DateTime.Today:yyyy-MM}.xlsx");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MonthlySummeryReport() {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+                return Ok(new { success = false, message = "Unable to resolve current user" });
+
+            var request = new GrcRequest {
+                UserId = userResponse.Data.UserId,
+                IPAddress = ipAddress,
+                Action = Activity.RETURNS_REPORT_DATA.GetDescription()
+            };
+
+            var result = await _returnService.GetMonthlySummeryAsync(request);
+            if (result.HasError || result.Data == null)
+                return Ok(new { success = false, message = result.Error.Message ?? "Failed to retrieve return data" });
+
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("Monthly Summery Returns");
+
+            var data = result.Data;
+
+            string[] headers =
+            {
+                "NO",
+                "PERIOD",
+                "SUBMITTED",
+                "PENDING",
+                "ON TIME",
+                "BREACHED",
+                "TOTAL"
+            };
+
+            for (int i = 0; i < headers.Length; i++) {
+                ws.Cell(1, i + 1).Value = headers[i];
+            }
+
+            // Header styling
+            var header = ws.Range(1, 1, 1, headers.Length);
+            header.Style.Font.Bold = true;
+            header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Fill.BackgroundColor = XLColor.LightGray;
+            ws.Row(1).Height = 28;
+
+
+            //..increase header height
+            ws.Row(1).Height = 30;
+            var countHeaderCell = ws.Cell(1, 3);
+
+            countHeaderCell.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            countHeaderCell.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+
+            int row = 2;
+            int no = 1;
+
+            foreach (var p in result.Data) {
+                ws.Cell(row, 1).Value = no;
+                ws.Cell(row, 2).Value = p.Period;
+                ws.Cell(row, 3).Value = p.Submitted;
+                ws.Cell(row, 4).Value = p.Pending;
+                ws.Cell(row, 5).Value = p.OnTime;
+                ws.Cell(row, 6).Value = p.Breached;
+
+                // Row total (formula)
+                ws.Cell(row, 7).FormulaA1 = $"=SUM(B{row}:E{row})";
+                row++;
+                no++;
+            }
+
+            int totalRow = row;
+
+            ws.Cell(totalRow, 1).Value = "TOTAL";
+            ws.Cell(totalRow, 2).FormulaA1 = $"=SUM(B2:B{row - 1})";
+            ws.Cell(totalRow, 3).FormulaA1 = $"=SUM(C2:C{row - 1})";
+            ws.Cell(totalRow, 4).FormulaA1 = $"=SUM(D2:D{row - 1})";
+            ws.Cell(totalRow, 5).FormulaA1 = $"=SUM(E2:E{row - 1})";
+
+            //..grand total
+            var totalRange = ws.Range(totalRow, 1, totalRow, 6);
+            totalRange.Style.Font.Bold = true;
+            totalRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+            ws.Row(totalRow).Height = 26;
+            ws.Cell(totalRow, 7).FormulaA1 = $"=SUM(B{totalRow}:E{totalRow})";
+
+            //..adjust details column
+            ws.Columns().AdjustToContents();
+            foreach (var col in ws.ColumnsUsed()) {
+                if (col.Width > 40)
+                    col.Width = 40;
+                else col.Width = 40;
+            }
+
+            // Cap row height
+            foreach (var rowUsed in ws.RowsUsed()) {
+                if (rowUsed.Height > 20)
+                    rowUsed.Height = 20;
+                else rowUsed.Height = 20;
+            }
+
+            ws.SheetView.FreezeRows(1);
+
+            //..exclude headers and totals
+            var dataRange = ws.Range(2, 3, row - 2, 4);
+
+            ws.Range(2, 7, row, 7).Style.Fill.BackgroundColor = XLColor.LightGray;
+            ws.Range(2, 3, row, 7).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            //..header height
+            ws.Row(1).Height = 30;
+
+            //..totals height
+            int totalRowNumber = row;
+            ws.Row(totalRowNumber).Height = 28;
+            ws.Range(1, 3, totalRowNumber, 3).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            ws.Range(1, 3, totalRowNumber, 3).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                 $"MONTHLY-SUMMERY-{DateTime.Today:MM-yyyy}.xlsx");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BreachedAgingReport() {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+                return Ok(new { success = false, message = "Unable to resolve current user" });
+
+            var request = new GrcRequest {
+                UserId = userResponse.Data.UserId,
+                IPAddress = ipAddress,
+                Action = Activity.RETURNS_REPORT_DATA.GetDescription()
+            };
+
+            var result = await _returnService.GetAgingReportAsync(request);
+            if (result.HasError || result.Data == null)
+                return Ok(new { success = false, message = result.Error.Message ?? "Failed to retrieve return data" });
+
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("Summery");
+
+            var data = result.Data;
+
+            //..define headers
+            ws.Cell(1, 1).Value = "NO";
+            ws.Cell(1, 2).Value = "REPORT NAME";
+            ws.Cell(1, 3).Value = "AUTHORITY";
+            ws.Cell(1, 4).Value = "DEPARTMENT";
+            ws.Cell(1, 5).Value = "DUE DATE";
+            ws.Cell(1, 6).Value = "SUBMISSION DATE";
+            ws.Cell(1, 7).Value = "STATUS";
+            ws.Cell(1, 8).Value = "AGE(IN DAYS)";
+
+            //..header styling
+            var header = ws.Range(1, 1, 1, 4);
+            header.Style.Font.Bold = true;
+            header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            //..increase header height
+            ws.Row(1).Height = 30;
+            var countHeaderCell = ws.Cell(1, 3);
+
+            countHeaderCell.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            countHeaderCell.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+
+            int row = 2;
+            int no = 1;
+
+            foreach (var record in data) {
+                ws.Cell(row, 1).Value = no;
+                ws.Cell(row, 2).Value = record.ReportName;
+                ws.Cell(row, 3).Value = record.Authority;
+                ws.Cell(row, 4).Value = record.Department;
+
+                ws.Cell(row, 5).Value = record.DueDate;
+                ws.Cell(row, 5).Style.DateFormat.Format = "dd-MMM-yyyy";
+
+                //..end Date
+                SetSafeDate(ws.Cell(row, 6), record.SubmissionDate);
+
+                ws.Cell(row, 7).Value = record.Status;
+                ws.Cell(row, 6).Value = record.Age;
+                row++;
+                no++;
+            }
+
+            //..adjust details column
+            ws.Columns().AdjustToContents();
+            ws.SheetView.FreezeRows(1);
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                 $"BREACHED-{DateTime.Today:MM-yyyy}.xlsx");
+        }
+
+        #endregion
+
+        #region Private methods
+
+        private static void SetSafeDate(IXLCell cell, DateTime? date) {
+            if (!date.HasValue) {
+                cell.Value = string.Empty;
+                return;
+            }
+
+            var value = date.Value;
+            //..excel-safe date range
+            if (value.Year < 1900 || value.Year > 9999) {
+                cell.Value = string.Empty;
+                return;
+            }
+
+            cell.Value = value;
+            cell.Style.DateFormat.Format = "dd-MMM-yyyy";
+        }
+
+        #endregion
     }
 }

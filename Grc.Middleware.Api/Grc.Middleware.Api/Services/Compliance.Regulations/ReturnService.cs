@@ -7,6 +7,7 @@ using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -42,6 +43,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 statistics.Policies.Add("Department Review", statusGroups.GetValueOrDefault("DEPT-REVIEW", 0));
                 statistics.Policies.Add("Not Uptodate", statusGroups.GetValueOrDefault("DUE", 0));
                 statistics.Policies.Add("Board Review", statusGroups.GetValueOrDefault("PENDING-BOARD", 0));
+                statistics.Policies.Add("MRC Review", statusGroups.GetValueOrDefault("PENDING-MRC", 0));
+                statistics.Policies.Add("SMT Review", statusGroups.GetValueOrDefault("PENDING-SMT", 0));
                 statistics.Policies.Add("Uptodate", statusGroups.GetValueOrDefault("UPTODATE", 0));
                 statistics.Policies.Add("Standard", statusGroups.GetValueOrDefault("NA", 0));
                 statistics.Policies.Add("Total", policies.Count);
@@ -379,6 +382,106 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
 
             return statistics;
 
+        }
+
+        #endregion
+
+        #region Reports
+
+        public async Task<List<SummeryReturnResponse>> GetPeriodReportAsync(string period) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Generate returns period report data", "INFO");
+
+            try {
+                var reports = await uow.ReturnRepository.GetAllAsync(false, 
+                    r => r.Department, 
+                    r => r.Frequency,
+                    r => r.ReturnType,
+                    r => r.Authority,
+                    r => r.Submissions);
+
+                if (reports == null || reports.Count == 0) {
+                    return new List<SummeryReturnResponse>();
+                }
+
+                var now = DateTime.UtcNow;
+                var result = reports
+                    .SelectMany(r => r.Submissions ?? Enumerable.Empty<ReturnSubmission>(), (r, s) => new { Report = r, Submission = s })
+                    .Where(sub => {
+                        var (start, end) = GetCurrentPeriodRange(period, now);
+                        var inCurrentPeriod = sub.Submission.PeriodStart < end && sub.Submission.PeriodEnd >= start;
+                        var breachedAndOpen =sub.Submission.IsBreached && string.Equals(sub.Submission.Status, "OPEN", StringComparison.OrdinalIgnoreCase);
+                        return inCurrentPeriod || breachedAndOpen;
+                    }).Select(submission => new SummeryReturnResponse {
+                        Id = submission.Submission.Id,
+                        Title = submission.Report.ReturnName,
+                        Type = submission.Report.ReturnType?.TypeName,
+                        Authority = submission.Report.Authority?.AuthorityName,
+                        PeriodStart = submission.Submission.PeriodStart,
+                        PeriodEnd = submission.Submission.PeriodEnd,
+                        Status = submission.Submission.Status ?? "OPEN",
+                        Department = submission.Report.Department?.DepartmentName,
+                        Executioner = submission.Submission.SubmittedBy ?? string.Empty,
+                        IsBreached = submission.Submission.IsBreached,
+                        BreachRisk = submission.Report.Risk ?? string.Empty,
+                        BreachReason = submission.Submission.BreachReason
+                    }).ToList();
+                return result;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to generate returns statistics: {ex.Message}","ERROR");
+                LogError(uow, ex);
+                throw;
+            }
+        }
+
+        public async Task<List<PeriodSummeryResponse>> GetMonthlySummeryAsync() {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Generate returns period report data", "INFO");
+
+            try {
+                var reports = await uow.ReturnRepository.GetAllAsync(false,
+                    r => r.Department,
+                    r => r.Frequency,
+                    r => r.ReturnType,
+                    r => r.Authority,
+                    r => r.Submissions);
+
+                if (reports == null || reports.Count == 0) {
+                    return new List<PeriodSummeryResponse>();
+                }
+
+                var now = DateTime.UtcNow;
+                var monthStart = new DateTime(now.Year, now.Month, 1);
+                var monthEnd = monthStart.AddMonths(1);
+
+                //..periods allowed
+                var allowedFrequencies = new[] {
+                    "DAILY",
+                    "WEEKLY",
+                    "MONTHLY"
+                };
+
+                var monthlySubmissions = reports.Where(r => allowedFrequencies.Contains(r.Frequency?.FrequencyName, StringComparer.OrdinalIgnoreCase))
+                         .SelectMany( r => r.Submissions ?? Enumerable.Empty<ReturnSubmission>(), (r, s) => new { Report = r, Submission = s })
+                         .Where(submission => submission.Submission.PeriodStart < monthEnd && submission.Submission.PeriodEnd >= monthStart
+                         ).ToList();
+
+                var summary = monthlySubmissions.GroupBy(submission => submission.Report.Frequency.FrequencyName.ToUpperInvariant())
+                        .Select(g => new PeriodSummeryResponse {
+                            Period = g.Key,
+                            Total = g.Count(),
+                            Submitted = g.Count(s => string.Equals(s.Submission.Status, "CLOSED", StringComparison.OrdinalIgnoreCase)),
+                            Pending = g.Count(s => string.Equals(s.Submission.Status, "OPEN", StringComparison.OrdinalIgnoreCase)),
+                            Breached = g.Count(s => s.Submission.IsBreached),
+                            OnTime = g.Count(s => !s.Submission.IsBreached && string.Equals(s.Submission.Status, "CLOSED", StringComparison.OrdinalIgnoreCase))
+                        }).OrderBy(s => s.Period).ToList();
+
+                return summary;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to generate returns statistics: {ex.Message}", "ERROR");
+                LogError(uow, ex);
+                throw;
+            }
         }
 
         #endregion
@@ -1103,6 +1206,19 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         #endregion
 
         #region private methods
+
+        private static (DateTime Start, DateTime End) GetCurrentPeriodRange(string frequency, DateTime now) {
+            now = now.Date;
+            return frequency?.ToUpperInvariant() switch {
+                "DAILY" => (now,now.AddDays(1)),
+                "WEEKLY" => (now.AddDays(-(int)now.DayOfWeek),   now.AddDays(7 - (int)now.DayOfWeek)),
+                "MONTHLY" => (new DateTime(now.Year, now.Month, 1), new DateTime(now.Year, now.Month, 1).AddMonths(1)),
+                "QUARTERLY" => (new DateTime(now.Year, ((now.Month - 1) / 3 * 3) + 1, 1),new DateTime(now.Year, ((now.Month - 1) / 3 * 3) + 1, 1).AddMonths(3)),
+                "ANNUAL" => (new DateTime(now.Year, 1, 1),new DateTime(now.Year + 1, 1, 1)),
+                _ => (DateTime.MinValue,DateTime.MaxValue)
+            };
+        }
+
         private static string GetCircularStatus(Circular c) {
             if (c.IsBreached)
                 return "BREACHED";

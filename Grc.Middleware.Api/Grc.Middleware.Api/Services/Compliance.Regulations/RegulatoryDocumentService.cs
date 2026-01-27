@@ -8,6 +8,7 @@ using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
+using Microsoft.Win32;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -551,10 +552,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     //..update Regulatory Document record
                     document.DocumentName = (request.DocumentName ?? string.Empty).Trim();
                     document.Status = (request.DocumentStatus ?? string.Empty).Trim();
-                    document.ApprovedBy = (request.ApprovedBy ?? string.Empty).Trim();
+                    document.Approver = (request.Approver ?? string.Empty).Trim();
                     document.ApprovalDate = request.ApprovalDate;
                     document.PolicyAligned = request.IsAligned;
                     document.IsLocked = request.IsLocked;
+                    document.NeedMcrApproval = request.NeedMcrApproval;
+                    document.NeedBoardApproval = request.NeedBoardApproval;
+                    document.OnIntranet = request.OnIntranet;
+                    document.IsApproved = request.IsApproved;
                     document.LastRevisionDate = request.LastRevisionDate;
                     document.FrequencyId = request.FrequencyId;
                     document.DocumentTypeId = request.DocumentTypeId;
@@ -608,9 +613,13 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     //..update Regulatory Document record
                     document.DocumentName = (request.DocumentName ?? string.Empty).Trim();
                     document.Status = (request.DocumentStatus ?? string.Empty).Trim();
-                    document.ApprovedBy = (request.ApprovedBy ?? string.Empty).Trim();
+                    document.Approver = (request.Approver ?? string.Empty).Trim();
                     document.PolicyAligned = request.IsAligned;
                     document.IsLocked = request.IsLocked;
+                    document.OnIntranet = request.OnIntranet;
+                    document.NeedMcrApproval = request.NeedMcrApproval;
+                    document.NeedBoardApproval = request.NeedBoardApproval;
+                    document.IsApproved = request.IsApproved;
                     document.LastRevisionDate = request.LastRevisionDate;
                     document.FrequencyId = request.FrequencyId;
                     document.NextRevisionDate = request.NextRevisionDate;
@@ -678,21 +687,17 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public bool Delete(IdRequest request)
-        {
+        public bool Delete(IdRequest request) {
             using var uow = UowFactory.Create();
-            try
-            {
-                var documentJson = JsonSerializer.Serialize(request, new JsonSerializerOptions
-                {
+            try {
+                var documentJson = JsonSerializer.Serialize(request, new JsonSerializerOptions {
                     WriteIndented = true,
                     ReferenceHandler = ReferenceHandler.IgnoreCycles
                 });
                 Logger.LogActivity($"Regulatory Document data: {documentJson}", "DEBUG");
 
                 var statute = uow.RegulatoryDocumentRepository.Get(t => t.Id == request.RecordId);
-                if (statute != null)
-                {
+                if (statute != null) {
                     //..mark as delete this Regulatory Document
                     _ = uow.RegulatoryDocumentRepository.Delete(statute, request.MarkAsDeleted);
 
@@ -716,21 +721,17 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<bool> DeleteAsync(IdRequest request)
-        {
+        public async Task<bool> DeleteAsync(IdRequest request) {
             using var uow = UowFactory.Create();
-            try
-            {
-                var documentJson = JsonSerializer.Serialize(request, new JsonSerializerOptions
-                {
+            try {
+                var documentJson = JsonSerializer.Serialize(request, new JsonSerializerOptions {
                     WriteIndented = true,
                     ReferenceHandler = ReferenceHandler.IgnoreCycles
                 });
                 Logger.LogActivity($"Regulatory Document data: {documentJson}", "DEBUG");
 
                 var documents = await uow.RegulatoryDocumentRepository.GetAsync(t => t.Id == request.RecordId);
-                if (documents != null)
-                {
+                if (documents != null) {
                     //..mark as delete this Regulatory Document
                     _ = await uow.RegulatoryDocumentRepository.DeleteAsync(documents, request.MarkAsDeleted);
 
@@ -744,9 +745,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 }
 
                 return false;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to delete Regulatory Document : {ex.Message}", "ERROR");
                 //..save error object to the database
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
@@ -957,8 +956,9 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Generate policy reports", "INFO");
 
-            var summery = new PolicySummeryResponse() {
-                Count = new()
+            var summary = new PolicySummeryResponse() {
+                Count = new(),
+                Percentage = new()
             };
 
             try {
@@ -968,67 +968,23 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 var statusGroups = policies.GroupBy(p => p.Status).ToDictionary(g => g.Key, g => g.Count());
                 var total = policies.Count;
 
-                //..on hold
-                var holdCount = statusGroups.GetValueOrDefault("ON-HOLD", 0);
-                summery.Count.Add("On Hold", holdCount);
-                if (holdCount > 0) { 
-                    var onHoldPercentage = (holdCount/total)*100;
-                    summery.Percentage.Add("On Hold", holdCount);
-                } else {
-                    summery.Percentage.Add("On Hold", 0);
+                //..nested method
+                void Add(string key, int count) {
+                    summary.Count[key] = count;
+                    summary.Percentage[key] = decimal.Round((count * 100m) / total, 2, MidpointRounding.AwayFromZero);
                 }
 
-                //..review
-                var reviewCount =  statusGroups.GetValueOrDefault("DEPT-REVIEW", 0);
-                summery.Count.Add("Department Review",reviewCount);
-                if (reviewCount > 0) { 
-                    var reviewPercentage = (reviewCount/total)*100;
-                    summery.Percentage.Add("Department Review", reviewPercentage);
-                } else {
-                    summery.Percentage.Add("Department Review", 0);
-                }
+                Add("On Hold", statusGroups.GetValueOrDefault("ON-HOLD", 0));
+                Add("Department Review", statusGroups.GetValueOrDefault("DEPT-REVIEW", 0));
+                Add("Not Uptodate", statusGroups.GetValueOrDefault("DUE", 0));
+                Add("Board Review", statusGroups.GetValueOrDefault("PENDING-BOARD", 0));
+                Add("SMT Review", statusGroups.GetValueOrDefault("PENDING-SMT", 0));
+                Add("MRC Review", statusGroups.GetValueOrDefault("PENDING-MRC", 0));
+                Add("Uptodate", statusGroups.GetValueOrDefault("UPTODATE", 0));
+                Add("Standard", statusGroups.GetValueOrDefault("NA", 0));
 
-                //..due
-                var dueCount =  statusGroups.GetValueOrDefault("DUE", 0);
-                summery.Count.Add("Not Uptodate",reviewCount);
-                if (dueCount > 0) { 
-                    var duePercentage = (dueCount/total)*100;
-                    summery.Percentage.Add("Not Uptodate", duePercentage);
-                } else {
-                    summery.Percentage.Add("Not Uptodate", 0);
-                }
-
-                //..BOD
-                var bodCount =  statusGroups.GetValueOrDefault("PENDING-BOARD", 0);
-                summery.Count.Add("Board Review",reviewCount);
-                if (bodCount > 0) { 
-                    var duePercentage = (bodCount/total)*100;
-                    summery.Percentage.Add("Board Review", duePercentage);
-                } else {
-                    summery.Percentage.Add("Board Review", 0);
-                }
-
-                var todateCount =  statusGroups.GetValueOrDefault("UPTODATE", 0);
-                summery.Count.Add("Uptodate",todateCount);
-                if (todateCount > 0) { 
-                    var duePercentage = (todateCount/total)*100;
-                    summery.Percentage.Add("Uptodate", duePercentage);
-                } else {
-                    summery.Percentage.Add("Uptodate", 0);
-                }
-
-                var standardCount =  statusGroups.GetValueOrDefault("NA", 0);
-                summery.Count.Add("Standard",standardCount);
-                if (standardCount > 0) { 
-                    var stanPercentage = (standardCount/total)*100;
-                    summery.Percentage.Add("Uptodate", stanPercentage);
-                } else {
-                    summery.Percentage.Add("Uptodate", 0);
-                }
-
-                //..totals
-                summery.Count.Add("Total", total);
-                summery.Percentage.Add("Total", 100);
+                Add("Total", total);
+                summary.Percentage["Total"] = 100;
 
             } catch (Exception ex) {
                  Logger.LogActivity($"Failed to generate report data: {ex.Message}", "ERROR");
@@ -1037,19 +993,99 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 throw;
             }
 
-            return summery;
+            return summary;
         }
 
         public async Task<PolicySummeryResponse> GetBodSummeryAsync(bool includeDeleted) {
-            return await Task.FromResult(new PolicySummeryResponse() {
-                Count = new()
-            });
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Generate policy reports", "INFO");
+
+            var summary = new PolicySummeryResponse() {
+                Count = new(),
+                Percentage = new()
+            };
+
+            try {
+                var policies = await uow.RegulatoryDocumentRepository.GetAllAsync(
+                    r => r.Status == "PENDING-BOARD" || r.Approver == "SMT",
+                    includeDeleted
+                );
+
+                var statusGroups = policies.GroupBy(p => p.Status).ToDictionary(g => g.Key, g => g.Count());
+                var total = policies.Count;
+
+                //..nested method
+                void Add(string key, int count) {
+                    summary.Count[key] = count;
+                    summary.Percentage[key] = decimal.Round((count * 100m) / total, 2, MidpointRounding.AwayFromZero);
+                }
+
+                Add("On Hold", statusGroups.GetValueOrDefault("ON-HOLD", 0));
+                Add("Department Review", statusGroups.GetValueOrDefault("DEPT-REVIEW", 0));
+                Add("Not Uptodate", statusGroups.GetValueOrDefault("DUE", 0));
+                Add("Board Review", statusGroups.GetValueOrDefault("PENDING-BOARD", 0));
+                Add("SMT Review", statusGroups.GetValueOrDefault("PENDING-SMT", 0));
+                Add("MRC Review", statusGroups.GetValueOrDefault("PENDING-MRC", 0));
+                Add("Uptodate", statusGroups.GetValueOrDefault("UPTODATE", 0));
+                Add("Standard", statusGroups.GetValueOrDefault("NA", 0));
+
+                Add("Total", total);
+                summary.Percentage["Total"] = 100;
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to generate report data: {ex.Message}", "ERROR");
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+
+            return summary;
         }
 
         public async Task<PolicySummeryResponse> GetSmtSummeryAsync(bool includeDeleted) {
-            return await Task.FromResult(new PolicySummeryResponse() {
-                Count = new()
-            });
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Generate policy reports", "INFO");
+
+            var summary = new PolicySummeryResponse() {
+                Count = new(),
+                Percentage = new()
+            };
+
+            try {
+                var policies = await uow.RegulatoryDocumentRepository.GetAllAsync(
+                    r => r.Status == "PENDING-SMT" || r.Approver == "SMT",
+                    includeDeleted
+                );
+
+                var statusGroups = policies.GroupBy(p => p.Status).ToDictionary(g => g.Key, g => g.Count());
+                var total = policies.Count;
+
+                //..nested method
+                void Add(string key, int count) {
+                    summary.Count[key] = count;
+                    summary.Percentage[key] = decimal.Round((count * 100m) / total, 2, MidpointRounding.AwayFromZero);
+                }
+
+                Add("On Hold", statusGroups.GetValueOrDefault("ON-HOLD", 0));
+                Add("Department Review", statusGroups.GetValueOrDefault("DEPT-REVIEW", 0));
+                Add("Not Uptodate", statusGroups.GetValueOrDefault("DUE", 0));
+                Add("Board Review", statusGroups.GetValueOrDefault("PENDING-BOARD", 0));
+                Add("SMT Review", statusGroups.GetValueOrDefault("PENDING-SMT", 0));
+                Add("MRC Review", statusGroups.GetValueOrDefault("PENDING-MRC", 0));
+                Add("Uptodate", statusGroups.GetValueOrDefault("UPTODATE", 0));
+                Add("Standard", statusGroups.GetValueOrDefault("NA", 0));
+
+                Add("Total", total);
+                summary.Percentage["Total"] = 100;
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to generate report data: {ex.Message}", "ERROR");
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+
+            return summary;
         }
 
         #endregion

@@ -10,11 +10,15 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
             builder.HasKey(t => t.Id);
             builder.Property(t => t.DocumentName).HasColumnName("doc_name").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
             builder.Property(t => t.Status).HasColumnName("doc_status").HasColumnType("NVARCHAR(50)").IsRequired(true);
-            builder.Property(t => t.ApprovedBy).HasColumnName("doc_approved_by").HasColumnType("NVARCHAR(50)").IsRequired(false);
+            builder.Property(t => t.Approver).HasColumnName("doc_approver").HasColumnType("NVARCHAR(50)").IsRequired(false);
             builder.Property(t => t.PolicyAligned).HasColumnName("is_aligned").IsRequired(true);
             builder.Property(t => t.Comments).HasColumnName("doc_comments").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
             builder.Property(t => t.IsDeleted).HasColumnName("is_deleted");
             builder.Property(t => t.IsLocked).HasColumnName("is_locked").IsRequired(false);
+            builder.Property(t => t.NeedMcrApproval).HasColumnName("need_mrc_approval").IsRequired(true);
+            builder.Property(t => t.NeedBoardApproval).HasColumnName("need_board_approval").IsRequired(true);
+            builder.Property(t => t.OnIntranet).HasColumnName("on_intranet").IsRequired(true);
+            builder.Property(t => t.IsApproved).HasColumnName("is_approved").IsRequired(true);
             builder.Property(t => t.LastRevisionDate).HasColumnName("last_revision_on").IsRequired();
             builder.Property(t => t.FrequencyId).HasColumnName("frequency_id").IsRequired();
             builder.Property(t => t.NextRevisionDate).HasColumnName("next_revision_on").IsRequired(false);

@@ -72,6 +72,13 @@ namespace Grc.ui.App.Services {
         Task<GrcResponse<ServiceResponse>> CreateIssueAsync(CircularIssueViewModel request, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> UpdateIssueAsync(CircularIssueViewModel request, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> DeleteIssueAsync(GrcIdRequest request);
+
+        #endregion
+
+        #region Reports
+        Task<GrcResponse<List<ReturnReportResponse>>> GetPeriodReturnReportAsync(GrcPeriodStatisticRequest request);
+        Task<GrcResponse<List<PeriodSummeryResponse>>> GetMonthlySummeryAsync(GrcRequest request);
+        Task<GrcResponse<List<BreachAgeResponse>>> GetAgingReportAsync(GrcRequest request);
         #endregion
     }
 }
