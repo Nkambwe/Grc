@@ -1,26 +1,27 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace Grc.Middleware.Api.Http.Requests {
-    public class PasswordResetRequest {
+    public class ReportRequest {
         /// <summary>
-        /// Get or Set record ID
+        /// Get or Set report filter
         /// </summary>
-        [JsonPropertyName("recordId")]
-        public long RecordId { get; set; }
+        [JsonPropertyName("filter")]
+        public string Filter { get; set; }
         /// <summary>
-        /// Get or Set ID of user making request
+        /// Get or Set ID of user sending request
         /// </summary>
         [JsonPropertyName("userId")]
         public long UserId { get; set; }
-        /// <summary>
-        /// Get or Set User IP Address
-        /// </summary>
-        [JsonPropertyName("ipAddress")]
-        public string IPAddress { get; set; }
         /// <summary>
         /// Get or Set Intended action
         /// </summary>
         [JsonPropertyName("action")]
         public string Action { get; set; }
+        /// <summary>
+        /// Get or Set User IP Address
+        /// </summary>
+        [JsonPropertyName("ipAddress")]
+        public string IpAddress { get; set; }
     }
+
 }

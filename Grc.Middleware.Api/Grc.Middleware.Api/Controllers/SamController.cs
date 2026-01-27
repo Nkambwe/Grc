@@ -1,12 +1,16 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Grc.Middleware.Api.Data.Entities.Logging;
 using Grc.Middleware.Api.Data.Entities.System;
+using Grc.Middleware.Api.Data.Repositories;
 using Grc.Middleware.Api.Enums;
+using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Security;
 using Grc.Middleware.Api.Services;
 using Grc.Middleware.Api.Services.Organization;
+using Grc.Middleware.Api.TaskHandler;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Concurrent;
@@ -20,6 +24,8 @@ namespace Grc.Middleware.Api.Controllers {
         private readonly ISystemAccessService _accessService;
         private readonly IQuickActionService _quickActionService;
         private readonly IPinnedItemService _pinnedItemService;
+        private readonly IMailTaskQueue _mailTask;
+        private readonly IRoleRepository _roleService;
         public SamController(IObjectCypher cypher, 
                             IServiceLoggerFactory loggerFactory, 
                             IMapper mapper, 
@@ -29,12 +35,16 @@ namespace Grc.Middleware.Api.Controllers {
                             IQuickActionService quickActionService,
                             IPinnedItemService pinnedItemService,
                             IErrorNotificationService errorService,
+                            IMailTaskQueue mailTask,
+                            IRoleRepository roleService,
                             ISystemErrorService systemErrorService) 
                             : base(cypher, loggerFactory, mapper, companyService, environment,
                                   errorService, systemErrorService) {
             _accessService = accessService;
             _quickActionService = quickActionService;
             _pinnedItemService = pinnedItemService;
+            _mailTask = mailTask;
+            _roleService = roleService;
         }
 
         #region Authentication
@@ -123,18 +133,12 @@ namespace Grc.Middleware.Api.Controllers {
                 Logger.LogActivity("Authenticate user at login", "INFO");
         
                 if (request == null || string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password)) { 
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Username and password are required",
-                        "Invalid login credentials"
-                    );
-
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Username and password are required", "Invalid login credentials");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<AuthenticationResponse>(error));
                 }
 
-                Logger.LogActivity($"Authentication Request >> {JsonSerializer.Serialize(new { Username = request.Username, HasPassword = !string.IsNullOrEmpty(request.Password) })}", "INFO");
-        
+                Logger.LogActivity($"Authentication Request >> {JsonSerializer.Serialize(new { request.Username, HasPassword = !string.IsNullOrEmpty(request.Password) })}", "INFO");
                 var response = await _accessService.AuthenticateUserAsync(request.Username);
                 if(response != null) {  
                     //..decrypt sensitive fields 
@@ -159,12 +163,7 @@ namespace Grc.Middleware.Api.Controllers {
                     Logger.LogActivity($"AUTHENTICATION SUCCESS: User {request.Username} authenticated successfully");
                     return Ok(new GrcResponse<AuthenticationResponse>(response));
                 } else { 
-                    var error = new ResponseError(
-                        ResponseCodes.UNAUTHORIZED,
-                        "Invalid username or password",
-                        "Authentication failed - please check your credentials"
-                    ); 
-            
+                    var error = new ResponseError(ResponseCodes.UNAUTHORIZED, "Invalid username or password", "Authentication failed - please check your credentials"); 
                     Logger.LogActivity($"AUTHENTICATION FAILED: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<AuthenticationResponse>(error));
                 }
@@ -198,12 +197,7 @@ namespace Grc.Middleware.Api.Controllers {
                     Logger.LogActivity($"MIDDLEWARE-SAM-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
                 }
 
-                var error = new ResponseError(
-                    ResponseCodes.SERVERERROR,
-                    "Authentication service temporarily unavailable",
-                    $"System Error - {ex.Message}"
-                );
-
+                var error = new ResponseError(ResponseCodes.SERVERERROR, "Authentication service temporarily unavailable", $"System Error - {ex.Message}");
                 Logger.LogActivity($"MIDDLEWARE-SAM RESPONSE: {JsonSerializer.Serialize(error)}");
                 return Ok(new GrcResponse<AuthenticationResponse>(error));
             }
@@ -737,14 +731,24 @@ namespace Grc.Middleware.Api.Controllers {
             try {
                 Logger.LogActivity("Creating new user record", "INFO");
                 if (request == null) {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "The user record cannot be null"
-                    );
-
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","The user record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<UserResponse>(error));
+                }
+
+                //..get group record
+                var role = await _roleService.GetAsync(r => r.Id == request.RoleId, false, r => r.Group);
+                if(role == null) {
+                     var error = new ResponseError(ResponseCodes.NOTFOUND,"Role record not found","Selected role not found");
+                     Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                     return Ok(new GrcResponse<UserResponse>(error));
+                }
+
+                var group = role.Group ?? null;
+                if(role == null) {
+                     var error = new ResponseError(ResponseCodes.NOTFOUND,"Role Group not found","Selected role has no defined role group");
+                     Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                     return Ok(new GrcResponse<UserResponse>(error));
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -753,14 +757,8 @@ namespace Grc.Middleware.Api.Controllers {
                 SystemUser user = null;
                 if (!string.IsNullOrWhiteSpace(request.UserName)) {
                     user = await _accessService.GetUserByUsernameAsync(request.UserName);
-                    if (user != null)
-                    {
-                        var error = new ResponseError(
-                            ResponseCodes.DUPLICATE,
-                            "Duplicate Record",
-                            "Another user found with same username"
-                        );
-
+                    if (user != null){
+                        var error = new ResponseError(ResponseCodes.DUPLICATE,"Duplicate Record","Another user found with same username");
                         Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
                         return Ok(new GrcResponse<UserResponse>(error));
                     }
@@ -768,16 +766,21 @@ namespace Grc.Middleware.Api.Controllers {
 
                 //..create company
                 var userRecord = Mapper.Map<SystemUser>(request);
-
-                //..hash the password
-                userRecord.PasswordHash ="Password10!";
                 userRecord.IsDeleted = false;
                 userRecord.IsActive=true;
 ;               userRecord.IsApproved = true;
                 userRecord.IsVerified = true;
-                userRecord.PasswordHash = ExtendedHashMapper.HashPassword(userRecord.PasswordHash);
+
+                var email = userRecord.EmailAddress;
+                var username = userRecord.Username;
+                var firstname = userRecord.FirstName;
                 //..encrypt fields
                 Cypher.EncryptProperties(userRecord, request.EncryptFields);
+
+                //..hash the password
+                var userPwd = SecurePasswordGenerator.Generate();
+                Logger.LogActivity($"USER GENERATED PWD >> : {userPwd}");
+                userRecord.PasswordHash = HashGenerator.EncryptString(ExtendedHashMapper.HashPassword(userPwd));
 
                 //..get username
                 var currentUser = await _accessService.GetByIdAsync(request.UserId);
@@ -798,10 +801,18 @@ namespace Grc.Middleware.Api.Controllers {
 
                 //..create company
                 var result = await _accessService.InsertUserAsync(userRecord);
-
                 var response = new GeneralResponse();
-                if (result)
-                {
+                if (result) {
+                    //..send mail for password change
+                    _mailTask.Enqueue(async (sp, token) => {
+                        var mailService = sp.GetRequiredService<IMailService>();
+                        var logger = sp.GetRequiredService<IServiceLoggerFactory>().CreateLogger();
+
+                        await SendMailAsync(Logger, mailService, firstname, email, username, userPwd);
+                        //await SendMailAsync(Logger, mailService, firstname, email, username, userPwd, true); 
+                    });
+
+                    //..set response
                     response.Status = true;
                     response.StatusCode = (int)ResponseCodes.SUCCESS;
                     response.Message = "User saved successfully";
@@ -823,61 +834,184 @@ namespace Grc.Middleware.Api.Controllers {
                 return Ok(new GrcResponse<GeneralResponse>(error));
             }
         }
-
-        [HttpPost("sam/users/updateuser")]
-        public async Task<IActionResult> UpdateUser([FromBody] UserRecordRequest request)
-        {
-            try
-            {
+        
+        [HttpPost("sam/users/password-change")]
+        public async Task<IActionResult> PasswordChange([FromBody] PasswordChangeRequest request) {
+            try {
                 Logger.LogActivity("Update system role", "INFO");
-                if (request == null)
-                {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "The user record cannot be null"
-                    );
-
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Invalid client request","The Request record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<RoleResponse>(error));
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
-                if (!await _accessService.UserExistsAsync(r => r.Id == request.Id))
-                {
-                    var error = new ResponseError(
-                        ResponseCodes.NOTFOUND,
-                        "Record Not Found",
-                        "User record not found in the database"
-                    );
-
+                var userRecord = await _accessService.GetByIdAsync(request.RecordId);
+                if (userRecord == null){
+                    var error = new ResponseError(ResponseCodes.NOTFOUND,"Record Not Found","User record not found in the database");
                     Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<RoleResponse>(error));
+                }
+
+                //..varify user password
+                bool isValid = ExtendedHashMapper.VerifyPassword(request.OldPassword, userRecord.PasswordHash);
+                if(!isValid){ 
+                    var error = new ResponseError(ResponseCodes.FAILED,"Authetication Error","Provided old password is not correct");
+                    Logger.LogActivity($"AUTHENTICATION ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username;
+                if (currentUser != null) {
+                    username = currentUser.Username;
+                } else {
+                    username= $"{request.UserId}";
+                }
+
+                //..hash the password
+                var passwordHash = HashGenerator.EncryptString(ExtendedHashMapper.HashPassword(request.NewPassword.Trim()));
+                Logger.LogActivity($"USER PASSWORD CHANGE >> : {passwordHash}");
+
+                //..update user record
+                var result = await _accessService.ChangePasswordAsync(request.UserId, passwordHash, username);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "User record updated successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+                else
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update user record record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            }
+            catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("sam/users/password-reset")]
+        public async Task<IActionResult> PasswordReset([FromBody] PasswordResetRequest request) {
+            try {
+                Logger.LogActivity("User password reset", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Invalid client request","The Request record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                var userRecord = await _accessService.GetByIdAsync(request.RecordId);
+                if (userRecord == null){
+                    var error = new ResponseError(ResponseCodes.NOTFOUND,"Record Not Found","User record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleResponse>(error));
+                }
+
+                userRecord = Cypher.DecryptProperties(userRecord, new[]{ "FirstName", "LastName","EmailAddress"});
+                var firstName = userRecord.FirstName;
+                var email = userRecord.EmailAddress;
+                var accountName = userRecord.Username;
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username;
+                if (currentUser != null) {
+                    username = currentUser.Username;
+                } else {
+                    username= $"{request.UserId}";
+                }
+
+                //..hash the password
+                var genPassword = SecurePasswordGenerator.Generate();
+                Logger.LogActivity($"USER RESET PWD >> : {genPassword}");
+                var passwordHash = HashGenerator.EncryptString(ExtendedHashMapper.HashPassword(genPassword));
+
+                //..update role
+                var result = await _accessService.ResetPasswordAsync(request.RecordId, passwordHash, username);
+                var response = new GeneralResponse();
+                if (result) {
+                    //..send mail for password change
+                    _mailTask.Enqueue(async (sp, token) => {
+                        var mailService = sp.GetRequiredService<IMailService>();
+                        var logger = sp.GetRequiredService<IServiceLoggerFactory>().CreateLogger();
+                        await SendMailAsync(Logger, mailService, firstName, email, accountName, genPassword, true); 
+                    });
+
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "User password reset successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+                else
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update user password. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            }
+            catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("sam/users/updateuser")]
+        public async Task<IActionResult> UpdateUser([FromBody] UserRecordRequest request) {
+            try {
+                Logger.LogActivity("Update system role", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The user record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _accessService.UserExistsAsync(r => r.Id == request.Id)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "User record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleResponse>(error));
+                }
+                
+                //..get group record
+                var role = await _roleService.GetAsync(r => r.Id == request.RoleId, false, r => r.Group);
+                if(role == null) {
+                     var error = new ResponseError(ResponseCodes.NOTFOUND,"Role record not found","Selected role not found");
+                     Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                     return Ok(new GrcResponse<UserResponse>(error));
+                }
+
+                var group = role.Group ?? null;
+                if(role == null) {
+                     var error = new ResponseError(ResponseCodes.NOTFOUND,"Role Group not found","Selected role has no defined role group");
+                     Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                     return Ok(new GrcResponse<UserResponse>(error));
                 }
 
                 //..encrypt fields
                 Cypher.EncryptProperties(request, request.EncryptFields);
 
-
                 //..get username
                 var currentUser = await _accessService.GetByIdAsync(request.UserId);
-                if (currentUser != null)
-                {
-                    request.ModifiedBy = currentUser.Username;
-                    request.ModifiedOn = DateTime.Now;
-                }
-                else
-                {
-                    request.ModifiedBy = $"{request.UserId}";
-                    request.ModifiedOn = DateTime.Now;
-
-                }
+                string username =currentUser != null?currentUser.Username:$"{request.UserId}";
 
                 //..update role
-                var result = await _accessService.UpdateUserAsync(request);
+                var result = await _accessService.UpdateUserAsync(request, username);
                 var response = new GeneralResponse();
-                if (result)
-                {
+                if (result) {
                     response.Status = true;
                     response.StatusCode = (int)ResponseCodes.SUCCESS;
                     response.Message = "User record updated successfully";
@@ -3213,6 +3347,46 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
+        #endregion
+
+        #region Private methods
+         private async Task SendMailAsync(IServiceLogger logger, IMailService mailService, string sendToName, string email, string username, string password, bool reset=false) {
+            
+            var mailSettings = await mailService.GetMailSettingsAsync();
+            if (mailSettings is null) {
+                Logger.LogActivity($"Could not send mail o user mail. Mail sendings not found", "INFO");
+            } else{ 
+                bool sent;
+                string subject; 
+                string mail;
+                if (reset) {
+                    (sent, subject, mail) = MailHandler.SendPasswordResetMail(
+                        logger,mailSettings.MailSender,email, sendToName,
+                        "","GRC Suite Password reset", mailSettings.NetworkPort,
+                        mailSettings.SystemPassword, password);
+                }else {
+                    (sent, subject, mail) = MailHandler.SendNewAccountMail(
+                        logger,mailSettings.MailSender,email, sendToName,
+                        "","GRC Suite User account", mailSettings.NetworkPort,
+                        mailSettings.SystemPassword, username, password);
+                }
+
+                if (sent) {
+                    Logger.LogActivity($"Mail saved to the database", "INFO");
+                    await mailService.InsertMailAsync(new MailRecord() {
+                        SentToEmail = email,
+                        CCMail = mailSettings.CopyTo,
+                        Subject = subject,
+                        Mail = mail,
+                        IsDeleted = false,
+                        CreatedBy = "SYSTEM",
+                        CreatedOn = DateTime.Now,
+                        LastModifiedBy = "SYSTEM",
+                        LastModifiedOn = DateTime.Now,
+                    });
+                }
+            } 
+         }
         #endregion
     }
 }

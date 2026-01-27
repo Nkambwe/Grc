@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Grc.ui.App.Http.Responses
-{
+namespace Grc.ui.App.Http.Responses {
     public class PolicyDocumentResponse
     {
         [JsonPropertyName("id")]

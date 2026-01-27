@@ -25,12 +25,14 @@ namespace Grc.Middleware.Api.Services {
 
         Task<bool> InsertUserAsync(SystemUser userRecord);
 
-        bool PasswordUpdate(PasswordResetRequest request);
+        Task<bool> ChangePasswordAsync(long recordId, string passwordHash, string username);
 
-        bool UpdateUser(UserRecordRequest request, bool includeDeleted = false);
+        Task<bool> ResetPasswordAsync(long recordId, string passwordHash, string username);
 
-        Task<bool> UpdateUserAsync(UserRecordRequest request, bool includeDeleted = false);
+        bool UpdateUser(UserRecordRequest request, string username, bool includeDeleted = false);
 
+        Task<bool> UpdateUserAsync(UserRecordRequest request, string username, bool includeDeleted = false);
+        
         bool DeleteUser(IdRequest request);
 
         Task<bool> DeleteUserAsync(IdRequest request);
@@ -189,7 +191,7 @@ namespace Grc.Middleware.Api.Services {
         Task<ActivityLog> GetActivityLogAsync(IdRequest request);
 
         Task<PagedResult<ActivityLog>> GetPagedActivityLogAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false);
-        
+       
         #endregion
 
     }

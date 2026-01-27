@@ -48,6 +48,86 @@ namespace Grc.ui.App.Services {
             }
         }
 
+        public async Task<GrcResponse<List<PolicyDocumentResponse>>> GetPolicyReportAsync(GrcReportRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST,"Invalid Request object","Request object cannot be null");
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<List<PolicyDocumentResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/report-data";
+                return await HttpHandler.PostAsync<GrcReportRequest, List<PolicyDocumentResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "POLICY-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR,"An unexpected error occurred","Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<List<PolicyDocumentResponse>>(error);
+            }
+        }
+
+        public async Task<GrcResponse<GrcPolicySummeryResponse>> GetPolicySummeryAsync(GrcReportRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST,"Invalid Request object","Request object cannot be null");
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<GrcPolicySummeryResponse>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/report-summery";
+                return await HttpHandler.PostAsync<GrcReportRequest, GrcPolicySummeryResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "POLICY-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR,"An unexpected error occurred","Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<GrcPolicySummeryResponse>(error);
+            }
+        }
+        
+        public async Task<GrcResponse<GrcPolicySummeryResponse>> GetSmtSummeryAsync(GrcReportRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST,"Invalid Request object","Request object cannot be null");
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<GrcPolicySummeryResponse>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/smt-report-summery";
+                return await HttpHandler.PostAsync<GrcReportRequest, GrcPolicySummeryResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "POLICY-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR,"An unexpected error occurred","Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<GrcPolicySummeryResponse>(error);
+            }
+        }
+        
+        public async Task<GrcResponse<GrcPolicySummeryResponse>> GetBodSummeryAsync(GrcReportRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST,"Invalid Request object","Request object cannot be null");
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<GrcPolicySummeryResponse>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/bod-report-summery";
+                return await HttpHandler.PostAsync<GrcReportRequest, GrcPolicySummeryResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "POLICY-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR,"An unexpected error occurred","Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<GrcPolicySummeryResponse>(error);
+            }
+        }
+        
         public async Task<GrcResponse<List<PolicyDocumentResponse>>> GetDocumentListAsync(GrcRequest request) {
             try {
                 if (request == null) {

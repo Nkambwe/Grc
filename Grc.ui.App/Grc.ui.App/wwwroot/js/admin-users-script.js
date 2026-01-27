@@ -247,11 +247,8 @@ function openUserPane(title, record, isEdit) {
     if (isEdit) {
         $('#roleId').val(record.roleId).trigger('change');
         $('#departmentId').val(record.departmentId).trigger('change');
-
-        setTimeout(() => {
-            $('#roleGroupId').val(record.roleGroupId || '0').trigger('change');
-            $('#unitCode').val(record.unitCode || '0').trigger('change');
-        }, 300);
+        $('#roleGroupId').val(record.roleGroupId || '0').trigger('change');
+        $('#unitCode').val(record.unitCode || '0').trigger('change');
     } else {
         $('#roleId').val('0');
         $('#departmentId').val('0');

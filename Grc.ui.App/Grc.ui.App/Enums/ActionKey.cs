@@ -170,5 +170,23 @@ namespace Grc.ui.App.Enums {
         AuditExce,
         [Description("audit-report-new")]
         AuditReport,
+        [Description("pol-report-all")]
+        PolReportAll,
+        [Description("pol-report-uptodate")]
+        PolReportUptodate,
+        [Description("pol-report-review")]
+        PolReportReview,
+        [Description("pol-report-due")]
+        PolReportDue,
+        [Description("pol-report-board")]
+        PolReportBoard,
+        [Description("pol-report-board-summery")]
+        PolReportBoardSummery,
+        [Description("pol-report-smt")]
+        PolReportSmt,
+        [Description("pol-report-smt-summery")]
+        PolReportSmtSummery,
+        [Description("pol-report-summery")]
+        PolReportSummery
     }
 }

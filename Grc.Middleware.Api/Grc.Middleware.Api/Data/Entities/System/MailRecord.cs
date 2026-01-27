@@ -6,7 +6,7 @@ namespace Grc.Middleware.Api.Data.Entities.System {
         public string CCMail { get; set; }
         public string Subject { get; set; }
         public string Mail {  get; set; }
-        public long ApprovalId { get; set; }
+        public long? ApprovalId { get; set; }
         public virtual ProcessApproval Approval { get; set; }
     }
 }

@@ -1,38 +1,34 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\",
+  "WorkspaceRootPath": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\views\\compliancereturn\\returnsregister.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\views\\compliancereturn\\returnsregister.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc\\grc\\grc.ui.app\\grc.ui.app\\controllers\\compliancepolicycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\controllers\\compliancepolicycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\js\\audit-report-exceptions.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\js\\audit-report-exceptions.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc\\grc\\grc.ui.app\\grc.ui.app\\services\\ipolicyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\services\\ipolicyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\views\\shared\\components\\auditexceptionlist\\default.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\views\\shared\\components\\auditexceptionlist\\default.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\grc\\grc\\grc.middleware.api\\grc.middleware.api\\services\\compliance.regulations\\regulatorydocumentservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\js\\app-returns-register.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\js\\app-returns-register.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\grc\\grc\\grc.middleware.api\\grc.middleware.api\\controllers\\regulatorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\js\\audit-exceptions-script.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\js\\audit-exceptions-script.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc\\grc\\grc.ui.app\\grc.ui.app\\services\\policyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\services\\policyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\routes\\routeprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\routes\\routeprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\grc\\grc\\grc.middleware.api\\grc.middleware.api\\services\\compliance.regulations\\returnservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\controllers\\complianceauditcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\controllers\\complianceauditcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\grc\\grc\\grc.middleware.api\\grc.middleware.api\\services\\compliance.regulations\\iregulatorydocumentservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.ui.app\\grc.ui.app\\views\\shared\\components\\auditreportlist\\default.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\views\\shared\\components\\auditreportlist\\default.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\js\\app-regulation-polregister.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\js\\app-regulation-polregister.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     }
   ],
   "DocumentGroupContainers": [
@@ -41,12 +37,12 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 6,
-          "SelectedChildIndex": 12,
+          "DockedWidth": 218,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
               "$type": "Bookmark",
@@ -54,114 +50,67 @@
             },
             {
               "$type": "Bookmark",
-              "Name": "ST:1:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
             },
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
             },
             {
               "$type": "Bookmark",
-              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:131:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:132:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:133:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:134:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:135:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:130:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ReturnsRegister.cshtml",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\ComplianceReturn\\ReturnsRegister.cshtml",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Views\\ComplianceReturn\\ReturnsRegister.cshtml",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\ComplianceReturn\\ReturnsRegister.cshtml*",
-              "RelativeToolTip": "Grc.ui.App\\Views\\ComplianceReturn\\ReturnsRegister.cshtml*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAwAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-01-24T17:28:31.894Z",
+              "Title": "CompliancePolicyController.cs",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Controllers\\CompliancePolicyController.cs",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Controllers\\CompliancePolicyController.cs",
+              "ToolTip": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Controllers\\CompliancePolicyController.cs",
+              "RelativeToolTip": "Grc.ui.App\\Controllers\\CompliancePolicyController.cs",
+              "ViewState": "AgIAANoEAAAAAAAAAAAmwFIFAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-27T01:50:51.307Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "IRegulatoryDocumentService.cs",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\IRegulatoryDocumentService.cs",
+              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\IRegulatoryDocumentService.cs",
+              "ToolTip": "C:\\Projects\\Grc\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\IRegulatoryDocumentService.cs",
+              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\IRegulatoryDocumentService.cs",
+              "ViewState": "AgIAACoAAAAAAAAAAAASwDUAAABMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-27T03:36:09.187Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "app-returns-register.js",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-returns-register.js",
-              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\js\\app-returns-register.js",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-returns-register.js",
-              "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\app-returns-register.js",
-              "ViewState": "AgIAAOIBAAAAAAAAAAA/wPIBAABQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-01-24T17:21:03.805Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Default.cshtml",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\Shared\\Components\\AuditReportList\\Default.cshtml",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Views\\Shared\\Components\\AuditReportList\\Default.cshtml",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\Shared\\Components\\AuditReportList\\Default.cshtml",
-              "RelativeToolTip": "Grc.ui.App\\Views\\Shared\\Components\\AuditReportList\\Default.cshtml",
-              "ViewState": "AgIAAMMCAAAAAAAAAAAAANgCAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-01-24T17:03:44.601Z",
+              "Title": "RegulatoryController.cs",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\RegulatoryController.cs",
+              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\RegulatoryController.cs",
+              "ToolTip": "C:\\Projects\\Grc\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\RegulatoryController.cs",
+              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\RegulatoryController.cs",
+              "ViewState": "AgIAAGgAAAAAAAAAAAAlwBoCAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-26T04:42:13.053Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "Default.cshtml",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\Shared\\Components\\AuditExceptionList\\Default.cshtml",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Views\\Shared\\Components\\AuditExceptionList\\Default.cshtml",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\Shared\\Components\\AuditExceptionList\\Default.cshtml",
-              "RelativeToolTip": "Grc.ui.App\\Views\\Shared\\Components\\AuditExceptionList\\Default.cshtml",
-              "ViewState": "AgIAAJQAAAAAAAAAAAAQwJwAAABuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-01-24T16:55:44.89Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "RouteProvider.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Routes\\RouteProvider.cs",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Routes\\RouteProvider.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Routes\\RouteProvider.cs",
-              "RelativeToolTip": "Grc.ui.App\\Routes\\RouteProvider.cs",
-              "ViewState": "AgIAAO0GAAAAAAAAAAAEwAEHAAAsAAAAAAAAAA==",
+              "Title": "RegulatoryDocumentService.cs",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\RegulatoryDocumentService.cs",
+              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\RegulatoryDocumentService.cs",
+              "ToolTip": "C:\\Projects\\Grc\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\RegulatoryDocumentService.cs",
+              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\RegulatoryDocumentService.cs",
+              "ViewState": "AgIAAKMDAAAAAAAAAAAmwKUDAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-24T16:49:17.154Z",
+              "WhenOpened": "2026-01-27T03:37:29.132Z",
               "EditorCaption": ""
-            }
-          ]
-        },
-        {
-          "DockedWidth": 3,
-          "SelectedChildIndex": -1,
-          "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
             }
           ]
         }
@@ -171,12 +120,12 @@
       "Orientation": 0,
       "VerticalTabListWidth": 256,
       "FloatingWindowState": {
-        "Id": "97297514-d20e-4fde-8091-1e9d1d336550",
-        "Display": 0,
-        "X": 271,
-        "Y": 93,
-        "Width": 774,
-        "Height": 737,
+        "Id": "2a2b343e-4d4a-4669-8a83-1374aea56b78",
+        "Display": 1,
+        "X": 123,
+        "Y": 239,
+        "Width": 865,
+        "Height": 927,
         "WindowState": 2
       },
       "DocumentGroups": [
@@ -187,40 +136,53 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "audit-report-exceptions.js",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\audit-report-exceptions.js",
-              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\js\\audit-report-exceptions.js",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\audit-report-exceptions.js",
-              "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\audit-report-exceptions.js",
-              "ViewState": "AgIAANEAAAAAAAAAAAAQwPIAAAAyAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-01-24T16:58:52.299Z",
+              "Title": "IPolicyService.cs",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Services\\IPolicyService.cs",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Services\\IPolicyService.cs",
+              "ToolTip": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Services\\IPolicyService.cs",
+              "RelativeToolTip": "Grc.ui.App\\Services\\IPolicyService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAswAkAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-26T14:10:14.917Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "audit-exceptions-script.js",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\audit-exceptions-script.js",
-              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\js\\audit-exceptions-script.js",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\audit-exceptions-script.js",
-              "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\audit-exceptions-script.js",
-              "ViewState": "AgIAACABAAAAAAAAAAAYwC0BAAAaAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-01-24T16:53:29.111Z",
+              "Title": "PolicyService.cs",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Services\\PolicyService.cs",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Services\\PolicyService.cs",
+              "ToolTip": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Services\\PolicyService.cs",
+              "RelativeToolTip": "Grc.ui.App\\Services\\PolicyService.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAwBgAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-26T14:14:03.371Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "ComplianceAuditController.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Controllers\\ComplianceAuditController.cs",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Controllers\\ComplianceAuditController.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\Grc.ui.App\\Controllers\\ComplianceAuditController.cs",
-              "RelativeToolTip": "Grc.ui.App\\Controllers\\ComplianceAuditController.cs",
-              "ViewState": "AgIAAJsEAAAAAAAAAAAAAKkEAAAjAAAAAAAAAA==",
+              "DocumentIndex": 5,
+              "Title": "ReturnService.cs",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\ReturnService.cs",
+              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\ReturnService.cs",
+              "ToolTip": "C:\\Projects\\Grc\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\ReturnService.cs",
+              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\Compliance.Regulations\\ReturnService.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAAAB8AAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-24T16:49:51.513Z",
+              "WhenOpened": "2026-01-27T03:58:30.882Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "app-regulation-PolRegister.js",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-regulation-PolRegister.js",
+              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\js\\app-regulation-PolRegister.js",
+              "ToolTip": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-regulation-PolRegister.js",
+              "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\app-regulation-PolRegister.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHoBAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-01-26T11:08:44.366Z",
               "EditorCaption": ""
             }
           ]

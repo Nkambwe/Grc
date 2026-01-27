@@ -12,7 +12,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
             builder.Property(m => m.CCMail).HasColumnName("cc_mails").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(m => m.Subject).HasColumnName("mail_subject").HasColumnType("NVARCHAR(MAX)").IsRequired();
             builder.Property(m => m.Mail).HasColumnName("mail_body").HasColumnType("NVARCHAR(MAX)").IsRequired();
-            builder.Property(m => m.ApprovalId).HasColumnName("approval_id").IsRequired();
+            builder.Property(m => m.ApprovalId).HasColumnName("approval_id").IsRequired(false);
             builder.Property(m => m.IsDeleted).HasColumnName("is_deleted");
             builder.Property(m => m.CreatedOn).HasColumnName("created_on").IsRequired();
             builder.Property(m => m.CreatedBy).HasColumnName("created_by").HasColumnType("NVARCHAR(50)").IsRequired();

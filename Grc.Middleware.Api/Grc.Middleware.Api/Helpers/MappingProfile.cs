@@ -77,6 +77,7 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(a => a.RedirectUrl, reg => reg.MapFrom(o => string.Empty))
                 .ForMember(a => a.Favourites, reg => reg.MapFrom(o => new List<string>()))
                 .ForMember(a => a.Views, reg => reg.MapFrom(o => new List<string>()))
+                .ForMember(a => a.Permissions, reg => reg.MapFrom(o => new List<string>()))
                 .ForMember(a => a.Claims, reg => reg.MapFrom(o => new Dictionary<string, object>()));
 
             //..map user from registration

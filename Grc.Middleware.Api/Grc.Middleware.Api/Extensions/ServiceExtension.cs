@@ -10,6 +10,7 @@ using Grc.Middleware.Api.Services.Compliance.Regulations;
 using Grc.Middleware.Api.Services.Compliance.Support;
 using Grc.Middleware.Api.Services.Operations;
 using Grc.Middleware.Api.Services.Organization;
+using Grc.Middleware.Api.TaskHandler;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -143,7 +144,7 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IAuditUpdateService, AuditUpdateService>();
             services.AddScoped<ISystemConfigurationService, SystemConfigurationService>();
             services.AddScoped<IMailService, MailService>();
-
+            services.AddSingleton<IMailTaskQueue, MailTaskQueue>();
             //allow html helpers to acces current action context
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         }

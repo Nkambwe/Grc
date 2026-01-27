@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
 using Grc.Middleware.Api.Data.Entities.Compliance.Returns;
 using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Helpers;
@@ -12,6 +13,7 @@ using Grc.Middleware.Api.Services.Compliance.Support;
 using Grc.Middleware.Api.Services.Organization;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Text.Json;
 
 namespace Grc.Middleware.Api.Controllers {
@@ -443,6 +445,142 @@ namespace Grc.Middleware.Api.Controllers {
                         "No data",
                         "No statutory document records found"
                     );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<DocumentResponse>>(new List<DocumentResponse>()));
+                }
+
+                List<DocumentResponse> documentList = new();
+                documents.ToList().ForEach(register => documentList.Add(new DocumentResponse() {
+                    Id = register.Id,
+                    DocumentName = register.DocumentName ?? string.Empty,
+                    Status = register.Status ?? string.Empty,
+                    IsAligned = register.PolicyAligned,
+                    IsLocked = register.IsLocked ?? false,
+                    IsDeleted = register.IsDeleted,
+                    FrequencyId = register.FrequencyId,
+                    FrequencyName = register.Frequency?.FrequencyName ?? string.Empty,
+                    DocumentTypeId = register.DocumentTypeId,
+                    DocumentTypeName = register.DocumentType?.DocumentType ?? string.Empty,
+                    ResponsibilityId = register.ResponsibilityId,
+                    ResponsibilityName = register.Owner?.ContactPosition ?? string.Empty,
+                    DepartmentId = register.Owner?.DepartmentId ?? 0,
+                    DepartmentName = register.Owner?.Department?.DepartmentName ?? string.Empty,
+                    SendNotification = register.SendNotification,
+                    Interval = register.Interval ?? string.Empty,
+                    IntervalType = register.IntervalType ?? string.Empty,
+                    SentMessages = register.SentMessages,
+                    NextSendAt = register.NextSendAt ?? string.Empty,
+                    ReminderMessage = register.ReminderMessage ?? string.Empty,
+                    Comments = register.Comments ?? string.Empty,
+                    ApprovedBy = register.ApprovedBy ?? string.Empty,
+                    ApprovalDate = register.ApprovalDate ?? DateTime.MinValue,
+                    LastRevisionDate = register.LastRevisionDate,
+                    NextRevisionDate = register.NextRevisionDate
+                }));
+
+                return Ok(new GrcResponse<List<DocumentResponse>>(documentList));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<List<DocumentResponse>>(error));
+            }
+        }
+
+        [HttpPost("registers/report-summery")]
+        public async Task<IActionResult> GetPolicySummery([FromBody] ReportRequest request) { 
+            try {
+                Logger.LogActivity("Retrieve policy summery report data", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PolicySummeryResponse>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IpAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var summeryData = await _regulatoryDocuments.GetPolicySummeryAsync(false);
+                if (summeryData == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could retrieve report data. A system error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<PolicySummeryResponse>>(error));
+                }
+
+                return Ok(new GrcResponse<PolicySummeryResponse>(summeryData));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PolicySummeryResponse>(error));
+            }
+        }
+
+        [HttpPost("registers/smt-report-summery")]
+        public async Task<IActionResult> GetSmtSummery([FromBody] ReportRequest request) { 
+            try {
+                Logger.LogActivity("Retrieve policy summery report data", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PolicySummeryResponse>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IpAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var summeryData = await _regulatoryDocuments.GetSmtSummeryAsync(false);
+                if (summeryData == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could retrieve report data. A system error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<PolicySummeryResponse>>(error));
+                }
+
+                return Ok(new GrcResponse<PolicySummeryResponse>(summeryData));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PolicySummeryResponse>(error));
+            }
+        }
+        
+        [HttpPost("registers/bod-report-summery")]
+        public async Task<IActionResult> GetBodSummery([FromBody] ReportRequest request) { 
+            try {
+                Logger.LogActivity("Retrieve policy summery report data", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PolicySummeryResponse>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IpAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var summeryData = await _regulatoryDocuments.GetBodSummeryAsync(false);
+                if (summeryData == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could retrieve report data. A system error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<PolicySummeryResponse>>(error));
+                }
+
+                return Ok(new GrcResponse<PolicySummeryResponse>(summeryData));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PolicySummeryResponse>(error));
+            }
+        }
+        
+        [HttpPost("registers/report-data")]
+        public async Task<IActionResult> GetPolicyReport([FromBody] ReportRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<DocumentResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IpAddress}", "INFO");
+                var status = GetPolicyStatus(request.Filter.Trim());
+                var documents = status switch {
+                    "ALL" => await _regulatoryDocuments.GetAllAsync(false, d => d.Owner, d => d.DocumentType, d => d.Frequency),
+                    _ => await _regulatoryDocuments.GetAllAsync(p => p.Status == status,false,d => d.Owner,d => d.DocumentType,d => d.Frequency),
+                };
+                if (documents == null || !documents.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS,"No data","No statutory document records found");
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<List<DocumentResponse>>(new List<DocumentResponse>()));
                 }
@@ -4657,14 +4795,16 @@ namespace Grc.Middleware.Api.Controllers {
                         var mailSettings = await _mailService.GetMailSettingsAsync();
                         if (mailSettings is null) {
                             msg += ". Mail settings not found. No mail sent";
+                            Logger.LogActivity($"Failed to send submission notification mail. Mail settings not found", "INFO");
                         } else {
                             foreach (var kv in emails) {
                                 var sendToName = kv.Key;
                                 var email = kv.Value;
                                 string title = "";
-                                var (sent, subject, mail) = MailHandler.GenerateSubmissionMail(Logger, mailSettings.MailSender, email, 
-                                    sendToName, mailSettings.CopyTo, "CURCULAR", title, mailSettings.NetworkPort, mailSettings.SystemPassword);
+                                var (sent, subject, mail) = MailHandler.SendSubmissionMail(Logger, mailSettings.MailSender, email, 
+                                    sendToName, mailSettings.CopyTo, "CURCULAR SUBMISSION", title, mailSettings.NetworkPort, mailSettings.SystemPassword);
                                 if (sent) {
+                                    Logger.LogActivity($"Submission notification mail has been sent to {sendToName}", "INFO");
                                     await _mailService.InsertMailAsync(new Data.Entities.System.MailRecord() {
                                         SentToEmail = email,
                                         CCMail = mailSettings.CopyTo,
@@ -4679,6 +4819,7 @@ namespace Grc.Middleware.Api.Controllers {
                                     });
                                 } else {
                                     msg += ". Notification email not sent. Something went erong";
+                                    Logger.LogActivity($"Failed to send submission notification mail to {sendToName}", "INFO");
                                 }
                             }
                                 
@@ -6527,6 +6668,18 @@ namespace Grc.Middleware.Api.Controllers {
         }
         
         #endregion
+
+        private static string GetPolicyStatus(string filter) {
+            string status = filter switch {
+                "BOD"=> "PENDING-BOARD",
+                "SMT"=> "PENDING-SMT",
+                "DUE" => "DUE",
+                "UPTODATE" => "UPTODATE",
+                "REVIEW" => "DEPT-REVIEW",
+                _ => "ALL",
+            };
+            return status;
+        }
 
     }
 }

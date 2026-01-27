@@ -264,9 +264,9 @@ $('.action-btn-policy-new').on('click', function () {
     addPolicyDocument();
 });
 
-$('#btnExportPolicy').on('click', function () {
+$('.action-btn-pol-report-all').on('click', function () {
     $.ajax({
-        url: '/grc/compliance/register/policies-export',
+        url: '/grc/compliance/register/policies/export/all',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(policyRegisterTable.getData()),
@@ -274,7 +274,7 @@ $('#btnExportPolicy').on('click', function () {
         success: function (blob) {
             let link = document.createElement('a');
             link.href = window.URL.createObjectURL(blob);
-            link.download = "Policy_Register.xlsx";
+            link.download = "All_Policies.xlsx";
             link.click();
         },
         error: function () {
@@ -283,9 +283,9 @@ $('#btnExportPolicy').on('click', function () {
     });
 });
 
-$('.action-btn-policy-export').on('click', function () {
-    $.ajax({
-        url: '/grc/compliance/register/policies-export-full',
+$('.action-btn-pol-report-summery').on('click', function () {
+  $.ajax({
+        url: '/grc/compliance/register/policies/export/all-summery',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(policyRegisterTable.getData()),
@@ -293,13 +293,146 @@ $('.action-btn-policy-export').on('click', function () {
         success: function (blob) {
             let link = document.createElement('a');
             link.href = window.URL.createObjectURL(blob);
-            link.download = "Policy_Register_All.xlsx";
+            link.download = "All_Policies_Summery.xlsx";
             link.click();
         },
         error: function () {
             toastr.error("Export failed. Please try again.");
         }
     });
+});
+
+$('.action-btn-pol-report-review').on('click', function () {
+   $.ajax({
+        url: '/grc/compliance/register/policies/export/reviews',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(policyRegisterTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "All_Policies_Review.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+    });
+});
+
+$('.action-btn-pol-report-uptodate').on('click', function () {
+    $.ajax({
+        url: '/grc/compliance/register/policies/export/uptodate',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(policyRegisterTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "All_Policies_Uptodate.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+    });
+});
+
+$('.action-btn-pol-report-due').on('click', function () {
+   $.ajax({
+        url: '/grc/compliance/register/policies/export/due',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(policyRegisterTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "All_Policies_Due.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+    });
+});
+
+$('.action-btn-pol-report-board').on('click', function () {
+   $.ajax({
+        url: '/grc/compliance/register/policies/export/bod',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(policyRegisterTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "BOD_Policies.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+    });
+});
+
+$('.action-btn-pol-report-board-summery').on('click', function () {
+  $.ajax({
+        url: '/grc/compliance/register/policies/export/bod-summery',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(policyRegisterTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "BOD_Policies_Summery.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+    });
+});
+
+$('.action-btn-pol-report-smt').on('click', function () {
+   $.ajax({
+        url: '/grc/compliance/register/policies/export/smt',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(policyRegisterTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "SMT_Policies.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+   });
+});
+
+$('.action-btn-pol-report-smt-summery').on('click', function () {
+   $.ajax({
+        url: '/grc/compliance/register/policies/export/smt-summery',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(policyRegisterTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "SMT_Policies_Summery.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+   });
 });
 
 let flatpickrInstances = {};

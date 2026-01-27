@@ -2501,6 +2501,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
+    "Method": "GetPolicyreport",
+    "RelativePath": "grc/registers/report-data",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ReportRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "GetStatute",
     "RelativePath": "grc/registers/statute-retrieve",
     "HttpMethod": "POST",
@@ -3726,6 +3742,38 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "PasswordChange",
+    "RelativePath": "grc/sam/users/password-change",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.PasswordChangeRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "PasswordReset",
+    "RelativePath": "grc/sam/users/password-reset",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.PasswordResetRequest",
         "IsRequired": true
       }
     ],

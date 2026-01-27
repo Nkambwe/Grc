@@ -75,8 +75,8 @@
             );
             routeBuilder.MapControllerRoute(
                 name: "admin-users-modify",
-                pattern: "admin/support/users-modify",
-                defaults: new { area = "Admin", controller = "Support", action = "ModifyUser" }
+                pattern: "/admin/support/users-modify",
+                defaults: new { area = "Admin", controller = "Support", action = "UpdateUser" }
             );
             routeBuilder.MapControllerRoute(
                 name: "admin-users-approve",
@@ -1545,9 +1545,49 @@
                 defaults: new { controller = "CompliancePolicy", action = "ExcelExportPolicies" }
             );
             routeBuilder.MapControllerRoute(
-                name: "app-compliance-settings-authorities-export-full",
-                pattern: "/grc/compliance/register/policies-export-full",
-                defaults: new { controller = "CompliancePolicy", action = "ExcelExportAllPolicies" }
+                name: "app-compliance-register-policies-export-all",
+                pattern: "/grc/compliance/register/policies/export/all",
+                defaults: new { controller = "CompliancePolicy", action = "ExportAll" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-policies-export-all-summery",
+                pattern: "/grc/compliance/register/policies/export/all-summery",
+                defaults: new { controller = "CompliancePolicy", action = "ExportAllSummery" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-policies-export-reviews",
+                pattern: "/grc/compliance/register/policies/export/reviews",
+                defaults: new { controller = "CompliancePolicy", action = "ExportReview" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-policies-export-uptodate",
+                pattern: "/grc/compliance/register/policies/export/uptodate",
+                defaults: new { controller = "CompliancePolicy", action = "ExportUpdated" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-policies-export-due",
+                pattern: "/grc/compliance/register/policies/export/due",
+                defaults: new { controller = "CompliancePolicy", action = "ExportDue" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-policies-export-smt",
+                pattern: "/grc/compliance/register/policies/export/smt",
+                defaults: new { controller = "CompliancePolicy", action = "ExportSmt" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-policies-export-smt-summery",
+                pattern: "/grc/compliance/register/policies/export/smt-summery",
+                defaults: new { controller = "CompliancePolicy", action = "ExportSmtSummery" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-policies-export-bod",
+                pattern: "/grc/compliance/register/policies/export/bod",
+                defaults: new { controller = "CompliancePolicy", action = "ExportBod" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-register-policies-export-bod-summery",
+                pattern: "/grc/compliance/register/policies/export/bod-summery",
+                defaults: new { controller = "CompliancePolicy", action = "ExportBodSummery" }
             );
 
             /*--------------------------------------------- compliance Policies tasks routes*/

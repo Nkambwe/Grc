@@ -81,7 +81,7 @@ namespace Grc.Middleware.Api {
             services.ConfigureForwardHeaders();
 
             //..add background service
-            services.AddHostedService<ReturnSubmissionBackgroundService>();
+            services.AddHostedService<GrcBackgroundService>();
 
             // http configurations
             services.AddHttpClient();

@@ -6,6 +6,7 @@ using Grc.Middleware.Api.Data.Entities.Support;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
+using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
 using System.Linq.Expressions;
 using System.Text.Json;
@@ -949,6 +950,109 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 throw;
             }
         }
+
+        #region Policy Reports
+
+        public async Task<PolicySummeryResponse> GetPolicySummeryAsync(bool includeDeleted) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Generate policy reports", "INFO");
+
+            var summery = new PolicySummeryResponse() {
+                Count = new()
+            };
+
+            try {
+
+                //..policies
+                var policies = await uow.RegulatoryDocumentRepository.GetAllAsync(includeDeleted);
+                var statusGroups = policies.GroupBy(p => p.Status).ToDictionary(g => g.Key, g => g.Count());
+                var total = policies.Count;
+
+                //..on hold
+                var holdCount = statusGroups.GetValueOrDefault("ON-HOLD", 0);
+                summery.Count.Add("On Hold", holdCount);
+                if (holdCount > 0) { 
+                    var onHoldPercentage = (holdCount/total)*100;
+                    summery.Percentage.Add("On Hold", holdCount);
+                } else {
+                    summery.Percentage.Add("On Hold", 0);
+                }
+
+                //..review
+                var reviewCount =  statusGroups.GetValueOrDefault("DEPT-REVIEW", 0);
+                summery.Count.Add("Department Review",reviewCount);
+                if (reviewCount > 0) { 
+                    var reviewPercentage = (reviewCount/total)*100;
+                    summery.Percentage.Add("Department Review", reviewPercentage);
+                } else {
+                    summery.Percentage.Add("Department Review", 0);
+                }
+
+                //..due
+                var dueCount =  statusGroups.GetValueOrDefault("DUE", 0);
+                summery.Count.Add("Not Uptodate",reviewCount);
+                if (dueCount > 0) { 
+                    var duePercentage = (dueCount/total)*100;
+                    summery.Percentage.Add("Not Uptodate", duePercentage);
+                } else {
+                    summery.Percentage.Add("Not Uptodate", 0);
+                }
+
+                //..BOD
+                var bodCount =  statusGroups.GetValueOrDefault("PENDING-BOARD", 0);
+                summery.Count.Add("Board Review",reviewCount);
+                if (bodCount > 0) { 
+                    var duePercentage = (bodCount/total)*100;
+                    summery.Percentage.Add("Board Review", duePercentage);
+                } else {
+                    summery.Percentage.Add("Board Review", 0);
+                }
+
+                var todateCount =  statusGroups.GetValueOrDefault("UPTODATE", 0);
+                summery.Count.Add("Uptodate",todateCount);
+                if (todateCount > 0) { 
+                    var duePercentage = (todateCount/total)*100;
+                    summery.Percentage.Add("Uptodate", duePercentage);
+                } else {
+                    summery.Percentage.Add("Uptodate", 0);
+                }
+
+                var standardCount =  statusGroups.GetValueOrDefault("NA", 0);
+                summery.Count.Add("Standard",standardCount);
+                if (standardCount > 0) { 
+                    var stanPercentage = (standardCount/total)*100;
+                    summery.Percentage.Add("Uptodate", stanPercentage);
+                } else {
+                    summery.Percentage.Add("Uptodate", 0);
+                }
+
+                //..totals
+                summery.Count.Add("Total", total);
+                summery.Percentage.Add("Total", 100);
+
+            } catch (Exception ex) {
+                 Logger.LogActivity($"Failed to generate report data: {ex.Message}", "ERROR");
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+
+            return summery;
+        }
+
+        public async Task<PolicySummeryResponse> GetBodSummeryAsync(bool includeDeleted) {
+            return await Task.FromResult(new PolicySummeryResponse() {
+                Count = new()
+            });
+        }
+
+        public async Task<PolicySummeryResponse> GetSmtSummeryAsync(bool includeDeleted) {
+            return await Task.FromResult(new PolicySummeryResponse() {
+                Count = new()
+            });
+        }
+
+        #endregion
 
         #region Private Methods
         private SystemError HandleError(IUnitOfWork uow, Exception ex) {

@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Text.Json.Serialization;
 
 namespace Grc.Middleware.Api.Http.Responses {
     public class ComplianceStatisticsResponse {

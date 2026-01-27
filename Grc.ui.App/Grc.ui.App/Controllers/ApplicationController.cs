@@ -431,25 +431,21 @@ namespace Grc.ui.App.Controllers {
         private string DetermineRedirectUrl(string roleGroup) {
             if(!string.IsNullOrWhiteSpace(roleGroup)){
                 //..route to admin
-                if (RoleCategory.ANONYMOUS.ToString().Equals(roleGroup.ToUpper()) || RoleCategory.ADMINSUPPORT.ToString().Equals(roleGroup.ToUpper())) {
+                if (RoleCategory.SYSTEM.ToString().Equals(roleGroup.ToUpper()) || 
+                    RoleCategory.ADMINISTRATOR.ToString().Equals(roleGroup.ToUpper())||
+                    RoleCategory.APPLICATIONSUPPORT.ToString().Equals(roleGroup.ToUpper())) {
                     return Url.Action("Index", "Support", new { area = "Admin" });
                 }
 
                 //..route to operations
-                if (RoleCategory.OPERATIONSERVICES.ToString().Equals(roleGroup.ToUpper()))
-                {
+                if (RoleCategory.OPERATIONSERVICES.ToString().Equals(roleGroup.ToUpper()) ||
+                    RoleCategory.OPERATIONGUESTS.ToString().Equals(roleGroup.ToUpper())) {
                     return Url.Action("Index", "OperationDashboard", new { area = "Operations" });
                 }
 
-                //..operations guest
-                if (RoleCategory.OPERATIONGUESTS.ToString().Equals(roleGroup.ToUpper()))
-                {
-                    return Url.Action("Guest", "OperationDashboard");
-                }
-
                 //..compliance
-                if (RoleCategory.COMPLIANCEDEPT.ToString().Equals(roleGroup.ToUpper()))
-                {
+                if (RoleCategory.COMPLIANCEDEPT.ToString().Equals(roleGroup.ToUpper()) ||
+                    RoleCategory.COMPLIANCEGUESTS.ToString().Equals(roleGroup.ToUpper())) {
                     return Url.Action("Dashboard", "Application");
                 }
 

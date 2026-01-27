@@ -6,6 +6,10 @@ namespace Grc.ui.App.Services {
 
     public interface IPolicyService : IGrcBaseService {
         Task<GrcResponse<PagedResponse<PolicyDocumentResponse>>> GetPagedDocumentsAsync(TableListRequest request);
+        Task<GrcResponse<List<PolicyDocumentResponse>>> GetPolicyReportAsync(GrcReportRequest request);
+        Task<GrcResponse<GrcPolicySummeryResponse>> GetBodSummeryAsync(GrcReportRequest request);
+        Task<GrcResponse<GrcPolicySummeryResponse>>  GetSmtSummeryAsync(GrcReportRequest request);
+        Task<GrcResponse<GrcPolicySummeryResponse>>  GetPolicySummeryAsync(GrcReportRequest request) ;
         Task<GrcResponse<PolicyDocumentResponse>> GetPolicyDocumentAsync(GrcIdRequest getRequest);
         Task<GrcResponse<List<PolicyDocumentResponse>>> GetDocumentListAsync(GrcRequest request);
         Task<GrcResponse<GrcPolicySupportResponse>> GetPolicySupportItemsAsync(GrcRequest request);

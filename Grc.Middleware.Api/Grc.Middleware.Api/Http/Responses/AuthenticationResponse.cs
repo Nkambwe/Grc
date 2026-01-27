@@ -87,6 +87,9 @@ namespace Grc.Middleware.Api.Http.Responses {
 
         [JsonPropertyName("views")]
         public List<string> Views { get; set; }
+        
+        [JsonPropertyName("permissions")]
+        public List<string> Permissions { get; set; } = new List<string>();
 
         [JsonPropertyName("claims")]
         public Dictionary<string, object> Claims { get; set; } = new Dictionary<string, object>();

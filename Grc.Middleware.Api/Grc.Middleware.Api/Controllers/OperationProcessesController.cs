@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Grc.Middleware.Api.Data.Entities.Operations.Processes;
 using Grc.Middleware.Api.Data.Entities.Support;
 using Grc.Middleware.Api.Data.Entities.System;
@@ -12,6 +13,7 @@ using Grc.Middleware.Api.Services;
 using Grc.Middleware.Api.Services.Compliance.Support;
 using Grc.Middleware.Api.Services.Operations;
 using Grc.Middleware.Api.Services.Organization;
+using Grc.Middleware.Api.TaskHandler;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -27,7 +29,7 @@ namespace Grc.Middleware.Api.Controllers {
         private readonly IProcessGroupService _groupService;
         private readonly ISystemAccessService _accessService;
         private readonly IProcessApprovalService _approvalService;
-        private readonly IMailService _mailService;
+        private readonly IMailTaskQueue _mailTask;
         private readonly IResponsebilityService _officersService;
 
         public OperationProcessesController(IObjectCypher cypher, 
@@ -42,7 +44,7 @@ namespace Grc.Middleware.Api.Controllers {
                                             IProcessGroupService groupService,
                                             IProcessApprovalService approvalService,
                                             ISystemAccessService accessService,
-                                            IMailService mailService,
+                                            IMailTaskQueue mailTask,
                                             IResponsebilityService officersService
                                             ) 
                                             : base(cypher, 
@@ -55,7 +57,7 @@ namespace Grc.Middleware.Api.Controllers {
             _processService = processService;
             _tagService = tagService;
             _groupService = groupService;
-            _mailService = mailService;
+            _mailTask = mailTask;
             _accessService = accessService;
             _approvalService = approvalService;
             _officersService = officersService;
@@ -1986,25 +1988,14 @@ namespace Grc.Middleware.Api.Controllers {
             try {
                 Logger.LogActivity("Update operation process", "INFO");
                 if (request == null) {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "The operations process record cannot be null"
-                    );
-
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty", "The operations process record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
-                if (!await _processService.ExistsAsync(r => r.Id == request.Id))
-                {
-                    var error = new ResponseError(
-                        ResponseCodes.NOTFOUND,
-                        "Record Not Found",
-                        "Operations Process record not found in the database"
-                    );
-
+                if (!await _processService.ExistsAsync(r => r.Id == request.Id)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found","Operations Process record not found in the database");
                     Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
@@ -2017,12 +2008,9 @@ namespace Grc.Middleware.Api.Controllers {
 
                 //..get username
                 var currentUser = await _accessService.GetByIdAsync(request.UserId);
-                if (currentUser != null)
-                {
+                if (currentUser != null) {
                     initiate.ModifiedBy = currentUser.Username;
-                }
-                else
-                {
+                } else {
                     initiate.ModifiedBy = $"{request.UserId}";
                 }
 
@@ -2040,44 +2028,40 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(response));
                 }
 
-                string msg = "Processes sent for review";
-                var mailSettings = await _mailService.GetMailSettingsAsync();
-                if (mailSettings is null) {
-                    msg += ". Mail settings not found. No mail sent";
-                } else {
+                string msg="";
+                //..send mail for password change
+                _mailTask.Enqueue(async (sp, token) => {
+                    //..get services
+                    var mailService = sp.GetRequiredService<IMailService>();
+                    var logger = sp.GetRequiredService<IServiceLoggerFactory>().CreateLogger();
 
-                    //..get Head of operations details
-                    var hod = await _officersService.GetAsync(o => o.ContactPosition == "Head of Operation & Services");
-                    if (hod is null) {
-                        msg += ". Head Of Operations Contacts not found. Mail not sent";
+                    //..get mail settings
+                    var mailSettings = await mailService.GetMailSettingsAsync();
+                    if (mailSettings is null) {
+                        msg += ". Mail settings not found. No mail sent";
+                        Logger.LogActivity($"Could not send process approval mail. Mail sendings not found", "INFO");
                     } else {
-                        var hodName = (hod.ContactEmail ?? string.Empty).Trim();
-                        var hodEmail = (hod.ContactEmail ?? string.Empty).Trim();
-                        if (!string.IsNullOrEmpty(hodName) && !string.IsNullOrEmpty(hodEmail)) {
-                            var (sent, subject, mail) = MailHandler.GenerateMail(Logger, mailSettings.MailSender, hodName, hodEmail, mailSettings.CopyTo, request.ProcessName, mailSettings.NetworkPort, mailSettings.SystemPassword);
-                            if (sent) {
-                                await _mailService.InsertMailAsync(new Data.Entities.System.MailRecord() {
-                                    SentToEmail = hodEmail,
-                                    CCMail = mailSettings.CopyTo,
-                                    Subject = subject,
-                                    Mail = mail,
-                                    ApprovalId = request.Id,
-                                    IsDeleted = false,
-                                    CreatedBy = "SYSTEM",
-                                    CreatedOn = DateTime.Now,
-                                    LastModifiedBy = "SYSTEM",
-                                    LastModifiedOn = DateTime.Now,
-                                });
-                            }
-                        } else {
+
+                        //..get Head of operations details
+                        var officer = await _officersService.GetAsync(o => o.ContactPosition == "Head of Operation & Services");
+                        if (officer is null) {
                             msg += ". Head Of Operations Contacts not found. Mail not sent";
+                            Logger.LogActivity($"Head Of Operations Contacts not found. Mail not sent", "INFO");
+                        } else {
+                            var officerName = (officer.ContactName ?? string.Empty).Trim();
+                            var officerEmail = (officer.ContactEmail ?? string.Empty).Trim();
+                            if (!string.IsNullOrEmpty(officerName) && !string.IsNullOrEmpty(officerEmail)) {
+                                await SendMailAsync(Logger, mailService, officerName, officerEmail, request.Id, request.ProcessName);
+                            } else {
+                                msg += ". Head Of Operations Contacts not found. Mail not sent";
+                            }
                         }
                     }
-                }
+                });
 
                 response.Status = true;
                 response.StatusCode = (int)ResponseCodes.SUCCESS;
-                response.Message = msg;
+                response.Message = "Processes sent for review";
                 Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
                 return Ok(new GrcResponse<GeneralResponse>(response));
             }
@@ -2190,42 +2174,39 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 //..send mail to HOD
-                string msg = "Processes sent for approval";
-                var mailSettings = await _mailService.GetMailSettingsAsync();
-                if (mailSettings is null) {
-                    msg += ". Mail settings not found. No mail sent";
-                } else {
+                string msg="";
+                //..send mail for password change
+                _mailTask.Enqueue(async (sp, token) => {
+                    //..get services
+                    var mailService = sp.GetRequiredService<IMailService>();
+                    var logger = sp.GetRequiredService<IServiceLoggerFactory>().CreateLogger();
 
-                    //..get Head of operations details
-                    var hod = await _officersService.GetAsync(o => o.ContactPosition == "Head of Operation & Services");
-                    if (hod is null) {
-                        msg += ". Head Of Operations Contacts not found. Mail not sent";
+                    //..get mail settings
+                    var mailSettings = await mailService.GetMailSettingsAsync();
+                    if (mailSettings is null) {
+                        msg += ". Mail settings not found. No mail sent";
+                        Logger.LogActivity($"Could not send process approval mail. Mail sendings not found", "INFO");
                     } else {
-                        var hodName = (hod.ContactName ?? string.Empty).Trim();
-                        var hodEmail = (hod.ContactEmail ?? string.Empty).Trim();
-                        if (!string.IsNullOrEmpty(hodName) && !string.IsNullOrEmpty(hodEmail)) {
-                            var (sent, subject, mail) = MailHandler.GenerateMail(Logger, mailSettings.MailSender, hodName, hodEmail, mailSettings.CopyTo, processName, mailSettings.NetworkPort, mailSettings.SystemPassword);
-                            if (sent) {
-                                await _mailService.InsertMailAsync(new MailRecord() {
-                                    SentToEmail = hodEmail,
-                                    CCMail = mailSettings.CopyTo,
-                                    Subject = subject,
-                                    Mail = mail,
-                                    ApprovalId = request.RecordId,
-                                    IsDeleted = false,
-                                    CreatedBy = "SYSTEM",
-                                    CreatedOn = DateTime.Now,
-                                    LastModifiedBy = "SYSTEM",
-                                    LastModifiedOn = DateTime.Now,
-                                });
-                            }
-                        } else {
+
+                        //..get Head of operations details
+                        var officer = await _officersService.GetAsync(o => o.ContactPosition == "Head of Operation & Services");
+                        if (officer is null) {
                             msg += ". Head Of Operations Contacts not found. Mail not sent";
+                            Logger.LogActivity($"Head Of Operations Contacts not found. Mail not sent", "INFO");
+                        } else {
+                            var officerName = (officer.ContactName ?? string.Empty).Trim();
+                            var officerEmail = (officer.ContactEmail ?? string.Empty).Trim();
+                            if (!string.IsNullOrEmpty(officerName) && !string.IsNullOrEmpty(officerEmail)) {
+                                await SendMailAsync(Logger, mailService, officerName, officerEmail, request.RecordId, processName);
+                            } else {
+                                msg += ". Head Of Operations Contacts not found. Mail not sent";
+                            }
                         }
                     }
-                }
+                });
 
-                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse() { Status = status, Message=msg }));
+                //..return response
+                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse() { Status = status, Message="Processes sent for approval" }));
             } catch (Exception ex) {
                 Logger.LogActivity($"Error submitting process approval by user {request.UserId}: {ex.Message}", "ERROR");
                 var error = await HandleErrorAsync(ex);
@@ -2473,41 +2454,36 @@ namespace Grc.Middleware.Api.Controllers {
                 var (isApproved, stage) = await _approvalService.ApproveProcessAsync(request, true);
                 var response = new GeneralResponse();
                 if (isApproved) {
-                    string msg = $"Processes has passed stage {(int)stage} approval";
+                    string msg = "";
+                    _mailTask.Enqueue(async (sp, token) => {
+                        //..get services
+                        var mailService = sp.GetRequiredService<IMailService>();
+                        var logger = sp.GetRequiredService<IServiceLoggerFactory>().CreateLogger();
 
-                    var mailSettings = await _mailService.GetMailSettingsAsync();
-                    if (mailSettings is null) {
-                        msg += ". Mail settings not found. No mail sent";
-                    } else {
-                        //..get resposible manager
-                        var (receiverName, receiverMail) = await GetMailReceiverInfo(stage, _officersService);
-                        if (!string.IsNullOrEmpty(receiverName) && !string.IsNullOrEmpty(receiverMail)) {
-                            var hodName = (receiverName ?? string.Empty).Trim();
-                            var hodEmail = (receiverMail ?? string.Empty).Trim();
-                            if (!string.IsNullOrEmpty(hodName) && !string.IsNullOrEmpty(hodEmail)) {
-                                var (sent, subject, mail) = MailHandler.GenerateMail(Logger, mailSettings.MailSender, hodName, hodEmail, mailSettings.CopyTo, request.ProcessName, mailSettings.NetworkPort, mailSettings.SystemPassword);
-                                if (sent) {
-                                    await _mailService.InsertMailAsync(new MailRecord() {
-                                        SentToEmail = hodEmail,
-                                        CCMail = mailSettings.CopyTo,
-                                        Subject = subject,
-                                        Mail = mail,
-                                        ApprovalId = request.Id,
-                                        IsDeleted = false,
-                                        CreatedBy = "SYSTEM",
-                                        CreatedOn = DateTime.Now,
-                                        LastModifiedBy = "SYSTEM",
-                                        LastModifiedOn = DateTime.Now,
-                                    });
-                                }
-                            } else {
-                                msg += $". Mail has not been sent to {stage.GetDescription()}, you need to send the mail manually";
-                            }
+                        //..get mail settings
+                        var mailSettings = await mailService.GetMailSettingsAsync();
+                        if (mailSettings is null) {
+                            msg += ". Mail settings not found. No mail sent";
+                            Logger.LogActivity($"Could not send process approval mail. Mail sendings not found", "INFO");
                         } else {
-                            msg += $". Mail has not been sent to {stage.GetDescription()}, you need to send the mail manually";
-                        }
-                    }
 
+                            //..get Head of operations details
+                            var officer = await _officersService.GetAsync(o => o.ContactPosition == "Head of Operation & Services");
+                            if (officer is null) {
+                                msg += ". Head Of Operations Contacts not found. Mail not sent";
+                                Logger.LogActivity($"Head Of Operations Contacts not found. Mail not sent", "INFO");
+                            } else {
+                                //..get resposible manager
+                                var (receiverName, receiverMail) = await GetMailReceiverInfo(stage, _officersService);
+                                if (!string.IsNullOrEmpty(receiverName) && !string.IsNullOrEmpty(receiverMail)) {
+                                    await SendMailAsync(Logger, mailService, receiverName, receiverMail, request.Id, request.ProcessName);
+                                } else {
+                                    msg += ". Head Of Operations Contacts not found. Mail not sent";
+                                }
+                            }
+                        }
+                    });
+                    
                     response.Status = true;
                     response.StatusCode = (int)ResponseCodes.SUCCESS;
                     response.Message = msg;
@@ -2530,6 +2506,41 @@ namespace Grc.Middleware.Api.Controllers {
         #endregion
 
         #region Private Methods
+
+        private async Task SendMailAsync(IServiceLogger logger, IMailService mailService, string sendToName, string email, long approvalId, string pocesssName) {
+            
+            var mailSettings = await mailService.GetMailSettingsAsync();
+            if (mailSettings is null) {
+                Logger.LogActivity($"Could not send mail to user mail. Mail sendings not found", "INFO");
+            } else{ 
+                bool sent;
+                string subject, mail;
+                 (sent, subject, mail) = MailHandler.SendReviewMail(
+                                                Logger,
+                                                mailSettings.MailSender, 
+                                                sendToName,
+                                                email, 
+                                                mailSettings.CopyTo, 
+                                                pocesssName,
+                                                mailSettings.NetworkPort, 
+                                                mailSettings.SystemPassword);
+                if (sent) {
+                    Logger.LogActivity($"Mail saved to the database", "INFO");
+                    await mailService.InsertMailAsync(new MailRecord() {
+                        SentToEmail = email,
+                        CCMail = mailSettings.CopyTo,
+                        Subject = subject,
+                        Mail = mail,
+                        ApprovalId = approvalId,
+                        IsDeleted = false,
+                        CreatedBy = "SYSTEM",
+                        CreatedOn = DateTime.Now,
+                        LastModifiedBy = "SYSTEM",
+                        LastModifiedOn = DateTime.Now,
+                    });
+                }
+            } 
+         }
 
         private static async Task<(string, string)> GetMailReceiverInfo(ApprovalStage stage, IResponsebilityService respService) {
             Responsebility responsible = stage switch {

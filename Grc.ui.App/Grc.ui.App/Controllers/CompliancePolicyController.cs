@@ -486,11 +486,11 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Export Policy", "User exported policies to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_POLICY, "Policy")]
-        public IActionResult ExcelExportPolicies([FromBody] List<PolicyDocumentResponse> data)
-        {
+        public IActionResult ExcelExportPolicies([FromBody] List<PolicyDocumentResponse> data) {
             using var workbook = new XLWorkbook();
             var ws = workbook.Worksheets.Add("Policies");
 
+            //..define headers
             ws.Cell(1, 1).Value = "POLICY/PROCEDURE NAME";
             ws.Cell(1, 2).Value = "DOCUMENT TYPE";
             ws.Cell(1, 3).Value = "REVIEW STATUS";
@@ -503,21 +503,62 @@ namespace Grc.ui.App.Controllers {
             ws.Cell(1, 10).Value = "POLICY ALIGNED";
             ws.Cell(1, 11).Value = "COMMENTS";
 
+            //..header styling
+            var header = ws.Range(1, 1, 1, 11);
+            header.Style.Font.Bold = true;
+            header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            //..worksheet data
             int row = 2;
             foreach (var p in data) {
                 ws.Cell(row, 1).Value = p.DocumentName;
                 ws.Cell(row, 2).Value = p.DocumentTypeName;
                 ws.Cell(row, 3).Value = p.Status;
                 ws.Cell(row, 4).Value = p.ApprovedBy;
-                ws.Cell(row, 5).Value = p.ApprovalDate;
+
+                //..approval Date
+                SetSafeDate(ws.Cell(row, 5), p.ApprovalDate);
+
+                //..last Revision Date
                 ws.Cell(row, 6).Value = p.LastRevisionDate;
-                ws.Cell(row, 7).Value = p.NextRevisionDate;
+                ws.Cell(row, 6).Style.DateFormat.Format = "dd-MMM-yyyy";
+
+                //..next Revision Date
+                SetSafeDate(ws.Cell(row, 7), p.NextRevisionDate);
+
                 ws.Cell(row, 8).Value = p.ResponsibilityName ?? string.Empty;
                 ws.Cell(row, 9).Value = p.DepartmentName ?? string.Empty;
                 ws.Cell(row, 10).Value = p.IsAligned ? "YES" : "NO";
-                ws.Cell(row, 11).Value = p.Comments;
+                ws.Cell(row, 11).Value = p.Comments ?? string.Empty;
+
                 row++;
             }
+
+            //..status formating
+            var statusRange = ws.Range(2, 3, row - 1, 3);
+            statusRange.AddConditionalFormat().WhenEquals("DUE").Fill.SetBackgroundColor(XLColor.Red);
+            statusRange.AddConditionalFormat().WhenEquals("PENDING-BOARD").Fill.SetBackgroundColor(XLColor.Orange);
+            statusRange.AddConditionalFormat().WhenEquals("PENDING-SM").Fill.SetBackgroundColor(XLColor.Orange);
+            statusRange.AddConditionalFormat() .WhenEquals("DPT-REVIEW").Fill.SetBackgroundColor(XLColor.LightGreen);
+            statusRange.AddConditionalFormat().WhenEquals("UPTODATE").Fill.SetBackgroundColor(XLColor.Green);
+
+            // Enable filters
+            ws.Range(1, 1, 1, 11).SetAutoFilter();
+
+            //..freeze header row
+            ws.SheetView.FreezeRows(1);
+
+            //..wrap COMMENTS column
+            ws.Column(11).Style.Alignment.WrapText = true;
+            ws.Column(11).Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
+
+            //..auto-size columns based on content
+            ws.Columns().AdjustToContents();
+
+            //..cap COMMENTS width AFTER auto-fit
+            ws.Column(11).Width = 40;
+
 
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);
@@ -530,28 +571,28 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Export Policy", "User exported policies to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_POLICY, "Policy")]
-        public async Task<IActionResult> ExcelExportAllPolicies() {
+        public async Task<IActionResult> ExportAll() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
             if (userResponse.HasError || userResponse.Data == null)
                 return Ok(new { success = false, message = "Unable to resolve current user" });
 
-            var request = new TableListRequest
+            var request = new GrcReportRequest
             {
                 UserId = userResponse.Data.UserId,
-                IPAddress = ipAddress,
-                PageIndex = 1,
-                PageSize = int.MaxValue,
+                IpAddress = ipAddress,
+                Filter = "ALL",
                 Action = Activity.COMPLIANCE_EXPORT_POLICIES.GetDescription()
             };
 
-            var result = await _policyService.GetPagedDocumentsAsync(request);
+            var result = await _policyService.GetPolicyReportAsync(request);
             if (result.HasError || result.Data == null)
-                return Ok(new { success = false, message = "Failed to retrieve policies" });
+                return Ok(new { success = false, message = "Failed to retrieve policy data" });
 
             using var workbook = new XLWorkbook();
             var ws = workbook.Worksheets.Add("Policies");
 
+            //..define headers
             ws.Cell(1, 1).Value = "POLICY/PROCEDURE NAME";
             ws.Cell(1, 2).Value = "DOCUMENT TYPE";
             ws.Cell(1, 3).Value = "REVIEW STATUS";
@@ -564,29 +605,822 @@ namespace Grc.ui.App.Controllers {
             ws.Cell(1, 10).Value = "POLICY ALIGNED";
             ws.Cell(1, 11).Value = "COMMENTS";
 
+            //..header styling
+            var header = ws.Range(1, 1, 1, 11);
+            header.Style.Font.Bold = true;
+            header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            //..worksheet data
             int row = 2;
-            foreach (var p in result.Data.Entities) {
+            foreach (var p in result.Data) {
                 ws.Cell(row, 1).Value = p.DocumentName;
                 ws.Cell(row, 2).Value = p.DocumentTypeName;
                 ws.Cell(row, 3).Value = p.Status;
                 ws.Cell(row, 4).Value = p.ApprovedBy;
-                ws.Cell(row, 5).Value = p.ApprovalDate;
+
+                //..approval Date
+                SetSafeDate(ws.Cell(row, 5), p.ApprovalDate);
+
+                //..last Revision Date
                 ws.Cell(row, 6).Value = p.LastRevisionDate;
-                ws.Cell(row, 7).Value = p.NextRevisionDate;
+                ws.Cell(row, 6).Style.DateFormat.Format = "dd-MMM-yyyy";
+
+                //..next Revision Date
+                SetSafeDate(ws.Cell(row, 7), p.NextRevisionDate);
+
                 ws.Cell(row, 8).Value = p.ResponsibilityName ?? string.Empty;
                 ws.Cell(row, 9).Value = p.DepartmentName ?? string.Empty;
                 ws.Cell(row, 10).Value = p.IsAligned ? "YES" : "NO";
-                ws.Cell(row, 11).Value = p.Comments;
+                ws.Cell(row, 11).Value = p.Comments ?? string.Empty;
 
                 row++;
             }
 
+            //..status formating
+            var statusRange = ws.Range(2, 3, row - 1, 3);
+            statusRange.AddConditionalFormat().WhenEquals("DUE").Fill.SetBackgroundColor(XLColor.Red);
+            statusRange.AddConditionalFormat().WhenEquals("PENDING-BOARD").Fill.SetBackgroundColor(XLColor.Orange);
+            statusRange.AddConditionalFormat().WhenEquals("PENDING-SM").Fill.SetBackgroundColor(XLColor.Orange);
+            statusRange.AddConditionalFormat() .WhenEquals("DPT-REVIEW").Fill.SetBackgroundColor(XLColor.LightGreen);
+            statusRange.AddConditionalFormat().WhenEquals("UPTODATE").Fill.SetBackgroundColor(XLColor.Green);
+
+            // Enable filters
+            ws.Range(1, 1, 1, 11).SetAutoFilter();
+
+            //..freeze header row
+            ws.SheetView.FreezeRows(1);
+
+            //..wrap COMMENTS column
+            ws.Column(11).Style.Alignment.WrapText = true;
+            ws.Column(11).Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
+
+            //..auto-size columns based on content
+            ws.Columns().AdjustToContents();
+
+            //..cap COMMENTS width AFTER auto-fit
+            ws.Column(11).Width = 40;
+
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);
             stream.Seek(0, SeekOrigin.Begin);
-            return File(stream.ToArray(),
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "Policies.xlsx");
+            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","All_Policies.xlsx");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ExportAllSummery() {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+                return Ok(new { success = false, message = "Unable to resolve current user" });
+
+            var request = new GrcReportRequest {
+                UserId = userResponse.Data.UserId,
+                IpAddress = ipAddress,
+                Filter = "ALLSUMMERY",
+                Action = Activity.COMPLIANCE_EXPORT_POLICIES.GetDescription()
+            };
+
+            var result = await _policyService.GetPolicySummeryAsync(request);
+            if (result.HasError || result.Data == null)
+                return Ok(new { success = false, message = "Failed to retrieve policy data" });
+
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("Summery");
+
+            var data = result.Data;
+
+            var summaryRows = new[] {
+                "Upto date",
+                "Pending SMT signoff",
+                "Under departmental review",
+                "Pending Board signoff",
+                "To be presented to MRC",
+                "Pending upload to intranet",
+                "Due for review",
+                "Not Applicable",
+                "On-Hold"
+            };
+            //..define headers
+            ws.Cell(1, 1).Value = "NO";
+            ws.Cell(1, 2).Value = "DETAILS";
+            ws.Cell(1, 3).Value = "COUNT";
+            ws.Cell(1, 4).Value = "PERCENTAGE";
+
+            // Header styling (optional but recommended)
+            var header = ws.Range(1, 1, 1, 4);
+            header.Style.Font.Bold = true;
+            header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            int row = 2;
+            int no = 1;
+
+            int totalCount = 0;
+            decimal totalPercentage = 0;
+
+            foreach (var label in summaryRows) {
+                var count = data.Count.TryGetValue(label, out var c) ? c : 0;
+                var percentage = data.Percentage.TryGetValue(label, out var p) ? p : 0;
+                ws.Cell(row, 1).Value = no;
+                ws.Cell(row, 2).Value = label;
+                ws.Cell(row, 3).Value = count;
+                ws.Cell(row, 4).Value = percentage / 100; 
+                ws.Cell(row, 4).Style.NumberFormat.Format = "0%";
+                totalCount += count;
+                totalPercentage += percentage;
+                row++;
+                no++;
+            }
+
+            //..add totals
+            ws.Cell(row, 2).Value = "Total";
+            ws.Cell(row, 3).Value = totalCount;
+            ws.Cell(row, 4).Value = 1; 
+
+            ws.Range(row, 2, row, 4).Style.Font.Bold = true;
+            ws.Cell(row, 4).Style.NumberFormat.Format = "0%";
+
+            //..adjust details column
+            ws.Columns().AdjustToContents();
+            ws.Column(2).Width = 35; 
+            ws.SheetView.FreezeRows(1);
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                 $"POLICIES-SUMMERY-{DateTime.Today:MM-yyyy}.xlsx");
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> ExportReview() {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+                return Ok(new { success = false, message = "Unable to resolve current user" });
+
+            var request = new GrcReportRequest
+            {
+                UserId = userResponse.Data.UserId,
+                IpAddress = ipAddress,
+                Filter = "REVIEW",
+                Action = Activity.COMPLIANCE_EXPORT_POLICIES.GetDescription()
+            };
+
+            var result = await _policyService.GetPolicyReportAsync(request);
+            if (result.HasError || result.Data == null)
+                return Ok(new { success = false, message = "Failed to retrieve policy data" });
+
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("Policies");
+
+            //..define headers
+            ws.Cell(1, 1).Value = "POLICY/PROCEDURE NAME";
+            ws.Cell(1, 2).Value = "DOCUMENT TYPE";
+            ws.Cell(1, 3).Value = "REVIEW STATUS";
+            ws.Cell(1, 4).Value = "APPROVED BY";
+            ws.Cell(1, 5).Value = "APPROVAL DATE";
+            ws.Cell(1, 6).Value = "LAST REVISION";
+            ws.Cell(1, 7).Value = "NEXT REVISION";
+            ws.Cell(1, 8).Value = "DEPARTMENT/FUNCTION";
+            ws.Cell(1, 9).Value = "POLICY OWNER";
+            ws.Cell(1, 10).Value = "POLICY ALIGNED";
+            ws.Cell(1, 11).Value = "COMMENTS";
+
+            //..header styling
+            var header = ws.Range(1, 1, 1, 11);
+            header.Style.Font.Bold = true;
+            header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            //..worksheet data
+            int row = 2;
+            foreach (var p in result.Data) {
+                ws.Cell(row, 1).Value = p.DocumentName;
+                ws.Cell(row, 2).Value = p.DocumentTypeName;
+                ws.Cell(row, 3).Value = p.Status;
+                ws.Cell(row, 4).Value = p.ApprovedBy;
+
+                //..approval Date
+                SetSafeDate(ws.Cell(row, 5), p.ApprovalDate);
+
+                //..last Revision Date
+                ws.Cell(row, 6).Value = p.LastRevisionDate;
+                ws.Cell(row, 6).Style.DateFormat.Format = "dd-MMM-yyyy";
+
+                //..next Revision Date
+                SetSafeDate(ws.Cell(row, 7), p.NextRevisionDate);
+
+                ws.Cell(row, 8).Value = p.ResponsibilityName ?? string.Empty;
+                ws.Cell(row, 9).Value = p.DepartmentName ?? string.Empty;
+                ws.Cell(row, 10).Value = p.IsAligned ? "YES" : "NO";
+                ws.Cell(row, 11).Value = p.Comments ?? string.Empty;
+
+                row++;
+            }
+
+            //..status formating
+            var statusRange = ws.Range(2, 3, row - 1, 3);
+            statusRange.AddConditionalFormat().WhenEquals("DUE").Fill.SetBackgroundColor(XLColor.Red);
+            statusRange.AddConditionalFormat().WhenEquals("PENDING-BOARD").Fill.SetBackgroundColor(XLColor.Orange);
+            statusRange.AddConditionalFormat().WhenEquals("PENDING-SM").Fill.SetBackgroundColor(XLColor.Orange);
+            statusRange.AddConditionalFormat() .WhenEquals("DPT-REVIEW").Fill.SetBackgroundColor(XLColor.LightGreen);
+            statusRange.AddConditionalFormat().WhenEquals("UPTODATE").Fill.SetBackgroundColor(XLColor.Green);
+
+            // Enable filters
+            ws.Range(1, 1, 1, 11).SetAutoFilter();
+
+            //..freeze header row
+            ws.SheetView.FreezeRows(1);
+
+            //..wrap COMMENTS column
+            ws.Column(11).Style.Alignment.WrapText = true;
+            ws.Column(11).Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
+
+            //..auto-size columns based on content
+            ws.Columns().AdjustToContents();
+
+            //..cap COMMENTS width AFTER auto-fit
+            ws.Column(11).Width = 40;
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                 $"POLICIES-UNDER-REVIEW-{DateTime.Today:MM-yyyy}.xlsx");
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> ExportUpdated() {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+                return Ok(new { success = false, message = "Unable to resolve current user" });
+
+            var request = new GrcReportRequest
+            {
+                UserId = userResponse.Data.UserId,
+                IpAddress = ipAddress,
+                Filter = "UPTODATE",
+                Action = Activity.COMPLIANCE_EXPORT_POLICIES.GetDescription()
+            };
+
+            var result = await _policyService.GetPolicyReportAsync(request);
+
+            if (result.HasError || result.Data == null)
+                return Ok(new { success = false, message = "Failed to retrieve policy data" });
+
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("Policies");
+
+            //..define headers
+            ws.Cell(1, 1).Value = "POLICY/PROCEDURE NAME";
+            ws.Cell(1, 2).Value = "DOCUMENT TYPE";
+            ws.Cell(1, 3).Value = "REVIEW STATUS";
+            ws.Cell(1, 4).Value = "APPROVED BY";
+            ws.Cell(1, 5).Value = "APPROVAL DATE";
+            ws.Cell(1, 6).Value = "LAST REVISION";
+            ws.Cell(1, 7).Value = "NEXT REVISION";
+            ws.Cell(1, 8).Value = "DEPARTMENT/FUNCTION";
+            ws.Cell(1, 9).Value = "POLICY OWNER";
+            ws.Cell(1, 10).Value = "POLICY ALIGNED";
+            ws.Cell(1, 11).Value = "COMMENTS";
+
+            //..header styling
+            var header = ws.Range(1, 1, 1, 11);
+            header.Style.Font.Bold = true;
+            header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            //..worksheet data
+            //..worksheet data
+            int row = 2;
+            foreach (var p in result.Data) {
+                ws.Cell(row, 1).Value = p.DocumentName;
+                ws.Cell(row, 2).Value = p.DocumentTypeName;
+                ws.Cell(row, 3).Value = p.Status;
+                ws.Cell(row, 4).Value = p.ApprovedBy;
+
+                //..approval Date
+                SetSafeDate(ws.Cell(row, 5), p.ApprovalDate);
+
+                //..last Revision Date
+                ws.Cell(row, 6).Value = p.LastRevisionDate;
+                ws.Cell(row, 6).Style.DateFormat.Format = "dd-MMM-yyyy";
+
+                //..next Revision Date
+                SetSafeDate(ws.Cell(row, 7), p.NextRevisionDate);
+
+                ws.Cell(row, 8).Value = p.ResponsibilityName ?? string.Empty;
+                ws.Cell(row, 9).Value = p.DepartmentName ?? string.Empty;
+                ws.Cell(row, 10).Value = p.IsAligned ? "YES" : "NO";
+                ws.Cell(row, 11).Value = p.Comments ?? string.Empty;
+
+                row++;
+            }
+
+            //..status formating
+            var statusRange = ws.Range(2, 3, row - 1, 3);
+            statusRange.AddConditionalFormat().WhenEquals("DUE").Fill.SetBackgroundColor(XLColor.Red);
+            statusRange.AddConditionalFormat().WhenEquals("PENDING-BOARD").Fill.SetBackgroundColor(XLColor.Orange);
+            statusRange.AddConditionalFormat().WhenEquals("PENDING-SM").Fill.SetBackgroundColor(XLColor.Orange);
+            statusRange.AddConditionalFormat() .WhenEquals("DPT-REVIEW").Fill.SetBackgroundColor(XLColor.LightGreen);
+            statusRange.AddConditionalFormat().WhenEquals("UPTODATE").Fill.SetBackgroundColor(XLColor.Green);
+
+            //..format data
+            // Enable filters
+            ws.Range(1, 1, 1, 11).SetAutoFilter();
+
+            //..freeze header row
+            ws.SheetView.FreezeRows(1);
+
+            //..wrap COMMENTS column
+            ws.Column(11).Style.Alignment.WrapText = true;
+            ws.Column(11).Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
+
+            //..auto-size columns based on content
+            ws.Columns().AdjustToContents();
+
+            //..cap COMMENTS width AFTER auto-fit
+            ws.Column(11).Width = 40;
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                 $"POLICIES-UPTODATE-{DateTime.Today:MM-yyyy}.xlsx");
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> ExportDue() {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+                return Ok(new { success = false, message = "Unable to resolve current user" });
+
+            var request = new GrcReportRequest
+            {
+                UserId = userResponse.Data.UserId,
+                IpAddress = ipAddress,
+                Filter = "DUE",
+                Action = Activity.COMPLIANCE_EXPORT_POLICIES.GetDescription()
+            };
+
+            var result = await _policyService.GetPolicyReportAsync(request);
+            if (result.HasError || result.Data == null)
+                return Ok(new { success = false, message = "Failed to retrieve policy data" });
+
+           using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("Policies");
+
+            //..define headers
+            ws.Cell(1, 1).Value = "POLICY/PROCEDURE NAME";
+            ws.Cell(1, 2).Value = "DOCUMENT TYPE";
+            ws.Cell(1, 3).Value = "REVIEW STATUS";
+            ws.Cell(1, 4).Value = "APPROVED BY";
+            ws.Cell(1, 5).Value = "APPROVAL DATE";
+            ws.Cell(1, 6).Value = "LAST REVISION";
+            ws.Cell(1, 7).Value = "NEXT REVISION";
+            ws.Cell(1, 8).Value = "DEPARTMENT/FUNCTION";
+            ws.Cell(1, 9).Value = "POLICY OWNER";
+            ws.Cell(1, 10).Value = "POLICY ALIGNED";
+            ws.Cell(1, 11).Value = "COMMENTS";
+
+            //..header styling
+            var header = ws.Range(1, 1, 1, 11);
+            header.Style.Font.Bold = true;
+            header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            //..worksheet data
+            //..worksheet data
+            int row = 2;
+            foreach (var p in result.Data) {
+                ws.Cell(row, 1).Value = p.DocumentName;
+                ws.Cell(row, 2).Value = p.DocumentTypeName;
+                ws.Cell(row, 3).Value = p.Status;
+                ws.Cell(row, 4).Value = p.ApprovedBy;
+
+                //..approval Date
+                SetSafeDate(ws.Cell(row, 5), p.ApprovalDate);
+
+                //..last Revision Date
+                ws.Cell(row, 6).Value = p.LastRevisionDate;
+                ws.Cell(row, 6).Style.DateFormat.Format = "dd-MMM-yyyy";
+
+                //..next Revision Date
+                SetSafeDate(ws.Cell(row, 7), p.NextRevisionDate);
+
+                ws.Cell(row, 8).Value = p.ResponsibilityName ?? string.Empty;
+                ws.Cell(row, 9).Value = p.DepartmentName ?? string.Empty;
+                ws.Cell(row, 10).Value = p.IsAligned ? "YES" : "NO";
+                ws.Cell(row, 11).Value = p.Comments ?? string.Empty;
+
+                row++;
+            }
+
+            //..status formating
+            var statusRange = ws.Range(2, 3, row - 1, 3);
+            statusRange.AddConditionalFormat().WhenEquals("DUE").Fill.SetBackgroundColor(XLColor.Red);
+            statusRange.AddConditionalFormat().WhenEquals("PENDING-BOARD").Fill.SetBackgroundColor(XLColor.Orange);
+            statusRange.AddConditionalFormat().WhenEquals("PENDING-SM").Fill.SetBackgroundColor(XLColor.Orange);
+            statusRange.AddConditionalFormat() .WhenEquals("DPT-REVIEW").Fill.SetBackgroundColor(XLColor.LightGreen);
+            statusRange.AddConditionalFormat().WhenEquals("UPTODATE").Fill.SetBackgroundColor(XLColor.Green);
+
+            //..format data
+            // Enable filters
+            ws.Range(1, 1, 1, 11).SetAutoFilter();
+
+            //..freeze header row
+            ws.SheetView.FreezeRows(1);
+
+            //..wrap COMMENTS column
+            ws.Column(11).Style.Alignment.WrapText = true;
+            ws.Column(11).Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
+
+            //..auto-size columns based on content
+            ws.Columns().AdjustToContents();
+
+            //..cap COMMENTS width AFTER auto-fit
+            ws.Column(11).Width = 40;
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                 $"DUE-UPDATE-{DateTime.Today:MM-yyyy}.xlsx");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ExportSmt() {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+                return Ok(new { success = false, message = "Unable to resolve current user" });
+
+            var request = new GrcReportRequest
+            {
+                UserId = userResponse.Data.UserId,
+                IpAddress = ipAddress,
+                Filter = "SMT",
+                Action = Activity.COMPLIANCE_EXPORT_POLICIES.GetDescription()
+            };
+
+            var result = await _policyService.GetPolicyReportAsync(request);
+            if (result.HasError || result.Data == null)
+                return Ok(new { success = false, message = "Failed to retrieve policy data" });
+
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("Policies");
+
+            //..define headers
+            ws.Cell(1, 1).Value = "POLICY/PROCEDURE NAME";
+            ws.Cell(1, 2).Value = "DOCUMENT TYPE";
+            ws.Cell(1, 3).Value = "REVIEW STATUS";
+            ws.Cell(1, 4).Value = "APPROVED BY";
+            ws.Cell(1, 5).Value = "APPROVAL DATE";
+            ws.Cell(1, 6).Value = "LAST REVISION";
+            ws.Cell(1, 7).Value = "NEXT REVISION";
+            ws.Cell(1, 8).Value = "DEPARTMENT/FUNCTION";
+            ws.Cell(1, 9).Value = "POLICY OWNER";
+            ws.Cell(1, 10).Value = "POLICY ALIGNED";
+            ws.Cell(1, 11).Value = "COMMENTS";
+
+            //..header styling
+            var header = ws.Range(1, 1, 1, 11);
+            header.Style.Font.Bold = true;
+            header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            //..worksheet data
+            //..worksheet data
+            int row = 2;
+            foreach (var p in result.Data) {
+                ws.Cell(row, 1).Value = p.DocumentName;
+                ws.Cell(row, 2).Value = p.DocumentTypeName;
+                ws.Cell(row, 3).Value = p.Status;
+                ws.Cell(row, 4).Value = p.ApprovedBy;
+
+                //..approval Date
+                SetSafeDate(ws.Cell(row, 5), p.ApprovalDate);
+
+                //..last Revision Date
+                ws.Cell(row, 6).Value = p.LastRevisionDate;
+                ws.Cell(row, 6).Style.DateFormat.Format = "dd-MMM-yyyy";
+
+                //..next Revision Date
+                SetSafeDate(ws.Cell(row, 7), p.NextRevisionDate);
+
+                ws.Cell(row, 8).Value = p.ResponsibilityName ?? string.Empty;
+                ws.Cell(row, 9).Value = p.DepartmentName ?? string.Empty;
+                ws.Cell(row, 10).Value = p.IsAligned ? "YES" : "NO";
+                ws.Cell(row, 11).Value = p.Comments ?? string.Empty;
+
+                row++;
+            }
+
+            //..status formating
+            var statusRange = ws.Range(2, 3, row - 1, 3);
+            statusRange.AddConditionalFormat().WhenEquals("DUE").Fill.SetBackgroundColor(XLColor.Red);
+            statusRange.AddConditionalFormat().WhenEquals("PENDING-BOARD").Fill.SetBackgroundColor(XLColor.Orange);
+            statusRange.AddConditionalFormat().WhenEquals("PENDING-SM").Fill.SetBackgroundColor(XLColor.Orange);
+            statusRange.AddConditionalFormat() .WhenEquals("DPT-REVIEW").Fill.SetBackgroundColor(XLColor.LightGreen);
+            statusRange.AddConditionalFormat().WhenEquals("UPTODATE").Fill.SetBackgroundColor(XLColor.Green);
+
+            //..format data
+            // Enable filters
+            ws.Range(1, 1, 1, 11).SetAutoFilter();
+
+            //..freeze header row
+            ws.SheetView.FreezeRows(1);
+
+            //..wrap COMMENTS column
+            ws.Column(11).Style.Alignment.WrapText = true;
+            ws.Column(11).Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
+
+            //..auto-size columns based on content
+            ws.Columns().AdjustToContents();
+
+            //..cap COMMENTS width AFTER auto-fit
+            ws.Column(11).Width = 40;
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                 $"SMT-SUMMERY-{DateTime.Today:MM-yyyy}.xlsx");
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> ExportSmtSummery() {
+           var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+                return Ok(new { success = false, message = "Unable to resolve current user" });
+
+            var request = new GrcReportRequest
+            {
+                UserId = userResponse.Data.UserId,
+                IpAddress = ipAddress,
+                Filter = "SMTSUMMERY",
+                Action = Activity.COMPLIANCE_EXPORT_POLICIES.GetDescription()
+            };
+
+            var result = await _policyService.GetSmtSummeryAsync(request);
+            if (result.HasError || result.Data == null)
+                return Ok(new { success = false, message = "Failed to retrieve policy data" });
+
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("Summery");
+
+            var data = result.Data;
+
+            var summaryRows = new[] {
+                "Upto date",
+                "Pending SMT signoff",
+                "Under departmental review",
+                "Pending Board signoff",
+                "To be presented to MRC",
+                "Pending upload to intranet",
+                "Due for review",
+                "Not Applicable",
+                "On-Hold"
+            };
+            //..define headers
+            ws.Cell(1, 1).Value = "NO";
+            ws.Cell(1, 2).Value = "DETAILS";
+            ws.Cell(1, 3).Value = "COUNT";
+            ws.Cell(1, 4).Value = "PERCENTAGE";
+
+            // Header styling (optional but recommended)
+            var header = ws.Range(1, 1, 1, 4);
+            header.Style.Font.Bold = true;
+            header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            int row = 2;
+            int no = 1;
+
+            int totalCount = 0;
+            decimal totalPercentage = 0;
+
+            foreach (var label in summaryRows) {
+                var count = data.Count.TryGetValue(label, out var c) ? c : 0;
+                var percentage = data.Percentage.TryGetValue(label, out var p) ? p : 0;
+                ws.Cell(row, 1).Value = no;
+                ws.Cell(row, 2).Value = label;
+                ws.Cell(row, 3).Value = count;
+                ws.Cell(row, 4).Value = percentage / 100; 
+                ws.Cell(row, 4).Style.NumberFormat.Format = "0%";
+                totalCount += count;
+                totalPercentage += percentage;
+                row++;
+                no++;
+            }
+
+            //..add totals
+            ws.Cell(row, 2).Value = "Total";
+            ws.Cell(row, 3).Value = totalCount;
+            ws.Cell(row, 4).Value = 1; 
+
+            ws.Range(row, 2, row, 4).Style.Font.Bold = true;
+            ws.Cell(row, 4).Style.NumberFormat.Format = "0%";
+
+            //..adjust details column
+            ws.Columns().AdjustToContents();
+            ws.Column(2).Width = 35; 
+            ws.SheetView.FreezeRows(1);
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                 $"SMT-SUMMERY-{DateTime.Today:MM-yyyy}.xlsx");
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> ExportBod() {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+                return Ok(new { success = false, message = "Unable to resolve current user" });
+
+            var request = new GrcReportRequest
+            {
+                UserId = userResponse.Data.UserId,
+                IpAddress = ipAddress,
+                Filter = "BOD",
+                Action = Activity.COMPLIANCE_EXPORT_POLICIES.GetDescription()
+            };
+
+            var result = await _policyService.GetPolicyReportAsync(request);
+            if (result.HasError || result.Data == null)
+                return Ok(new { success = false, message = "Failed to retrieve policy data" });
+
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("Policies");
+
+            //..define headers
+            ws.Cell(1, 1).Value = "POLICY/PROCEDURE NAME";
+            ws.Cell(1, 2).Value = "DOCUMENT TYPE";
+            ws.Cell(1, 3).Value = "REVIEW STATUS";
+            ws.Cell(1, 4).Value = "APPROVED BY";
+            ws.Cell(1, 5).Value = "APPROVAL DATE";
+            ws.Cell(1, 6).Value = "LAST REVISION";
+            ws.Cell(1, 7).Value = "NEXT REVISION";
+            ws.Cell(1, 8).Value = "DEPARTMENT/FUNCTION";
+            ws.Cell(1, 9).Value = "POLICY OWNER";
+            ws.Cell(1, 10).Value = "POLICY ALIGNED";
+            ws.Cell(1, 11).Value = "COMMENTS";
+
+            //..header styling
+            var header = ws.Range(1, 1, 1, 11);
+            header.Style.Font.Bold = true;
+            header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            //..worksheet data
+            int row = 2;
+            foreach (var p in result.Data) {
+                ws.Cell(row, 1).Value = p.DocumentName;
+                ws.Cell(row, 2).Value = p.DocumentTypeName;
+                ws.Cell(row, 3).Value = p.Status;
+                ws.Cell(row, 4).Value = p.ApprovedBy;
+
+                //..approval Date
+                SetSafeDate(ws.Cell(row, 5), p.ApprovalDate);
+
+                //..last Revision Date
+                ws.Cell(row, 6).Value = p.LastRevisionDate;
+                ws.Cell(row, 6).Style.DateFormat.Format = "dd-MMM-yyyy";
+
+                //..next Revision Date
+                SetSafeDate(ws.Cell(row, 7), p.NextRevisionDate);
+
+                ws.Cell(row, 8).Value = p.ResponsibilityName ?? string.Empty;
+                ws.Cell(row, 9).Value = p.DepartmentName ?? string.Empty;
+                ws.Cell(row, 10).Value = p.IsAligned ? "YES" : "NO";
+                ws.Cell(row, 11).Value = p.Comments ?? string.Empty;
+
+                row++;
+            }
+
+            //..status formating
+            var statusRange = ws.Range(2, 3, row - 1, 3);
+            statusRange.AddConditionalFormat().WhenEquals("DUE").Fill.SetBackgroundColor(XLColor.Red);
+            statusRange.AddConditionalFormat().WhenEquals("PENDING-BOARD").Fill.SetBackgroundColor(XLColor.Orange);
+            statusRange.AddConditionalFormat().WhenEquals("PENDING-SM").Fill.SetBackgroundColor(XLColor.Orange);
+            statusRange.AddConditionalFormat() .WhenEquals("DPT-REVIEW").Fill.SetBackgroundColor(XLColor.LightGreen);
+            statusRange.AddConditionalFormat().WhenEquals("UPTODATE").Fill.SetBackgroundColor(XLColor.Green);
+
+            //..format data
+            // Enable filters
+            ws.Range(1, 1, 1, 11).SetAutoFilter();
+
+            //..freeze header row
+            ws.SheetView.FreezeRows(1);
+
+            //..wrap COMMENTS column
+            ws.Column(11).Style.Alignment.WrapText = true;
+            ws.Column(11).Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
+
+            //..auto-size columns based on content
+            ws.Columns().AdjustToContents();
+
+            //..cap COMMENTS width AFTER auto-fit
+            ws.Column(11).Width = 40;
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                 $"BOD-REPORT-{DateTime.Today:MM-yyyy}.xlsx");
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> ExportBodSummery() {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+                return Ok(new { success = false, message = "Unable to resolve current user" });
+
+            var request = new GrcReportRequest {
+                UserId = userResponse.Data.UserId,
+                IpAddress = ipAddress,
+                Filter = "BODSUMMERY",
+                Action = Activity.COMPLIANCE_EXPORT_POLICIES.GetDescription()
+            };
+
+            var result = await _policyService.GetBodSummeryAsync(request);
+            if (result.HasError || result.Data == null)
+                return Ok(new { success = false, message = "Failed to retrieve policy data" });
+
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("Summery");
+
+            var data = result.Data;
+            var summaryRows = new[] {
+                "Upto date",
+                "Pending SMT signoff",
+                "Under departmental review",
+                "Pending Board signoff",
+                "To be presented to MRC",
+                "Pending upload to intranet",
+                "Due for review",
+                "Not Applicable",
+                "On-Hold"
+            };
+            //..define headers
+            ws.Cell(1, 1).Value = "NO";
+            ws.Cell(1, 2).Value = "DETAILS";
+            ws.Cell(1, 3).Value = "COUNT";
+            ws.Cell(1, 4).Value = "PERCENTAGE";
+
+            // Header styling (optional but recommended)
+            var header = ws.Range(1, 1, 1, 4);
+            header.Style.Font.Bold = true;
+            header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            int row = 2;
+            int no = 1;
+
+            int totalCount = 0;
+            decimal totalPercentage = 0;
+
+            foreach (var label in summaryRows) {
+                var count = data.Count.TryGetValue(label, out var c) ? c : 0;
+                var percentage = data.Percentage.TryGetValue(label, out var p) ? p : 0;
+                ws.Cell(row, 1).Value = no;
+                ws.Cell(row, 2).Value = label;
+                ws.Cell(row, 3).Value = count;
+                ws.Cell(row, 4).Value = percentage / 100; 
+                ws.Cell(row, 4).Style.NumberFormat.Format = "0%";
+                totalCount += count;
+                totalPercentage += percentage;
+                row++;
+                no++;
+            }
+
+            //..add totals
+            ws.Cell(row, 2).Value = "Total";
+            ws.Cell(row, 3).Value = totalCount;
+            ws.Cell(row, 4).Value = 1; 
+
+            ws.Range(row, 2, row, 4).Style.Font.Bold = true;
+            ws.Cell(row, 4).Style.NumberFormat.Format = "0%";
+
+            //..adjust details column
+            ws.Columns().AdjustToContents();
+            ws.Column(2).Width = 35; 
+            ws.SheetView.FreezeRows(1);
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"BOD-SUMMERY-{DateTime.Today:MM-yyyy}.xlsx");
         }
 
         [HttpGet]
@@ -1224,6 +2058,25 @@ namespace Grc.ui.App.Controllers {
         }
         #endregion
 
+        #region Private Methods
+        private static void SetSafeDate(IXLCell cell, DateTime? date) {
+            if (!date.HasValue) {
+                cell.Value = string.Empty;
+                return;
+            }
+
+            var value = date.Value;
+            //..excel-safe date range
+            if (value.Year < 1900 || value.Year > 9999) {
+                cell.Value = string.Empty;
+                return;
+            }
+
+            cell.Value = value;
+            cell.Style.DateFormat.Format = "dd-MMM-yyyy";
+        }
+
+        #endregion
     }
 
 }

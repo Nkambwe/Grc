@@ -20,7 +20,8 @@ namespace Grc.ui.App.Models {
         [JsonPropertyName("userName")]
         public string UserName { get; set; }
 
-        [JsonPropertyName("displayName")]
+        [JsonPropertyName("oldPassword")]
+        public string OldPassword { get; set; }
         public string DisplayName { get; set; }
 
         [JsonPropertyName("emailAddress")]
@@ -46,6 +47,9 @@ namespace Grc.ui.App.Models {
 
         [JsonPropertyName("roleName")]
         public string RoleName { get; set; }
+        
+        [JsonPropertyName("roleGroupId")]
+        public long RoleGroupId { get; set; }
 
         [JsonPropertyName("roleGroup")]
         public string RoleGroup { get; set; }

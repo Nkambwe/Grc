@@ -164,69 +164,49 @@ namespace Grc.Middleware.Api.Services {
 
         public async Task<AuthenticationResponse> AuthenticateUserAsync(string username) {
             using var uow = UowFactory.Create();
-            Logger.LogActivity($"Validating username: {username}", "INFO");
 
-            try {
-                //..get user record
-                var user = await uow.UserRepository.GetAsync(u => u.Username.ToLower() == username.ToLower(), true, u => u.Role, u => u.Department);
-                if (user == null) {
-                    Logger.LogActivity($"Username not found: {username}", "DEBUG");
-                    return new AuthenticationResponse() {
-                        RedirectUrl = string.Empty,
-                        IsActive = false,
-                        IsAuthenticated = false,
-                        Message = $"Username {username} not found",
-                        Favourites = new List<string>(),
-                        Views = new List<string>(),
-                        Claims = new Dictionary<string, object>()
-                    };
-                }
+            var response = await uow.UserRepository.GetLookupAsync(
+                u => u.Username.ToLower() == username.ToLower(),
+                u => new AuthenticationResponse {
+                    UserId = u.Id,
+                    FirstName = (u.FirstName ?? string.Empty).Trim(),
+                    LastName = (u.LastName ?? string.Empty).Trim(),
+                    MiddleName = (u.OtherName ?? string.Empty).Trim(),
+                    EmailAddress = (u.EmailAddress ?? string.Empty).Trim(),
+                    PhoneNumber = u.PhoneNumber,
+                    Username = (u.Username ?? string.Empty).Trim(),
+                    Password = u.PasswordHash,
+                    PFNumber = u.PFNumber,
+                    SolId = u.BranchSolId ?? "MAIN",
+                    RoleId = u.RoleId,
+                    RoleName = u.Role.RoleName,
+                    RoleGroup = u.Role.Group.GroupCategory,
+                    DepartmentId = u.DepartmentId,
+                    DepartmentCode = u.Department.DepartmentCode,
+                    DepartmentName = u.Department.DepartmentName,
+                    UnitCode = u.DepartmentUnit,
+                    IsActive = u.IsActive,
+                    IsDeleted = u.IsDeleted,
+                    IsVerified = u.IsVerified ?? false,
+                    IsApproved = u.IsApproved ?? false,
 
-                //..map response
-                var response = Mapper.Map<AuthenticationResponse>(user);
-                var requestId = new IdRequest() {
-                    RecordId = user.RoleId
-                };
-                var role = await GetRoleByIdAsync(requestId);
-                if (role != null) {
-                    response.RoleGroup = role.Group?.GroupCategory ?? string.Empty;
-                }
+                    IsAdministrator =
+                        u.Role.RoleName == "Administrator" ||
+                        u.Role.RoleName == "Support",
 
-                // Check if user is active
-                if (!user.IsActive) {
-                    Logger.LogActivity($"Inactive user attempted login: {username}", "WARN");
-                    response.IsAuthenticated = false;
-                    response.Message = $"User account has been deactivated";
-                    return response;
-                }
+                    Permissions = u.Role.Group.PermissionSets
+                        .SelectMany(g => g.PermissionSet.Permissions)
+                        .Select(p => p.Permission.PermissionName)
+                        .Distinct()
+                        .ToList(),
 
-                // Check if user is active
-                if (user.IsDeleted) {
-                    Logger.LogActivity($"Deleted user attempted login: {username}", "WARN");
-                    response.IsAuthenticated = false;
-                    response.Message = $"User account was deleted";
-                    return response;
-                }
+                    Claims = new Dictionary<string, object>()
+                },
+                includeDeleted: true
+            );
 
-                Logger.LogActivity($"Username validation successful: {username}", "DEBUG");
-                response.IsAuthenticated = false;
-                response.IsAdministrator = response.RoleName.Trim() is "Administrator" or "Support";
-
-                //..TODO update based on policy configurations
-                response.CheckApproval = false;
-                response.CheckVerified = false;
-                return response;
-            } catch (Exception ex) {
-                Logger.LogActivity($"Username validation failed: {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null) {
-                    Logger.LogActivity($"Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                return new AuthenticationResponse() {
-                    RedirectUrl = string.Empty,
-                    IsActive = false,
+            if (response == null) {
+                return new AuthenticationResponse {
                     IsAuthenticated = false,
                     Message = $"Username {username} not found",
                     Favourites = new List<string>(),
@@ -234,6 +214,25 @@ namespace Grc.Middleware.Api.Services {
                     Claims = new Dictionary<string, object>()
                 };
             }
+
+            //...business checks
+            if (!response.IsActive) {
+                response.IsAuthenticated = false;
+                response.Message = "User account has been deactivated";
+                return response;
+            }
+
+            if (response.IsDeleted) {
+                response.IsAuthenticated = false;
+                response.Message = "User account was deleted";
+                return response;
+            }
+
+            response.IsAuthenticated = true;
+            response.CheckApproval = false;
+            response.CheckVerified = false;
+
+            return response;
         }
 
         public async Task<bool> UpdateLoginStatusAsync(long userId, DateTime loginTime) {
@@ -523,29 +522,7 @@ namespace Grc.Middleware.Api.Services {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to check for System User in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogErrorAsync(uow,ex);
                 throw;
             }
         }
@@ -571,29 +548,7 @@ namespace Grc.Middleware.Api.Services {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve role groups in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogErrorAsync(uow,ex);
                 throw;
             }
         }
@@ -620,29 +575,7 @@ namespace Grc.Middleware.Api.Services {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrive units the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogErrorAsync(uow,ex);
                 throw;
             }
         }
@@ -659,29 +592,7 @@ namespace Grc.Middleware.Api.Services {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to check for System User in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogErrorAsync(uow,ex);
                 throw;
             }
         }
@@ -698,29 +609,7 @@ namespace Grc.Middleware.Api.Services {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to check for System User in the database: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                LogErrorAsync(uow,ex);
                 throw;
             }
         }
@@ -750,30 +639,7 @@ namespace Grc.Middleware.Api.Services {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve user: {ex.Message}", "ERROR");
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogErrorAsync(uow,ex);
                 throw;
             }
         }
@@ -802,30 +668,7 @@ namespace Grc.Middleware.Api.Services {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve user: {ex.Message}", "ERROR");
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                LogErrorAsync(uow,ex);
                 throw;
             }
         }
@@ -958,52 +801,26 @@ namespace Grc.Middleware.Api.Services {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to insert System User record: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public bool PasswordUpdate(PasswordResetRequest request)
-        {
+        public async Task<bool> ChangePasswordAsync(long recordId, string passwordHash, string username) {
             using var uow = UowFactory.Create();
             Logger.LogActivity("Update System User request", "INFO");
 
-            try
-            {
-                var user = uow.UserRepository.Get(a => a.Id == request.UserId);
-                if (user != null)
-                {
+            try {
+                var user = await uow.UserRepository.GetAsync(a => a.Id == recordId);
+                if (user != null) {
                     //..update System User password
-                    user.PasswordHash = (request.Password ?? string.Empty).Trim();
+                    user.PasswordHash = (passwordHash ?? string.Empty).Trim();
                     user.LastModifiedOn = DateTime.Now;
-                    user.LastModifiedBy = $"{request.UserId}";
+                    user.LastModifiedBy = $"{username}";
+                    user.LastPasswordChange = DateTime.Now;
 
                     //..check entity state
-                    _ = uow.UserRepository.Update(user);
+                    _ = await uow.UserRepository.UpdateAsync(user);
                     var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
                     Logger.LogActivity($"System User state after Update: {entityState}", "DEBUG");
 
@@ -1017,36 +834,45 @@ namespace Grc.Middleware.Api.Services {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to update System User password: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                 await LogErrorAsync(uow, ex);
                 throw;
             }
         }
 
-        public bool UpdateUser(UserRecordRequest request, bool includeDeleted = false)
+        public async Task<bool> ResetPasswordAsync(long recordId, string passwordHash, string username) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Update System User request", "INFO");
+
+            try {
+                var user = await uow.UserRepository.GetAsync(a => a.Id == recordId);
+                if (user != null) {
+                    //..update System User password
+                    user.PasswordHash = (passwordHash ?? string.Empty).Trim();
+                    user.LastModifiedOn = DateTime.Now;
+                    user.LastModifiedBy = $"{username}";
+                    user.LastPasswordChange = DateTime.Now;
+
+                    //..check entity state
+                    _ = await uow.UserRepository.UpdateAsync(user);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
+                    Logger.LogActivity($"System User state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to reset System User password: {ex.Message}", "ERROR");
+                 await LogErrorAsync(uow, ex);
+                throw;
+            }
+        }
+
+        public bool UpdateUser(UserRecordRequest request, string username, bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update System User request", "INFO");
@@ -1073,7 +899,7 @@ namespace Grc.Middleware.Api.Services {
                     user.DepartmentId = request.DepartmentId;
                     user.IsDeleted = request.IsDeleted;
                     user.LastModifiedOn = DateTime.Now;
-                    user.LastModifiedBy = $"{request.UserId}";
+                    user.LastModifiedBy = $"{username}";
 
                     //..check entity state
                     _ = uow.UserRepository.Update(user, includeDeleted);
@@ -1090,36 +916,12 @@ namespace Grc.Middleware.Api.Services {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to update System User record: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
+                 LogError(uow, ex);
                 throw;
             }
         }
 
-        public async Task<bool> UpdateUserAsync(UserRecordRequest request, bool includeDeleted = false)
+        public async Task<bool> UpdateUserAsync(UserRecordRequest request, string username, bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update System User", "INFO");
@@ -1146,7 +948,7 @@ namespace Grc.Middleware.Api.Services {
                     user.DepartmentId = request.DepartmentId;
                     user.IsDeleted = request.IsDeleted;
                     user.LastModifiedOn = request.ModifiedOn;
-                    user.LastModifiedBy = $"{request.ModifiedBy}";
+                    user.LastModifiedBy = $"{username}";
 
                     //..check entity state
                     _ = await uow.UserRepository.UpdateAsync(user, includeDeleted);
@@ -1163,31 +965,7 @@ namespace Grc.Middleware.Api.Services {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to update System User record: {ex.Message}", "ERROR");
-
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                 await LogErrorAsync(uow, ex);
                 throw;
             }
         }
