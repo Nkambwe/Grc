@@ -7,7 +7,6 @@ using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Utils;
 using Microsoft.EntityFrameworkCore;
-using RTools_NTS.Util;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -20,6 +19,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                                      IMapper mapper) : base(loggerFactory, uowFactory, mapper) {
         }
 
+        #region Queries
         public int Count() {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Count number of audit exceptions in the database", "INFO");
@@ -1652,6 +1652,94 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
                 _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
                 throw;
             }
+        }
+
+        #endregion
+
+        #region Reports
+
+        public async Task<List<ExceptionReport>> GetExceptionSummaryReportAsync(bool includeDeleted) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Generate exception summary report", "INFO");
+            try {
+                // Get all audit reports with their related data
+                var auditReports = await uow.AuditReportRepository.GetAllAsync(
+                    includeDeleted,
+                    p => p.Audit,
+                    p => p.Audit.AuditType,
+                    p => p.AuditExceptions);
+
+                if (auditReports == null || !auditReports.Any()) {
+                    Logger.LogActivity("No audit reports found", "INFO");
+                    return new List<ExceptionReport>();
+                }
+
+                var now = DateTime.UtcNow;
+
+                var report = auditReports
+                    .Where(ar => ar.AuditExceptions != null && ar.AuditExceptions.Any())
+                    .Select(auditReport => {
+                        var exceptions = auditReport.AuditExceptions.ToList();
+                        var totalFindings = exceptions.Count;
+
+                        var closedCount = exceptions.Count(e =>string.Equals(e.Status, "CLOSED", StringComparison.OrdinalIgnoreCase));
+                        var openCount = exceptions.Count(e =>!string.Equals(e.Status, "CLOSED", StringComparison.OrdinalIgnoreCase));
+                        var openExceptions = exceptions.Where(e => !string.Equals(e.Status, "CLOSED", StringComparison.OrdinalIgnoreCase)).ToList();
+
+                        var averageAgingDays = 0;
+                        if (openExceptions.Any()) {
+                            var totalAgingDays = openExceptions.Sum(e => (now.Date - e.TargetDate.Date).Days);
+                            averageAgingDays = (int)Math.Round((double)totalAgingDays / openExceptions.Count);
+                        }
+
+                        return new ExceptionReport {
+                            Audit = auditReport.Audit?.AuditName ?? auditReport.ReportName ?? string.Empty,
+                            AuditType = auditReport.Audit?.AuditType?.TypeName ?? string.Empty,
+                            AuditDate = auditReport.AuditedOn,
+                            Findings = totalFindings,
+                            Closed = closedCount,
+                            Open = openCount,
+                            PercentageCompleted = CalculatePercentage(closedCount, totalFindings),
+                            PercentageOutstanding = CalculatePercentage(openCount, totalFindings),
+                            AverageAgingDays = averageAgingDays
+                        };
+                    }).OrderByDescending(r => r.AuditDate).ToList();
+
+                Logger.LogActivity($"Generated exception report for {report.Count} audit reports", "INFO");
+                return report;
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve audit exception report data: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                var conpany = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new() {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "AUDIT-EXCEPTION-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = uow.SystemErrorRespository.Insert(errorObj);
+                throw;
+            }
+        }
+
+        #endregion
+
+        private static double CalculatePercentage(int count, int total) {
+            if (total == 0) return 0;
+            return Math.Round((double)count / total * 100, 2);
         }
     }
 }

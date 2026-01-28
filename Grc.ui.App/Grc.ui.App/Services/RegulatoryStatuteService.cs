@@ -27,6 +27,7 @@ namespace Grc.ui.App.Services {
             : base(loggerFactory, httpHandler, environment, endpointType, mapper, webHelper, sessionManager, errorFactory, errorService) {
         }
 
+        #region Queries
         public async Task<GrcResponse<GrcStatuteSupportResponse>> GetStatuteSupportItemsAsync(GrcRequest request) {
             try {
 
@@ -287,6 +288,32 @@ namespace Grc.ui.App.Services {
                 return new GrcResponse<ServiceResponse>(error);
             }
         }
+
+        #endregion
+
+        #region Report
+
+        public async Task<GrcResponse<List<GrcObligationReport>>> GetObligationReportAsync(GrcRequest request) {
+            try {
+
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object", "Request object cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<List<GrcObligationReport>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/obligation-summary";
+                return await HttpHandler.PostAsync<GrcRequest, List<GrcObligationReport>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "STATUTE-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<List<GrcObligationReport>>(error);
+            }
+        }
+
+        #endregion
 
     }
 }

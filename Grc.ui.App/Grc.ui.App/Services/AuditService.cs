@@ -1233,6 +1233,22 @@ namespace Grc.ui.App.Services {
         }
 
         #endregion
+
+        #region Reports
+        public async Task<GrcResponse<List<GrcExceptionReport>>> GetExceptionReportAsync(GrcRequest request) {
+            try {
+                var endpoint = $"{EndpointProvider.Compliance.AuditBase}/exceptions-report";
+                return await HttpHandler.PostAsync<GrcRequest, List<GrcExceptionReport>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "AUDIT-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<List<GrcExceptionReport>>(error);
+            }
+        }
+
+        #endregion
     }
 
 }

@@ -65,8 +65,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         #endregion
 
         #region Reports
-        Task<List<SummeryReturnResponse>> GetPeriodReportAsync(string period);
-        Task<List<PeriodSummeryResponse>> GetMonthlySummeryAsync();
+
+        Task<List<SummeryReturnResponse>> GetPeriodReportAsync(ReportPeriod period, bool includeDeleted);
+        Task<List<PeriodSummaryResponse>> GetMonthlySummeryAsync();
+        Task<List<BreachResponse>> GetBreachedReportAsync(bool includeDeleted);
+        Task<List<BreachAgeResponse>> GetBreachedAgingReportAsync(bool includeDeleted);
+        Task<List<CircularReportResponse>> GetCircularAuthorityReportAsync(bool includeDeleted, string authority);
+        Task<List<CircularSummaryResponse>> GetCircularSummeryReportAsync(bool includeDeleted);
+        
         #endregion
 
     }

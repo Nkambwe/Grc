@@ -14,6 +14,6 @@ namespace Grc.ui.App.Services {
         Task<GrcResponse<ServiceResponse>> CreateStatuteAsync(StatuteViewModel request, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> UpdateStatuteAsync(StatuteViewModel request, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> DeleteStatuteAsync(GrcIdRequest request);
-        
+        Task<GrcResponse<List<GrcObligationReport>>> GetObligationReportAsync(GrcRequest request);
     }
 }

@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Bibliography;
+﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Bibliography;
 using Grc.ui.App.Defaults;
 using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
@@ -1795,6 +1796,202 @@ namespace Grc.ui.App.Controllers {
 
         #endregion
 
+        #region Reports
+
+        [HttpPost()]
+        public async Task<IActionResult> GetExceptionSummaryReport() {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+                return Ok(new { success = false, message = "Unable to resolve current user" });
+
+            var request = new GrcRequest {
+                UserId = userResponse.Data.UserId,
+                IPAddress = ipAddress,
+                Action = Activity.EXCEPTIONS_REPORT_DATA.GetDescription()
+            };
+
+            var result = await _auditService.GetExceptionReportAsync(request);
+            if (result.HasError || result.Data == null)
+                return Ok(new { success = false, message = result.Error.Message ?? "Failed to retrieve audit exceptions data" });
+
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("Exception Summary");
+            var kpiSheet = workbook.Worksheets.Add("Summary KPIs");
+
+            var data = result.Data;
+
+            //..grouped headers
+            ws.Cell(1, 1).Value = "NO";
+            ws.Cell(1, 2).Value = "AUDIT";
+            ws.Cell(1, 3).Value = "TYPE";
+            ws.Cell(1, 4).Value = "AUDIT DATE";
+            ws.Cell(1, 5).Value = "FINDINGS";
+
+            ws.Range(1, 6, 1, 7).Merge().Value = "CLOSED";
+            ws.Range(1, 8, 1, 9).Merge().Value = "OPEN";
+
+            ws.Cell(1, 10).Value = "COMPLETED %";
+            ws.Cell(1, 11).Value = "OUTSTANDING %";
+            ws.Cell(1, 12).Value = "HEDGING DAYS";
+
+            //..sub headers
+            ws.Cell(2, 6).Value = "COUNT";
+            ws.Cell(2, 7).Value = "%";
+            ws.Cell(2, 8).Value = "COUNT";
+            ws.Cell(2, 9).Value = "%";
+
+            //..header styling
+            var headerRange = ws.Range(1, 1, 2, 12);
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            headerRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+            headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thick;
+            headerRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+            ws.Row(1).Height = 28;
+            ws.Row(2).Height = 22;
+
+            //..freez header
+            ws.SheetView.FreezeRows(2);
+
+            int row = 3;
+            int no = 1;
+
+            foreach (var r in data) {
+                ws.Cell(row, 1).Value = no;
+                ws.Cell(row, 2).Value = r.Audit;
+                ws.Cell(row, 3).Value = r.AuditType;
+                ws.Cell(row, 4).Value = r.AuditDate;
+                ws.Cell(row, 4).Style.DateFormat.Format = "MMM-yy";
+                ws.Cell(row, 5).Value = r.Findings;
+                ws.Cell(row, 6).Value = r.Closed;
+                ws.Cell(row, 7).Value = r.PercentageCompleted / 100;
+                ws.Cell(row, 8).Value = r.Open;
+                ws.Cell(row, 9).Value = r.PercentageOutstanding / 100;
+                ws.Cell(row, 10).Value = r.PercentageCompleted / 100;
+                ws.Cell(row, 11).Value = r.PercentageOutstanding / 100;
+                ws.Cell(row, 12).Value = r.AverageAgingDays;
+                row++;
+                no++;
+            }
+           
+            int lastDataRow = row - 1;
+
+            // Percentage formats
+            ws.Range(3, 7, lastDataRow, 7).Style.NumberFormat.Format = "0%";
+            ws.Range(3, 9, lastDataRow, 9).Style.NumberFormat.Format = "0%";
+            ws.Range(3, 10, lastDataRow, 11).Style.NumberFormat.Format = "0%";
+
+            //..column shading
+            ws.Range(3, 1, lastDataRow, 2).Style.Fill.BackgroundColor = XLColor.WhiteSmoke;
+            ws.Range(3, 3, lastDataRow, 4).Style.Fill.BackgroundColor = XLColor.AliceBlue;
+            ws.Range(3, 5, lastDataRow, 5).Style.Fill.BackgroundColor = XLColor.Honeydew;
+            ws.Range(3, 6, lastDataRow, 7).Style.Fill.BackgroundColor = XLColor.LightGreen;
+            ws.Range(3, 8, lastDataRow, 9).Style.Fill.BackgroundColor = XLColor.MistyRose;
+            ws.Range(3, 12, lastDataRow, 12).Style.Fill.BackgroundColor = XLColor.LemonChiffon;
+
+            //..zebra striping
+            for (int r = 3; r <= lastDataRow; r++) {
+                if (r % 2 == 0)
+                    ws.Range(r, 1, r, 12).Style.Fill.BackgroundColor = XLColor.FromHtml("#F9FAFB");
+            }
+            
+            //..center numeric columns
+            ws.Range(3, 1, lastDataRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Range(3, 5, lastDataRow, 12).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Range(3, 4, lastDataRow, 4).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            //..completion coloring
+            var completionRange = ws.Range(3, 10, lastDataRow, 10);
+            completionRange.AddConditionalFormat().WhenBetween(0.9, 1).Fill.SetBackgroundColor(XLColor.Green);
+            completionRange.AddConditionalFormat().WhenBetween(0.75, 0.8999).Fill.SetBackgroundColor(XLColor.Orange);
+            completionRange.AddConditionalFormat().WhenLessThan(0.75).Fill.SetBackgroundColor(XLColor.Red);
+            completionRange.Style.Font.Bold = true;
+
+            //..boarders and resize
+            ws.Range(3, 1, lastDataRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Range(3, 3, lastDataRow, 8).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Range(1, 1, lastDataRow, 8).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+
+            // Widths
+            ws.Column(1).Width = 6;
+            ws.Column(2).Width = 35;
+            ws.Column(3).Width = 14;
+            for (int c = 4; c <= 8; c++) ws.Column(c).Width = 12;
+
+            int totalRow = lastDataRow + 1;
+
+            ws.Cell(totalRow, 1).Value = "TOTAL";
+            ws.Range(totalRow, 1, totalRow, 4).Merge();
+
+            ws.Cell(totalRow, 5).FormulaA1 = $"=SUM(E3:E{lastDataRow})";
+            ws.Cell(totalRow, 6).FormulaA1 = $"=SUM(F3:F{lastDataRow})";
+            ws.Cell(totalRow, 8).FormulaA1 = $"=SUM(H3:H{lastDataRow})";
+
+            ws.Cell(totalRow, 7).FormulaA1 = $"=IF(E{totalRow}=0,0,F{totalRow}/E{totalRow})";
+            ws.Cell(totalRow, 9).FormulaA1 = $"=IF(E{totalRow}=0,0,H{totalRow}/E{totalRow})";
+            ws.Cell(totalRow, 10).FormulaA1 = ws.Cell(totalRow, 7).Address.ToStringRelative();
+            ws.Cell(totalRow, 11).FormulaA1 = ws.Cell(totalRow, 9).Address.ToStringRelative();
+
+            var totalRange = ws.Range(totalRow, 1, totalRow, 12);
+            totalRange.Style.Font.Bold = true;
+            totalRange.Style.Fill.BackgroundColor = XLColor.FromHtml("#D1D5DB");
+            totalRange.Style.Border.TopBorder = XLBorderStyleValues.Thick;
+            totalRange.Style.Border.BottomBorder = XLBorderStyleValues.Thick;
+            totalRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Row(totalRow).Height = 26;
+
+            ws.Column(1).Width = 6;
+            ws.Column(2).Width = 30;
+            ws.Column(3).Width = 18;
+            ws.Column(4).Width = 14;
+
+            for (int c = 5; c <= 12; c++)
+                ws.Column(c).Width = 12;
+
+            ws.Range(totalRow, 5, totalRow, 9).Style.NumberFormat.Format = "0%";
+
+            //..add KPI Sheet
+            kpiSheet.Cell(2, 2).Value = "Total Obligations";
+            kpiSheet.Cell(2, 3).FormulaA1 = $"='Obligations Summary'!C{totalRow}";
+
+            kpiSheet.Cell(3, 2).Value = "Compliant";
+            kpiSheet.Cell(3, 3).FormulaA1 = $"='Obligations Summary'!D{totalRow}";
+
+            kpiSheet.Cell(4, 2).Value = "Non-Compliant";
+            kpiSheet.Cell(4, 3).FormulaA1 = $"='Obligations Summary'!F{totalRow}";
+
+            kpiSheet.Cell(5, 2).Value = "Compliance Rate";
+            kpiSheet.Cell(5, 3).FormulaA1 = $"='Obligations Summary'!H{totalRow}";
+            kpiSheet.Cell(5, 3).Style.NumberFormat.Format = "0%";
+
+            var kpiRange = kpiSheet.Range(2, 2, 5, 3);
+            kpiRange.Style.Font.Bold = true;
+            kpiRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thick;
+            kpiRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+            kpiSheet.Column(2).Width = 30;
+            kpiSheet.Column(3).Width = 16;
+            kpiSheet.Range(2, 3, 5, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            // Center totals row
+            ws.Range(totalRow, 1, totalRow, 10).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Range(totalRow, 1, totalRow, 2).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Range(totalRow, 1, totalRow, 10).Style.Font.FontSize = 12;
+
+            kpiSheet.Range(5, 3, 5, 3).AddConditionalFormat().WhenBetween(0.9, 1).Fill.SetBackgroundColor(XLColor.Green);
+            kpiSheet.Range(5, 3, 5, 3).AddConditionalFormat().WhenLessThan(0.9).Fill.SetBackgroundColor(XLColor.Orange);
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                 $"CIRCULAR-SUMMERY-{DateTime.Today:MM-yyyy}.xlsx");
+        }
+
+        #endregion
     }
 
 }

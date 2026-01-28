@@ -388,45 +388,39 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
 
         #region Reports
 
-        public async Task<List<SummeryReturnResponse>> GetPeriodReportAsync(string period) {
+        public async Task<List<SummeryReturnResponse>> GetPeriodReportAsync(ReportPeriod period, bool includeDeleted) {
+            
             using var uow = UowFactory.Create();
             Logger.LogActivity("Generate returns period report data", "INFO");
 
             try {
-                var reports = await uow.ReturnRepository.GetAllAsync(false, 
-                    r => r.Department, 
-                    r => r.Frequency,
-                    r => r.ReturnType,
-                    r => r.Authority,
-                    r => r.Submissions);
+                var frequencyName = MapReturnStatusToFilter(period);
+                var reports = await uow.ReturnRepository.GetAllAsync(r => r.Frequency.FrequencyName == frequencyName, includeDeleted,
+                    r => r.Department, r => r.Frequency, r => r.ReturnType, r => r.Authority, r => r.Submissions);
 
                 if (reports == null || reports.Count == 0) {
                     return new List<SummeryReturnResponse>();
                 }
 
-                var now = DateTime.UtcNow;
-                var result = reports
-                    .SelectMany(r => r.Submissions ?? Enumerable.Empty<ReturnSubmission>(), (r, s) => new { Report = r, Submission = s })
-                    .Where(sub => {
-                        var (start, end) = GetCurrentPeriodRange(period, now);
-                        var inCurrentPeriod = sub.Submission.PeriodStart < end && sub.Submission.PeriodEnd >= start;
-                        var breachedAndOpen =sub.Submission.IsBreached && string.Equals(sub.Submission.Status, "OPEN", StringComparison.OrdinalIgnoreCase);
-                        return inCurrentPeriod || breachedAndOpen;
-                    }).Select(submission => new SummeryReturnResponse {
-                        Id = submission.Submission.Id,
-                        Title = submission.Report.ReturnName,
-                        Type = submission.Report.ReturnType?.TypeName,
-                        Authority = submission.Report.Authority?.AuthorityName,
-                        PeriodStart = submission.Submission.PeriodStart,
-                        PeriodEnd = submission.Submission.PeriodEnd,
-                        Status = submission.Submission.Status ?? "OPEN",
-                        Department = submission.Report.Department?.DepartmentName,
-                        Executioner = submission.Submission.SubmittedBy ?? string.Empty,
-                        IsBreached = submission.Submission.IsBreached,
-                        BreachRisk = submission.Report.Risk ?? string.Empty,
-                        BreachReason = submission.Submission.BreachReason
-                    }).ToList();
-                return result;
+                var response = reports.SelectMany(report => report.Submissions ?? Enumerable.Empty<ReturnSubmission>(), (setReport, setSubmission) => new { setReport, setSubmission })
+                        .Where(record => BelongsToPeriod(record.setSubmission, period) || (record.setSubmission.IsBreached && string.Equals(record.setSubmission.Status, "OPEN", StringComparison.OrdinalIgnoreCase)))
+                        .Select(set => new SummeryReturnResponse {
+                            Id = set.setSubmission.Id,
+                            Title = set.setReport.ReturnName,
+                            Type = set.setReport.ReturnType?.TypeName,
+                            Frequency = set.setReport.Frequency?.FrequencyName,
+                            Authority = set.setReport.Authority?.AuthorityName,
+                            PeriodStart = set.setSubmission.PeriodStart,
+                            PeriodEnd = set.setSubmission.PeriodEnd,
+                            Status = set.setSubmission.Status ?? "OPEN",
+                            Department = set.setReport.Department?.DepartmentName,
+                            Executioner = set.setSubmission.SubmittedBy ?? string.Empty,
+                            IsBreached = set.setSubmission.IsBreached,
+                            BreachRisk = set.setReport.Risk ?? string.Empty,
+                            BreachReason = set.setSubmission.BreachReason
+                        }).ToList();
+
+                return response;
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to generate returns statistics: {ex.Message}","ERROR");
                 LogError(uow, ex);
@@ -434,10 +428,9 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
-        public async Task<List<PeriodSummeryResponse>> GetMonthlySummeryAsync() {
+        public async Task<List<PeriodSummaryResponse>> GetMonthlySummeryAsync() {
             using var uow = UowFactory.Create();
-            Logger.LogActivity("Generate returns period report data", "INFO");
-
+            Logger.LogActivity("Generate period summary percentage report", "INFO");
             try {
                 var reports = await uow.ReturnRepository.GetAllAsync(false,
                     r => r.Department,
@@ -447,38 +440,273 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     r => r.Submissions);
 
                 if (reports == null || reports.Count == 0) {
-                    return new List<PeriodSummeryResponse>();
+                    return new List<PeriodSummaryResponse>();
                 }
 
                 var now = DateTime.UtcNow;
                 var monthStart = new DateTime(now.Year, now.Month, 1);
                 var monthEnd = monthStart.AddMonths(1);
 
-                //..periods allowed
+                var allowedFrequencies = new[] { "DAILY", "WEEKLY", "MONTHLY"};
+                var monthlySubmissions = reports
+                    .Where(r => allowedFrequencies.Contains(r.Frequency?.FrequencyName, StringComparer.OrdinalIgnoreCase))
+                    .SelectMany(r => r.Submissions ?? Enumerable.Empty<ReturnSubmission>(),
+                        (r, s) => new { Report = r, Submission = s })
+                    .Where(submission => submission.Submission.PeriodStart < monthEnd &&
+                                        submission.Submission.PeriodEnd >= monthStart)
+                    .ToList();
+
+                var summary = monthlySubmissions
+                    .GroupBy(submission => submission.Report.Frequency.FrequencyName.ToUpperInvariant())
+                    .Select(g => {
+                        var total = g.Count();
+                        var submitted = g.Count(s => string.Equals(s.Submission.Status, "CLOSED", StringComparison.OrdinalIgnoreCase));
+                        var pending = g.Count(s => string.Equals(s.Submission.Status, "OPEN", StringComparison.OrdinalIgnoreCase));
+                        var breached = g.Count(s => s.Submission.IsBreached);
+                        var onTime = g.Count(s => !s.Submission.IsBreached &&
+                                                 string.Equals(s.Submission.Status, "CLOSED", StringComparison.OrdinalIgnoreCase));
+
+                        return new PeriodSummaryResponse {
+                            Period = g.Key,
+                            Total = total,
+                            Submitted = submitted,
+                            SubmittedPercentage = CalculatePercentage(submitted, total),
+                            Pending = pending,
+                            PendingPercentage = CalculatePercentage(pending, total),
+                            Breached = breached,
+                            BreachedPercentage = CalculatePercentage(breached, total),
+                            OnTime = onTime,
+                            OnTimePercentage = CalculatePercentage(onTime, total),
+                            ComplianceRate = CalculatePercentage(onTime, total)
+                        };
+                    }).OrderBy(s => s.Period).ToList();
+
+                return summary;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to generate period summary percentage report: {ex.Message}", "ERROR");
+                LogError(uow, ex);
+                throw;
+            }
+        }
+
+        public async Task<List<BreachResponse>> GetBreachedReportAsync(bool includeDeleted) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Generate breached reports for current month", "INFO");
+            try {
+                var reports = await uow.ReturnRepository.GetAllAsync(false,
+                    r => r.Department,
+                    r => r.Frequency,
+                    r => r.ReturnType,
+                    r => r.Authority,
+                    r => r.Submissions);
+
+                if (reports == null || reports.Count == 0) {
+                    return new List<BreachResponse>();
+                }
+
+                var now = DateTime.UtcNow;
+                var monthStart = new DateTime(now.Year, now.Month, 1);
+                var monthEnd = monthStart.AddMonths(1);
+
+                //..allowed frequencies
                 var allowedFrequencies = new[] {
                     "DAILY",
                     "WEEKLY",
                     "MONTHLY"
                 };
 
-                var monthlySubmissions = reports.Where(r => allowedFrequencies.Contains(r.Frequency?.FrequencyName, StringComparer.OrdinalIgnoreCase))
-                         .SelectMany( r => r.Submissions ?? Enumerable.Empty<ReturnSubmission>(), (r, s) => new { Report = r, Submission = s })
-                         .Where(submission => submission.Submission.PeriodStart < monthEnd && submission.Submission.PeriodEnd >= monthStart
-                         ).ToList();
+                //..get submissions for the current month
+                var monthlySubmissions = reports
+                    .Where(r => allowedFrequencies.Contains(r.Frequency?.FrequencyName, StringComparer.OrdinalIgnoreCase))
+                    .SelectMany(report => report.Submissions ?? Enumerable.Empty<ReturnSubmission>(), (set_report, set_submission) 
+                        => new { 
+                            Report = set_report, 
+                            Submission = set_submission
+                        })
+                    .Where(set => set.Submission.PeriodStart < monthEnd && set.Submission.PeriodEnd >= monthStart)
+                    .ToList();
 
-                var summary = monthlySubmissions.GroupBy(submission => submission.Report.Frequency.FrequencyName.ToUpperInvariant())
-                        .Select(g => new PeriodSummeryResponse {
-                            Period = g.Key,
-                            Total = g.Count(),
-                            Submitted = g.Count(s => string.Equals(s.Submission.Status, "CLOSED", StringComparison.OrdinalIgnoreCase)),
-                            Pending = g.Count(s => string.Equals(s.Submission.Status, "OPEN", StringComparison.OrdinalIgnoreCase)),
-                            Breached = g.Count(s => s.Submission.IsBreached),
-                            OnTime = g.Count(s => !s.Submission.IsBreached && string.Equals(s.Submission.Status, "CLOSED", StringComparison.OrdinalIgnoreCase))
-                        }).OrderBy(s => s.Period).ToList();
+                //..filter for breached submissions and map to response
+                var breachedReports = monthlySubmissions
+                    .Where(report => report.Submission.IsBreached == true)
+                    .Select(breach => new BreachResponse {
+                        ReportName = breach.Report.ReturnType?.TypeName ?? string.Empty,
+                        Frequency = breach.Report.Frequency?.FrequencyName ?? string.Empty,
+                        Department = breach.Report.Department?.DepartmentName ?? string.Empty,
+                        DueDate = breach.Submission.PeriodEnd,
+                        SubmissionDate = breach.Submission.SubmissionDate,
+                        Status = breach.Submission.Status ?? "OPEN",
+                        AssociatedRisk = breach.Report.Risk ?? "Not applicable" 
+                    })
+                    .ToList();
 
-                return summary;
+                Logger.LogActivity($"Found {breachedReports.Count} breached reports for current month", "INFO");
+                return breachedReports;
             } catch (Exception ex) {
-                Logger.LogActivity($"Failed to generate returns statistics: {ex.Message}", "ERROR");
+                Logger.LogActivity($"Failed to generate breached reports: {ex.Message}", "ERROR");
+                LogError(uow, ex);
+                throw;
+            }
+        }
+
+        public async Task<List<BreachAgeResponse>> GetBreachedAgingReportAsync(bool includeDeleted) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Generate breached aging report for current month", "INFO");
+            try {
+                var reports = await uow.ReturnRepository.GetAllAsync(includeDeleted,
+                    r => r.Department,
+                    r => r.Frequency,
+                    r => r.ReturnType,
+                    r => r.Authority,
+                    r => r.Submissions);
+
+                if (reports == null || reports.Count == 0) {
+                    return new List<BreachAgeResponse>();
+                }
+
+                var now = DateTime.UtcNow;
+                var monthStart = new DateTime(now.Year, now.Month, 1);
+                var monthEnd = monthStart.AddMonths(1);
+
+                //..frequencies to include
+                var allowedFrequencies = new[] { "DAILY", "WEEKLY", "MONTHLY" };
+
+                var monthlySubmissions = reports
+                    .Where(r => allowedFrequencies.Contains(r.Frequency?.FrequencyName, StringComparer.OrdinalIgnoreCase))
+                    .SelectMany(report => report.Submissions ?? Enumerable.Empty<ReturnSubmission>(),
+                        (set_report, set_submission) 
+                        => new {
+                            Report = set_report,
+                            Submission = set_submission
+                        })
+                    .Where(set => set.Submission.PeriodStart < monthEnd && set.Submission.PeriodEnd >= monthStart).ToList();
+                var breachedAgingReport = monthlySubmissions
+                    .Where(report => report.Submission.IsBreached == true)
+                    .Select(breach => {
+                        var daysOverdue = CalculateDaysOverdue(breach.Submission.PeriodEnd, breach.Submission.SubmissionDate,now);
+                        return new BreachAgeResponse {
+                            ReportName = breach.Report.ReturnType?.TypeName ?? string.Empty,
+                            Frequency = breach.Report.Frequency?.FrequencyName ?? string.Empty,
+                            Department = breach.Report.Department?.DepartmentName ?? string.Empty,
+                            DueDate = breach.Submission.PeriodEnd,
+                            SubmissionDate = breach.Submission.SubmissionDate,
+                            Status = breach.Submission.Status ?? "OPEN",
+                            DaysOverdue = daysOverdue,
+                            AgingBucket = GetAgingBucket(daysOverdue),
+                            AssociatedRisk = breach.Report.Risk ?? "Not applicable"
+                        };
+                    })
+                    .OrderByDescending(x => x.DaysOverdue)
+                    .ToList();
+
+                Logger.LogActivity($"Found {breachedAgingReport.Count} breached reports for current month", "INFO");
+                return breachedAgingReport;
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to generate breached aging report: {ex.Message}", "ERROR");
+                LogError(uow, ex);
+                throw;
+            }
+        }
+
+        public async Task<List<CircularReportResponse>> GetCircularAuthorityReportAsync(bool includeDeleted, string authority) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Generate circular statistics", "INFO");
+
+            var response = new List<CircularReportResponse>();
+            try {
+                //..get records
+                var excludedAuthorities = new[] { "BOU", "URA", "DPF", "MoFED", "PPDA" };
+
+                var reports = authority switch {
+                    "OTHER" => await uow.CircularRepository.GetAllAsync(
+                        p => !excludedAuthorities.Contains(p.Authority.AuthorityAlias),
+                        includeDeleted,
+                        p => p.Department,
+                        p => p.Authority),
+                    _ => await uow.CircularRepository.GetAllAsync(
+                        p => p.Authority.AuthorityAlias == authority,
+                        includeDeleted,
+                        p => p.Department,
+                        p => p.Authority)
+                };
+
+                if (reports?.Any() == true) {
+                    response = reports.Select(r => new CircularReportResponse {
+                        Id = r.Id,
+                        Title = r.CircularTitle,
+                        Status = r.Status,
+                        IsBreached = r.IsBreached,
+                        DueDate = r.DeadlineOn,
+                        SubmissionDate = r.SubmissionDate,
+                        AuthorityAlias = r.Authority?.AuthorityAlias,
+                        Authority = r.Authority?.AuthorityName ?? string.Empty,
+                        Department = r.Department?.DepartmentName ?? string.Empty,
+                        BreachRisk = r.BreachRisk
+                    }).ToList();
+                }
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve circular report data: {ex.Message}", "ERROR");
+                LogError(uow, ex);
+                throw;
+            }
+            return response;
+        }
+
+        public async Task<List<CircularSummaryResponse>> GetCircularSummeryReportAsync(bool includeDeleted) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Generate circular authority statistics report", "INFO");
+            try {
+                var currentYear = DateTime.UtcNow.Year;
+                var yearStart = new DateTime(currentYear, 1, 1);
+                var yearEnd = new DateTime(currentYear, 12, 31, 23, 59, 59);
+
+                //..get all circulars received
+                var circulars = await uow.CircularRepository.GetAllAsync(p => p.RecievedOn >= yearStart &&
+                p.RecievedOn <= yearEnd, includeDeleted,p => p.Department, p => p.Authority);
+
+                if (circulars == null || !circulars.Any()) {
+                    Logger.LogActivity("No circulars found for current year", "INFO");
+                    return new List<CircularSummaryResponse>();
+                }
+
+                //..group by authority
+                var stats = circulars
+                    .Where(c => c.Authority != null)
+                    .GroupBy(c => new { Alias = c.Authority.AuthorityAlias, Name = c.Authority.AuthorityName})
+                    .Select(g => {
+                        var totalReceived = g.Count();
+                        var closedCount = g.Count(c => string.Equals(c.Status, "CLOSED", StringComparison.OrdinalIgnoreCase));
+                        var outstandingCount = g.Count(c => string.Equals(c.Status, "OPEN", StringComparison.OrdinalIgnoreCase) ||
+                                               string.Equals(c.Status, "UNKNOWN", StringComparison.OrdinalIgnoreCase));
+                        var breachedCount = g.Count(c => c.IsBreached);
+                        var closedNotBreached = closedCount - g.Count(c => c.IsBreached &&  string.Equals(c.Status, "CLOSED", StringComparison.OrdinalIgnoreCase));
+
+                        return new CircularSummaryResponse { 
+                            AuthorityAlias = g.Key.Alias,
+                            AuthorityName = g.Key.Name ?? string.Empty,
+                            TotalReceived = totalReceived,
+                            Closed = new CircularMetric {
+                                Count = closedCount,
+                                Percentage = CalculateCircularPercentage(closedCount, totalReceived)
+                            },
+                            Outstanding = new CircularMetric {
+                                Count = outstandingCount,
+                                Percentage = CalculateCircularPercentage(outstandingCount, totalReceived)
+                            },
+                            Breached = new CircularMetric {
+                                Count = breachedCount,
+                                Percentage = CalculateCircularPercentage(breachedCount, totalReceived)
+                            },
+                            ComplianceRate = CalculateCircularPercentage(closedNotBreached, totalReceived)
+                        };
+                    }).OrderByDescending(s => s.TotalReceived).ToList();
+
+                Logger.LogActivity($"Generated statistics for {stats.Count} authorities", "INFO");
+                return stats;
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to generate circular authority statistics: {ex.Message}", "ERROR");
                 LogError(uow, ex);
                 throw;
             }
@@ -1207,6 +1435,33 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
 
         #region private methods
 
+        private static double CalculatePercentage(int count, int total) 
+            => total == 0 ? 0 : Math.Round((double)count / total * 100, 2);
+
+        private static int CalculateDaysOverdue(DateTime dueDate, DateTime? submissionDate, DateTime now) {
+            // If submitted late, calculate days between due date and submission
+            if (submissionDate.HasValue && submissionDate.Value > dueDate) {
+                return (submissionDate.Value.Date - dueDate.Date).Days;
+            }
+            // If not yet submitted, calculate days from due date to now
+            if (!submissionDate.HasValue) {
+                return (now.Date - dueDate.Date).Days;
+            }
+            // Shouldn't happen for breached reports, but return 0 as fallback
+            return 0;
+        }
+
+        private static string GetAgingBucket(int daysOverdue) {
+            return daysOverdue switch {
+                <= 7 => "1-7 days",
+                <= 14 => "8-14 days",
+                <= 30 => "15-30 days",
+                <= 60 => "31-60 days",
+                <= 90 => "61-90 days",
+                _ => "90+ days"
+            };
+        }
+
         private static (DateTime Start, DateTime End) GetCurrentPeriodRange(string frequency, DateTime now) {
             now = now.Date;
             return frequency?.ToUpperInvariant() switch {
@@ -1225,6 +1480,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
 
             return c.Status ?? "OPEN";
         }
+
         private static string MapPolicyStatusToFilter(PolicyStatus status) => status switch {
             PolicyStatus.ONHOLD => "ON-HOLD",
             PolicyStatus.NEEDREVIEW => "DUE",
@@ -1249,6 +1505,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             ReportPeriod.ONEOFF => "ONE-OFF",
             _ => "ON OCCURRENCE"
         };
+
         private static bool BelongsToPeriod(ReturnSubmission s, ReportPeriod period) {
             var today = DateTime.Today;
 
@@ -1312,9 +1569,11 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             };
         }
 
-        private static int GetQuarter(DateTime date) => (date.Month - 1) / 3 + 1;
+        private static int GetQuarter(DateTime date) 
+            => (date.Month - 1) / 3 + 1;
 
-        private static int GetHalf(DateTime date) => date.Month <= 6 ? 1 : 2;
+        private static int GetHalf(DateTime date) 
+            => date.Month <= 6 ? 1 : 2;
 
         private void LogError(IUnitOfWork uow, Exception ex) {
             var currentEx = ex.InnerException;
@@ -1367,7 +1626,12 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             //..save error object to the database
             _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
         }
-        
+
+        private static double CalculateCircularPercentage(int count, int total) {
+            if (total == 0) return 0;
+            return Math.Round((double)count / total * 100, 2);
+        }
+
         #endregion
     }
 }

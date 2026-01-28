@@ -262,6 +262,25 @@ $('.action-btn-audit-home').on('click', function () {
     }
 });
 
+$('.action-btn-excel-export').on('click', function () {
+    $.ajax({
+        url: '/grc/compliance/audits/exceptions/reports-summary',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(auditReportTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Exceptions_report.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+    });
+});
+
 $(document).ready(function () {
     console.log("DOM Loged");
    initAuditExceptionTable();

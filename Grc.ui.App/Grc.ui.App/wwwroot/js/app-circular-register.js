@@ -220,6 +220,139 @@ $('.action-btn-return-new').on('click', function () {
     addCircular();
 });
 
+$('.action-btn-circular-report-bou').on('click', function () {
+    $.ajax({
+        url: '/grc/circular/reports/bou',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(circularTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "BOU_Circulars.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+    });
+});
+
+$('.action-btn-circular-report-dpf').on('click', function () {
+    $.ajax({
+        url: '/grc/circular/reports/dpf',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(circularTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "DPF_Circulars.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+    });
+});
+
+$('.action-btn-circular-report-ura').on('click', function () {
+    $.ajax({
+        url: '/grc/circular/reports/ura',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(circularTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "URA_Circulars.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+    });
+});
+
+$('.action-btn-circular-report-mofed').on('click', function () {
+    $.ajax({
+        url: '/grc/circular/reports/mofed',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(circularTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "MoFed_Circulars.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+    });
+});
+
+$('.action-btn-circular-report-other').on('click', function () {
+    $.ajax({
+        url: '/grc/circular/reports/other',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(circularTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Other_Authorities_Circulars.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+    });
+});
+
+$('.action-btn-circular-report-ppd').on('click', function () {
+    a$.ajax({
+        url: '/grc/circular/reports/ppda',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(circularTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "PPDA_Circulars.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+    });
+});
+
+$('.action-btn-circular-report-summery').on('click', function () {
+    $.ajax({
+        url: '/grc/circular/reports/summary',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(circularTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Summary_Circulars.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+    });
+});
+
 function addCircular() {
     openCircular2Panel('Add New Circular', {
         id: 0,

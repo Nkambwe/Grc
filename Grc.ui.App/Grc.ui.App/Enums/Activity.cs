@@ -383,5 +383,11 @@ namespace Grc.ui.App.Enums {
         AUDIT_NOTES_DELETE = 198,
         [Description("Retrieve return report data")]
         RETURNS_REPORT_DATA = 199,
+        [Description("Retrieve circular report data")]
+        CIRCULAR_REPORT_DATA = 200,
+        [Description("Retrieve obligation report data")]
+        OBLIGATION_REPORT_DATA = 201,
+        [Description("Retrieve exceptions report data")]
+        EXCEPTIONS_REPORT_DATA = 202,
     }
 }

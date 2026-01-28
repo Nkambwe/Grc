@@ -71,8 +71,11 @@ namespace Grc.ui.App.Services {
         Task<GrcResponse<ServiceResponse>> CreateExceptionTaskAsync(GrcAuditTaskViewModel model, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> UpdateExceptionTaskAsync(GrcAuditTaskViewModel model, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> DeleteExceptionTaskAsync(GrcIdRequest request);
-       
 
+        #endregion
+
+        #region Reports
+        Task<GrcResponse<List<GrcExceptionReport>>> GetExceptionReportAsync(GrcRequest request);
         #endregion
     }
 

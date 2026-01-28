@@ -18,6 +18,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             IMapper mapper) : base(loggerFactory, uowFactory, mapper) {
         }
 
+        #region Queries
         public int Count()
         {
             using var uow = UowFactory.Create();
@@ -1057,7 +1058,63 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
+        #endregion
+
+        #region Reports
+        public async Task<List<ObligationReport>> GetObligationSummaryReportAsync(bool includeDeleted) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Generate obligations statistics report", "INFO");
+            try {
+                //..get all statutory regulations with their articles
+                var obligations = await uow.StatutoryRegulationRepository.GetAllAsync(includeDeleted,s => s.Articles);
+
+                if (obligations == null || !obligations.Any()) {
+                    Logger.LogActivity("No obligations found", "INFO");
+                    return new List<ObligationReport>();
+                }
+
+                //..generate the report grouped by statute
+                var report = obligations
+                    .Where(statute => statute.Articles != null && statute.Articles.Any())
+                    .Select(statute => {
+                        //..get articles that are considered for compliance, excludeFromCompliance
+                        var applicableArticles = statute.Articles.Where(article => !article.ExcludeFromCompliance).ToList();
+
+                        var totalObligations = applicableArticles.Count;
+
+                        //..compliant: IsCovered == true
+                        var compliantCount = applicableArticles.Count(article => article.IsCovered);
+
+                        // Non-compliant: IsCovered == false or null
+                        var nonCompliantCount = applicableArticles.Count(article => !article.IsCovered);
+
+                        return new ObligationReport {
+                            Statute = statute.RegulatoryName ?? string.Empty,
+                            Obligations = totalObligations,
+                            CompliantCount = compliantCount,
+                            CompliantPercentage = CalculatePercentage(compliantCount, totalObligations),
+                            NonCompliantCount = nonCompliantCount,
+                            NonCompliantPercentage = CalculatePercentage(nonCompliantCount, totalObligations)
+                        };
+                    })
+                    // Only include statutes with at least one obligation
+                    .Where(r => r.Obligations > 0).OrderByDescending(r => r.Obligations).ToList();
+
+                Logger.LogActivity($"Generated obligation report for {report.Count} statutes", "INFO");
+                return report;
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to generate obligations report: {ex.Message}", "ERROR");
+                // Save error object to the database
+                _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
+                throw;
+            }
+        }
+
+        #endregion
+
         #region Private Methods
+
         private SystemError HandleError(IUnitOfWork uow, Exception ex) {
             var innerEx = ex.InnerException;
             while (innerEx != null) {
@@ -1079,6 +1136,11 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 CreatedOn = DateTime.Now
             };
 
+        }
+
+        private static double CalculatePercentage(int count, int total) {
+            if (total == 0) return 0;
+            return Math.Round((double)count / total * 100, 2);
         }
 
         #endregion

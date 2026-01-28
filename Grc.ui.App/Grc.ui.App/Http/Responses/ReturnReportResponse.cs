@@ -12,6 +12,9 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("type")]
         public string Type { get; set; }
 
+        [JsonPropertyName("frequency")]
+        public string Frequency { get; set; }
+
         [JsonPropertyName("authority")]
         public string Authority { get; set; }
 

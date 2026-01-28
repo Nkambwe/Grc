@@ -2354,6 +2354,32 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
+        [HttpPost("registers/obligation-summary")]
+        public async Task<IActionResult> GetObligationSummery([FromBody] GeneralRequest request) {
+            try {
+                Logger.LogActivity("Retrieve obligation summary report", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<ObligationReport>>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IPAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var data = await _regulatoryService.GetObligationSummaryReportAsync(false);
+                if (data == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could circular statistics. A system error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<ObligationReport>>(error));
+                }
+
+                return Ok(new GrcResponse<List<ObligationReport>>(data));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<List<ObligationReport>>(error));
+            }
+        }
+
         #endregion
 
         #region Statute Section
@@ -4086,7 +4112,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                var records = await _returnService.GetPeriodReportAsync(request.Period);
+                var records = await _returnService.GetPeriodReportAsync(GetPeriodEnumValue(request.Period), false);
                 if (records == null || !records.Any()) {
                     var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No report records found");
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
@@ -4100,7 +4126,6 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
-
         [HttpPost("returns/monthly-summary")]
         public async Task<IActionResult> GetPeriodMonthlySummery([FromBody] PeriodStatisticRequest request) {
             try {
@@ -4108,7 +4133,7 @@ namespace Grc.Middleware.Api.Controllers {
                 if (request == null) {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<List<PeriodSummeryResponse>>(error));
+                    return Ok(new GrcResponse<List<PeriodSummaryResponse>>(error));
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
@@ -4116,13 +4141,63 @@ namespace Grc.Middleware.Api.Controllers {
                 if (records == null || !records.Any()) {
                     var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No report records found");
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<List<PeriodSummeryResponse>>(new List<PeriodSummeryResponse>()));
+                    return Ok(new GrcResponse<List<PeriodSummaryResponse>>(new List<PeriodSummaryResponse>()));
                 }
 
-                return Ok(new GrcResponse<List<PeriodSummeryResponse>>(records));
+                return Ok(new GrcResponse<List<PeriodSummaryResponse>>(records));
             } catch (Exception ex) {
                 var error = await HandleErrorAsync(ex);
-                return Ok(new GrcResponse<List<PeriodSummeryResponse>>(error));
+                return Ok(new GrcResponse<List<PeriodSummaryResponse>>(error));
+            }
+        }
+
+        [HttpPost("returns/breach-report")]
+        public async Task<IActionResult> GetBreachedReport([FromBody] GeneralRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<BreachResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var records = await _returnService.GetBreachedReportAsync(false);
+                if (records == null || !records.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No report records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<BreachResponse>>(new List<BreachResponse>()));
+                }
+
+                return Ok(new GrcResponse<List<BreachResponse>>(records));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<List<BreachResponse>>(error));
+            }
+        }
+
+        [HttpPost("returns/breach-aging")]
+        public async Task<IActionResult> GetBreachedAgingReport([FromBody] GeneralRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<BreachAgeResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var records = await _returnService.GetBreachedAgingReportAsync(false);
+                if (records == null || !records.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No report records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<BreachAgeResponse>>(new List<BreachAgeResponse>()));
+                }
+
+                return Ok(new GrcResponse<List<BreachAgeResponse>>(records));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<List<BreachAgeResponse>>(error));
             }
         }
 
@@ -4409,6 +4484,59 @@ namespace Grc.Middleware.Api.Controllers {
                 Logger.LogActivity($"Error deleting circular by user {request.UserId}: {ex.Message}", "ERROR");
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("circulars/authority-report")]
+        public async Task<IActionResult> GetCircularReport([FromBody] CircularStatisticRequest request) {
+
+            try {
+                Logger.LogActivity("Retrieve circular authority report", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<CircularReportResponse>>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IPAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var data = await _returnService.GetCircularAuthorityReportAsync(false, request.Authority);
+                if (data == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could circular statistics. A system error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<CircularReportResponse>>(error));
+                }
+
+                return Ok(new GrcResponse<List<CircularReportResponse>>(data));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<List<CircularReportResponse>>(error));
+            }
+        }
+        [HttpPost("circulars/summary-report")]
+        public async Task<IActionResult> GetCircularSummery([FromBody] GeneralRequest request) {
+
+            try {
+                Logger.LogActivity("Retrieve circular summery report", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<CircularSummaryResponse>>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IPAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var data = await _returnService.GetCircularSummeryReportAsync(false);
+                if (data == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could circular statistics. A system error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<CircularSummaryResponse>>(error));
+                }
+
+                return Ok(new GrcResponse<List<CircularSummaryResponse>>(data));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<List<CircularSummaryResponse>>(error));
             }
         }
 
@@ -6003,6 +6131,32 @@ namespace Grc.Middleware.Api.Controllers {
                 Logger.LogActivity($"Error deleting audit exception by user {request.UserId}: {ex.Message}", "ERROR");
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("audits/exceptions-report")]
+        public async Task<IActionResult> GetExceptionReport([FromBody] GeneralRequest request) {
+            try {
+                Logger.LogActivity("Retrieve exception report", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<ExceptionReport>>(error));
+                }
+                Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IPAddress}", "INFO");
+                Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var data = await _auditExceptionService.GetExceptionSummaryReportAsync(false);
+                if (data == null) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could circular statistics. A system error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<ExceptionReport>>(error));
+                }
+
+                return Ok(new GrcResponse<List<ExceptionReport>>(data));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<List<ExceptionReport>>(error));
             }
         }
 

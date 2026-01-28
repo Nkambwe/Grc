@@ -1,5 +1,4 @@
 ﻿using Grc.Middleware.Api.Data.Entities.Compliance.Audits;
-using Grc.Middleware.Api.Data.Entities.Support;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using System.Linq.Expressions;
@@ -7,6 +6,8 @@ using System.Linq.Expressions;
 namespace Grc.Middleware.Api.Services.Compliance.Audits {
 
     public interface IAuditExceptionService {
+
+        #region Queries
         int Count();
         int Count(Expression<Func<AuditException, bool>> predicate);
         Task<int> CountAsync(CancellationToken cancellationToken = default);
@@ -46,5 +47,11 @@ namespace Grc.Middleware.Api.Services.Compliance.Audits {
         Task<PagedResult<AuditException>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<AuditException, bool>> where = null, bool includeDeleted = false);
         Task<PagedResult<AuditException>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<AuditException, bool>> predicate = null, params Expression<Func<AuditException, object>>[] includes);
         Task<PagedResult<AuditExceptionResponse>> PageLookupAsync<AuditExceptionResponse>(int page, int size, bool includeDeleted, Expression<Func<AuditException, AuditExceptionResponse>> selector);
+
+        #endregion
+
+        #region Reports
+        Task<List<ExceptionReport>> GetExceptionSummaryReportAsync(bool includeDeleted);
+        #endregion
     }
 }

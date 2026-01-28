@@ -7,6 +7,8 @@ using System.Linq.Expressions;
 namespace Grc.Middleware.Api.Services.Compliance.Regulations {
     public interface IStatutoryRegulationService : IBaseService
     {
+
+        #region Queries
         int Count();
         int Count(Expression<Func<StatutoryRegulation, bool>> predicate);
         Task<int> CountAsync(CancellationToken cancellationToken = default);
@@ -46,5 +48,11 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         Task<PagedResult<StatutoryRegulation>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<StatutoryRegulation, bool>> where = null, bool includeDeleted = false);
         Task<PolicySupportResponse> GetSupportItemsAsync(bool includeDeleted);
         Task<StatuteSupportResponse> GetStatuteSupportItemsAsync(bool includeDeleted);
+        #endregion
+
+        #region Reports
+        Task<List<ObligationReport>> GetObligationSummaryReportAsync(bool includeDeleted);
+
+        #endregion
     }
 }

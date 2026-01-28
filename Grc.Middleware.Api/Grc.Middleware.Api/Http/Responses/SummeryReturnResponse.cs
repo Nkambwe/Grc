@@ -15,6 +15,9 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("authority")]
         public string Authority { get; set; }
 
+        [JsonPropertyName("frequency")]
+        public string Frequency { get; set; }
+        
         [JsonPropertyName("periodStart")]
         public DateTime PeriodStart { get; set; }
 

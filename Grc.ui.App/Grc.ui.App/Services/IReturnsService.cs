@@ -76,9 +76,19 @@ namespace Grc.ui.App.Services {
         #endregion
 
         #region Reports
+
         Task<GrcResponse<List<ReturnReportResponse>>> GetPeriodReturnReportAsync(GrcPeriodStatisticRequest request);
-        Task<GrcResponse<List<PeriodSummeryResponse>>> GetMonthlySummeryAsync(GrcRequest request);
-        Task<GrcResponse<List<BreachAgeResponse>>> GetAgingReportAsync(GrcRequest request);
+
+        Task<GrcResponse<List<GrcPeriodSummeryResponse>>> GetMonthlySummeryAsync(GrcRequest request);
+
+        Task<GrcResponse<List<GrcBreachAgeResponse>>> GetAgingReportAsync(GrcRequest request);
+
+        Task<GrcResponse<List<GrcBreachResponse>>> GetBreachedReportAsync(GrcRequest request);
+
+        Task<GrcResponse<List<GrcCircularReportResponse>>> GetCircularReportAsync(GrcAuthorityStatisticRequest request);
+
+        Task<GrcResponse<List<GrcCircularSummaryResponse>>> GetCircularSummeryReportAsync(GrcRequest request);
+
         #endregion
     }
 }

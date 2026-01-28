@@ -1157,7 +1157,44 @@
                name: "app-compliance-register-circular-returns-submissions-update",
                pattern: "/grc/returns/circular-returns/submissions/update",
                defaults: new { controller = "ComplianceReturn", action = "UpdateCircular" }
-           );
+            );
+
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-circular-reports-mofed",
+               pattern: "/grc/circular/reports/mofed",
+               defaults: new { controller = "ComplianceReturn", action = "MofReport" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-circular-reports-dpf",
+               pattern: "/grc/circular/reports/dpf",
+               defaults: new { controller = "ComplianceReturn", action = "DpfReport" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-circular-reports-ura",
+               pattern: "/grc/circular/reports/ura",
+               defaults: new { controller = "ComplianceReturn", action = "UraReport" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-circular-reports-ppda",
+               pattern: "/grc/circular/reports/ppda",
+               defaults: new { controller = "ComplianceReturn", action = "PpdaReport" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-circular-reports-bou",
+               pattern: "/grc/circular/reports/bou",
+               defaults: new { controller = "ComplianceReturn", action = "BouReport" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-circular-reports-other",
+               pattern: "/grc/circular/reports/other",
+               defaults: new { controller = "ComplianceReturn", action = "OthersReport" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-register-circular-reports-summary",
+               pattern: "/grc/circular/reports/summary",
+               defaults: new { controller = "ComplianceReturn", action = "CircularSummeryReport" }
+            );
+
             /*----------------------------------------------Compliance Tasks Routes*/
             routeBuilder.MapControllerRoute(
                  name: "app-compliance-returns-tasks-home",
@@ -1265,6 +1302,12 @@
                 name: "app-compliance-register-controlitems-assigne",
                 pattern: "/grc/compliance/register/controlitems/assign-control",
                 defaults: new { controller = "Register", action = "ComplianceMapping" }
+            );
+
+            routeBuilder.MapControllerRoute(
+              name: "app-operations-register-obligations-reports-summary",
+              pattern: "/grc/register/obligations/reports/summary",
+              defaults: new { controller = "Register", action = "GetObligationSummary" }
             );
 
             /*----------------------------------------------Issues Routes*/
@@ -1969,6 +2012,11 @@
                 name: "app-compliance-audits-audit-reports-all",
                 pattern: "/grc/compliance/audits/reports-list",
                 defaults: new { controller = "ComplianceAudit", action = "GetAuditReportsList" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-audits-exceptions-report-summary",
+                pattern: "/grc/compliance/audits/exceptions/reports-summary",
+                defaults: new { controller = "ComplianceAudit", action = "GetExceptionSummaryReport" }
             );
 
             /*----------------------- Application login routes*/

@@ -203,6 +203,20 @@ namespace Grc.ui.App.Enums {
         [Description("returns-report-breached")]
         ReturnsBreachedExport,
         [Description("returns-report-breached-aging")]
-        ReturnsBreachedAgingExport
+        ReturnsBreachedAgingExport,
+        [Description("circular-report-bou")]
+        CircularBouReport,
+        [Description("circular-report-dpf")]
+        CircularDpfReport,
+        [Description("circular-report-ura")]
+        CircularUraReport,
+        [Description("circular-report-mofed")]
+        CircularMoFReport,
+        [Description("circular-report-other")]
+        CircularOtheReport,
+        [Description("circular-report-ppd")]
+        CircularPpdReport,
+        [Description("circular-report-summery")]
+        CircularSummeryReport
     }
 }

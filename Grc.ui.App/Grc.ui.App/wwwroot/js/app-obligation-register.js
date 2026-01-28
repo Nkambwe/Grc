@@ -169,6 +169,26 @@ $('.action-btn-complianceHome').on('click', function () {
     window.location.href = '/grc/compliance';
 });
 
+
+$('.action-btn-excel').on('click', function () {
+    $.ajax({
+        url: '/grc/register/obligations/reports/summary',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(obligationTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Obligations_report.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+    });
+});
+
 function initObligationsearch() {
     // Add your search implementation here
 }
