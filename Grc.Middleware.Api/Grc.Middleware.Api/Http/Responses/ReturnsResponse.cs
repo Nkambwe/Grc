@@ -24,6 +24,12 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("article")]
         public string Article { get; set; }
 
+        [JsonPropertyName("requiredSubmissionDate ")]
+        public DateTime? RequiredSubmissionDate { get; set; }
+
+        [JsonPropertyName("requiredSubmissionDay")]
+        public int RequiredSubmissionDay { get; set; }
+
         [JsonPropertyName("comments")]
         public string Comments { get; set; }
 

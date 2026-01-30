@@ -123,7 +123,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 var reports = await uow.ReturnRepository.GetAllAsync(
                     p => p.Frequency.FrequencyName == frequencyName,
                     includeDeleted,
-                    p => p.Department,
+                    p => p.Owner,
                     p => p.ReturnType,
                     p => p.Frequency,
                     p => p.Submissions
@@ -141,14 +141,16 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 if (submissions?.Any() == true) {
                     //..department statistics based on submissions
                     response.Statistics = submissions
-                        .GroupBy(x => x.Return.Department?.DepartmentName ?? "Unassigned")
+                        .GroupBy(x => x.Return.Owner?.ContactPosition ?? "Unassigned")
                         .ToDictionary(g => g.Key, g => g.Count());
 
-                    // Submission-based report list
+                    //..submission-based report list
                     response.Reports = submissions.Select(x => new ReturnReportResponse {
                         Id = x.Submission.Id,              
                         Title = x.Return.ReturnName,        
-                        Department = x.Return.Department?.DepartmentName,
+                        Department = x.Return.Owner?.ContactPosition,
+                        RequiredDate = x.Return.RequiredSubmissionDate,
+                        RequiredDay = x.Return.RequiredSubmissionDay,
                         Type = x.Return.ReturnType?.TypeName
                     }).ToList();
                 }
@@ -171,7 +173,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             try {
                 var frequencyName = MapReturnStatusToFilter(period);
                 var reports = await uow.ReturnRepository.GetAllAsync(r => r.Frequency.FrequencyName == frequencyName, includeDeleted,
-                    r => r.Department, r => r.Frequency, r => r.Submissions);
+                    r => r.Owner, r => r.Frequency, r => r.Submissions);
 
                 if (reports == null || reports.Count == 0) {
                     return new ReturnExtensionResponse {
@@ -192,7 +194,9 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                             PeriodStart = set.s.PeriodStart,
                             PeriodEnd = set.s.PeriodEnd,
                             Status = set.s.IsBreached ? "BREACHED" : set.s.Status ?? "OPEN",
-                            Department = set.r.Department?.DepartmentName,
+                            RequiredSubmissionDate = set.r.RequiredSubmissionDate,
+                            RequiredSubmissionDay = set.r.RequiredSubmissionDay,
+                            Department = set.r.Owner?.ContactPosition,
                             Risk = set.r.Risk?.ToString()
                         }).ToList()
 
@@ -396,7 +400,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             try {
                 var frequencyName = MapReturnStatusToFilter(period);
                 var reports = await uow.ReturnRepository.GetAllAsync(r => r.Frequency.FrequencyName == frequencyName, includeDeleted,
-                    r => r.Department, r => r.Frequency, r => r.ReturnType, r => r.Authority, r => r.Submissions);
+                    r => r.Owner, r => r.Frequency, r => r.ReturnType, r => r.Authority, r => r.Submissions);
 
                 if (reports == null || reports.Count == 0) {
                     return new List<SummeryReturnResponse>();
@@ -413,7 +417,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                             PeriodStart = set.setSubmission.PeriodStart,
                             PeriodEnd = set.setSubmission.PeriodEnd,
                             Status = set.setSubmission.Status ?? "OPEN",
-                            Department = set.setReport.Department?.DepartmentName,
+                            Department = set.setReport.Owner?.ContactPosition,
                             Executioner = set.setSubmission.SubmittedBy ?? string.Empty,
                             IsBreached = set.setSubmission.IsBreached,
                             BreachRisk = set.setReport.Risk ?? string.Empty,
@@ -433,7 +437,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             Logger.LogActivity("Generate period summary percentage report", "INFO");
             try {
                 var reports = await uow.ReturnRepository.GetAllAsync(false,
-                    r => r.Department,
+                    r => r.Owner,
                     r => r.Frequency,
                     r => r.ReturnType,
                     r => r.Authority,
@@ -494,7 +498,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             Logger.LogActivity("Generate breached reports for current month", "INFO");
             try {
                 var reports = await uow.ReturnRepository.GetAllAsync(false,
-                    r => r.Department,
+                    r => r.Owner,
                     r => r.Frequency,
                     r => r.ReturnType,
                     r => r.Authority,
@@ -532,7 +536,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     .Select(breach => new BreachResponse {
                         ReportName = breach.Report.ReturnType?.TypeName ?? string.Empty,
                         Frequency = breach.Report.Frequency?.FrequencyName ?? string.Empty,
-                        Department = breach.Report.Department?.DepartmentName ?? string.Empty,
+                        Department = breach.Report.Owner?.ContactPosition ?? string.Empty,
                         DueDate = breach.Submission.PeriodEnd,
                         SubmissionDate = breach.Submission.SubmissionDate,
                         Status = breach.Submission.Status ?? "OPEN",
@@ -554,7 +558,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             Logger.LogActivity("Generate breached aging report for current month", "INFO");
             try {
                 var reports = await uow.ReturnRepository.GetAllAsync(includeDeleted,
-                    r => r.Department,
+                    r => r.Owner,
                     r => r.Frequency,
                     r => r.ReturnType,
                     r => r.Authority,
@@ -587,7 +591,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                         return new BreachAgeResponse {
                             ReportName = breach.Report.ReturnType?.TypeName ?? string.Empty,
                             Frequency = breach.Report.Frequency?.FrequencyName ?? string.Empty,
-                            Department = breach.Report.Department?.DepartmentName ?? string.Empty,
+                            Department = breach.Report.Owner?.ContactPosition ?? string.Empty,
                             DueDate = breach.Submission.PeriodEnd,
                             SubmissionDate = breach.Submission.SubmissionDate,
                             Status = breach.Submission.Status ?? "OPEN",
@@ -1055,12 +1059,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     TypeId = request.TypeId,
                     AuthorityId = request.AuthorityId,
                     FrequencyId = request.FrequencyId,
-                    DepartmentId = request.DepartmentId,
+                    OwnerId = request.DepartmentId,
                     Risk = request.Risk,
                     Interval = request.Interval,
                     IntervalType = request.IntervalType,
                     SendReminder = request.SendReminder,
                     Reminder = request.Reminder,
+                    RequiredSubmissionDate = request.RequiredSubmissionDate,
+                    RequiredSubmissionDay = request.RequiredSubmissionDay,
                     CreatedBy = request.UserName,
                     CreatedOn = DateTime.Now,
                     LastModifiedBy = request.UserName,
@@ -1107,12 +1113,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     TypeId = request.TypeId,
                     AuthorityId = request.AuthorityId,
                     FrequencyId = request.FrequencyId,
-                    DepartmentId = request.DepartmentId,
+                    OwnerId = request.DepartmentId,
                     Risk = request.Risk,
                     Interval = request.Interval,
                     IntervalType = request.IntervalType,
                     SendReminder = request.SendReminder,
                     Reminder = request.Reminder,
+                    RequiredSubmissionDate = request.RequiredSubmissionDate,
+                    RequiredSubmissionDay = request.RequiredSubmissionDay,
                     CreatedBy = request.UserName,
                     CreatedOn = DateTime.Now,
                     LastModifiedBy = request.UserName,
@@ -1160,12 +1168,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     regReturn.FrequencyId = request.FrequencyId;
                     regReturn.ArticleId = request.ArticleId;
                     regReturn.AuthorityId = request.AuthorityId;
-                    regReturn.DepartmentId = request.DepartmentId;
+                    regReturn.OwnerId = request.DepartmentId;
                     regReturn.Risk = request.Risk;
                     regReturn.Interval = request.Interval;
                     regReturn.IntervalType = request.IntervalType;
                     regReturn.SendReminder = request.SendReminder;
                     regReturn.Reminder = request.Reminder;
+                    regReturn.RequiredSubmissionDate = request.RequiredSubmissionDate;
+                    regReturn.RequiredSubmissionDay = request.RequiredSubmissionDay;
                     regReturn.Comments = (request.Comments ?? string.Empty).Trim();
                     regReturn.IsDeleted = request.IsDeleted;
                     regReturn.LastModifiedOn = DateTime.Now;
@@ -1202,12 +1212,14 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     regReturn.FrequencyId = request.FrequencyId;
                     regReturn.ArticleId = request.ArticleId;
                     regReturn.AuthorityId = request.AuthorityId;
-                    regReturn.DepartmentId = request.DepartmentId;
+                    regReturn.OwnerId = request.DepartmentId;
                     regReturn.Risk = request.Risk;
                     regReturn.Interval = request.Interval;
                     regReturn.IntervalType = request.IntervalType;
                     regReturn.SendReminder = request.SendReminder;
                     regReturn.Reminder = request.Reminder;
+                    regReturn.RequiredSubmissionDate = request.RequiredSubmissionDate;
+                    regReturn.RequiredSubmissionDay = request.RequiredSubmissionDay;
                     regReturn.Comments = (request.Comments ?? string.Empty).Trim();
                     regReturn.IsDeleted = request.IsDeleted;
                     regReturn.LastModifiedOn = DateTime.Now;

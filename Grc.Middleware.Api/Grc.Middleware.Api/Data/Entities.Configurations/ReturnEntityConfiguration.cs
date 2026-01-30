@@ -16,11 +16,14 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
             builder.Property(r => r.SendReminder).HasColumnName("send_reminder").IsRequired(true);
             builder.Property(r => r.Interval).HasColumnName("reminder_interval").HasColumnType("NVARCHAR(50)").IsRequired(false);
             builder.Property(r => r.IntervalType).HasColumnName("interval_type").HasColumnType("NVARCHAR(50)").IsRequired(false);
-            builder.Property(r => r.Reminder).HasColumnName("reminder_message").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
+            builder.Property(r => r.Reminder).HasColumnName("reminder_message").HasColumnType("NVARCHAR(MAX)").IsRequired(false); 
+            builder.Property(r => r.RequiredSubmissionDate).HasColumnName("breach_date").IsRequired(false);
+            builder.Property(r => r.RequiredSubmissionDay).HasColumnName("breach_day").IsRequired(true);
+            builder.Property(r => r.SentMessages).HasColumnName("reminders_sent").IsRequired(true);
             builder.Property(r => r.TypeId).HasColumnName("type_id");
             builder.Property(r => r.FrequencyId).HasColumnName("freq_id");
             builder.Property(r => r.ArticleId).HasColumnName("act_id");
-            builder.Property(r => r.DepartmentId).HasColumnName("dept_id");
+            builder.Property(r => r.OwnerId).HasColumnName("owner_id");
             builder.Property(r => r.AuthorityId).HasColumnName("auth_id");
             builder.Property(r => r.Comments).HasColumnName("comment").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(r => r.IsDeleted).HasColumnName("is_deleted");
@@ -31,7 +34,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
             builder.HasOne(r => r.ReturnType).WithMany(t => t.Returns).HasForeignKey(r => r.TypeId);
             builder.HasOne(r => r.Article).WithMany(a => a.Returns).HasForeignKey(a => a.ArticleId);
             builder.HasOne(r => r.Authority).WithMany(a => a.Returns).HasForeignKey(a => a.AuthorityId);
-            builder.HasOne(r => r.Department).WithMany(r => r.Returns).HasForeignKey(r => r.DepartmentId);
+            builder.HasOne(r => r.Owner).WithMany(r => r.Reports).HasForeignKey(r => r.OwnerId);
             builder.HasOne(r => r.Frequency).WithMany(f => f.Returns).HasForeignKey(r => r.FrequencyId);
         }
     }

@@ -4,10 +4,11 @@ using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using System.Linq.Expressions;
 
-namespace Grc.Middleware.Api.Services.Compliance.Regulations
-{
-    public interface IRegulatoryDocumentService
-    {
+namespace Grc.Middleware.Api.Services.Compliance.Regulations {
+
+    public interface IRegulatoryDocumentService {
+
+        #region Queries
         int Count();
         int Count(Expression<Func<RegulatoryDocument, bool>> predicate);
         Task<int> CountAsync(CancellationToken cancellationToken = default);
@@ -46,12 +47,18 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations
         Task<PagedResult<RegulatoryDocument>> PageAllAsync(CancellationToken token, int page, int size, bool includeDeleted, params Expression<Func<RegulatoryDocument, object>>[] includes);
         Task<PagedResult<RegulatoryDocument>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<RegulatoryDocument, bool>> where = null);
         Task<PagedResult<RegulatoryDocument>> PageAllAsync(CancellationToken token, int page, int size, Expression<Func<RegulatoryDocument, bool>> where = null, bool includeDeleted = false);
-        
+
+        #endregion
 
         #region Policy Reports
         Task<PolicySummeryResponse> GetPolicySummeryAsync(bool includeDeleted);
         Task<PolicySummeryResponse> GetBodSummeryAsync(bool includeDeleted);
         Task<PolicySummeryResponse> GetSmtSummeryAsync(bool includeDeleted);
+
+        #endregion
+
+        #region Notification Mails
+        Task SendNotificationMailsAsync();
         #endregion
     }
 }

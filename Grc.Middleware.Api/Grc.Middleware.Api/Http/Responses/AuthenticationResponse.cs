@@ -1,7 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace Grc.Middleware.Api.Http.Responses {
+
     public class AuthenticationResponse {
+
         [JsonPropertyName("userId")]
         public long UserId { get; set; }
 
@@ -94,4 +96,5 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("claims")]
         public Dictionary<string, object> Claims { get; set; } = new Dictionary<string, object>();
     }
+
 }

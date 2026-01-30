@@ -2,7 +2,6 @@
 
 namespace Grc.Middleware.Api.Data.Repositories {
     public interface IMailSettingsRepository : IRepository<MailSettings> {
-
     }
 
 }

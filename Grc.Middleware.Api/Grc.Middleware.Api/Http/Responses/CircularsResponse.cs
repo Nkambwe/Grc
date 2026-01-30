@@ -60,6 +60,24 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("status")]
         public string Status { get; set; }
 
+        [JsonPropertyName("sendReminder")]
+        public bool SendReminder { get; set; }
+
+        [JsonPropertyName("interval")]
+        public string Interval { get; set; }
+
+        [JsonPropertyName("intervalType")]
+        public string IntervalType { get; set; }
+
+        [JsonPropertyName("reminder")]
+        public string Reminder { get; set; }
+
+        [JsonPropertyName("requiredSubmissionDate")]
+        public DateTime? RequiredSubmissionDate { get; set; }
+
+        [JsonPropertyName("requiredSubmissionDay")]
+        public int RequiredSubmissionDay { get; set; }
+
         [JsonPropertyName("comments")]
         public string Comments { get; set; }
 

@@ -382,7 +382,7 @@ namespace Grc.Middleware.Api.Helpers {
                 .ForMember(r => r.FrequencyId, reg => reg.MapFrom(o => o.FrequencyId))
                 .ForMember(r => r.ArticleId, reg => reg.MapFrom(o => o.ArticleId))
                 .ForMember(r => r.AuthorityId, reg => reg.MapFrom(o => o.AuthorityId))
-                .ForMember(r => r.DepartmentId, reg => reg.MapFrom(o => o.DepartmentId))
+                .ForMember(r => r.OwnerId, reg => reg.MapFrom(o => o.DepartmentId))
                 .ForMember(r => r.Comments, reg => reg.MapFrom(o => (o.Comments ?? string.Empty).Trim()));
 
             CreateMap<PolicyDocumentRequest, RegulatoryDocument>()

@@ -11,13 +11,17 @@ namespace Grc.ui.App.Enums {
         APPLICATIONSUPPORT = 2,
         [Description("Operations and Services")]
         OPERATIONSERVICES = 3,
-        [Description("Compliance")]
-        COMPLIANCEDEPT = 4,
+        [Description("Operations and Services")]
+        OPERATIONADMIN = 4,
         [Description("Operation and Services External Users")]
         OPERATIONGUESTS = 5,
+        [Description("Compliance User")]
+        COMPLIANCEDEPT = 6,
+        [Description("Compliance Administrator")]
+        COMPLIANCEADMIN = 7,
         [Description("Compliance External Users")]
-        COMPLIANCEGUESTS = 6,
+        COMPLIANCEGUESTS = 8,
         [Description("Application Developer")]
-        DEVELOPER = 7,
+        DEVELOPER = 9
     }
 }

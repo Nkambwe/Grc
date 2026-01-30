@@ -411,7 +411,7 @@ namespace Grc.ui.App.Services {
                 }
 
                 //..build request object
-                var request = new GrcStatutoryReturnReportRequest() {
+                var request = new GrcReturnReportRequest() {
                     ReturnName = model.ReturnName,
                     TypeId = model.ReturnTypeId,
                     DepartmentId = model.DepartmentId,
@@ -419,6 +419,8 @@ namespace Grc.ui.App.Services {
                     StatuteId = model.SectionId,
                     FrequencyId = model.FrequencyId,
                     IsDeleted = model.IsDeleted,
+                    RequiredSubmissionDate = model .RequiredSubmissionDate,
+                    RequiredSubmissionDay = model.RequiredSubmissionDay,
                     Risk = model.RiskAttached,
                     SendReminder = model.SendReminder,
                     Interval = model.Interval,
@@ -437,7 +439,7 @@ namespace Grc.ui.App.Services {
                 var endpoint = $"{EndpointProvider.Compliance.ReturnBase}/create-return";
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
-                return await HttpHandler.PostAsync<GrcStatutoryReturnReportRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcReturnReportRequest, ServiceResponse>(endpoint, request);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
                 Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
@@ -464,7 +466,7 @@ namespace Grc.ui.App.Services {
                 }
 
                 //..build request object
-                var request = new GrcStatutoryReturnReportRequest() {
+                var request = new GrcReturnReportRequest() {
                     Id = model.Id,
                     ReturnName = model.ReturnName,
                     TypeId = model.ReturnTypeId,
@@ -477,6 +479,8 @@ namespace Grc.ui.App.Services {
                     SendReminder = model.SendReminder,
                     Interval = model.Interval,
                     IntervalType = model.IntervalType,
+                    RequiredSubmissionDate = model.RequiredSubmissionDate,
+                    RequiredSubmissionDay = model.RequiredSubmissionDay,
                     Reminder = model.Reminder,
                     Comments = model.Comments,
                     UserId = userId,
@@ -491,7 +495,7 @@ namespace Grc.ui.App.Services {
                 var endpoint = $"{EndpointProvider.Compliance.ReturnBase}/update-return";
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
-                return await HttpHandler.PostAsync<GrcStatutoryReturnReportRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcReturnReportRequest, ServiceResponse>(endpoint, request);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
                 Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
@@ -824,6 +828,12 @@ namespace Grc.ui.App.Services {
                     AuthorityId = model.AuthorityId,
                     FrequencyId = model.FrequencyId,
                     Status = model.Status ?? "UNKNOWN",
+                    SendReminder = model.SendReminder,
+                    Interval = model.Interval ?? string.Empty,
+                    IntervalType = model.IntervalType ?? string.Empty,
+                    Reminder = model.Reminder ?? string.Empty,
+                    RequiredSubmissionDate = model.RequiredSubmissionDate,
+                    RequiredSubmissionDay = model.RequiredSubmissionDay,
                     RecievedOn = model.RecievedOn,
                     DeadlineOn = model.DeadlineOn,
                     BreachRisk = model.BreachRisk ?? string.Empty,
@@ -879,6 +889,12 @@ namespace Grc.ui.App.Services {
                     RecievedOn = model.RecievedOn,
                     DeadlineOn = model.DeadlineOn,
                     BreachRisk = model.BreachRisk ?? string.Empty,
+                    SendReminder = model.SendReminder,
+                    Interval = model.Interval ?? string.Empty,
+                    IntervalType = model.IntervalType ?? string.Empty,
+                    Reminder = model.Reminder ?? string.Empty,
+                    RequiredSubmissionDate = model.RequiredSubmissionDate,
+                    RequiredSubmissionDay = model.RequiredSubmissionDay,
                     Comments = model.Comments ?? string.Empty,
                     IsDeleted = model.IsDeleted,
                     UserId = userId,

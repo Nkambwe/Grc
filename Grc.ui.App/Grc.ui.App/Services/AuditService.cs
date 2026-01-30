@@ -1,7 +1,4 @@
 ﻿using AutoMapper;
-using DocumentFormat.OpenXml.Bibliography;
-using DocumentFormat.OpenXml.EMMA;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -12,12 +9,12 @@ using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
-using System;
-using System.Net;
 using System.Text.Json;
 
 namespace Grc.ui.App.Services {
+
     public class AuditService : GrcBaseService, IAuditService {
+
         public AuditService(IApplicationLoggerFactory loggerFactory, 
             IHttpHandler httpHandler, 
             IEnvironmentProvider environment, 
@@ -1235,6 +1232,7 @@ namespace Grc.ui.App.Services {
         #endregion
 
         #region Reports
+
         public async Task<GrcResponse<List<GrcExceptionReport>>> GetExceptionReportAsync(GrcRequest request) {
             try {
                 var endpoint = $"{EndpointProvider.Compliance.AuditBase}/exceptions-report";

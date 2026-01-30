@@ -410,9 +410,11 @@ namespace Grc.ui.App.Controllers {
                     frequency = response.Frequency ?? string.Empty,
                     riskAttached = response.Risk ?? string.Empty,
                     sendReminder = response.SendReminder,
-                    interval = response.Interval,
-                    intervalType = response.IntervalType,
-                    reminderMessage = response.Reminder,
+                    interval = response.Interval ?? string.Empty,
+                    intervalType = response.IntervalType ?? string.Empty,
+                    reminderMessage = response.Reminder ?? string.Empty,
+                    requiredSubmissionDate = response.RequiredSubmissionDate,
+                    requiredSubmissionDay = response.RequiredSubmissionDay,
                     isDeleted = response.IsDeleted,
                     comments = response.Comments ?? string.Empty
                 };
@@ -608,11 +610,18 @@ namespace Grc.ui.App.Controllers {
                 var pagedEntities = returnsList.Entities
                     .Select(report => new {
                         id = report.Id,
+                        type = report.Type ?? string.Empty,
                         reportName = report.ReportName ?? string.Empty,
                         article = report.Article ?? string.Empty,
                         authority = report.Authority ?? string.Empty,
                         department = report.Department ?? string.Empty,
+                        sendReminder = report.SendReminder ? "YES" : "NO",
+                        interval = report.Interval?? string.Empty,
+                        intervalType = report.IntervalType ?? string.Empty,
+                        reminder = report.Reminder ?? string.Empty,
+                        submissionDate = report.RequiredSubmissionDate.HasValue ? report.RequiredSubmissionDate.Value.ToString("MMM dd"): string.Empty,
                         status = report.IsDeleted ? "INACTIVE" : "ACTIVE",
+                        comments = report.Comments ?? string.Empty,
                     }).ToList();
 
                 var totalPages = (int)Math.Ceiling((double)returnsList.TotalCount / returnsList.Size);
@@ -672,6 +681,8 @@ namespace Grc.ui.App.Controllers {
                         isBreached = submission.IsBreached,
                         reason= submission.BreachReason,
                         submittedBy = submission.SubmittedBy ?? string.Empty,
+                        requiredDate = submission.RequiredDate,
+                        requiredDay = submission.RequiredDay,
                         submittedOn = submission.SubmittedOn,
                         departmentId = submission.DepartmentId,
                         department = submission.Department ?? string.Empty
@@ -963,7 +974,7 @@ namespace Grc.ui.App.Controllers {
                     report = response.Report ?? string.Empty,
                     title = response.Title ?? string.Empty,
                     period = $"{response.PeriodStart:yyyy-MM-dd} TO {response.PeriodEnd:yyyy-MM-dd}",
-                    deadline = $"{response.PeriodEnd:yyyy-MM-dd}",
+                    requiredDate = $"{response.RequiredDate:yyyy-MM-dd}",
                     status = response.Status ?? string.Empty,
                     isDeleted = response.IsDeleted,
                     isBreached = response.IsBreached,

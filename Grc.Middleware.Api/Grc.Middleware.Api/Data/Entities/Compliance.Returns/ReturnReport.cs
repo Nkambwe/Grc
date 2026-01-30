@@ -6,12 +6,15 @@ namespace Grc.Middleware.Api.Data.Entities.Compliance.Returns {
         public string ReturnName { get; set; }
         public string Risk { get; set; }
         public bool SendReminder { get; set; }
+        public int SentMessages { get; set; }
         public string Interval { get; set; }
         public string IntervalType { get; set; }
         public string Reminder { get; set; }
         public string Comments { get; set; }
-        public long DepartmentId { get; set; }
-        public virtual Department Department { get; set; }
+        public DateTime? RequiredSubmissionDate { get; set; }
+        public int RequiredSubmissionDay { get; set; }
+        public long OwnerId { get; set; }
+        public virtual Responsebility Owner { get; set; }
         public long ArticleId { get; set; }
         public virtual StatutoryArticle Article { get; set; }
         public long AuthorityId { get; set; }

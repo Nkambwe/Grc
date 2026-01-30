@@ -996,10 +996,10 @@
 		<Value>Report Frequency</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.ApprovedBy">
-		<Value>Approved By</Value>
+		<Value>Approver</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.ApprovedBy.Select">
-		<Value>Select approver</Value>
+		<Value>Select approver...</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.Details">
 		<Value>Policy/Regulation Info</Value>
@@ -2221,7 +2221,7 @@
 		<Value>Submitted By</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Submitted.Department">
-		<Value>Responsible Department</Value>
+		<Value>Responsible Person</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Submitted.Header">
 		<Value>Report/Return Submission Update</Value>

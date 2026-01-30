@@ -242,7 +242,7 @@
                                                 <option value="NA">Not Applicable</option>
                                                 <option value="ON-HOLD">On hold</option>
                                                 <option value="PENDING-BOARD">Pending Board Signoff</option>
-                                                <option value="PENDING-MCR">Pending MCR</option>
+                                                <option value="PENDING-MRC">Pending MRC</option>
                                                 <option value="PENDING-SMT">Pending SMT Signoff</option>
                                                 <option value="DEPT-REVIEW">Department Review</option>
                                                 <option value="DUE">Due For Review</option>
@@ -304,7 +304,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="needMcrApproval">
                                         <label class="form-check-label" for="needMcrApproval">
-                                            Need MCR Approval
+                                            Need MRC Approval
                                         </label>
                                     </div>
                                 </div>
@@ -313,7 +313,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="onIntranet">
                                         <label class="form-check-label" for="onIntranet">
-                                            Need MCR Approval
+                                            Uploaded to Intranet
                                         </label>
                                     </div>
                                 </div>
@@ -358,7 +358,7 @@
                                             <select class="js-act-approval-by form-control" id="approver" name="approver">
                                                 <option value="NONE">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.ApprovedBy.Select"))</option>
                                                 <option value="BOARD">Board Approval</option>
-                                                <option value="MRC">MCR Approval</option>
+                                                <option value="MRC">MRC Approval</option>
                                                 <option value="SMT">SMT Approval</option>
                                             </select>
                                         </div>

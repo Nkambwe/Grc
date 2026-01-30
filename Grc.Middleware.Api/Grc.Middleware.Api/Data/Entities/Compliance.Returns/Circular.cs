@@ -12,10 +12,16 @@ namespace Grc.Middleware.Api.Data.Entities.Compliance.Returns {
         public string FilePath { get; set; }
         public string SubmittedBy { get; set; }
         public string Reference { get; set; }
-        public string Comments { get; set; }
+        public bool SendReminder { get; set; }
+        public string Interval { get; set; }
+        public string IntervalType { get; set; }
+        public string Reminder { get; set; }
+        public DateTime? RequiredSubmissionDate { get; set; }
+        public int RequiredSubmissionDay { get; set; }
         public bool IsBreached { get; set; }
         public string BreachReason { get; set; }
         public string BreachRisk { get; set; }
+        public string Comments { get; set; }
         public long AuthorityId { get; set; }
         public virtual Authority Authority { get; set; }
         public long FrequencyId { get; set; }

@@ -31,6 +31,12 @@ namespace Grc.ui.App.Models
         [JsonPropertyName("riskAttached")]
         public string RiskAttached { get; set; }
 
+        [JsonPropertyName("requiredSubmissionDate")]
+        public DateTime? RequiredSubmissionDate { get; set; }
+
+        [JsonPropertyName("requiredSubmissionDay")]
+        public int RequiredSubmissionDay { get; set; }
+
         [JsonPropertyName("sendReminder")]
         public bool SendReminder { get; set; }
 

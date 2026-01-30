@@ -13,7 +13,6 @@ namespace Grc.Middleware.Api.Data.Entities.Org {
         public virtual ICollection<SystemUser> Users {get; set;}
         public virtual ICollection<DepartmentUnit> Units { get; set; }
         public virtual ICollection<Responsebility> Responsibilities { get; set; }
-        public virtual ICollection<ReturnReport> Returns { get; set; }
         public virtual ICollection<Circular> Circulars { get; set; }
         public override bool Equals(object obj) {
 

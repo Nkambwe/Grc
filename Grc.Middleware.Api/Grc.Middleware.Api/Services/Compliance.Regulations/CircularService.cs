@@ -8,10 +8,11 @@ using Grc.Middleware.Api.Utils;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Xml.Linq;
 
 namespace Grc.Middleware.Api.Services.Compliance.Regulations {
+
     public class CircularService : BaseService, ICircularService {
+
         public CircularService(IServiceLoggerFactory 
             loggerFactory, IUnitOfWorkFactory uowFactory, 
             IMapper mapper) 
@@ -165,6 +166,12 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     IsBreached = request.IsBreached,
                     BreachRisk = request.BreachRisk,
                     BreachReason = request.BreachReason,
+                    SendReminder = request.SendReminder,
+                    Interval = request.Interval,
+                    IntervalType = request.IntervalType,
+                    Reminder = request.Reminder,
+                    RequiredSubmissionDate = request.RequiredSubmissionDate,
+                    RequiredSubmissionDay = request.RequiredSubmissionDay,
                     Comments = request.Comments,
                     FrequencyId = request.FrequencyId,
                     AuthorityId = request.AuthorityId,
@@ -219,6 +226,12 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     BreachRisk = request.BreachRisk,
                     BreachReason = request.BreachReason,
                     Reference = request.SubmissionReference,
+                    SendReminder = request.SendReminder,
+                    Interval = request.Interval,
+                    IntervalType = request.IntervalType,
+                    Reminder = request.Reminder,
+                    RequiredSubmissionDate = request.RequiredSubmissionDate,
+                    RequiredSubmissionDay = request.RequiredSubmissionDay,
                     FrequencyId = request.FrequencyId,
                     AuthorityId = request.AuthorityId,
                     DepartmentId = request.OwnerId,
@@ -262,6 +275,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
 
             try {
                 var circular = uow.CircularRepository.Get(a => a.Id == request.Id, includeDeleted);
+
                 if (circular != null) {
                     //..update record
                     circular.CircularTitle = (request.CircularTitle ?? string.Empty).Trim();
@@ -276,6 +290,12 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     circular.IsBreached = request.IsBreached;
                     circular.BreachRisk = request.BreachRisk;
                     circular.BreachReason = request.BreachReason;
+                    circular.SendReminder = request.SendReminder;
+                    circular.Interval = request.Interval;
+                    circular.IntervalType = request.IntervalType;
+                    circular.Reminder = request.Reminder;
+                    circular.RequiredSubmissionDate = request.RequiredSubmissionDate;
+                    circular.RequiredSubmissionDay = request.RequiredSubmissionDay;
                     circular.Comments = request.Comments;
                     circular.AuthorityId = request.AuthorityId;
                     circular.FrequencyId = request.FrequencyId;
@@ -320,6 +340,12 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     circular.BreachRisk = request.BreachRisk;
                     circular.IsBreached = request.IsBreached;
                     circular.BreachReason = request.BreachReason;
+                    circular.SendReminder = request.SendReminder;
+                    circular.Interval = request.Interval;
+                    circular.IntervalType = request.IntervalType;
+                    circular.Reminder = request.Reminder;
+                    circular.RequiredSubmissionDate = request.RequiredSubmissionDate;
+                    circular.RequiredSubmissionDay = request.RequiredSubmissionDay;
                     circular.Comments = request.Comments;
                     circular.SubmittedBy = request.SubmittedBy;
                     circular.AuthorityId = request.AuthorityId;

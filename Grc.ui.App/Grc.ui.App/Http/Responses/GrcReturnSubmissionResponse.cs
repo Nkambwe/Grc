@@ -24,6 +24,12 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("status")]
         public string Status { get; set; }
 
+        [JsonPropertyName("requiredDate")]
+        public DateTime? RequiredDate { get; set; }
+
+        [JsonPropertyName("requiredDay")]
+        public int RequiredDay { get; set; }
+
         [JsonPropertyName("departmentId")]
         public long DepartmentId { get; set; }
 

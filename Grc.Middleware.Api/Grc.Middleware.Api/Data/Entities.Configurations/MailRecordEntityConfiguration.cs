@@ -8,6 +8,10 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
             builder.ToTable("TBL_GRC_MAILRECORD");
             builder.HasKey(m => m.Id);
             builder.Property(m => m.Id).HasColumnName("id");
+            builder.Property(m => m.DocumentId).HasColumnName("document_id").IsRequired(false);
+            builder.Property(m => m.ReturnId).HasColumnName("return_id").IsRequired(false);
+            builder.Property(m => m.SubmissionId).HasColumnName("submission_id").IsRequired(false);
+            builder.Property(m => m.CircularId).HasColumnName("circular_id").IsRequired(false);
             builder.Property(m => m.SentToEmail).HasColumnName("sent_to").HasColumnType("NVARCHAR(200)").IsRequired();
             builder.Property(m => m.CCMail).HasColumnName("cc_mails").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(m => m.Subject).HasColumnName("mail_subject").HasColumnType("NVARCHAR(MAX)").IsRequired();

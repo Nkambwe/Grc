@@ -16,6 +16,12 @@ public partial class CircularEntityConfiguration {
         builder.Property(a => a.FilePath).HasColumnName("file_path").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
         builder.Property(a => a.SubmittedBy).HasColumnName("submitted_by").HasColumnType("NVARCHAR(50)").IsRequired(false);
         builder.Property(a => a.Reference).HasColumnName("reference").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
+        builder.Property(r => r.SendReminder).HasColumnName("send_reminder").IsRequired(true);
+        builder.Property(r => r.Interval).HasColumnName("reminder_interval").HasColumnType("NVARCHAR(50)").IsRequired(false);
+        builder.Property(r => r.IntervalType).HasColumnName("interval_type").HasColumnType("NVARCHAR(50)").IsRequired(false);
+        builder.Property(r => r.Reminder).HasColumnName("reminder_message").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
+        builder.Property(r => r.RequiredSubmissionDate).HasColumnName("breach_date").IsRequired(false);
+        builder.Property(r => r.RequiredSubmissionDay).HasColumnName("breach_day").IsRequired(true);
         builder.Property(a => a.IsBreached).HasColumnName("is_breached");
         builder.Property(a => a.BreachReason).HasColumnName("breach_reason").HasColumnType("NVARCHAR(50)").IsRequired(false);
         builder.Property(a => a.BreachRisk).HasColumnName("breach_risk").HasColumnType("NVARCHAR(50)").IsRequired(false);

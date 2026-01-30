@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
-using Grc.Middleware.Api.Data.Entities.Compliance.Returns;
 using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
@@ -13,7 +11,6 @@ using Grc.Middleware.Api.Services.Compliance.Support;
 using Grc.Middleware.Api.Services.Organization;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Text.Json;
 
 namespace Grc.Middleware.Api.Controllers {
@@ -3650,7 +3647,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
 
-                var result = await _returnService.GetAsync(d => d.Id == request.RecordId, true, r => r.Authority, r => r.Article, r => r.Frequency, r => r.Department, r => r.ReturnType);
+                var result = await _returnService.GetAsync(d => d.Id == request.RecordId, true, r => r.Authority, r => r.Article, r => r.Frequency, r => r.Owner, r => r.ReturnType);
                 if (result == null) {
                     var error = new ResponseError(ResponseCodes.FAILED, "Return/Report not found", "No return/report matched the provided ID");
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
@@ -3667,10 +3664,12 @@ namespace Grc.Middleware.Api.Controllers {
                     Interval = result.Interval,
                     IntervalType = result.IntervalType,
                     Reminder = result.Reminder,
+                    RequiredSubmissionDate = result.RequiredSubmissionDate,
+                    RequiredSubmissionDay = result.RequiredSubmissionDay,
                     TypeId = result.ReturnType?.Id ?? 0,
                     Type = result.ReturnType?.TypeName ?? string.Empty,
-                    DepartmentId = result.Department?.Id ?? 0,
-                    Department = result.Department?.DepartmentName ?? string.Empty,
+                    DepartmentId = result.Owner?.Id ?? 0,
+                    Department = result.Owner?.ContactPosition ?? string.Empty,
                     AuthorityId = result.Authority?.Id ?? 0,
                     Authority = result.Authority?.AuthorityName ?? string.Empty,
                     FrequencyId = result.Frequency?.Id ?? 0,
@@ -3736,6 +3735,8 @@ namespace Grc.Middleware.Api.Controllers {
                     Interval = request.Interval,
                     IntervalType = request.IntervalType,
                     Reminder = request.Reminder,
+                    RequiredSubmissionDate = request.RequiredSubmissionDate,
+                    RequiredSubmissionDay = request.RequiredSubmissionDay,
                     StatuteId = request.StatuteId,
                     UserName = currentUser.Username,
                     Action = request.Action,
@@ -3815,6 +3816,8 @@ namespace Grc.Middleware.Api.Controllers {
                     SendReminder = request.SendReminder,
                     Interval = request.Interval,
                     IntervalType = request.IntervalType,
+                    RequiredSubmissionDate = request.RequiredSubmissionDate,
+                    RequiredSubmissionDay = request.RequiredSubmissionDay,
                     Reminder = request.Reminder,
                     StatuteId = request.StatuteId,
                     UserName = currentUser.Username,
@@ -3888,7 +3891,7 @@ namespace Grc.Middleware.Api.Controllers {
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
                 var pageResult = await _returnService.PageAllAsync(request.PageIndex, request.PageSize, false, 
-                    r=> r.FrequencyId == request.RecordId, r=>r.Frequency, r=> r.Department,r=> r.ReturnType, r=>r.Authority);
+                    r=> r.FrequencyId == request.RecordId, r=>r.Frequency, r=> r.Owner,r=> r.ReturnType, r=>r.Authority);
 
                 if (pageResult.Entities == null || !pageResult.Entities.Any()) {
                     var error = new ResponseError(ResponseCodes.SUCCESS,"No data", "No return/report records found");
@@ -3908,8 +3911,10 @@ namespace Grc.Middleware.Api.Controllers {
                     ReportName = rec.ReturnName ?? string.Empty,
                     Article = $"{rec.Article?.Article ?? string.Empty}{rec.Article?.Summery ?? string.Empty}",
                     Frequency = rec.Frequency?.FrequencyName ?? string.Empty,
-                    Department = rec.Department?.DepartmentName ?? string.Empty,
+                    Department = rec.Owner?.ContactPosition ?? string.Empty,
                     Type = rec.ReturnType?.TypeName ?? string.Empty,
+                    RequiredSubmissionDate = rec.RequiredSubmissionDate,
+                    RequiredSubmissionDay = rec.RequiredSubmissionDay,
                     IsDeleted = rec.IsDeleted,
                     Risk = rec.Risk ??string.Empty,
                     Authority = rec.Authority?.AuthorityName ?? string.Empty,
@@ -3940,7 +3945,7 @@ namespace Grc.Middleware.Api.Controllers {
                                                          r => r.ReturnId == request.RecordId, 
                                                          r => r.RegulatoryReturn,
                                                          r => r.RegulatoryReturn.Article,
-                                                         r => r.RegulatoryReturn.Department);
+                                                         r => r.RegulatoryReturn.Owner);
 
                 if (pageResult.Entities == null || !pageResult.Entities.Any()) {
                     var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No submissions records found");
@@ -3961,13 +3966,16 @@ namespace Grc.Middleware.Api.Controllers {
                             PeriodStart = s.PeriodStart,
                             Status = s.IsBreached ? "BREACHED" : s.Status,
                             BreachReason = s.BreachReason,
+                            RequiredSubmissionDate = s.RegulatoryReturn.RequiredSubmissionDate,
+                            RequiredSubmissionDay = s.RegulatoryReturn.RequiredSubmissionDay,
+                            DepartmentId = s.RegulatoryReturn.OwnerId,
                             SubmittedOn = s.SubmissionDate,
                             SubmittedBy = s.SubmittedBy,
                             Risk = s.RegulatoryReturn.Risk,
                             Comment = s.Comments,
                             IsBreached = s.IsBreached,
                             IsDeleted = s.IsDeleted,
-                            Department = s.RegulatoryReturn?.Department?.DepartmentName ?? string.Empty
+                            Department = s.RegulatoryReturn?.Owner.ContactPosition ?? string.Empty
 
                         });
                     });
@@ -4070,8 +4078,10 @@ namespace Grc.Middleware.Api.Controllers {
                             Interval = report.Interval,
                             IntervalType = report.IntervalType,
                             Reminder = report.Reminder,
-                            DepartmentId = report.DepartmentId,
-                            Department = report.Department.DepartmentName ?? string.Empty,
+                            DepartmentId = report.OwnerId,
+                            RequiredDate = report.RequiredSubmissionDate,
+                            RequiredDay = report.RequiredSubmissionDay,
+                            Department = report.Owner.Department.DepartmentName ?? string.Empty,
                             ArticleNo = report.Article.Article ?? string.Empty,
                             ArticleSummery = report.Article.Summery ?? string.Empty,
                             AuthorityId = report.AuthorityId,
@@ -4247,6 +4257,12 @@ namespace Grc.Middleware.Api.Controllers {
                     IsBreached = circular.IsBreached,
                     BreachReason = circular.BreachReason,
                     BreachRisk = circular.BreachRisk,
+                    SendReminder = circular.SendReminder,
+                    Interval = circular.Interval,
+                    IntervalType = circular.IntervalType,
+                    Reminder = circular.Reminder,
+                    RequiredSubmissionDate = circular.RequiredSubmissionDate,
+                    RequiredSubmissionDay = circular.RequiredSubmissionDay,
                     Comments = circular.Comments ?? string.Empty,
                     RecievedOn = circular.RecievedOn,
                     DeadlineOn = circular.DeadlineOn,
@@ -4310,6 +4326,12 @@ namespace Grc.Middleware.Api.Controllers {
                         IsBreached = circular.IsBreached,
                         BreachReason = circular.BreachReason,
                         BreachRisk = circular.BreachRisk,
+                        SendReminder = circular.SendReminder,
+                        Interval = circular.Interval,
+                        IntervalType = circular.IntervalType,
+                        Reminder = circular.Reminder,
+                        RequiredSubmissionDate = circular.RequiredSubmissionDate,
+                        RequiredSubmissionDay = circular.RequiredSubmissionDay,
                         Comments = circular.Comments ?? string.Empty,
                         RecievedOn = circular.RecievedOn,
                         DeadlineOn = circular.DeadlineOn,
@@ -4799,7 +4821,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
 
-                var result = await _submissionService.GetAsync(d => d.Id == request.RecordId, true, r => r.RegulatoryReturn, r => r.RegulatoryReturn.Department, r => r.RegulatoryReturn.Department);
+                var result = await _submissionService.GetAsync(d => d.Id == request.RecordId, true, r => r.RegulatoryReturn, r => r.RegulatoryReturn.Owner, r => r.RegulatoryReturn.Owner);
                 if (result == null) {
                     var error = new ResponseError(ResponseCodes.FAILED, "submission/Report not found", "No submission/report matched the provided ID");
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
@@ -4814,8 +4836,8 @@ namespace Grc.Middleware.Api.Controllers {
                     PeriodStart = result.PeriodStart,
                     PeriodEnd = result.PeriodEnd,
                     Status = result.Status ?? string.Empty,
-                    OwnerId = result.RegulatoryReturn?.Department?.Id ?? 0,
-                    Department = result.RegulatoryReturn?.Department?.DepartmentName,
+                    OwnerId = result.RegulatoryReturn?.Owner?.Id ?? 0,
+                    Department = result.RegulatoryReturn?.Owner?.ContactPosition,
                     IsDeleted = result.IsDeleted,
                     IsBreached = result.IsBreached,
                     BreachReason = result.BreachReason ?? string.Empty,
@@ -5001,6 +5023,7 @@ namespace Grc.Middleware.Api.Controllers {
                                 if (sent) {
                                     Logger.LogActivity($"Submission notification mail has been sent to {sendToName}", "INFO");
                                     await _mailService.InsertMailAsync(new Data.Entities.System.MailRecord() {
+                                        CircularId = request.Id,
                                         SentToEmail = email,
                                         CCMail = mailSettings.CopyTo,
                                         Subject = subject,

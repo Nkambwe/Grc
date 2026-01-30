@@ -5,6 +5,7 @@ using Grc.Middleware.Api.Data.Entities.Compliance.Returns;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
+using Grc.Middleware.Api.TaskHandler;
 using Grc.Middleware.Api.Utils;
 using RTools_NTS.Util;
 using System.Linq.Expressions;
@@ -14,9 +15,13 @@ using System.Text.Json.Serialization;
 namespace Grc.Middleware.Api.Services.Compliance.Regulations {
 
     public class ReturnsSubmissionService : BaseService, IReturnsSubmissionService {
+
+        private readonly IMailTaskQueue _mailTaskQueue;
         public ReturnsSubmissionService(IServiceLoggerFactory loggerFactory, 
-                                         IUnitOfWorkFactory uowFactory, 
+                                         IUnitOfWorkFactory uowFactory,
+                                         IMailTaskQueue mailTaskQueue,
                                          IMapper mapper) : base(loggerFactory, uowFactory, mapper) {
+            _mailTaskQueue = mailTaskQueue;
         }
 
         #region Queries
@@ -841,43 +846,59 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         }
 
         public async Task GenerateMissingSubmissionsAsync(DateTime today, CancellationToken ct) {
-
             using var uow = UowFactory.Create();
-            Logger.LogActivity($"Count number of Submission in the database", "INFO");
+            Logger.LogActivity($"Generating submissions for {today:yyyy-MM-dd}", "INFO");
 
-            //..exclude from processing
-            var excludeFrequencies = new[] {"NA", "PERIODIC", "ONE-OFF", "ON OCCURRENCE"};
+            var excludeFrequencies = new[] { "NA", "PERIODIC", "ONE-OFF", "ON OCCURRENCE" };
 
             try {
-                var reports = await uow.ReturnRepository.GetAllAsync(r => r.Frequency != null, false, r => r.Frequency);
+                var reports = await uow.ReturnRepository.GetAllAsync(
+                    r => r.Frequency != null,
+                    false,
+                    r => r.Frequency,
+                    r => r.Owner);
+
                 var newSubmissions = new List<ReturnSubmissionRequest>();
                 var breachedUpdates = new List<ReturnSubmissionRequest>();
 
                 foreach (var report in reports) {
-                    
                     if (excludeFrequencies.Contains(report.Frequency.FrequencyName))
                         continue;
 
-                    var (start, end) = FrequencyPeriodCalculator.GetCurrentPeriod(report.Frequency.FrequencyName, today);
+                    //..daily frequency handling
+                    var (start, end) = FrequencyPeriodCalculator.GetCurrentPeriod(report.Frequency.FrequencyName, today, report.ReturnName);
 
-                    //..check if submission exists for this period
+                    //..skip invalid periods; Sunday for daily, Saturday for non-NPS daily
+                    if (start == DateTime.MinValue || end == DateTime.MinValue) {
+                        Logger.LogActivity($"Skipping {report.ReturnName} - not a valid day for this frequency", "DEBUG");
+                        continue;
+                    }
+
+                    //..calculate the actual deadline based on RequiredSubmissionDay
+                    var deadline = DeadlineCalculator.CalculateDeadline(report.Frequency.FrequencyName, start, end, report.RequiredSubmissionDay);
+
+                    // Check if submission already exists for this period
                     if (!await ExistsAsync(r => r.ReturnId == report.Id && r.PeriodStart == start && r.PeriodEnd == end, false, ct)) {
+
                         newSubmissions.Add(new ReturnSubmissionRequest {
                             ReturnId = report.Id,
                             Status = "OPEN",
                             PeriodStart = start,
                             IsBreached = false,
                             PeriodEnd = end,
-                            Deadline = end,
+                            Deadline = deadline, 
                             SubmissionDate = null,
                             CreatedBy = "SYSTEM",
                             CreatedOn = DateTime.Now,
                             ModifiedBy = "SYSTEM",
-                            ModifiedOn = DateTime.Now
+                            ModifiedOn = DateTime.Now,
+                            Owner = report.ReturnName
                         });
+
+                        Logger.LogActivity($"New submission created: {report.ReturnName} | Period: {start:yyyy-MM-dd} to {end:yyyy-MM-dd} | Deadline: {deadline:yyyy-MM-dd}", "INFO");
                     }
 
-                    //..breach old submissions
+                    //..find overdue submissions, using Deadline, not PeriodEnd
                     var overdue = await GetAllAsync(r => r.ReturnId == report.Id && r.Status == "OPEN" && r.SubmissionDate == null && r.Deadline < today && !r.IsBreached, false);
                     foreach (var sub in overdue) {
                         breachedUpdates.Add(new ReturnSubmissionRequest {
@@ -891,25 +912,414 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                             SubmissionDate = sub.SubmissionDate,
                             CreatedBy = sub.CreatedBy,
                             CreatedOn = sub.CreatedOn,
-                            ModifiedBy = "SYSTEM", 
-                            ModifiedOn = DateTime.Now
+                            ModifiedBy = "SYSTEM",
+                            ModifiedOn = DateTime.Now,
                         });
+
+                        Logger.LogActivity($"Submission breached: {report.ReturnName} | ID: {sub.Id} | Deadline was: {sub.Deadline:yyyy-MM-dd}", "WARN");
                     }
                 }
 
-                if (newSubmissions.Any())
+                //..bulk operations
+                if (newSubmissions.Any()) {
                     await BulkyInsertAsync(newSubmissions.ToArray());
+                    Logger.LogActivity($"Inserted {newSubmissions.Count} new submissions", "INFO");
+                }
 
-                if (breachedUpdates.Any())
+                if (breachedUpdates.Any()) {
                     await BulkyUpdateAsync(breachedUpdates.ToArray());
+                    Logger.LogActivity($"Updated {breachedUpdates.Count} breached submissions", "INFO");
+                }
+
+                //..enqueue mail notifications
+                if (newSubmissions.Any()) {
+                    await EnqueueSubmissionNotificationMailsAsync(newSubmissions, uow);
+                }
+
+                if (breachedUpdates.Any()) {
+                    await EnqueueBreachNotificationMailsAsync(breachedUpdates, uow);
+                }
+
             } catch (Exception ex) {
-                Logger.LogActivity($"Failed to Submission in the database: {ex.Message}", "ERROR");
+                Logger.LogActivity($"Failed to generate submissions: {ex.Message}", "ERROR");
                 _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
-
         }
 
+        private async Task EnqueueSubmissionNotificationMailsAsync(List<ReturnSubmissionRequest> submissions, IUnitOfWork uow) {
+
+            // Group by ReturnId to avoid sending duplicate emails
+            var submissionsByReturn = submissions.GroupBy(s => s.ReturnId);
+
+            foreach (var group in submissionsByReturn) {
+                var returnId = group.Key;
+
+                try {
+                    // Get return with owner details
+                    var returnDoc = await uow.ReturnRepository.GetAsync(
+                        r => r.Id == returnId,
+                        false,
+                        r => r.Owner);
+
+                    if (returnDoc?.Owner == null) {
+                        Logger.LogActivity($"Return {returnId} has no owner. Skipping notification.", "WARN");
+                        continue;
+                    }
+
+                    //..should we send reminders for this return?
+                    if (!returnDoc.SendReminder) {
+                        Logger.LogActivity($"Return {returnId} has SendReminder=false. Skipping notification.", "INFO");
+                        continue;
+                    }
+
+                    var ownerEmail = (returnDoc.Owner.ContactEmail ?? string.Empty).Trim();
+                    var ownerName = (returnDoc.Owner.ContactName ?? string.Empty).Trim();
+
+                    if (string.IsNullOrEmpty(ownerEmail)) {
+                        Logger.LogActivity($"Return {returnId} owner has no email. Skipping notification.", "WARN");
+                        continue;
+                    }
+
+                    //..apply interval filter [ONCE, TWICE, THREE]
+                    if (!ShouldSendReturnNotification(returnDoc, group.ToList())) {
+                        Logger.LogActivity(
+                            $"Return {returnId} has reached notification limit. Interval: {returnDoc.Interval}, Sent: {returnDoc.SentMessages}",
+                            "INFO");
+                        continue;
+                    }
+
+                    //..apply interval type filter [DAILY, WEEKLY, MONTHLY]
+                    var lastNotificationDate = await uow.MailRecordRepository.GetLastNotificationDateAsync(returnId, "Return");
+                    if (!ShouldSendBasedOnIntervalType(returnDoc.IntervalType, lastNotificationDate)) {
+                        Logger.LogActivity(
+                            $"Return {returnId} notification skipped based on IntervalType: {returnDoc.IntervalType}. Last sent: {lastNotificationDate:yyyy-MM-dd}",
+                            "INFO");
+                        continue;
+                    }
+
+                    // Get compliance users for CC
+                    var compliance = await uow.DepartmentRepository.GetAllAsync(
+                        d => d.DepartmentCode == "COMPLIANCE",
+                        false,
+                        d => d.Users);
+
+                    string compUsers = compliance != null && compliance.Any()
+                        ? string.Join(";", compliance
+                            .SelectMany(d => d.Users)
+                            .Select(u => u.EmailAddress)
+                            .Where(e => !string.IsNullOrEmpty(e))
+                            .Distinct())
+                        : string.Empty;
+
+                    // Test mails (remove in production)
+                    compUsers += ";irene.nabuloli@pearlbank.com;apollo.olinga@pearlbank.com;Moses.Semanda@pearlbank.com;mark.nkambwe@pearlbank.com";
+
+                    var returnTitle = returnDoc.ReturnName ?? "Return Submission";
+                    var submissionCount = group.Count();
+
+                    Logger.LogActivity(
+                        $"Enqueuing notification for Return {returnId} to {ownerEmail}",
+                        "INFO");
+
+                    // Get the first submission ID for tracking
+                    var submissionId = group.First().Id;
+
+                    // Enqueue the mail task
+                    _mailTaskQueue.Enqueue(async (sp, token) => {
+                        var mailService = sp.GetRequiredService<IMailService>();
+                        var logger = sp.GetRequiredService<IServiceLoggerFactory>().CreateLogger();
+                        var returnUow = sp.GetRequiredService<IUnitOfWorkFactory>().Create();
+
+                        try {
+                            var mailSettings = await mailService.GetMailSettingsAsync();
+                            if (mailSettings == null) {
+                                logger.LogActivity(
+                                    $"Mail settings not found. Cannot send notification for Return {returnId}.",
+                                    "WARN");
+                                return;
+                            }
+
+                            var (sent, subject, body) = MailHandler.SendSubmissionMail(
+                                logger,
+                                mailSettings.MailSender,
+                                ownerEmail,
+                                ownerName,
+                                compUsers,
+                                "RETURN REPORT SUBMISSION",
+                                returnTitle,
+                                mailSettings.NetworkPort,
+                                mailSettings.SystemPassword
+                            );
+
+                            if (sent) {
+                                logger.LogActivity(
+                                    $"Submission notification sent to {ownerEmail} for Return {returnId}",
+                                    "INFO");
+
+                                // Save mail record to database
+                                await mailService.InsertMailAsync(new MailRecord {
+                                    ReturnId = returnId,
+                                    SubmissionId = submissionId,
+                                    SentToEmail = ownerEmail,
+                                    CCMail = compUsers,
+                                    Subject = subject,
+                                    Mail = body,
+                                    IsDeleted = false,
+                                    CreatedBy = "SYSTEM",
+                                    CreatedOn = DateTime.Now,
+                                    LastModifiedBy = "SYSTEM",
+                                    LastModifiedOn = DateTime.Now,
+                                });
+
+                                //..update SentMessages count
+                                var returnToUpdate = await returnUow.ReturnRepository.GetAsync(r => r.Id == returnId, false);
+                                if (returnToUpdate != null) {
+                                    returnToUpdate.SentMessages = returnToUpdate.SentMessages + 1;
+                                    returnToUpdate.LastModifiedBy = "SYSTEM";
+                                    returnToUpdate.LastModifiedOn = DateTime.Now;
+
+                                    await returnUow.ReturnRepository.UpdateAsync(returnToUpdate);
+                                    await returnUow.SaveChangesAsync();
+
+                                    logger.LogActivity(
+                                        $"Updated SentMessages count to {returnToUpdate.SentMessages} for Return {returnId}",
+                                        "INFO");
+                                }
+
+                                logger.LogActivity($"Mail record saved for Return {returnId}", "INFO");
+                            } else {
+                                logger.LogActivity(
+                                    $"Failed to send notification for Return {returnId}",
+                                    "ERROR");
+                            }
+                        } catch (Exception ex) {
+                            logger.LogActivity(
+                                $"Exception sending notification for Return {returnId}: {ex.Message}",
+                                "ERROR");
+                        } finally {
+                            returnUow?.Dispose();
+                        }
+                    });
+                } catch (Exception ex) {
+                    Logger.LogActivity(
+                        $"Error enqueuing notification for Return {returnId}: {ex.Message}",
+                        "ERROR");
+                }
+            }
+        }
+
+        private async Task EnqueueBreachNotificationMailsAsync(List<ReturnSubmissionRequest> breachedSubmissions, IUnitOfWork uow) {
+
+            var submissionsByReturn = breachedSubmissions.GroupBy(s => s.ReturnId);
+
+            foreach (var group in submissionsByReturn) {
+                var returnId = group.Key;
+
+                try {
+                    var returnDoc = await uow.ReturnRepository.GetAsync(
+                        r => r.Id == returnId,
+                        false,
+                        r => r.Owner);
+
+                    if (returnDoc?.Owner == null) {
+                        Logger.LogActivity($"Return {returnId} has no owner. Skipping breach notification.", "WARN");
+                        continue;
+                    }
+
+                    //..should we send reminders for this return?
+                    if (!returnDoc.SendReminder) {
+                        Logger.LogActivity($"Return {returnId} has SendReminder=false. Skipping breach notification.", "INFO");
+                        continue;
+                    }
+
+                    var ownerEmail = (returnDoc.Owner.ContactEmail ?? string.Empty).Trim();
+                    var ownerName = (returnDoc.Owner.ContactName ?? string.Empty).Trim();
+
+                    if (string.IsNullOrEmpty(ownerEmail)) {
+                        Logger.LogActivity($"Return {returnId} owner has no email. Skipping breach notification.", "WARN");
+                        continue;
+                    }
+
+                    //..apply interval filter
+                    if (!ShouldSendReturnNotification(returnDoc, group.ToList())) {
+                        Logger.LogActivity(
+                            $"Return {returnId} breach notification skipped - reached notification limit",
+                            "INFO");
+                        continue;
+                    }
+
+                    //..apply interval type filter
+                    var lastNotificationDate = await uow.MailRecordRepository.GetLastNotificationDateAsync(returnId, "Return");
+                    if (!ShouldSendBasedOnIntervalType(returnDoc.IntervalType, lastNotificationDate)) {
+                        Logger.LogActivity(
+                            $"Return {returnId} breach notification skipped based on IntervalType: {returnDoc.IntervalType}",
+                            "INFO");
+                        continue;
+                    }
+
+                    // Add compliance users
+                    var compliance = await uow.DepartmentRepository.GetAllAsync(
+                        d => d.DepartmentCode == "COMPLIANCE",
+                        false,
+                        d => d.Users);
+
+                    string compUsers = compliance != null && compliance.Any()
+                        ? string.Join(";", compliance
+                            .SelectMany(d => d.Users)
+                            .Select(u => u.EmailAddress)
+                            .Where(e => !string.IsNullOrEmpty(e))
+                            .Distinct())
+                        : string.Empty;
+
+                    // Test mails
+                    compUsers += ";irene.nabuloli@pearlbank.com;apollo.olinga@pearlbank.com;Moses.Semanda@pearlbank.com;mark.nkambwe@pearlbank.com";
+
+                    var returnTitle = returnDoc.ReturnName ?? "Return Submission";
+                    Logger.LogActivity(
+                        $"Enqueuing BREACH notification for Return {returnId} to {ownerEmail}",
+                        "INFO");
+
+                    var submissionId = group.First().Id;
+
+                    // Enqueue breach notification
+                    _mailTaskQueue.Enqueue(async (sp, token) => {
+                        var mailService = sp.GetRequiredService<IMailService>();
+                        var logger = sp.GetRequiredService<IServiceLoggerFactory>().CreateLogger();
+                        var returnUow = sp.GetRequiredService<IUnitOfWorkFactory>().Create();
+
+                        try {
+                            var mailSettings = await mailService.GetMailSettingsAsync();
+                            if (mailSettings == null) {
+                                logger.LogActivity(
+                                    $"Mail settings not found. Cannot send breach notification for Return '{returnTitle}'.",
+                                    "WARN");
+                                return;
+                            }
+
+                            var (sent, subject, body) = MailHandler.SendSubmissionMail(
+                                logger,
+                                mailSettings.MailSender,
+                                ownerEmail,
+                                ownerName,
+                                compUsers,
+                                "COMPLIANCE RETURN REPORT - OVERDUE",
+                                $"OVERDUE: {returnTitle}",
+                                mailSettings.NetworkPort,
+                                mailSettings.SystemPassword
+                            );
+
+                            if (sent) {
+                                logger.LogActivity(
+                                    $"Breach notification sent to {ownerEmail} for Return '{returnTitle}'",
+                                    "INFO");
+
+                                await mailService.InsertMailAsync(new MailRecord {
+                                    ReturnId = returnId,
+                                    SubmissionId = submissionId,
+                                    SentToEmail = ownerEmail,
+                                    CCMail = compUsers,
+                                    Subject = subject,
+                                    Mail = body,
+                                    IsDeleted = false,
+                                    CreatedBy = "SYSTEM",
+                                    CreatedOn = DateTime.Now,
+                                    LastModifiedBy = "SYSTEM",
+                                    LastModifiedOn = DateTime.Now,
+                                });
+
+                                //..update SentMessages count
+                                var returnToUpdate = await returnUow.ReturnRepository.GetAsync(r => r.Id == returnId, false);
+                                if (returnToUpdate != null) {
+                                    returnToUpdate.SentMessages = returnToUpdate.SentMessages + 1;
+                                    returnToUpdate.LastModifiedBy = "SYSTEM";
+                                    returnToUpdate.LastModifiedOn = DateTime.Now;
+
+                                    await returnUow.ReturnRepository.UpdateAsync(returnToUpdate);
+                                    await returnUow.SaveChangesAsync();
+
+                                    logger.LogActivity(
+                                        $"Updated SentMessages count to {returnToUpdate.SentMessages} for Return {returnId}",
+                                        "INFO");
+                                }
+                            } else {
+                                logger.LogActivity(
+                                    $"Failed to send breach notification for Return '{returnTitle}'",
+                                    "ERROR");
+                            }
+                        } catch (Exception ex) {
+                            logger.LogActivity(
+                                $"Exception sending breach notification for Return '{returnTitle}': {ex.Message}",
+                                "ERROR");
+                        } finally {
+                            returnUow?.Dispose();
+                        }
+                    });
+                } catch (Exception ex) {
+                    Logger.LogActivity(
+                        $"Error enqueuing breach notification for Return {returnId}: {ex.Message}",
+                        "ERROR");
+                }
+            }
+        }
+
+        private static bool ShouldSendReturnNotification(ReturnReport returnDoc, List<ReturnSubmissionRequest> submissions) {
+            // Get interval count
+            int intervalCount = (returnDoc.Interval ?? string.Empty).Trim().ToUpper() switch {
+                "ONCE" => 1,
+                "TWICE" => 2,
+                "THREE" => 3,
+                _ => int.MaxValue // No limit if interval is not specified or invalid
+            };
+
+            int sentCount = returnDoc.SentMessages;
+
+            // Check if we've reached the notification limit
+            return sentCount < intervalCount;
+        }
+
+        private static bool ShouldSendBasedOnIntervalType(string intervalType, DateTime? lastNotification) {
+            var now = DateTime.UtcNow;
+            var type = (intervalType ?? string.Empty).Trim().ToUpper();
+
+            return type switch {
+                "DAILY" => ShouldSendDaily(lastNotification, now),
+                "WEEKLY" => ShouldSendWeekly(lastNotification, now),
+                "MONTHLY" => ShouldSendMonthly(lastNotification, now),
+                _ => true // If no interval type specified, always send
+            };
+        }
+
+        private static bool ShouldSendDaily(DateTime? lastNotification, DateTime now) {
+            if (!lastNotification.HasValue)
+                return true;
+
+            // Check if last notification was on a different day
+            return lastNotification.Value.Date < now.Date;
+        }
+
+        private static bool ShouldSendWeekly(DateTime? lastNotification, DateTime now) {
+            if (!lastNotification.HasValue)
+                return true;
+
+            // Week is Monday to Saturday
+            int daysUntilMonday = ((int)now.DayOfWeek - (int)DayOfWeek.Monday + 7) % 7;
+            DateTime currentWeekStart = now.Date.AddDays(-daysUntilMonday);
+
+            int lastDaysUntilMonday = ((int)lastNotification.Value.DayOfWeek - (int)DayOfWeek.Monday + 7) % 7;
+            DateTime lastWeekStart = lastNotification.Value.Date.AddDays(-lastDaysUntilMonday);
+
+            return currentWeekStart > lastWeekStart;
+        }
+
+        private static bool ShouldSendMonthly(DateTime? lastNotification, DateTime now) {
+            if (!lastNotification.HasValue)
+                return true;
+
+            // Send if we're in a different month
+            return lastNotification.Value.Year != now.Year ||
+                   lastNotification.Value.Month != now.Month;
+        }
         #endregion
 
         #region private methods

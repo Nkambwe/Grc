@@ -332,7 +332,7 @@ namespace Grc.ui.App.Controllers {
                     onIntranet = response.OnIntranet,
                     isApproved = string.IsNullOrWhiteSpace(response.ApprovedBy) ? 2 : 1,
                     approvalDate = response.ApprovalDate,
-                    approvedBy = response.ApprovedBy ?? string.Empty
+                    approver = response.ApprovedBy ?? string.Empty
                 };
 
                 return Ok(new { success = true, data = policyRecord });

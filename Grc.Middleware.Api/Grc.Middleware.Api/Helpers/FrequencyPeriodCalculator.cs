@@ -1,10 +1,21 @@
 ﻿namespace Grc.Middleware.Api.Helpers {
     public static class FrequencyPeriodCalculator {
-        public static (DateTime start, DateTime end) GetCurrentPeriod(string frequencyName, DateTime today) {
+        public static (DateTime start, DateTime end) GetCurrentPeriod(string frequencyName, DateTime today, string returnName = "") {
             today = today.Date;
 
             switch (frequencyName.ToUpperInvariant()) {
                 case "DAILY":
+                    //..daily runs Monday to Friday, except NPS which runs Monday to Saturday
+                    bool isNPS = returnName.Contains("NPS", StringComparison.OrdinalIgnoreCase);
+
+                    //..skip Sundays for all daily reports
+                    if (today.DayOfWeek == DayOfWeek.Sunday)
+                        return (DateTime.MinValue, DateTime.MinValue); 
+
+                    //..skip Saturdays for non-NPS reports
+                    if (!isNPS && today.DayOfWeek == DayOfWeek.Saturday)
+                        return (DateTime.MinValue, DateTime.MinValue); 
+
                     return (today, today);
 
                 case "WEEKLY": {
@@ -37,18 +48,21 @@
                 case "ANNUAL":
                 case "YEARLY":
                     return (new DateTime(today.Year, 1, 1), new DateTime(today.Year, 12, 31));
+
                 case "BIENNIAL": {
                         int yearOffset = today.Year % 2;
                         int startYear = today.Year - yearOffset;
                         int endYear = startYear + 1;
                         return (new DateTime(startYear, 1, 1), new DateTime(endYear, 12, 31));
-                }
+                    }
+
                 case "TRIENNIAL": {
                         int yearOffset = today.Year % 3;
                         int startYear = today.Year - yearOffset;
                         int endYear = startYear + 2;
                         return (new DateTime(startYear, 1, 1), new DateTime(endYear, 12, 31));
-                }
+                    }
+
                 default:
                     throw new NotSupportedException($"Unsupported frequency: {frequencyName}");
             }

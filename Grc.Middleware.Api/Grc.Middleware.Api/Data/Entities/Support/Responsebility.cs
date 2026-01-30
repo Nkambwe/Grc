@@ -1,5 +1,6 @@
 ﻿using Grc.Middleware.Api.Data.Entities.Compliance.Audits;
 using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
+using Grc.Middleware.Api.Data.Entities.Compliance.Returns;
 using Grc.Middleware.Api.Data.Entities.Operations.Processes;
 using Grc.Middleware.Api.Data.Entities.Org;
 
@@ -20,6 +21,7 @@ namespace Grc.Middleware.Api.Data.Entities.Support
         public virtual ICollection<OperationProcess> AssigneeProcesses { get; set; }
         public virtual ICollection<StatutoryArticle> Articles { get; set; }
         public virtual ICollection<AuditException> Findings { get; set; }
+        public virtual ICollection<ReturnReport> Reports { get; set; }
     }
 
 }

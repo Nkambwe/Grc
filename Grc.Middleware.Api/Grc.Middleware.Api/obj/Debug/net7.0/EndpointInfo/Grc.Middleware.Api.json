@@ -8749,6 +8749,30 @@
             "type": "string",
             "nullable": true
           },
+          "sendReminder": {
+            "type": "boolean"
+          },
+          "interval": {
+            "type": "string",
+            "nullable": true
+          },
+          "intervalType": {
+            "type": "string",
+            "nullable": true
+          },
+          "reminder": {
+            "type": "string",
+            "nullable": true
+          },
+          "requiredSubmissionDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "requiredSubmissionDay": {
+            "type": "integer",
+            "format": "int32"
+          },
           "comments": {
             "type": "string",
             "nullable": true
@@ -10950,6 +10974,15 @@
           "reminder": {
             "type": "string",
             "nullable": true
+          },
+          "requiredSubmissionDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "requiredSubmissionDay": {
+            "type": "integer",
+            "format": "int32"
           },
           "comments": {
             "type": "string",

@@ -487,7 +487,7 @@ function addPolicyDocument() {
         isLocked: false,
         isApproved: 0,
         approvalDate: '',
-        approvedBy: 'NONE',
+        approver: 'NONE',
         interval: '0',
         intervalType: 'NA',
         reminderMessage:''
@@ -495,6 +495,8 @@ function addPolicyDocument() {
 }
 
 function openPolicyDocPanel(title, record, isEdit) {
+
+    console.log(record);
     $('#isEdit').val(isEdit);
     $('#recordId').val(record.id);
     $('#documentName').val(record.documentName || '');
@@ -535,6 +537,7 @@ function openPolicyDocPanel(title, record, isEdit) {
     } else {
         flatpickrInstances["approvalDate"].setDate(today, true, "Y-m-d");
     }
+
     $('#approver').val(record.approver).trigger('change');
 
     //..lock fields is document is locked

@@ -72,5 +72,10 @@ namespace Grc.Middleware.Api.Http.Requests
 
         [JsonPropertyName("action")]
         public string Action { get; set; }
+
+        [JsonIgnore]
+        public string Owner { get; set; }
+        [JsonIgnore]
+        public string OwnerEmail { get; set; }
     }
 }

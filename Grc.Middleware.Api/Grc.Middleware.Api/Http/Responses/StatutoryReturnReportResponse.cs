@@ -22,6 +22,12 @@ namespace Grc.Middleware.Api.Http.Responses
         [JsonPropertyName("reminder")]
         public string Reminder { get; set; }
 
+        [JsonPropertyName("requiredSubmissionDate ")]
+        public DateTime? RequiredSubmissionDate { get; set; }
+
+        [JsonPropertyName("requiredSubmissionDay ")]
+        public int RequiredSubmissionDay { get; set; }
+
         [JsonPropertyName("typeId")]
         public long TypeId { get; set; }
 

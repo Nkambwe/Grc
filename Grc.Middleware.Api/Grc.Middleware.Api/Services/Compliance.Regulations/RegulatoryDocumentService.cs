@@ -7,6 +7,7 @@ using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
+using Grc.Middleware.Api.TaskHandler;
 using Grc.Middleware.Api.Utils;
 using Microsoft.Win32;
 using System.Linq.Expressions;
@@ -17,10 +18,16 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
 
     public class RegulatoryDocumentService : BaseService, IRegulatoryDocumentService {
 
-        public RegulatoryDocumentService(IServiceLoggerFactory loggerFactory, IUnitOfWorkFactory uowFactory, IMapper mapper)
+        private readonly IMailTaskQueue _mailTaskQueue;
+        public RegulatoryDocumentService(IServiceLoggerFactory loggerFactory, 
+                                         IUnitOfWorkFactory uowFactory, 
+                                         IMailTaskQueue mailTaskQueue, 
+                                         IMapper mapper)
             : base(loggerFactory, uowFactory, mapper) {
+            _mailTaskQueue = mailTaskQueue;
         }
 
+        #region Queries
         public int Count()
         {
             using var uow = UowFactory.Create();
@@ -950,6 +957,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
             }
         }
 
+        #endregion
+
         #region Policy Reports
 
         public async Task<PolicySummeryResponse> GetPolicySummeryAsync(bool includeDeleted) {
@@ -1090,7 +1099,263 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
 
         #endregion
 
+        #region Notification Mails
+
+        public async Task SendNotificationMailsAsync() {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Generate and send Notification mails", "INFO");
+
+            try {
+                var includeStatuses = new List<string> {
+                    "DUE",
+                    "PENDING-MRC",
+                    "PENDING-SMT",
+                    "DEPT-REVIEW",
+                    "PENDING-BOARD"
+                };
+
+                var policies = await uow.RegulatoryDocumentRepository.GetAllAsync(p => p.SendNotification && 
+                includeStatuses.Contains(p.Status) && 
+                !p.IsApproved, false,p => p.Owner);
+
+                var policyList = policies.ToList();
+                if (policyList == null || !policyList.Any()) {
+                    Logger.LogActivity("No policies found for notification", "INFO");
+                    return;
+                }
+
+                //..apply interval filter (based on how many times notification has been sent)
+                Logger.LogActivity($"Found {policyList.Count} policies with SendNotification=true", "INFO");
+                policyList = IntervalFilter(policyList);
+
+                if (!policyList.Any()) {
+                    Logger.LogActivity("No policies remain after interval filter", "INFO");
+                    return;
+                }
+
+                //..apply interval type filter (Daily/Weekly/Monthly timing)
+                Logger.LogActivity($"{policyList.Count} policies remain after interval filter", "INFO");
+                policyList = await IntervalTypeFilter(policyList, uow);
+
+                if (!policyList.Any()) {
+                    Logger.LogActivity("No policies remain after interval type filter", "INFO");
+                    return;
+                }
+
+                Logger.LogActivity($"{policyList.Count} policies ready for notification", "INFO");
+
+                // Filter out policies where next review date is more than 2 months away
+                var twoMonthsFromNow = DateTime.UtcNow.AddMonths(2);
+                policyList = policyList.Where(p => p.NextRevisionDate.HasValue &&p.NextRevisionDate.Value <= twoMonthsFromNow).ToList();
+                if (!policyList.Any()) {
+                    Logger.LogActivity("No policies with NextReviewDate within 2 months", "INFO");
+                    return;
+                }
+
+                //..get compliance users for CC
+                Logger.LogActivity($"{policyList.Count} policies have NextReviewDate within 2 months", "INFO");
+                var compliance = await uow.DepartmentRepository.GetAllAsync(d => d.DepartmentCode == "COMPLIANCE", false, d => d.Users);
+
+                string compUsers = compliance != null && compliance.Any() ?
+                      string.Join(";", compliance
+                            .SelectMany(d => d.Users)
+                            .Select(u => u.EmailAddress)
+                            .Where(e => !string.IsNullOrEmpty(e))
+                            .Distinct()): string.Empty;
+
+                //..add test users
+                compUsers += $"irene.nabuloli@pearlbank.com;apollo.olinga@pearlbank.com;Moses.Semanda@pearlbank.com;mark.nkambwe@pearlbank.com";
+                //..enqueue notifications for each policy
+                foreach (var policy in policyList) {
+                    await EnqueuePolicyNotificationAsync(policy, compUsers, uow);
+                }
+
+                Logger.LogActivity($"Enqueued {policyList.Count} policy notifications", "INFO");
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to generate policy notifications: {ex.Message}", "ERROR");
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+        }
+
+        #endregion
+
         #region Private Methods
+
+        private async Task EnqueuePolicyNotificationAsync(RegulatoryDocument policy, string complianceUsers, IUnitOfWork uow) {
+
+            try {
+
+                if (policy.Owner == null) {
+                    Logger.LogActivity($"Policy {policy.Id} has no owner. Skipping notification.", "WARN");
+                    return;
+                }
+
+                var ownerEmail = (policy.Owner.ContactEmail ?? string.Empty).Trim();
+                var ownerName = (policy.Owner.ContactName ?? string.Empty).Trim();
+
+                if (string.IsNullOrEmpty(ownerEmail)) {
+                    Logger.LogActivity($"Policy {policy.Id} owner has no email. Skipping notification.", "WARN");
+                    return;
+                }
+
+                var policyTitle = policy.DocumentName ?? "Policy";
+                var policyId = policy.Id;
+                var nextReviewDate = policy.NextRevisionDate;
+
+                Logger.LogActivity($"Enqueuing notification for Policy {policyId} to {ownerEmail}", "INFO");
+
+                //..enqueue the mail task
+                _mailTaskQueue.Enqueue(async (sp, token) => {
+                    var mailService = sp.GetRequiredService<IMailService>();
+                    var logger = sp.GetRequiredService<IServiceLoggerFactory>().CreateLogger();
+                    var docUow = sp.GetRequiredService<IUnitOfWorkFactory>().Create();
+
+                    try {
+                        var mailSettings = await mailService.GetMailSettingsAsync();
+                        if (mailSettings == null) {
+                            logger.LogActivity($"Mail settings not found. Cannot send notification for Policy {policyId}.", "WARN");
+                            return;
+                        }
+
+                        var (sent, subject, body) = MailHandler.SendPolicyNotificationMail(
+                            logger,
+                            mailSettings.MailSender,
+                            ownerEmail,
+                            ownerName,
+                            complianceUsers,
+                            policyTitle,
+                            nextReviewDate,
+                            mailSettings.NetworkPort,
+                            mailSettings.SystemPassword
+                        );
+
+                        if (sent) {
+                            logger.LogActivity($"Policy notification sent to {ownerEmail} for Policy {policyId}", "INFO");
+
+                            // Save mail record
+                            await mailService.InsertMailAsync(new MailRecord {
+                                SentToEmail = ownerEmail,
+                                CCMail = complianceUsers,
+                                Subject = subject,
+                                Mail = body,
+                                DocumentId = policyId, 
+                                IsDeleted = false,
+                                CreatedBy = "SYSTEM",
+                                CreatedOn = DateTime.Now,
+                                LastModifiedBy = "SYSTEM",
+                                LastModifiedOn = DateTime.Now,
+                            });
+
+                            //..increment SentMessages count
+                            var policyToUpdate = await docUow.RegulatoryDocumentRepository
+                                .GetAsync(p => p.Id == policyId, false);
+
+                            if (policyToUpdate != null) {
+                                policyToUpdate.SentMessages = policyToUpdate.SentMessages + 1;
+                                policyToUpdate.LastModifiedBy = "SYSTEM";
+                                policyToUpdate.LastModifiedOn = DateTime.Now;
+
+                                await docUow.RegulatoryDocumentRepository.UpdateAsync(policyToUpdate);
+                                await docUow.SaveChangesAsync();
+
+                                logger.LogActivity($"Updated SentMessages count to {policyToUpdate.SentMessages} for Policy {policyId}", "INFO");
+                            }
+                        }
+                    } catch (Exception ex) {
+                        logger.LogActivity($"Exception sending policy notification for Policy {policyId}: {ex.Message}", "ERROR");
+                    } finally {
+                        docUow?.Dispose();
+                    }
+                });
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error enqueuing notification for Policy {policy.Id}: {ex.Message}", "ERROR");
+            }
+        }
+        private static List<RegulatoryDocument> IntervalFilter(List<RegulatoryDocument> documents) {
+            static int GetIntervalCount(string interval) {
+                return interval?.Trim().ToUpper() switch {
+                    "ONCE" => 1,
+                    "TWICE" => 2,
+                    "THREE" => 3,
+                    _ => 0
+                };
+            }
+
+            // Keep only documents where sent messages is less than the interval count
+            return documents.Where(d => {
+                int intervalCount = GetIntervalCount(d.Interval);
+                int sentCount = d.SentMessages;
+
+                // If interval is 0 (invalid/unlimited), always include
+                if (intervalCount == 0)
+                    return true;
+
+                // Otherwise, only include if we haven't reached the limit
+                return sentCount < intervalCount;
+            }).ToList();
+        }
+
+        private static async Task<List<RegulatoryDocument>> IntervalTypeFilter(List<RegulatoryDocument> documents, IUnitOfWork uow) {
+
+            var result = new List<RegulatoryDocument>();
+            var now = DateTime.UtcNow;
+
+            foreach (var doc in documents) {
+                var intervalType = (doc.IntervalType ?? string.Empty).Trim().ToUpper();
+
+                // Get the last notification date for this document
+                var lastNotification = await uow.MailRecordRepository.GetLastNotificationDateAsync(doc.Id, "Policy");
+                bool shouldSend = intervalType switch {
+                    "DAILY" => ShouldSendDaily(lastNotification, now),
+                    "WEEKLY" => ShouldSendWeekly(lastNotification, now),
+                    "MONTHLY" => ShouldSendMonthly(lastNotification, now),
+                    _ => true 
+                };
+
+                if (shouldSend) {
+                    result.Add(doc);
+                }
+            }
+
+            return result;
+        }
+
+        private static bool ShouldSendDaily(DateTime? lastNotification, DateTime now) {
+            if (!lastNotification.HasValue)
+                return true; // Never sent before
+
+            // Check if last notification was on a different day
+            return lastNotification.Value.Date < now.Date;
+        }
+
+        private static bool ShouldSendWeekly(DateTime? lastNotification, DateTime now) {
+            if (!lastNotification.HasValue)
+                return true;
+
+            // Week is Monday to Saturday
+            // Get the start of current week (Monday)
+            int daysUntilMonday = ((int)now.DayOfWeek - (int)DayOfWeek.Monday + 7) % 7;
+            DateTime currentWeekStart = now.Date.AddDays(-daysUntilMonday);
+
+            // Get the start of last notification's week
+            int lastDaysUntilMonday = ((int)lastNotification.Value.DayOfWeek - (int)DayOfWeek.Monday + 7) % 7;
+            DateTime lastWeekStart = lastNotification.Value.Date.AddDays(-lastDaysUntilMonday);
+
+            // Send if we're in a different week
+            return currentWeekStart > lastWeekStart;
+        }
+
+        private static bool ShouldSendMonthly(DateTime? lastNotification, DateTime now) {
+            if (!lastNotification.HasValue)
+                return true;
+
+            // Month is from 1st to end of month
+            // Send if we're in a different month
+            return lastNotification.Value.Year != now.Year ||
+                   lastNotification.Value.Month != now.Month;
+        }
         private SystemError HandleError(IUnitOfWork uow, Exception ex) {
             var innerEx = ex.InnerException;
             while (innerEx != null) {
