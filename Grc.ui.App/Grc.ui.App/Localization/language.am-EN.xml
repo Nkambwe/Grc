@@ -2714,4 +2714,9 @@
 	<LocaleResource Name="Component.Table.Audits.Type.Deleted">
 		<Value>Remove type</Value>
 	</LocaleResource>
+
+	<LocaleResource Name="App.Menu.Compliance.Configuration.Settings">
+		<Value>Compliance Settings</Value>
+	</LocaleResource>
+
 </Language>

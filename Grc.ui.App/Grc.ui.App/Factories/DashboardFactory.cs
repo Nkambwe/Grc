@@ -6,9 +6,11 @@ using Grc.ui.App.Extensions;
 using Grc.ui.App.Extensions.Http;
 using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
+using Grc.ui.App.Infrastructure.AppSettings;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
+using NuGet.Configuration;
 
 namespace Grc.ui.App.Factories {
     public class DashboardFactory : IDashboardFactory {
@@ -602,6 +604,7 @@ namespace Grc.ui.App.Factories {
 
         #endregion
 
+        #region Private Methods
         private static string GetReportDate(DateTime date) {
             var today = DateTime.Today;
 
@@ -661,5 +664,8 @@ namespace Grc.ui.App.Factories {
                 }
             };
         }
+
+        #endregion
+
     }
 }

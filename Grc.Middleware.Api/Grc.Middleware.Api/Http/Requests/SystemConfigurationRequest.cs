@@ -18,22 +18,14 @@ namespace Grc.Middleware.Api.Http.Requests {
         [JsonPropertyName("userId")]
         public long UserId { get; set; }
 
-        [JsonPropertyName("action")]
-        public string Action { get; set; }
-
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 
-        [JsonPropertyName("createdOn")]
-        public DateTime? CreatedOn { get; set; }
+        [JsonPropertyName("action")]
+        public string Action { get; set; }
 
-        [JsonPropertyName("createdBy")]
-        public string CreatedBy { get; set; }
+        [JsonPropertyName("ipAddress")]
+        public string IPAddress { get; set; }
 
-        [JsonPropertyName("modifiedOn")]
-        public DateTime? ModifiedOn { get; set; }
-
-        [JsonPropertyName("modifiedBy")]
-        public string ModifiedBy { get; set; }
     }
 }

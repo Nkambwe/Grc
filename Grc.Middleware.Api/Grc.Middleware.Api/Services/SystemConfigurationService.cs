@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using Grc.Middleware.Api.Data.Containers;
+using Grc.Middleware.Api.Data.Entities.Support;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
+using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
+using System.Globalization;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -17,29 +20,101 @@ namespace Grc.Middleware.Api.Services
             : base(loggerFactory, uowFactory, mapper) {
         }
 
-        public async Task<SystemConfiguration> GetConfigurationAsync(string paramName)
-        {
+        public async Task<bool> ExistsAsync(Expression<Func<SystemConfiguration, bool>> predicate, bool excludeDeleted = false, CancellationToken token = default) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Check if configuration that fits predicate >> '{predicate}' exists", "INFO");
+
+            try {
+                return await uow.SystemConfigurationRepository.ExistsAsync(predicate, excludeDeleted, token);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve system configuration: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                throw;
+            }
+        }
+
+        public async Task<ConfigurationResponse> GetAllConfigurationAsync() {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve all application configurations", "INFO");
+
+            var response = new ConfigurationResponse() {
+                GeneralSettings = new(),
+                PolicySettings = new(),
+                AuditSettings = new(),
+                ObligationSettings = new(),
+                MappingSettings = new(),
+                SecuritySettings = new()
+            };
+            try {
+                var settings = (await uow.SystemConfigurationRepository.GetAllAsync(true))
+                               ?.ToDictionary(s => s.ParameterName, s => s.ParameterValue)
+                               ?? new Dictionary<string, string>();
+
+                //..general
+                response.GeneralSettings.SoftDeleteRecord = ToBool(settings.GetValueOrDefault("GENERAL_SOFTDELETERECORD"));
+                response.GeneralSettings.IncludeDeletedRecords = ToBool(settings.GetValueOrDefault("GENERAL_INCLUDEDELETEDRECORD"));
+
+                //..policy seettings
+                response.PolicySettings.SendNotifications = ToBool(settings.GetValueOrDefault("POLICY_SENDNOTIFICATIONS"));
+                response.PolicySettings.MaximumNotifications = ToInt(settings.GetValueOrDefault("POLICY_MAXIMUMNUMBEROFNOTIFICATIONS"));
+
+                //..audit
+                response.AuditSettings.SendNotifications = ToBool(settings.GetValueOrDefault("AUDIT_SENDNOTIFICATIONS"));
+                response.AuditSettings.MaximumNotifications = ToInt(settings.GetValueOrDefault("AUDIT_MAXIMUMNUMBEROFNOTIFICATIONS"));
+
+                //..obligations
+                response.ObligationSettings.SendNotifications = ToBool(settings.GetValueOrDefault("OBLIGATION_SENDNOTIFICATIONS"));
+                response.ObligationSettings.MaximumNotifications = ToInt(settings.GetValueOrDefault("OBLIGATION_MAXIMUMNUMBEROFNOTIFICATIONS"));
+
+                //..mapping
+                response.MappingSettings.UsersCanAddComplianceControls = ToBool(settings.GetValueOrDefault("MAPPING_USERSCANADDCOMPLIANCECONTROLS"));
+                response.MappingSettings.LimitNumberOfItemsOnControl = ToBool(settings.GetValueOrDefault("MAPPING_LIMITNUMBEROFCONTROLS"));
+                response.MappingSettings.MaximumNumberOfItemsOnControl = ToInt(settings.GetValueOrDefault("MAPPING_MAXIMUMNUMBEROFCONTROLITEMS"));
+
+                //..security
+                response.SecuritySettings.ExpirePassword = ToBool(settings.GetValueOrDefault("SECURITY_EXPIRPASSWORDS"));
+                response.SecuritySettings.ExipreyPeriod = ToInt(settings.GetValueOrDefault("SECURITY_EXPIRYPERIOD"));
+                response.SecuritySettings.CanUseOldPassword = ToBool(settings.GetValueOrDefault("SECURITY_CANUSEOLDPASSWORDS"));
+                response.SecuritySettings.AllowAdmininsToResetPasswords = ToBool(settings.GetValueOrDefault("SECURITY_ALLOWMANUALPASSWORDCHANGE"));
+
+                return response;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve system configuration: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                throw;
+            }
+        }
+
+        public async Task<ConfigurationParameterResponse<T>> GetConfigurationAsync<T>(string paramName) {
 
             using var uow = UowFactory.Create();
             Logger.LogActivity("Retrieve System Configuration", "INFO");
 
-            try
-            {
-                Logger.LogActivity($"System configuration ParaName: {paramName}", "DEBUG");
-                var user = await uow.SystemConfigurationRepository.GetAsync(p => p.ParameterName == paramName);
+            try {
+                var config = await uow.SystemConfigurationRepository.GetAsync(p => p.ParameterName == paramName);
+                if (config == null)
+                    return null;
 
-                //..log system configuration
-                var paramJson = JsonSerializer.Serialize(user, new JsonSerializerOptions
-                {
-                    WriteIndented = true,
-                    ReferenceHandler = ReferenceHandler.IgnoreCycles
-                });
-                Logger.LogActivity($"System configuration record: {paramJson}", "DEBUG");
+                var value = ConvertValue(config);
 
-                return user;
-            }
-            catch (Exception ex)
-            {
+                return new ConfigurationParameterResponse<T> {
+                    ParameterName = config.ParameterName,
+                    ParameterType = config.ParameterType,
+                    Value = (T)value
+                };
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to System configuration: {ex.Message}", "ERROR");
                 //..log inner exceptions here too
                 var innerEx = ex.InnerException;
@@ -69,64 +144,26 @@ namespace Grc.Middleware.Api.Services
             }
         }
 
-        public async Task<bool> UpdateConfigurationAsync(SystemConfigurationRequest request)
-        {
+        public async Task<bool> UpdateConfigurationAsync(SystemConfigurationRequest request, string username) {
             using var uow = UowFactory.Create();
-            Logger.LogActivity("Update System Configuration request", "INFO");
 
-            try
-            {
-                var config = await uow.SystemConfigurationRepository.GetAsync(a => a.ParameterName == request.ParamName);
-                if (config != null)
-                {
-                    //..update System configurations
-                    config.ParameterValue = (request.ParamValue ?? string.Empty).Trim();
-                    config.ParameterType = (request.ParamType ?? string.Empty).Trim();
-                    config.LastModifiedOn = DateTime.Now;
-                    config.LastModifiedBy = $"{request.UserId}";
+            var config = await uow.SystemConfigurationRepository.GetAsync(s=>s.ParameterName == request.ParamName);
+            var normalizedValue = NormalizeValue(request.ParamValue, config.ParameterType);
 
-                    //..check entity state
-                    _ = uow.SystemConfigurationRepository.UpdateAsync(config);
-                    var entityState = ((UnitOfWork)uow).Context.Entry(config).State;
-                    Logger.LogActivity($"System Configuration state after Update: {entityState}", "DEBUG");
+            //..only update if changed
+            if (config.ParameterValue != normalizedValue) {
+                config.ParameterValue = normalizedValue;
+                config.LastModifiedBy = username;
+                config.LastModifiedOn = DateTime.UtcNow;
 
-                    var result = uow.SaveChanges();
-                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
-                    return result > 0;
-                }
+                uow.SystemConfigurationRepository.Update(config);
+                await uow.SaveChangesAsync();
 
-                return false;
+                Logger.LogActivity($"Updated configuration {request.ParamName} to {normalizedValue}","INFO");
+                return true;
             }
-            catch (Exception ex)
-            {
-                Logger.LogActivity($"Failed to update System Configuration password: {ex.Message}", "ERROR");
 
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
-
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "SYSTEM-CONFIGURATION-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                _ = uow.SystemErrorRespository.Insert(errorObj);
-                throw;
-            }
+            return false;
         }
 
         public async Task<IList<SystemConfiguration>> GetAllAsync(Expression<Func<SystemConfiguration, bool>> predicate, bool includeDeleted) {
@@ -202,6 +239,78 @@ namespace Grc.Middleware.Api.Services
                 throw;
             }
         }
+
+        #region Private Methods
+
+        private static string NormalizeValue(string value, string parameterType) {
+            if (string.IsNullOrWhiteSpace(value))
+                return string.Empty;
+
+            return parameterType switch {
+                "FLAG" => NormalizeBool(value),
+                "NUMBER" => NormalizeInt(value),
+                "MONEY" => NormalizeDecimal(value),
+                "TEXT" => value.Trim(),
+                "DATETIME" => NormalizeDateTime(value),
+                "TIME" => value.Trim(),
+                _ => throw new InvalidOperationException($"Unsupported parameter type: {parameterType}")
+            };
+        }
+
+        private static string NormalizeBool(string value) {
+            return value.Equals("true", StringComparison.OrdinalIgnoreCase)
+                || value.Equals("yes", StringComparison.OrdinalIgnoreCase)
+                || value == "1"
+                ? "YES"
+                : "NO";
+        }
+
+        private static string NormalizeInt(string value) {
+            if (!int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var i))
+                throw new ArgumentException("Invalid number value");
+
+            return i.ToString(CultureInfo.InvariantCulture);
+        }
+        private static string NormalizeDecimal(string value) {
+            var cleaned = value
+                .Replace(",", "")
+                .Trim();
+
+            if (!decimal.TryParse(cleaned, NumberStyles.AllowDecimalPoint,
+                    CultureInfo.InvariantCulture, out var d)) {
+                throw new ArgumentException("Invalid money value");
+            }
+
+            return d.ToString("0.00", CultureInfo.InvariantCulture);
+        }
+        private static string NormalizeDateTime(string value) {
+            if (!DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dt))
+                throw new ArgumentException("Invalid datetime value");
+
+            return dt.ToString("yyyy-MM-dd HH:mm:ss");
+        }
+
+        private static bool ToBool(string value)
+            => value?.Equals("YES", StringComparison.OrdinalIgnoreCase) == true || value == "1";
+
+        private static int ToInt(string value)
+            => int.TryParse(value, out var i) ? i : 0;
+
+        private static decimal ToDecimal(string value)
+            => decimal.TryParse(value, out var d) ? d : 0m;
+
+        private static object ConvertValue(SystemConfiguration config) {
+            return config.ParameterType switch {
+                "FLAG" => config.ParameterValue.Equals("YES", StringComparison.OrdinalIgnoreCase),
+                "NUMBER" => int.Parse(config.ParameterValue),
+                "MONEY" => decimal.Parse(config.ParameterValue, CultureInfo.InvariantCulture),
+                "TEXT" => config.ParameterValue,
+                "DATETIME" => DateTime.Parse(config.ParameterValue, CultureInfo.InvariantCulture),
+                _ => throw new InvalidOperationException($"Unsupported type {config.ParameterType}")
+            };
+        }
+
+        #endregion
 
     }
 }

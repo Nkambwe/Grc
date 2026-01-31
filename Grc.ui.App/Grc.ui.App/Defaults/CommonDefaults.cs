@@ -4,7 +4,7 @@
         /// <summary>
         /// Gets Application Version
         /// </summary>
-        public static string AppVersion => "GRC SUITE 1.3";
+        public static string AppVersion => "GRC SUITE 3.0";
         /// <summary>
         /// Gets a request path to the keep alive URL
         /// </summary>

@@ -1,5 +1,6 @@
 ﻿using Grc.ui.App.Defaults;
 using Grc.ui.App.Enums;
+using Grc.ui.App.Extensions.Http;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Filters;
 using Grc.ui.App.Helpers;
@@ -22,6 +23,7 @@ namespace Grc.ui.App.Controllers {
         private readonly IInstallService _installService;
         private readonly ILoginFactory _loginFactory;
         private readonly IDashboardFactory _dashboardFactory;
+        private readonly IConfigurationFactory _configFactory;
 
         public ApplicationController(IWebHelper webHelper,
                                      IApplicationLoggerFactory loggerFactory, 
@@ -33,6 +35,7 @@ namespace Grc.ui.App.Controllers {
                                      ISystemAccessService accessService,
                                      ILoginFactory loginFactory,
                                      IDashboardFactory dashboardFactory,
+                                     IConfigurationFactory configFactory,
                                      IErrorService errorService,
                                      IGrcErrorFactory grcErrorFactory,
                                      SessionManager sessionManager) :
@@ -45,6 +48,7 @@ namespace Grc.ui.App.Controllers {
             _accessService = accessService;
             _loginFactory = loginFactory;
             _dashboardFactory = dashboardFactory;
+            _configFactory = configFactory;
         }
 
         [LogActivityResult("User Login", "User logged in to the system", ActivityTypeDefaults.USER_LOGIN, "SystemUser")]
@@ -299,6 +303,17 @@ namespace Grc.ui.App.Controllers {
         public  async Task<IActionResult> NoService(){
             var model = await _registrationFactory.PrepareNoServiceModelAsync();
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ComplianceSettings() {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var response = await _authService.GetCurrentUserAsync(ipAddress);
+            if (response.HasError || response.Data == null) {
+                return Redirect(Url.Action("Dashboard", "Application"));
+            }
+
+            return View(await _configFactory.PrepareConfigurationModelAsync(response.Data));
         }
 
         #region Helper Methods

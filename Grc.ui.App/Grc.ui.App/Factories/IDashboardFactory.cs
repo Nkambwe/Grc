@@ -34,7 +34,6 @@ namespace Grc.ui.App.Factories {
         #region Tasks
         Task<TaskDashboardModel> PrepareTasksDashboardModelAsync(UserModel data);
         Task<TaskMinDashboardModel> PrepareMinTaskDashboardStatisticModelAsync(UserModel currentUser, string status);
-
         #endregion
     }
 }

@@ -23,7 +23,8 @@ namespace Grc.Middleware.Api.Controllers {
         private readonly IBranchService _branchService;
         private readonly IDepartmentsService _departmentsService;
         private readonly IDepartmentUnitService _departmentUnitService;
-
+        private readonly ISystemAccessService _accessService;
+        private readonly ISystemConfigurationService _configService;
         public SupportController(
             IActivityLogService activityLogService,
             IActivityTypeService activityTypeService,
@@ -37,6 +38,8 @@ namespace Grc.Middleware.Api.Controllers {
             IEnvironmentProvider environment,
             IErrorNotificationService errorService, 
             ISystemErrorService systemErrorService,
+            ISystemConfigurationService configService,
+            ISystemAccessService accessService,
             IBranchService branchService)
             : base(cypher, loggerFactory, mapper, companyService, environment, 
                   errorService, systemErrorService) {
@@ -46,6 +49,8 @@ namespace Grc.Middleware.Api.Controllers {
             _departmentsService = departmentsService;
             _departmentUnitService = departmentUnitService;
             _branchService = branchService;
+            _configService = configService;
+            _accessService = accessService;
         }
 
         #region Activity logging
@@ -561,8 +566,210 @@ namespace Grc.Middleware.Api.Controllers {
 
         #endregion
 
+        #region Configurations
+
+        [HttpPost("organization/settings-all")]
+        public async Task<IActionResult> GetConfiguration([FromBody] GeneralRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ConfigurationResponse>(error));
+                }
+
+                Logger.LogActivity($"REQUEST >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var response = await _configService.GetAllConfigurationAsync();
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                return Ok(new GrcResponse<ConfigurationResponse>(response));
+            } catch (Exception ex) {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var conpany = await CompanyService.GetDefaultCompanyAsync();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new() {
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "SUPPORT-MIDDLEWARE-COTROLLER",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                var result = await SystemErrorService.SaveErrorAsync(errorObj);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Error captured and saved successfully";
+                    Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to capture error to database. An error occurrred";
+                    Logger.LogActivity($"SUPPORT-MIDDLEWARE-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                var error = new ResponseError(ResponseCodes.BADREQUEST,"Oops! Something went wrong", $"System Error - {ex.Message}");
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<ConfigurationResponse>(error));
+            }
+        }
+
+        [HttpPost("organization/include-deleted")]
+        public async Task<IActionResult> GetIncludeDeletedRecord([FromBody] ConfigurationParamRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<BooleanConfigurationResponse>(error));
+                }
+
+                Logger.LogActivity($"REQUEST >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                if (await _configService.ExistsAsync(s=>s.ParameterName == request.ParamName)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND,
+                        "Configuration Parameter not found", $"No configuration found with parameter name '{request.ParamName}'");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<BooleanConfigurationResponse>(error));
+                }
+
+                var response = await _configService.GetConfigurationAsync<bool>(request.ParamName);
+                if(response == null){
+                    var error = new ResponseError(ResponseCodes.FAILED, "System Error", $"Could not retrieve configuration. An error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<BooleanConfigurationResponse>(error));
+                }
+
+                var result = new BooleanConfigurationResponse(){
+                    ParameterName = response.ParameterName,
+                    ParameterValue = response.Value
+                };
+                Logger.LogActivity($"SETTINGS-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(result)}");
+                return Ok(new GrcResponse<BooleanConfigurationResponse>(result));
+            } catch (Exception ex) {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var conpany = await CompanyService.GetDefaultCompanyAsync();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new() {
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "SUPPORT-MIDDLEWARE-COTROLLER",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                var result = await SystemErrorService.SaveErrorAsync(errorObj);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Error captured and saved successfully";
+                    Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to capture error to database. An error occurrred";
+                    Logger.LogActivity($"SUPPORT-MIDDLEWARE-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                var error = new ResponseError(ResponseCodes.BADREQUEST, "Oops! Something went wrong", $"System Error - {ex.Message}");
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<ConfigurationResponse>(error));
+            }
+        }
+
+        [HttpPost("organization/settings-update")]
+        public async Task<IActionResult> UpdateConfigurationParameter([FromBody] SystemConfigurationRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"REQUEST >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                if (await _configService.ExistsAsync(s => s.ParameterName == request.ParamName)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND,
+                        "Configuration Parameter not found", $"No configuration found with parameter name '{request.ParamName}'");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser == null) {
+                    var error = new ResponseError(ResponseCodes.RESTRICTED, "Authentication Error", "User ID could not be verified");
+                    Logger.LogActivity($"RESTRICTED: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                string username = currentUser != null ? currentUser.Username : "SYSTEM";    
+                var response = await _configService.UpdateConfigurationAsync(request, username);
+                if (!response) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "System Error", $"Could not retrieve configuration. An error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                var result = new GeneralResponse() {
+                    Status = true,
+                    StatusCode = 200,
+                    Message = "Configuration parameter updated successfully"
+                };
+                Logger.LogActivity($"SETTINGS-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(result)}");
+                return Ok(new GrcResponse<GeneralResponse>(result));
+            } catch (Exception ex) {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var conpany = await CompanyService.GetDefaultCompanyAsync();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new() {
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "SUPPORT-MIDDLEWARE-COTROLLER",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                var result = await SystemErrorService.SaveErrorAsync(errorObj);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Error captured and saved successfully";
+                    Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to capture error to database. An error occurrred";
+                    Logger.LogActivity($"SUPPORT-MIDDLEWARE-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                var error = new ResponseError(ResponseCodes.BADREQUEST, "Oops! Something went wrong", $"System Error - {ex.Message}");
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<ConfigurationResponse>(error));
+            }
+        }
+
+        #endregion
+
         #region Departments
-        
+
         [HttpPost("departments/getDepartments")]
         public async Task<IActionResult> GetDepartments([FromBody] GeneralRequest request) {
             try {

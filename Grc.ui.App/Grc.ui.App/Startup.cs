@@ -53,8 +53,9 @@ namespace Grc.ui.App {
             services.AddScoped<IGrcErrorFactory, GrcErrorFactory>();
             services.AddScoped<IOperationsDashboardFactory, OperationsDashboardFactory>(); 
             services.AddScoped<IPolicyRegisterFactory, PolicyRegisterFactory>(); 
-            services.AddScoped<IStatuteFactory, StatuteFactory>();
+            services.AddScoped<IStatuteFactory, StatuteFactory>(); 
             services.AddScoped<IControlFactory, ControlFactory>();
+            services.AddScoped<IConfigurationFactory, ConfigurationFactory>();
 
             //..register session manager
             services.AddScoped<SessionManager>();

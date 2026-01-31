@@ -52,6 +52,7 @@ namespace Grc.ui.App.Extensions.Mvc {
             services.AddScoped<IStatutorySectionService, StatutorySectionService>(); 
             services.AddScoped<IRegulatoryStatuteService, RegulatoryStatuteService>();
             services.AddScoped<IComplianceControlService, ComplianceControlService>();
+            services.AddScoped<ISystemConfiguration, SystemConfiguration>();
 
             //..sessionExtensions manager
             services.AddScoped<SessionManager>();

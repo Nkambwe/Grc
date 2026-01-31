@@ -651,6 +651,12 @@
             );
 
             routeBuilder.MapControllerRoute(
+                name: "app-compliance-dashboard",
+                pattern: "/grc/compliance/configurations",
+                defaults: new { controller = "Application", action = "ComplianceSettings" }
+            );
+
+            routeBuilder.MapControllerRoute(
                 name: "app-compliance-dashboard-policies-totals",
                 pattern: "/grc/compliance/policies-statistics/totals",
                 defaults: new { controller = "CompliancePolicy", action = "PoliciesTotals" }

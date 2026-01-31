@@ -1205,6 +1205,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "GetIncludeDeletedRecord",
+    "RelativePath": "grc/organization/include-deleted",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ConfigurationParamRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
     "Method": "SaveBranch",
     "RelativePath": "grc/organization/saveBranch",
     "HttpMethod": "POST",
@@ -1214,6 +1230,38 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.BranchRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "GetConfiguration",
+    "RelativePath": "grc/organization/settings-all",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "UpdateConfigurationParameter",
+    "RelativePath": "grc/organization/settings-update",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.SystemConfigurationRequest",
         "IsRequired": true
       }
     ],

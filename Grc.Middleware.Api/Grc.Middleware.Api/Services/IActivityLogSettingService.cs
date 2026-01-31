@@ -1,4 +1,5 @@
 ﻿using Grc.Middleware.Api.Data.Entities.Logging;
+using Grc.Middleware.Api.Http.Responses;
 
 namespace Grc.Middleware.Api.Services {
 
