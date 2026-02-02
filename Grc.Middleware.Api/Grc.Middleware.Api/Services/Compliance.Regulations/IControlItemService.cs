@@ -1,6 +1,8 @@
-﻿using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
+﻿using Grc.Middleware.Api.Data.Entities.Compliance.Audits;
+using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
+using Grc.Middleware.Api.Http.Responses;
 using System.Linq.Expressions;
 
 namespace Grc.Middleware.Api.Services.Compliance.Regulations {
@@ -16,6 +18,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         Task<ControlItem> GetAsync(Expression<Func<ControlItem, bool>> predicate, bool includeDeleted = false, params Expression<Func<ControlItem, object>>[] includes);
         Task<IList<ControlItem>> GetAllAsync(Expression<Func<ControlItem, bool>> predicate, bool includeDeleted);
         Task<IList<ControlItem>> GetAllAsync(Expression<Func<ControlItem, bool>> predicate, bool includeDeleted = false, params Expression<Func<ControlItem, object>>[] includes);
+        Task<PagedResult<ComplianceMapResponse>> GetComplianceControlsAsync<ComplianceMapResponse>(int page, int size, bool includeDeleted, Expression<Func<ControlCategory, ComplianceMapResponse>> selector);
         bool Insert(ControlItemRequest request);
         Task<bool> InsertAsync(ControlItemRequest request);
         bool Update(ControlItemRequest request, bool includeDeleted = false);
@@ -25,5 +28,6 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         Task<PagedResult<ControlItemResponse>> PageLookupAsync<ControlItemResponse>(int page, int size, bool includeDeleted, Expression<Func<ControlItem, ControlItemResponse>> selector);
         Task<PagedResult<ControlItem>> PageAllAsync(int page, int size, bool includeDeleted, params Expression<Func<ControlItem, object>>[] includes);
         Task<PagedResult<ControlItem>> PageAllAsync(int page, int size, bool includeDeleted, Expression<Func<ControlItem, bool>> predicate = null);
+        
     }
 }

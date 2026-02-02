@@ -888,6 +888,7 @@ namespace Grc.ui.App.Services {
                     Status = model.Status ?? "UNKNOWN",
                     RecievedOn = model.RecievedOn,
                     DeadlineOn = model.DeadlineOn,
+                    SubmissionDate = model.SubmissionDate,
                     BreachRisk = model.BreachRisk ?? string.Empty,
                     SendReminder = model.SendReminder,
                     Interval = model.Interval ?? string.Empty,

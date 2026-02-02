@@ -70,7 +70,7 @@
 
                                         <div class="col-12">
 
-                                            <div class="row mb-3">
+                                            <div class="row mb-1">
                                                 <label for="reference" class="col-12 form-label">
                                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circular.Label.Reference"))
                                                 </label>
@@ -79,7 +79,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row mb-3">
+                                            <div class="row mb-1">
                                                 <label for="circularTitle" class="col-12 form-label">
                                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circular.Label.Title"))
                                                 </label>
@@ -88,7 +88,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row mb-3">
+                                            <div class="row mb-1">
                                                 <label for="circularRequirement" class="col-12 form-label">
                                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circular.Label.Requirement"))
                                                 </label>
@@ -97,10 +97,10 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row mb-3">
+                                            <div class="row mb-1">
 
                                                 <div class="col-6">
-                                                    <div class="row mb-3">
+                                                    <div class="row mb-1">
                                                         <label for="recievedOn" class="col-sm-12 col-form-label">
                                                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circular.Label.ReceiveDate"))
                                                         </label>
@@ -111,7 +111,7 @@
                                                 </div>
 
                                                 <div class="col-6">
-                                                    <div class="row mb-3">
+                                                    <div class="row mb-1">
                                                         <label for="deadline" class="col-sm-12 col-form-label">
                                                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circular.Label.Deadline"))
                                                         </label>
@@ -121,9 +121,26 @@
                                                     </div>
                                                 </div>
 
+                                                <div class="col-6">
+                                                    <div class="row mb-1">
+                                                        <label for="submissionDate" class="col-sm-12 col-form-label">Submission Date</label>
+                                                        <div class="col-sm-12">
+                                                            <input type="text" id="submissionDate" name="deadline" class="form-control datepicker" placeholder="MM/DD/YYYY" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="row mb-1">
+                                                        <label for="submissionDay" class="col-sm-12 col-form-label m-1">Day of submission</label>
+                                                        <div class="col-sm-12">
+                                                            <input type="number" id="submissionDay" name="submissionDay" class="form-control" min="1" max="31" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
 
-                                            <div class="row mb-3">
+                                            <div class="row mb-1">
                                                 <div class="col-3">
                                                     <div class="form-check form-switch mt-4">
                                                         <input class="form-check-input" type="checkbox" id="isDeleted">
@@ -133,11 +150,11 @@
                                                 <div class="col-9"></div>
                                             </div>
 
-                                            <div class="row mb-3">
+                                            <div class="row mb-1">
 
                                                 <div class="col-6">
-                                                    <div class="row mb-3">
-                                                        <label for="ownerId" class="col-sm-12 col-form-label m-3">
+                                                    <div class="row mb-1">
+                                                        <label for="ownerId" class="col-sm-12 col-form-label m-1">
                                                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circular.Label.Owner"))
                                                         </label>
                                                         <div class="col-sm-12">
@@ -154,8 +171,8 @@
                                                 </div>
 
                                                 <div class="col-6">
-                                                    <div class="row mb-3">
-                                                        <label for="frequencyId" class="col-sm-12 col-form-label m-3">
+                                                    <div class="row mb-1">
+                                                        <label for="frequencyId" class="col-sm-12 col-form-label m-1">
                                                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circular.Label.Frequency"))
                                                         </label>
                                                         <div class="col-sm-12">
@@ -173,10 +190,10 @@
 
                                             </div>
 
-                                            <div class="row mb-3">
+                                            <div class="row mb-1">
                                                 <div class="col-6">
-                                                    <div class="row mb-3">
-                                                        <label for="authorityId" class="col-sm-12 col-form-label m-3">
+                                                    <div class="row mb-1">
+                                                        <label for="authorityId" class="col-sm-12 col-form-label m-1">
                                                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circular.Label.Authority"))
                                                         </label>
                                                         <div class="col-sm-12">
@@ -194,6 +211,55 @@
                                                
                                                 <div class="col-6"></div>
 
+                                            </div>
+
+                                            <div class="row mb-1">
+
+                                                <div class="col-4">
+                                                    <div class="form-check form-switch mt-4">
+                                                        <input class="form-check-input" type="checkbox" id="sendReminder">
+                                                        <label class="form-check-label" for="sendReminder">Send Notification mail</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-8"></div>
+
+                                                <div class="col-6">
+                                                    <div class="row mb-1">
+                                                        <label for="interval" class="col-sm-12 col-form-label m-1">Number of times to send mail</label>
+                                                        <div class="col-sm-12">
+                                                            <select class="js-interval form-control" id="interval" name="interval">
+                                                                <option value="NA">Select interval...</option>
+                                                                <option value="ONCE">One</option>
+                                                                <option value="TWICE">Two</option>
+                                                                <option value="THREE">Three</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-6">
+                                                    <div class="row mb-1">
+                                                        <label for="intervalType" class="col-sm-12 col-form-label m-1">Interval Type</label>
+                                                        <div class="col-sm-12">
+                                                            <select class="js-interval-type form-control" id="intervalType" name="intervalType">
+                                                                <option value="NA">Select reminder interval...</option>
+                                                                <option value="HOURS">Hour(s)</option>
+                                                                <option value="DAYS">Day(s)</option>
+                                                                <option value="WEEKS">Week(s)</option>
+                                                                <option value="MONTHS">Month(s)</option>
+                                                                <option value="YEARS">Year(s)</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <label for="reminder" class="col-12 form-label">Customized mail notification</label>
+                                                <div class="col-12">
+                                                    <textarea class="form-control" id="reminder" rows="4"></textarea>
+                                                </div>
                                             </div>
 
                                             <div class="row mb-3">
@@ -322,7 +388,7 @@
                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circular.Label.Status"))
                                 </label>
                                 <div class="col-sm-12">
-                                    <select class="js-owner form-control" id="issueStatus" name="issueStatus">
+                                    <select class="js-issues form-control" id="issueStatus" name="issueStatus">
                                         <option value="UNKNOWN">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Circular.Label.Select.Status"))</option>
                                         <option value="NA">Not Applicable</option>
                                         <option value="OPEN">Pending Closure</option>

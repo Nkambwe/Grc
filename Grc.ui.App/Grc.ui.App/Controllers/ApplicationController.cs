@@ -1,9 +1,11 @@
-﻿using Grc.ui.App.Defaults;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using Grc.ui.App.Defaults;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions.Http;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Filters;
 using Grc.ui.App.Helpers;
+using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
@@ -24,7 +26,7 @@ namespace Grc.ui.App.Controllers {
         private readonly ILoginFactory _loginFactory;
         private readonly IDashboardFactory _dashboardFactory;
         private readonly IConfigurationFactory _configFactory;
-
+        private readonly ISystemConfiguration _configService;
         public ApplicationController(IWebHelper webHelper,
                                      IApplicationLoggerFactory loggerFactory, 
                                      IEnvironmentProvider environment,
@@ -37,6 +39,7 @@ namespace Grc.ui.App.Controllers {
                                      IDashboardFactory dashboardFactory,
                                      IConfigurationFactory configFactory,
                                      IErrorService errorService,
+                                     ISystemConfiguration configService,
                                      IGrcErrorFactory grcErrorFactory,
                                      SessionManager sessionManager) :
             base(loggerFactory, environment, webHelper, localizationService, 
@@ -49,6 +52,7 @@ namespace Grc.ui.App.Controllers {
             _loginFactory = loginFactory;
             _dashboardFactory = dashboardFactory;
             _configFactory = configFactory;
+            _configService = configService;
         }
 
         [LogActivityResult("User Login", "User logged in to the system", ActivityTypeDefaults.USER_LOGIN, "SystemUser")]
@@ -314,6 +318,93 @@ namespace Grc.ui.App.Controllers {
             }
 
             return View(await _configFactory.PrepareConfigurationModelAsync(response.Data));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveGeneralConfigurations([FromBody] GeneralConfigurationModel model) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (model == null) {
+                    return BadRequest(new { success = false, message = "Invalid request data", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                GrcGeneralConfigurationsRequest request = new() {
+                    SoftDeleteRecords = model.SoftDeleteRecords,
+                    IncludeDeletedRecord = model.IncludeDeletedRecord,
+                    UserId = currentUser.UserId,
+                    IPAddress = ipAddress,
+                    Action = "Update General Configurations"
+                };
+
+                var result = await _configService.SaveGeneralConfigurationsAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to save settings" });
+
+
+                var response = result.Data;
+                if (!response.Status) {
+                    return Ok(new { success = false, message = response.Message });
+                }
+
+                //..success
+                return Ok(new { success = true, message = "Settings saved successfully", data = new { } });
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error save configurations: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "APPLICATION-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Unable to save configurations.Something went wrong" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SavePolicyConfigurations([FromBody] PolicyConfigurationsModel model) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (model == null) {
+                    return BadRequest(new { success = false, message = "Invalid request data", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                GrcPolicyConfigurationsRequest request = new() {
+                    SendPolicyNotifications = model.SendPolicyNotifications,
+                    MaximumNumberOfNotifications = model.MaximumNumberOfNotifications,
+                    UserId = currentUser.UserId,
+                    IPAddress = ipAddress,
+                    Action = "Update Policy Configurations"
+                };
+
+                var result = await _configService.SavePolicyConfigurationsAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to save settings" });
+
+                var response = result.Data;
+                if(!response.Status) {
+                    return Ok(new { success = false, message = response.Message });
+                }
+
+                //..success
+                return Ok(new { success = true, message = "Settings saved successfully", data = new { } });
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error save configurations: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "APPLICATION-CONTROLLER", ex.StackTrace);
+                return Ok(new { success = false, message = "Unable to save configurations.Something went wrong" });
+            }
         }
 
         #region Helper Methods

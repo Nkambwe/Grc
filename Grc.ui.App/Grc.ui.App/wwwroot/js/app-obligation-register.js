@@ -126,7 +126,7 @@ function initObligationable() {
                 },
                 cellClick: function (e, cell) {
                     const rowData = cell.getRow().getData();
-                    console.log(rowData)
+                    console.log(`Record Retrieved >>`, rowData)
                     if (rowData.rowType === "section" && rowData.sectionId) {
                         viewRequirement(rowData.sectionId);
                     }
@@ -352,6 +352,8 @@ function viewRequirement(id) {
     findObligation(id)
         .then(record => {
             Swal.close();
+
+            console.log(`Obligation Openned >> `, record);
             if (record) {
                 openObligationPanel('REQUIREMENT DETAILS', record);
             } else {
@@ -386,7 +388,6 @@ function findObligation(id) {
 }
 
 function openObligationPanel(title, record) {
-
     let coverageValue = record.coverage ?? 0;
     let assuranceValue = record.assurance ?? 0;
 
@@ -414,6 +415,7 @@ function openObligationPanel(title, record) {
     $('.obligation-panel-overlay').addClass('active');
     $('#obligationPanel').addClass('active');
 
+    setTimeout(restoreActiveTab, 150);
     restoreActiveTab();
 }
 

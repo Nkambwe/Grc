@@ -4,6 +4,7 @@ using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
+using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
 using System.Linq.Expressions;
 using System.Text.Json;
@@ -165,6 +166,19 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 return await uow.ControlItemRepository.GetAllAsync(includeDeleted, includes);
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve Control Items : {ex.Message}", "ERROR");
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<ComplianceMapResponse>> GetComplianceControlsAsync<ComplianceMapResponse>(int page, int size, bool includeDeleted, Expression<Func<ControlCategory, ComplianceMapResponse>> selector) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Get all Compliance maps", "INFO");
+
+            try {
+                return await uow.ControlCategoryRepository.PageLookupAsync(page, size, includeDeleted, selector);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve Compliance maps : {ex.Message}", "ERROR");
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }

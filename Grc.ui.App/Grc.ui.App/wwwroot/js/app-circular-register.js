@@ -361,11 +361,17 @@ function addCircular() {
         circularRequirement: '',
         recievedOn: '',
         deadline: '',
+        requiredSubmissionDate:'',
         isDeleted: false,
         ownerId: 0,
         frequencyId: 0,
         authorityId: 0,
         breachRisk: '',
+        sendReminder:false,
+        interval: 'NA',
+        intervalType:'NA',
+        reminder: '',
+        requiredSubmissionDay:0,
         comments: '',
         issues:[]
     }, false);
@@ -384,13 +390,20 @@ function openCircular2Panel(title, record, isEdit) {
     $('#authorityId').val(record.authorityId || '0').trigger('change');
     $('#breachRisk').val(record.breachRisk || '');
     $('#comments').val(record.comments || '');
+    $('#sendReminder').prop('checked', record.sendReminder);
+    $('#reminder').val(record.reminder || '');
+    $('#submissionDay').val(record.requiredSubmissionDay || 0);
+    $('#interval').val(record.interval || 'NA').trigger('change');
+    $('#intervalType').val(record.intervalType || 'NA').trigger('change');
 
     const receivedOn = normalizeDate(record.recievedOn);
     const deadline = normalizeDate(record.deadline);
+    const submissionDate = normalizeDate(record.requiredSubmissionDate);
 
-    // Clear first (important when re-opening dialog)
+    //..clear first
     flatpickrInstances["recievedOn"]?.clear();
     flatpickrInstances["deadline"]?.clear();
+    flatpickrInstances["submissionDate"]?.clear();
 
     if (receivedOn && flatpickrInstances["recievedOn"]) {
         flatpickrInstances["recievedOn"].setDate(receivedOn, true);
@@ -400,6 +413,12 @@ function openCircular2Panel(title, record, isEdit) {
         flatpickrInstances["deadline"].setDate(deadline, true);
     } else {
         record.deadline = "";
+    }
+
+    if (submissionDate && flatpickrInstances["submissionDate"]) {
+        flatpickrInstances["submissionDate"].setDate(submissionDate, true);
+    } else {
+        record.requiredSubmissionDate = "";
     }
 
     //..add issues
@@ -467,6 +486,7 @@ function saveCircular(e) {
     let frequencyId = Number($('#frequencyId').val()) || 0;
     let authorityId = Number($('#authorityId').val()) || 0;
     let isEdit = $('#isCircularEdit').val() || false;
+    let submissionDay = Number($('#submissionDay').val()) || 0;
 
     //..build record payload from form
     let recordData = {
@@ -477,10 +497,17 @@ function saveCircular(e) {
         recievedOn: $('#recievedOn').val()?.trim(),
         deadline: $('#deadline').val()?.trim(),
         ownerId: ownerId,
+        status:'OPEN',
         frequencyId: frequencyId,
         authorityId: authorityId,
         breachRisk: $('#breachRisk').val()?.trim(),
         isDeleted: $('#isDeleted').is(':checked') ? true : false,
+        requiredSubmissionDate: $('#submissionDate').val()?.trim(),
+        sendReminder: $('#sendReminder').is(':checked') ? true : false,
+        reminder: $('#reminder' || '').val()?.trim(),
+        interval: $('#interval').val()?.trim(),
+        intervalType: $('#intervalType').val()?.trim(),
+        requiredSubmissionDay: submissionDay,
         comments: $('#comments').val()?.trim()
     };
 
@@ -904,6 +931,14 @@ function initDates() {
         defaultDate: null
     });
 
+    flatpickrInstances["submissionDate"] = flatpickr("#submissionDate", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y",
+        defaultDate: null
+    });
+
 }
 
 function highlightInnerField(selector, hasError, message) {
@@ -926,9 +961,14 @@ $(document).ready(function () {
     initCircularTable();
     initDates();
 
-    $('#frequencyId ,#ownerId, #authorityId, #issueStatus').select2({
+    $('#frequencyId ,#ownerId, #authorityId, #interval, #intervalType').select2({
         width: '100%',
         dropdownParent: $('#circularPanel')
+    });
+
+    $('#issueStatus').select2({
+        width: '100%',
+        dropdownParent: $('#issuePanel')
     });
 
     $('#circularForm').on('submit', function (e) {

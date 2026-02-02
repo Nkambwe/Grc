@@ -177,7 +177,6 @@ let reportsTable = new Tabulator("#returnsTable", {
     ]
 });
 
-
 let submissionsTable = new Tabulator("#submissionsTable", {
     ajaxURL: "/grc/returns/compliance-returns/return-submissions",
     paginationMode: "remote",
@@ -593,7 +592,6 @@ function viewReturn(id) {
 
     find2Report(id)
         .then(record => {
-            console.log(`Then >> `, record);
             Swal.close();
             if (record) {
                 open2Panel('Edit Return', record, true);
@@ -639,7 +637,7 @@ function find2Report(id) {
 function open2Panel(title, record, isEdit) {
     $('#returnEdit').val(isEdit);
 
-    console.log(record);
+    console.log(record)
     //..initialize form fields
     $('#returnId').val(record.id);
     $('#statuteId').val(record.statuteId || 0).trigger('change');
@@ -650,13 +648,25 @@ function open2Panel(title, record, isEdit) {
     $('#departmentId').val(record.departmentId || 0).trigger('change');
     $('#returnRisk').val(record.riskAttached || '');
     $('#sendReminder').prop('checked', record.sendReminder);
-    $('#interval').val(record.interval || '0');
+    $('#interval').val(record.interval || 'NA').trigger('change');
     $('#intervalType').val(record.intervalType || 'NA').trigger('change');
-    $('#sendReminders').prop('checked', record.sendReminders).trigger('change');
+    $('#sendReminder').prop('checked', record.sendReminder).trigger('change');
     $('#reminderMessage').val(record.reminderMessage || '');
-    $('#reportDeleted').prop('checked', record.isDeleted).trigger('change');
+    $('#reportDeleted').prop('checked', record.isDeleted).trigger('change'); 
     $('#reportComments').val(record.comments || '');
+    $('#submissionDay').val(record.requiredSubmissionDay || '0');
 
+    if (!record.requiredSubmissionDate) {
+        flatpickrInstances["requiredSubmissionDate"]?.clear(); 
+        record.requiredSubmissionDate = null;
+    } else {
+        const submissionDate = normalize3Date(record.requiredSubmissionDate);
+
+        if (submissionDate instanceof Date && !isNaN(submissionDate)) {
+            flatpickrInstances["requiredSubmissionDate"]?.setDate(submissionDate, true);
+        
+        }
+    }
     //..load dialog window
     closeReportPane();
     
@@ -664,6 +674,13 @@ function open2Panel(title, record, isEdit) {
     $('#returnReportPanel').addClass('active');
     $('#returnInnerOverlay').addClass('active');
     $('body').css('overflow', 'hidden');
+}
+
+function normalize3Date(value) {
+    if (!value) return null;
+
+    const d = new Date(value);
+    return isNaN(d) ? null : d;
 }
 
 function closeReportPane() {
@@ -682,10 +699,12 @@ $('#btnAddReturn').on('click', function () {
         status: 'UNKNOWN',
         riskAttached: '',
         sendReminder: true,
-        interval: 1,
+        interval: 'NA',
         intervalType: 'NA',
         reminderMessage:'',
         isDeleted: false,
+        requiredSubmissionDay: 0,
+        requiredSubmissionDate:'',
         comments:''
     }, false);
 });
@@ -704,17 +723,25 @@ function saveAuditReport(e) {
         frequencyId: Number($('#frequencyId').val()) || 0,
         authorityId: Number($('#authorityId').val()) || 0,
         riskAttached: $('#returnRisk').val(),
-        sendReminder: $('#reportDeleted').is(':checked') ? true : false,
-        interval: $('#interval').val() || 1,
+        sendReminder: $('#sendReminder').prop('checked'),
+        interval: $('#interval').val() || 'NA',
         intervalType: $('#intervalType').val(),
+        requiredSubmissionDate: $('#requiredSubmissionDate').val(),
+        requiredSubmissionDay: Number($('#submissionDay').val()) || 0,
         reminder: $('#reminderMessage').val(),
-        isDeleted: $('#reportDeleted').is(':checked') ? true : false,
+        isDeleted: $('#reportDeleted').prop('checked'),
         comments: $('#reportComments').val()
         
     };
 
     //..validate required fields
     let errors = [];
+    if (!recordData.requiredSubmissionDate)
+        errors.push("Submission date is required");
+
+    if (recordData.requiredSubmissionDay === 0)
+        errors.push("Day of month for submission is required");
+
     if (recordData.sectionId === 0) {
         errors.push("Enforcing law field is required"); 
     }
@@ -736,14 +763,14 @@ function saveAuditReport(e) {
     if (!recordData.riskAttached)
         errors.push("Provide risk resulting from breach of submission");
 
-    if (recordData.sendReminders) {
-        if (!recordData.reminderMessage)
+    if (recordData.sendReminder) {
+        if (!recordData.reminder)
             errors.push("Reminder message field is required");
 
         if (!recordData.intervalType || recordData.intervalType === 'NA')
             errors.push("Interval type is required.");
 
-        if (!recordData.interval)
+        if (!recordData.interval || recordData.intervalType === 'NA')
             errors.push("Interval field is required.");
     }
 
@@ -756,10 +783,10 @@ function saveAuditReport(e) {
         highlightReturnSubmissionField("#returnRisk", !recordData.riskAttached);
         highlightReturnSubmissionField("#reportComments", !recordData.comments);
 
-        if (recordData.sendReminders) {
-            highlightAuditField("#reminderMessage", !recordData.reminderMessage);
-            highlightAuditField("#intervalType", !recordData.intervalType || recordData.intervalType === 'NA');
-            highlightAuditField("#interval", !recordData.interval);
+        if (recordData.sendReminder) {
+            highlightReturnSubmissionField("#reminderMessage", !recordData.reminder);
+            highlightReturnSubmissionField("#intervalType", !recordData.intervalType || recordData.intervalType === 'NA');
+            highlightReturnSubmissionField("#interval", !recordData.interval);
         }
 
         Swal.fire({
@@ -1036,6 +1063,14 @@ function initReturnSubmissionDate() {
         altFormat: "d M Y",
         defaultDate: null
     });
+
+    flatpickrInstances["requiredSubmissionDate"] = flatpickr("#requiredSubmissionDate", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y",
+        defaultDate: null
+    });
 }
 
 //..get antiforegery token from meta tag
@@ -1070,7 +1105,7 @@ $(document).ready(function () {
         dropdownParent: $('#returnInnerPanel')
     });
 
-    $('#intervalType, #departmentId, #authorityId, #statuteId, #returnTypeId').select2({
+    $('#intervalType, #interval, #departmentId, #authorityId, #statuteId, #returnTypeId').select2({
         width: '100%',
         dropdownParent: $('#returnReportPanel')
     });
@@ -1080,7 +1115,7 @@ $(document).ready(function () {
     });
 
     //..hide update message reminder
-    const $sendReminders = $('#sendReminders');
+    const $sendReminders = $('#sendReminder');
     const $notificationBox = $('#notificationBox');
 
     //..ensure initial state

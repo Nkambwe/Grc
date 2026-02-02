@@ -28,9 +28,8 @@
 .tab-content h2 {
     width: 100%;
     font-size: 1.3em;
-    background: var(--accent-cloud-light);
+    background: transparent;
     padding: 17px 16px;
-    border-bottom: 1px solid var(--accent-cloud-base);
     flex-shrink: 0; 
 }
 
@@ -59,12 +58,12 @@
     overflow-y: auto;
 }
 
-.tab-content {
+.tab-content.configuration-content {
     display: none;
 }
 
 
-    .tab-content.active {
+    .tab-content.configuration-content.active {
         display: flex;
         flex-direction: column;
         height: 100%;
@@ -154,8 +153,9 @@
     top: 0;
     z-index: 10;
     background: #fff;
-    border-bottom: 1px solid #e5e7eb;
-    padding: 10px 16px;
+    padding:10px;
+    background: var(--accent-cloud-light);
+    border-bottom: 1px solid var(--accent-cloud-base);
 }
 
 .settings-header-actions {

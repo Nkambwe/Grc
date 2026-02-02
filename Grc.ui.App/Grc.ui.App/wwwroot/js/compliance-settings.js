@@ -12,7 +12,7 @@ function getActiveTab() {
     return document.querySelector(".tab-content.active");
 }
 
-// DIRTY STATE
+//..dirty state
 document.querySelectorAll(".setting-input").forEach(input => {
     input.addEventListener("change", () => {
         const saveBar = getActiveTab().querySelector(".settings-header-actions");
@@ -20,7 +20,7 @@ document.querySelectorAll(".setting-input").forEach(input => {
     });
 });
 
-// SAVE BUTTON HANDLER
+//..save button handler
 document.addEventListener("click", function (e) {
     if (!e.target.classList.contains("save-settings-btn")) return;
 
@@ -30,30 +30,26 @@ document.addEventListener("click", function (e) {
     if (tabId === "policies") savePolicySettings();
 });
 
-// BUILD RECORDS
 function buildGeneralSettings() {
     return {
-        softDeleteRecord: document.getElementById("softDelete").checked,
-        includeDeletedRecords: document.getElementById("includeDeleted").checked
+        softDeleteRecords: $('#softDelete').is(':checked'), 
+        includeDeletedRecord: $('#includeDeleted').is(':checked'),
     };
 }
 
 function buildPolicySettings() {
     return {
-        sendNotifications: document.getElementById("policySendNotifications").checked,
-        maximumNotifications: parseInt(
-            document.getElementById("policyMaxNotifications").value || 0
-        )
+        sendPolicyNotifications: $('#policySendNotifications').is(':checked'), 
+        maximumNumberOfNotifications: Number($('#policyMaxNotifications').val()) || 0 
     };
 }
 
-// SAVE FUNCTIONS (AJAX-ready)
 function saveGeneralSettings() {
-    saveSettings("/grc/compliance/settings/save-general", buildGeneralSettings());
+    saveSettings("/grc/compliance/configurations/general-config", buildGeneralSettings());
 }
 
 function savePolicySettings() {
-    saveSettings("/grc/compliance/settings/save-policies", buildPolicySettings());
+    saveSettings("/grc/compliance/configurations/policy-config", buildPolicySettings());
 }
 
 function saveSettings(url, record) {
@@ -71,7 +67,7 @@ function saveSettings(url, record) {
         data: JSON.stringify(record),
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': getCircularAntiForgeryToken()
+            'X-CSRF-TOKEN': getConfigAntiForgeryToken()
         },
         success: function (res) {
             Swal.close();
@@ -92,4 +88,9 @@ function saveSettings(url, record) {
             Swal.fire("Save failed", "Unexpected error occurred");
         }
     });
+
+    function getConfigAntiForgeryToken() {
+        return $('meta[name="csrf-token"]').attr('content');
+    }
+
 }

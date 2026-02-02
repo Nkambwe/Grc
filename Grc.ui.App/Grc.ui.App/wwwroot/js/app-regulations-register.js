@@ -1,5 +1,6 @@
 ﻿let selectedCategory = null;
 let selectedLaw = null;
+//let flatpickr1Instances = {};
 
 function loadRegulatoryTree() {
 
@@ -729,7 +730,7 @@ function addAct(law) {
         isCovered:false,
         exclude: false,
         assurance:0,
-        isDeleted:false,
+        isDeleted: false,
         comments:''
     }, false);
 }
@@ -790,7 +791,7 @@ function findSection(id) {
 function openActPanel(title, record, isEdit) {
     let coverageValue = record.coverage ?? 0;
     let assuranceValue = record.assurance ?? 0;
-    
+
     //..initialize form fields
     $('#isActEdit').val(isEdit);
     $('#actId').val(record.id);
@@ -816,12 +817,21 @@ function openActPanel(title, record, isEdit) {
 
 }
 
+function normalize2Date(value) {
+    if (!value) return null;
+
+    const d = new Date(value);
+    return isNaN(d) ? null : d;
+}
+
 function saveAct(e) {
     e.preventDefault();
     let isEdit = $('#isActEdit').val();
     let lawId = Number($('#actLawId').val()) || 0;
     let coverage = Number($('#coverage').val()) || 0;
     let assurance = Number($('#assurance').val()) || 0;
+    //let submissionDay = Number($('#submissionDay').val()) || 0;
+
     //..build record payload from form
     let recordData = {
         id: Number($('#actId').val()) || 0,
@@ -842,6 +852,7 @@ function saveAct(e) {
 
     //..validate required fields
     let errors = [];
+   
     if (!recordData.section)
         errors.push("Act/Section section number is required.");
 
@@ -955,15 +966,27 @@ $(document).on('keydown', function (e) {
     }
 })
 
+function init2Dates() {
+
+    flatpickr1Instances["submissionDate"] = flatpickr("#submissionDate", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y",
+        defaultDate: null
+    });
+
+}
+
 $(document).ready(function () {
     loadRegulatoryTree();
-
+    init2Dates();
     $('#typeId, #authorityId, #actFrequencyId').select2({
         width: '100%',
         dropdownParent: $('#lawRegulationPanel')
     });
 
-    $('#actFrequencyId, #actResponsibleId').select2({
+    $('#actFrequencyId, #actResponsibleId, #interval, #intervalType').select2({
         width: '100%',
         dropdownParent: $('#actPanel')
     });

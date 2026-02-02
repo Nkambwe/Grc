@@ -584,38 +584,7 @@ namespace Grc.Middleware.Api.Controllers {
                 Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
                 return Ok(new GrcResponse<ConfigurationResponse>(response));
             } catch (Exception ex) {
-                Logger.LogActivity($"{ex.Message}", "ERROR");
-                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
-
-                var conpany = await CompanyService.GetDefaultCompanyAsync();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new() {
-                    ErrorMessage = ex.Message,
-                    ErrorSource = "SUPPORT-MIDDLEWARE-COTROLLER",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                var result = await SystemErrorService.SaveErrorAsync(errorObj);
-                var response = new GeneralResponse();
-                if (result) {
-                    response.Status = true;
-                    response.StatusCode = (int)ResponseCodes.SUCCESS;
-                    response.Message = "Error captured and saved successfully";
-                    Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
-                } else {
-                    response.Status = true;
-                    response.StatusCode = (int)ResponseCodes.FAILED;
-                    response.Message = "Failed to capture error to database. An error occurrred";
-                    Logger.LogActivity($"SUPPORT-MIDDLEWARE-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
-                }
-
-                var error = new ResponseError(ResponseCodes.BADREQUEST,"Oops! Something went wrong", $"System Error - {ex.Message}");
-                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
-                return Ok(new GrcResponse<ConfigurationResponse>(error));
+                return Ok(new GrcResponse<ConfigurationResponse>(await ResponseErrorAsync(ex)));
             }
         }
 
@@ -652,38 +621,7 @@ namespace Grc.Middleware.Api.Controllers {
                 Logger.LogActivity($"SETTINGS-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(result)}");
                 return Ok(new GrcResponse<BooleanConfigurationResponse>(result));
             } catch (Exception ex) {
-                Logger.LogActivity($"{ex.Message}", "ERROR");
-                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
-
-                var conpany = await CompanyService.GetDefaultCompanyAsync();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new() {
-                    ErrorMessage = ex.Message,
-                    ErrorSource = "SUPPORT-MIDDLEWARE-COTROLLER",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                var result = await SystemErrorService.SaveErrorAsync(errorObj);
-                var response = new GeneralResponse();
-                if (result) {
-                    response.Status = true;
-                    response.StatusCode = (int)ResponseCodes.SUCCESS;
-                    response.Message = "Error captured and saved successfully";
-                    Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
-                } else {
-                    response.Status = true;
-                    response.StatusCode = (int)ResponseCodes.FAILED;
-                    response.Message = "Failed to capture error to database. An error occurrred";
-                    Logger.LogActivity($"SUPPORT-MIDDLEWARE-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
-                }
-
-                var error = new ResponseError(ResponseCodes.BADREQUEST, "Oops! Something went wrong", $"System Error - {ex.Message}");
-                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
-                return Ok(new GrcResponse<ConfigurationResponse>(error));
+                return Ok(new GrcResponse<BooleanConfigurationResponse>(await ResponseErrorAsync(ex)));
             }
         }
 
@@ -705,7 +643,6 @@ namespace Grc.Middleware.Api.Controllers {
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
-
 
                 //..get username
                 var currentUser = await _accessService.GetByIdAsync(request.UserId);
@@ -731,38 +668,84 @@ namespace Grc.Middleware.Api.Controllers {
                 Logger.LogActivity($"SETTINGS-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(result)}");
                 return Ok(new GrcResponse<GeneralResponse>(result));
             } catch (Exception ex) {
-                Logger.LogActivity($"{ex.Message}", "ERROR");
-                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+                return Ok(new GrcResponse<GeneralResponse>(await ResponseErrorAsync(ex)));
+            }
+        }
 
-                var conpany = await CompanyService.GetDefaultCompanyAsync();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new() {
-                    ErrorMessage = ex.Message,
-                    ErrorSource = "SUPPORT-MIDDLEWARE-COTROLLER",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
+        [HttpPost("organization/general-configurations")]
+        public async Task<IActionResult> SaveGeneralConfigurations([FromBody] GeneralConfigurationsRequest request) {
+            try {
 
-                //..save error object to the database
-                var result = await SystemErrorService.SaveErrorAsync(errorObj);
-                var response = new GeneralResponse();
-                if (result) {
-                    response.Status = true;
-                    response.StatusCode = (int)ResponseCodes.SUCCESS;
-                    response.Message = "Error captured and saved successfully";
-                    Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
-                } else {
-                    response.Status = true;
-                    response.StatusCode = (int)ResponseCodes.FAILED;
-                    response.Message = "Failed to capture error to database. An error occurrred";
-                    Logger.LogActivity($"SUPPORT-MIDDLEWARE-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<BooleanConfigurationResponse>(error));
                 }
 
-                var error = new ResponseError(ResponseCodes.BADREQUEST, "Oops! Something went wrong", $"System Error - {ex.Message}");
-                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
-                return Ok(new GrcResponse<ConfigurationResponse>(error));
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser == null) {
+                    var error = new ResponseError(ResponseCodes.RESTRICTED, "Authentication Error", "User ID could not be verified");
+                    Logger.LogActivity($"RESTRICTED: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                string username = currentUser != null ? currentUser.Username : "SYSTEM";
+                var successful = await _configService.SaveGeneralConfigurationsAsync(request, username);
+                if (!successful) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "System Error! Could not save configuration. An error occurred", $"Could not save configuration. An error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                var result = new GeneralResponse() {
+                    Status = true,
+                    Message = "Settings Saved successfully",
+                    StatusCode = 200
+                };
+                Logger.LogActivity($"SETTINGS-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(result)}");
+                return Ok(new GrcResponse<GeneralResponse>(result));
+            } catch (Exception ex) {
+                return Ok(new GrcResponse<GeneralResponse>(await ResponseErrorAsync(ex)));
+            }
+        }
+
+        [HttpPost("organization/policy-configurations")]
+        public async Task<IActionResult> SavePolicyConfigurations([FromBody] PolicyConfigurationsRequest request) {
+            try {
+
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<BooleanConfigurationResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser == null) {
+                    var error = new ResponseError(ResponseCodes.RESTRICTED, "Authentication Error", "User ID could not be verified");
+                    Logger.LogActivity($"RESTRICTED: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                string username = currentUser != null ? currentUser.Username : "SYSTEM";
+                var successful = await _configService.SavePolicyConfigurationsAsync(request, username);
+                if (!successful) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "System Error! Could not save configuration. An error occurred", $"Could not save configuration. An error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+                var result = new GeneralResponse() {
+                    Status = true,
+                    Message = "Settings Saved successfully",
+                    StatusCode = 200
+                };
+                Logger.LogActivity($"SETTINGS-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(result)}");
+                return Ok(new GrcResponse<GeneralResponse>(result));
+            } catch (Exception ex) {
+                return Ok(new GrcResponse<GeneralResponse>(await ResponseErrorAsync(ex)));
             }
         }
 
@@ -997,9 +980,9 @@ namespace Grc.Middleware.Api.Controllers {
                         ResponseCodes.NOTUPDATE,
                         "Failed to update department",
                         "An unexpected error occurred while trying to update department");
-                     return Ok(new GrcResponse<StatusResponse>(error));
+                        return Ok(new GrcResponse<StatusResponse>(error));
                 } 
-               return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse(){Status = status}));
+                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse(){Status = status}));
             } catch (Exception ex) {
                 Logger.LogActivity($"Error updating department for user {request.UserId}: {ex.Message}", "ERROR");
                 Logger.LogActivity($"{ex.StackTrace}", "ERROR");
@@ -1057,9 +1040,9 @@ namespace Grc.Middleware.Api.Controllers {
                         ResponseCodes.FAILED,
                         "Failed to delete department",
                         "An error occurred! could delete department");
-                     return Ok(new GrcResponse<GeneralResponse>(error));
+                        return Ok(new GrcResponse<GeneralResponse>(error));
                 } 
-               return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse(){Status = status}));
+                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse(){Status = status}));
             } catch (Exception ex) {
                 Logger.LogActivity($"Error deleting department by user {request.UserId}: {ex.Message}", "ERROR");
                 Logger.LogActivity($"{ex.StackTrace}", "ERROR");
@@ -1432,9 +1415,9 @@ namespace Grc.Middleware.Api.Controllers {
                         ResponseCodes.NOTUPDATE,
                         "Failed to update department unit",
                         "An unexpected error occurred while trying to update department unit");
-                     return Ok(new GrcResponse<GeneralResponse>(error));
+                        return Ok(new GrcResponse<GeneralResponse>(error));
                 } 
-               return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse(){Status = status}));
+                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse(){Status = status}));
             } catch (Exception ex) {
                 Logger.LogActivity($"Error updating department unit for user {request.UserId}: {ex.Message}", "ERROR");
                 Logger.LogActivity($"{ex.StackTrace}", "ERROR");
@@ -1492,9 +1475,9 @@ namespace Grc.Middleware.Api.Controllers {
                         ResponseCodes.FAILED,
                         "Failed to delete department unit",
                         "An error occurred! could delete unit");
-                     return Ok(new GrcResponse<GeneralResponse>(error));
+                        return Ok(new GrcResponse<GeneralResponse>(error));
                 } 
-               return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse(){Status = status}));
+                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse(){Status = status}));
             } catch (Exception ex) {
                 Logger.LogActivity($"Error deleting unit by user {request.UserId}: {ex.Message}", "ERROR");
                 Logger.LogActivity($"{ex.StackTrace}", "ERROR");
@@ -1529,6 +1512,45 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
+        #endregion
+
+        #region Private Members
+
+        protected async Task<ResponseError> ResponseErrorAsync (Exception ex) {
+            Logger.LogActivity($"{ex.Message}", "ERROR");
+            Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+            var conpany = await CompanyService.GetDefaultCompanyAsync();
+            long companyId = conpany != null ? conpany.Id : 1;
+            SystemError errorObj = new() {
+                ErrorMessage = ex.Message,
+                ErrorSource = "SUPPORT-MIDDLEWARE-COTROLLER",
+                StackTrace = ex.StackTrace,
+                Severity = "CRITICAL",
+                ReportedOn = DateTime.Now,
+                CompanyId = companyId
+            };
+
+            //..save error object to the database
+            var result = await SystemErrorService.SaveErrorAsync(errorObj);
+            var response = new GeneralResponse();
+            if (result) {
+                response.Status = true;
+                response.StatusCode = (int)ResponseCodes.SUCCESS;
+                response.Message = "Error captured and saved successfully";
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+            } else {
+                response.Status = true;
+                response.StatusCode = (int)ResponseCodes.FAILED;
+                response.Message = "Failed to capture error to database. An error occurrred";
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
+            }
+
+            var error = new ResponseError(ResponseCodes.BADREQUEST, "Oops! Something went wrong", $"System Error - {ex.Message}");
+            Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+
+            return error;
+        }
         #endregion
 
     }

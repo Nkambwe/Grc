@@ -73,8 +73,12 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(r => r.Coverage, reg => reg.MapFrom(o => o.Coverage))
                 .ForMember(r => r.IsCovered, reg => reg.MapFrom(o => o.IsCovered))
                 .ForMember(r => r.FrequencyId, reg => reg.MapFrom(o => o.FrequencyId))
-                .ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.OwnerId))
-                .ForMember(r => r.ComplianceAssurance, reg => reg.MapFrom(o => o.ComplianceAssurance))
+                .ForMember(r => r.OwnerId, opt => opt.MapFrom(src => src.OwnerId))
+                //.ForMember(r => r.Interval, reg => reg.MapFrom(o => o.Interval))
+                //.ForMember(r => r.IntervalType, reg => reg.MapFrom(o => o.IntervalType))
+                //.ForMember(r => r.Reminder, reg => reg.MapFrom(o => o.Reminder))
+                //.ForMember(r => r.RequiredSubmissionDate, reg => reg.MapFrom(o => o.RequiredSubmissionDate))
+                //.ForMember(r => r.RequiredSubmissionDay, reg => reg.MapFrom(o => o.RequiredSubmissionDay))
                 .ForMember(r => r.Comments, reg => reg.MapFrom(o => (o.Comments ?? string.Empty).Trim()))
                 .ForMember(r => r.IsDeleted, reg => reg.MapFrom(o => o.IsDeleted));
 
@@ -91,6 +95,11 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(dest => dest.IsCovered, opt => opt.MapFrom(src => src.IsCovered))
                 .ForMember(dest => dest.FrequencyId, opt => opt.MapFrom(src => src.FrequencyId))
                 .ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.OwnerId))
+                //.ForMember(dest => dest.Interval, reg => reg.MapFrom(o => o.Interval))
+                //.ForMember(dest => dest.IntervalType, reg => reg.MapFrom(o => o.IntervalType))
+                //.ForMember(dest => dest.Reminder, reg => reg.MapFrom(o => o.Reminder))
+                //.ForMember(dest => dest.RequiredSubmissionDate, reg => reg.MapFrom(o => o.RequiredSubmissionDate))
+                //.ForMember(dest => dest.RequiredSubmissionDay, reg => reg.MapFrom(o => o.RequiredSubmissionDay))
                 .ForMember(dest => dest.ComplianceAssurance, opt => opt.MapFrom(src => src.ComplianceAssurance))
                 .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments));
 

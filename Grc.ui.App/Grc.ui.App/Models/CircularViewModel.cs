@@ -51,6 +51,9 @@ namespace Grc.ui.App.Models
         [JsonPropertyName("deadline")]
         public DateTime DeadlineOn { get; set; }
 
+        [JsonPropertyName("submissionDate")]
+        public DateTime? SubmissionDate { get; set; }
+
         [JsonPropertyName("breachRisk")]
         public string BreachRisk { get; set; }
 

@@ -21,7 +21,7 @@
     <!-- Right Content -->
     <div class="settings-content">
 
-        <div class="tab-content active" id="general">
+        <div class="tab-content configuration-content active" id="general">
 
             <div class="tab-header">
                 <h2>General Settings</h2>
@@ -37,7 +37,7 @@
             <div class="tab-content-area">
                 <div class="row g-4">
 
-                    <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="col-lg-4 col-md-6 col-sm-12 m-2">
                         <div class="settings-card">
                             <div class="settings-info">
                                 <h6>Soft Delete Records</h6>
@@ -47,13 +47,14 @@
                                 <div class="form-check form-switch">
                                     <input class="form-check-input setting-input"
                                            type="checkbox"
-                                           id="softDelete" />
+                                           id="softDelete"
+                                           asp-for="@generalConfi.SoftDeleteRecord" />
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="col-lg-4 col-md-6 col-sm-12 m-2">
                         <div class="settings-card">
                             <div class="settings-info">
                                 <h6>Include Deleted Records</h6>
@@ -63,7 +64,8 @@
                                 <div class="form-check form-switch">
                                     <input class="form-check-input setting-input"
                                            type="checkbox"
-                                           id="includeDeleted" />
+                                           id="includeDeleted"
+                                           asp-for="@generalConfi.IncludeDeletedRecords" />
                                 </div>
                             </div>
                         </div>
@@ -73,7 +75,7 @@
             </div>
         </div>
 
-        <div class="tab-content" id="policies">
+        <div class="tab-content configuration-content" id="policies">
 
             <div class="tab-header">
                 <h2>Policies & Procedures</h2>
@@ -89,7 +91,7 @@
             <div class="tab-content-area">
                 <div class="row g-4">
 
-                    <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="col-lg-4 col-md-6 col-sm-12 m-2">
                         <div class="settings-card">
                             <div class="settings-info">
                                 <h6>Send Notifications</h6>
@@ -97,26 +99,20 @@
                             </div>
                             <div class="settings-control">
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input setting-input"
-                                           type="checkbox"
-                                           id="policySendNotifications" />
+                                    <input asp-for="@policyConfi.SendNotifications" class="form-check-input setting-input" type="checkbox" id="policySendNotifications" />
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="col-lg-4 col-md-6 col-sm-12 m-2">
                         <div class="settings-card">
                             <div class="settings-info">
                                 <h6>Maximum Notifications</h6>
                                 <p>Maximum notifications per day.</p>
                             </div>
                             <div class="settings-control">
-                                <input class="form-control setting-input"
-                                       type="number"
-                                       id="policyMaxNotifications"
-                                       min="1"
-                                       max="100" />
+                                <input asp-for="@(policyConfi.MaximumNotifications)" class="form-control setting-input" type="number" id="policyMaxNotifications" min="1" max="100" />
                             </div>
                         </div>
                     </div>
@@ -125,7 +121,7 @@
             </div>
         </div>
 
-        <div class="tab-content" id="obligations">
+        <div class="tab-content configuration-content" id="obligations">
 
             <h2>Return Obligations</h2>
 
@@ -140,25 +136,15 @@
 
                     <div class="col-lg-4 col-md-6 col-sm-12 m-2">
                         <div class="settings-card">
-
                             <div class="settings-info">
                                 <h6>Send Notifications</h6>
-                                <p>Enable system notifications for obligations events.</p>
+                                <p>Enable system notifications for obligations events</p>
                             </div>
-
                             <div class="settings-control">
                                 <div class="form-check form-switch">
-                                    <input asp-for="@obliConfi.SendNotifications"
-                                           class="form-check-input setting-input"
-                                           type="checkbox"
-                                           id="obliSendNotifications" />
-                                    <label class="form-check-label visually-hidden"
-                                           for="obliSendNotifications">
-                                        Send Notifications
-                                    </label>
+                                    <input asp-for="@obliConfi.SendNotifications" class="form-check-input setting-input" type="checkbox" id="obliSendNotifications" />
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
@@ -169,7 +155,7 @@
                                 <p>Maximum number of notifications per day.</p>
                             </div>
                             <div class="settings-control">
-                                <input asp-for="@obliConfi.MaximumNotifications" class="form-control setting-input" type="number" min="1" max="100" />
+                                <input asp-for="@obliConfi.MaximumNotifications" id="obliMaximumNotifications" class="form-control setting-input" type="number" min="1" max="100" />
                             </div>
                         </div>
                     </div>
@@ -180,13 +166,15 @@
 
         </div>
 
-        <div class="tab-content" id="mapping">
+        <div class="tab-content configuration-content" id="mapping">
 
-            <h2>Compliance Mapping</h2>
+            <div class="tab-header">
+                <h2>Compliance Mapping</h2>
 
-            <div id="saveBar" class="save-bar">
-                <span>You have unsaved changes</span>
-                <button class="btn btn-primary btn-sm">Save Changes</button>
+                <div id="saveBar" class="save-bar">
+                    <span>You have unsaved changes</span>
+                    <button class="btn btn-primary btn-sm">Save Changes</button>
+                </div>
             </div>
 
             <div class="tab-content-area">
@@ -195,49 +183,29 @@
 
                     <div class="col-lg-4 col-md-6 col-sm-12 m-2">
                         <div class="settings-card">
-
                             <div class="settings-info">
                                 <h6>Allow user add mapping controls</h6>
                                 <p>Allow system users to add and map compliance obligations to controls</p>
                             </div>
-
                             <div class="settings-control">
                                 <div class="form-check form-switch">
-                                    <input asp-for="@mappingConfi.UsersCanAddComplianceControls"
-                                           class="form-check-input setting-input"
-                                           type="checkbox"
-                                           id="allowControlMapping" />
-                                    <label class="form-check-label visually-hidden"
-                                           for="allowControlMapping">
-                                        Allow user add mapping controls
-                                    </label>
+                                    <input asp-for="@mappingConfi.UsersCanAddComplianceControls" class="form-check-input setting-input" type="checkbox" id="allowControlMapping" />
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
                     <div class="col-lg-4 col-md-6 col-sm-12 m-2">
                         <div class="settings-card">
-
                             <div class="settings-info">
                                 <h6>Limit control items</h6>
                                 <p>Enable system to limit the number of items that a mapping control can have</p>
                             </div>
-
                             <div class="settings-control">
                                 <div class="form-check form-switch">
-                                    <input asp-for="@mappingConfi.LimitNumberOfItemsOnControl"
-                                           class="form-check-input setting-input"
-                                           type="checkbox"
-                                           id="limitControlItems" />
-                                    <label class="form-check-label visually-hidden"
-                                           for="limitControlItems">
-                                        Limit control items
-                                    </label>
+                                    <input asp-for="@mappingConfi.LimitNumberOfItemsOnControl" class="form-check-input setting-input" type="checkbox" id="limitControlItems" />
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
@@ -248,7 +216,7 @@
                                 <p>Limit the number of items that a control can have </p>
                             </div>
                             <div class="settings-control">
-                                <input asp-for="@mappingConfi.MaximumNumberOfItemsOnControl" class="form-control setting-input" type="number" min="1" max="100" />
+                                <input asp-for="@mappingConfi.MaximumNumberOfItemsOnControl" class="form-control setting-input" type="number" min="1" max="100" id="maximuItemsOnControl" />
                             </div>
                         </div>
                     </div>
@@ -259,13 +227,15 @@
 
         </div>
 
-        <div class="tab-content" id="audits">
+        <div class="tab-content configuration-content" id="audits">
 
-            <h2>Compliance Audits</h2>
+            <div class="tab-header">
+                <h2>Compliance Audits</h2>
 
-            <div id="saveBar" class="save-bar">
-                <span>You have unsaved changes</span>
-                <button class="btn btn-primary btn-sm">Save Changes</button>
+                <div id="saveBar" class="save-bar">
+                    <span>You have unsaved changes</span>
+                    <button class="btn btn-primary btn-sm">Save Changes</button>
+                </div>
             </div>
 
             <div class="tab-content-area">
@@ -274,25 +244,15 @@
 
                     <div class="col-lg-4 col-md-6 col-sm-12 m-2">
                         <div class="settings-card">
-
                             <div class="settings-info">
                                 <h6>Send Notifications</h6>
                                 <p>Enable system notifications for audit events.</p>
                             </div>
-
                             <div class="settings-control">
                                 <div class="form-check form-switch">
-                                    <input asp-for="@auditConfi.SendNotifications"
-                                           class="form-check-input setting-input"
-                                           type="checkbox"
-                                           id="auditSendNotifications" />
-                                    <label class="form-check-label visually-hidden"
-                                           for="auditSendNotifications">
-                                        Send Notifications
-                                    </label>
+                                    <input asp-for="@mappingConfi.LimitNumberOfItemsOnControl" class="form-check-input setting-input" type="checkbox" id="auditSendNotifications" />
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
@@ -303,7 +263,7 @@
                                 <p>Maximum number of notifications per day.</p>
                             </div>
                             <div class="settings-control">
-                                <input asp-for="@auditConfi.MaximumNotifications" class="form-control setting-input" type="number" min="1" max="100" />
+                                <input asp-for="@auditConfi.MaximumNotifications" class="form-control setting-input" type="number" min="1" max="100" id="auditMaximumNotifications" />
                             </div>
                         </div>
                     </div>
@@ -314,43 +274,37 @@
 
         </div>
 
-        <div class="tab-content" id="security">
+        <div class="tab-content configuration-content" id="security">
 
-            <h2>System Security and Data encription</h2>
+            <div class="tab-header">
 
-            <div id="saveBar" class="save-bar">
-                <span>You have unsaved changes</span>
-                <button class="btn btn-primary btn-sm">Save Changes</button>
+                <h2>System Security and Data encription</h2>
+
+                <div id="saveBar" class="save-bar">
+                    <span>You have unsaved changes</span>
+                    <button class="btn btn-primary btn-sm">Save Changes</button>
+                </div>
+
             </div>
 
             <div class="tab-content-area">
+
                 <div class="row g-4">
 
                     <div class="col-lg-4 col-md-6 col-sm-12 m-2">
                         <div class="settings-card">
-
                             <div class="settings-info">
                                 <h6>User password should expire</h6>
                                 <p>Force users to periodically change their password by limiting usage period.</p>
                             </div>
-
                             <div class="settings-control">
                                 <div class="form-check form-switch">
-                                    <input asp-for="@securityConfi.ExpirePassword"
-                                           class="form-check-input setting-input"
-                                           type="checkbox"
-                                           id="expirePassword" />
-                                    <label class="form-check-label visually-hidden"
-                                           for="expirePassword">
-                                        User password should expire
-                                    </label>
+                                    <input asp-for="@securityConfi.ExpirePassword" class="form-check-input setting-input" type="checkbox" id="expirePassword" />
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
-                    <!-- Number of days for password usage -->
                     <div class="col-lg-4 col-md-6 col-sm-12 m-2">
                         <div class="settings-card">
                             <div class="settings-info">
@@ -358,60 +312,41 @@
                                 <p>Set the number of days a user can use the same password</p>
                             </div>
                             <div class="settings-control">
-                                <input asp-for="@securityConfi.ExipreyPeriod" class="form-control setting-input" type="number" min="1" max="100" />
+                                <input asp-for="@securityConfi.ExipreyPeriod" class="form-control setting-input" type="number" min="1" max="100" id="exipreyPeriod" />
                             </div>
                         </div>
                     </div>
 
                     <div class="col-lg-4 col-md-6 col-sm-12 m-2">
                         <div class="settings-card">
-
                             <div class="settings-info">
                                 <h6>Allow users to use an old password</h6>
                                 <p>System allows users to set a once used password again</p>
                             </div>
-
                             <div class="settings-control">
                                 <div class="form-check form-switch">
-                                    <input asp-for="@securityConfi.CanUseOldPassword"
-                                           class="form-check-input setting-input"
-                                           type="checkbox"
-                                           id="allowPasswordReuse" />
-                                    <label class="form-check-label visually-hidden"
-                                           for="allowPasswordReuse">
-                                        Allow users to use an old password
-                                    </label>
+                                    <input asp-for="@securityConfi.CanUseOldPassword" class="form-check-input setting-input" type="checkbox" id="allowPasswordReuse" />
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
                     <div class="col-lg-4 col-md-6 col-sm-12 m-2">
                         <div class="settings-card">
-
                             <div class="settings-info">
                                 <h6>Allow manual password reset</h6>
                                 <p>Allow system administrators to set new password for users</p>
                             </div>
-
                             <div class="settings-control">
                                 <div class="form-check form-switch">
-                                    <input asp-for="@securityConfi.AllowAdmininsToResetPasswords"
-                                           class="form-check-input setting-input"
-                                           type="checkbox"
-                                           id="allowAdminPasswordReset" />
-                                    <label class="form-check-label visually-hidden"
-                                           for="allowAdminPasswordReset">
-                                        Allow manual password reset
-                                    </label>
+                                    <input asp-for="@securityConfi.AllowAdmininsToResetPasswords" class="form-check-input setting-input" type="checkbox" id="allowAdminPasswordReset" />
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
                 </div>
+
             </div>
 
         </div>

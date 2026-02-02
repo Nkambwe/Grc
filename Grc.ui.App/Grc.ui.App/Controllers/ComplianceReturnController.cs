@@ -428,7 +428,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Add Return", "User added return/repor", ActivityTypeDefaults.COMPLIANCE_CREATE_RETURN, "StatutoryReturn")]
+        [LogActivityResult("Add Return", "User added return/report", ActivityTypeDefaults.COMPLIANCE_CREATE_RETURN, "StatutoryReturn")]
         public async Task<IActionResult> CreateReturn([FromBody] StatutoryReturnViewModel request) {
             try {
                 if (!ModelState.IsValid) {
@@ -1549,6 +1549,12 @@ namespace Grc.ui.App.Controllers {
                     frequencyId = circular.FrequencyId,
                     recievedOn = circular.RecievedOn,
                     received = circular.RecievedOn.ToString("yyyy-MM-dd"),
+                    sendReminder = circular.SendReminder,
+                    requiredSubmissionDate = circular.RequiredSubmissionDate.HasValue ? ((DateTime)circular.RequiredSubmissionDate).ToString("yyyy-MM-dd") : "",
+                    requiredSubmissionDay = circular.RequiredSubmissionDay,
+                    reminder = circular.Reminder ?? string.Empty,
+                    interval = circular.Interval ?? string.Empty,
+                    intervalType = circular.IntervalType ?? string.Empty,
                     deadline = circular.DeadlineOn ?? DateTime.Now.AddYears(30),
                     lastDate = circular.DeadlineOn.HasValue ?
                     circular.RecievedOn.ToString("yyyy-MM-dd") :
@@ -1605,6 +1611,12 @@ namespace Grc.ui.App.Controllers {
                         recievedOn = circular.RecievedOn,
                         status = circular.Status ?? string.Empty,
                         submissionDate = circular.SubmissionDate,
+                        sendReminder = circular.SendReminder,
+                        requiredSubmissionDate = circular.RequiredSubmissionDate.HasValue ? ((DateTime)circular.RequiredSubmissionDate).ToString("yyyy-MM-dd") : "",
+                        requiredSubmissionDay = circular.RequiredSubmissionDay,
+                        reminder = circular.Reminder ?? string.Empty,
+                        interval = circular.Interval ?? string.Empty,
+                        intervalType = circular.IntervalType ?? string.Empty,
                         deadlineOn = circular.DeadlineOn,
                         hasIssues = circular.Issues.Count > 0,
                         file = circular.FilePath ?? string.Empty,

@@ -1189,6 +1189,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "SaveGeneralConfigurations",
+    "RelativePath": "grc/organization/general-configurations",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.GeneralConfigurationsRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
     "Method": "GetBranches",
     "RelativePath": "grc/organization/getBranches",
     "HttpMethod": "POST",
@@ -1214,6 +1230,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.ConfigurationParamRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "SavePolicyConfigurations",
+    "RelativePath": "grc/organization/policy-configurations",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.PolicyConfigurationsRequest",
         "IsRequired": true
       }
     ],

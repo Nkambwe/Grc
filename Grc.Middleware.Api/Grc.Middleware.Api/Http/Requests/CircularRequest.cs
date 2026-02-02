@@ -30,6 +30,9 @@ namespace Grc.Middleware.Api.Http.Requests {
         [JsonPropertyName("deadlineOn")]
         public DateTime? DeadlineOn { get; set; }
 
+        [JsonPropertyName("submissionDate")]
+        public DateTime? SubmissionDate { get; set; }
+
         [JsonPropertyName("status")]
         public string Status { get; set; }
 
@@ -65,9 +68,6 @@ namespace Grc.Middleware.Api.Http.Requests {
 
         [JsonPropertyName("comments")]
         public string Comments { get; set; }
-
-        [JsonPropertyName("submissionDate")]
-        public DateTime? SubmissionDate { get; set; }
 
         [JsonPropertyName("submittedBy")]
         public string SubmittedBy { get; set; }

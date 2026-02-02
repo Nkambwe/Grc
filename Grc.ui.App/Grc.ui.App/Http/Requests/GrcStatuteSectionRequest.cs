@@ -48,17 +48,20 @@ namespace Grc.ui.App.Http.Requests {
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 
-        [JsonPropertyName("createdBy")]
-        public string CreatedBy { get; set; }
+        //[JsonPropertyName("interval")]
+        //public string Interval { get; set; }
 
-        [JsonPropertyName("ceatedOn")]
-        public DateTime CreatedOn { get; set; }
+        //[JsonPropertyName("intervalType")]
+        //public string IntervalType { get; set; }
 
-        [JsonPropertyName("modifiedBy")]
-        public string ModifiedBy { get; set; }
+        //[JsonPropertyName("reminder")]
+        //public string Reminder { get; set; }
 
-        [JsonPropertyName("modifiedOn")]
-        public DateTime ModifiedOn { get; set; }
+        //[JsonPropertyName("requiredSubmissionDate")]
+        //public DateTime? RequiredSubmissionDate { get; set; }
+
+        //[JsonPropertyName("requiredSubmissionDay")]
+        //public int RequiredSubmissionDay { get; set; }
 
         [JsonPropertyName("userId")]
         public long UserId { get; set; }

@@ -52,11 +52,23 @@ namespace Grc.ui.App.Http.Responses
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
 
-        [JsonPropertyName("createdBy")]
-        public string CreatedBy { get; set; }
+        [JsonPropertyName("sendReminder")]
+        public bool SendReminder { get; set; }
 
-        [JsonPropertyName("modifiedBy")]
-        public string ModifiedBy { get; set; }
+        [JsonPropertyName("interval")]
+        public string Interval { get; set; }
+
+        [JsonPropertyName("intervalType")]
+        public string IntervalType { get; set; }
+
+        [JsonPropertyName("reminder")]
+        public string Reminder { get; set; }
+
+        [JsonPropertyName("requiredSubmissionDate")]
+        public DateTime? RequiredSubmissionDate { get; set; }
+
+        [JsonPropertyName("requiredSubmissionDay")]
+        public int RequiredSubmissionDay { get; set; }
 
         [JsonPropertyName("revisions")]
         public List<GrcArticleRevisionResponse> Revisions { get; set; } = new();

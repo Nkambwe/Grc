@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const statusColors = {
         OPEN: '#FF8503',
         CLOSED: '#09B831',
-        BREACHED: '#FF2413'
+        BREACHED: '#B84A80'
     };
 
     //...build datasets

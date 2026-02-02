@@ -643,19 +643,29 @@
                 defaults: new { area = "Operations", controller = "OperationWorkflow", action = "NewProcessApproval" }
             );
 
-            /*----------------------- Compliance dashboard routes*/
+            /*----------------------- Compliance application routes*/
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-dashboard",
                 pattern: "/grc/compliance",
                 defaults: new { controller = "Application", action = "Dashboard" }
             );
-
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-dashboard",
                 pattern: "/grc/compliance/configurations",
                 defaults: new { controller = "Application", action = "ComplianceSettings" }
             );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-configurations-general",
+                pattern: "/grc/compliance/configurations/general-config",
+                defaults: new { controller = "Application", action = "SaveGeneralConfigurations" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "app-compliance-configurations-policies",
+                pattern: "/grc/compliance/configurations/policy-config",
+                defaults: new { controller = "Application", action = "SavePolicyConfigurations" }
+            );
 
+            /*----------------------- Compliance dashboard routes*/
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-dashboard-policies-totals",
                 pattern: "/grc/compliance/policies-statistics/totals",

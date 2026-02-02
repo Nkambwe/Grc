@@ -399,6 +399,12 @@ namespace Grc.ui.App.Controllers {
                     coverage = response.Coverage,
                     isCovered = response.IsCovered,
                     isActive = response.IsDeleted,
+                    sendReminder = response.SendReminder,
+                    requiredSubmissionDate = response.RequiredSubmissionDate.HasValue ? ((DateTime)response.RequiredSubmissionDate).ToString("yyyy-MM-dd") : "",
+                    requiredSubmissionDay = response.RequiredSubmissionDay,
+                    reminder = response.Reminder ?? string.Empty,
+                    interval = response.Interval ?? string.Empty,
+                    intervalType = response.IntervalType ?? string.Empty,
                     comments = response.Comments ?? string.Empty,
                     assurance = response.ComplianceAssurance
                 };

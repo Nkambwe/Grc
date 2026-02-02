@@ -7531,6 +7531,68 @@
         }
       }
     },
+    "/grc/organization/general-configurations": {
+      "post": {
+        "tags": [
+          "Support"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralConfigurationsRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralConfigurationsRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralConfigurationsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/organization/policy-configurations": {
+      "post": {
+        "tags": [
+          "Support"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.PolicyConfigurationsRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.PolicyConfigurationsRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.PolicyConfigurationsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/grc/departments/getDepartments": {
       "post": {
         "tags": [
@@ -8823,6 +8885,11 @@
             "format": "date-time",
             "nullable": true
           },
+          "submissionDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
           "status": {
             "type": "string",
             "nullable": true
@@ -8868,11 +8935,6 @@
           },
           "comments": {
             "type": "string",
-            "nullable": true
-          },
-          "submissionDate": {
-            "type": "string",
-            "format": "date-time",
             "nullable": true
           },
           "submittedBy": {
@@ -9363,6 +9425,30 @@
             "nullable": true
           },
           "StackTrace": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Grc.Middleware.Api.Http.Requests.GeneralConfigurationsRequest": {
+        "type": "object",
+        "properties": {
+          "softDeleteRecords": {
+            "type": "boolean"
+          },
+          "includeDeletedRecord": {
+            "type": "boolean"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          },
+          "ipAddress": {
             "type": "string",
             "nullable": true
           }
@@ -9911,6 +9997,31 @@
               "type": "integer",
               "format": "int64"
             },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Grc.Middleware.Api.Http.Requests.PolicyConfigurationsRequest": {
+        "type": "object",
+        "properties": {
+          "sendPolicyNotifications": {
+            "type": "boolean"
+          },
+          "maximumNumberOfNotifications": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          },
+          "ipAddress": {
+            "type": "string",
             "nullable": true
           }
         },

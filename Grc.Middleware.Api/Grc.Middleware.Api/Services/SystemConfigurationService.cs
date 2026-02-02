@@ -6,6 +6,10 @@ using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
+using Newtonsoft.Json.Linq;
+using RTools_NTS.Util;
+using System;
+using System.Drawing;
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Text.Json;
@@ -207,35 +211,98 @@ namespace Grc.Middleware.Api.Services
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve all system configurations", "INFO");
 
-            try
-            {
+            try {
                 return await uow.SystemConfigurationRepository.PageAllAsync(token, page, size, predicate, includeDeleted);
+            } catch (Exception ex) {
+                _ = await uow.SystemErrorRespository.InsertAsync(CreateErrorObject(uow, ex));
+                throw;
             }
-            catch (Exception ex)
-            {
-                Logger.LogActivity($"Failed to retrieve system configurations : {ex.Message}", "ERROR");
-                var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+        }
 
-                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
-                long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
-                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                    ErrorSource = "SYSTEM-CONFIGURATION-SERVICE",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
+        public async Task<bool> SavePolicyConfigurationsAsync(PolicyConfigurationsRequest request, string username) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Save policy configurations", "INFO");
+
+            try {
+                var settings = await uow.SystemConfigurationRepository.GetAllAsync(s => s.ParameterName.StartsWith("POLICY"), true);
+                if (settings == null || !settings.Any()) {
+                    return false;
+                }
+
+                //..convert to dictionary for lookups
+                var settingsDict = settings.ToDictionary(s => s.ParameterName);
+                var now = DateTime.Now;
+                var entitiesToUpdate = new List<SystemConfiguration>(settingsDict.Count);
+
+                //..define configuration updates
+                var updates = new[] {
+                    ("POLICY_SENDNOTIFICATIONS", request.SendPolicyNotifications.ToString(), "FLAG"),
+                    ("POLICY_MAXIMUMNUMBEROFNOTIFICATIONS", request.MaximumNumberOfNotifications.ToString(), "NUMBER")
                 };
 
-                //..save error object to the database
-                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                foreach (var (paramName, newValue, paramType) in updates) {
+                    if (settingsDict.TryGetValue(paramName, out var setting)) {
+                        var normalizedValue = NormalizeValue(newValue, paramType);
+                        if (setting.ParameterValue != normalizedValue) {
+                            setting.ParameterValue = normalizedValue;
+                            setting.LastModifiedBy = username;
+                            setting.LastModifiedOn = now;
+                            entitiesToUpdate.Add(setting);
+                        }
+                    }
+                }
+
+                if (entitiesToUpdate.Count > 0) {
+                    return await uow.SystemConfigurationRepository.BulkyUpdateAsync(entitiesToUpdate.ToArray());
+                }
+
+                return false;
+            } catch (Exception ex) {
+                _ = await uow.SystemErrorRespository.InsertAsync(CreateErrorObject(uow, ex));
+                throw;
+            }
+        }
+
+        public async Task<bool> SaveGeneralConfigurationsAsync(GeneralConfigurationsRequest request, string username) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Save general configurations", "INFO");
+
+            try {
+                var settings = await uow.SystemConfigurationRepository.GetAllAsync(s => s.ParameterName.StartsWith("GENERAL"), true);
+                if (settings == null || !settings.Any()) {
+                    return false;
+                }
+
+                //..convert to dictionary for lookups
+                var settingsDict = settings.ToDictionary(s => s.ParameterName);
+                var now = DateTime.Now;
+                var entitiesToUpdate = new List<SystemConfiguration>(settingsDict.Count);
+
+                //..define configuration updates
+                var updates = new[] {
+                    ("GENERAL_SOFTDELETERECORD", request.SoftDeleteRecords.ToString(), "FLAG"),
+                    ("GENERAL_INCLUDEDELETEDRECORD", request.IncludeDeletedRecord.ToString(), "FLAG")
+                };
+
+                foreach (var (paramName, newValue, paramType) in updates) {
+                    if (settingsDict.TryGetValue(paramName, out var setting)) {
+                        var normalizedValue = NormalizeValue(newValue, paramType);
+                        if (setting.ParameterValue != normalizedValue) {
+                            setting.ParameterValue = normalizedValue;
+                            setting.LastModifiedBy = username;
+                            setting.LastModifiedOn = now;
+                            entitiesToUpdate.Add(setting);
+                        }
+                    }
+                }
+
+                if (entitiesToUpdate.Count > 0) {
+                    return await uow.SystemConfigurationRepository.BulkyUpdateAsync(entitiesToUpdate.ToArray());
+                }
+
+                return false;
+            } catch (Exception ex) {
+                _ = await uow.SystemErrorRespository.InsertAsync(CreateErrorObject(uow, ex));
                 throw;
             }
         }
@@ -310,6 +377,27 @@ namespace Grc.Middleware.Api.Services
             };
         }
 
+        private SystemError CreateErrorObject(IUnitOfWork uow, Exception ex) {
+            Logger.LogActivity($"Failed to retrieve system configurations : {ex.Message}", "ERROR");
+            var innerEx = ex.InnerException;
+            while (innerEx != null) {
+                Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                innerEx = innerEx.InnerException;
+            }
+            Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+            var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+            long companyId = company != null ? company.Id : 1;
+            return new SystemError() {
+                ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                ErrorSource = "SYSTEM-CONFIGURATION-SERVICE",
+                StackTrace = ex.StackTrace,
+                Severity = "CRITICAL",
+                ReportedOn = DateTime.Now,
+                CompanyId = companyId
+            };
+
+        }
         #endregion
 
     }

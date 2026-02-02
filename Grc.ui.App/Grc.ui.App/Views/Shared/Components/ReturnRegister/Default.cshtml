@@ -389,6 +389,30 @@
 
                 </div>
 
+                <div class="col-12">
+                    <div class="row mb-1">
+
+                        <div class="col-6">
+                            <div class="row mb-1">
+                                <label for="requiredSubmissionDate" class="col-sm-12 col-form-label">Submission Date</label>
+                                <div class="col-sm-12">
+                                    <input type="text" id="requiredSubmissionDate" name="requiredSubmissionDate" class="form-control datepicker" placeholder="MM/DD/YYYY" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row mb-1">
+                                <label for="submissionDay" class="col-sm-12 col-form-label m-1">Day of submission</label>
+                                <div class="col-sm-12">
+                                    <input type="number" id="submissionDay" name="submissionDay" class="form-control" min="1" max="31" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
                 <div class="col-sm-12">
                     <label for="reportComments" class="form-label m-3">
                         @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Returns.Comments"))
@@ -402,8 +426,8 @@
                         <div class="row mb-3">
                             <div class="col-3">
                                 <div class="form-check form-switch mt-4">
-                                    <input class="form-check-input" type="checkbox" id="sendReminders">
-                                    <label class="form-check-label" for="sendReminders">
+                                    <input class="form-check-input" type="checkbox" id="sendReminder">
+                                    <label class="form-check-label" for="sendReminder">
                                         @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Update.Label.SendReminder"))
                                     </label>
                                 </div>
@@ -416,18 +440,22 @@
 
                         <div class="row mb-3">
 
-                            <div class="col-sm-7">
-                                <div class="row mb-3">
-                                    <label for="interval" class="col-5 form-label">
-                                        Send Reiminders every
-                                    </label>
-                                    <div class="col-7">
-                                        <input type="text" id="interval" name="interval" class="form-control"/>
+                            <div class="col-6">
+                                <div class="row mb-1">
+                                    <label for="interval" class="col-sm-12 col-form-label m-1">Number of times to send mail</label>
+                                    <div class="col-12">
+                                        <select class="js-interval form-control" id="interval" name="interval">
+                                            <option value="NA">Select interval...</option>
+                                            <option value="ONCE">One</option>
+                                            <option value="TWICE">Two</option>
+                                            <option value="THREE">Three</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-5">
-                                <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <div class="row mb-1">
+                                    <label for="intervalType" class="col-sm-12 col-form-label m-1">Interval Type</label>
                                     <div class="col-12">
                                         <select class="js-interval-type-id form-control" id="intervalType" name="intervalType">
                                             <option value="NA">Select reminder interval...</option>

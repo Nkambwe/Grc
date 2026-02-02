@@ -42,6 +42,8 @@ namespace Grc.Middleware.Api.Controllers {
         private readonly IAuditExceptionService _auditExceptionService;
         private readonly IAuditTaskService _auditTaskService;
         private readonly IAuditUpdateService _auditUpdateService;
+
+        private readonly ISystemConfigurationService _configService;
         public RegulatoryController(IObjectCypher cypher,
             IServiceLoggerFactory loggerFactory, 
             IMapper mapper, 
@@ -71,7 +73,8 @@ namespace Grc.Middleware.Api.Controllers {
             IAuditExceptionService auditExceptionService,
             IAuditTaskService auditTaskService,
             IAuditUpdateService auditUpdateService,
-            IErrorNotificationService errorService, 
+            IErrorNotificationService errorService,
+            ISystemConfigurationService configService,
             ISystemErrorService systemErrorService) 
             : base(cypher, loggerFactory, mapper, companyService, environment, errorService, systemErrorService) {
             _authorityService = authorityService;
@@ -98,6 +101,7 @@ namespace Grc.Middleware.Api.Controllers {
             _auditReportService = auditReportService;
             _auditTaskService = auditTaskService;
             _auditUpdateService = auditUpdateService;
+            _configService = configService;
         }
 
         #region Compliance Statistics
@@ -338,8 +342,15 @@ namespace Grc.Middleware.Api.Controllers {
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
 
+                //..check if deleted records to be included
+                var config = await _configService.GetConfigurationAsync<bool>("GENERAL_INCLUDEDELETEDRECORD");
+                bool includeDeleted = false;
+                if (config != null) {
+                    includeDeleted = config.Value;
+                }
+
                 //..get support data
-                var _supportItemsList = await _regulatoryService.GetSupportItemsAsync(false);
+                var _supportItemsList = await _regulatoryService.GetSupportItemsAsync(includeDeleted);
                 return Ok(new GrcResponse<PolicySupportResponse>(_supportItemsList));
             } catch (Exception ex) {
                 var error = await HandleErrorAsync(ex);
@@ -372,7 +383,14 @@ namespace Grc.Middleware.Api.Controllers {
                 }
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
 
-                var register = await _regulatoryDocuments.GetAsync(d => d.Id == request.RecordId, false, d => d.Owner, d => d.DocumentType, d => d.Frequency);
+                //..check if deleted records to be included
+                var config = await _configService.GetConfigurationAsync<bool>("GENERAL_INCLUDEDELETEDRECORD");
+                bool includeDeleted = false;
+                if (config != null) {
+                    includeDeleted = config.Value;
+                }
+
+                var register = await _regulatoryDocuments.GetAsync(d => d.Id == request.RecordId, includeDeleted, d => d.Owner, d => d.DocumentType, d => d.Frequency);
                 if (register == null) {
                     var error = new ResponseError(
                         ResponseCodes.FAILED,
@@ -438,7 +456,15 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                var documents = await _regulatoryDocuments.GetAllAsync(false, d => d.Owner, d => d.DocumentType, d => d.Frequency);
+
+                //..check if deleted records to be included
+                var config = await _configService.GetConfigurationAsync<bool>("GENERAL_INCLUDEDELETEDRECORD");
+                bool includeDeleted = false;
+                if (config != null) {
+                    includeDeleted = config.Value;
+                }
+
+                var documents = await _regulatoryDocuments.GetAllAsync(includeDeleted, d => d.Owner, d => d.DocumentType, d => d.Frequency);
 
                 if (documents == null || !documents.Any()) {
                     var error = new ResponseError(
@@ -502,7 +528,14 @@ namespace Grc.Middleware.Api.Controllers {
                 Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IpAddress}", "INFO");
                 Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
 
-                var summeryData = await _regulatoryDocuments.GetPolicySummeryAsync(false);
+                //..check if deleted records to be included
+                var config = await _configService.GetConfigurationAsync<bool>("GENERAL_INCLUDEDELETEDRECORD");
+                bool includeDeleted = false;
+                if (config != null) {
+                    includeDeleted = config.Value;
+                }
+
+                var summeryData = await _regulatoryDocuments.GetPolicySummeryAsync(includeDeleted);
                 if (summeryData == null) {
                     var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could retrieve report data. A system error occurred");
                     Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
@@ -528,7 +561,14 @@ namespace Grc.Middleware.Api.Controllers {
                 Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IpAddress}", "INFO");
                 Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
 
-                var summeryData = await _regulatoryDocuments.GetSmtSummeryAsync(false);
+                //..check if deleted records to be included
+                var config = await _configService.GetConfigurationAsync<bool>("GENERAL_INCLUDEDELETEDRECORD");
+                bool includeDeleted = false;
+                if (config != null) {
+                    includeDeleted = config.Value;
+                }
+
+                var summeryData = await _regulatoryDocuments.GetSmtSummeryAsync(includeDeleted);
                 if (summeryData == null) {
                     var error = new ResponseError(ResponseCodes.FAILED, "An error occurred", "Could retrieve report data. A system error occurred");
                     Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
@@ -553,6 +593,13 @@ namespace Grc.Middleware.Api.Controllers {
                 }
                 Logger.LogActivity($"ACTION >>{request.Action}:: IPADDRESS >> {request.IpAddress}", "INFO");
                 Logger.LogActivity($"REQUEST BODY >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                //..check if deleted records to be included
+                var config = await _configService.GetConfigurationAsync<bool>("GENERAL_INCLUDEDELETEDRECORD");
+                bool includeDeleted = false;
+                if (config != null) {
+                    includeDeleted = config.Value;
+                }
 
                 var summeryData = await _regulatoryDocuments.GetBodSummeryAsync(false);
                 if (summeryData == null) {
@@ -579,10 +626,18 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IpAddress}", "INFO");
+
+                //..check if deleted records to be included
+                var config = await _configService.GetConfigurationAsync<bool>("GENERAL_INCLUDEDELETEDRECORD");
+                bool includeDeleted = false;
+                if (config != null) {
+                    includeDeleted = config.Value;
+                }
+
                 var status = GetPolicyStatus(request.Filter.Trim());
                 var documents = status switch {
-                    "ALL" => await _regulatoryDocuments.GetAllAsync(false, d => d.Owner, d => d.DocumentType, d => d.Frequency),
-                    _ => await _regulatoryDocuments.GetAllAsync(p => p.Status == status,false,d => d.Owner,d => d.DocumentType,d => d.Frequency),
+                    "ALL" => await _regulatoryDocuments.GetAllAsync(includeDeleted, d => d.Owner, d => d.DocumentType, d => d.Frequency),
+                    _ => await _regulatoryDocuments.GetAllAsync(p => p.Status == status, includeDeleted, d => d.Owner,d => d.DocumentType,d => d.Frequency),
                 };
                 if (documents == null || !documents.Any()) {
                     var error = new ResponseError(ResponseCodes.SUCCESS,"No data","No statutory document records found");
@@ -646,9 +701,17 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+
+                //..check if deleted records to be included
+                var config = await _configService.GetConfigurationAsync<bool>("GENERAL_INCLUDEDELETEDRECORD");
+                bool includeDeleted = false;
+                if (config != null) {
+                    includeDeleted = config.Value;
+                }
+
                 var pageResult = await _regulatoryDocuments.PageAllAsync(request.PageIndex, 
-                                                                         request.PageSize, 
-                                                                         false, 
+                                                                         request.PageSize,
+                                                                         includeDeleted, 
                                                                          d => d.Owner,
                                                                          d => d.Owner.Department, 
                                                                          d => d.DocumentType, 
@@ -915,6 +978,14 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(response));
                 }
 
+                //..check if to soft delete records
+                var config = await _configService.GetConfigurationAsync<bool>("GENERAL_SOFTDELETERECORD");
+                bool softDelete = false;
+                if (config != null) {
+                    softDelete = config.Value;
+                }
+                request.MarkAsDeleted = softDelete;
+
                 //..delete policy document
                 var status = await _regulatoryDocuments.DeleteAsync(request);
                 if (!status) {
@@ -947,7 +1018,15 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                var pageResult = await _categoryService.GetObligationsAsync(request.PageIndex, request.PageSize, false);
+
+                //..check if deleted records to be included
+                var config = await _configService.GetConfigurationAsync<bool>("GENERAL_INCLUDEDELETEDRECORD");
+                bool includeDeleted = false;
+                if (config != null) {
+                    includeDeleted = config.Value;
+                }
+
+                var pageResult = await _categoryService.GetObligationsAsync(request.PageIndex, request.PageSize, includeDeleted);
                 if (pageResult.Entities == null || !pageResult.Entities.Any()) {
                     var error = new ResponseError(ResponseCodes.SUCCESS,"No data", "No obligation records found");
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
@@ -984,7 +1063,14 @@ namespace Grc.Middleware.Api.Controllers {
                 }
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
 
-                var obligation = await _articleService.GetObligationAsync(a => a.Id == request.RecordId, true);
+                //..check if deleted records to be included
+                var config = await _configService.GetConfigurationAsync<bool>("GENERAL_INCLUDEDELETEDRECORD");
+                bool includeDeleted = false;
+                if (config != null) {
+                    includeDeleted = config.Value;
+                }
+
+                var obligation = await _articleService.GetObligationAsync(a => a.Id == request.RecordId, includeDeleted);
                 if (obligation == null) {
                     var error = new ResponseError(ResponseCodes.FAILED, "Obligation/Requirement not found", "No obligation/Requirement matched the provided ID");
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
@@ -1005,94 +1091,57 @@ namespace Grc.Middleware.Api.Controllers {
         [HttpPost("registers/paged-maps-list")]
         public async Task<IActionResult> GetPagedMapList([FromBody] ListRequest request) {
             try {
-                //Logger.LogActivity($"{request.Action}", "INFO");
-                //if (request == null) {
-                //    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
-                //    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
-                //    return Ok(new GrcResponse<PagedResponse<ObligaionResponse>>(error));
-                //}
-
-                //Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                //var pageResult = await _categoryService.GetObligationsAsync(request.PageIndex, request.PageSize, false);
-                //if (pageResult.Entities == null || !pageResult.Entities.Any()) {
-                //    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No obligation records found");
-                //    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
-                //    return Ok(new GrcResponse<PagedResponse<ObligaionResponse>>(
-                //              new PagedResponse<ObligaionResponse>(
-                //              new List<ObligaionResponse>(), 0, pageResult.Page, pageResult.Size)));
-                //}
-
-                //var categories = pageResult.Entities;
-                //return Ok(new GrcResponse<PagedResponse<ObligaionResponse>>(
-                //          new PagedResponse<ObligaionResponse>(
-                //              categories, pageResult.Count, pageResult.Page, pageResult.Size))
-                //    );
-
-                var maps = new List<ComplianceMapResponse>() {
-                    new() {
-                        Id = 1,
-                        MapControl = "Access Control",
-                        Include = true,
-                        Owner = "Head Business Technology",
-                        ControlMaps = new List<ControlMapResponse>() {
-                            new() {
-                                Id=1,
-                                ParentId = 1,
-                                Description = "Password Policy",
-                                Notes = "Pearl Bank maintains a password cycle managed by Microsoft ADC for all company devices",
-                                Include = false
-                            },
-                            new() {
-                                Id=2,
-                                ParentId = 1,
-                                Description = "MFA Enforcement",
-                                Notes = "Pearl Bank uses Entrust System to manage Two-Factor authentication",
-                                Include = false
-                            }
-                        }
-                    },
-                    new() {
-                        Id = 2,
-                        MapControl = "Incident Logging",
-                        Include = true,
-                        Owner = "Head Business Technology",
-                        ControlMaps = new()
-                    },
-                    new() {
-                        Id = 3,
-                        MapControl = "System Security",
-                        Include = true,
-                        Owner = "Head Security",
-                        ControlMaps = new List<ControlMapResponse>() { 
-                            new() {
-                                Id=3,
-                                ParentId = 3,
-                                Description = "Premises security",
-                                Notes = "Pearl Bank applys bio-metric systems for access, secures premises with armed security",
-                                Include = false
-                            },
-                            new() {
-                                Id=4,
-                                ParentId = 3,
-                                Description = "Customer Protection",
-                                Notes = "Maintains customer physical property and secure access points",
-                                Include = false
-                            },
-                            new() {
-                                Id=5,
-                                ParentId = 3,
-                                Description = "Data Security",
-                                Notes = "Some notes on data security",
-                                Include = false
-                            }
-                        }
+                try {
+                    Logger.LogActivity($"{request.Action}", "INFO");
+                    if (request == null) {
+                        var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                        Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<PagedResponse<ComplianceMapResponse>>(error));
                     }
-                };
 
-                return Ok(new GrcResponse<PagedResponse<ComplianceMapResponse>>(new PagedResponse<ComplianceMapResponse>(maps, 2, 1, 2)));
+                    Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+
+                    //..check if deleted records to be included
+                    var config = await _configService.GetConfigurationAsync<bool>("GENERAL_INCLUDEDELETEDRECORD");
+                    bool includeDeleted = false;
+                    if (config != null) {
+                        includeDeleted = config.Value;
+                    }
+
+                    var controlMaps = await _itemService.GetComplianceControlsAsync(request.PageIndex, request.PageSize, includeDeleted,
+                        map => new ComplianceMapResponse {
+                        Id = map.Id,
+                        MapControl = map.CategoryName ?? string.Empty,
+                        Include = !map.Exclude,
+                        Owner = map.Owner ?? string.Empty,
+                        ControlMaps = map.ControlItems != null && map.ControlItems.Any()?
+                            map.ControlItems.Select(control => new ControlMapResponse() {
+                                Id = control.Id,
+                                ParentId = control.ControlCategoryId,
+                                Description = control.ItemName,
+                                Notes = control.Notes ?? string.Empty,
+                                Include = !control.Exclude,
+                        }).ToList() : new List<ControlMapResponse>()
+                    });
+
+                    //..calculate coverage for laws after data retrieval
+                    var data = controlMaps.Entities;
+                    if (data == null || !data.Any()) {
+                        var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No obligation records found");
+                        Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<PagedResponse<ComplianceMapResponse>>(
+                                  new PagedResponse<ComplianceMapResponse>(
+                                  new List<ComplianceMapResponse>(), 0, controlMaps.Page, controlMaps.Size)));
+                    }
+
+                    return Ok(new GrcResponse<PagedResponse<ComplianceMapResponse>>(new PagedResponse<ComplianceMapResponse>(data, controlMaps.Count, controlMaps.Page, controlMaps.Size)));
+                } catch (Exception ex) {
+                    var error = await HandleErrorAsync(ex);
+                    return Ok(new GrcResponse<PagedResponse<ComplianceMapResponse>>(error));
+                }
             } catch (Exception ex) {
                 var error = await HandleErrorAsync(ex);
-                return Ok(new GrcResponse<PagedResponse<ObligaionResponse>>(error));
+                return Ok(new GrcResponse<PagedResponse<ComplianceMapResponse>>(error));
             }
         }
 
