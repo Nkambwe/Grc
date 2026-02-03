@@ -26,6 +26,9 @@ namespace Grc.ui.App.Dtos {
         [JsonPropertyName("exceptionCount")]
         public int ExceptionCount { get; set; }
 
+        [JsonPropertyName("resolvedException")]
+        public int ResolvedException { get; set; }
+
         [JsonPropertyName("responseDate")]
         public DateTime? ResponseDate { get; set; }
 

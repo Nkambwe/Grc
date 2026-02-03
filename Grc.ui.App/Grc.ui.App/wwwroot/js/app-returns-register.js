@@ -368,15 +368,9 @@ $('#frequencyTree').on("select_node.jstree", function (e, data) {
         tree.toggle_node(data.node);
     }
 
-    console.log("Node:", node);
-    console.log("Node type:", node.type);
-    console.log("Original:", node.original);
-
     if (node.type === "frequency") {
         selectedFrequency = parseInt(node.id.replace("C_", ""));
         selectedReturn = null;
-
-        console.log(`1.Selected Frequency ${selectedFrequency}`);
 
         // Show category view
         $("#returnView").removeClass("d-none");
@@ -394,8 +388,6 @@ $('#frequencyTree').on("select_node.jstree", function (e, data) {
         selectedReturn = parseInt(node.id.replace("L_", ""));
         selectedFrequency = parseInt(node.parent.replace("C_", ""));
 
-        console.log(`1.Selected Frequency ${selectedFrequency}`);
-        console.log(`1.Selected Return ${selectedReturn}`);
         showReturnView(node.text);
         loadSubmissions(selectedLaw);
     }
@@ -739,6 +731,9 @@ function saveAuditReport(e) {
     if (!recordData.requiredSubmissionDate)
         errors.push("Submission date is required");
 
+    if (recordData.authorityId === 0)
+        errors.push("Return issuing authority is required");
+
     if (recordData.requiredSubmissionDay === 0)
         errors.push("Day of month for submission is required");
 
@@ -775,6 +770,7 @@ function saveAuditReport(e) {
     }
 
     if (errors.length > 0) {
+        highlightReturnSubmissionField("#authorityId", recordData.authorityId === 0);
         highlightReturnSubmissionField("#statuteId", recordData.sectionId === 0);
         highlightReturnSubmissionField("#returnTypeId", recordData.returnTypeId === 0);
         highlightReturnSubmissionField("#departmentId", recordData.departmentId === 0);

@@ -374,6 +374,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                         Title = r.CircularTitle,
                         Status = r.IsBreached ? "BREACHED": r.Status,
                         AuthorityAlias = r.Authority?.AuthorityAlias,
+                        SubmissionDate = r.SubmissionDate,
+                        DueDate = r.RequiredSubmissionDate,
                         Authority = r.Authority?.AuthorityName ?? string.Empty,
                         Department = r.Department?.DepartmentName ?? string.Empty,
                     }).ToList();

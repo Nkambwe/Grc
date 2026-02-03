@@ -259,8 +259,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 headerFilter: "input"
             },
             {
-                title: "FOR PERIOD",
+                title: "SUBMISSION DATE",
                 field: "Period",
+                hozAlign: "center",
                 headerFilter: "input"
             },
             {

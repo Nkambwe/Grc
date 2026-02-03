@@ -11,6 +11,7 @@ using Grc.Middleware.Api.TaskHandler;
 using Grc.Middleware.Api.Utils;
 using Microsoft.Win32;
 using System.Linq.Expressions;
+using System.Net.Mail;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -1157,7 +1158,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 var compliance = await uow.DepartmentRepository.GetAllAsync(d => d.DepartmentCode == "COMPLIANCE", false, d => d.Users);
 
                 string compUsers = compliance != null && compliance.Any() ?
-                      string.Join(";", compliance
+                      string.Join(",", compliance
                             .SelectMany(d => d.Users)
                             .Select(u => u.EmailAddress)
                             .Where(e => !string.IsNullOrEmpty(e))
@@ -1181,6 +1182,19 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
         #endregion
 
         #region Private Methods
+        private static void AddMailAddresses( MailAddressCollection collection,string addresses) {
+            if (string.IsNullOrWhiteSpace(addresses))
+                return;
+
+            var normalized = addresses
+                .Replace(";", ",")
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(e => e.Trim());
+
+            foreach (var email in normalized) {
+                collection.Add(new MailAddress(email));
+            }
+        }
 
         private async Task EnqueuePolicyNotificationAsync(RegulatoryDocument policy, string complianceUsers, IUnitOfWork uow) {
 

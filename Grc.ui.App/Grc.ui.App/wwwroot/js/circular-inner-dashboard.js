@@ -311,6 +311,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 headerFilter: "input"
             },
             {
+                title: "SUBMISSION DATE",
+                field: "RequiredDate",
+                hozAlign: "center",
+                headerFilter: "input"
+            },
+            {
                 title: "STATUS",
                 field: "Status",
                 headerFilter: "select",
