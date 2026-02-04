@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Grc.Middleware.Api.Data.Entities.Compliance.Audits;
 using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
@@ -11,6 +12,8 @@ using Grc.Middleware.Api.Services.Compliance.Support;
 using Grc.Middleware.Api.Services.Organization;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
+using RTools_NTS.Util;
+using System.Drawing;
 using System.Text.Json;
 
 namespace Grc.Middleware.Api.Controllers {
@@ -5681,7 +5684,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                var pageResult = await _auditReportService.PageAllAsync(request.PageIndex, request.PageSize, false, r => r.AuditId == request.AuditId);
+                var pageResult = await _auditReportService.PageAllAsync(request.PageIndex, request.PageSize, false, r => r.AuditId == request.AuditId, r => r.AuditExceptions);
                 if (pageResult.Entities == null || !pageResult.Entities.Any()) {
                     var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No audit report records found");
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
@@ -5700,7 +5703,8 @@ namespace Grc.Middleware.Api.Controllers {
                         Summery = report.Summery ?? string.Empty,
                         ReportStatus = report.Status ?? string.Empty,
                         ReportDate = report.AuditedOn,
-                        ExceptionCount = report.ExceptionCount,
+                        ExceptionCount = report.AuditExceptions == null ? 0 : report.AuditExceptions.Count,
+                        ResolvedException = report.AuditExceptions == null ? 0 : report.AuditExceptions.Count(e=>e.Status == "CLOSED"),
                         ResponseDate = report.RespondedOn,
                         ManagementComments = report.ManagementComment ?? string.Empty,
                         AdditionalNotes = report.AdditionalNotes ?? string.Empty,

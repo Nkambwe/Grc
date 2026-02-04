@@ -130,11 +130,9 @@ namespace Grc.Middleware.Api.Helpers {
                 MailMessage mail = new() {
                     From = new MailAddress(from, "GRC SUITE")
                 };
-                mail.To.Add(sendTo);
 
-                if (!string.IsNullOrEmpty(cc)) {
-                    mail.CC.Add(cc);
-                }
+                AddMailAddresses(mail.To, sendTo);
+                AddMailAddresses(mail.CC, cc);
 
                 mail.Subject = subject;
                 mail.Body = body;
@@ -298,6 +296,21 @@ namespace Grc.Middleware.Api.Helpers {
             </body>
             </html>";
         }
+
+        private static void AddMailAddresses(MailAddressCollection collection,string addresses) {
+            if (string.IsNullOrWhiteSpace(addresses))
+                return;
+
+            var normalized = addresses
+                .Replace(";", ",")
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(e => e.Trim());
+
+            foreach (var email in normalized) {
+                collection.Add(new MailAddress(email));
+            }
+        }
+
 
     }
 }

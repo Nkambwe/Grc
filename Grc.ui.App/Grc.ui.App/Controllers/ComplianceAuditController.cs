@@ -776,6 +776,7 @@ namespace Grc.ui.App.Controllers {
                     status = response.ReportStatus ?? string.Empty,
                     reportDate = response.ReportDate,
                     exceptions = response.ExceptionCount,
+                    resolved = response.ResolvedException,
                     responseDate = response.ResponseDate,
                     managementComments = response.ManagementComments ?? string.Empty,
                     AdditionalNotes = response.AdditionalNotes ?? string.Empty,
@@ -859,6 +860,7 @@ namespace Grc.ui.App.Controllers {
                         ReportStatus = report.ReportStatus ?? string.Empty,
                         reportDate = report.ReportDate,
                         exceptionCount = report.ExceptionCount,
+                        resolved = report.ResolvedException,
                         responseDate = report.ResponseDate,
                         managementComments = report.ManagementComments ?? string.Empty,
                         additionalNotes = report.AdditionalNotes ?? string.Empty,
@@ -1133,6 +1135,7 @@ namespace Grc.ui.App.Controllers {
                         reportStatus = report.ReportStatus ?? string.Empty,
                         reportDate = report.ReportDate,
                         exceptionCount = report.ExceptionCount,
+                        resolved = report.ResolvedException,
                         responseDate = report.ResponseDate,
                     }).ToList();
                     return Ok(new { last_page = 1, total_records = reports.Count, data = reports });

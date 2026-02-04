@@ -281,18 +281,21 @@ let reportTable = new Tabulator("#reportsTable", {
             field: "reportStatus",
             formatter: function (cell) {
                 const value = cell.getValue();
+                const rowData = cell.getRow().getData();
                 const cellEl = cell.getElement();
 
-                // Default color
                 let bg = "#C2B70B";
                 let clr = "#FFFFFF";
-                if (value === "CLOSED") {
-                    bg = "#28C232";
+
+                //..first priority: partial resolution
+                if (rowData.resolved !== rowData.exceptionCount) {
+                    bg = "#FF9800"; // ORANGE
+                }
+                else if (value === "CLOSED") {
+                    bg = "#28C232"; // GREEN
                 }
                 else if (value === "DUE") {
-                    bg = "#F50C0C";
-                } else {
-                    bg = "#C2B70B";
+                    bg = "#F50C0C"; // RED
                 }
 
                 cellEl.style.backgroundColor = bg;
@@ -320,10 +323,16 @@ let reportTable = new Tabulator("#reportsTable", {
             }
         },
         {
-            title: "FINDINGS",
+            title: "TOTAL FINDINGS",
             field: "exceptionCount",
             hozAlign: "center",
-            width: 150
+            width: 200
+        },
+        {
+            title: "RESOLVEDFINDINGS",
+            field: "resolved",
+            hozAlign: "center",
+            width: 200
         }
 
     ]

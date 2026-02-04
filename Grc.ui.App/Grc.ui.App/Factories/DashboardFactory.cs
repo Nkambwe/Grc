@@ -354,6 +354,7 @@ namespace Grc.ui.App.Factories {
                 circulars.Reports = data.Reports;
                 circulars.Statuses = data.Statuses;
             }
+
             var model = new CircularExtensionDashboardModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
@@ -367,6 +368,7 @@ namespace Grc.ui.App.Factories {
                                   Id= report.Id,
                                   Title = report.Title ?? string.Empty,
                                   Status = report.Status ?? string.Empty,
+                                  RequiredDate = report.DueDate.HasValue ? report.DueDate.Value.ToString("MMM dd") : string.Empty,
                                   BreachRisk = report.BreachRisk ?? string.Empty,
                                   Authority = report.Authority ?? string.Empty,
                                   AuthorityAlias = report.AuthorityAlias ?? string.Empty,
@@ -466,7 +468,7 @@ namespace Grc.ui.App.Factories {
                 returns.Reports = data.Reports.Select(report => new ReturnSubmission() {
                     Id = report.Id,
                     Title = report.Title ?? string.Empty,
-                    Period =period.Equals("DAILY")? GetReportDate(report.PeriodStart) : $"{report.PeriodStart:yyyy-MM-dd} TO {report.PeriodEnd:yyyy-MM-dd}",
+                    Period =report.RequiredSubmissionDate.HasValue ? report.RequiredSubmissionDate.Value.ToString("MMM dd"): "",
                     Status = report.Status ?? string.Empty,
                     Department = report.Department ?? string.Empty,
                     Risk = report.Risk ?? string.Empty,
