@@ -3361,9 +3361,7 @@ namespace Grc.Middleware.Api.Controllers {
                 string mail;
                 if (reset) {
                     (sent, subject, mail) = MailHandler.SendPasswordResetMail(
-                        logger,mailSettings.MailSender,email, sendToName,
-                        "","GRC Suite Password reset", mailSettings.NetworkPort,
-                        mailSettings.SystemPassword, password);
+                        logger,mailSettings.MailSender,email, sendToName,"","GRC Suite Password reset", mailSettings.NetworkPort,mailSettings.SystemPassword, password);
                 }else {
                     (sent, subject, mail) = MailHandler.SendNewAccountMail(
                         logger,mailSettings.MailSender,email, sendToName,
