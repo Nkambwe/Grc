@@ -66,6 +66,9 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("isVerified")]
         public bool IsVerified { get; set; }
 
+        [JsonPropertyName("isApproved")]
+        public bool IsApproved { get; set; }
+
         [JsonPropertyName("isLogged")]
         public bool IsLogged { get; set; }
 
@@ -77,6 +80,9 @@ namespace Grc.ui.App.Http.Responses {
 
         [JsonPropertyName("modifiedOn")]
         public DateTime? ModifiedOn { get; set; }
+
+        [JsonPropertyName("lastLogindate")]
+        public DateTime? LastLogindate { get; set; }
 
         [JsonPropertyName("modifiedBy")]
         public string ModifiedBy { get; set; } = string.Empty;

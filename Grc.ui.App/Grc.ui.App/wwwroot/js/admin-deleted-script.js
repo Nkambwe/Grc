@@ -87,8 +87,8 @@ function initDeletedTable() {
                 frozen: true, formatter: () => `<span class="record-tab"></span>`
             },
             {
-                title: "USERNAME",
-                field: "userName",
+                title: "FULL NAME",
+                field: "displayName",
                 minWidth: 200,
                 widthGrow: 4,
                 headerSort: true,
@@ -96,13 +96,14 @@ function initDeletedTable() {
                 formatter: (cell) => `<span class="clickable-title" onclick="viewRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`
             },
             {
-                title: "FULL NAME",
-                field: "displayName",
+                title: "USERNAME",
+                field: "userName",
                 minWidth: 200,
                 widthGrow: 4,
                 headerSort: true,
                 frozen: true
             },
+            { title: "PF NUMBER", field: "pfNumber", minWidth: 200 },
             {
                 title: "EMAIL ADDRESS",
                 field: "emailAddress",
@@ -111,85 +112,9 @@ function initDeletedTable() {
                 headerSort: true,
                 frozen: true
             },
+            { title: "DEPARTMENT", field: "departmentName", minWidth: 300 },
             { title: "ROLE", field: "roleName", minWidth: 300 },
             { title: "ROLE GROUP", field: "roleGroup", minWidth: 300 },
-            { title: "PF NUMBER", field: "pfNumber", minWidth: 200 },
-            {
-                title: "ACTIVE",
-                field: "isActive",
-                formatter: function (cell) {
-                    let rowData = cell.getRow().getData();
-                    let value = rowData.isActive;
-                    let color = value === true ? "#08A11C" : "#FF2E80";
-                    let text = value === true ? "Active" : "Blocked";
-                    console.log("User status >> " + text);
-                    return `<div style="
-                                display:flex;
-                                align-items:center;
-                                justify-content:center;
-                                width:100%;
-                                height:100%;
-                                border-radius:50px;
-                                color:${color || "#D6D6D6"};
-                                font-weight:bold;">
-                                ${text}
-                            </div>`;
-                },
-                hozAlign: "center",
-                headerHozAlign: "center",
-                minWidth: 250
-            },
-            {
-                title: "VERIFIED",
-                field: "isVerified",
-                formatter: function (cell) {
-                    let rowData = cell.getRow().getData();
-                    let value = rowData.isVerified;
-                    let color = value !== true? "#FF9704" : "#08A11C";
-                    let text = value === true ? "Verified" : "Pending";
-                    return `<div style="
-                                display:flex;
-                                align-items:center;
-                                justify-content:center;
-                                width:100%;
-                                height:100%;
-                                border-radius:50px;
-                                color:${color || "#D6D6D6"};
-                                font-weight:bold;">
-                                ${text}
-                            </div>`;
-                },
-                hozAlign: "center",
-                headerHozAlign: "center",
-                minWidth: 250
-            },
-            {
-                title: "CREATED ON",
-                formatter: function (cell) {
-                    const value = cell.getRow().getData().createdOn;
-                    if (!value) return "";
-
-                    const date = new Date(value);
-
-                    const day = String(date.getDate()).padStart(2, "0");
-                    const month = String(date.getMonth() + 1).padStart(2, "0");
-                    const year = date.getFullYear();
-                    const formattedDate = `${day}-${month}-${year}`;
-
-                    return `
-                            <div style="
-                                display:flex;
-                                align-items:center;
-                                justify-content:center;
-                                font-weight:bold;">
-                                <span>${formattedDate}</span>
-                            </div>`;
-                },
-                width: 200,
-                hozAlign: "center",
-                headerHozAlign: "center",
-                headerSort: false
-            },
             { title: "", field: "endTab", maxWidth: 50, headerSort: false, formatter: () => `<span class="record-tab"></span>` }
         ]
     });
@@ -202,6 +127,55 @@ function initDeletedSearch() {
 
 }
 
+function deleteUser(id) {
+    if (!id && id !== 0) {
+        Swal.fire({
+            title: "Delete user account",
+            text: "User ID is required",
+            showCancelButton: false,
+            okButtonText: "Ok"
+        })
+        return;
+    }
+
+    Swal.fire({
+        title: "Delete User Account",
+        text: "Are you sure you want to delete this user account?",
+        showCancelButton: true,
+        confirmButtonColor: "#450354",
+        confirmButtonText: "Delete",
+        cancelButtonColor: "#f41369",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        $.ajax({
+            url: `/grc/compliance/register/policies-delete/${encodeURIComponent(id)}`,
+            type: 'DELETE',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getPolicyAntiForgeryToken()
+            },
+            success: function (res) {
+                if (res && res.success) {
+                    toastr.success(res.message || "User account deleted successfully.");
+                    policyRegisterTable.setPage(1, true);
+                } else {
+                    toastr.error(res?.message || "Delete failed.");
+                }
+            },
+            error: function () {
+                toastr.error("Request failed.");
+            }
+        });
+    });
+}
+
 $(document).ready(function () {
     initDeletedTable();
+
+    $(".action-btn-admin-home").on("click", function () {
+        window.location.href = '/admin/support';
+    });
+
 });

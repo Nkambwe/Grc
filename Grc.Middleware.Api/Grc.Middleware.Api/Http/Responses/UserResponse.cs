@@ -60,8 +60,14 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("verified")]
         public bool IsVerified { get; set; }
 
+        [JsonPropertyName("isApproved")]
+        public bool IsApproved { get; set; }
+
         [JsonPropertyName("createdBy")]
         public string CreatedBy { get; set; }
+
+        [JsonPropertyName("lastLogindate")]
+        public DateTime? LastLogindate { get; set; }
 
         [JsonPropertyName("createdOn")]
         public DateTime CreatedOn { get; set; }
@@ -71,9 +77,6 @@ namespace Grc.Middleware.Api.Http.Responses {
 
         [JsonPropertyName("modifiedOn")]
         public DateTime ModifiedOn { get; set; }
-
-        [JsonPropertyName("approved")]
-        public bool IsApproved { get; set; }
 
         [JsonPropertyName("favourites")]
         public List<string> Favourites { get; set; }

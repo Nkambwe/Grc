@@ -1,5 +1,6 @@
 ﻿
 let unverifiedTable;
+
 function initUnverifiedTable() {
     unverifiedTable = new Tabulator("#unverifiedTable", {
         ajaxURL: "/admin/support/users/unverified-list",
@@ -87,8 +88,8 @@ function initUnverifiedTable() {
                 frozen: true, formatter: () => `<span class="record-tab"></span>`
             },
             {
-                title: "USERNAME",
-                field: "userName",
+                title: "FULL NAME",
+                field: "displayName",
                 minWidth: 200,
                 widthGrow: 4,
                 headerSort: true,
@@ -96,13 +97,14 @@ function initUnverifiedTable() {
                 formatter: (cell) => `<span class="clickable-title" onclick="viewRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`
             },
             {
-                title: "FULL NAME",
-                field: "displayName",
+                title: "USERNAME",
+                field: "userName",
                 minWidth: 200,
                 widthGrow: 4,
                 headerSort: true,
                 frozen: true
             },
+            { title: "PF NUMBER", field: "pfNumber", minWidth: 200 },
             {
                 title: "EMAIL ADDRESS",
                 field: "emailAddress",
@@ -111,9 +113,8 @@ function initUnverifiedTable() {
                 headerSort: true,
                 frozen: true
             },
+            { title: "DEPARTMENT", field: "departmentName", minWidth: 300 },
             { title: "ROLE", field: "roleName", minWidth: 300 },
-            { title: "ROLE GROUP", field: "roleGroup", minWidth: 300 },
-            { title: "PF NUMBER", field: "pfNumber", minWidth: 200 },
             {
                 title: "ACTIVE",
                 field: "isActive",
@@ -123,30 +124,6 @@ function initUnverifiedTable() {
                     let color = value === true ? "#08A11C" : "#FF2E80";
                     let text = value === true ? "Active" : "Blocked";
                     console.log("User status >> " + text);
-                    return `<div style="
-                                display:flex;
-                                align-items:center;
-                                justify-content:center;
-                                width:100%;
-                                height:100%;
-                                border-radius:50px;
-                                color:${color || "#D6D6D6"};
-                                font-weight:bold;">
-                                ${text}
-                            </div>`;
-                },
-                hozAlign: "center",
-                headerHozAlign: "center",
-                minWidth: 250
-            },
-            {
-                title: "VERIFIED",
-                field: "isVerified",
-                formatter: function (cell) {
-                    let rowData = cell.getRow().getData();
-                    let value = rowData.isVerified;
-                    let color = value !== true? "#FF9704" : "#08A11C";
-                    let text = value === true ? "Verified" : "Pending";
                     return `<div style="
                                 display:flex;
                                 align-items:center;
@@ -202,8 +179,57 @@ function initUnverifiedSearch() {
 
 }
 
+function verifyUser(id) {
+    if (!id && id !== 0) {
+        Swal.fire({
+            title: "Verify user",
+            text: "User ID is required",
+            showCancelButton: false,
+            okButtonText: "Ok"
+        })
+        return;
+    }
+
+    Swal.fire({
+        title: "Lock User",
+        text: "Are you sure you want to verify this user account?",
+        showCancelButton: true,
+        confirmButtonColor: "#450354",
+        confirmButtonText: "Verify",
+        cancelButtonColor: "#f41369",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        $.ajax({
+            url: `/grc/compliance/register/policies-delete/${encodeURIComponent(id)}`,
+            type: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getPolicyAntiForgeryToken()
+            },
+            success: function (res) {
+                if (res && res.success) {
+                    toastr.success(res.message || "User account verified successfully.");
+                    policyRegisterTable.setPage(1, true);
+                } else {
+                    toastr.error(res?.message || "Lock failed.");
+                }
+            },
+            error: function () {
+                toastr.error("Request failed.");
+            }
+        });
+    });
+}
+
 $(document).ready(function () {
     initUnverifiedTable();
+
+    $(".action-btn-admin-home").on("click", function () {
+        window.location.href = '/admin/support';
+    });
+
 });
 
 

@@ -183,7 +183,7 @@
                                 </li>
 
                                 <li class="sidebar-item with-submenu">
-                                    <a asp-controller="Support" asp-action="GetDeletedAccounts" asp-area="Admin">
+                                    <a asp-controller="Support" asp-action="DeletedUsers" asp-area="Admin">
                                         <span class="menu-icon">
                                             <i class="mdi mdi-account-remove-outline"></i>
                                         </span>
@@ -403,8 +403,13 @@
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery-validation/dist/jquery.validate.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/datatables/datatables.min.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/toastr/toastr.min.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/select-2/js/select2.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/bootstrap/dist/js/bootstrap.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/date-controls/moment.min.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/date-controls/daterangepicker.min.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/flastpicker/flatpickr.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jstree/jstree.min.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/component-script.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-script.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/department-units-script.js");

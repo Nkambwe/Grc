@@ -17,6 +17,9 @@ namespace Grc.Middleware.Api.Helpers {
                 mail.To.Add(sendTo);
                 mail.Subject = subject;
                 mail.Body =body;
+                if (!string.IsNullOrWhiteSpace(cc)) {
+                    mail.CC.Add(cc);
+                }
                 mail.IsBodyHtml = true;
                 SmtpClient smtpClient = new("pearlbank-com.mail.eo.outlook.com") {
                     Port = port,
@@ -45,7 +48,9 @@ namespace Grc.Middleware.Api.Helpers {
                 mail.To.Add(sendTo);
                 mail.Subject = subject;
                 mail.Body = body;
-                mail.CC.Add(cc);
+                if (!string.IsNullOrWhiteSpace(cc)) {
+                    mail.CC.Add(cc);
+                }
                 mail.IsBodyHtml = true;
                 SmtpClient smtpClient = new("pearlbank-com.mail.eo.outlook.com") {
                     Port = port,
@@ -73,7 +78,9 @@ namespace Grc.Middleware.Api.Helpers {
                 mail.To.Add(sendTo);
                 mail.Subject = subject;
                 mail.Body = body;
-                mail.CC.Add(cc);
+                if (!string.IsNullOrWhiteSpace(cc)) {
+                    mail.CC.Add(cc);
+                }
                 mail.IsBodyHtml = true;
                 SmtpClient smtpClient = new("pearlbank-com.mail.eo.outlook.com") {
                     Port = port,
@@ -101,7 +108,9 @@ namespace Grc.Middleware.Api.Helpers {
                 mail.To.Add(sendTo);
                 mail.Subject = subject;
                 mail.Body = body;
-                mail.CC.Add(cc);
+                if (!string.IsNullOrWhiteSpace(cc)) {
+                    mail.CC.Add(cc);
+                }
                 mail.IsBodyHtml = true;
                 SmtpClient smtpClient = new("pearlbank-com.mail.eo.outlook.com") {
                     Port = port,

@@ -288,10 +288,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcT3BlcmF0aW9uc1xfVmlld1N0YXJ0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Anonymouse/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQW5vbnltb3VzZVxJbmRleC5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Projects/cs/GRC/github_17102025/Grc/Grc.ui.App/Grc.ui.App/Views/Application/ComplianceSettings.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXBwbGljYXRpb25cQ29tcGxpYW5jZVNldHRpbmdzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 

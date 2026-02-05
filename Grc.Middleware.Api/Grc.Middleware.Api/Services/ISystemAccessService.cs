@@ -11,6 +11,7 @@ namespace Grc.Middleware.Api.Services {
     public interface ISystemAccessService: IBaseService {
 
         #region System Users
+
         bool UserExists(Expression<Func<SystemUser, bool>> predicate, bool excludeDeleted = false);
 
         Task<bool> UserExistsAsync(Expression<Func<SystemUser, bool>> predicate, bool excludeDeleted = false, CancellationToken token = default);
@@ -28,6 +29,8 @@ namespace Grc.Middleware.Api.Services {
         Task<bool> ChangePasswordAsync(long recordId, string passwordHash, string username);
 
         Task<bool> ResetPasswordAsync(long recordId, string passwordHash, string username);
+
+        Task<bool> SuspendAccountAsync(long recordId, string username);
 
         bool UpdateUser(UserRecordRequest request, string username, bool includeDeleted = false);
 

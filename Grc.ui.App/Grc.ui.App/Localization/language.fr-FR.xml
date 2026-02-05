@@ -609,6 +609,9 @@
 	<LocaleResource Name="Component.Table.Search.Authority">
 		<Value>Search authorities... </Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Label.Authority">
+		<Value>Report Authority</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Search.DocTypes">
 		<Value>Search types... </Value>
 	</LocaleResource>
@@ -708,6 +711,10 @@
 	<LocaleResource Name="Component.Table.Policy.Department.Name">
 		<Value>Attached Department</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Department.Select">
+		<Value>Select department...</Value>
+	</LocaleResource>
+
 	<LocaleResource Name="Component.Table.Policy.Aligned">
 		<Value>Aligned with Policy</Value>
 	</LocaleResource>
@@ -838,8 +845,6 @@
 	<LocaleResource Name="Component.Table.Select.ControlName">
 		<Value>Select control...</Value>
 	</LocaleResource>
-
-
 	<LocaleResource Name="Component.Table.Law.Label.Type">
 		<Value>Law/Regulation Type</Value>
 	</LocaleResource>
@@ -991,16 +996,22 @@
 		<Value>Report Frequency</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.ApprovedBy">
-		<Value>Approved By</Value>
+		<Value>Approver</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.ApprovedBy.Select">
-		<Value>Select approver</Value>
+		<Value>Select approver...</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.Details">
 		<Value>Policy/Regulation Info</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.Review">
 		<Value>Policy Review</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Approval">
+		<Value>Policy Approval</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Policy.Notification">
+		<Value>Policy Notifications</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Policy.Task.LastDate">
 		<Value>Last Review</Value>
@@ -2204,13 +2215,13 @@
 		<Value>Is Breached</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Submitted.Reason">
-		<Value>Reason for delayed submisstion</Value>
+		<Value>Reason for delayed submission</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Submitted.SubmittedBy">
 		<Value>Submitted By</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Submitted.Department">
-		<Value>Responsible Department</Value>
+		<Value>Responsible Person</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Submitted.Header">
 		<Value>Report/Return Submission Update</Value>
@@ -2252,7 +2263,7 @@
 		<Value>Circular Requirement</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Circulars.Submission.Label.Receive-date">
-		<Value>Recieve Date</Value>
+		<Value>Receive Date</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Circulars.Submission.Label.Deadline-date">
 		<Value>Deadline</Value>
@@ -2279,7 +2290,7 @@
 		<Value>Comments</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Circulars.Issues.Label.Recieved-on">
-		<Value>Recieve Date</Value>
+		<Value>Receive Date</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Circulars.Issues.Label.IsDeleted">
 		<Value>Mark as deleted</Value>
@@ -2305,6 +2316,34 @@
 	<LocaleResource Name="Component.Table.Returns.Header.Frequency.Returns">
 		<Value>Frequency Returns/Reports</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Label.Name">
+		<Value>Return Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Label.Type">
+		<Value>Return Type</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Label.Type.Select">
+		<Value>Select type...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Label.Type">
+		<Value>Return Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Label.Statute.Select">
+		<Value>Select law...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Statute">
+		<Value>Enforcement Law</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Label.Status.Select">
+		<Value>Select law...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Status">
+		<Value>Statue</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Returns.Deleted">
+		<Value>Remove Report</Value>
+	</LocaleResource>
+
 	<LocaleResource Name="Component.Table.Returns.Header.Frequency.Reports.List">
 		<Value>Returns/Report List</Value>
 	</LocaleResource>
@@ -2330,13 +2369,22 @@
 		<Value>Audit Findings</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.Audit.MonthLess">
-		<Value>Exceptions due less than a month</Value>
+		<Value>Due less than a month</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Key.Audit.TwoMonthLess">
-		<Value>Exceptions due less than two month</Value>
+		<Value>Due in a month</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Audit.TwoToThreeMonthLess">
+		<Value>Due two to six months</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.Audit.AboveSixMonthLess">
+		<Value>Due less than a month</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Audit.Title.AuditReport">
 		<Value>Audit Report View</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audit.Type.Branch">
+		<Value>Branch</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Audit.Label.Reference">
 		<Value>Reference</Value>
@@ -2362,9 +2410,8 @@
 	<LocaleResource Name="Component.Table.Audit.Label.Overdue">
 		<Value>Overdue Findings</Value>
 	</LocaleResource>
-
-	<LocaleResource Name="Component.Table.Policy.Additional">
-		<Value>Additional Information</Value>
+	<LocaleResource Name="Component.Table.Policy.Aligned">
+		<Value>Policy is aligned</Value>
 	</LocaleResource>
 	<LocaleResource Name="Component.Table.Circular.Header">
 		<Value>Manage Circulars</Value>
@@ -2429,4 +2476,250 @@
 	<LocaleResource Name="Component.Table.Circular.Label.Select.Status">
 		<Value>Select status...</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.User.Label.FirstName">
+		<Value>First Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.User.Label.Middlename">
+		<Value>Middle Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.User.Label.LastName">
+		<Value>Last Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.User.Label.Username">
+		<Value>Username</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.User.Label.DisplayName">
+		<Value>Display Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.User.Label.Email">
+		<Value>Email Address</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.User.Label.PFNumber">
+		<Value>PF Number</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.User.Label.Phone">
+		<Value>Phone Number</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.User.Label.Deactivate">
+		<Value>Active Account</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.User.Label.Role">
+		<Value>System Role</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.User.Label.Role.Select">
+		<Value>Select role...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.User.Label.RoleGroup">
+		<Value>Role Group</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.User.Label.Department">
+		<Value>Department</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.User.Label.Department.Select">
+		<Value>Select department...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.User.Label.Unit">
+		<Value>Department Unit</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.User.Label.Unit.Select">
+		<Value>Select unit..</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.User.Label.Branch">
+		<Value>Branch</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.User.Label.Branch.Select">
+		<Value>Select branch...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Key.audit-home">
+		<Value>Audit Types</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Type.Header">
+		<Value>Manage Audit Types</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Type.Code">
+		<Value>Type Code</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Type.Name">
+		<Value>Type Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Type.Description">
+		<Value>Type Description</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits Report.Header">
+		<Value>Manage Audit Reports</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Report.Label.Reference">
+		<Value>REF NO.</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Report.Label.Name">
+		<Value>REPORT NAME</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Report.Label.Summery">
+		<Value>REPORT SUMMERY</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Report.Label.Date">
+		<Value>REPORT DATE</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Report.Label.Date">
+		<Value>RESPONSE DATE</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Report.Label.Deleted">
+		<Value>REMOVE REPORT</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Report.Label.Type">
+		<Value>AUDIT TYPE</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Report.Select.Type">
+		<Value>Select type...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Report.Label.Status">
+		<Value>REPORT STATUS</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Report.Select.Status">
+		<Value>Select status...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Report.Label.Additional">
+		<Value>ADDITIONAL NOTES</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Report.Label.Findings">
+		<Value>FINDINGS</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Report.Label.Management">
+		<Value>MANAGEMENT NOTES</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Report.Label.ReportDate">
+		<Value>REPORT DATE</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Report.Label.ResolveDate">
+		<Value>RESPONSE DATE</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Audit.Header">
+		<Value>Manage Audits</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Audit.Label.Name">
+		<Value>Audit Name</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Audit.Label.Deleted">
+		<Value>Audit Removed</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Select.Authority">
+		<Value>Authority</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Audit.Label.Type">
+		<Value>Audit Type</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Audit.Label.Description">
+		<Value>Audit Description</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Button.Category">
+		<Value>New Category</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Audit.Category">
+		<Value>Audit Categories</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Category.Audits">
+		<Value>Category Audits</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Header.Top">
+		<Value>Audit List</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Header.Audit">
+		<Value>Category Audits</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Button.Audit">
+		<Value>New Audit</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Header.Reports">
+		<Value>Audit Reports</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Button.Report">
+		<Value>New Report</Value>
+	</LocaleResource>
+
+	<LocaleResource Name="Component.Table.Audits.Exceptions.Button.New">
+		<Value>New Finding</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Exceptions.Header.Title">
+		<Value>Manage Exceptions</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Exceptions.Label.Findings">
+		<Value>Findings</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Exceptions.Label.Proposal">
+		<Value>Proposed Action</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Exceptions.Label.Status">
+		<Value>Action Status</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Exceptions.Label.Status.Select">
+		<Value>Select status...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Exceptions.Label.Target">
+		<Value>Target Date</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Exceptions.Label.Executioner">
+		<Value>Executioner</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Exceptions.Label.Deleted">
+		<Value>Remove Exception</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Exceptions.Label.Responsibility">
+		<Value>Responsible</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Exceptions.Label.Responsibility.Select">
+		<Value>Select responsible...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Exceptions.Label.Recomendations">
+		<Value>Recommendation</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Exceptions.Label.RiskLevel">
+		<Value>Risk Level</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Exceptions.Label.RiskLevel.Select">
+		<Value>Select risk level...</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Exceptions.Label.RiskRate">
+		<Value>Risk Level</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Exceptions.Label.Notes">
+		<Value>Notes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Exceptions.Label.Corrective">
+		<Value>Collective Action</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Updates.Button.New">
+		<Value>New Update</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Update.Header.Title">
+		<Value>MANAGE UPDATES</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Update.Label.SendReminder">
+		<Value>Send Reminders</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Update.Label.Notes">
+		<Value>Update Notes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Update.Label.EmailList">
+		<Value>Notification Mailing List(Enter emails separated by commas)</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Update.Label.Reminder">
+		<Value>Notification Message (Enter body content only)</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Update.Label.SendDate">
+		<Value>Send Date</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Update.Label.AddedBy">
+		<Value>Added By</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Update.Label.Delete">
+		<Value>Remove notes</Value>
+	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audits.Type.Deleted">
+		<Value>Remove type</Value>
+	</LocaleResource>
+
+	<LocaleResource Name="App.Menu.Compliance.Configuration.Settings">
+		<Value>Compliance Settings</Value>
+	</LocaleResource>
+
 </Language>

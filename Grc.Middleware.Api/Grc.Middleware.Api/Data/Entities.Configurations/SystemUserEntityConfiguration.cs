@@ -12,7 +12,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
             builder.Property(u => u.PFNumber).HasColumnName("Pf_No").HasColumnType("NVARCHAR(MAX)").IsRequired();
             builder.Property(u => u.FirstName).HasColumnName("FirstName").HasColumnType("NVARCHAR(MAX)").IsRequired();
             builder.Property(u => u.LastName).HasColumnName("LastName").HasColumnType("NVARCHAR(MAX)").IsRequired();
-            builder.Property(u => u.OtherName).HasColumnName("OtherName").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
+            builder.Property(u => u.MiddleName).HasColumnName("OtherName").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(u => u.PhoneNumber).HasColumnName("Phone").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(u => u.EmailAddress).HasColumnName("Email").HasColumnType("VARCHAR(MAX)").IsRequired();
             builder.Property(u => u.Username).HasColumnName("Username").HasColumnType("NVARCHAR(MAX)").IsRequired();
