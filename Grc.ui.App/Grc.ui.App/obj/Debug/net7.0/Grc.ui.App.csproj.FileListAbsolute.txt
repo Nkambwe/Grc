@@ -580,7 +580,6 @@ C:\Projects\Grc\Grc\Grc.ui.App\Grc.ui.App\obj\Debug\net7.0\Grc.ui.App.MvcApplica
 C:\Projects\Grc\Grc\Grc.ui.App\Grc.ui.App\obj\Debug\net7.0\Grc.ui.App.RazorAssemblyInfo.cache
 C:\Projects\Grc\Grc\Grc.ui.App\Grc.ui.App\obj\Debug\net7.0\Grc.ui.App.RazorAssemblyInfo.cs
 C:\Projects\Grc\Grc\Grc.ui.App\Grc.ui.App\obj\Debug\net7.0\Grc.ui.App.sourcelink.json
-C:\Projects\Grc\Grc\Grc.ui.App\Grc.ui.App\obj\Debug\net7.0\scopedcss\Views\Shared\_Anonymouse_Layout.cshtml.rz.scp.css
 C:\Projects\Grc\Grc\Grc.ui.App\Grc.ui.App\obj\Debug\net7.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Projects\Grc\Grc\Grc.ui.App\Grc.ui.App\obj\Debug\net7.0\scopedcss\bundle\Grc.ui.App.styles.css
 C:\Projects\Grc\Grc\Grc.ui.App\Grc.ui.App\obj\Debug\net7.0\scopedcss\projectbundle\Grc.ui.App.bundle.scp.css

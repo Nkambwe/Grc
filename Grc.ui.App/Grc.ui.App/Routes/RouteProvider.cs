@@ -34,6 +34,26 @@
                 pattern: "admin/support/users-deactivated",
                 defaults: new { area = "Admin", controller = "Support", action = "DeletedUsers" }
             );
+            routeBuilder.MapControllerRoute(
+                name: "admin-support-users-lockedusers",
+                pattern: "admin/support/users/locked-accounts",
+                defaults: new { area = "Admin", controller = "Support", action = "GetLockedUsers" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-support-users-unapprovedUsers",
+                pattern: "admin/support/users/unapproved-list",
+                defaults: new { area = "Admin", controller = "Support", action = "GetUnapprovedUsers" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-support-users-unverified-user-list",
+                pattern: "admin/support/users/unverified-list",
+                defaults: new { area = "Admin", controller = "Support", action = "GetUnverifiedUsers" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-support-users-deleted-list",
+                pattern: "admin/support/users/deleted-accounts",
+                defaults: new { area = "Admin", controller = "Support", action = "GetDeletedAccounts" }
+            );
 
             /*----------------------- System activity routes*/
             routeBuilder.MapControllerRoute(

@@ -261,7 +261,6 @@ function openUserPane(title, record, isEdit) {
     $('#newUserContainer').addClass('active');
 }
 
-
 function viewRecord(id) {
     Swal.fire({
         title: 'Loading...',
@@ -457,15 +456,11 @@ function exportUsers() {
 }
 
 function approveUsers() {
-    alert("Approve user button clicked")
+     window.location.href = '/admin/support';
 }
 
 function lockUsers() {
-    alert("Lock account button clicked");
-}
-
-function managePassword() {
-     alert("User password button clicked");
+     window.location.href = '/admin/support';
 }
 
 function closeUserPanel() {
@@ -615,10 +610,6 @@ $(document).ready(function () {
 
     $(".action-btn-lock-account").on("click", function () {
         lockUsers();
-    });
-
-    $(".action-btn-password-user").on("click", function () {
-        managePassword();
     });
 
 });

@@ -389,5 +389,15 @@ namespace Grc.ui.App.Enums {
         OBLIGATION_REPORT_DATA = 201,
         [Description("Retrieve exceptions report data")]
         EXCEPTIONS_REPORT_DATA = 202,
+        [Description("Locked user accounts retrieved")]
+        USER_LOCKED_ACCOUNTS = 203,
+        [Description("Unapproved user accounts retrieved")]
+        UNAPPROVED_ACCOUNTS = 204,
+        [Description("Unverified user accounts retrieved")]
+        UNVERIFIED_ACCOUNTS = 205,
+        [Description("Deleted user accounts retrieved")]
+        DELETED_ACCOUNTS = 206,
+        [Description("Lock user account")]
+        LOCK_ACCOUNT =207,
     }
 }

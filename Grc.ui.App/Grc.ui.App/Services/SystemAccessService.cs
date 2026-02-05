@@ -394,37 +394,132 @@ namespace Grc.ui.App.Services {
             }
         }
 
-        public async Task<GrcResponse<PagedResponse<UserResponse>>> GetPagedUsersAsync(TableListRequest request)
-        {
-            if (request == null)
-            {
-                var error = new GrcResponseError(
-                    GrcStatusCodes.BADREQUEST,
-                    "Invalid Request object",
-                    "Request object cannot be null"
-                );
-
+        public async Task<GrcResponse<PagedResponse<UserResponse>>> GetPagedUsersAsync(TableListRequest request) {
+            if (request == null) {
+                var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object", "Request object cannot be null");
                 Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                 return new GrcResponse<PagedResponse<UserResponse>>(error);
             }
 
-            try
-            {
+            try {
                 var endpoint = $"{EndpointProvider.Sam.Users}/pagedusers";
                 return await HttpHandler.PostAsync<TableListRequest, PagedResponse<UserResponse>>(endpoint, request);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
                 await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
-                var error = new GrcResponseError(
-                    GrcStatusCodes.SERVERERROR,
-                    "An unexpected error occurred",
-                    "Cannot proceed! An error occurred, please try again later"
-                );
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred","Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<PagedResponse<UserResponse>>(error);
             }
+        }
+
+        public async Task<GrcResponse<PagedResponse<UserResponse>>> GetUnapprovedUsersAsync(TableListRequest request) {
+            if (request == null) {
+                var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object", "Request object cannot be null");
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<PagedResponse<UserResponse>>(error);
+            }
+
+            try {
+                var endpoint = $"{EndpointProvider.Sam.Users}/unapproved";
+                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<UserResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred","Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<PagedResponse<UserResponse>>(error);
+            }
+        }
+
+        public async Task<GrcResponse<PagedResponse<UserResponse>>> GetUnverifiedUsersAsync(TableListRequest request) {
+            if (request == null) {
+                var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object", "Request object cannot be null");
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<PagedResponse<UserResponse>>(error);
+            }
+
+            try {
+                var endpoint = $"{EndpointProvider.Sam.Users}/unverified-users";
+                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<UserResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred","Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<PagedResponse<UserResponse>>(error);
+            }
+        }
+
+        public async Task<GrcResponse<PagedResponse<UserResponse>>> GetDeletedUsersAsync(TableListRequest request) {
+            if (request == null) {
+                var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object", "Request object cannot be null");
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<PagedResponse<UserResponse>>(error);
+            }
+
+            try {
+                var endpoint = $"{EndpointProvider.Sam.Users}/deleted-users";
+                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<UserResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred","Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<PagedResponse<UserResponse>>(error);
+            }
+        }
+
+        public async Task<GrcResponse<PagedResponse<UserResponse>>> GetLockedUsersAsync(TableListRequest request) {
+            if (request == null) {
+                var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object", "Request object cannot be null");
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<PagedResponse<UserResponse>>(error);
+            }
+
+            try {
+                var endpoint = $"{EndpointProvider.Sam.Users}/locked-accounts";
+                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<UserResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred","Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<PagedResponse<UserResponse>>(error);
+            }
+        }
+        
+        public async Task<GrcResponse<ServiceResponse>> LockUserAsync(GrcIdRequest request) {
+            if (request == null) {
+                var error = new GrcResponseError(GrcStatusCodes.BADREQUEST,"User record cannot be null","Invalid user record");
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+
+            try {
+                //..map request
+                Logger.LogActivity($"LOCK USER REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Sam.Users}/lock-user";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcIdRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "SYSTEM-ACCESS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred",httpEx.Message);
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+
         }
 
         public async Task<GrcResponse<ServiceResponse>> CreateUserAsync(UserViewModel userRecord, long userId, string ipAddress)
@@ -656,6 +751,62 @@ namespace Grc.ui.App.Services {
                 Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
                 await ProcessErrorAsync(ex.Message, "SYSTEM-ACCESS-SERVICE", ex.StackTrace);
                 return new GrcResponse<UsernameValidationResponse>(error);
+            }
+        }
+        
+        public async Task<GrcResponse<ServiceResponse>> ApproveUserAsync(ApproveUserViewModel userRecord, long userId, string ipAddress) {
+            if (userRecord == null) {
+                var error = new GrcResponseError( GrcStatusCodes.BADREQUEST, "User record cannot be null","Invalid user record");
+
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+
+            try {
+                //..build request model
+                var request = new GrcApproveUserRequest(){ 
+                    Id = userRecord.Id,
+                    IsApproved = userRecord.IsApproved,
+                    IsVerified = userRecord.IsVerified,
+                    UserId = userId,
+                    IPAddress = ipAddress,
+                    Action = Activity.USER_EDITED.GetDescription()
+                };
+                
+
+                //..map request
+                Logger.LogActivity($"UPDATE USER REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Sam.Users}/approve-user";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcApproveUserRequest, ServiceResponse>(endpoint, request);
+            }
+            catch (HttpRequestException httpEx)
+            {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "SYSTEM-ACCESS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.BADGATEWAY,
+                    "Network error occurred",
+                    httpEx.Message
+                );
+                return new GrcResponse<ServiceResponse>(error);
+
+            }
+            catch (GRCException ex)
+            {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(
+                    GrcStatusCodes.SERVERERROR,
+                    "An unexpected error occurred",
+                    "Cannot proceed! An error occurred, please try again later"
+                );
+                return new GrcResponse<ServiceResponse>(error);
             }
         }
 

@@ -26,6 +26,7 @@ namespace Grc.Middleware.Api.Controllers {
         private readonly IPinnedItemService _pinnedItemService;
         private readonly IMailTaskQueue _mailTask;
         private readonly IRoleRepository _roleService;
+         private readonly ISystemConfigurationService _configService;
         public SamController(IObjectCypher cypher, 
                             IServiceLoggerFactory loggerFactory, 
                             IMapper mapper, 
@@ -37,6 +38,7 @@ namespace Grc.Middleware.Api.Controllers {
                             IErrorNotificationService errorService,
                             IMailTaskQueue mailTask,
                             IRoleRepository roleService,
+                            ISystemConfigurationService configService,
                             ISystemErrorService systemErrorService) 
                             : base(cypher, loggerFactory, mapper, companyService, environment,
                                   errorService, systemErrorService) {
@@ -45,6 +47,7 @@ namespace Grc.Middleware.Api.Controllers {
             _pinnedItemService = pinnedItemService;
             _mailTask = mailTask;
             _roleService = roleService;
+            _configService = configService;
         }
 
         #region Authentication
@@ -410,8 +413,15 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                
+                //..check if deleted records to be included
+                var config = await _configService.GetConfigurationAsync<bool>("GENERAL_INCLUDEDELETEDRECORD");
+                bool includeDeleted = false;
+                if (config != null) {
+                    includeDeleted = config.Value;
+                }
 
-                var roleGroups = await _accessService.GetGroupItemsAsync(request.RecordId, false);
+                var roleGroups = await _accessService.GetGroupItemsAsync(request.RecordId, includeDeleted);
                 Logger.LogActivity($"MIDDLEWARE RESPONSE: {roleGroups.Count}");
                 return Ok(new GrcResponse<List<RoleGroupItemResponse>>(roleGroups));
             } catch (Exception ex) {
@@ -432,8 +442,15 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                
+                //..check if deleted records to be included
+                var config = await _configService.GetConfigurationAsync<bool>("GENERAL_INCLUDEDELETEDRECORD");
+                bool includeDeleted = false;
+                if (config != null) {
+                    includeDeleted = config.Value;
+                }
 
-                var units = await _accessService.GetUnitItemsAsync(request.RecordId, false);
+                var units = await _accessService.GetUnitItemsAsync(request.RecordId, includeDeleted);
                 Logger.LogActivity($"MIDDLEWARE RESPONSE: {units.Count}");
                 return Ok(new GrcResponse<List<UnitItemResponse>>(units));
             } catch (Exception ex) {
@@ -610,8 +627,15 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                
+                //..check if deleted records to be included
+                var config = await _configService.GetConfigurationAsync<bool>("GENERAL_INCLUDEDELETEDRECORD");
+                bool includeDeleted = false;
+                if (config != null) {
+                    includeDeleted = config.Value;
+                }
 
-                var count = await _accessService.GetTotalUsersCountAsync();
+                var count = await _accessService.GetTotalUsersCountAsync(includeDeleted);
                 //..map response
                 var countResponse = new RecordCountResponse() {
                     Count = count
@@ -641,8 +665,15 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                
+                //..check if deleted records to be included
+                var config = await _configService.GetConfigurationAsync<bool>("GENERAL_INCLUDEDELETEDRECORD");
+                bool includeDeleted = false;
+                if (config != null) {
+                    includeDeleted = config.Value;
+                }
 
-                var count = await _accessService.GetActiveUsersCountAsync();
+                var count = await _accessService.GetActiveUsersCountAsync(includeDeleted);
                 //..map response
                 var countResponse = new RecordCountResponse() {
                     Count = count
@@ -1088,8 +1119,8 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                var result = await _accessService.GetAllUsersAsync();
-
+                
+                var result = await _accessService.GetAllUsersAsync(false);
                 if (result == null || !result.Any())
                 {
                     var error = new ResponseError(
@@ -1142,15 +1173,12 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                var pageResult = await _accessService.PagedUsersAsync(request.PageIndex, request.PageSize, true);
-
+                
+                var pageResult = await _accessService.PagedUsersAsync(request.PageIndex, request.PageSize, false);
                 if (pageResult.Entities == null || !pageResult.Entities.Any())
                 {
                     var error = new ResponseError(
-                        ResponseCodes.SUCCESS,
-                        "No data",
-                        "No user records found"
-                    );
+                        ResponseCodes.SUCCESS,"No data","No user records found");
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
 
                     return Ok(new GrcResponse<PagedResponse<UserResponse>>(new PagedResponse<UserResponse>(
@@ -1203,6 +1231,349 @@ namespace Grc.Middleware.Api.Controllers {
             {
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<PagedResponse<UserResponse>>(error));
+            }
+        }
+        
+        [HttpPost("sam/users/unapproved")]
+        public async Task<IActionResult> GetUnapprovedUsers([FromBody] ListRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<UserResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                
+                var pageResult = await _accessService.GetUapprovedUsersAsync(request.PageIndex, request.PageSize, false);
+
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS,"No data","No user records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<UserResponse>>(new PagedResponse<UserResponse>(new List<UserResponse>(),0, pageResult.Page, pageResult.Size)));
+                }
+
+                // Map to UserResponse (removed unnecessary null! and AsQueryable)
+                var users = pageResult.Entities.Select(Mapper.Map<UserResponse>).ToList();
+
+                // Decrypt fields - define once outside loop
+                var fieldsToDecrypt = new[] { "FirstName", "LastName", "MiddleName", "EmailAddress", "PhoneNumber", "PFNumber" };
+
+                // Decrypt in parallel for better performance with large datasets
+                var decryptedUsers = users
+                    .AsParallel()
+                    .AsOrdered()
+                    .Select(user => Cypher.DecryptProperties(user, fieldsToDecrypt))
+                    .ToList();
+
+                // Apply search filter if provided
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                    var searchTerm = request.SearchTerm.ToLower();
+
+                    decryptedUsers = decryptedUsers.Where(u =>
+                        (u.Username?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.FirstName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.MiddleName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.LastName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.DepartmentCode?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.DepartmentName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.EmailAddress?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.PFNumber?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.RoleName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                    ).ToList();
+                }
+
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(decryptedUsers)}");
+                return Ok(new GrcResponse<PagedResponse<UserResponse>>(new PagedResponse<UserResponse>(
+                    decryptedUsers,
+                    pageResult.Count,
+                    pageResult.Page,
+                    pageResult.Size
+                )));
+            }
+            catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<UserResponse>>(error));
+            }
+        }
+        
+        [HttpPost("sam/users/unverified-users")]
+        public async Task<IActionResult> GetUnverifiedUsers([FromBody] ListRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<UserResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                
+                var pageResult = await _accessService.GetUapprovedUsersAsync(request.PageIndex, request.PageSize, false);
+
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS,"No data","No user records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<UserResponse>>(new PagedResponse<UserResponse>(new List<UserResponse>(),0, pageResult.Page, pageResult.Size)));
+                }
+
+                // Map to UserResponse (removed unnecessary null! and AsQueryable)
+                var users = pageResult.Entities.Select(Mapper.Map<UserResponse>).ToList();
+
+                // Decrypt fields - define once outside loop
+                var fieldsToDecrypt = new[] { "FirstName", "LastName", "MiddleName", "EmailAddress", "PhoneNumber", "PFNumber" };
+
+                // Decrypt in parallel for better performance with large datasets
+                var decryptedUsers = users
+                    .AsParallel()
+                    .AsOrdered()
+                    .Select(user => Cypher.DecryptProperties(user, fieldsToDecrypt))
+                    .ToList();
+
+                // Apply search filter if provided
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                    var searchTerm = request.SearchTerm.ToLower();
+
+                    decryptedUsers = decryptedUsers.Where(u =>
+                        (u.Username?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.FirstName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.MiddleName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.LastName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.DepartmentCode?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.DepartmentName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.EmailAddress?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.PFNumber?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.RoleName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                    ).ToList();
+                }
+
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(decryptedUsers)}");
+                return Ok(new GrcResponse<PagedResponse<UserResponse>>(new PagedResponse<UserResponse>(
+                    decryptedUsers,
+                    pageResult.Count,
+                    pageResult.Page,
+                    pageResult.Size
+                )));
+            }
+            catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<UserResponse>>(error));
+            }
+        }
+        
+        [HttpPost("sam/users/locked-accounts")]
+        public async Task<IActionResult> GetLockedUsers([FromBody] ListRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<UserResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                
+                var pageResult = await _accessService.GetLockedUsersAsync(request.PageIndex, request.PageSize, false);
+
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS,"No data","No user records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<UserResponse>>(new PagedResponse<UserResponse>(new List<UserResponse>(),0, pageResult.Page, pageResult.Size)));
+                }
+
+                // Map to UserResponse (removed unnecessary null! and AsQueryable)
+                var users = pageResult.Entities.Select(Mapper.Map<UserResponse>).ToList();
+
+                // Decrypt fields - define once outside loop
+                var fieldsToDecrypt = new[] { "FirstName", "LastName", "MiddleName", "EmailAddress", "PhoneNumber", "PFNumber" };
+
+                // Decrypt in parallel for better performance with large datasets
+                var decryptedUsers = users
+                    .AsParallel()
+                    .AsOrdered()
+                    .Select(user => Cypher.DecryptProperties(user, fieldsToDecrypt))
+                    .ToList();
+
+                // Apply search filter if provided
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                    var searchTerm = request.SearchTerm.ToLower();
+
+                    decryptedUsers = decryptedUsers.Where(u =>
+                        (u.Username?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.FirstName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.MiddleName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.LastName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.DepartmentCode?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.DepartmentName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.EmailAddress?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.PFNumber?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.RoleName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                    ).ToList();
+                }
+
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(decryptedUsers)}");
+                return Ok(new GrcResponse<PagedResponse<UserResponse>>(new PagedResponse<UserResponse>(
+                    decryptedUsers,
+                    pageResult.Count,
+                    pageResult.Page,
+                    pageResult.Size
+                )));
+            }
+            catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<UserResponse>>(error));
+            }
+        }
+
+        [HttpPost("sam/users/deleted-users")]
+        public async Task<IActionResult> GetDeletedUsers([FromBody] ListRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<UserResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                
+                var pageResult = await _accessService.GetDeletedUsersAsync(request.PageIndex, request.PageSize, true);
+
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS,"No data","No user records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<UserResponse>>(new PagedResponse<UserResponse>(new List<UserResponse>(),0, pageResult.Page, pageResult.Size)));
+                }
+
+                // Map to UserResponse (removed unnecessary null! and AsQueryable)
+                var users = pageResult.Entities.Select(Mapper.Map<UserResponse>).ToList();
+
+                // Decrypt fields - define once outside loop
+                var fieldsToDecrypt = new[] { "FirstName", "LastName", "MiddleName", "EmailAddress", "PhoneNumber", "PFNumber" };
+
+                // Decrypt in parallel for better performance with large datasets
+                var decryptedUsers = users
+                    .AsParallel()
+                    .AsOrdered()
+                    .Select(user => Cypher.DecryptProperties(user, fieldsToDecrypt))
+                    .ToList();
+
+                // Apply search filter if provided
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                    var searchTerm = request.SearchTerm.ToLower();
+
+                    decryptedUsers = decryptedUsers.Where(u =>
+                        (u.Username?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.FirstName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.MiddleName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.LastName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.DepartmentCode?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.DepartmentName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.EmailAddress?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.PFNumber?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.RoleName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                    ).ToList();
+                }
+
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(decryptedUsers)}");
+                return Ok(new GrcResponse<PagedResponse<UserResponse>>(new PagedResponse<UserResponse>(
+                    decryptedUsers,
+                    pageResult.Count,
+                    pageResult.Page,
+                    pageResult.Size
+                )));
+            }
+            catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<UserResponse>>(error));
+            }
+        }
+        
+        [HttpPost("sam/users/approve-user")]
+        public async Task<IActionResult> ApproveUser([FromBody] ApproveUserRequest request) {
+            try {
+                Logger.LogActivity("Update system role", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The user record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _accessService.UserExistsAsync(r => r.Id == request.Id)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "User record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleResponse>(error));
+                }
+                
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username =currentUser != null?currentUser.Username:$"{request.UserId}";
+
+                //..update role
+                var result = await _accessService.ApproveUserAsync(request.Id, request.IsApproved, request.IsVerified, username);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "User record updated successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+                else
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update user record record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            }
+            catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+        
+        [HttpPost("sam/users/lock-user")]
+        public async Task<IActionResult> LockUser([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Update system role", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The user record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _accessService.UserExistsAsync(r => r.Id == request.RecordId)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "User record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleResponse>(error));
+                }
+                
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username =currentUser != null?currentUser.Username:$"{request.UserId}";
+
+                //..update user record
+                await _accessService.LockUserAccountAsync(request.RecordId,username);
+                var response = new GeneralResponse {
+                    Status = true,
+                    StatusCode = (int)ResponseCodes.SUCCESS,
+                    Message = "User record updated successfully"
+                };
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
             }
         }
 

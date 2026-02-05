@@ -155,6 +155,42 @@
                                     </a>
                                 </li>
 
+                                <li class="sidebar-item with-submenu">
+                                    <a asp-controller="Support" asp-action="LockedUsers" asp-area="Admin">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-account-lock-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">Locked Accounts</span>
+                                    </a>
+                                </li>
+
+                                <li class="sidebar-item with-submenu">
+                                    <a asp-controller="Support" asp-action="UnverifiedUser" asp-area="Admin">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-account-switch"></i>
+                                        </span>
+                                        <span class="sidebar-text">Verification</span>
+                                    </a>
+                                </li>
+
+                                <li class="sidebar-item with-submenu">
+                                    <a asp-controller="Support" asp-action="UnapprovedUsers" asp-area="Admin">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-account-multiple-check-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">Approvals</span>
+                                    </a>
+                                </li>
+
+                                <li class="sidebar-item with-submenu">
+                                    <a asp-controller="Support" asp-action="GetDeletedAccounts" asp-area="Admin">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-account-remove-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">Deleted Accounts</span>
+                                    </a>
+                                </li>
+
                                 <li class="sidebar-item">
                                     <a asp-controller="Configuration" asp-action="SystemActivity" asp-area="Admin">
                                         <span class="menu-icon">
