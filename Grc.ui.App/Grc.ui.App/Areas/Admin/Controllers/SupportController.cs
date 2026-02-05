@@ -1,4 +1,5 @@
-﻿using Grc.ui.App.Defaults;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using Grc.ui.App.Defaults;
 using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -1394,12 +1395,271 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
 
                 return Ok(new { last_page = totalPages, total_records = list.TotalCount, data = pagedEntities });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving system users: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Ok(new { last_page = 0, data = new List<object>() });
+            }
+        }
+        
+        public async Task<IActionResult> GetUnapprovedUsers([FromBody] TableListRequest request) {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError) Logger.LogActivity("USER DATA ERROR: Failed to get user");
+
+                var currentUser = userResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.UNAPPROVED_ACCOUNTS.GetDescription();
+
+                var result = await _accessService.GetUnapprovedUsersAsync(request);
+                PagedResponse<UserResponse> list = result.Data ?? new();
+
+                var pagedEntities = (list.Entities ?? new List<UserResponse>())
+                    .Select(user => new {
+                        id = user.Id,
+                        firstName = user.FirstName,
+                        lastName = user.LastName,
+                        middleName = user.MiddleName,
+                        userName = user.UserName,
+                        emailAddress = user.Email,
+                        displayName = user.DisplayName,
+                        phoneNumber = user.PhoneNumber,
+                        pfNumber = user.PFNumber,
+                        solId = user.SolId,
+                        roleId = user.RoleId,
+                        roleName = user.RoleName,
+                        roleGroup = user.RoleGroup,
+                        departmentId = user.DepartmentId,
+                        departmentName = user.DepartmentName,
+                        unitCode = user.UnitCode,
+                        isActive = user.IsActive,
+                        isVerified = user.IsVerified,
+                        createdOn = user.CreatedOn,
+                        createdBy = user.CreatedBy,
+                        modifiedOn = user.ModifiedOn,
+                        modifiedBy = user.ModifiedBy
+                    }).ToList();
+
+                var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
+
+                return Ok(new { last_page = totalPages, total_records = list.TotalCount, data = pagedEntities });
             }
             catch (Exception ex)
             {
                 Logger.LogActivity($"Error retrieving system users: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
                 return Ok(new { last_page = 0, data = new List<object>() });
+            }
+        }
+        
+        public async Task<IActionResult> GetLockedUsers([FromBody] TableListRequest request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError) Logger.LogActivity("USER DATA ERROR: Failed to get user");
+
+                var currentUser = userResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.USER_LOCKED_ACCOUNTS.GetDescription();
+
+                var result = await _accessService.GetLockedUsersAsync(request);
+                PagedResponse<UserResponse> list = result.Data ?? new();
+
+                var pagedEntities = (list.Entities ?? new List<UserResponse>())
+                    .Select(user => new {
+                        id = user.Id,
+                        firstName = user.FirstName,
+                        lastName = user.LastName,
+                        middleName = user.MiddleName,
+                        userName = user.UserName,
+                        emailAddress = user.Email,
+                        displayName = user.DisplayName,
+                        phoneNumber = user.PhoneNumber,
+                        pfNumber = user.PFNumber,
+                        solId = user.SolId,
+                        roleId = user.RoleId,
+                        roleName = user.RoleName,
+                        roleGroup = user.RoleGroup,
+                        departmentId = user.DepartmentId,
+                        departmentName = user.DepartmentName,
+                        unitCode = user.UnitCode,
+                        isActive = user.IsActive,
+                        isVerified = user.IsVerified,
+                        createdOn = user.CreatedOn,
+                        createdBy = user.CreatedBy,
+                        modifiedOn = user.ModifiedOn,
+                        modifiedBy = user.ModifiedBy
+                    }).ToList();
+
+                var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
+
+                return Ok(new { last_page = totalPages, total_records = list.TotalCount, data = pagedEntities });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving locked user accounts: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Ok(new { last_page = 0, data = new List<object>() });
+            }
+        }
+        
+        public async Task<IActionResult> GetUnverifiedUsers([FromBody] TableListRequest request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError) Logger.LogActivity("USER DATA ERROR: Failed to get user");
+
+                var currentUser = userResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.UNVERIFIED_ACCOUNTS.GetDescription();
+
+                var result = await _accessService.GetUnverifiedUsersAsync(request);
+                PagedResponse<UserResponse> list = result.Data ?? new();
+
+                var pagedEntities = (list.Entities ?? new List<UserResponse>())
+                    .Select(user => new {
+                        id = user.Id,
+                        firstName = user.FirstName,
+                        lastName = user.LastName,
+                        middleName = user.MiddleName,
+                        userName = user.UserName,
+                        emailAddress = user.Email,
+                        displayName = user.DisplayName,
+                        phoneNumber = user.PhoneNumber,
+                        pfNumber = user.PFNumber,
+                        solId = user.SolId,
+                        roleId = user.RoleId,
+                        roleName = user.RoleName,
+                        roleGroup = user.RoleGroup,
+                        departmentId = user.DepartmentId,
+                        departmentName = user.DepartmentName,
+                        unitCode = user.UnitCode,
+                        isActive = user.IsActive,
+                        isVerified = user.IsVerified,
+                        createdOn = user.CreatedOn,
+                        createdBy = user.CreatedBy,
+                        modifiedOn = user.ModifiedOn,
+                        modifiedBy = user.ModifiedBy
+                    }).ToList();
+
+                var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
+
+                return Ok(new { last_page = totalPages, total_records = list.TotalCount, data = pagedEntities });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving locked user accounts: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Ok(new { last_page = 0, data = new List<object>() });
+            }
+        }
+        
+        public async Task<IActionResult> GetDeletedAccounts([FromBody] TableListRequest request) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError) Logger.LogActivity("USER DATA ERROR: Failed to get user");
+
+                var currentUser = userResponse.Data;
+                request.UserId = currentUser.UserId;
+                request.IPAddress = ipAddress;
+                request.Action = Activity.DELETED_ACCOUNTS.GetDescription();
+
+                var result = await _accessService.GetDeletedUsersAsync(request);
+                PagedResponse<UserResponse> list = result.Data ?? new();
+
+                var pagedEntities = (list.Entities ?? new List<UserResponse>())
+                    .Select(user => new {
+                        id = user.Id,
+                        firstName = user.FirstName,
+                        lastName = user.LastName,
+                        middleName = user.MiddleName,
+                        userName = user.UserName,
+                        emailAddress = user.Email,
+                        displayName = user.DisplayName,
+                        phoneNumber = user.PhoneNumber,
+                        pfNumber = user.PFNumber,
+                        solId = user.SolId,
+                        roleId = user.RoleId,
+                        roleName = user.RoleName,
+                        roleGroup = user.RoleGroup,
+                        departmentId = user.DepartmentId,
+                        departmentName = user.DepartmentName,
+                        unitCode = user.UnitCode,
+                        isActive = user.IsActive,
+                        isVerified = user.IsVerified,
+                        createdOn = user.CreatedOn,
+                        createdBy = user.CreatedBy,
+                        modifiedOn = user.ModifiedOn,
+                        modifiedBy = user.ModifiedBy
+                    }).ToList();
+
+                var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
+
+                return Ok(new { last_page = totalPages, total_records = list.TotalCount, data = pagedEntities });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving locked user accounts: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Ok(new { last_page = 0, data = new List<object>() });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ApproveUser([FromBody] ApproveUserViewModel request) {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                if (request == null) {
+                    return Ok(new { success = false, message = "Invalid user data" });
+                }
+
+                var result = await _accessService.ApproveUserAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update user record" });
+
+                var data = result.Data;
+                return Ok(new{ success = data.Status, message = data.Message,data = new {status = data.Status,}});
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error update user record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> LockUserAccount(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                if (id == 0) return BadRequest(new { success = false, message = "User Id is required" });
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.LOCK_ACCOUNT.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = true
+                };
+
+                var result = await _accessService.LockUserAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to lock user record" });
+
+                return Ok(new { success = result.Data.Status, message = result.Data.Message });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error locking user record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
             }
         }
 

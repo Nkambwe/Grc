@@ -89,6 +89,30 @@ namespace Grc.ui.App.Services {
         /// <returns></returns>
         Task<GrcResponse<PagedResponse<UserResponse>>> GetPagedUsersAsync(TableListRequest request);
         /// <summary>
+        /// Get a list of unverified users
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<GrcResponse<PagedResponse<UserResponse>>> GetUnverifiedUsersAsync(TableListRequest request);
+        /// <summary>
+        /// Get a list of locked user accounts
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<GrcResponse<PagedResponse<UserResponse>>> GetLockedUsersAsync(TableListRequest request);
+        /// <summary>
+        /// Get a list of uapproved user records
+        /// </summary>
+        /// <param name="request">Pagenated request</param>
+        /// <returns></returns>
+        Task<GrcResponse<PagedResponse<UserResponse>>> GetUnapprovedUsersAsync(TableListRequest request);
+        /// <summary>
+        /// Get a list of uapproved user records
+        /// </summary>
+        /// <param name="request">Pagenated request</param>
+        /// <returns></returns>
+        Task<GrcResponse<PagedResponse<UserResponse>>> GetDeletedUsersAsync(TableListRequest request);
+        /// <summary>
         /// Delete system user from the system
         /// </summary>
         /// <param name="request">User record to delete</param>
@@ -125,10 +149,25 @@ namespace Grc.ui.App.Services {
         /// <param name="ipAddress">IP Address for current user</param>
         /// <returns>Task containing update status of this user</returns>
         Task<GrcResponse<ServiceResponse>> UpdateUserAsync(UserViewModel userRecord, long userId, string ipAddress);
+        /// <summary>
+        /// Verify or approve user record
+        /// </summary>
+        /// <param name="userRecord"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        Task<GrcResponse<ServiceResponse>> ApproveUserAsync(ApproveUserViewModel userRecord, long userId, string ipAddress);
        
+        /// <summary>
+        /// Lock user account
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<GrcResponse<ServiceResponse>> LockUserAsync(GrcIdRequest request);
         Task<GrcResponse<GrcUserSupportResponse>> GetUserSupportAsync(long userId, string iPAddress);
         
         Task<GrcResponse<List<RoleGroupItemResponse>>> GetSelectedRoleGroupsAsync(long userId, long id, string ipAddress);
+        
         Task<GrcResponse<List<UnitItemResponse>>> GetSelectedUnitsAsync(long userId, long id, string ipAddress);
 
         #endregion

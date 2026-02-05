@@ -21,7 +21,7 @@ namespace Grc.Middleware.Api.Services {
 
         Task<SystemUser> GetUserByUsernameAsync(string username);
 
-        Task<List<SystemUser>> GetAllUsersAsync();
+        Task<List<SystemUser>> GetAllUsersAsync(bool includeDeleted);
 
         Task<bool> InsertUserAsync(SystemUser userRecord);
 
@@ -40,16 +40,20 @@ namespace Grc.Middleware.Api.Services {
         Task<PagedResult<SystemUser>> PagedUsersAsync(int pageIndex = 1, int pageSize = 5, bool includeDeleted = false);
 
         Task<PagedResult<SystemUser>> PageAllUsersAsync(CancellationToken token, int pageIndex, int pageSize, Expression<Func<SystemUser, bool>> predicate = null, bool includeDeleted = false);
-
+        Task<PagedResult<SystemUser>> GetUapprovedUsersAsync(int pageIndex, int pageSize, bool includeDeleted);
+        Task<PagedResult<SystemUser>> GetUnverifiedUsersAsync(int pageIndex, int pageSize, bool includeDeleted);
+        Task<PagedResult<SystemUser>> GetDeletedUsersAsync(int pageIndex, int pageSize, bool includeDeleted);
+        Task<PagedResult<SystemUser>> GetLockedUsersAsync(int pageIndex, int pageSize, bool includeDeleted);
+        Task<bool> ApproveUserAsync(long userId, bool isApproved, bool isVerified, string currentUser);
         #endregion
 
         #region Admin Dashboard
 
         Task<AdminCountResponse> GetAdminiDashboardStatisticsAsync();
 
-        Task<int> GetActiveUsersCountAsync();
+        Task<int> GetActiveUsersCountAsync(bool includeDeleted);
 
-        Task<int> GetTotalUsersCountAsync();
+        Task<int> GetTotalUsersCountAsync(bool includeDeleted);
 
         #endregion
 
@@ -68,7 +72,7 @@ namespace Grc.Middleware.Api.Services {
 
         Task<bool> LogFailedLoginAsync(long userId, string ipAddress);
 
-        Task LockUserAccountAsync(long userId);
+        Task LockUserAccountAsync(long userId, string username="");
 
         Task<WorkspaceResponse> GetWorkspaceAsync(long userId, string ipAddress);
 
@@ -191,7 +195,7 @@ namespace Grc.Middleware.Api.Services {
         Task<ActivityLog> GetActivityLogAsync(IdRequest request);
 
         Task<PagedResult<ActivityLog>> GetPagedActivityLogAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false);
-       
+        
         #endregion
 
     }

@@ -3733,6 +3733,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "ApproveUser",
+    "RelativePath": "grc/sam/users/approve-user",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ApproveUserRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
     "Method": "AuthenticateAsync",
     "RelativePath": "grc/sam/users/auth",
     "HttpMethod": "POST",
@@ -3790,6 +3806,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.UserRecordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "GetDeletedUsers",
+    "RelativePath": "grc/sam/users/deleted-users",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
         "IsRequired": true
       }
     ],
@@ -3973,6 +4005,38 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "LockUser",
+    "RelativePath": "grc/sam/users/lock-user",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "GetLockedUsers",
+    "RelativePath": "grc/sam/users/locked-accounts",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
     "Method": "Logout",
     "RelativePath": "grc/sam/users/logout",
     "HttpMethod": "POST",
@@ -4062,6 +4126,38 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "GetUnapprovedUsers",
+    "RelativePath": "grc/sam/users/unapproved",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "GetUnverifiedUsers",
+    "RelativePath": "grc/sam/users/unverified-users",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
         "IsRequired": true
       }
     ],

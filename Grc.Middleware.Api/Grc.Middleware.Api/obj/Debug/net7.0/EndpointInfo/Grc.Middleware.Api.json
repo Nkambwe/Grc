@@ -6229,6 +6229,192 @@
         }
       }
     },
+    "/grc/sam/users/unapproved": {
+      "post": {
+        "tags": [
+          "Sam"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/sam/users/unverified-users": {
+      "post": {
+        "tags": [
+          "Sam"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/sam/users/locked-accounts": {
+      "post": {
+        "tags": [
+          "Sam"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/sam/users/deleted-users": {
+      "post": {
+        "tags": [
+          "Sam"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ListRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/sam/users/approve-user": {
+      "post": {
+        "tags": [
+          "Sam"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ApproveUserRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ApproveUserRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ApproveUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/sam/users/lock-user": {
+      "post": {
+        "tags": [
+          "Sam"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/grc/sam/roles/getrole-by-id": {
       "post": {
         "tags": [
@@ -8100,6 +8286,34 @@
           "modifiedOn": {
             "type": "string",
             "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Grc.Middleware.Api.Http.Requests.ApproveUserRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "isVerified": {
+            "type": "boolean"
+          },
+          "isApproved": {
+            "type": "boolean"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

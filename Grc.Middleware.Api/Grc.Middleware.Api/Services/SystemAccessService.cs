@@ -9,7 +9,9 @@ using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.Utils;
 using Microsoft.EntityFrameworkCore;
+using RTools_NTS.Util;
 using System;
+using System.Drawing;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -25,12 +27,12 @@ namespace Grc.Middleware.Api.Services {
 
         #region Admin Dashboard
 
-        public async Task<int> GetTotalUsersCountAsync() {
+        public async Task<int> GetTotalUsersCountAsync(bool includeDeleted) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Total User Count", "INFO");
 
             try {
-                return await uow.UserRepository.CountAsync(false);
+                return await uow.UserRepository.CountAsync(includeDeleted);
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve total user count: {ex.Message}", "ERROR");
 
@@ -44,12 +46,12 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<int> GetActiveUsersCountAsync() {
+        public async Task<int> GetActiveUsersCountAsync(bool includeDeleted) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Active User Count", "INFO");
 
             try {
-                return await uow.UserRepository.CountAsync(u => u.IsActive, false);
+                return await uow.UserRepository.CountAsync(u => u.IsActive, includeDeleted);
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve active user count: {ex.Message}", "ERROR");
 
@@ -357,7 +359,7 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task LockUserAccountAsync(long userId) {
+        public async Task LockUserAccountAsync(long userId, string username="") {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Lock user accounts for User ID {userId}", "INFO");
 
@@ -378,6 +380,12 @@ namespace Grc.Middleware.Api.Services {
                         user.IsVerified = false;
                         user.LastLoginDate = DateTime.Now;
                         user.LastModifiedOn = DateTime.Now;
+
+                        if (!string.IsNullOrWhiteSpace(username)) {
+                            user.LastModifiedBy = username;
+                        } else {
+                            user.LastModifiedBy = "SYSTEM";
+                        }
 
                         //..check entity state
                         _ = await uow.UserRepository.UpdateAsync(user);
@@ -725,14 +733,14 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<List<SystemUser>> GetAllUsersAsync()
+        public async Task<List<SystemUser>> GetAllUsersAsync(bool includeDeleted)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity("Retrieve list of user records", "INFO");
 
             try
             {
-                var users = await uow.UserRepository.GetAllAsync(true, u => u.Role, u => u.Department);
+                var users = await uow.UserRepository.GetAllAsync(includeDeleted, u => u.Role, u => u.Department);
                 var usersJson = JsonSerializer.Serialize(users, new JsonSerializerOptions
                 {
                     WriteIndented = true,
@@ -1121,18 +1129,14 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<PagedResult<SystemUser>> PageAllUsersAsync(CancellationToken token, int page, int size, Expression<Func<SystemUser, bool>> predicate = null, bool includeDeleted = false)
-        {
+        public async Task<PagedResult<SystemUser>> PageAllUsersAsync(CancellationToken token, int page, int size, Expression<Func<SystemUser, bool>> predicate = null, bool includeDeleted = false) {
 
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve paged User records", "INFO");
 
-            try
-            {
+            try{
                 return await uow.UserRepository.PageAllAsync(token, page, size, predicate, includeDeleted);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve user records : {ex.Message}", "ERROR");
                 var innerEx = ex.InnerException;
                 while (innerEx != null)
@@ -1156,6 +1160,180 @@ namespace Grc.Middleware.Api.Services {
 
                 //..save error object to the database
                 _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<PagedResult<SystemUser>> GetUapprovedUsersAsync(int pageIndex, int pageSize, bool includeDeleted) {
+            
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve unapproved User records", "INFO");
+
+            try{
+                return await uow.UserRepository.PageAllAsync(CancellationToken.None, pageIndex, pageSize, includeDeleted, u => !u.IsApproved);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve user records : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+        
+        public async Task<PagedResult<SystemUser>> GetUnverifiedUsersAsync(int pageIndex, int pageSize, bool includeDeleted) {
+            
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve unapproved User records", "INFO");
+
+            try{
+                return await uow.UserRepository.PageAllAsync(CancellationToken.None, pageIndex, pageSize, includeDeleted, u => !u.IsVerified);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve user records : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+        
+        public async Task<PagedResult<SystemUser>> GetDeletedUsersAsync(int pageIndex, int pageSize, bool includeDeleted) {
+            
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve unapproved User records", "INFO");
+
+            try{
+                return await uow.UserRepository.PageAllAsync(CancellationToken.None, pageIndex, pageSize, includeDeleted, u => u.IsDeleted);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve user records : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+        
+        public async Task<PagedResult<SystemUser>> GetLockedUsersAsync(int pageIndex, int pageSize, bool includeDeleted) {
+            
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve unapproved User records", "INFO");
+
+            try{
+                return await uow.UserRepository.PageAllAsync(CancellationToken.None, pageIndex, pageSize, includeDeleted, u => !u.IsActive);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve user records : {ex.Message}", "ERROR");
+                var innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new()
+                {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+        
+        public async Task<bool> ApproveUserAsync(long userId, bool isApproved, bool isVerified, string currentUser)
+        {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Upprove or verify System User", "INFO");
+
+            try
+            {
+                var user = await uow.UserRepository.GetAsync(a => a.Id == userId);
+                if (user != null) {
+                    user.IsVerified = isVerified;
+                    user.IsApproved = isApproved;
+                    user.LastModifiedOn = DateTime.Now;
+                    user.LastModifiedBy = $"{currentUser}";
+
+                    //..check entity state
+                    _ = await uow.UserRepository.UpdateAsync(user, true);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
+                    Logger.LogActivity($"System User state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Failed to update System User record: {ex.Message}", "ERROR");
+                 await LogErrorAsync(uow, ex);
                 throw;
             }
         }
