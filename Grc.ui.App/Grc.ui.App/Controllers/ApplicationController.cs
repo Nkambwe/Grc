@@ -535,11 +535,11 @@ namespace Grc.ui.App.Controllers {
         }
 
         private string DetermineRedirectUrl(string roleGroup) {
-            if(!string.IsNullOrWhiteSpace(roleGroup)){
+            if (!string.IsNullOrWhiteSpace(roleGroup)) {
                 //..route to admin
                 if (RoleCategory.DEVELOPER.ToString().Equals(roleGroup.ToUpper()) ||
                     RoleCategory.SYSTEM.ToString().Equals(roleGroup.ToUpper()) ||
-                    RoleCategory.ADMINISTRATOR.ToString().Equals(roleGroup.ToUpper())||
+                    RoleCategory.ADMINISTRATOR.ToString().Equals(roleGroup.ToUpper()) ||
                     RoleCategory.APPLICATIONSUPPORT.ToString().Equals(roleGroup.ToUpper())) {
                     return Url.Action("Index", "Support", new { area = "Admin" });
                 }
@@ -558,15 +558,9 @@ namespace Grc.ui.App.Controllers {
                     return Url.Action("Dashboard", "Application");
                 }
 
-                //..anonymous user dashboard
-                //if (RoleCategory.SYSTEM.ToString().Equals(roleGroup.ToUpper()) ||
-                //    RoleCategory.DEVELOPER.ToString().Equals(roleGroup.ToUpper())) {
-                //    return Url.Action("Dashboard", "Anonymouse");
-                //}
-
             }
 
-            // Redirect to login for unknow roles
+            //..redirect to login for unknow roles
             return Url.Action("Login", "Application");
         }
 

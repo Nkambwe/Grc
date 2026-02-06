@@ -35,13 +35,23 @@ namespace Grc.ui.App.Services {
 
                 _availableLanguages = new List<SystemLanguage>();
                 foreach (var filePath in _fileProvider.EnumerateFiles(_fileProvider.MapPath("~/Localization/"), "*.xml")) {
-                    var xmlDocument = new XmlDocument();
-                    xmlDocument.Load(filePath);
+                    var settings = new XmlReaderSettings {
+                        DtdProcessing = DtdProcessing.Prohibit,
+                        XmlResolver = null
+                    };
+
+                    var xmlDocument = new XmlDocument {
+                        XmlResolver = null
+                    };
+
+                    using var reader = XmlReader.Create(filePath, settings);
+                    xmlDocument.Load(reader);
 
                     //get language code
                     var languageCode = "";
+
                     //we get the file name format: language.{languagecode}.xml
-                    var r = new Regex(Regex.Escape("language.") + "(.*?)" + Regex.Escape(".xml"));
+                    var r = new Regex(@"^language\.(.*?)\.xml$", RegexOptions.IgnoreCase);
                     var matches = r.Matches(_fileProvider.GetFileName(filePath));
                     foreach (Match match in matches) {
                         languageCode = match.Groups[1].Value;

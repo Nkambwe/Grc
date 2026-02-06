@@ -15,6 +15,11 @@
                 defaults: new { area = "Admin", controller = "Support", action = "ActiveUsers" }
             );
             routeBuilder.MapControllerRoute(
+               name: "admin-support-activeusers-export",
+               pattern: "admin/support/users/export-list",
+               defaults: new { area = "Admin", controller = "Support", action = "ExportUserList" }
+           );
+            routeBuilder.MapControllerRoute(
                 name: "admin-support-lockedusers",
                 pattern: "admin/support/users-locked",
                 defaults: new { area = "Admin", controller = "Support", action = "LockedUsers" }
@@ -30,8 +35,8 @@
                 defaults: new { area = "Admin", controller = "Support", action = "UnverifiedUser" }
             );
             routeBuilder.MapControllerRoute(
-                name: "admin-support-deletedUsers",
-                pattern: "admin/support/users-deactivated",
+                name: "admin-support-deleted-users",
+                pattern: "admin/support/users/deleted",
                 defaults: new { area = "Admin", controller = "Support", action = "DeletedUsers" }
             );
             routeBuilder.MapControllerRoute(
@@ -102,6 +107,16 @@
                 name: "admin-users-approve",
                 pattern: "admin/support/users-approve",
                 defaults: new { area = "Admin", controller = "Support", action = "ApproveUser" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-users-lock-user",
+                pattern: "admin/support/users/lock-user/{id:long}",
+                defaults: new { area = "Admin", controller = "Support", action = "LockUserAccount" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-users-password-reset",
+                pattern: "admin/support/users/password-reset/{id:long}",
+                defaults: new { area = "Admin", controller = "Support", action = "PasswordReset" }
             );
             routeBuilder.MapControllerRoute(
                 name: "admin-users-delete",

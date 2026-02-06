@@ -2383,6 +2383,9 @@
 	<LocaleResource Name="Component.Table.Audit.Title.AuditReport">
 		<Value>Audit Report View</Value>
 	</LocaleResource>
+	<LocaleResource Name="Component.Table.Audit.Type.Branch">
+		<Value>Branch</Value>
+	</LocaleResource>
 	<LocaleResource Name="Component.Table.Audit.Label.Reference">
 		<Value>Reference</Value>
 	</LocaleResource>

@@ -164,6 +164,11 @@ namespace Grc.ui.App.Services {
         /// <param name="request"></param>
         /// <returns></returns>
         Task<GrcResponse<ServiceResponse>> LockUserAsync(GrcIdRequest request);
+
+        Task<GrcResponse<ServiceResponse>> PasswordResetAsync(GrcIdRequest request);
+
+        Task<GrcResponse<ServiceResponse>> ChangePasswordAsync(GrcPasswordChangeRequest request);
+
         Task<GrcResponse<GrcUserSupportResponse>> GetUserSupportAsync(long userId, string iPAddress);
         
         Task<GrcResponse<List<RoleGroupItemResponse>>> GetSelectedRoleGroupsAsync(long userId, long id, string ipAddress);

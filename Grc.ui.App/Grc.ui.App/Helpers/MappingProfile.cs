@@ -31,7 +31,7 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(dest => dest.IsVerified, opt => opt.MapFrom(src => false))
                 .ForMember(dest => dest.IsLogged, opt => opt.MapFrom(src => false))
                 .ForMember(dest => dest.Action, opt => opt.MapFrom(src => Activity.COMPANYREGISTRATION.GetDescription()))
-                .ForMember(dest => dest.EncryptFields, opt => opt.MapFrom(src => new string[]{"FirstName", "LastName", "OtherName", "EmailAddress", "PhoneNumber", "PFNumber", "Password" }))
+                .ForMember(dest => dest.EncryptFields, opt => opt.MapFrom(src => new string[]{"FirstName", "LastName", "MiddleName", "EmailAddress", "PhoneNumber", "PFNumber", "Password" }))
                 .ForMember(dest => dest.DecryptFields, opt => opt.MapFrom(src => new string[]{ }))
                 .ForMember(dest => dest.CreatedOn, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => "1"))
@@ -55,7 +55,7 @@ namespace Grc.ui.App.Helpers {
                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
                .ForMember(dest => dest.IsVerified, opt => opt.MapFrom(src => src.IsVerified))
                .ForMember(dest => dest.IsLogged, opt => opt.MapFrom(src => src.IsLogged))
-               .ForMember(dest => dest.EncryptFields, opt => opt.MapFrom(src => new string[] { "FirstName", "LastName", "OtherName", "EmailAddress", "PhoneNumber", "PFNumber", "Password" }))
+               .ForMember(dest => dest.EncryptFields, opt => opt.MapFrom(src => new string[] { "FirstName", "LastName", "MiddleName", "EmailAddress", "PhoneNumber", "PFNumber", "Password" }))
                .ForMember(dest => dest.DecryptFields, opt => opt.MapFrom(src => new string[] { }))
                .ForMember(dest => dest.CreatedOn, opt => opt.MapFrom(src => DateTime.Now))
                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => string.Empty))
@@ -119,7 +119,7 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(u => u.IsValidated, reg => reg.MapFrom(o => o.IsUsernameValidated))
                 .ForMember(u => u.Action, opt => opt.MapFrom(src => Activity.AUTHENTICATE.GetDescription()))
                 .ForMember(u => u.EncryptFields, opt => opt.MapFrom(src => new string[]{ }))
-                .ForMember(u => u.DecryptFields, opt => opt.MapFrom(src => new string[]{"FirstName", "LastName", "OtherName", "Email", "PhoneNumber", "PFNumber"}));
+                .ForMember(u => u.DecryptFields, opt => opt.MapFrom(src => new string[]{"FirstName", "LastName", "MiddleName", "Email", "PhoneNumber", "PFNumber"}));
                 
             //..map logout model
             CreateMap<LogoutModel,LogoutRequest>()
@@ -127,7 +127,7 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(u => u.IPAddress, reg => reg.MapFrom(o => o.IPAddress))
                 .ForMember(u => u.Action, opt => opt.MapFrom(src => Activity.AUTHENTICATE.GetDescription()))
                 .ForMember(u => u.EncryptFields, opt => opt.MapFrom(src => new string[]{ }))
-                .ForMember(u => u.DecryptFields, opt => opt.MapFrom(src => new string[]{"FirstName", "LastName", "OtherName", "Email", "PhoneNumber", "PFNumber"}));
+                .ForMember(u => u.DecryptFields, opt => opt.MapFrom(src => new string[]{"FirstName", "LastName", "MiddleName", "Email", "PhoneNumber", "PFNumber"}));
 
             //..map actions
             CreateMap<QuickAction, QuickActionModel>()

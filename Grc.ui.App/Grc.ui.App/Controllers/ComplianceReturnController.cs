@@ -1571,7 +1571,7 @@ namespace Grc.ui.App.Controllers {
                                  issueDescription = (issue.IssueDescription ?? string.Empty).Trim(),
                                  issueResolution = issue.Resolution ?? string.Empty,
                                  issueDeleted = issue.IsDeleted,
-                                 issueStatus = issue.Status ?? "UNKNOWN",
+                                 issueStatus = issue.Status ?? "OPEN",
                                  issueRecieved = issue.ReceivedOn,
                                  issueResolved = issue.ResolvedOn ?? DateTime.Now.AddYears(30),
                              }).ToArray():
@@ -1767,7 +1767,7 @@ namespace Grc.ui.App.Controllers {
                     issueDescription = (response.IssueDescription ?? string.Empty).Trim(),
                     issueResolution = response.Resolution ?? string.Empty,
                     issueDeleted = response.IsDeleted,
-                    issueStatus = response.Status ?? "UNKNOWN",
+                    issueStatus = response.Status ?? "OPEN",
                     issueRecieved = response.ReceivedOn,
                     issueResolved = response.ResolvedOn
                 };
@@ -1809,7 +1809,7 @@ namespace Grc.ui.App.Controllers {
                         issueDescription = (issue.IssueDescription ?? string.Empty).Trim(),
                         issueResolution = issue.Resolution ?? string.Empty,
                         issueDeleted = issue.IsDeleted,
-                        issueStatus = issue.Status ?? "UNKNOWN",
+                        issueStatus = issue.Status ?? "OPEN",
                         issueRecieved = issue.ReceivedOn,
                         issueResolved = issue.ResolvedOn
                     }).OrderBy(s => s.issueStatus).ToList();

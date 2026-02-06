@@ -17,6 +17,9 @@ namespace Grc.Middleware.Api.Helpers {
                 mail.To.Add(sendTo);
                 mail.Subject = subject;
                 mail.Body =body;
+                if (!string.IsNullOrWhiteSpace(cc)) {
+                    mail.CC.Add(cc);
+                }
                 mail.IsBodyHtml = true;
                 SmtpClient smtpClient = new("pearlbank-com.mail.eo.outlook.com") {
                     Port = port,
@@ -45,7 +48,9 @@ namespace Grc.Middleware.Api.Helpers {
                 mail.To.Add(sendTo);
                 mail.Subject = subject;
                 mail.Body = body;
-                mail.CC.Add(cc);
+                if (!string.IsNullOrWhiteSpace(cc)) {
+                    mail.CC.Add(cc);
+                }
                 mail.IsBodyHtml = true;
                 SmtpClient smtpClient = new("pearlbank-com.mail.eo.outlook.com") {
                     Port = port,
@@ -73,7 +78,9 @@ namespace Grc.Middleware.Api.Helpers {
                 mail.To.Add(sendTo);
                 mail.Subject = subject;
                 mail.Body = body;
-                mail.CC.Add(cc);
+                if (!string.IsNullOrWhiteSpace(cc)) {
+                    mail.CC.Add(cc);
+                }
                 mail.IsBodyHtml = true;
                 SmtpClient smtpClient = new("pearlbank-com.mail.eo.outlook.com") {
                     Port = port,
@@ -101,7 +108,9 @@ namespace Grc.Middleware.Api.Helpers {
                 mail.To.Add(sendTo);
                 mail.Subject = subject;
                 mail.Body = body;
-                mail.CC.Add(cc);
+                if (!string.IsNullOrWhiteSpace(cc)) {
+                    mail.CC.Add(cc);
+                }
                 mail.IsBodyHtml = true;
                 SmtpClient smtpClient = new("pearlbank-com.mail.eo.outlook.com") {
                     Port = port,
@@ -154,6 +163,66 @@ namespace Grc.Middleware.Api.Helpers {
             }
         }
 
+        /// <summary>
+        /// General mail sending method
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="receivers"></param>
+        /// <param name="cc"></param>
+        /// <param name="attachments"></param>
+        /// <param name="IS"></param>
+        /// <param name="subject"></param>
+        /// <param name="body"></param>
+        /// <returns></returns>
+        public bool SendEmail(IServiceLogger logger, string[] receivers, string[] cc, string[] attachments, string IS, string subject, string body) {
+            try {
+
+                MemoryStream ms = new();
+                MailMessage m = new();
+
+                if (attachments != null) {
+                    foreach (string a in attachments) {
+                        m.Attachments.Add(new Attachment(a));
+                    }
+
+                }
+
+                logger.LogActivity($"Sending {IS} Email to " + string.Join(",", receivers));
+
+                //Loop through receivers
+                foreach (string r in receivers) {
+                    m.To.Add(new MailAddress(r));
+                }
+
+                //extra
+                foreach (string c in cc) {
+                    m.CC.Add(new MailAddress(c));
+                }
+
+
+                m.Subject = subject;
+                m.Body = body;
+                m.From = new MailAddress("Utilities@pearlbank.com", "DAILY MAIL");
+                string sender_email = "Utilities@pearlbank.com";
+                string password = "2016@Utility";
+                SmtpClient smtp = new("pearlbank-com.mail.eo.outlook.com") {
+                    Port = 25,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    Credentials = new NetworkCredential(sender_email, password)
+                };
+                smtp.Send(m);
+
+                //..log success
+                logger.LogActivity($"{IS} CSV sent successfully");
+                return true;
+            } catch (Exception exp) {
+                logger.LogActivity($"MAIL Exception >> {exp.Message} :: {exp.ToString()}", "ERROR");
+                logger.LogActivity($"{IS} CSV FAILED WITH EX: {exp.StackTrace}", "STACKTRACE");
+            }
+            return false;
+        }
+
+        #region Private Mail Body Methods
         private static string MailBody(string sendToName, string title,  string processName) {
             return $@"
 				<div style='font-family: Arial, sans-serif; color: #333; padding: 20px; background-color: #f9f9f9;'>
@@ -310,7 +379,6 @@ namespace Grc.Middleware.Api.Helpers {
                 collection.Add(new MailAddress(email));
             }
         }
-
-
+        #endregion
     }
 }

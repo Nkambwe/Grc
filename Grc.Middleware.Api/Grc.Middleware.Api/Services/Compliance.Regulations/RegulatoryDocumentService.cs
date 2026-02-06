@@ -1232,17 +1232,18 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                             return;
                         }
 
-                        var (sent, subject, body) = MailHandler.SendPolicyNotificationMail(
-                            logger,
-                            mailSettings.MailSender,
-                            ownerEmail,
-                            ownerName,
-                            complianceUsers,
-                            policyTitle,
-                            nextReviewDate,
-                            mailSettings.NetworkPort,
-                            mailSettings.SystemPassword
-                        );
+                        var (sent, subject, body) = (false, string.Empty, string.Empty);
+                        //var (sent, subject, body) = MailHandler.SendPolicyNotificationMail(
+                        //    logger,
+                        //    mailSettings.MailSender,
+                        //    ownerEmail,
+                        //    ownerName,
+                        //    complianceUsers,
+                        //    policyTitle,
+                        //    nextReviewDate,
+                        //    mailSettings.NetworkPort,
+                        //    mailSettings.SystemPassword
+                        //);
 
                         if (sent) {
                             logger.LogActivity($"Policy notification sent to {ownerEmail} for Policy {policyId}", "INFO");

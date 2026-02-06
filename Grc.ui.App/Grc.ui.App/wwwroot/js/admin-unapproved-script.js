@@ -87,8 +87,8 @@ function initUnapprovedTable() {
                 frozen: true, formatter: () => `<span class="record-tab"></span>`
             },
             {
-                title: "USERNAME",
-                field: "userName",
+                title: "FULL NAME",
+                field: "displayName",
                 minWidth: 200,
                 widthGrow: 4,
                 headerSort: true,
@@ -96,13 +96,14 @@ function initUnapprovedTable() {
                 formatter: (cell) => `<span class="clickable-title" onclick="viewRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`
             },
             {
-                title: "FULL NAME",
-                field: "displayName",
+                title: "USERNAME",
+                field: "userName",
                 minWidth: 200,
                 widthGrow: 4,
                 headerSort: true,
                 frozen: true
             },
+            { title: "PF NUMBER", field: "pfNumber", minWidth: 200 },
             {
                 title: "EMAIL ADDRESS",
                 field: "emailAddress",
@@ -111,34 +112,8 @@ function initUnapprovedTable() {
                 headerSort: true,
                 frozen: true
             },
+            { title: "DEPARTMENT", field: "departmentName", minWidth: 300 },
             { title: "ROLE", field: "roleName", minWidth: 300 },
-            { title: "ROLE GROUP", field: "roleGroup", minWidth: 300 },
-            { title: "PF NUMBER", field: "pfNumber", minWidth: 200 },
-            {
-                title: "ACTIVE",
-                field: "isActive",
-                formatter: function (cell) {
-                    let rowData = cell.getRow().getData();
-                    let value = rowData.isActive;
-                    let color = value === true ? "#08A11C" : "#FF2E80";
-                    let text = value === true ? "Active" : "Blocked";
-                    console.log("User status >> " + text);
-                    return `<div style="
-                                display:flex;
-                                align-items:center;
-                                justify-content:center;
-                                width:100%;
-                                height:100%;
-                                border-radius:50px;
-                                color:${color || "#D6D6D6"};
-                                font-weight:bold;">
-                                ${text}
-                            </div>`;
-                },
-                hozAlign: "center",
-                headerHozAlign: "center",
-                minWidth: 250
-            },
             {
                 title: "VERIFIED",
                 field: "isVerified",
@@ -164,9 +139,9 @@ function initUnapprovedTable() {
                 minWidth: 250
             },
             {
-                title: "CREATED ON",
+                title: "VERIFIED ON",
                 formatter: function (cell) {
-                    const value = cell.getRow().getData().createdOn;
+                    const value = cell.getRow().getData().modifiedOn;
                     if (!value) return "";
 
                     const date = new Date(value);
@@ -202,7 +177,56 @@ function initUnapprovedSearch() {
 
 }
 
+function approveUser(id) {
+    if (!id && id !== 0) {
+        Swal.fire({
+            title:"Approve user",
+            text: "User ID is required",
+            showCancelButton: false,
+            okButtonText: "Ok"
+        })
+        return;
+    }
+
+    Swal.fire({
+        title:"Approve User",
+        text: "Are you sure you want to approve this user?",
+        showCancelButton: true,
+        confirmButtonColor: "#450354",
+        confirmButtonText: "Approve",
+        cancelButtonColor: "#f41369",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        $.ajax({
+            url: `/grc/compliance/register/policies-delete/${encodeURIComponent(id)}`,
+            type: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getPolicyAntiForgeryToken()
+            },
+            success: function (res) {
+                if (res && res.success) {
+                    toastr.success(res.message || "User approved successfully.");
+                    policyRegisterTable.setPage(1, true);
+                } else {
+                    toastr.error(res?.message || "Approval failed.");
+                }
+            },
+            error: function () {
+                toastr.error("Request failed.");
+            }
+        });
+    });
+}
+
 $(document).ready(function () {
     initUnapprovedTable();
+
+    $(".action-btn-admin-home").on("click", function () {
+        window.location.href = '/admin/support';
+    });
+
 });
 

@@ -112,78 +112,44 @@ function initUserTable() {
                 frozen: true
             },
             { title: "ROLE", field: "roleName", minWidth: 300 },
-            { title: "ROLE GROUP", field: "roleGroup", minWidth: 300 },
+            { title: "DEPARTMENT", field: "department", minWidth: 300 },
             { title: "PF NUMBER", field: "pfNumber", minWidth: 200 },
             {
-                title: "ACTIVE",
-                field: "isActive",
+                title: "PASSWORD",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                    let value = rowData.isActive;
-                    let color = value === true ? "#08A11C" : "#FF2E80";
-                    let text = value === true ? "Active" : "Blocked";
-                    console.log("User status >> " + text);
-                    return `<div style="
-                                display:flex;
-                                align-items:center;
-                                justify-content:center;
-                                width:100%;
-                                height:100%;
-                                border-radius:50px;
-                                color:${color || "#D6D6D6"};
-                                font-weight:bold;">
-                                ${text}
-                            </div>`;
+                    return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="passwordReset(${rowData.id})">
+                        <span><i class="mdi mdi-account-key-outline" aria-hidden="true"></i></span>
+                        <span>RESET</span>
+                    </button>`;
                 },
+                width: 200,
                 hozAlign: "center",
                 headerHozAlign: "center",
-                minWidth: 250
+                headerSort: false
             },
             {
-                title: "VERIFIED",
-                field: "isVerified",
+                title: "LOCK",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                    let value = rowData.isVerified;
-                    let color = value !== true? "#FF9704" : "#08A11C";
-                    let text = value === true ? "Verified" : "Pending";
-                    return `<div style="
-                                display:flex;
-                                align-items:center;
-                                justify-content:center;
-                                width:100%;
-                                height:100%;
-                                border-radius:50px;
-                                color:${color || "#D6D6D6"};
-                                font-weight:bold;">
-                                ${text}
-                            </div>`;
+                    return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="lockUser(${rowData.id})">
+                        <span><i class="mdi mdi-account-lock-outline" aria-hidden="true"></i></span>
+                        <span>LOCK</span>
+                    </button>`;
                 },
+                width: 200,
                 hozAlign: "center",
                 headerHozAlign: "center",
-                minWidth: 250
+                headerSort: false
             },
             {
-                title: "CREATED ON",
+                title: "DELETE",
                 formatter: function (cell) {
-                    const value = cell.getRow().getData().createdOn;
-                    if (!value) return "";
-
-                    const date = new Date(value);
-
-                    const day = String(date.getDate()).padStart(2, "0");
-                    const month = String(date.getMonth() + 1).padStart(2, "0");
-                    const year = date.getFullYear();
-                    const formattedDate = `${day}-${month}-${year}`;
-
-                    return `
-                            <div style="
-                                display:flex;
-                                align-items:center;
-                                justify-content:center;
-                                font-weight:bold;">
-                                <span>${formattedDate}</span>
-                            </div>`;
+                    let rowData = cell.getRow().getData();
+                    return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteUser(${rowData.id})">
+                        <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                        <span>DELETE</span>
+                    </button>`;
                 },
                 width: 200,
                 hozAlign: "center",
@@ -230,7 +196,6 @@ function openUserPane(title, record, isEdit) {
     $('#recordId').val(record?.id || '');
     $('#isVerify').val(record?.isVerify || false);
     $('#isApprove').val(record?.isApprove || false);
-
     $('#firstName').val(record?.firstName || '');
     $('#lastName').val(record?.lastName || '');
     $('#middleName').val(record?.middleName || '');
@@ -269,8 +234,6 @@ function viewRecord(id) {
         allowEscapeKey: false,
         didOpen: () => Swal.showLoading()
     });
-
-    console.log("ID >> " + id);
     findUser(id)
         .then(record => {
             Swal.close();
@@ -452,15 +415,162 @@ function saveUserRecord(isEdit, record) {
 }
 
 function exportUsers() {
-    alert("Export Users");
+    $.ajax({
+        url: '/admin/support/users/export-list',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(userTable.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Active_users.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+    });
 }
 
 function approveUsers() {
-     window.location.href = '/admin/support';
+    window.location.href = '/admin/support/users-unapproved';
+}
+
+function lockUser(id) {
+    if (!id && id !== 0) {
+        Swal.fire({
+            title: "Lock User Account",
+            text: "User ID is required",
+            showCancelButton: false,
+            okButtonText: "Ok"
+        })
+        return;
+    }
+
+    Swal.fire({
+        title: "Lock User Account",
+        text: "Are you sure you want to lock user account?",
+        showCancelButton: true,
+        confirmButtonColor: "#450354",
+        confirmButtonText: "Lock",
+        cancelButtonColor: "#f41369",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        $.ajax({
+            url: `/admin/support/users/lock-user/${encodeURIComponent(id)}`,
+            type: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getPostToken()
+            },
+            success: function (res) {
+                if (res && res.success) {
+                    toastr.success(res.message || "User account has been locked successfully");
+                    userTable.setPage(1, true);
+                } else {
+                    toastr.error(res?.message || "Failed to lock user account");
+                }
+            },
+            error: function () {
+                toastr.error("Request failed.");
+            }
+        });
+    });
+}
+
+function deleteUser(id) {
+    if (!id && id !== 0) {
+        Swal.fire({
+            title: "Delete User",
+            text: "User ID is required",
+            showCancelButton: false,
+            okButtonText: "Ok"
+        })
+        return;
+    }
+
+    Swal.fire({
+        title: "Delete User",
+        text: "Are you sure you want to delete user account?",
+        showCancelButton: true,
+        confirmButtonColor: "#450354",
+        confirmButtonText: "Delete",
+        cancelButtonColor: "#f41369",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        $.ajax({
+            url: `/admin/support/users-delete/${encodeURIComponent(id)}`,
+            type: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getPostToken()
+            },
+            success: function (res) {
+                if (res && res.success) {
+                    toastr.success(res.message || "User account has been deleted successfully");
+                    userTable.setPage(1, true);
+                } else {
+                    toastr.error(res?.message || "Failed to delete user account");
+                }
+            },
+            error: function () {
+                toastr.error("Request failed.");
+            }
+        });
+    });
+}
+
+function passwordReset(id) {
+    if (!id && id !== 0) {
+        Swal.fire({
+            title: "Password Reset",
+            text: "User ID is required",
+            showCancelButton: false,
+            okButtonText: "Ok"
+        })
+        return;
+    }
+
+    Swal.fire({
+        title: "Password Reset",
+        text: "Are you sure you want to reset user password?",
+        showCancelButton: true,
+        confirmButtonColor: "#450354",
+        confirmButtonText: "Reset",
+        cancelButtonColor: "#f41369",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        $.ajax({
+            url: `/admin/support/users/password-reset/${encodeURIComponent(id)}`,
+            type: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getPostToken()
+            },
+            success: function (res) {
+                if (res && res.success) {
+                    toastr.success(res.message || "Password reset. Mail will be set to user with new password.");
+                    userTable.setPage(1, true);
+                } else {
+                    toastr.error(res?.message || "Password reset failed.");
+                }
+            },
+            error: function () {
+                toastr.error("Request failed.");
+            }
+        });
+    });
 }
 
 function lockUsers() {
-     window.location.href = '/admin/support';
+    window.location.href = '/admin/support/users-locked';
 }
 
 function closeUserPanel() {

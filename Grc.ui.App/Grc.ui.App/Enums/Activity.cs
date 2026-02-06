@@ -399,5 +399,7 @@ namespace Grc.ui.App.Enums {
         DELETED_ACCOUNTS = 206,
         [Description("Lock user account")]
         LOCK_ACCOUNT =207,
+        [Description("Get a list of active users in the system")]
+        USER_LIST = 208,
     }
 }

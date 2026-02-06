@@ -74,9 +74,9 @@ namespace Grc.Middleware.Api.Services {
                 var totalUsers = await uow.UserRepository.CountAsync(false);
                 var activeUsers = await uow.UserRepository.CountAsync(u => u.IsActive, true);
                 var deactivatedUsers = await uow.UserRepository.CountAsync(u => !u.IsActive, true);
-                var unApprovedUsers = await uow.UserRepository.CountAsync(u => !(bool)u.IsApproved, true);
-                var unverifiedUsers = await uow.UserRepository.CountAsync(u => !(bool)u.IsVerified, true);
-                var deletedUsers = await uow.UserRepository.CountAsync(u => u.IsDeleted, true);
+                var unApprovedUsers = await uow.UserRepository.CountAsync(u => u.IsApproved == null || !(bool)u.IsApproved, true);
+                var unverifiedUsers = await uow.UserRepository.CountAsync(u => u.IsVerified == null || !(bool)u.IsVerified, true);
+                var deletedUsers = await uow.UserRepository.CountAsync(u => u.IsDeleted, false);
 
                 // Get all bug counts sequentially
                 var totalBugs = await uow.SystemErrorRespository.CountAsync(false);
@@ -173,7 +173,7 @@ namespace Grc.Middleware.Api.Services {
                     UserId = u.Id,
                     FirstName = (u.FirstName ?? string.Empty).Trim(),
                     LastName = (u.LastName ?? string.Empty).Trim(),
-                    MiddleName = (u.OtherName ?? string.Empty).Trim(),
+                    MiddleName = (u.MiddleName ?? string.Empty).Trim(),
                     EmailAddress = (u.EmailAddress ?? string.Empty).Trim(),
                     PhoneNumber = u.PhoneNumber,
                     Username = (u.Username ?? string.Empty).Trim(),
@@ -490,8 +490,7 @@ namespace Grc.Middleware.Api.Services {
              using var uow = UowFactory.Create();
             Logger.LogActivity($"Get user support items", "INFO");
 
-            try
-            {
+            try {
                 //..map response
                 var supportItems = new UserSupportResponse() {
                     Branches = new(),
@@ -588,77 +587,62 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public bool UserExists(Expression<Func<SystemUser, bool>> predicate, bool excludeDeleted = false)
-        {
+        public bool UserExists(Expression<Func<SystemUser, bool>> predicate, bool excludeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Check if an System User exists in the database that fit predicate >> '{predicate}'", "INFO");
 
-            try
-            {
+            try {
                 return uow.UserRepository.Exists(predicate, excludeDeleted);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to check for System User in the database: {ex.Message}", "ERROR");
-                LogErrorAsync(uow,ex);
+                LogError(uow,ex);
                 throw;
             }
         }
 
-        public async Task<bool> UserExistsAsync(Expression<Func<SystemUser, bool>> predicate, bool excludeDeleted = false, CancellationToken token = default)
-        {
+        public async Task<bool> UserExistsAsync(Expression<Func<SystemUser, bool>> predicate, bool excludeDeleted = false, CancellationToken token = default) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Check if an System User exists in the database that fit predicate >> '{predicate}'", "INFO");
 
-            try
-            {
+            try {
                 return await uow.UserRepository.ExistsAsync(predicate, excludeDeleted, token);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to check for System User in the database: {ex.Message}", "ERROR");
-                LogErrorAsync(uow,ex);
+                await LogErrorAsync(uow,ex);
                 throw;
             }
         }
 
-        public async Task<SystemUser> GetUserByEmailAsync(string email)
-        {
+        public async Task<SystemUser> GetUserByEmailAsync(string email) {
 
             using var uow = UowFactory.Create();
             Logger.LogActivity("Retrieve user by email", "INFO");
 
-            try
-            {
+            try {
 
                 Logger.LogActivity($"User email: {email}", "DEBUG");
                 var user = await uow.UserRepository.GetAsync(u => u.EmailAddress == email);
 
                 //..log user record
-                var companyJson = JsonSerializer.Serialize(user, new JsonSerializerOptions
-                {
+                var companyJson = JsonSerializer.Serialize(user, new JsonSerializerOptions {
                     WriteIndented = true,
                     ReferenceHandler = ReferenceHandler.IgnoreCycles
                 });
                 Logger.LogActivity($"User record: {companyJson}", "DEBUG");
 
                 return user;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve user: {ex.Message}", "ERROR");
-                LogErrorAsync(uow,ex);
+                await LogErrorAsync(uow,ex);
                 throw;
             }
         }
 
-        public async Task<SystemUser> GetByIdAsync(long id)
-        {
+        public async Task<SystemUser> GetByIdAsync(long id) {
             using var uow = UowFactory.Create();
             Logger.LogActivity("Retrieve user by ID", "INFO");
 
-            try
-            {
+            try {
 
                 Logger.LogActivity($"User ID: {id}", "DEBUG");
                 var user = await uow.UserRepository.GetAsync(id);
@@ -672,22 +656,18 @@ namespace Grc.Middleware.Api.Services {
                 Logger.LogActivity($"User record: {companyJson}", "DEBUG");
 
                 return user;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve user: {ex.Message}", "ERROR");
-                LogErrorAsync(uow,ex);
+                await LogErrorAsync(uow,ex);
                 throw;
             }
         }
 
-        public async Task<SystemUser> GetUserByUsernameAsync(string username)
-        {
+        public async Task<SystemUser> GetUserByUsernameAsync(string username) {
             using var uow = UowFactory.Create();
             Logger.LogActivity("Retrieve user by email", "INFO");
 
-            try
-            {
+            try {
 
                 Logger.LogActivity($"User Username: {username}", "DEBUG");
                 var user = await uow.UserRepository.GetAsync(u => u.Username == username);
@@ -701,14 +681,11 @@ namespace Grc.Middleware.Api.Services {
                 Logger.LogActivity($"User record: {companyJson}", "DEBUG");
 
                 return user;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve user: {ex.Message}", "ERROR");
                 //..log inner exceptions here too
                 var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
+                while (innerEx != null) {
                     Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
                     innerEx = innerEx.InnerException;
                 }
@@ -717,8 +694,7 @@ namespace Grc.Middleware.Api.Services {
 
                 var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
                 long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
+                SystemError errorObj = new() {
                     ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
                     ErrorSource = "SYSTEM-ACCESS-SERVICE",
                     StackTrace = ex.StackTrace,
@@ -740,7 +716,7 @@ namespace Grc.Middleware.Api.Services {
 
             try
             {
-                var users = await uow.UserRepository.GetAllAsync(includeDeleted, u => u.Role, u => u.Department);
+                var users = await uow.UserRepository.GetAllAsync(u=> u.IsActive, includeDeleted, u => u.Role, u => u.Department);
                 var usersJson = JsonSerializer.Serialize(users, new JsonSerializerOptions
                 {
                     WriteIndented = true,
@@ -880,6 +856,37 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
+        public async Task<bool> SuspendAccountAsync(long recordId, string username) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Suspend user account", "INFO");
+
+            try {
+                var user = await uow.UserRepository.GetAsync(a => a.Id == recordId);
+                if (user != null) {
+                    //..update System User password
+                    user.IsActive = false;
+                    user.LastModifiedOn = DateTime.Now;
+                    user.LastModifiedBy = $"{username}";
+                    user.LastPasswordChange = DateTime.Now;
+
+                    //..check entity state
+                    _ = await uow.UserRepository.UpdateAsync(user);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
+                    Logger.LogActivity($"System User state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to reset System User password: {ex.Message}", "ERROR");
+                await LogErrorAsync(uow, ex);
+                throw;
+            }
+        }
+
         public bool UpdateUser(UserRecordRequest request, string username, bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
@@ -893,7 +900,7 @@ namespace Grc.Middleware.Api.Services {
                     //..update System User record
                     user.FirstName = (request.FirstName ?? string.Empty).Trim();
                     user.LastName = (request.LastName ?? string.Empty).Trim();
-                    user.OtherName = (request.MiddleName ?? string.Empty).Trim();
+                    user.MiddleName = (request.MiddleName ?? string.Empty).Trim();
                     user.Username = (request.UserName ?? string.Empty).Trim();
                     user.EmailAddress = (request.EmailAddress ?? string.Empty).Trim();
                     user.PhoneNumber = (request.PhoneNumber ?? string.Empty).Trim();
@@ -942,7 +949,7 @@ namespace Grc.Middleware.Api.Services {
                     //..update System User record
                     user.FirstName = (request.FirstName ?? string.Empty).Trim();
                     user.LastName = (request.LastName ?? string.Empty).Trim();
-                    user.OtherName = (request.MiddleName ?? string.Empty).Trim();
+                    user.MiddleName = (request.MiddleName ?? string.Empty).Trim();
                     user.Username = (request.UserName ?? string.Empty).Trim();
                     user.EmailAddress = (request.EmailAddress ?? string.Empty).Trim();
                     user.PhoneNumber = (request.PhoneNumber ?? string.Empty).Trim();
@@ -1077,8 +1084,7 @@ namespace Grc.Middleware.Api.Services {
 
                 var company = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
                 long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
+                SystemError errorObj = new() {
                     ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
                     ErrorSource = "SYSTEM-ACCESS-SERVICE",
                     StackTrace = ex.StackTrace,
@@ -1098,7 +1104,7 @@ namespace Grc.Middleware.Api.Services {
 
             try
             {
-                return await uow.UserRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, null, u => u.Role, u => u.Department);
+                return await uow.UserRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, u => u.IsActive, u => u.Role, u => u.Department);
             }
             catch (Exception ex)
             {
@@ -1170,12 +1176,11 @@ namespace Grc.Middleware.Api.Services {
             Logger.LogActivity($"Retrieve unapproved User records", "INFO");
 
             try{
-                return await uow.UserRepository.PageAllAsync(CancellationToken.None, pageIndex, pageSize, includeDeleted, u => !u.IsApproved);
+                return await uow.UserRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, u => u.IsActive && (bool)u.IsVerified && (u.IsApproved == null || !(bool)u.IsApproved), u => u.Role, u => u.Role.Group, u => u.Department);
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve user records : {ex.Message}", "ERROR");
                 var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
+                while (innerEx != null) {
                     Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
                     innerEx = innerEx.InnerException;
                 }
@@ -1183,8 +1188,7 @@ namespace Grc.Middleware.Api.Services {
 
                 var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
                 long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
+                SystemError errorObj = new() {
                     ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
                     ErrorSource = "SYSTEM-ACCESS-SERVICE",
                     StackTrace = ex.StackTrace,
@@ -1205,7 +1209,7 @@ namespace Grc.Middleware.Api.Services {
             Logger.LogActivity($"Retrieve unapproved User records", "INFO");
 
             try{
-                return await uow.UserRepository.PageAllAsync(CancellationToken.None, pageIndex, pageSize, includeDeleted, u => !u.IsVerified);
+                return await uow.UserRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, u => u.IsActive && (bool)u.IsVerified && u.IsVerified == null || !(bool)u.IsVerified, u => u.Role, u => u.Department);
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve user records : {ex.Message}", "ERROR");
                 var innerEx = ex.InnerException;
@@ -1240,7 +1244,7 @@ namespace Grc.Middleware.Api.Services {
             Logger.LogActivity($"Retrieve unapproved User records", "INFO");
 
             try{
-                return await uow.UserRepository.PageAllAsync(CancellationToken.None, pageIndex, pageSize, includeDeleted, u => u.IsDeleted);
+                return await uow.UserRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, u => u.IsDeleted, u => u.Role, u => u.Department);
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve user records : {ex.Message}", "ERROR");
                 var innerEx = ex.InnerException;
@@ -1275,7 +1279,7 @@ namespace Grc.Middleware.Api.Services {
             Logger.LogActivity($"Retrieve unapproved User records", "INFO");
 
             try{
-                return await uow.UserRepository.PageAllAsync(CancellationToken.None, pageIndex, pageSize, includeDeleted, u => !u.IsActive);
+                return await uow.UserRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, u => !u.IsActive, u => u.Role, u => u.Department);
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve user records : {ex.Message}", "ERROR");
                 var innerEx = ex.InnerException;

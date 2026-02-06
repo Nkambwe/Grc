@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
+﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Grc.ui.App.Defaults;
 using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
@@ -1425,7 +1426,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                         middleName = user.MiddleName,
                         userName = user.UserName,
                         emailAddress = user.Email,
-                        displayName = user.DisplayName,
+                        displayName = $"{user.FirstName} {user.LastName}",
                         phoneNumber = user.PhoneNumber,
                         pfNumber = user.PFNumber,
                         solId = user.SolId,
@@ -1437,10 +1438,10 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                         unitCode = user.UnitCode,
                         isActive = user.IsActive,
                         isVerified = user.IsVerified,
-                        createdOn = user.CreatedOn,
-                        createdBy = user.CreatedBy,
-                        modifiedOn = user.ModifiedOn,
-                        modifiedBy = user.ModifiedBy
+                        createdOn = user.CreatedOn.ToString("yyyy-MM-dd"),
+                        createdBy = user.CreatedBy ?? string.Empty,
+                        modifiedOn = user.ModifiedOn.HasValue ? user.ModifiedOn.Value.ToString("yyyy-MM-dd") : string.Empty,
+                        modifiedBy = user.ModifiedBy ?? string.Empty
                     }).ToList();
 
                 var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
@@ -1477,7 +1478,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                         middleName = user.MiddleName,
                         userName = user.UserName,
                         emailAddress = user.Email,
-                        displayName = user.DisplayName,
+                        displayName = $"{user.FirstName} {user.LastName}",
                         phoneNumber = user.PhoneNumber,
                         pfNumber = user.PFNumber,
                         solId = user.SolId,
@@ -1489,10 +1490,10 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                         unitCode = user.UnitCode,
                         isActive = user.IsActive,
                         isVerified = user.IsVerified,
-                        createdOn = user.CreatedOn,
-                        createdBy = user.CreatedBy,
-                        modifiedOn = user.ModifiedOn,
-                        modifiedBy = user.ModifiedBy
+                        createdOn = user.CreatedOn.ToString("yyyy-MM-dd"),
+                        createdBy = user.CreatedBy ?? string.Empty,
+                        modifiedOn = user.ModifiedOn.HasValue ? user.ModifiedOn.Value.ToString("yyyy-MM-dd"): string.Empty,
+                        modifiedBy = user.ModifiedBy ?? string.Empty
                     }).ToList();
 
                 var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
@@ -1527,7 +1528,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                         middleName = user.MiddleName,
                         userName = user.UserName,
                         emailAddress = user.Email,
-                        displayName = user.DisplayName,
+                        displayName = $"{user.FirstName} {user.LastName}",
                         phoneNumber = user.PhoneNumber,
                         pfNumber = user.PFNumber,
                         solId = user.SolId,
@@ -1539,10 +1540,10 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                         unitCode = user.UnitCode,
                         isActive = user.IsActive,
                         isVerified = user.IsVerified,
-                        createdOn = user.CreatedOn,
-                        createdBy = user.CreatedBy,
-                        modifiedOn = user.ModifiedOn,
-                        modifiedBy = user.ModifiedBy
+                        createdOn = user.CreatedOn.ToString("yyyy-MM-dd"),
+                        createdBy = user.CreatedBy ?? string.Empty,
+                        modifiedOn = user.ModifiedOn.HasValue ? user.ModifiedOn.Value.ToString("yyyy-MM-dd") : string.Empty,
+                        modifiedBy = user.ModifiedBy ?? string.Empty
                     }).ToList();
 
                 var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
@@ -1577,7 +1578,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                         middleName = user.MiddleName,
                         userName = user.UserName,
                         emailAddress = user.Email,
-                        displayName = user.DisplayName,
+                        displayName = $"{user.FirstName} {user.LastName}",
                         phoneNumber = user.PhoneNumber,
                         pfNumber = user.PFNumber,
                         solId = user.SolId,
@@ -1589,10 +1590,10 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                         unitCode = user.UnitCode,
                         isActive = user.IsActive,
                         isVerified = user.IsVerified,
-                        createdOn = user.CreatedOn,
-                        createdBy = user.CreatedBy,
-                        modifiedOn = user.ModifiedOn,
-                        modifiedBy = user.ModifiedBy
+                        createdOn = user.CreatedOn.ToString("yyyy-MM-dd"),
+                        createdBy = user.CreatedBy ?? string.Empty,
+                        modifiedOn = user.ModifiedOn.HasValue ? user.ModifiedOn.Value.ToString("yyyy-MM-dd") : string.Empty,
+                        modifiedBy = user.ModifiedBy ?? string.Empty
                     }).ToList();
 
                 var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
@@ -1632,37 +1633,6 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             }
         }
         
-        [HttpPost]
-        public async Task<IActionResult> LockUserAccount(long id) {
-            try {
-                var ipAddress = WebHelper.GetCurrentIpAddress();
-                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (userResponse.HasError || userResponse.Data == null)
-                    return Ok(new { success = false, message = "Unable to resolve current user" });
-
-                if (id == 0) return BadRequest(new { success = false, message = "User Id is required" });
-
-                var currentUser = userResponse.Data;
-                GrcIdRequest request = new() {
-                    RecordId = id,
-                    UserId = currentUser.UserId,
-                    Action = Activity.LOCK_ACCOUNT.GetDescription(),
-                    IPAddress = ipAddress,
-                    IsDeleted = true
-                };
-
-                var result = await _accessService.LockUserAsync(request);
-                if (result.HasError || result.Data == null)
-                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to lock user record" });
-
-                return Ok(new { success = result.Data.Status, message = result.Data.Message });
-            } catch (Exception ex) {
-                Logger.LogActivity($"Error locking user record: {ex.Message}", "ERROR");
-                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
-                return Json(new { results = new List<object>() });
-            }
-        }
-
         [HttpPost]
         [LogActivityResult("User Added", "User added user record", ActivityTypeDefaults.USER_ADDED, "SystemUser")]
         public async Task<IActionResult> CreateUser([FromBody] UserViewModel request)
@@ -1794,7 +1764,69 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 return Json(new { results = new List<object>() });
             }
         }
-        
+
+        [HttpPost]
+        public async Task<IActionResult> LockUserAccount(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                if (id == 0) return BadRequest(new { success = false, message = "User Id is required" });
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.LOCK_ACCOUNT.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = true
+                };
+
+                var result = await _accessService.LockUserAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to lock user record" });
+
+                return Ok(new { success = result.Data.Status, message = result.Data.Message });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error locking user record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PasswordReset(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                if (id == 0) return BadRequest(new { success = false, message = "User Id is required" });
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.LOCK_ACCOUNT.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = true
+                };
+
+                var result = await _accessService.PasswordResetAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to lock user record" });
+
+                return Ok(new { success = result.Data.Status, message = result.Data.Message });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error locking user record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
         public async Task<IActionResult> GetRoleGroupsMiniList(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1865,6 +1897,105 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
                 return Json(new { success=false, data = Array.Empty<object>()});
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ExportUserList() {
+
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+                return Ok(new { success = false, message = "Unable to resolve current user" });
+
+            var request = new GrcRequest {
+                UserId = userResponse.Data.UserId,
+                IPAddress = ipAddress,
+                EncryptFields = Array.Empty<string>(),  
+                DecryptFields = Array.Empty<string>(),
+                Action = Activity.USER_LIST.GetDescription()
+            };
+
+            var result = await _accessService.GetUsersAsync(request);
+            if (result.HasError || result.Data == null)
+                return Ok(new { success = false, message = result.Error.Message ?? "Failed to retrieve user data" });
+
+            var data = result.Data.Data ?? new List<UserResponse>();
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("GRC Active users");
+
+            //..headers
+            string[] headers = {
+                "FULL NAME",
+                "PF NO.",
+                "EMAIL",
+                "DEPARTMENT",
+                "USERNAME",
+                "ROLE",
+                "ACTIVE",
+                "VERIFIED",
+                "APPROVED",
+                "LAST LOGIN"
+            };
+
+            for (int col = 0; col < headers.Length; col++) {
+                ws.Cell(1, col + 1).Value = headers[col];
+            }
+
+            //..header styling
+            var header = ws.Range(1, 1, 1, headers.Length);
+            header.Style.Font.Bold = true;
+            header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            //..header height
+            ws.Row(1).Height = 30;
+
+            //..add data
+            int row = 2;
+            foreach (var p in data) {
+                ws.Cell(row, 1).Value = !string.IsNullOrWhiteSpace(p.MiddleName)? 
+                    $"{p.FirstName.Trim()} {p.MiddleName.Trim()} {p.LastName.Trim()}":
+                    $"{p.FirstName.Trim()} {p.LastName.Trim()}";
+                ws.Cell(row, 2).Value = (p.PFNumber ?? string.Empty).Trim();
+                ws.Cell(row, 3).Value = (p.Email ?? string.Empty).Trim();
+                ws.Cell(row, 4).Value = (p.DepartmentName ?? string.Empty).Trim();
+                ws.Cell(row, 5).Value = (p.UserName ?? string.Empty).Trim();
+                ws.Cell(row, 6).Value = (p.RoleName ?? string.Empty).Trim();
+                ws.Cell(row, 7).Value = p.IsActive ? "YES" : "NO";
+                ws.Cell(row, 8).Value = p.IsVerified ? "YES" : "NO";
+                ws.Cell(row, 9).Value = p.IsApproved ? "YES" : "NO";
+                SetSafeDate(ws.Cell(row, 10), p.LastLogindate);
+                row++;
+            }
+
+            int lastDataRow = row - 1;
+
+            ws.Range(2, 1, lastDataRow, 1).Style.Fill.BackgroundColor = XLColor.LightGray;
+            ws.Range(2, 4, lastDataRow, 4).Style.Fill.BackgroundColor = XLColor.Gray;
+            ws.Range(1, 4, lastDataRow, 4).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+
+            //..add header filtersfilters
+            ws.Range(1, 1, 1, headers.Length).SetAutoFilter();
+
+            //..freeze header
+            ws.SheetView.FreezeRows(1);
+            ws.Column(10).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            //..auto-fit columns to content
+            ws.Columns().AdjustToContents(10, 60);
+            ws.Column(1).Width = 70;
+            ws.Column(2).Width = 10;
+            ws.Column(5).Width = 20;
+            ws.Column(7).Width = 10;
+            ws.Column(8).Width = 10;
+            ws.Column(9).Width = 10;
+            ws.Column(10).Width = 15; 
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"GRCUSERS-{DateTime.Today:yyyy-MM}.xlsx");
         }
 
         #endregion
@@ -3476,7 +3607,22 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         #endregion
 
         #region Protected methods
+        private static void SetSafeDate(IXLCell cell, DateTime? date) {
+            if (!date.HasValue) {
+                cell.Value = string.Empty;
+                return;
+            }
 
+            var value = date.Value;
+            //..excel-safe date range
+            if (value.Year < 1900 || value.Year > 9999) {
+                cell.Value = string.Empty;
+                return;
+            }
+
+            cell.Value = value;
+            cell.Style.DateFormat.Format = "dd-MMM-yyyy";
+        }
         protected void Notify(string message, string title = "GRC NOTIFICATION", NotificationType type = NotificationType.Success) {
             var notificationMessage = new NotificationMessage() {
                 Title = title,

@@ -2051,7 +2051,7 @@ namespace Grc.Middleware.Api.Controllers {
                             var officerName = (officer.ContactName ?? string.Empty).Trim();
                             var officerEmail = (officer.ContactEmail ?? string.Empty).Trim();
                             if (!string.IsNullOrEmpty(officerName) && !string.IsNullOrEmpty(officerEmail)) {
-                                await SendMailAsync(Logger, mailService, officerName, officerEmail, request.Id, request.ProcessName);
+                                //await SendMailAsync(Logger, mailService, officerName, officerEmail, request.Id, request.ProcessName);
                             } else {
                                 msg += ". Head Of Operations Contacts not found. Mail not sent";
                             }
@@ -2197,7 +2197,7 @@ namespace Grc.Middleware.Api.Controllers {
                             var officerName = (officer.ContactName ?? string.Empty).Trim();
                             var officerEmail = (officer.ContactEmail ?? string.Empty).Trim();
                             if (!string.IsNullOrEmpty(officerName) && !string.IsNullOrEmpty(officerEmail)) {
-                                await SendMailAsync(Logger, mailService, officerName, officerEmail, request.RecordId, processName);
+                                //await SendMailAsync(Logger, mailService, officerName, officerEmail, request.RecordId, processName);
                             } else {
                                 msg += ". Head Of Operations Contacts not found. Mail not sent";
                             }
@@ -2476,7 +2476,7 @@ namespace Grc.Middleware.Api.Controllers {
                                 //..get resposible manager
                                 var (receiverName, receiverMail) = await GetMailReceiverInfo(stage, _officersService);
                                 if (!string.IsNullOrEmpty(receiverName) && !string.IsNullOrEmpty(receiverMail)) {
-                                    await SendMailAsync(Logger, mailService, receiverName, receiverMail, request.Id, request.ProcessName);
+                                    //await SendMailAsync(Logger, mailService, receiverName, receiverMail, request.Id, request.ProcessName);
                                 } else {
                                     msg += ". Head Of Operations Contacts not found. Mail not sent";
                                 }

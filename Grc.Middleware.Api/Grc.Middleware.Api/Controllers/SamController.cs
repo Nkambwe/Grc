@@ -799,8 +799,8 @@ namespace Grc.Middleware.Api.Controllers {
                 var userRecord = Mapper.Map<SystemUser>(request);
                 userRecord.IsDeleted = false;
                 userRecord.IsActive=true;
-;               userRecord.IsApproved = true;
-                userRecord.IsVerified = true;
+;               userRecord.IsApproved = false;
+                userRecord.IsVerified = false;
 
                 var email = userRecord.EmailAddress;
                 var username = userRecord.Username;
@@ -1084,7 +1084,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 //..delete system user
-                var status = await _accessService.DeleteRoleAsync(request);
+                var status = await _accessService.DeleteUserAsync(request);
                 if (!status)
                 {
                     var error = new ResponseError(
@@ -1254,13 +1254,13 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<PagedResponse<UserResponse>>(new PagedResponse<UserResponse>(new List<UserResponse>(),0, pageResult.Page, pageResult.Size)));
                 }
 
-                // Map to UserResponse (removed unnecessary null! and AsQueryable)
+                //..map to UserResponse
                 var users = pageResult.Entities.Select(Mapper.Map<UserResponse>).ToList();
 
-                // Decrypt fields - define once outside loop
+                //..decrypt fields - define once outside loop
                 var fieldsToDecrypt = new[] { "FirstName", "LastName", "MiddleName", "EmailAddress", "PhoneNumber", "PFNumber" };
 
-                // Decrypt in parallel for better performance with large datasets
+                //..decrypt in parallel for better performance with large datasets
                 var decryptedUsers = users
                     .AsParallel()
                     .AsOrdered()
@@ -1311,7 +1311,7 @@ namespace Grc.Middleware.Api.Controllers {
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
                 
-                var pageResult = await _accessService.GetUapprovedUsersAsync(request.PageIndex, request.PageSize, false);
+                var pageResult = await _accessService.GetUnverifiedUsersAsync(request.PageIndex, request.PageSize, false);
 
                 if (pageResult.Entities == null || !pageResult.Entities.Any()) {
                     var error = new ResponseError(ResponseCodes.SUCCESS,"No data","No user records found");
@@ -1442,20 +1442,19 @@ namespace Grc.Middleware.Api.Controllers {
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
                 
                 var pageResult = await _accessService.GetDeletedUsersAsync(request.PageIndex, request.PageSize, true);
-
                 if (pageResult.Entities == null || !pageResult.Entities.Any()) {
                     var error = new ResponseError(ResponseCodes.SUCCESS,"No data","No user records found");
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<PagedResponse<UserResponse>>(new PagedResponse<UserResponse>(new List<UserResponse>(),0, pageResult.Page, pageResult.Size)));
                 }
 
-                // Map to UserResponse (removed unnecessary null! and AsQueryable)
+                //..map to UserResponse
                 var users = pageResult.Entities.Select(Mapper.Map<UserResponse>).ToList();
 
-                // Decrypt fields - define once outside loop
+                //..decrypt fields - define once outside loop
                 var fieldsToDecrypt = new[] { "FirstName", "LastName", "MiddleName", "EmailAddress", "PhoneNumber", "PFNumber" };
 
-                // Decrypt in parallel for better performance with large datasets
+                //..decrypt in parallel for better performance with large datasets
                 var decryptedUsers = users
                     .AsParallel()
                     .AsOrdered()
@@ -1563,7 +1562,7 @@ namespace Grc.Middleware.Api.Controllers {
                 string username =currentUser != null?currentUser.Username:$"{request.UserId}";
 
                 //..update user record
-                await _accessService.LockUserAccountAsync(request.RecordId,username);
+                await _accessService.SuspendAccountAsync(request.RecordId,username);
                 var response = new GeneralResponse {
                     Status = true,
                     StatusCode = (int)ResponseCodes.SUCCESS,
@@ -3732,9 +3731,7 @@ namespace Grc.Middleware.Api.Controllers {
                 string mail;
                 if (reset) {
                     (sent, subject, mail) = MailHandler.SendPasswordResetMail(
-                        logger,mailSettings.MailSender,email, sendToName,
-                        "","GRC Suite Password reset", mailSettings.NetworkPort,
-                        mailSettings.SystemPassword, password);
+                        logger,mailSettings.MailSender,email, sendToName,"","GRC Suite Password reset", mailSettings.NetworkPort,mailSettings.SystemPassword, password);
                 }else {
                     (sent, subject, mail) = MailHandler.SendNewAccountMail(
                         logger,mailSettings.MailSender,email, sendToName,
