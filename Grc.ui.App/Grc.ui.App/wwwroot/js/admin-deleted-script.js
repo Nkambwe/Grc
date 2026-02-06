@@ -1,5 +1,6 @@
 ﻿
 let deletedTable;
+
 function initDeletedTable() {
     deletedTable = new Tabulator("#deletedUsersTable", {
         ajaxURL: "/admin/support/users/deleted-accounts",
@@ -100,8 +101,7 @@ function initDeletedTable() {
                 field: "userName",
                 minWidth: 200,
                 widthGrow: 4,
-                headerSort: true,
-                frozen: true
+                headerSort: true
             },
             { title: "PF NUMBER", field: "pfNumber", minWidth: 200 },
             {
@@ -109,12 +109,24 @@ function initDeletedTable() {
                 field: "emailAddress",
                 minWidth: 500,
                 widthGrow: 4,
-                headerSort: true,
-                frozen: true
+                headerSort: true
             },
             { title: "DEPARTMENT", field: "departmentName", minWidth: 300 },
             { title: "ROLE", field: "roleName", minWidth: 300 },
-            { title: "ROLE GROUP", field: "roleGroup", minWidth: 300 },
+            {
+                title: "RESTORE",
+                formatter: function (cell) {
+                    let rowData = cell.getRow().getData();
+                    return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="restoreAccount(${rowData.id})">
+                        <span><i class="mdi mdi-account-reactivate-outline" aria-hidden="true"></i></span>
+                        <span>RESTORE</span>
+                    </button>`;
+                },
+                width: 200,
+                hozAlign: "center",
+                headerHozAlign: "center",
+                headerSort: false
+            },
             { title: "", field: "endTab", maxWidth: 50, headerSort: false, formatter: () => `<span class="record-tab"></span>` }
         ]
     });
@@ -127,10 +139,74 @@ function initDeletedSearch() {
 
 }
 
-function deleteUser(id) {
+function openDeletePane(title, record) {
+
+    $('#fullName').val(record?.fullName || '');
+    $('#pfNumber').val(record?.pfNumber || '');
+    $('#emailAddress').val(record?.emailAddress || '');
+    $('#departmentName').val(record?.departmentName || '');
+    $('#username').val(record?.userName || '');
+    $('#displayName').val(record?.displayName || '');
+    $('#phoneNumber').val(record?.phoneNumber || '');
+    $('#roleName').val(record?.roleName || '');
+
+    $('#userTitle').text(title);
+    $('#deleteOverLay').addClass('active');
+    $('#deleteContainer').addClass('active');
+}
+
+function viewRecord(id) {
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving user...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => Swal.showLoading()
+    });
+    findDeletedAccount(id)
+        .then(record => {
+            Swal.close();
+            if (record) {
+                openDeletePane('User Account Summery', record);
+            } else {
+                Swal.fire({ title: 'NOT FOUND', text: 'User not found' });
+            }
+        })
+        .catch(() => {
+            Swal.close();
+            Swal.fire({ title: 'Error', text: 'Failed to load user details.' });
+        });
+}
+
+function closeDeletePanel() {
+      $('#deleteOverLay').removeClass('active');
+      $('#deleteContainer').removeClass('active');
+}
+
+function findDeletedAccount(id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/admin/support/users-retrieve/${id}`,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success && response.data) {
+                    resolve(response.data);
+                    resolve(null);
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire("Error", error);
+                return;
+            }
+        });
+    });
+}
+
+function restoreAccount(id) {
     if (!id && id !== 0) {
         Swal.fire({
-            title: "Delete user account",
+            title: "Restore user account",
             text: "User ID is required",
             showCancelButton: false,
             okButtonText: "Ok"
@@ -139,29 +215,29 @@ function deleteUser(id) {
     }
 
     Swal.fire({
-        title: "Delete User Account",
-        text: "Are you sure you want to delete this user account?",
+        title: "Restore User Account",
+        text: "Are you sure you want to restore this user account?",
         showCancelButton: true,
         confirmButtonColor: "#450354",
-        confirmButtonText: "Delete",
+        confirmButtonText: "Restore",
         cancelButtonColor: "#f41369",
         cancelButtonText: "Cancel"
     }).then((result) => {
         if (!result.isConfirmed) return;
 
         $.ajax({
-            url: `/grc/compliance/register/policies-delete/${encodeURIComponent(id)}`,
-            type: 'DELETE',
+            url: `/admin/support/users/restore-user/${encodeURIComponent(id)}`,
+            type: 'POST',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': getPolicyAntiForgeryToken()
+                'X-CSRF-TOKEN': getDeleteToken()
             },
             success: function (res) {
                 if (res && res.success) {
-                    toastr.success(res.message || "User account deleted successfully.");
-                    policyRegisterTable.setPage(1, true);
+                    toastr.success(res.message || "User account restored successfully.");
+                    deletedTable.setPage(1, true);
                 } else {
-                    toastr.error(res?.message || "Delete failed.");
+                    toastr.error(res?.message || "Restore failed.");
                 }
             },
             error: function () {
@@ -177,5 +253,16 @@ $(document).ready(function () {
     $(".action-btn-admin-home").on("click", function () {
         window.location.href = '/admin/support';
     });
-
+    
+    $(".action-btn-new-user").on("click", function () {
+        window.location.href = '/admin/support/system-users';
+    });
+    
+    $('#restoreForm').on('submit', function (e) {
+        e.preventDefault();
+    });
 });
+
+function getDeleteToken() {
+    return $('meta[name="csrf-token"]').attr('content');
+}

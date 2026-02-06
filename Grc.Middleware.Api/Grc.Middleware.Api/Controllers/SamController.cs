@@ -1101,7 +1101,54 @@ namespace Grc.Middleware.Api.Controllers {
                 return Ok(new GrcResponse<GeneralResponse>(error));
             }
         }
+        
+        [HttpPost("sam/users/restore-user")]
+        public async Task<IActionResult> RestoreUser([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Restore user account", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The user record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleResponse>(error));
+                }
 
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _accessService.UserExistsAsync(r => r.Id == request.RecordId)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "User record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleResponse>(error));
+                }
+                
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username =currentUser != null?currentUser.Username:$"{request.UserId}";
+
+                //..update role
+                var result = await _accessService.RestoreUserAsync(request.RecordId,  username);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "User record restored successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+                else
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to restore user account record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            }
+            catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+        
         [HttpPost("sam/users/getusers")]
         public async Task<IActionResult> GetPagedUsers([FromBody] GeneralRequest request) {
             try
@@ -1496,7 +1543,7 @@ namespace Grc.Middleware.Api.Controllers {
         [HttpPost("sam/users/approve-user")]
         public async Task<IActionResult> ApproveUser([FromBody] ApproveUserRequest request) {
             try {
-                Logger.LogActivity("Update system role", "INFO");
+                Logger.LogActivity("Approve user account", "INFO");
                 if (request == null) {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The user record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
@@ -1527,7 +1574,54 @@ namespace Grc.Middleware.Api.Controllers {
                 {
                     response.Status = true;
                     response.StatusCode = (int)ResponseCodes.FAILED;
-                    response.Message = "Failed to update user record record. An error occurrred";
+                    response.Message = "Failed to approve user account. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            }
+            catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+        
+        [HttpPost("sam/users/verify-user")]
+        public async Task<IActionResult> VerifyUser([FromBody] ApproveUserRequest request) {
+            try {
+                Logger.LogActivity("Verify user account", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The user record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _accessService.UserExistsAsync(r => r.Id == request.Id)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "User record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleResponse>(error));
+                }
+                
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username =currentUser != null?currentUser.Username:$"{request.UserId}";
+
+                //..update role
+                var result = await _accessService.VerifyUserAsync(request.Id, false, request.IsVerified, username);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "User record updated successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+                else
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to verify user account record. An error occurrred";
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
                 }
 
@@ -1575,7 +1669,54 @@ namespace Grc.Middleware.Api.Controllers {
                 return Ok(new GrcResponse<GeneralResponse>(error));
             }
         }
+        
+        [HttpPost("sam/users/unlock-user")]
+        public async Task<IActionResult> UnlockUser([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Unlock user account", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The user record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleResponse>(error));
+                }
 
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _accessService.UserExistsAsync(r => r.Id == request.RecordId)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "User record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleResponse>(error));
+                }
+                
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username =currentUser != null?currentUser.Username:$"{request.UserId}";
+
+                //..update role
+                var result = await _accessService.UnlockUserAsync(request.RecordId,  username);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "User record unlocked successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+                else
+                {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to unlock user account record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            }
+            catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+        
         #endregion
 
         #region System Roles

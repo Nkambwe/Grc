@@ -1308,19 +1308,112 @@ namespace Grc.Middleware.Api.Services {
             }
         }
         
-        public async Task<bool> ApproveUserAsync(long userId, bool isApproved, bool isVerified, string currentUser)
-        {
+        public async Task<bool> ApproveUserAsync(long userId, bool isApproved, bool isVerified, string currentUser) {
             using var uow = UowFactory.Create();
-            Logger.LogActivity($"Upprove or verify System User", "INFO");
+            Logger.LogActivity($"Upprove System User", "INFO");
 
             try
             {
-                var user = await uow.UserRepository.GetAsync(a => a.Id == userId);
+                var user = await uow.UserRepository.GetAsync(a => a.Id == userId, true);
                 if (user != null) {
                     user.IsVerified = isVerified;
                     user.IsApproved = isApproved;
                     user.LastModifiedOn = DateTime.Now;
                     user.LastModifiedBy = $"{currentUser}";
+
+                    //..check entity state
+                    _ = await uow.UserRepository.UpdateAsync(user, true);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
+                    Logger.LogActivity($"System User state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to update System User record: {ex.Message}", "ERROR");
+                 await LogErrorAsync(uow, ex);
+                throw;
+            }
+        }
+
+        public async Task<bool> VerifyUserAsync(long userId, bool isApproved, bool isVerified, string currentUser) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Verify System User", "INFO");
+
+            try {
+                var user = await uow.UserRepository.GetAsync(a => a.Id == userId, true);
+                if (user != null) {
+                    user.IsVerified = isVerified;
+                    user.IsApproved = isApproved;
+                    user.LastModifiedOn = DateTime.Now;
+                    user.LastModifiedBy = $"{currentUser}";
+
+                    //..check entity state
+                    _ = await uow.UserRepository.UpdateAsync(user, true);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
+                    Logger.LogActivity($"System User state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to update System User record: {ex.Message}", "ERROR");
+                 await LogErrorAsync(uow, ex);
+                throw;
+            }
+        }
+
+        public async Task<bool> RestoreUserAsync(long recordId, string username) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Restore System User", "INFO");
+
+            try {
+                var user = await uow.UserRepository.GetAsync(a => a.Id == recordId, true);
+                if (user != null) {
+                    user.IsActive = true;
+                    user.IsDeleted = false;
+                    user.IsVerified = false;
+                    user.IsApproved = false;
+                    user.LastModifiedOn = DateTime.Now;
+                    user.LastModifiedBy = $"{username}";
+
+                    //..check entity state
+                    _ = await uow.UserRepository.UpdateAsync(user, true);
+                    var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
+                    Logger.LogActivity($"System User state after Update: {entityState}", "DEBUG");
+
+                    var result = uow.SaveChanges();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to update System User record: {ex.Message}", "ERROR");
+                 await LogErrorAsync(uow, ex);
+                throw;
+            }
+        }
+
+        public async Task<bool> UnlockUserAsync(long recordId, string username) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Unlock System User", "INFO");
+
+            try {
+                var user = await uow.UserRepository.GetAsync(a => a.Id == recordId, true);
+                if (user != null) {
+                    user.IsActive = true;
+                    user.IsDeleted = false;
+                    user.IsVerified = true;
+                    user.IsApproved = true;
+                    user.LastModifiedOn = DateTime.Now;
+                    user.LastModifiedBy = $"{username}";
 
                     //..check entity state
                     _ = await uow.UserRepository.UpdateAsync(user, true);

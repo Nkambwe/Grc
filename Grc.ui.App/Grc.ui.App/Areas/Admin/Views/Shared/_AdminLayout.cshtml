@@ -298,6 +298,50 @@
                             </ul>
                         </li>
 
+                        <li class="sidebar-separator">
+                            <span class="separator-label">BUG TRACKER</span>
+                            <span class="separator-line"></span>
+                        </li>
+
+                        <li class="sidebar-item with-submenu">
+                            <a href="" class="toggle-submenu" data-id="bugs-menu">
+                                <span class="menu-icon">
+                                    <i class="mdi mdi-bug-outline"></i>
+                                </span>
+                                <span>Bugs</span>
+                                <span class="drop-icon">
+                                    <i class="mdi mdi-chevron-down"></i>
+                                </span>
+                            </a>
+
+                            <ul id="bugs-menu" class="sidebar-submenu">
+                                <li class="sidebar-item">
+                                    <a asp-controller="Configuration" asp-action="NewBugs" asp-area="Admin">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-bug-play-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">Active Bugs</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a asp-controller="Configuration" asp-action="BugProgress" asp-area="Admin">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-bug-play-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">Bug Fixes</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a asp-controller="Configuration" asp-action="BugFixes" asp-area="Admin">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-bug-play-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">Closed Bugs</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        
                     </ul>
 
                     <div class="sidebar-footer">

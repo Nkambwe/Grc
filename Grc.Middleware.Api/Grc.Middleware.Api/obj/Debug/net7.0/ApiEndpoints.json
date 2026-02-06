@@ -1173,6 +1173,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "AllDepartments",
+    "RelativePath": "grc/organization/bug-list",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.BugListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
     "Method": "DeleteBranch",
     "RelativePath": "grc/organization/deleteBranch",
     "HttpMethod": "POST",
@@ -4101,6 +4117,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "RestoreUser",
+    "RelativePath": "grc/sam/users/restore-user",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
     "Method": "GetSelectedRoleGroups",
     "RelativePath": "grc/sam/users/role-rolegroup-list",
     "HttpMethod": "POST",
@@ -4142,6 +4174,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "UnlockUser",
+    "RelativePath": "grc/sam/users/unlock-user",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
         "IsRequired": true
       }
     ],
@@ -4206,6 +4254,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.UsernameValidationRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "VerifyUser",
+    "RelativePath": "grc/sam/users/verify-user",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.ApproveUserRequest",
         "IsRequired": true
       }
     ],

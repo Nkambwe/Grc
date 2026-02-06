@@ -398,8 +398,12 @@ namespace Grc.ui.App.Enums {
         [Description("Deleted user accounts retrieved")]
         DELETED_ACCOUNTS = 206,
         [Description("Lock user account")]
-        LOCK_ACCOUNT =207,
+        LOCK_ACCOUNT = 207,
+        [Description("Unlock user account")]
+        UNLOCK_ACCOUNT = 208,
+        [Description("Restore user account")]
+        RESTORE_ACCOUNT = 209,
         [Description("Get a list of active users in the system")]
-        USER_LIST = 208,
+        USER_LIST = 210,
     }
 }

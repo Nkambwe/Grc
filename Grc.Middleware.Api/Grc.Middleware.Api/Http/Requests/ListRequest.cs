@@ -53,5 +53,4 @@ namespace Grc.Middleware.Api.Http.Requests {
         [JsonPropertyName("decrypts")]
         public string[] DecryptFields { get; set; }
     }
-
 }

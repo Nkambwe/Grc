@@ -10,6 +10,7 @@ using Grc.Middleware.Api.Services.Organization;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Grc.Middleware.Api.Controllers {
 
@@ -25,6 +26,7 @@ namespace Grc.Middleware.Api.Controllers {
         private readonly IDepartmentUnitService _departmentUnitService;
         private readonly ISystemAccessService _accessService;
         private readonly ISystemConfigurationService _configService;
+        private readonly IBugService _bugService;
         public SupportController(
             IActivityLogService activityLogService,
             IActivityTypeService activityTypeService,
@@ -40,6 +42,7 @@ namespace Grc.Middleware.Api.Controllers {
             ISystemErrorService systemErrorService,
             ISystemConfigurationService configService,
             ISystemAccessService accessService,
+            IBugService bugService,
             IBranchService branchService)
             : base(cypher, loggerFactory, mapper, companyService, environment, 
                   errorService, systemErrorService) {
@@ -51,6 +54,7 @@ namespace Grc.Middleware.Api.Controllers {
             _branchService = branchService;
             _configService = configService;
             _accessService = accessService;
+            _bugService = bugService;
         }
 
         #region Activity logging
@@ -749,6 +753,72 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
+        #endregion
+
+        #region Bugs
+        
+        [HttpPost("organization/bug-list")]
+        public async Task<IActionResult> AllDepartments([FromBody] BugListRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<BugItemResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+
+                var pageResult = await _bugService.GetBugsAsync(request);
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(
+                        ResponseCodes.SUCCESS,
+                        "No data",
+                        "No bug list found"
+                    );
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<BugItemResponse>>(new PagedResponse<BugItemResponse>(new List<BugItemResponse>(), 0, pageResult.Page, pageResult.Size)));
+                }
+
+                List<BugItemResponse> bugs = new();
+                var records = pageResult.Entities.ToList();
+                if (records != null && records.Any()) {
+                    records.ForEach(bug => bugs.Add(new() {
+                        Id = bug.Id,
+                        Error = bug.Error,
+                        Severity = bug.Severity,
+                        Status = bug.Status,
+                        CreatedOn = bug.CreatedOn,
+                    }));
+                }
+
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                    var searchTerm = request.SearchTerm.ToLower();
+                    bugs = bugs.Where(u =>
+                        (u.Error?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.Severity?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.Status?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                    ).ToList();
+                }
+
+                return Ok(new GrcResponse<PagedResponse<BugItemResponse>>(
+                    new PagedResponse<BugItemResponse>(
+                    bugs,
+                    pageResult.Count,
+                    pageResult.Page,
+                    pageResult.Size
+                )));
+            } catch (Exception ex) {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                var error = new ResponseError(ResponseCodes.BADREQUEST,"Oops! Something went wrong",$"System Error - {ex.Message}");
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<PagedResponse<BugItemResponse>>(error));
+            }
+        }
+        
         #endregion
 
         #region Departments

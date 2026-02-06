@@ -264,130 +264,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             return View(model);
         }
 
-        public async Task<IActionResult> Bugs()
-        {
-            var model = new AdminDashboardModel();
-            try
-            {
-                //..get user IP address
-                var ipAddress = WebHelper.GetCurrentIpAddress();
-
-                //..get current authenticated user record
-                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (grcResponse.HasError)
-                {
-                    await ProcessErrorAsync(grcResponse.Error.Message, "SUPPORT-CONTROLLER", string.Empty);
-                    return View(model);
-                }
-
-                var currentUser = grcResponse.Data;
-                currentUser.IPAddress = ipAddress;
-
-                //..prepare user dashboard
-                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
-            }
-            catch (Exception ex)
-            {
-                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
-                return View(model);
-            }
-
-            return View(model);
-        }
-
-        public async Task<IActionResult> NewBugs()
-        {
-            var model = new AdminDashboardModel();
-            try
-            {
-                //..get user IP address
-                var ipAddress = WebHelper.GetCurrentIpAddress();
-
-                //..get current authenticated user record
-                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (grcResponse.HasError)
-                {
-                    await ProcessErrorAsync(grcResponse.Error.Message, "SUPPORT-CONTROLLER", string.Empty);
-                    return View(model);
-                }
-
-                var currentUser = grcResponse.Data;
-                currentUser.IPAddress = ipAddress;
-
-                //..prepare user dashboard
-                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
-            }
-            catch (Exception ex)
-            {
-                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
-                return View(model);
-            }
-
-            return View(model);
-        }
-
-        public async Task<IActionResult> BugFixes()
-        {
-            var model = new AdminDashboardModel();
-            try
-            {
-                //..get user IP address
-                var ipAddress = WebHelper.GetCurrentIpAddress();
-
-                //..get current authenticated user record
-                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (grcResponse.HasError)
-                {
-                    await ProcessErrorAsync(grcResponse.Error.Message, "SUPPORT-CONTROLLER", string.Empty);
-                    return View(model);
-                }
-
-                var currentUser = grcResponse.Data;
-                currentUser.IPAddress = ipAddress;
-
-                //..prepare user dashboard
-                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
-            }
-            catch (Exception ex)
-            {
-                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
-                return View(model);
-            }
-
-            return View(model);
-        }
-
-        public async Task<IActionResult> UserReportedBugs()
-        {
-            var model = new AdminDashboardModel();
-            try
-            {
-                //..get user IP address
-                var ipAddress = WebHelper.GetCurrentIpAddress();
-
-                //..get current authenticated user record
-                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (grcResponse.HasError)
-                {
-                    await ProcessErrorAsync(grcResponse.Error.Message, "SUPPORT-CONTROLLER", string.Empty);
-                    return View(model);
-                }
-
-                var currentUser = grcResponse.Data;
-                currentUser.IPAddress = ipAddress;
-
-                //..prepare user dashboard
-                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
-            }
-            catch (Exception ex)
-            {
-                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
-                return View(model);
-            }
-
-            return View(model);
-        }
-
+        
         public async Task<IActionResult> ActivityRecord()
         {
             var model = new AdminDashboardModel();
@@ -1239,6 +1116,9 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                     lastName = user.LastName,
                     middleName = user.MiddleName,
                     userName = user.UserName,
+                    fullName = !string.IsNullOrWhiteSpace(user.MiddleName) ?
+                    $"{user.FirstName} {user.MiddleName.Trim()} {user.LastName}": 
+                    $"{user.FirstName} {user.LastName}",
                     emailAddress = user.Email,
                     displayName = user.DisplayName,
                     phoneNumber = user.PhoneNumber,
@@ -1248,6 +1128,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                     roleName = user.RoleName,
                     roleGroup = user.RoleGroup,
                     departmentId = user.DepartmentId,
+                    department = user.DepartmentName,
                     unitCode = user.UnitCode,
                     isActive = user.IsActive,
                     isVerified = user.IsVerified,
@@ -1375,6 +1256,9 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                         middleName = user.MiddleName,
                         userName = user.UserName,
                         emailAddress = user.Email,
+                        fullName = !string.IsNullOrWhiteSpace(user.MiddleName) ?
+                        $"{user.FirstName} {user.MiddleName.Trim()} {user.LastName}": 
+                        $"{user.FirstName} {user.LastName}",
                         displayName = user.DisplayName,
                         phoneNumber = user.PhoneNumber,
                         pfNumber = user.PFNumber,
@@ -1607,33 +1491,6 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
-        public async Task<IActionResult> ApproveUser([FromBody] ApproveUserViewModel request) {
-            try
-            {
-                var ipAddress = WebHelper.GetCurrentIpAddress();
-                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (userResponse.HasError || userResponse.Data == null)
-                    return Ok(new { success = false, message = "Unable to resolve current user" });
-
-                var currentUser = userResponse.Data;
-                if (request == null) {
-                    return Ok(new { success = false, message = "Invalid user data" });
-                }
-
-                var result = await _accessService.ApproveUserAsync(request, currentUser.UserId, ipAddress);
-                if (result.HasError || result.Data == null)
-                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update user record" });
-
-                var data = result.Data;
-                return Ok(new{ success = data.Status, message = data.Message,data = new {status = data.Status,}});
-            } catch (Exception ex) {
-                Logger.LogActivity($"Error update user record: {ex.Message}", "ERROR");
-                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
-                return Json(new { results = new List<object>() });
-            }
-        }
-        
-        [HttpPost]
         [LogActivityResult("User Added", "User added user record", ActivityTypeDefaults.USER_ADDED, "SystemUser")]
         public async Task<IActionResult> CreateUser([FromBody] UserViewModel request)
         {
@@ -1766,6 +1623,103 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
+        public async Task<IActionResult> RestoreUserAccount(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                if (id == 0) return BadRequest(new { success = false, message = "User Id is required" });
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.RESTORE_ACCOUNT.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = true
+                };
+
+                var result = await _accessService.RestoreUserAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to lock user record" });
+
+                return Ok(new { success = result.Data.Status, message = result.Data.Message });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error locking user record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> ApproveUser(long id) {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                if (id == 0) {
+                    return Ok(new { success = false, message = "Invalid user request" });
+                }
+
+                var request = new ApproveUserViewModel(){
+                    Id = id,
+                    IsApproved = true,
+                    IsVerified = true,
+                };
+
+                var result = await _accessService.ApproveUserAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update user record" });
+
+                var data = result.Data;
+                return Ok(new{ success = data.Status, message = data.Message,data = new {status = data.Status,}});
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error update user record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> VerifyUser(long id) {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                if (id == 0) {
+                    return Ok(new { success = false, message = "Invalid user request" });
+                }
+
+                var request = new ApproveUserViewModel(){
+                    Id = id,
+                    IsApproved = true,
+                    IsVerified = true,
+                };
+
+                var result = await _accessService.VerifyUserAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update user record" });
+
+                var data = result.Data;
+                return Ok(new{ success = data.Status, message = data.Message,data = new {status = data.Status,}});
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error update user record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+        
+        [HttpPost]
         public async Task<IActionResult> LockUserAccount(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1791,6 +1745,36 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 return Ok(new { success = result.Data.Status, message = result.Data.Message });
             } catch (Exception ex) {
                 Logger.LogActivity($"Error locking user record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        public async Task<IActionResult> UnLockUserAccount(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                if (id == 0) return BadRequest(new { success = false, message = "User Id is required" });
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.UNLOCK_ACCOUNT.GetDescription(),
+                    IPAddress = ipAddress,
+                    IsDeleted = true
+                };
+
+                var result = await _accessService.UnlockUserAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to unlock user record" });
+
+                return Ok(new { success = result.Data.Status, message = result.Data.Message });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error unocking user record: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
                 return Json(new { results = new List<object>() });
             }

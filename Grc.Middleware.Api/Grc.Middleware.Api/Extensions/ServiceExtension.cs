@@ -143,6 +143,7 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<IAuditTypeService, AuditTypeService>();
             services.AddScoped<IAuditUpdateService, AuditUpdateService>();
             services.AddScoped<ISystemConfigurationService, SystemConfigurationService>();
+            services.AddScoped<IBugService, BugService>();
             services.AddScoped<IMailService, MailService>();
             services.AddSingleton<IMailTaskQueue, MailTaskQueue>();
             //allow html helpers to acces current action context
