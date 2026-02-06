@@ -116,37 +116,37 @@ namespace Grc.ui.App.Factories {
                         Title = _localizationService.GetLocalizedLabel("App.Admin.Dashboard.Labels.TotalBugs"),
                         Value = stats.TotalBugs,
                         CssClass = "stat-separator-colored-pearl-orange",
-                        Controller = "Support",
-                        Action = "Bugs"
+                        Controller = "Configuration",
+                        Action = "BugReporter"
                     },
                     new(){
                         Title = _localizationService.GetLocalizedLabel("App.Admin.Dashboard.Labels.NewBugs"),
                         Value = stats.NewBugs,
                         CssClass = "stat-separator-colored-pearl-orange",
-                        Controller = "Support",
+                        Controller = "Configuration",
                         Action = "NewBugs"
                     },
                     new(){
                         Title = _localizationService.GetLocalizedLabel("App.Admin.Dashboard.Labels.FixingBugs"),
                         Value = stats.BugProgress,
                         CssClass = "stat-separator-colored-pearl-orange",
-                        Controller = "Support",
+                        Controller = "Configuration",
                         Action = "BugProgress"
                     },
                     new(){
                         Title = _localizationService.GetLocalizedLabel("App.Admin.Dashboard.Labels.Fixed"),
                         Value = stats.BugFixes,
                         CssClass = "stat-separator-colored-pearl-orange",
-                        Controller = "Support",
-                        Action = "bugFixing"
-                    },
-                    new(){
-                        Title = _localizationService.GetLocalizedLabel("App.Admin.Dashboard.Labels.UserReported"),
-                        Value = stats.UserReportedBugs,
-                        CssClass = "stat-separator-colored-pearl-orange",
-                        Controller = "Support",
-                        Action = "UserReportedBugs"
+                        Controller = "Configuration",
+                        Action = "BugFixes"
                     }
+                    //new(){
+                    //    Title = _localizationService.GetLocalizedLabel("App.Admin.Dashboard.Labels.UserReported"),
+                    //    Value = stats.UserReportedBugs,
+                    //    CssClass = "stat-separator-colored-pearl-orange",
+                    //    Controller = "Configuration",
+                    //    Action = "UserReportedBugs"
+                    //}
                 }
             };
 

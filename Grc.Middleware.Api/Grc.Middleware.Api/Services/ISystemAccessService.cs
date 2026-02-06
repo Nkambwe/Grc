@@ -48,6 +48,9 @@ namespace Grc.Middleware.Api.Services {
         Task<PagedResult<SystemUser>> GetDeletedUsersAsync(int pageIndex, int pageSize, bool includeDeleted);
         Task<PagedResult<SystemUser>> GetLockedUsersAsync(int pageIndex, int pageSize, bool includeDeleted);
         Task<bool> ApproveUserAsync(long userId, bool isApproved, bool isVerified, string currentUser);
+        Task<bool> VerifyUserAsync(long userId, bool isApproved, bool isVerified, string currentUser);
+        Task<bool> RestoreUserAsync(long recordId, string username);
+        Task<bool> UnlockUserAsync(long recordId, string username);
         #endregion
 
         #region Admin Dashboard
@@ -198,7 +201,7 @@ namespace Grc.Middleware.Api.Services {
         Task<ActivityLog> GetActivityLogAsync(IdRequest request);
 
         Task<PagedResult<ActivityLog>> GetPagedActivityLogAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false);
-        
+
         #endregion
 
     }

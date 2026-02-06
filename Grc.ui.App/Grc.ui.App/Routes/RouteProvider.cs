@@ -105,13 +105,28 @@
             );
             routeBuilder.MapControllerRoute(
                 name: "admin-users-approve",
-                pattern: "admin/support/users-approve",
+                pattern: "admin/support/users/approve/{id:long}",
                 defaults: new { area = "Admin", controller = "Support", action = "ApproveUser" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-users-approve",
+                pattern: "admin/support/users/verify/{id:long}",
+                defaults: new { area = "Admin", controller = "Support", action = "VerifyUser" }
             );
             routeBuilder.MapControllerRoute(
                 name: "admin-users-lock-user",
                 pattern: "admin/support/users/lock-user/{id:long}",
                 defaults: new { area = "Admin", controller = "Support", action = "LockUserAccount" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-users-unlock-user",
+                pattern: "admin/support/users/unlock-user/{id:long}",
+                defaults: new { area = "Admin", controller = "Support", action = "UnLockUserAccount" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-users-restore-user",
+                pattern: "admin/support/users/restore-user/{id:long}",
+                defaults: new { area = "Admin", controller = "Support", action = "RestoreUserAccount" }
             );
             routeBuilder.MapControllerRoute(
                 name: "admin-users-password-reset",
@@ -383,7 +398,31 @@
                pattern: "admin/configuration/activities",
                defaults: new { area = "Admin", controller = "Configuration", action = "SystemActivity" }
             );
-
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-bugs",
+               pattern: "admin/configuration/bug-tracker",
+               defaults: new { area = "Admin", controller = "Configuration", action = "BugReporter" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-bugs-new",
+               pattern: "admin/configuration/bugs/new-bugs",
+               defaults: new { area = "Admin", controller = "Configuration", action = "NewBugs" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-bugs-infix",
+               pattern: "admin/configuration/bugs/in-progress",
+               defaults: new { area = "Admin", controller = "Configuration", action = "BugProgress" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-bugs-infix",
+               pattern: "admin/configuration/bugs/bugs-closed",
+               defaults: new { area = "Admin", controller = "Configuration", action = "BugFixes" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-bugs-list",
+               pattern: "admin/configuration/bug-list",
+               defaults: new { area = "Admin", controller = "Configuration", action = "GetAllBugs" }
+            );
             /*----------------------- Admin Support*/
             routeBuilder.MapControllerRoute(
                 name: "admin-support",

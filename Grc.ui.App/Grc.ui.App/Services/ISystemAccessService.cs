@@ -119,6 +119,13 @@ namespace Grc.ui.App.Services {
         /// <returns>Task containing persistance status of this user record</returns>
         Task<GrcResponse<ServiceResponse>> DeleteUserAsync(GrcIdRequest request);
         /// <summary>
+        /// Restore user account
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<GrcResponse<ServiceResponse>> RestoreUserAsync(GrcIdRequest request);
+
+        /// <summary>
         /// Get user validation
         /// </summary>
         /// <param name="model">Login model to validate agnest</param>
@@ -157,13 +164,28 @@ namespace Grc.ui.App.Services {
         /// <param name="ipAddress"></param>
         /// <returns></returns>
         Task<GrcResponse<ServiceResponse>> ApproveUserAsync(ApproveUserViewModel userRecord, long userId, string ipAddress);
-       
+        /// <summary>
+        /// Verify user account
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        Task<GrcResponse<ServiceResponse>> VerifyUserAsync(ApproveUserViewModel request, long userId, string ipAddress);
+
         /// <summary>
         /// Lock user account
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         Task<GrcResponse<ServiceResponse>> LockUserAsync(GrcIdRequest request);
+        
+        /// <summary>
+        /// Unlock user account
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<GrcResponse<ServiceResponse>> UnlockUserAsync(GrcIdRequest request);
 
         Task<GrcResponse<ServiceResponse>> PasswordResetAsync(GrcIdRequest request);
 
@@ -334,7 +356,7 @@ namespace Grc.ui.App.Services {
         Task<GrcResponse<ServiceResponse>> UpdatePermissionSetAsync(GrcPermissionSetViewModel roleRecord, long userId, string ipAddress);
 
         Task<GrcResponse<ServiceResponse>> DeletePermissionSetAsync(GrcIdRequest request);
-
+        
         #endregion
 
     }

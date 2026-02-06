@@ -17,5 +17,4 @@ namespace Grc.Middleware.Api.Services {
         Task<bool> SavePolicyConfigurationsAsync(PolicyConfigurationsRequest request, string username);
         Task<bool> SaveGeneralConfigurationsAsync(GeneralConfigurationsRequest request, string username);
     }
-
 }

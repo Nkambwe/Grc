@@ -92,5 +92,31 @@ namespace Grc.ui.App.Services {
             }
         }
 
+        public async Task<GrcResponse<PagedResponse<GrcBugItemResponse>>> GetBugListAsync(BugListView model, long id, string ipAddress) {
+            try {
+
+                var request = new GrcBugListRequest() {
+                    PageIndex = model.PageIndex,
+                    PageSize = model.PageSize,
+                    SortBy = model.SortBy,
+                    SortDirection = model.SortDirection,
+                    Filters = model.Filters,
+                    SearchTerm = model.SearchTerm,
+                    UserId = id,
+                    IPAddress = ipAddress,
+                    Action = "Retrieve a list of system bugs"
+                };
+
+                var endpoint = $"{EndpointProvider.Organization.OrganizationBase}/bug-list";
+                return await HttpHandler.PostAsync<GrcBugListRequest, PagedResponse<GrcBugItemResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<PagedResponse<GrcBugItemResponse>>(error);
+            }
+        }
+
     }
 }

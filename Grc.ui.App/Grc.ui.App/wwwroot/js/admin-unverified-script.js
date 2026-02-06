@@ -101,8 +101,7 @@ function initUnverifiedTable() {
                 field: "userName",
                 minWidth: 200,
                 widthGrow: 4,
-                headerSort: true,
-                frozen: true
+                headerSort: true
             },
             { title: "PF NUMBER", field: "pfNumber", minWidth: 200 },
             {
@@ -110,35 +109,7 @@ function initUnverifiedTable() {
                 field: "emailAddress",
                 minWidth: 500,
                 widthGrow: 4,
-                headerSort: true,
-                frozen: true
-            },
-            { title: "DEPARTMENT", field: "departmentName", minWidth: 300 },
-            { title: "ROLE", field: "roleName", minWidth: 300 },
-            {
-                title: "ACTIVE",
-                field: "isActive",
-                formatter: function (cell) {
-                    let rowData = cell.getRow().getData();
-                    let value = rowData.isActive;
-                    let color = value === true ? "#08A11C" : "#FF2E80";
-                    let text = value === true ? "Active" : "Blocked";
-                    console.log("User status >> " + text);
-                    return `<div style="
-                                display:flex;
-                                align-items:center;
-                                justify-content:center;
-                                width:100%;
-                                height:100%;
-                                border-radius:50px;
-                                color:${color || "#D6D6D6"};
-                                font-weight:bold;">
-                                ${text}
-                            </div>`;
-                },
-                hozAlign: "center",
-                headerHozAlign: "center",
-                minWidth: 250
+                headerSort: true
             },
             {
                 title: "CREATED ON",
@@ -167,6 +138,20 @@ function initUnverifiedTable() {
                 headerHozAlign: "center",
                 headerSort: false
             },
+            {
+                title: "VERIFY",
+                formatter: function (cell) {
+                    let rowData = cell.getRow().getData();
+                    return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="verifyUser(${rowData.id})">
+                        <span><i class="mdi mdi-account-check-outline" aria-hidden="true"></i></span>
+                        <span>VERIFY</span>
+                    </button>`;
+                },
+                width: 200,
+                hozAlign: "center",
+                headerHozAlign: "center",
+                headerSort: false
+            },
             { title: "", field: "endTab", maxWidth: 50, headerSort: false, formatter: () => `<span class="record-tab"></span>` }
         ]
     });
@@ -177,6 +162,69 @@ function initUnverifiedTable() {
 
 function initUnverifiedSearch() {
 
+}
+
+function openUnverifiedPane(title, record) {
+    $('#fullName').val(record?.fullName || '');
+    $('#pfNumber').val(record?.pfNumber || '');
+    $('#emailAddress').val(record?.emailAddress || '');
+    $('#departmentName').val(record?.departmentName || '');
+    $('#username').val(record?.userName || '');
+    $('#displayName').val(record?.displayName || '');
+    $('#phoneNumber').val(record?.phoneNumber || '');
+    $('#roleName').val(record?.roleName || '');
+
+    $('#userTitle').text(title);
+    $('#verifyContainer').addClass('active');
+    $('#verifyOverLay').addClass('active');
+}
+
+function viewRecord(id) {
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving user...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => Swal.showLoading()
+    });
+    findUnverifiedAccount(id)
+        .then(record => {
+            Swal.close();
+            if (record) {
+                openUnverifiedPane('User Account Summery', record);
+            } else {
+                Swal.fire({ title: 'NOT FOUND', text: 'User not found' });
+            }
+        })
+        .catch(() => {
+            Swal.close();
+            Swal.fire({ title: 'Error', text: 'Failed to load user details.' });
+        });
+}
+
+function closeVerifyPanel() {
+      $('#verifyContainer').removeClass('active');
+      $('#verifyOverLay').removeClass('active');
+}
+
+function findUnverifiedAccount(id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/admin/support/users-retrieve/${id}`,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success && response.data) {
+                    resolve(response.data);
+                    resolve(null);
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire("Error", error);
+                return;
+            }
+        });
+    });
 }
 
 function verifyUser(id) {
@@ -191,7 +239,7 @@ function verifyUser(id) {
     }
 
     Swal.fire({
-        title: "Lock User",
+        title: "Verified User",
         text: "Are you sure you want to verify this user account?",
         showCancelButton: true,
         confirmButtonColor: "#450354",
@@ -202,16 +250,16 @@ function verifyUser(id) {
         if (!result.isConfirmed) return;
 
         $.ajax({
-            url: `/grc/compliance/register/policies-delete/${encodeURIComponent(id)}`,
+            url: `/admin/support/users/verify/${encodeURIComponent(id)}`,
             type: 'POST',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': getPolicyAntiForgeryToken()
+                'X-CSRF-TOKEN': getVerifiedToken()
             },
             success: function (res) {
                 if (res && res.success) {
                     toastr.success(res.message || "User account verified successfully.");
-                    policyRegisterTable.setPage(1, true);
+                    unverifiedTable.setPage(1, true);
                 } else {
                     toastr.error(res?.message || "Lock failed.");
                 }
@@ -229,7 +277,19 @@ $(document).ready(function () {
     $(".action-btn-admin-home").on("click", function () {
         window.location.href = '/admin/support';
     });
+    
+    $(".action-btn-new-user").on("click", function () {
+        window.location.href = '/admin/support/system-users';
+    });
+    
+    $('#verifyForm').on('submit', function (e) {
+        e.preventDefault();
+    });
 
 });
+
+function getVerifiedToken() {
+    return $('meta[name="csrf-token"]').attr('content');
+}
 
 
