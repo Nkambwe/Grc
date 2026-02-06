@@ -63,31 +63,23 @@ namespace Grc.Middleware.Api.Security {
         }
 
         public static string GenerateHashedPassword(string password, int length) {
-            // Hash the password using SHA-256
             byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes(password));
 
-            // Convert the byte array to a hexadecimal string
             StringBuilder builder = new();
             foreach (byte b in bytes) {
-                // Convert each byte to hex
                 builder.Append(b.ToString("x2"));
             }
 
-            // Truncate the hash to the required length
-            // leave space for special characters
             string baseHash = builder.ToString()[..(length - 4)];
-
-            // Define a set of special characters
             string specialChars = "!@#$%^&*()_+-=[]{}|;:,.<>?";
-            Random rand = new();
 
-            // Add random special characters to the hash
             StringBuilder finalPassword = new(baseHash);
 
-            // Add 4 random special characters
             for (int i = 0; i < 4; i++) {
-                int randomIndex = rand.Next(specialChars.Length);
-                finalPassword.Insert(rand.Next(finalPassword.Length), specialChars[randomIndex]);
+                int charIndex = RandomNumberGenerator.GetInt32(specialChars.Length);
+                int insertIndex = RandomNumberGenerator.GetInt32(finalPassword.Length + 1);
+
+                finalPassword.Insert(insertIndex, specialChars[charIndex]);
             }
 
             return finalPassword.ToString();
