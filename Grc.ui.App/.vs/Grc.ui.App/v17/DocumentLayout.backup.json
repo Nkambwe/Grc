@@ -138,7 +138,7 @@
               "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\SamController.cs",
               "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\SamController.cs",
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\SamController.cs",
-              "ViewState": "AgIAAIgOAAAAAAAAAADwv5IOAAAcAAAAAAAAAA==",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAAAEMDAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-05T07:20:41.861Z",
               "EditorCaption": ""
@@ -153,8 +153,7 @@
               "RelativeToolTip": "Grc.ui.App\\Controllers\\ApplicationController.cs",
               "ViewState": "AgIAADIBAAAAAAAAAAA8wAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-05T17:47:10.2Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-05T17:47:10.2Z"
             },
             {
               "$type": "Document",
@@ -166,8 +165,7 @@
               "RelativeToolTip": "Grc.ui.App\\Views\\Shared\\Components\\UserList\\Default.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-05T17:12:09.596Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-05T17:12:09.596Z"
             },
             {
               "$type": "Document",
@@ -239,8 +237,7 @@
               "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Controllers\\SupportController.cs",
               "ViewState": "AgIAAAEHAAAAAAAAAADgvwgHAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-05T07:00:35.437Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-05T07:00:35.437Z"
             }
           ]
         }
@@ -271,7 +268,7 @@
               "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Helpers\\MailHandler.cs",
               "ToolTip": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Helpers\\MailHandler.cs",
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Helpers\\MailHandler.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAAwA8AAAASAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-05T17:22:09.642Z",
               "EditorCaption": ""
@@ -298,8 +295,7 @@
               "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\admin-users-script.js",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAOMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-02-05T12:15:48.791Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-05T12:15:48.791Z"
             },
             {
               "$type": "Document",
@@ -311,8 +307,7 @@
               "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\app-regulation-PolRegister.js",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAPkCAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-02-05T15:54:01.529Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-05T15:54:01.529Z"
             },
             {
               "$type": "Document",
@@ -384,8 +379,7 @@
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\SystemAccessService.cs",
               "ViewState": "AgIAAEoDAAAAAAAAAAAEwFgDAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-05T08:15:35.261Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-05T08:15:35.261Z"
             }
           ]
         }
