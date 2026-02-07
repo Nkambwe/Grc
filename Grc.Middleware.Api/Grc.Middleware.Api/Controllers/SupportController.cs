@@ -758,7 +758,7 @@ namespace Grc.Middleware.Api.Controllers {
         #region Bugs
         
         [HttpPost("organization/bug-list")]
-        public async Task<IActionResult> AllDepartments([FromBody] BugListRequest request) {
+        public async Task<IActionResult> GetAllBugs([FromBody] BugListRequest request) {
             try {
                 Logger.LogActivity($"{request.Action}", "INFO");
 
@@ -772,11 +772,7 @@ namespace Grc.Middleware.Api.Controllers {
 
                 var pageResult = await _bugService.GetBugsAsync(request);
                 if (pageResult.Entities == null || !pageResult.Entities.Any()) {
-                    var error = new ResponseError(
-                        ResponseCodes.SUCCESS,
-                        "No data",
-                        "No bug list found"
-                    );
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No bug list found");
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<PagedResponse<BugItemResponse>>(new PagedResponse<BugItemResponse>(new List<BugItemResponse>(), 0, pageResult.Page, pageResult.Size)));
                 }
@@ -786,9 +782,9 @@ namespace Grc.Middleware.Api.Controllers {
                 if (records != null && records.Any()) {
                     records.ForEach(bug => bugs.Add(new() {
                         Id = bug.Id,
-                        Error = bug.Error,
+                        Error = bug.ErrorMessage,
                         Severity = bug.Severity,
-                        Status = bug.Status,
+                        Status = bug.FixStatus,
                         CreatedOn = bug.CreatedOn,
                     }));
                 }
@@ -812,7 +808,6 @@ namespace Grc.Middleware.Api.Controllers {
             } catch (Exception ex) {
                 Logger.LogActivity($"{ex.Message}", "ERROR");
                 Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
-
                 var error = new ResponseError(ResponseCodes.BADREQUEST,"Oops! Something went wrong",$"System Error - {ex.Message}");
                 Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
                 return Ok(new GrcResponse<PagedResponse<BugItemResponse>>(error));
