@@ -1173,7 +1173,7 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
-    "Method": "AllDepartments",
+    "Method": "GetAllBugs",
     "RelativePath": "grc/organization/bug-list",
     "HttpMethod": "POST",
     "IsController": true,

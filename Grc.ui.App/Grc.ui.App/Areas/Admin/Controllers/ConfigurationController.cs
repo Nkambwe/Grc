@@ -352,11 +352,8 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                         createdOn = bug.CreatedOn
                     }).ToList();
 
-                    return Ok(new {
-                        last_page = list.TotalPages,
-                        total_records = list.TotalCount,
-                        data = bugs
-                    });
+                    var totalPages = list.TotalPages <= 0 ? 1 : list.TotalPages;
+                    return Ok(new { data = bugs, last_page = totalPages, total_records = list.TotalCount });
                 }
                 return Ok(new { last_page = 0, total_records = 0, data = Array.Empty<object>() });
             } catch (Exception ex) {

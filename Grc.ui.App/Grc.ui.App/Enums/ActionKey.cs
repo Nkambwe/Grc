@@ -217,6 +217,8 @@ namespace Grc.ui.App.Enums {
         [Description("circular-report-ppd")]
         CircularPpdReport,
         [Description("circular-report-summery")]
-        CircularSummeryReport
+        CircularSummeryReport,
+        [Description("bug-export")]
+        BugExport
     }
 }

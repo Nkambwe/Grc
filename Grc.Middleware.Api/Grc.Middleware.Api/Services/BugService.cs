@@ -15,17 +15,20 @@ namespace Grc.Middleware.Api.Services {
 
         public async Task<PagedResult<SystemError>> GetBugsAsync(BugListRequest request) {
             using var uow = UowFactory.Create();
-            Logger.LogActivity("Retrieve paged system errors", "INFO");
+            Logger.LogActivity("Retrieve all system bugs", "INFO");
             try {
-                return await uow.SystemErrorRespository.PageAllAsync(request.PageIndex, request.PageSize, false);
+                return await uow.SystemErrorRespository.PageAllAsync(
+                    request.PageIndex, 
+                    request.PageSize,false);
             } catch (Exception ex) {
-                Logger.LogActivity($"Failed to retrieve system errors: {ex.Message}", "ERROR");
+                Logger.LogActivity($"Failed to retrieve system erors: {ex.Message}", "ERROR");
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 await uow.SaveChangesAsync();
                 throw;
             }
         }
 
+        
         #region Private Methods
 
         private SystemError HandleError(IUnitOfWork uow, Exception ex) {
@@ -40,7 +43,7 @@ namespace Grc.Middleware.Api.Services {
             long companyId = company != null ? company.Id : 1;
             return new() {
                 ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
-                ErrorSource = "PROCESSES-APPROVAL-SERVICE",
+                ErrorSource = "GUG-SERVICE",
                 StackTrace = ex.StackTrace,
                 Severity = "CRITICAL",
                 ReportedOn = DateTime.Now,

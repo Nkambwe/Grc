@@ -3,7 +3,57 @@
   "WorkspaceRootPath": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.ui.App\\",
   "Documents": [
     {
+<<<<<<< HEAD
       "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_17102025\\grc\\grc.middleware.api\\grc.middleware.api\\helpers\\mailhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+=======
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc\\grc\\grc.ui.app\\grc.ui.app\\areas\\admin\\views\\shared\\_adminlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\admin\\views\\shared\\_adminlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\js\\app-admin-bugs.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\js\\app-admin-bugs.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc\\grc\\grc.ui.app\\grc.ui.app\\views\\shared\\components\\bugtracker\\default.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\views\\shared\\components\\bugtracker\\default.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\js\\audit-report-exceptions.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\js\\audit-report-exceptions.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc\\grc\\grc.ui.app\\grc.ui.app\\areas\\admin\\controllers\\configurationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\admin\\controllers\\configurationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc\\grc\\grc.ui.app\\grc.ui.app\\areas\\admin\\views\\configuration\\bugreporter.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\admin\\views\\configuration\\bugreporter.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\grc\\grc\\grc.middleware.api\\grc.middleware.api\\services\\bugservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\grc\\grc\\grc.middleware.api\\grc.middleware.api\\controllers\\supportcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\grc\\grc\\grc.middleware.api\\grc.middleware.api\\services\\ibugservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc\\grc\\grc.ui.app\\grc.ui.app\\routes\\routeprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\routes\\routeprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc\\grc\\grc.ui.app\\grc.ui.app\\areas\\admin\\views\\configuration\\bugfixes.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\admin\\views\\configuration\\bugfixes.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc\\grc\\grc.ui.app\\grc.ui.app\\areas\\admin\\views\\configuration\\bugprogress.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\admin\\views\\configuration\\bugprogress.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc\\grc\\grc.ui.app\\grc.ui.app\\areas\\admin\\views\\configuration\\newbugs.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\admin\\views\\configuration\\newbugs.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+>>>>>>> 81d7c8f362ad2b30395e50330d95320f15d4f1f6
     }
   ],
   "DocumentGroupContainers": [
@@ -12,8 +62,13 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
+<<<<<<< HEAD
           "DockedWidth": 4,
           "SelectedChildIndex": 12,
+=======
+          "DockedWidth": 139,
+          "SelectedChildIndex": 24,
+>>>>>>> 81d7c8f362ad2b30395e50330d95320f15d4f1f6
           "Children": [
             {
               "$type": "Bookmark",
@@ -60,12 +115,170 @@
               "Name": "ST:130:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
+<<<<<<< HEAD
               "$type": "Bookmark",
               "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+=======
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "app-admin-bugs.js",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-admin-bugs.js",
+              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\js\\app-admin-bugs.js",
+              "ToolTip": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\app-admin-bugs.js",
+              "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\app-admin-bugs.js",
+              "ViewState": "AgIAAEkAAAAAAAAAAAAowFYAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-02-07T01:37:10.651Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "audit-report-exceptions.js",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\audit-report-exceptions.js",
+              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\js\\audit-report-exceptions.js",
+              "ToolTip": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\audit-report-exceptions.js",
+              "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\audit-report-exceptions.js",
+              "ViewState": "AgIAAJgAAAAAAAAAAAAIwKYAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-02-07T01:47:40.472Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "IBugService.cs",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\IBugService.cs",
+              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\IBugService.cs",
+              "ToolTip": "C:\\Projects\\Grc\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\IBugService.cs",
+              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\IBugService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-07T01:16:09.604Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "BugService.cs",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\BugService.cs",
+              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\BugService.cs",
+              "ToolTip": "C:\\Projects\\Grc\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\BugService.cs",
+              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\BugService.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAxwBwAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-07T01:16:15.472Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "SupportController.cs",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\SupportController.cs",
+              "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\SupportController.cs",
+              "ToolTip": "C:\\Projects\\Grc\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\SupportController.cs",
+              "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\SupportController.cs",
+              "ViewState": "AgIAAAMDAAAAAAAAAAAAAA4DAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-07T01:14:43.879Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Default.cshtml",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\Shared\\Components\\BugTracker\\Default.cshtml",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Views\\Shared\\Components\\BugTracker\\Default.cshtml",
+              "ToolTip": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Views\\Shared\\Components\\BugTracker\\Default.cshtml",
+              "RelativeToolTip": "Grc.ui.App\\Views\\Shared\\Components\\BugTracker\\Default.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-07T01:08:15.735Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "BugFixes.cshtml",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Views\\Configuration\\BugFixes.cshtml",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Admin\\Views\\Configuration\\BugFixes.cshtml",
+              "ToolTip": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Views\\Configuration\\BugFixes.cshtml",
+              "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Views\\Configuration\\BugFixes.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-07T01:08:53.398Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "NewBugs.cshtml",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Views\\Configuration\\NewBugs.cshtml",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Admin\\Views\\Configuration\\NewBugs.cshtml",
+              "ToolTip": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Views\\Configuration\\NewBugs.cshtml",
+              "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Views\\Configuration\\NewBugs.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-07T01:09:01.04Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "BugProgress.cshtml",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Views\\Configuration\\BugProgress.cshtml",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Admin\\Views\\Configuration\\BugProgress.cshtml",
+              "ToolTip": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Views\\Configuration\\BugProgress.cshtml",
+              "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Views\\Configuration\\BugProgress.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-07T01:08:54.983Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ConfigurationController.cs",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Controllers\\ConfigurationController.cs",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Admin\\Controllers\\ConfigurationController.cs",
+              "ToolTip": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Controllers\\ConfigurationController.cs",
+              "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Controllers\\ConfigurationController.cs",
+              "ViewState": "AgIAAFIBAAAAAAAAAAAkwGMBAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-07T01:13:39.917Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "BugReporter.cshtml",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Views\\Configuration\\BugReporter.cshtml",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Admin\\Views\\Configuration\\BugReporter.cshtml",
+              "ToolTip": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Views\\Configuration\\BugReporter.cshtml",
+              "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Views\\Configuration\\BugReporter.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-07T01:10:42.456Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "RouteProvider.cs",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Routes\\RouteProvider.cs",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Routes\\RouteProvider.cs",
+              "ToolTip": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Routes\\RouteProvider.cs",
+              "RelativeToolTip": "Grc.ui.App\\Routes\\RouteProvider.cs",
+              "ViewState": "AgIAAIQBAAAAAAAAAADwv5MBAABiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-07T01:07:10.494Z",
+              "EditorCaption": ""
+>>>>>>> 81d7c8f362ad2b30395e50330d95320f15d4f1f6
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
+<<<<<<< HEAD
               "Title": "MailHandler.cs",
               "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Helpers\\MailHandler.cs",
               "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Helpers\\MailHandler.cs",
@@ -74,6 +287,16 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAHMAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-06T11:07:18.466Z",
+=======
+              "Title": "_AdminLayout.cshtml",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
+              "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
+              "ToolTip": "C:\\Projects\\Grc\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
+              "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
+              "ViewState": "AgIAADkBAAAAAAAAAAAAAEUBAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-07T01:05:51.459Z",
+>>>>>>> 81d7c8f362ad2b30395e50330d95320f15d4f1f6
               "EditorCaption": ""
             }
           ]
