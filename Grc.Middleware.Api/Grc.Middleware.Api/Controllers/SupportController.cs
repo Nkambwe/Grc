@@ -786,9 +786,9 @@ namespace Grc.Middleware.Api.Controllers {
                 if (records != null && records.Any()) {
                     records.ForEach(bug => bugs.Add(new() {
                         Id = bug.Id,
-                        Error = bug.Error,
+                        Error = bug.ErrorMessage,
                         Severity = bug.Severity,
-                        Status = bug.Status,
+                        Status = bug.FixStatus,
                         CreatedOn = bug.CreatedOn,
                     }));
                 }
