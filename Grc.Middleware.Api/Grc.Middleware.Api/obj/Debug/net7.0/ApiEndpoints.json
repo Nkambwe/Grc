@@ -1157,8 +1157,24 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "GetBranches",
+    "RelativePath": "grc/organization/branches-all",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
     "Method": "AllBranches",
-    "RelativePath": "grc/organization/allBranches",
+    "RelativePath": "grc/organization/branches-list",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1166,6 +1182,38 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.ListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "GetBranch",
+    "RelativePath": "grc/organization/branches-retrieve",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "GetSystemErrorList",
+    "RelativePath": "grc/organization/bug-export",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
         "IsRequired": true
       }
     ],
@@ -1189,8 +1237,88 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "GetSystemError",
+    "RelativePath": "grc/organization/bug-retrieve",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "GetStatusBugs",
+    "RelativePath": "grc/organization/bug-status",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.BugStatusListRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "ChangeBugStatus",
+    "RelativePath": "grc/organization/change-bug-status",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.BugStatusRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "SaveBranch",
+    "RelativePath": "grc/organization/create-branch",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.BranchRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "CreateError",
+    "RelativePath": "grc/organization/create-bug",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.BugRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
     "Method": "DeleteBranch",
-    "RelativePath": "grc/organization/deleteBranch",
+    "RelativePath": "grc/organization/delete-branch",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1214,22 +1342,6 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.GeneralConfigurationsRequest",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
-    "Method": "GetBranches",
-    "RelativePath": "grc/organization/getBranches",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "request",
-        "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
         "IsRequired": true
       }
     ],
@@ -1262,22 +1374,6 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.PolicyConfigurationsRequest",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
-    "Method": "SaveBranch",
-    "RelativePath": "grc/organization/saveBranch",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "request",
-        "Type": "Grc.Middleware.Api.Http.Requests.BranchRequest",
         "IsRequired": true
       }
     ],
@@ -1318,7 +1414,7 @@
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
     "Method": "UpdateBranch",
-    "RelativePath": "grc/organization/updateBranch",
+    "RelativePath": "grc/organization/update-branch",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1326,6 +1422,22 @@
       {
         "Name": "request",
         "Type": "Grc.Middleware.Api.Http.Requests.BranchRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "UpdateSystemError",
+    "RelativePath": "grc/organization/update-bug",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.BugRequest",
         "IsRequired": true
       }
     ],

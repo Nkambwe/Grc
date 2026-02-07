@@ -15,13 +15,13 @@ namespace Grc.ui.App.Http.Responses {
         /// <summary>
         /// Gets or sets branch name
         /// </summary>
-        [JsonPropertyName("branchName")]
-        public string BranchName { get; set; }
-        /// <summary>
-        /// Gets or sets company name
-        /// </summary>
         [JsonPropertyName("companyName")]
         public string CompanyName { get; set; }
+        /// <summary>
+        /// Gets or sets branch name
+        /// </summary>
+        [JsonPropertyName("branchName")]
+        public string BranchName { get; set; }
         /// <summary>
         /// Gets or sets branch sol ID
         /// </summary>
@@ -31,7 +31,7 @@ namespace Grc.ui.App.Http.Responses {
         /// Get or set the record as deleted
         /// </summary>
         [JsonPropertyName("isDeleted")]
-        public bool IsDeleted { get;set; }
+        public bool IsDeleted { get; set; }
         /// <summary>
         /// Get or Set Creation date
         /// </summary>
@@ -46,12 +46,12 @@ namespace Grc.ui.App.Http.Responses {
         /// Get or Set Modification Date
         /// </summary>
         [JsonPropertyName("modifiedOn")]
-        public DateTime? LastModifiedOn {get;set;}
+        public DateTime? LastModifiedOn { get; set; }
         /// <summary>
         /// Get or Set Person who modified record
         /// </summary>
         [JsonPropertyName("modifiedBy")]
-        public string LastModifiedBy { get;set; }
+        public string LastModifiedBy { get; set; }
     }
 
 }

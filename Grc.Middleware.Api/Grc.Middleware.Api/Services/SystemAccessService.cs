@@ -529,7 +529,7 @@ namespace Grc.Middleware.Api.Services {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to check for System User in the database: {ex.Message}", "ERROR");
-                LogErrorAsync(uow,ex);
+                await LogErrorAsync(uow,ex);
                 throw;
             }
         }
@@ -555,7 +555,7 @@ namespace Grc.Middleware.Api.Services {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrieve role groups in the database: {ex.Message}", "ERROR");
-                LogErrorAsync(uow,ex);
+                await LogErrorAsync(uow,ex);
                 throw;
             }
         }
@@ -582,7 +582,7 @@ namespace Grc.Middleware.Api.Services {
             catch (Exception ex)
             {
                 Logger.LogActivity($"Failed to retrive units the database: {ex.Message}", "ERROR");
-                LogErrorAsync(uow,ex);
+                await LogErrorAsync(uow,ex);
                 throw;
             }
         }
@@ -3822,17 +3822,13 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<PagedResult<SystemPermissionSet>> PageAllPermissionSetAsync(CancellationToken token, int page, int size, Expression<Func<SystemPermissionSet, bool>> predicate = null, bool includeDeleted = false)
-        {
+        public async Task<PagedResult<SystemPermissionSet>> PageAllPermissionSetAsync(CancellationToken token, int page, int size, Expression<Func<SystemPermissionSet, bool>> predicate = null, bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve all system permission sets", "INFO");
 
-            try
-            {
+            try {
                 return await uow.PermissionSetRepository.PageAllAsync(token, page, size, predicate, includeDeleted);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve system permission sets records : {ex.Message}", "ERROR");
                 await LogErrorAsync(uow, ex);
                 throw;

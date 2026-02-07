@@ -258,8 +258,8 @@ function openSetEditor(title, set, isEdit) {
     }
 
     $('#panelTitle').text(title);
-    $('.overlay').addClass('active');
-    $('#setPanel').addClass('active');
+    $('#permsetOverLay').addClass('active');
+    $('#permsetPanel').addClass('active');
 }
 
 function deleteSetRecord(id) {
@@ -415,8 +415,8 @@ function persistPermissionSet(isEdit, payload) {
 }
 
 function closeSetPanel() {
-    $('.overlay').removeClass('active');
-    $('#setPanel').removeClass('active');
+    $('#permsetOverLay').removeClass('active');
+    $('#permsetPanel').removeClass('active');
 }
 
 function initSetSearch() {

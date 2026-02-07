@@ -16,6 +16,105 @@
     <div id="bugsTable"></div>
 </div>
 
+
+<div id="bugOverLay" class="obligation-panel-overlay"></div>
+
+<div id="bugContainer" class="obligation-side-panel" onclick="event.stopPropagation()">
+
+    <div class="obligation-side-panel-header">
+        <h3 id="bugTitle">Bug Tracker</h3>
+        <button class="panel-close" onclick="closeBugPanel()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div id="bugPanel" class="obligation-side-panel-body">
+
+        <form id="bugForm" class="grc-law-form m-5">
+            <input type="hidden" id="errorId">
+            <input type="hidden" id="isEdit">
+
+            <div class="row mb-5">
+
+                <div class="col-12">
+
+                    <div class="row">
+
+                        <div class="col-12">
+                            <div class="row m-3">
+                                <label for="error" class="col-12 mb-3 form-label">Error Message</label>
+                                <div class="col-sm-12">
+                                    <textarea class="form-control code-textarea" id="error" name="error" rows="4"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row m-3">
+                                <label for="severity" class="col-12 mb-3 form-label">Severity</label>
+                                <div class="col-12">
+                                    <select class="js-act-severity form-control" id="severity" name="severity">
+                                        <option value="NONE">Select severity...</option>
+                                        <option value="CRITICAL">Critical</option>
+                                        <option value="HIGH">High</option>
+                                        <option value="MEDIUM">Medium</option>
+                                        <option value="LOW">Low</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row m-3">
+                                <label for="status" class="col-12 mb-3 form-label">Status</label>
+                                <div class="col-12">
+                                    <select class="js-act-status form-control" id="status" name="status">
+                                        <option value="NONE">Select status...</option>
+                                        <option value="OPEN">New</option>
+                                        <option value="ASSIGNED">In Progress</option>
+                                        <option value="CLOSED">Closed</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row m-3">
+                            <label for="assignedTo" class="col-12 form-label">Assigned To</label>
+                            <div class="col-12">
+                                <input type="text" class="form-control" id="assignedTo" name="assignedTo">
+                            </div>
+                        </div>
+
+                        <div class="row m-3">
+                            <label for="stackTrace" class="col-12 mb-3 form-label">Stack Trace</label>
+                            <div class="col-12">
+                                <textarea class="form-control code-textarea" id="stackTrace" name="stackTrace" rows="12"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+                        <div class="col-sm-2">
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveError(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeBugPanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                        </div>
+                        <div class="col-sm-8"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
 @{
     Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
     Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-admin-bugs.js");

@@ -347,10 +347,65 @@
 
             routeBuilder.MapControllerRoute(
                name: "admin-support-branches",
-               pattern: "support/organization/branches-all",
+               pattern: "admin/support/organization/branches-list",
                defaults: new { area = "Admin", controller = "Support", action = "GetBranches" }
             );
+            routeBuilder.MapControllerRoute(
+               name: "admin-support-branches-retrieve",
+               pattern: "/admin/support/organization/branches-retrieve/{id:long}",
+               defaults: new { area = "Admin", controller = "Support", action = "GetBranch" }
+           );
+            routeBuilder.MapControllerRoute(
+               name: "admin-support-branches-list",
+               pattern: "admin/support/organization/branches-all",
+               defaults: new { area = "Admin", controller = "Support", action = "AllBranches" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-branches-create",
+               pattern: "admin/support/organization/branches/create-branch",
+               defaults: new { area = "Admin", controller = "Support", action = "CreateBranch" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-branches-update",
+               pattern: "admin/support/organization/branches/update-branch",
+               defaults: new { area = "Admin", controller = "Support", action = "UpdateBranch" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-configuration-branches-delete",
+                pattern: "admin/support/organization/branches/delete/{id:long}",
+                defaults: new { area = "Admin", controller = "Support", action = "DeleteBranch" }
+            );
 
+            routeBuilder.MapControllerRoute(
+               name: "admin-support-departments",
+               pattern: "admin/support/organization/departments/department-list",
+               defaults: new { area = "Admin", controller = "Support", action = "GetDepartments" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-support-departments-retrieve",
+               pattern: "admin/support/organization/departments-retrieve/{id:long}",
+               defaults: new { area = "Admin", controller = "Support", action = "GetDepartment" }
+           );
+            routeBuilder.MapControllerRoute(
+               name: "admin-support-departments-list",
+               pattern: "admin/support/organization/departments-all",
+               defaults: new { area = "Admin", controller = "Support", action = "AllDepartments" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-departments-create",
+               pattern: "admin/support/organization/departments/create-department",
+               defaults: new { area = "Admin", controller = "Support", action = "CreateDepartment" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-departments-update",
+               pattern: "admin/support/organization/departments/update-department",
+               defaults: new { area = "Admin", controller = "Support", action = "UpdateDepartment" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-configuration-departments-delete",
+                pattern: "admin/support/organization/departments/delete/{id:long}",
+                defaults: new { area = "Admin", controller = "Support", action = "DeleteDepartment" }
+            );
             routeBuilder.MapControllerRoute(
                 name: "admin-settings",
                 pattern: "admin/settings",
@@ -419,10 +474,59 @@
                defaults: new { area = "Admin", controller = "Configuration", action = "BugFixes" }
             );
             routeBuilder.MapControllerRoute(
+              name: "admin-configuration-bugs-retrieve",
+              pattern: "admin/configuration/bugs/retrieve/{id:long}",
+              defaults: new { area = "Admin", controller = "Configuration", action = "GetBug" }
+            );
+            routeBuilder.MapControllerRoute(
                name: "admin-configuration-bugs-list",
                pattern: "admin/configuration/bug-list",
                defaults: new { area = "Admin", controller = "Configuration", action = "GetAllBugs" }
             );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-bugs-new",
+               pattern: "admin/configuration/bugs/new-bugs",
+               defaults: new { area = "Admin", controller = "Configuration", action = "GetNewErrorList" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-bugs-closed",
+               pattern: "admin/configuration/bugs/closed-bugs",
+               defaults: new { area = "Admin", controller = "Configuration", action = "GetClosedErrorList" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-bugs-progress",
+               pattern: "admin/configuration/bugs/progress-bugs",
+               defaults: new { area = "Admin", controller = "Configuration", action = "GetProgressErrorList" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-bugs-create",
+               pattern: "admin/configuration/bugs/create-bug",
+               defaults: new { area = "Admin", controller = "Configuration", action = "CreateError" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-bugs-update",
+               pattern: "admin/configuration/bugs/update-bug",
+               defaults: new { area = "Admin", controller = "Configuration", action = "UpdateError" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-bugs-change-status",
+               pattern: "admin/configuration/bugs/change-status",
+               defaults: new { area = "Admin", controller = "Configuration", action = "ChangeErrorStatus" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-bugs-export",
+               pattern: "admin/configuration/bug-export",
+               defaults: new { area = "Admin", controller = "Configuration", action = "ExportBugList" }
+            );
+            routeBuilder.MapControllerRoute(
+              name: "admin-configuration-bugs-retrieve",
+              pattern: "admin/configuration/bugs/retrieve/{id:long}",
+              defaults: new { area = "Admin", controller = "Configuration", action = "GetBug" }
+            );
+
+
+
+
             /*----------------------- Admin Support*/
             routeBuilder.MapControllerRoute(
                 name: "admin-support",

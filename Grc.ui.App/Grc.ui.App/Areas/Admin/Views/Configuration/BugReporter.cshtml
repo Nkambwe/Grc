@@ -12,7 +12,7 @@
         {
             new ComponentAction { ActionKey = ActionKey.AdminHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home") },
             new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
-            new ComponentAction { ActionKey = ActionKey.New.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") },
+             new ComponentAction { ActionKey = ActionKey.New.GetDescription(), Icon = "mdi mdi-spider", Tooltip = "New"},
             new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
             new ComponentAction { ActionKey = ActionKey.BugExport.GetDescription(), Icon = "mdi mdi-email-outline", Tooltip = "Export" },
             new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
@@ -22,5 +22,4 @@
     };
 }
 
-<!-- role list -->
 @await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("BugTracker") })

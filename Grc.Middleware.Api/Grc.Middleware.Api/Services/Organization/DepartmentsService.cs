@@ -23,7 +23,7 @@ namespace Grc.Middleware.Api.Services.Organization {
             Logger.LogActivity($"Retrieve department record with '{id}' ID", "INFO");
     
             try {;
-                var department = await uow.DepartmentRepository.GetAsync(t => t.Id == id, includeDeleted);
+                var department = await uow.DepartmentRepository.GetAsync(t => t.Id == id, includeDeleted, d=> d.Units);
                 if(department != null) {
                     //..log the Department data being retrieved
                     var typeJson = JsonSerializer.Serialize(department, new JsonSerializerOptions { 

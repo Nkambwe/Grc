@@ -218,17 +218,58 @@ namespace Grc.Middleware.Api.Controllers {
 
         #region Branches
 
-        [HttpPost("organization/getBranches")]
+        [HttpPost("organization/branches-retrieve")]
+        public async Task<IActionResult> GetBranch([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Get System Error", "INFO");
+
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleResponse>(error));
+                }
+
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request Branch ID is required", "Invalid request Role ID");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var branch = await _branchService.GetByIdAsync(request.RecordId, true);
+                if (branch != null) {
+                    var bug = new BranchResponse() {
+                        Id = branch.Id,
+                        CompanyId = branch.CompanyId,
+                        CompanyName = branch.Company != null ? branch.Company.CompanyName : string.Empty,
+                        BranchName = branch.BranchName,
+                        SolId = branch.SolId,
+                        IsDeleted = branch.IsDeleted,
+                        CreatedBy = branch.CreatedBy,
+                        CreatedOn = branch.CreatedOn,
+                        LastModifiedBy = branch.LastModifiedBy,
+                        LastModifiedOn = branch.LastModifiedOn
+                    };
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(bug)}");
+                    return Ok(new GrcResponse<BranchResponse>(bug));
+                } else {
+                    var error = new ResponseError(ResponseCodes.FAILED, "System Error not found", "No System Error matched the provided ID");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<BranchResponse>(error));
+                }
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<BranchResponse>(error));
+            }
+        }
+
+        [HttpPost("organization/branches-all")]
         public async Task<IActionResult> GetBranches([FromBody] GeneralRequest request) {
             try {
                 Logger.LogActivity($"{request.Action}", "INFO");
 
                 if (request == null) {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "Invalid request body"
-                    );
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","Invalid request body");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<List<BranchResponse>>(error));
                 }
@@ -240,7 +281,18 @@ namespace Grc.Middleware.Api.Controllers {
                 //..map response
                 List<BranchResponse> data = new();
                 if(dataList != null && dataList.Any()) { 
-                    data = dataList.Select(Mapper.Map<BranchResponse>).ToList();
+                    data = dataList.Select(b=> new BranchResponse() {
+                        Id = b.Id,
+                        CompanyId = b.CompanyId,
+                        CompanyName = b.Company != null ? b.Company.CompanyName : string.Empty,
+                        BranchName = b.BranchName,
+                        SolId = b.SolId,
+                        IsDeleted = b.IsDeleted,
+                        CreatedBy = b.CreatedBy,
+                        CreatedOn = b.CreatedOn,
+                        LastModifiedBy = b.LastModifiedBy,
+                        LastModifiedOn = b.LastModifiedOn
+                    }).ToList();
                 }
                     
                 Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(data)}");
@@ -285,7 +337,7 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
-        [HttpPost("organization/allBranches")]
+        [HttpPost("organization/branches-list")]
         public async Task<IActionResult> AllBranches([FromBody] ListRequest request) {
             try {
                 Logger.LogActivity($"{request.Action}", "INFO");
@@ -302,15 +354,26 @@ namespace Grc.Middleware.Api.Controllers {
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
 
-                var pageResult = await _departmentsService.GetPagedDepartmentsAsync(
+                var pageResult = await _branchService.GetPagedBranchesAsync(
                     pageIndex:request.PageIndex, 
                     pageSize:request.PageSize,
                     includeDeleted:request.IncludeDeleted);
 
                 //..map response
                 List<BranchResponse> data = new();
-                if(pageResult.Entities != null && pageResult.Entities.Any()) { 
-                    data = pageResult.Entities.Select(Mapper.Map<BranchResponse>).ToList();
+                if(pageResult.Entities != null && pageResult.Entities.Any()) {
+                    data = pageResult.Entities.Select(b => new BranchResponse() {
+                        Id = b.Id,
+                        CompanyId = b.CompanyId,
+                        CompanyName = b.Company != null ? b.Company.CompanyName : string.Empty,
+                        BranchName = b.BranchName,
+                        SolId = b.SolId,
+                        IsDeleted = b.IsDeleted,
+                        CreatedBy = b.CreatedBy,
+                        CreatedOn = b.CreatedOn,
+                        LastModifiedBy = b.LastModifiedBy,
+                        LastModifiedOn = b.LastModifiedOn
+                    }).ToList();
                 }
                     
                 Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(data)}");
@@ -360,7 +423,7 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
-        [HttpPost("organization/saveBranch")]
+        [HttpPost("organization/create-branch")]
         public async Task<IActionResult> SaveBranch([FromBody] BranchRequest request) {
             try {
 
@@ -447,7 +510,7 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
-        [HttpPost("organization/updateBranch")]
+        [HttpPost("organization/update-branch")]
         public async Task<IActionResult> UpdateBranch([FromBody] BranchRequest request) {
             try {
                 var response = new GeneralResponse();
@@ -508,7 +571,7 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
-        [HttpPost("organization/deleteBranch")]
+        [HttpPost("organization/delete-branch")]
         public async Task<IActionResult> DeleteBranch([FromBody] IdRequest request) {
             try {
                 Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
@@ -525,12 +588,9 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 //..delete branch record
-                var status = await _departmentUnitService.DeleteUnitAsync(request);
+                var status = await _branchService.DeleteBranchAsync(request);
                 if(!status){
-                    var error = new ResponseError(
-                        ResponseCodes.FAILED,
-                        "Failed to delete department unit",
-                        "An error occurred! could delete unit");
+                    var error = new ResponseError(ResponseCodes.FAILED, "Failed to delete branch", "An error occurred! could delete branch");
                      return Ok(new GrcResponse<GeneralResponse>(error));
                 } 
                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse(){Status = status}));
@@ -756,7 +816,49 @@ namespace Grc.Middleware.Api.Controllers {
         #endregion
 
         #region Bugs
-        
+
+        [HttpPost("organization/bug-retrieve")]
+        public async Task<IActionResult> GetSystemError([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity("Get System Error", "INFO");
+
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleResponse>(error));
+                }
+
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request System Error ID is required", "Invalid request Role ID");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleResponse>(error));
+                }
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+
+                var response = await _bugService.GetBugAsync(request.RecordId);
+                if (response != null) {
+                    var bug = new BugResponse() {
+                        Id = response.Id,
+                        Error = response.ErrorMessage,
+                        Severity = response.Severity,
+                        Status = response.FixStatus,
+                        Source = response.ErrorSource,
+                        AssignedTo = response.AssignedTo,
+                        StackTrace = response.StackTrace
+                    };
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(bug)}");
+                    return Ok(new GrcResponse<BugResponse>(bug));
+                } else {
+                    var error = new ResponseError(ResponseCodes.FAILED, "System Error not found", "No System Error matched the provided ID");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<BugResponse>(error));
+                }
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<BugResponse>(error));
+            }
+        }
+
         [HttpPost("organization/bug-list")]
         public async Task<IActionResult> GetAllBugs([FromBody] BugListRequest request) {
             try {
@@ -813,7 +915,203 @@ namespace Grc.Middleware.Api.Controllers {
                 return Ok(new GrcResponse<PagedResponse<BugItemResponse>>(error));
             }
         }
-        
+
+        [HttpPost("organization/bug-export")]
+        public async Task<IActionResult> GetSystemErrorList([FromBody] GeneralRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<BugResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var permissionSets = await _bugService.GetAllAsync(b=> b.FixStatus == "OPEN", false);
+                if (permissionSets == null || !permissionSets.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS,"No data", "No System erros found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ListResponse<BugResponse>>(error));
+                }
+
+                var bugs = permissionSets.Select(b => new BugResponse() { 
+                    Id = b.Id,
+                    Error = b.ErrorMessage,
+                    Severity = b.Severity,
+                    Status = b.FixStatus,
+                    Source = b.ErrorSource,
+                    StackTrace = b.StackTrace,
+                    AssignedTo = b.AssignedTo,
+                    CreatedOn = b.CreatedOn
+                }).ToList();
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: Retrieved {bugs.Count} system errors (IDs: {string.Join(", ", bugs.Select(u => u.Id))})");
+                return Ok(new GrcResponse<ListResponse<BugResponse>>(new ListResponse<BugResponse>() {
+                    Data = bugs
+                }));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<BugResponse>>(error));
+            }
+        }
+
+        [HttpPost("organization/bug-status")]
+        public async Task<IActionResult> GetStatusBugs([FromBody] BugStatusListRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<BugResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var pageResult = await _bugService.PageAllAsync(request.PageIndex, request.PageSize, true, b =>b.FixStatus == request.Status);
+
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS,"No data","No permission set records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+
+                    return Ok(new GrcResponse<PagedResponse<BugResponse>>(new PagedResponse<BugResponse>(
+                        new List<BugResponse>(),0,pageResult.Page,pageResult.Size)));
+                }
+
+                var permissionData = pageResult.Entities;
+                var sets = permissionData.Select(Mapper.Map<BugResponse>).ToList();
+                if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                    var searchTerm = request.SearchTerm.ToLower();
+                    sets = sets.Where(u =>
+                        (u.Error?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.Source?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (u.Severity?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                    ).ToList();
+                }
+
+                return Ok(new GrcResponse<PagedResponse<BugResponse>>(new PagedResponse<BugResponse>(
+                    sets,
+                    pageResult.Count,
+                    pageResult.Page,
+                    pageResult.Size
+                )));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<PagedResponse<RoleGroupResponse>>(error));
+            }
+        }
+
+        [HttpPost("organization/create-bug")]
+        public async Task<IActionResult> CreateError([FromBody] BugRequest request) {
+            try {
+                Logger.LogActivity("Creating new system error record", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Error record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                //..get username
+
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username = currentUser != null ? currentUser.Username : $"{request.UserId}";
+
+                //..create system error
+                var result = await _bugService.InsertSystemErrorAsync(request, username);
+                var response = new GeneralResponse();
+                if (result) {
+                    //..set response
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "System Error saved successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to save system error record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("organization/change-bug-status")]
+        public async Task<IActionResult> ChangeBugStatus([FromBody] BugStatusRequest request) {
+            try {
+                Logger.LogActivity("Close system error", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The user record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _accessService.UserExistsAsync(r => r.Id == request.RecordId)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "User record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username = currentUser != null ? currentUser.Username : $"{request.UserId}";
+
+                //..update system error
+                await _bugService.UpdateStatusAsync(request.RecordId, request.Status, username);
+                var response = new GeneralResponse { Status = true, StatusCode = (int)ResponseCodes.SUCCESS, Message = "User record updated successfully" };
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("organization/update-bug")]
+        public async Task<IActionResult> UpdateSystemError([FromBody] BugRequest request) {
+            try {
+                Logger.LogActivity("Update system error", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The system error record cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _bugService.ExistsAsync(r => r.Id == request.Id)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "System Error record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username = currentUser != null ? currentUser.Username : $"{request.UserId}";
+
+                //..update system error
+                var result = await _bugService.UpdateErrorAsync(request, username);
+                var response = new GeneralResponse();
+                if (result) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "System Error record updated successfully";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update system error record record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
         #endregion
 
         #region Departments
@@ -824,11 +1122,7 @@ namespace Grc.Middleware.Api.Controllers {
                 Logger.LogActivity($"{request.Action}", "INFO");
 
                 if (request == null) {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "Invalid request body"
-                    );
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<List<DepartmentResponse>>(error));
                 }
@@ -1159,18 +1453,35 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"REQUEST >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                var dataRecord = await _departmentUnitService.GetUnitByIdAsync(request.RecordId, true);
+                var dataRecord = await _departmentsService.GetDepartmentByIdAsync(request.RecordId, true);
 
                 //..map response
-                DepartmentUnitResponse result;
+                DepartmentResponse result;
                 if(dataRecord != null) { 
-                    result = Mapper.Map<DepartmentUnitResponse>(dataRecord);
+                    result = new DepartmentResponse() { 
+                        Id = dataRecord.Id,
+                        BranchId = dataRecord.BranchId,
+                        Branch = dataRecord.Branch != null ? dataRecord.Branch.BranchName : string.Empty,
+                        DepartmentCode = dataRecord.DepartmentCode,
+                        DepartmentName = dataRecord.DepartmentName,
+                        DepartmentAlias = dataRecord.Alias,
+                        DepartmentUnits = dataRecord.Units != null && dataRecord.Units.Any() ?
+                        dataRecord.Units.Select(u => new DepartmentUnitResponse() {
+                            Id = u.Id,
+                            DepartmentId = u.DepartmentId,
+                            UnitCode = u.UnitCode,
+                            UnitName = u.UnitName,
+                            Department = dataRecord.DepartmentName
+
+                        }).ToList() :
+                        new List<DepartmentUnitResponse>(),
+                    };
                     Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(result)}");
-                    return Ok(new GrcResponse<DepartmentUnitResponse>(result));
+                    return Ok(new GrcResponse<DepartmentResponse>(result));
                 }
                     
                 error = new ResponseError(ResponseCodes.FAILED, "An error occurred while retriving unit", "Get help from your administrtor");
-                return Ok(new GrcResponse<DepartmentUnitResponse>(error));
+                return Ok(new GrcResponse<DepartmentResponse>(error));
             } catch (Exception ex) {
                 Logger.LogActivity($"{ex.Message}", "ERROR");
                 Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");

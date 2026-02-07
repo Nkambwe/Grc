@@ -499,8 +499,49 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         #endregion
 
-        #region Data actions
+        #region Branches
 
+        [HttpPost]
+        public async Task<IActionResult> GetBranch(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0) {
+                    return BadRequest(new { success = false, message = "Branch Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                var result = await _branchService.GetBranchAsync(id, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null) {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving branch";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var data = result.Data;
+                var branch = new {
+                    id = data.Id,
+                    branchName = data.BranchName,
+                    solId = data.SolId,
+                    isDeleted = data.IsDeleted,
+                    createdOn = data.CreatedOn
+                };
+
+                return Ok(new { success = true, data = branch });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving branch record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        [HttpPost]
         public async Task<IActionResult> GetBranches() { 
             try {
 
@@ -554,7 +595,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             }
         }
         
-        [HttpPost("support/organization/allBranches")]
+        [HttpPost]
         public async Task<IActionResult> AllBranches([FromBody] TableListRequest request) { 
             
             try{
@@ -565,6 +606,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (grcResponse.HasError) {
                         Logger.LogActivity($"BRANCH DATA ERROR: Failed to Current user record - {JsonSerializer.Serialize(grcResponse)}");
+                    return Ok(new { last_page = 0, total_records = 0, data = Array.Empty<object>() });
                 }
 
                 //..update with user data
@@ -584,24 +626,133 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                     Logger.LogActivity($"BRANCH DATA - {JsonSerializer.Serialize(branchList)}");
                 }
 
-                branchList.Entities ??= new();
-                return Ok(new {
-                    data = branchList.Entities,
-                    recordsTotal = branchList.TotalCount ,
-                    recordsFiltered = branchList.TotalCount 
-                });
+                var data = (branchList.Entities ??= new()).ToArray();
+                var totalPages = branchList.TotalPages <= 0 ? 1 : branchList.TotalPages;
+                return Ok(new { data, last_page = totalPages, total_records = branchList.TotalCount });
             } catch(Exception ex){
                 Logger.LogActivity($"Error retrieving branch items: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
-
-                return Ok(new {
-                    data = new List<ActivityModel>(),
-                    recordsTotal = 0 ,
-                    recordsFiltered = 0
-                });
+                return Ok(new { last_page = 0, total_records = 0, data = Array.Empty<object>() });
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateBranch([FromBody] BranchModel model) {
+            try {
+
+                if (model == null) {
+                    return Ok(new { success = false, message = "Invalid request data" });
+                }
+
+                if (!ModelState.IsValid) {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+
+                    string combinedErrors = string.Join("; ", errors);
+                    return Ok(new {
+                        success = false,
+                        message = $"Please correct these errors: {combinedErrors}",
+                        data = (object)null
+                    });
+                }
+
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                var result = await _branchService.CreateBranchAsync(model, currentUser.Id, currentUser.IPAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create branch record" });
+
+                var created = result.Data;
+                return Ok(new { success = true, message = "Branch created successfully" });
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error creating branch record: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "SYSTEM-SUPPORT", ex.StackTrace);
+                return Ok(new { success = false, message = "An unexpected error occurred" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateBranch([FromBody] BranchModel model) {
+            try {
+
+                if (model == null) {
+                    return Ok(new { success = false, message = "Invalid request data" });
+                }
+
+                if (!ModelState.IsValid) {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+
+                    string combinedErrors = string.Join("; ", errors);
+                    return Ok(new {
+                        success = false,
+                        message = $"Please correct these errors: {combinedErrors}",
+                        data = (object)null
+                    });
+                }
+
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                var result = await _branchService.UpdateBranchAsync(model, currentUser.Id, currentUser.IPAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update branch record" });
+
+                var created = result.Data;
+                return Ok(new { success = true, message = "Branch update successfully" });
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error updateing branch record: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "SYSTEM-SUPPORT", ex.StackTrace);
+                return Ok(new { success = false, message = "An unexpected error occurred" });
+            }
+        }
+
+        public async Task<IActionResult> DeleteBranch(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                if (id == 0) return BadRequest(new { success = false, message = "Branch Id is required" });
+
+                var currentUser = userResponse.Data;
+                GrcIdRequest request = new() {
+                    RecordId = id,
+                    UserId = currentUser.UserId,
+                    Action = "Delete Branch",
+                    IPAddress = ipAddress,
+                    IsDeleted = true
+                };
+
+                var result = await _branchService.DeleteBranchAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to delete branchrecord" });
+
+                return Ok(new { success = result.Data.Status, message = result.Data.Message });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error deleting branch record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        #endregion
+
+        #region Activities
         [HttpPost("support/activities/allActivities")]
         public async Task<IActionResult> AllActivities([FromBody] TableListRequest request) {
 
@@ -651,7 +802,124 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             
         }
 
-        [HttpPost("support/departments/allDepartments")]
+        #endregion
+
+        #region Departments
+
+        [HttpPost]
+        public async Task<IActionResult> GetDepartment(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = new { } });
+                }
+
+                if (id == 0) {
+                    return BadRequest(new { success = false, message = "Department Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+
+                var result = await _departmentService.GetDepartmentById(new GrcIdRequest() {
+                    RecordId = id,
+                    IsDeleted = false,
+                    UserId = currentUser.UserId,
+                    Action = "Retrieve department",
+                    IPAddress = ipAddress,
+                    DecryptFields = Array.Empty<string>(),
+                    EncryptFields = Array.Empty<string>()
+                });
+
+                if (result.HasError || result.Data == null) {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving department";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = new { } });
+                }
+
+                var data = result.Data;
+                var department = new {
+                    id = data.Id,
+                    departmentName = data.DepartmentName,
+                    departmentAlias = data.DepartmentAlias,
+                    departmentCode = data.DepartmentCode,
+                    isDeleted = data.IsDeleted,
+                    units =  data.DepartmentUnits.Select(u => new {
+                        id = u.Id,
+                        departmentId = u.DepartmentId,
+                        unitCode = u.UnitCode,
+                        unitName = u.UnitName,
+                        department = data.DepartmentName
+                    }).ToArray()
+                };
+
+                return Ok(new { success = true, data = department });
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving department record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDepartments() {
+            try {
+
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    Logger.LogActivity($"DEPARTMENT LIST ERROR: Failed to Current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                var currentUser = grcResponse.Data;
+                if (currentUser == null) {
+                    //..session has expired
+                    return RedirectToAction("Login", "Application");
+                }
+                GrcRequest request = new() {
+                    UserId = currentUser.UserId,
+                    Action = Activity.RETRIEVEDEPARTMENTS.GetDescription(),
+                    IPAddress = ipAddress,
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>()
+                };
+
+                //..get list of all departments
+                var departmentData = await _departmentService.GetDepartmentsAsync(request);
+
+                List<GrcDepartmentRecordResponse> departments;
+                if (departmentData.HasError) {
+                    departments = new();
+                    Logger.LogActivity($"DEPARTMENT DATA ERROR: Failed to retrieve department items - {JsonSerializer.Serialize(departmentData)}");
+                } else {
+                    departments = departmentData.Data;
+                    Logger.LogActivity($"DEPARTMENT DATA - {JsonSerializer.Serialize(departments)}");
+                }
+
+                //..get ajax data
+                List<object> select2Data = new();
+                if (departments.Any()) {
+                    select2Data = departments.Select(department => new {
+                        id = department.Id,
+                        text = department.DepartmentName
+                    }).Cast<object>().ToList();
+                }
+
+                return Json(new { results = select2Data });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving departments: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { results = new List<object>() });
+            }
+        }
+
+        [HttpPost]
         public async Task<IActionResult> AllDepartments([FromBody] TableListRequest request) {
 
             try{
@@ -673,12 +941,12 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 
                 request.UserId = currentUser.UserId;
                 request.IPAddress = ipAddress;
-                request.PageSize = 7;
+
 
                 //..get list of a departments logs
                 var departmentdata = await _departmentService.GetAllDepartmentsAsync(request);
 
-                PagedResponse<DepartmentModel> deparmentList = new ();
+                PagedResponse<GrcDepartmentRecordResponse> deparmentList = new ();
                 if(departmentdata.HasError){ 
                     Logger.LogActivity($"DEPARTMENT DATA ERROR: Failed to retrieve department items - {JsonSerializer.Serialize(departmentdata)}");
                 } else {
@@ -705,62 +973,117 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             
         }
 
-        [HttpGet("support/departments/getDepartments")]
-        public async Task<IActionResult> GetDepartments() { 
+        [HttpPost]
+        public async Task<IActionResult> CreateDepartment([FromBody] DepartmentModel model) {
             try {
 
-                //..get user IP address
+                if (model == null) {
+                    return Ok(new { success = false, message = "Invalid request data" });
+                }
+
+                if (!ModelState.IsValid) {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+
+                    string combinedErrors = string.Join("; ", errors);
+                    return Ok(new {
+                        success = false,
+                        message = $"Please correct these errors: {combinedErrors}",
+                        data = (object)null
+                    });
+                }
+
                 var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
 
-                //..get current authenticated user record
-                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (grcResponse.HasError) {
-                        Logger.LogActivity($"DEPARTMENT LIST ERROR: Failed to Current user record - {JsonSerializer.Serialize(grcResponse)}");
-                }
+                var currentUser = userResponse.Data;
+                var result = await _departmentService.InsertDepartmentAsync(model, currentUser.Id, currentUser.IPAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to create department record" });
 
-                var currentUser = grcResponse.Data;
-                if (currentUser == null)
-                {
-                    //..session has expired
-                    return RedirectToAction("Login", "Application");
-                }
-                GrcRequest request = new() {
-                    UserId = currentUser.UserId,
-                    Action = Activity.RETRIEVEDEPARTMENTS.GetDescription(),
-                    IPAddress = ipAddress,
-                    EncryptFields = Array.Empty<string>(),
-                    DecryptFields = Array.Empty<string>()
-                };
+                var created = result.Data;
+                return Ok(new { success = true, message = "Department created successfully" });
 
-                //..get list of all departments
-                var  departmentData = await _departmentService.GetDepartmentsAsync(request);
-
-                List<DepartmentModel> departments;
-                if(departmentData.HasError){ 
-                    departments = new ();
-                    Logger.LogActivity($"DEPARTMENT DATA ERROR: Failed to retrieve department items - {JsonSerializer.Serialize(departmentData)}");
-                } else {
-                    departments = departmentData.Data;
-                    Logger.LogActivity($"DEPARTMENT DATA - {JsonSerializer.Serialize(departments)}");
-                }
-
-                //..get ajax data
-                List<object> select2Data = new();
-                if(departments.Any()){ 
-                    select2Data = departments.Select(department => new {                        
-                        id = department.Id,
-                        text = department.DepartmentName 
-                    }).Cast<object>().ToList();
-                }
-
-                return Json(new { results = select2Data });
             } catch (Exception ex) {
-                Logger.LogActivity($"Error retrieving departments: {ex.Message}", "ERROR");
-                await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
+                Logger.LogActivity($"Unexpected error creating branch record: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "SYSTEM-SUPPORT", ex.StackTrace);
+                return Ok(new { success = false, message = "An unexpected error occurred" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateDepartment([FromBody] DepartmentModel model) {
+            try {
+
+                if (model == null) {
+                    return Ok(new { success = false, message = "Invalid request data" });
+                }
+
+                if (!ModelState.IsValid) {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+
+                    string combinedErrors = string.Join("; ", errors);
+                    return Ok(new {
+                        success = false,
+                        message = $"Please correct these errors: {combinedErrors}",
+                        data = (object)null
+                    });
+                }
+
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                var result = await _departmentService.UpdateDepartmentAsync(model, currentUser.Id, currentUser.IPAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update department record" });
+
+                var created = result.Data;
+                return Ok(new { success = true, message = "Department update successfully" });
+
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected error updateing department record: {ex.Message}", "ERROR");
+                _ = await ProcessErrorAsync(ex.Message, "SYSTEM-SUPPORT", ex.StackTrace);
+                return Ok(new { success = false, message = "An unexpected error occurred" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteDepartment(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                if (id == 0) return BadRequest(new { success = false, message = "Department Id is required" });
+
+                var currentUser = userResponse.Data;
+                var result = await _departmentService.DeleteDepartmentAsync(id, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to delete department" });
+
+                return Ok(new { success = result.Data.Status, message = result.Data.Message });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error deleting department record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
                 return Json(new { results = new List<object>() });
             }
         }
-        
+
+        #endregion
+
+        #region Department Units
+
         [HttpGet("support/departments/getUnit/{id:long}")]
         public async Task<IActionResult> GetUnitById(long id) {
             try {

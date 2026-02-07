@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Http.Requests;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Utils;
+using System.Net;
 
 namespace Grc.ui.App.Services {
     public class SystemConfiguration : GrcBaseService, ISystemConfiguration {
@@ -92,6 +95,26 @@ namespace Grc.ui.App.Services {
             }
         }
 
+        public async Task<GrcResponse<GrcBugResponse>> GetErrorAsync(long id, long userId, string iPAddress) {
+            try {
+                var request = new GrcIdRequest() {
+                    RecordId = id,
+                    UserId = userId,
+                    IPAddress = iPAddress,
+                    Action = "Get system error record"
+                };
+
+                var endpoint = $"{EndpointProvider.Organization.OrganizationBase}/bug-retrieve";
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcBugResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<GrcBugResponse>(error);
+            }
+        }
+
         public async Task<GrcResponse<PagedResponse<GrcBugItemResponse>>> GetBugListAsync(BugListView model, long id, string ipAddress) {
             try {
 
@@ -115,6 +138,71 @@ namespace Grc.ui.App.Services {
                 await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<PagedResponse<GrcBugItemResponse>>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ListResponse<GrcBugResponse>>> GetNewBugsAsync(GrcRequest request) {
+            try {
+                var endpoint = $"{EndpointProvider.Organization.OrganizationBase}/bug-export";
+                return await HttpHandler.PostAsync<GrcRequest, ListResponse<GrcBugResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ListResponse<GrcBugResponse>>(error);
+            }
+        }
+
+        public async Task<GrcResponse<PagedResponse<GrcBugResponse>>> GetStatusBugsAsync(GrcBugStatusListRequest request) {
+            try {
+                var endpoint = $"{EndpointProvider.Organization.OrganizationBase}/bug-status";
+                return await HttpHandler.PostAsync<GrcBugStatusListRequest, PagedResponse<GrcBugResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<PagedResponse<GrcBugResponse>>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> CreateErrorAsync(GrcBugRequest request) {
+            try {
+                var endpoint = $"{EndpointProvider.Organization.OrganizationBase}/create-bug";
+                return await HttpHandler.PostAsync<GrcBugRequest, ServiceResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> ChangeErrorStausAsync(GrcBugStatusRequest request) {
+            try {
+                var endpoint = $"{EndpointProvider.Organization.OrganizationBase}/change-bug-status";
+                return await HttpHandler.PostAsync<GrcBugStatusRequest, ServiceResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> UpdateErrorAsync(GrcBugRequest request) {
+            try {
+                var endpoint = $"{EndpointProvider.Organization.OrganizationBase}/update-bug";
+                return await HttpHandler.PostAsync<GrcBugRequest, ServiceResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
             }
         }
 

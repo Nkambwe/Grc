@@ -96,7 +96,13 @@
         color: var(--purple-dark-accent);
         transition: all .5s ease-in-out;
     }
-
+#bugsTable .grc-table-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-align: center;
+}
 div.dt-processing > div:last-child > div {
     position: absolute;
     top: 0;
@@ -141,3 +147,95 @@ div.dt-processing > div:last-child > div {
     border-left: 2px solid var(--grey-light-slightly) !important;
     border-right: 2px solid var(--grey-light-slightly) !important;
 }
+
+.code-textarea {
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    background-color: #0f172a; /* slate-900 */
+    color: #e5e7eb; /* gray-200 */
+    border: 1px solid var(--grey-light-extra); /* slate-700 */
+    border-radius: 6px;
+    padding: 12px;
+    resize: vertical;
+    white-space: pre;
+    overflow: auto;
+}
+
+    .code-textarea:focus {
+        background-color: #020617;
+        color: #f8fafc;
+        border-color: #38bdf8;
+        box-shadow: 0 0 0 0.15rem rgba(56,189,248,.25);
+    }
+
+.unit-list-section {
+    margin-top: 20px;
+}
+
+.unit-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.unit-list-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+#unitListTable {
+    background: white;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+    #unitListTable table {
+        margin-bottom: 0;
+    }
+
+    #unitListTable thead th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #495057;
+        border-bottom: 2px solid #dee2e6;
+    }
+/*
+.grc-table-btn {
+    border: none;
+    background: none;
+    padding: 6px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+}*/
+
+.grc-btn-edit {
+    color: #0d6efd;
+}
+
+    .grc-btn-edit:hover {
+        background-color: #e7f1ff;
+        color: #0a58ca;
+    }
+
+/*.grc-btn-delete {
+    color: #dc3545;
+}
+
+    .grc-btn-delete:hover {
+        background-color: #f8d7da;
+        color: #b02a37;
+    }
+*/
+/*.grc-table-btn i {
+    font-size: 1.1rem;
+}*/

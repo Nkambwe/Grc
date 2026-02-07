@@ -174,11 +174,11 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(m => m.LastName, reg => reg.MapFrom(o => o.LastName));
 
             CreateMap<AssignedBranchResponse, BranchModel>()
-                .ForMember(b => b.BranchId, reg => reg.MapFrom(o => o.BranchId))
-                .ForMember(b => b.OrganizationId, reg => reg.MapFrom(o => o.OrganizationId))
+                .ForMember(b => b.Id, reg => reg.MapFrom(o => o.BranchId))
+                .ForMember(b => b.CompanyId, reg => reg.MapFrom(o => o.OrganizationId))
                 .ForMember(b => b.SolId, reg => reg.MapFrom(o => (o.SolId ?? string.Empty).Trim()))
-                .ForMember(b => b.OrganizationName, reg => reg.MapFrom(o => o.OrganizationName))
-                .ForMember(b => b.OrgAlias, reg => reg.MapFrom(o => o.OrgAlias))
+                .ForMember(b => b.CompanyName, reg => reg.MapFrom(o => o.OrganizationName))
+                .ForMember(b => b.CompanyAlias, reg => reg.MapFrom(o => o.OrgAlias))
                 .ForMember(b => b.BranchName, reg => reg.MapFrom(o => o.BranchName));
             
             CreateMap<PreferenceResponse, UserPreferenceModel>()

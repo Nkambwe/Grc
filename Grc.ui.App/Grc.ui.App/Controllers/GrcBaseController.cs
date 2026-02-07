@@ -40,7 +40,7 @@ namespace Grc.ui.App.Controllers {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var branch = SessionManager.GetWorkspace()?.AssignedBranch;
             Logger.LogActivity($"WORKSPACE BRANCH: {JsonSerializer.Serialize(branch)}");
-            long conpanyId = branch?.OrganizationId ?? 0;
+            long conpanyId = branch?.CompanyId ?? 0;
             var errModel = await ErrorFactory.PrepareErrorModelAsync(conpanyId, message, source, stacktrace);
             Logger.LogActivity($"ERROR MODEL: {JsonSerializer.Serialize(errModel)}");
             var response = await ErrorService.SaveSystemErrorAsync(errModel, ipAddress);

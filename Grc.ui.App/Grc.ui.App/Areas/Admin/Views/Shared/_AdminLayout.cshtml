@@ -82,47 +82,6 @@
                             </a>
                         </li>
 
-                        <li class="sidebar-item with-submenu">
-
-                            <a href="" class="toggle-submenu" data-id="company-menu">
-                                <span class="menu-icon">
-                                    <i class="mdi mdi-vector-arrange-above"></i>
-                                </span>
-                                <span>
-                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Organization"))
-                                </span>
-                                <span class="drop-icon">
-                                    <i class="mdi mdi-chevron-down"></i>
-                                </span>
-                            </a>
-
-                            <ul id="company-menu" class="sidebar-submenu">
-                               
-                                <li class="sidebar-item with-submenu">
-                                    <a asp-controller="Configuration" asp-action="Branches" asp-area="Admin">
-                                        <span class="menu-icon">
-                                            <i class="mdi mdi-view-grid-outline"></i>
-                                        </span>
-                                        <span class="sidebar-text">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Organization.Branches"))
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="sidebar-item with-submenu">
-                                    <a asp-controller="Support" asp-action="Departments" asp-area="Admin">
-                                        <span class="menu-icon">
-                                            <i class="mdi mdi-widgets-outline"></i>
-                                        </span>
-                                        <span class="sidebar-text">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Organization.Departments"))
-                                        </span>
-                                    </a>
-                                </li>
-                               
-                            </ul>
-
-                        </li>
-
                         <li class="sidebar-separator">
                             <span class="separator-label">
                                 @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Workbench"))
@@ -349,7 +308,53 @@
                                 </li>
                             </ul>
                         </li>
-                        
+
+                        <li class="sidebar-separator">
+                            <span class="separator-label">Organization</span>
+                            <span class="separator-line"></span>
+                        </li>
+
+                        <li class="sidebar-item with-submenu">
+
+                            <a href="" class="toggle-submenu" data-id="company-menu">
+                                <span class="menu-icon">
+                                    <i class="mdi mdi-vector-arrange-above"></i>
+                                </span>
+                                <span>
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Organization"))
+                                </span>
+                                <span class="drop-icon">
+                                    <i class="mdi mdi-chevron-down"></i>
+                                </span>
+                            </a>
+
+                            <ul id="company-menu" class="sidebar-submenu">
+
+                                <li class="sidebar-item with-submenu">
+                                    <a asp-controller="Configuration" asp-action="Branches" asp-area="Admin">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-view-grid-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Organization.Branches"))
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item with-submenu">
+                                    <a asp-controller="Support" asp-action="Departments" asp-area="Admin">
+                                        <span class="menu-icon">
+                                            <i class="mdi mdi-widgets-outline"></i>
+                                        </span>
+                                        <span class="sidebar-text">
+                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Organization.Departments"))
+                                        </span>
+                                    </a>
+                                </li>
+
+                            </ul>
+
+                        </li>
+
                     </ul>
 
                     <div class="sidebar-footer">

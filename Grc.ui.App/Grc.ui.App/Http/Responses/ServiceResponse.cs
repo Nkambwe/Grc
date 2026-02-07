@@ -10,5 +10,5 @@
         /// </summary>
         public ServiceResponse() { }
        
-    }   
+    }
 }

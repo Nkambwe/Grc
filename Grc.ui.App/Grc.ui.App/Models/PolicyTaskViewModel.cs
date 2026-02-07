@@ -1,4 +1,6 @@
-﻿namespace Grc.ui.App.Models
+﻿using System.Text.Json.Serialization;
+
+namespace Grc.ui.App.Models
 {
     public class PolicyTaskViewModel {
         public long Id { get; set; }

@@ -405,5 +405,17 @@ namespace Grc.ui.App.Enums {
         RESTORE_ACCOUNT = 209,
         [Description("Get a list of active users in the system")]
         USER_LIST = 210,
+        [Description("Generate export file for System Errors")]
+        EXPORT_BUG_LIST = 211,
+        [Description("Get a list of system errors")]
+        BUG_NEW = 212,
+        [Description("Get a list of system errors by status")]
+        BUG_STATUS = 213,
+        [Description("Create new system error")]
+        BUG_CREATE = 214,
+        [Description("Update new system error")]
+        BUG_UPDATE = 215,
+        [Description("Update new system error")]
+        BUG_UPDATE_STATUS = 216,
     }
 }

@@ -1,118 +1,76 @@
-﻿
-<div class="component-split-container">
+﻿<div class="dashboard-category-grid">
+    <div class="dashboard-bottom-row" style="display:flex;">
 
-    <div class="component-slideout">
-
-        <div class="component-create-container">
-
-            <div class="component-slide-header">
-                <div class="component-slide-header-label">
-                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Header.New.Branch"))</span>
-                </div>
-                <button type="button" class="component-new-close" title='@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Close"))'>
-                    <span><i class="mdi mdi-close"></i></span>
-                </button>
-            </div>
-
-            <div class="component-slide-content">
-
-                <form id="form-branch-new" method="post">
-                    <div class="field-group">
-                        <label for="tfNewBranchCode" class="form-label text-right">
-                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Branch.Code"))
-                        </label>
-                        <input type="text" class="form-control" id="tfNewBranchCode" name="tfNewBranchCode" placeholder="ENTER CODE">
-                    </div>
-
-                    <div class="field-group">
-                        <label for="tfNewBranchName" class="form-label text-right">
-                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Branch.Name"))
-                        </label>
-                        <input type="text" class="form-control" id="tfNewBranchName" name="tfNewBranchName" placeholder="ENTER NAME">
-                    </div>
-
-                    <div class="field-group">
-                        <button id="btnBranchNew" type="submit" class="btn btn-primary" style="width:200px">
-                            @Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))
-                        </button>
-                    </div>
-                </form>
-
-            </div>
-
-        </div>
-
-        <div class="component-edit-container">
-
-            <div class="component-slide-header">
-                <div class="component-slide-header-label">
-                    <span>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Header.Edit.Branch"))</span>
-                </div>
-                <button type="button" class="component-edit-close" title='@Html.Raw(ILocalize.GetLocalizedLabel("Component.Label.Close"))'>
-                    <span><i class="mdi mdi-close"></i></span>
-                </button>
-            </div>
-
-            <div class="component-slide-content">
-
-                <form id="form-branch-edit" method="post">
-                    <input type="hidden" id="branchEditId" name="branchEditId">
-
-                    <div class="field-group">
-                        <label for="tfEditBranchCode" class="form-label text-right">
-                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Branch.Code"))
-                        </label>
-                        <input type="text" class="form-control" id="tfEditBranchCode" name="tfEditBranchCode" placeholder="ENTER CODE">
-                    </div>
-
-                    <div class="field-group">
-                        <label for="tfEditBranchName" class="form-label text-right">
-                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Branch.Name"))
-                        </label>
-                        <input type="text" class="form-control" id="tfEditBranchName" name="tfEditBranchName" placeholder="ENTER NAME">
-                    </div>
-
-                    <div class="field-group">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="isDeleted" name="isDeleted">
-                            <label class="form-check-label" for="exampleCheck1">
-                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.Branch.Deactivate"))
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="field-group">
-                        <button id="btnBranchEdit" type="submit" class="btn btn-primary" style="width:200px">
-                            @Html.Raw(ILocalize.GetLocalizedLabel("Button.Update"))
-                        </button>
-                    </div>
-                </form>
-
-            </div>
+        <div class="inner-dashboard-container" style="flex:1">
+            <div id="branchesTable"></div>
         </div>
 
     </div>
-
-    <div class="component-split-table-container">
-
-        <div class="table-container">
-            <table id="branchTable" class="table is-fullwidth is-striped">
-                <thead>
-                    <tr>
-                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Branch.Name"))</th>
-                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Branch.Solid"))</th>
-                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Branch.Active"))</th>
-                        <th>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Branch.Created"))</th>
-                    </tr>
-                </thead>
-                <tbody id="branchTableBody"></tbody>
-            </table>
-        </div>
-
-    </div>
-
 </div>
 
+<div id="branchOverLay" class="obligation-panel-overlay"></div>
 
+<div id="branchContainer" class="obligation-side-panel" onclick="event.stopPropagation()">
 
+    <div class="obligation-side-panel-header">
+        <h3 id="branchTitle">Bug Tracker</h3>
+        <button class="panel-close" onclick="closeBranchPanel()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
 
+    <div id="branchPanel" class="obligation-side-panel-body">
+
+        <form id="branchForm" class="grc-law-form m-5">
+            <input type="hidden" id="branchId">
+            <input type="hidden" id="isEdit">
+
+            <div class="row">
+
+                <div class="col-12 m-2">
+                    <label for="branchName" class="col-12 form-label">BRANCH NAME</label>
+                </div>
+
+                <div class="col-12 m-2">
+                    <input type="text" class="form-control" id="branchName" name="branchName">
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-12 m-2">
+                    <label for="solId" class="col-12 form-label">SOLID</label>
+                </div>
+
+                <div class="col-12 m-2">
+                    <input type="text" class="form-control" id="solId" name="solId">
+                </div>
+
+            </div>
+
+            <div class="row mb-5">
+
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+                        <div class="col-sm-2">
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveBranch(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeBranchPanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                        </div>
+                        <div class="col-sm-8"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+@{
+    Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-branches.js");
+}

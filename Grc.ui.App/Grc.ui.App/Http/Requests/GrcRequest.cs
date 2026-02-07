@@ -30,4 +30,5 @@ namespace Grc.ui.App.Http.Requests {
         public string[] DecryptFields { get; set; }
 
     }
+
 }

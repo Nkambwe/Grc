@@ -192,6 +192,12 @@ namespace Grc.Middleware.Api.Services.Organization {
              using var uow = UowFactory.Create();
              try {
 
+                
+                if(request.CompanyId == 0) {
+                    var company = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
+                    request.CompanyId = company != null ? company.Id : 1;
+                }
+
                 //..create branch record
                 var branch = new Branch(){ 
                     BranchName = request.BranchName,
@@ -400,7 +406,7 @@ namespace Grc.Middleware.Api.Services.Organization {
             }
         }
 
-        public async Task<PagedResult<Branch>> GetPagedDepartmentsAsync(DateTime? createdFrom = null, DateTime? createdTo = null, long? userId = null, int pageIndex = 1, int pageSize = 20, bool includeDeleted = false)
+        public async Task<PagedResult<Branch>> GetPagedBranchesAsync(DateTime? createdFrom = null, DateTime? createdTo = null, long? userId = null, int pageIndex = 1, int pageSize = 20, bool includeDeleted = false)
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve all branches", "INFO");

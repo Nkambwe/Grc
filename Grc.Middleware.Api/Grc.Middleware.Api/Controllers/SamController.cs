@@ -764,7 +764,7 @@ namespace Grc.Middleware.Api.Controllers {
                 if (request == null) {
                     var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","The user record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<UserResponse>(error));
+                    return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
                 //..get group record
@@ -772,14 +772,14 @@ namespace Grc.Middleware.Api.Controllers {
                 if(role == null) {
                      var error = new ResponseError(ResponseCodes.NOTFOUND,"Role record not found","Selected role not found");
                      Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
-                     return Ok(new GrcResponse<UserResponse>(error));
+                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
                 var group = role.Group ?? null;
                 if(role == null) {
                      var error = new ResponseError(ResponseCodes.NOTFOUND,"Role Group not found","Selected role has no defined role group");
                      Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
-                     return Ok(new GrcResponse<UserResponse>(error));
+                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -791,7 +791,7 @@ namespace Grc.Middleware.Api.Controllers {
                     if (user != null){
                         var error = new ResponseError(ResponseCodes.DUPLICATE,"Duplicate Record","Another user found with same username");
                         Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
-                        return Ok(new GrcResponse<UserResponse>(error));
+                        return Ok(new GrcResponse<GeneralResponse>(error));
                     }
                 }
 
@@ -1007,14 +1007,14 @@ namespace Grc.Middleware.Api.Controllers {
                 if (request == null) {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The user record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<RoleResponse>(error));
+                    return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!await _accessService.UserExistsAsync(r => r.Id == request.Id)) {
                     var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "User record not found in the database");
                     Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<RoleResponse>(error));
+                    return Ok(new GrcResponse<GeneralResponse>(error));
                 }
                 
                 //..get group record
@@ -1022,14 +1022,14 @@ namespace Grc.Middleware.Api.Controllers {
                 if(role == null) {
                      var error = new ResponseError(ResponseCodes.NOTFOUND,"Role record not found","Selected role not found");
                      Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
-                     return Ok(new GrcResponse<UserResponse>(error));
+                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
                 var group = role.Group ?? null;
                 if(role == null) {
                      var error = new ResponseError(ResponseCodes.NOTFOUND,"Role Group not found","Selected role has no defined role group");
                      Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
-                     return Ok(new GrcResponse<UserResponse>(error));
+                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
                 //..encrypt fields
@@ -1547,14 +1547,14 @@ namespace Grc.Middleware.Api.Controllers {
                 if (request == null) {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The user record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<RoleResponse>(error));
+                    return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!await _accessService.UserExistsAsync(r => r.Id == request.Id)) {
                     var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "User record not found in the database");
                     Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<RoleResponse>(error));
+                    return Ok(new GrcResponse<GeneralResponse>(error));
                 }
                 
                 //..get username
@@ -1594,14 +1594,14 @@ namespace Grc.Middleware.Api.Controllers {
                 if (request == null) {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The user record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<RoleResponse>(error));
+                    return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!await _accessService.UserExistsAsync(r => r.Id == request.Id)) {
                     var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "User record not found in the database");
                     Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<RoleResponse>(error));
+                    return Ok(new GrcResponse<GeneralResponse>(error));
                 }
                 
                 //..get username
@@ -1637,18 +1637,18 @@ namespace Grc.Middleware.Api.Controllers {
         [HttpPost("sam/users/lock-user")]
         public async Task<IActionResult> LockUser([FromBody] IdRequest request) {
             try {
-                Logger.LogActivity("Update system role", "INFO");
+                Logger.LogActivity("Lock userv account", "INFO");
                 if (request == null) {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The user record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<RoleResponse>(error));
+                    return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!await _accessService.UserExistsAsync(r => r.Id == request.RecordId)) {
                     var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "User record not found in the database");
                     Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<RoleResponse>(error));
+                    return Ok(new GrcResponse<GeneralResponse>(error));
                 }
                 
                 //..get username
@@ -1677,14 +1677,14 @@ namespace Grc.Middleware.Api.Controllers {
                 if (request == null) {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The user record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<RoleResponse>(error));
+                    return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!await _accessService.UserExistsAsync(r => r.Id == request.RecordId)) {
                     var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "User record not found in the database");
                     Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<RoleResponse>(error));
+                    return Ok(new GrcResponse<GeneralResponse>(error));
                 }
                 
                 //..get username

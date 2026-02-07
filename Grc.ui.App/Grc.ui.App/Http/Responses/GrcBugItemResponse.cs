@@ -7,7 +7,10 @@ namespace Grc.ui.App.Http.Responses {
 
         [JsonPropertyName("error ")]
         public string Error  { get; set; }
-        
+
+        [JsonPropertyName("source ")]
+        public string Source { get; set; }
+
         [JsonPropertyName("severity ")]
         public string Severity  { get; set; }
 

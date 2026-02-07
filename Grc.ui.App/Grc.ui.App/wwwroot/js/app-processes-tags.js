@@ -393,7 +393,7 @@ function deleteProcessTag(id) {
             },
             success: function (res) {
                 if (res && res.success) {
-                    toastr.success(res.message || "Process deleted successfully.");
+                    toastr.success(res.message || "Tag deleted successfully.");
                     if (roleGroupTable) {
                         roleGroupTable.replaceData();
                     }
