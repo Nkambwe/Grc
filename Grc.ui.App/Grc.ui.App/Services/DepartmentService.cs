@@ -85,17 +85,21 @@ namespace Grc.ui.App.Services {
             }
         }
 
-        public async Task<GrcResponse<ServiceResponse>> InsertDepartmentAsync(DepartmentModel model, long userId, string ipAddress = null) {
+        public async Task<GrcResponse<ServiceResponse>> InsertDepartmentAsync(DepartmentFullModel model, long userId, string ipAddress = null) {
             try {
                 //..build request model
-                var request = new DepartmentRequest() {
+                var request = new DepartmentFullRequest() {
                     UserId = userId,
                     IPAddress = ipAddress,
                     Action = "Insert new department",
                     DepartmentCode = model.DepartmentCode,
                     DepartmentName = model.DepartmentName,
-                    BranchId = model.BranchId,
-                    IsDeleted = model.IsDeleted
+                    Alias = model.DepartmentAlias,
+                    HeadFullName = model.DepartmentHead,
+                    HeadEmail = model.DepartmentHeadEmail,
+                    HeadContact = model.DepartmentHeadContact,
+                    HeadDesignation = model.DepartmentHeadDesignation,
+                    HeadComment = $"HOD - {model.DepartmentName}",
                 };
 
                 //..map request
@@ -105,7 +109,7 @@ namespace Grc.ui.App.Services {
                 var endpoint = $"{EndpointProvider.Departments.InsertDepartment}";
                 Logger.LogActivity($"Endpoint: {endpoint}");
         
-                return await HttpHandler.PostAsync<DepartmentRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<DepartmentFullRequest, ServiceResponse>(endpoint, request);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
                 Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
@@ -130,29 +134,27 @@ namespace Grc.ui.App.Services {
             }
         }
 
-        public async Task<GrcResponse<ServiceResponse>> UpdateDepartmentAsync(DepartmentModel model, long userId, string ipAddress = null) {
+        public async Task<GrcResponse<ServiceResponse>> UpdateDepartmentAsync(DepartmentFullModel model, long userId, string ipAddress = null) {
             try {
 
                 //..build request model
-                var request = new DepartmentRequest() {
+                var request = new DepartmentFullRequest() {
+                    Id = model.Id,
                     UserId = userId,
                     IPAddress = ipAddress,
                     Action = "Update department",
+                    Alias = model.DepartmentAlias,
                     DepartmentCode = model.DepartmentCode,
                     DepartmentName = model.DepartmentName,
-                    BranchId = model.BranchId,
-                    IsDeleted = model.IsDeleted
+                    HeadFullName = model.DepartmentHead,
+                    HeadEmail = model.DepartmentHeadEmail,
+                    HeadContact = model.DepartmentHeadContact,
+                    HeadDesignation = model.DepartmentHeadDesignation,
+                    HeadComment = $"HOD - {model.DepartmentName}"
                 };
 
                 var endpoint = EndpointProvider.Departments.UpdateDepartment;
-                var response = await HttpHandler.PostAsync<DepartmentRequest, StatusResponse>(endpoint, request);
-                if(response.HasError) { 
-                    Logger.LogActivity($"Failed to update department on server. {response.Error.Message}");
-                } else {
-                    Logger.LogActivity("Department updated successfully.");
-                }
-                
-                return await HttpHandler.PostAsync<DepartmentRequest, ServiceResponse>(endpoint, request);
+                return await HttpHandler.PostAsync<DepartmentFullRequest, ServiceResponse>(endpoint, request);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"Http Exception: {httpEx.Message}", "ERROR");
                 await ProcessErrorAsync(httpEx.Message,"DEPARTMENT-SERVICE" , httpEx.StackTrace);

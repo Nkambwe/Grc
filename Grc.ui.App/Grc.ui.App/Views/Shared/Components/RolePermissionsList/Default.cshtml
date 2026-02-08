@@ -1,13 +1,4 @@
 ﻿<div class="grc-tabulator-container">
-    <div class="grc-tabulator-search">
-        <div class="field-search-group">
-            <label class="form-searchbox-label text-right">
-                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.Role"))
-            </label>
-            <input id="rolePermissionSearchbox" type="text" class="form-control searchbox-field">
-        </div>
-    </div>
-
     <div id="rolePermissionsTable"></div>
 </div>
 
@@ -33,25 +24,25 @@
 
                         <div class="row">
 
-                            <div class="col-sm-6 form-group">
+                            <div class="col-12 form-group">
                                 <!-- Role Name -->
                                 <div class="row mb-3">
-                                    <label for="roleName" class="col-sm-4 col-form-label text-sm-end">
+                                    <label for="roleName" class="col-12 col-form-label">
                                         @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Role.Name"))
                                     </label>
-                                    <div class="col-sm-8">
+                                    <div class="col-12">
                                         <input type="text" id="roleName" name="roleName" class="form-control" />
                                     </div>
                                 </div>
                             </div>
 
                             <!-- role description-->
-                            <div class="col-sm-6 form-group">
+                            <div class="col-12 form-group">
                                 <div class="row mb-3">
-                                    <label for="roleDescription" class="col-sm-4 col-form-label text-sm-end">
+                                    <label for="roleDescription" class="col-sm-4 col-form-label">
                                         @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Role.Description"))
                                     </label>
-                                    <div class="col-sm-8">
+                                    <div class="col-12">
                                         <input type="text" id="roleDescription" name="roleDescription" class="form-control" />
                                     </div>
                                 </div>

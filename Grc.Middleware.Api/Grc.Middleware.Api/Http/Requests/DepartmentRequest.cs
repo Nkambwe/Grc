@@ -37,6 +37,16 @@ namespace Grc.Middleware.Api.Http.Requests {
         /// </summary>
         [JsonPropertyName("alias")]
         public string Alias { get; set; }
+        [JsonPropertyName("headFullName")]
+        public string HeadFullName { get; set; }
+        [JsonPropertyName("headEmail")]
+        public string HeadEmail { get; set; }
+        [JsonPropertyName("headContact")]
+        public string HeadContact { get; set; }
+        [JsonPropertyName("headDesignation")]
+        public string HeadDesignation { get; set; }
+        [JsonPropertyName("headComment")]
+        public string HeadComment { get; set; }
         /// <summary>
         /// Get or Set ID of department
         /// </summary>

@@ -171,6 +171,9 @@ div.dt-processing > div:last-child > div {
 
 .unit-list-section {
     margin-top: 20px;
+    margin-bottom: 20px;
+    background: var(--background-color);
+    padding: 15px;
 }
 
 .unit-list-header {
@@ -189,6 +192,15 @@ div.dt-processing > div:last-child > div {
     color: #2c3e50;
 }
 
+.unit-list-header,
+.unit-list-title {
+    color: var(--pearl-orange);
+}
+
+.unit-action-container {
+    display:flex;
+    flex-direction:row;
+}
 #unitListTable {
     background: white;
     border-radius: 4px;
@@ -208,34 +220,37 @@ div.dt-processing > div:last-child > div {
         color: #495057;
         border-bottom: 2px solid #dee2e6;
     }
-/*
+
 .grc-table-btn {
     border: none;
-    background: none;
+    color:var(--black-base);
+    background: transparent;
     padding: 6px 10px;
     cursor: pointer;
     border-radius: 4px;
     transition: all 0.2s;
-}*/
+}
 
 .grc-btn-edit {
     color: #0d6efd;
 }
 
-    .grc-btn-edit:hover {
-        background-color: #e7f1ff;
+    .grc-btn-edit:hover i {
         color: #0a58ca;
     }
 
-/*.grc-btn-delete {
+.grc-btn-delete {
     color: #dc3545;
 }
 
-    .grc-btn-delete:hover {
-        background-color: #f8d7da;
+    .grc-btn-delete:hover i {
         color: #b02a37;
     }
-*/
-/*.grc-table-btn i {
+
+.grc-table-btn i {
     font-size: 1.1rem;
-}*/
+}
+
+form#departmentForm {
+    overflow-y: auto;
+}

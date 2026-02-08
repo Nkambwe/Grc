@@ -1,20 +1,6 @@
 ﻿@model RoleGroupListModel
 
 <div class="grc-tabulator-container">
-
-    <div class="grc-tabulator-search">
-        <div class="field-search-group">
-            <label class="form-searchbox-label text-right">
-                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.Role"))
-            </label>
-            <input id="roleSearchbox" type="text" class="form-control searchbox-field">
-        </div>
-        <div class="field-search-buttons">
-            <button id="btnRoleExportFiltered" class="btn btn-primary">
-                <i class="mdi mdi-file-excel-outline"></i> @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.ExportFiltered"))
-            </button>
-        </div>
-    </div>
     <div id="adminRolesTable"></div>
 </div>
 
@@ -23,9 +9,7 @@
 <div id="rolePanel" class="circular-side-panel" onclick="event.stopPropagation()">
 
     <div class="circular-side-panel-header">
-        <h5 id="rolePanelTitle">
-            System Role
-        </h5>
+        <h5 id="rolePanelTitle">System Role</h5>
         <button class="panel-close" onclick="closeRolePanel()">
             <i class="mdi mdi-close"></i>
         </button>
@@ -45,37 +29,37 @@
 
                     <div class="row">
 
-                        <div class="col-sm-6 form-group">
+                        <div class="col-12 form-group">
                             <!-- Role Name -->
                             <div class="row mb-3">
-                                <label for="roleName" class="col-sm-4 col-form-label text-sm-end">
+                                <label for="roleName" class="col-12 col-form-label">
                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Role.Name"))
                                 </label>
-                                <div class="col-sm-8">
+                                <div class="col-12">
                                     <input type="text" id="roleName" name="roleName" class="form-control" />
                                 </div>
                             </div>
                         </div>
 
                         <!-- role description-->
-                        <div class="col-sm-6 form-group">
+                        <div class="col-sm-12 form-group">
                             <div class="row mb-3">
-                                <label for="roleDescription" class="col-sm-4 col-form-label text-sm-end">
+                                <label for="roleDescription" class="col-12 col-form-label">
                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Role.Description"))
                                 </label>
-                                <div class="col-sm-8">
+                                <div class="col-12">
                                     <input type="text" id="roleDescription" name="roleDescription" class="form-control" />
                                 </div>
                             </div>
                         </div>
 
                         <!-- role groups-->
-                        <div class="col-sm-6 form-group">
+                        <div class="col-sm-12 form-group">
                             <div class="row mb-3">
-                                <label for="dpRoleGroups" class="col-sm-4 col-form-label text-sm-end">
+                                <label for="dpRoleGroups" class="col-12 col-form-label">
                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Role.List.Name"))
                                 </label>
-                                <div class="col-sm-8">
+                                <div class="col-12">
                                     <select class="js-role-groups form-control"
                                             id="dpRoleGroups"
                                             name="dpRoleGroups"
@@ -147,19 +131,19 @@
 
                     <div class="row mb-3">
 
-                        <div class="col-sm-1">
+                        <div class="col-2">
                             <button class="btn btn-grc-primary w-100" onclick="saveRole(event)">
                                 @Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))
                             </button>
                         </div>
 
-                        <div class="col-sm-1">
+                        <div class="col-2">
                             <button class="btn btn-grc-secondary w-100" onclick="closeRolePanel()">
                                 @Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))
                             </button>
                         </div>
 
-                        <div class="col-sm-10"></div>
+                        <div class="col-sm-8"></div>
 
                     </div>
 
@@ -176,15 +160,13 @@
 <div id="groupPanel" class="circular-side-panel" onclick="event.stopPropagation()">
 
     <div class="circular-side-panel-header">
-        <h5 id="groupPanelTitle">
-            Role Group
-        </h5>
+        <h5 id="groupPanelTitle">Role Group</h5>
         <button class="panel-close" onclick="closeGroupPanel()">
             <i class="mdi mdi-close"></i>
         </button>
     </div>
 
-    <<div class="circular-side-panel-body">
+    <div class="circular-side-panel-body">
         <form id="groupInnerForm" class="grc-set-form">
             <input type="hidden" id="groupId">
             <input type="hidden" id="isEdit">
@@ -235,17 +217,17 @@
                 <!-- Bottom section - buttons -->
                 <div class="col-sm-12 button-section">
                     <div class="row mb-3">
-                        <div class="col-sm-1">
+                        <div class="col-2">
                             <button class="btn btn-grc-primary w-100 disabled" disabled onclick="saveGroup(event)">
                                 @Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))
                             </button>
                         </div>
-                        <div class="col-sm-1">
+                        <div class="col-2">
                             <button class="btn btn-grc-secondary w-100" onclick="closeGroupPanel()">
                                 @Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))
                             </button>
                         </div>
-                        <div class="col-sm-10"></div>
+                        <div class="col-sm-8"></div>
                     </div>
                 </div>
             </div>

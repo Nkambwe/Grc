@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Helpers;
@@ -26,12 +28,12 @@ namespace Grc.ui.App.Services {
         }
 
         
-        public async Task<GrcResponse<DepartmentUnitModel>> GetUnitById(GrcIdRequest request) {
+        public async Task<GrcResponse<GrcDepartmentUnitResponse>> GetUnitById(GrcIdRequest request) {
             Logger.LogActivity($"Get unit record", "INFO");
 
             try{
                var endpoint = $"{EndpointProvider.Departments.UnitById}";
-                return await HttpHandler.PostAsync<GrcIdRequest, DepartmentUnitModel>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcDepartmentUnitResponse>(endpoint, request);
             } catch (Exception ex) {
                 Logger.LogActivity($"Error retrieving unit record: {ex.Message}", "Error");
                 await ProcessErrorAsync(ex.Message,"DEPARTMENT-UNIT-SERVICE" , ex.StackTrace);
@@ -41,16 +43,16 @@ namespace Grc.ui.App.Services {
                     ex.Message
                 );
 
-                return new GrcResponse<DepartmentUnitModel>(error);
+                return new GrcResponse<GrcDepartmentUnitResponse>(error);
             }
         }
 
-        public async Task<GrcResponse<List<DepartmentUnitModel>>> GetUnitsAsync(GrcRequest request){ 
+        public async Task<GrcResponse<List<GrcDepartmentUnitResponse>>> GetUnitsAsync(GrcRequest request){ 
             Logger.LogActivity($"Get a list of units available", "INFO");
 
             try{
                var endpoint = $"{EndpointProvider.Departments.GetUnits}";
-                return await HttpHandler.PostAsync<GrcRequest, List<DepartmentUnitModel>>(endpoint, request);
+                return await HttpHandler.PostAsync<GrcRequest, List<GrcDepartmentUnitResponse>>(endpoint, request);
             } catch (Exception ex) {
                 Logger.LogActivity($"Error retrieving a list of units available: {ex.Message}", "Error");
                 await ProcessErrorAsync(ex.Message,"DEPARTMENT-UNIT-SERVICE" , ex.StackTrace);
@@ -60,16 +62,16 @@ namespace Grc.ui.App.Services {
                     ex.Message
                 );
 
-                return new GrcResponse<List<DepartmentUnitModel>>(error);
+                return new GrcResponse<List<GrcDepartmentUnitResponse>>(error);
             }
         }
 
-        public async Task<GrcResponse<PagedResponse<DepartmentUnitModel>>> GetDepartmentUnitsAsync(TableListRequest request) {
+        public async Task<GrcResponse<PagedResponse<GrcDepartmentUnitResponse>>> GetDepartmentUnitsAsync(TableListRequest request) {
             Logger.LogActivity($"Get a list of all department units", "INFO");
 
             try {
                var endpoint = $"{EndpointProvider.Departments.AllUnits}";
-                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<DepartmentUnitModel>>(endpoint, request);
+                return await HttpHandler.PostAsync<TableListRequest, PagedResponse<GrcDepartmentUnitResponse>>(endpoint, request);
             } catch (Exception ex) {
                 Logger.LogActivity($"Error retrieving list of department units: {ex.Message}", "Error");
                 await ProcessErrorAsync(ex.Message,"DEPARTMENT UNIT SERVICE" , ex.StackTrace);
@@ -80,22 +82,27 @@ namespace Grc.ui.App.Services {
                     ex.Message
                 );
 
-                return new GrcResponse<PagedResponse<DepartmentUnitModel>>(error);
+                return new GrcResponse<PagedResponse<GrcDepartmentUnitResponse>>(error);
             }
 
         }
 
-        public async Task<GrcResponse<ServiceResponse>> InsertDepartmentUnitAsync(GrcInsertRequest<DepartmentUnitRequest> data) {
+        public async Task<GrcResponse<ServiceResponse>> InsertDepartmentUnitAsync(DepartmentFullUnitModel data, long userId, string ipAddress) {
             try {
                 //..build request model
                 var request = new DepartmentUnitRequest() {
-                    UserId = data.UserId,
-                    IPAddress = data.IPAddress,
-                    Action = data.Action,
-                    UnitCode = data.Record.UnitCode ?? string.Empty,
-                    UnitName = data.Record.UnitName,
-                    DepartmentId = data.Record.DepartmentId,
-                    IsDeleted = data.Record.IsDeleted
+                    UserId = userId,
+                    IPAddress = ipAddress,
+                    Action = "Create department unit",
+                    UnitCode = data.UnitCode ?? string.Empty,
+                    UnitName = data.UnitName,
+                    DepartmentId = data.DepartmentId,
+                    IsDeleted = data.IsDeleted,
+                    ContactName = data.UnitHead,
+                    HeadComment = $"Unit Head - {data.UnitName}",
+                    ContactEmail = data.UnitContactEmail,
+                    ContactNumber = data.UnitContactNumber,
+                    ContactDesignation = data.UnitHeadDesignation
                 };
 
                 //..map request
@@ -110,47 +117,36 @@ namespace Grc.ui.App.Services {
                 Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
                 Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
                 await ProcessErrorAsync(httpEx.Message,"DEPARTMENTUNIT-SERVICE" , httpEx.StackTrace);
-                var error = new GrcResponseError(
-                    GrcStatusCodes.BADGATEWAY,
-                    "Network error occurred",
-                    httpEx.Message
-                );
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
                 return new GrcResponse<ServiceResponse>(error);
-        
             } catch (GRCException ex)  {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");    
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
                 await ProcessErrorAsync(ex.Message,"DEPARTMENTUNIT-SERVICE" , ex.StackTrace);
-                var error = new GrcResponseError(
-                    GrcStatusCodes.SERVERERROR,
-                    "An unexpected error occurred",
-                    "Cannot proceed! An error occurred, please try again later"
-                );
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<ServiceResponse>(error);
             }
         }
 
-        public async Task<GrcResponse<ServiceResponse>> UpdateDepartmentUnitAsync(GrcInsertRequest<DepartmentUnitRequest> data) {
+        public async Task<GrcResponse<ServiceResponse>> UpdateDepartmentUnitAsync(DepartmentFullUnitModel data, long userId, string ipAddress) {
             try {
                 var request = new DepartmentUnitRequest() {
-                    UserId = data.UserId,
-                    IPAddress = data.IPAddress,
-                    Action = data.Action,
-                    Id=data.Record.Id,
-                    UnitCode = data.Record.UnitCode ?? string.Empty,
-                    UnitName = data.Record.UnitName ?? string.Empty,
-                    DepartmentId = data.Record.DepartmentId,
-                    IsDeleted = data.Record.IsDeleted
+                    Id = data.Id,
+                    UserId = userId,
+                    IPAddress = ipAddress,
+                    Action = "Update department unit",
+                    UnitCode = data.UnitCode ?? string.Empty,
+                    UnitName = data.UnitName,
+                    DepartmentId = data.DepartmentId,
+                    IsDeleted = data.IsDeleted,
+                    ContactName = data.UnitHead,
+                    HeadComment = $"Unit Head - {data.UnitName}",
+                    ContactEmail = data.UnitContactEmail,
+                    ContactNumber = data.UnitContactNumber,
+                    ContactDesignation = data.UnitHeadDesignation
                 };
 
                 var endpoint = EndpointProvider.Departments.UpdateUnit;
-                var response = await HttpHandler.PostAsync<DepartmentUnitRequest, StatusResponse>(endpoint, request);
-                if(response.HasError) { 
-                    Logger.LogActivity($"Failed to update department unit on server. {response.Error.Message}");
-                } else {
-                    Logger.LogActivity("Department unit updated successfully.");
-                }
-                
                 return await HttpHandler.PostAsync<DepartmentUnitRequest, ServiceResponse>(endpoint, request);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"Http Exception: {httpEx.Message}", "ERROR");

@@ -130,8 +130,6 @@ function initRolePermissionTable() {
         ]
     });
 
-    //..search role permissions
-    initRolePermissionSearch();
 }
 
 function findRolePermissionRecord(id) {
@@ -155,7 +153,19 @@ function findRolePermissionRecord(id) {
 }
 
 function openRolePermissionEditor(title, record) {
+    $("#setId").val(record?.setId || "");
+    $('#isEdit').val(isEdit);
+    $("#roleName").val(record?.roleName || "");
+    $("#roleDescription").val(record?.roleDescription || "");
 
+    $('#panelTitle').text(title);
+    $('.role-permission-overlay').addClass('active');
+    $('#rolePermissionPanel').addClass('active');
+}
+
+function closeRolePermPanel() {
+    $('.role-permission-overlay').removeClass('active');
+    $('#rolePermissionPanel').removeClass('active');
 }
 
 function viewRolePermissions(id) {
@@ -170,6 +180,8 @@ function viewRolePermissions(id) {
     console.log("ID >> " + id);
     findRolePermissionRecord(id)
         .then(record => {
+
+            console.log(record);
             Swal.close();
             if (record) {
                 openRolePermissionEditor('Edit Role Permissions', record, true);
@@ -183,26 +195,6 @@ function viewRolePermissions(id) {
         });
 }
 
-function initRolePermissionSearch() {
-    const searchInput = $('#rolePermissionSearchbox');
-    let typingTimer;
-
-    searchInput.on('input', function () {
-        clearTimeout(typingTimer);
-        const searchTerm = $(this).val().trim();
-
-        typingTimer = setTimeout(function () {
-            if (searchTerm && searchTerm.length >= 2) {
-                rolePermissionsTable.setFilter([
-                    { field: "roleName", type: "like", value: searchTerm },
-                    { field: "roleDescription", type: "like", value: searchTerm }
-                ]);
-            } else {
-                rolePermissionsTable.clearFilter();
-            }
-        }, 300);
-    });
-}
 
 function getRolePermissionsAntiForgeryToken() {
     return $('meta[name="csrf-token"]').attr('content');

@@ -13,6 +13,7 @@ using RTools_NTS.Util;
 using System;
 using System.Drawing;
 using System.Linq.Expressions;
+using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -2256,13 +2257,15 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<bool> InsertRoleGroupAsync(RoleGroupRequest request) {
+        public async Task<bool> InsertRoleGroupAsync(RoleGroupRequest request, string username) {
             using var uow = UowFactory.Create();
             Logger.LogActivity("Save role group record >>>>");
             try
             {
                 //..map Role Group request to Role Group entity
                 var roleGroup = Mapper.Map<RoleGroupRequest, SystemRoleGroup>(request);
+                roleGroup.CreatedBy = username;
+                roleGroup.CreatedOn = DateTime.Now;
 
                 //..log the Role Group data being saved
                 var groupJson = JsonSerializer.Serialize(roleGroup, new JsonSerializerOptions
@@ -2318,13 +2321,15 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<bool> InsertRoleGroupWithRolesAsync(RoleGroupRequest request) {
+        public async Task<bool> InsertRoleGroupWithRolesAsync(RoleGroupRequest request, string username) {
             using var uow = UowFactory.Create();
             Logger.LogActivity("Save role group record >>>>");
             try
             {
                 //..map Role Group request to Role Group entity
                 var roleGroup = Mapper.Map<RoleGroupRequest, SystemRoleGroup>(request);
+                roleGroup.CreatedBy = username;
+                roleGroup.CreatedOn = DateTime.Now;
 
                 //..log the Role Group data being saved
                 var groupJson = JsonSerializer.Serialize(roleGroup, new JsonSerializerOptions
@@ -2390,12 +2395,14 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<bool> InsertRoleGroupWithPermissionSetsAsync(RoleGroupRequest request) {
+        public async Task<bool> InsertRoleGroupWithPermissionSetsAsync(RoleGroupRequest request, string username) {
             using var uow = UowFactory.Create();
             Logger.LogActivity("Save role group record >>>>");
             try {
                 //..map Role Group request to Role Group entity
                 var roleGroup = Mapper.Map<RoleGroupRequest, SystemRoleGroup>(request);
+                roleGroup.CreatedBy = username;
+                roleGroup.CreatedOn = DateTime.Now;
 
                 //..log the Role Group data being saved
                 var groupJson = JsonSerializer.Serialize(roleGroup, new JsonSerializerOptions
@@ -2459,7 +2466,7 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public bool UpdateRoleGroup(RoleGroupRequest request, bool includeDeleted = false) {
+        public bool UpdateRoleGroup(RoleGroupRequest request, bool includeDeleted = false, string username = "") {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update Role Group request", "INFO");
 
@@ -2479,7 +2486,7 @@ namespace Grc.Middleware.Api.Services {
                     roleGroup.IsApproved = request.IsApproved;
                     roleGroup.IsDeleted = request.IsDeleted;
                     roleGroup.LastModifiedOn = DateTime.Now;
-                    roleGroup.LastModifiedBy = $"{request.UserId}";
+                    roleGroup.LastModifiedBy = $"{username}";
 
                     //..check entity state
                     _ = uow.RoleGroupRepository.Update(roleGroup, includeDeleted);
@@ -2525,7 +2532,7 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<bool> UpdateRoleGroupAsync(RoleGroupRequest request, bool includeDeleted = false)
+        public async Task<bool> UpdateRoleGroupAsync(RoleGroupRequest request, bool includeDeleted = false, string username = "")
         {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update Role Group", "INFO");
@@ -2546,7 +2553,7 @@ namespace Grc.Middleware.Api.Services {
                     roleGroup.IsApproved = request.IsApproved;
                     roleGroup.IsDeleted = request.IsDeleted;
                     roleGroup.LastModifiedOn = DateTime.Now;
-                    roleGroup.LastModifiedBy = $"{request.UserId}";
+                    roleGroup.LastModifiedBy = $"{username}";
 
                     //..check entity state
                     _ = await uow.RoleGroupRepository.UpdateAsync(roleGroup, includeDeleted);

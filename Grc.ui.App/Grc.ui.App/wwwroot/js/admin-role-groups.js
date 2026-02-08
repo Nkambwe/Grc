@@ -82,17 +82,20 @@ function initGroupTable() {
             {
                 title: "GROUP NAME",
                 field: "groupName",
+                headerFilter: "input",
                 minWidth: 250,
                 formatter: (cell) => `<span class="clickable-title" onclick="editGroup(${cell.getRow().getData().id})">${cell.getValue()}</span>`
             },
             {
                 title: "GROUP DESCRIPTION",
                 field: "groupDescription",
+                headerFilter: "input",
                 minWidth: 250
             },
             {
                 title: "GROUP TYPE",
                 field: "groupCategory",
+                headerFilter: "input",
                 minWidth: 250
             },
             {
@@ -103,6 +106,7 @@ function initGroupTable() {
             {
                 title: "DEPARTMENT",
                 field: "department",
+                headerFilter: "input",
                 minWidth: 250
             },
             {
@@ -136,20 +140,6 @@ function initGroupTable() {
                     const year = date.getFullYear();
                     return `${day}-${month}-${year}`;
                 }
-            },
-            {
-                title: "ACTION",
-                formatter: function (cell) {
-                    let rowData = cell.getRow().getData();
-                    return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteGroup(${rowData.id})">
-                        <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
-                        <span>DELETE</span>
-                    </button>`;
-                },
-                width: 200,
-                hozAlign: "center",
-                headerHozAlign: "center",
-                headerSort: false
             }
         ]
     });
@@ -289,8 +279,8 @@ function openGroupEditor(title, group, isEdit) {
     }
 
     $('#panelTitle').text(title);
-    $('.circular-outer-panel-overlay').addClass('active');
-    $('#setPanel').addClass('active');
+    $('#roleGroupOverLay').addClass('active');
+    $('#roleGroupPane').addClass('active');
 }
 
 function deleteGroup(id) {
@@ -342,7 +332,7 @@ function saveGroup(e) {
     let isEdit = $('#isEdit').val();
 
     let recordData = {
-        id: parseInt($('#id').val()) || 0,
+        id: parseInt($('#groupId').val()) || 0,
         groupName: $('#groupName').val()?.trim(),
         groupDescription: $('#groupDescription').val()?.trim(),
         setDescription: $('#setDescription').val()?.trim(),
@@ -367,14 +357,14 @@ function saveGroup(e) {
     if (!recordData.groupDescription)
         errors.push("Role Group description is required.");
 
-    if (recordData.permissionSets.length == 0)
+    if (recordData.roles.length == 0)
         errors.push("Please select set roles.");
 
     // --- stop if validation fails ---
     if (errors.length > 0) {
 
-        highlightField("#groupName", !recordData.groupName);
-        highlightField("#groupDescription", !recordData.groupDescription);
+        highlightGroupField("#groupName", !recordData.groupName);
+        highlightGroupField("#groupDescription", !recordData.groupDescription);
 
         Swal.fire({
             title: "Record Validation",
@@ -385,6 +375,22 @@ function saveGroup(e) {
 
     console.log("Valid Record:", recordData);
     persistGroup(isEdit, recordData);
+}
+
+
+function highlightGroupField(selector, hasError, message) {
+    const $field = $(selector);
+    const $formGroup = $field.closest('.form-group');
+    // Remove existing error
+    $field.removeClass('is-invalid');
+    $formGroup.find('.field-error').remove();
+
+    if (hasError) {
+        $field.addClass('is-invalid');
+        if (message) {
+            $formGroup.append(`<div class="field-error text-danger small mt-1 text-end">${message}</div>`);
+        }
+    }
 }
 
 function persistGroup(isEdit, payload) {
@@ -455,9 +461,8 @@ function persistGroup(isEdit, payload) {
 }
 
 function closeGroupPanel() {
-    console.log('Button clicked');
-    $('.circular-outer-panel-overlay').removeClass('active');
-    $('#setPanel').removeClass('active');
+    $('#roleGroupOverLay').removeClass('active');
+    $('#roleGroupPane').removeClass('active');
 }
 
 function initGroupSearch() {
@@ -497,9 +502,10 @@ $(document).ready(function () {
 
     initGroupTable();
 
-    $('.admin-home').on('click', function () {
-        window.location.href = '/admin/support/system-roles-groups';
+    $(".action-btn-admin-home").on("click", function () {
+        window.location.href = '/admin/support';
     });
+
 
     //..new role group
     $(".action-btn-new-role-group").on("click", function () {

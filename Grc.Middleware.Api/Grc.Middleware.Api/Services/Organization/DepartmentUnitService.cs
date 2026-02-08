@@ -8,6 +8,7 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Data.Entities.System;
+using Grc.Middleware.Api.Data.Entities.Support;
 
 namespace Grc.Middleware.Api.Services.Organization {
     public class DepartmentUnitService : BaseService, IDepartmentUnitService {
@@ -64,6 +65,52 @@ namespace Grc.Middleware.Api.Services.Organization {
             };
         }
         
+        public async Task<Responsebility> GetDepartmentHeadAsync(string description) {
+            using var uow = UowFactory.Create();
+
+            try {;
+                var responseibility = await uow.ResponsebilityRepository.GetAsync(r => r.Description.Contains(description));
+                if(responseibility != null) {
+                    //..log the Department unit data being retrieved
+                    var headJson = JsonSerializer.Serialize(responseibility, new JsonSerializerOptions { 
+                        WriteIndented = true,
+                        ReferenceHandler = ReferenceHandler.IgnoreCycles 
+                    });
+                    Logger.LogActivity($"Department Head not found: {headJson}", "DEBUG");
+                } else {
+                    Logger.LogActivity($"Department Head with DESCR '{description}' not found", "DEBUG");
+                }
+
+                return responseibility;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve Department head: {ex.Message}", "ERROR");
+        
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+                
+                var conpany = (await uow.CompanyRepository.GetAllAsync(false)).FirstOrDefault();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new(){ 
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "DEPARTMENT-UNIT-SERVICE-MIDDLEWARE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw; 
+            };
+        }
+
         public async Task<DepartmentUnit> GetUnitByCodeAsync(string code, bool includeDeleted = false) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve department unit record with '{code}' code", "INFO");
@@ -305,7 +352,7 @@ namespace Grc.Middleware.Api.Services.Organization {
             }
         }
 
-        public async Task<bool> InsertUnitAsync(DepartmentUnitRequest request) {
+        public async Task<bool> InsertUnitAsync(DepartmentUnitRequest request, string username) {
             using var uow = UowFactory.Create();
 
              try {
@@ -320,6 +367,29 @@ namespace Grc.Middleware.Api.Services.Organization {
                     LastModifiedBy = $"{request.UserId}",
                     LastModifiedOn = DateTime.Now,
                 };
+
+                var head = await uow.ResponsebilityRepository.GetAsync(r=>r.Description.Contains($"{request.HeadComment}"));
+                if(head == null) { 
+                    //..get department 
+                    var department = await uow.DepartmentRepository.GetAsync(d=>d.Id == request.DepartmentId, true);
+                    if(department == null){ 
+                        return false;
+                    }
+
+                    department.Responsibilities = department.Responsibilities ?? new List<Responsebility>();
+                    department.Responsibilities.Add(new Responsebility() {
+                        DepartmentId = department.Id,
+                        ContactName = request.ContactName,
+                        ContactEmail = request.ContactEmail,
+                        ContactPhone = request.ContactNumber,
+                        ContactPosition = request.ContactDesignation,
+                        Description = request.HeadComment,
+                        CreatedBy = $"{username}",
+                        CreatedOn = DateTime.Now,
+                        LastModifiedBy = $"{username}",
+                        LastModifiedOn = DateTime.Now
+                    });
+                }
 
                 //..log the unit data being saved
                 var unitJson = JsonSerializer.Serialize(unit, new JsonSerializerOptions { 
@@ -364,7 +434,7 @@ namespace Grc.Middleware.Api.Services.Organization {
              }
         }
         
-        public async Task<bool> UpdateUnitAsync(DepartmentUnitRequest request) {
+        public async Task<bool> UpdateUnitAsync(DepartmentUnitRequest request, string username) {
            using var uow = UowFactory.Create();
             Logger.LogActivity($"Update unit with ID {request.UserId}", "INFO");
     
@@ -378,7 +448,54 @@ namespace Grc.Middleware.Api.Services.Organization {
                     unit.DepartmentId = request.DepartmentId;
                     unit.LastModifiedOn = DateTime.Now;
                     unit.IsDeleted = request.IsDeleted;
-                    unit.LastModifiedBy = $"{request.UserId}";
+                    unit.LastModifiedBy = $"{username}";
+
+                     //..get representative
+                    var head = await uow.ResponsebilityRepository.GetAsync(r=>r.Description.Contains($"{request.HeadComment}"));
+                    if(head == null) { 
+                        //..get department 
+                        var department = await uow.DepartmentRepository.GetAsync(d=>d.Id == request.DepartmentId, true);
+                        if(department == null){ 
+                            return false;
+                        }
+
+                        department.Responsibilities = department.Responsibilities ?? new List<Responsebility>();
+                        department.Responsibilities.Add(new Responsebility() {
+                            DepartmentId = department.Id,
+                            ContactName = request.ContactName,
+                            ContactEmail = request.ContactEmail,
+                            ContactPhone = request.ContactNumber,
+                            ContactPosition = request.ContactDesignation,
+                            Description = request.HeadComment,
+                            CreatedBy = $"{username}",
+                            CreatedOn = DateTime.Now,
+                            LastModifiedBy = $"{username}",
+                            LastModifiedOn = DateTime.Now
+                        });
+                    } else {
+                        head.DepartmentId = request.DepartmentId;
+                        if (!string.IsNullOrWhiteSpace(request.ContactName)) {
+                            head.ContactName = request.ContactName;
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(request.ContactEmail)) {
+                           head.ContactEmail = request.ContactEmail;
+                        }
+                        
+                        if (!string.IsNullOrWhiteSpace(request.ContactNumber)) {
+                           head.ContactPhone = request.ContactNumber;
+                        }
+                        
+                        if (!string.IsNullOrWhiteSpace(request.ContactDesignation)) {
+                           head.ContactPosition = request.ContactDesignation;
+                        }
+                        if (!string.IsNullOrWhiteSpace(request.HeadComment)) {
+                           head.Description = request.HeadComment;
+                        }
+
+                        head.LastModifiedBy = $"{username}";
+                        head.LastModifiedOn = DateTime.Now;
+                    }
 
                     //..check entity state
                     _= await uow.DepartmentUnitRepository.UpdateAsync(unit);

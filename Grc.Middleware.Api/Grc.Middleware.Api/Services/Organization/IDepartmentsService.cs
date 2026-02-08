@@ -9,8 +9,8 @@ namespace Grc.Middleware.Api.Services.Organization {
         Task<Department> GetDepartmentByCodeAsync(string code, bool includeDeleted=false);
         Task<IList<Department>> GetAllAsync(bool includeDeleted=false);
         Task<PagedResult<Department>> GetPagedDepartmentsAsync(DateTime? createdFrom = null, DateTime? createdTo = null, long? userId = null, int pageIndex = 1, int pageSize = 20, bool includeDeleted=false);
-        Task<bool> InsertDepartmentAsync(DepartmentRequest request);
-        Task<bool> UpdateDepartmentAsync(DepartmentRequest request);
+        Task<bool> InsertDepartmentAsync(DepartmentRequest request, string username);
+        Task<bool> UpdateDepartmentAsync(DepartmentRequest request, string username);
         Task<bool> ExistsByIdAsync(long id);
         Task<bool> ExistsAsync(DepartmentRequest request); 
         Task<bool> DeleteDepartmentAsync(IdRequest request);

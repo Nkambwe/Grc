@@ -195,6 +195,8 @@ function addPermissionSetRecord() {
 }
 
 function openSetEditor(title, set, isEdit) {
+
+    console.log(set);
     $("#setId").val(set?.id || "");
     $('#isEdit').val(isEdit);
     $("#setName").val(set?.setName || "");

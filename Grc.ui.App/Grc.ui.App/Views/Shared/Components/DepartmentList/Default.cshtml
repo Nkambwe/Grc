@@ -1,6 +1,6 @@
-﻿<div class="dashboard-category-grid" style="display:flex; min-height:85vh;">
+﻿<div class="dashboard-category-grid" style="display:flex; min-height:70vh;">
     <div class="inner-dashboard-container" style="flex:1; display:flex; flex-direction:column;">
-        <div id="depatTable" style="flex:1;"></div>
+        <div id="depatTable"></div>
     </div>
 </div>
 
@@ -15,9 +15,9 @@
         </button>
     </div>
 
-    <div id="departmentPanel" class="obligation-side-panel-body">
+    <div id="departmentPanel" class="obligation-side-panel-body" style="overflow-y:auto!important;overflow-x: hidden !important;">
 
-        <form id="departmentForm" class="grc-law-form m-5">
+        <form id="departmentForm" class="grc-law-form p-5">
             <input type="hidden" id="departmentId">
             <input type="hidden" id="isEdit">
 
@@ -56,7 +56,50 @@
                 </div>
 
             </div>
+            <div class="row">
 
+                <div class="col-12 m-2">
+                    <label for="departmentHead" class="col-12 form-label">DEPARTMENT HEAD (FULL NAME)</label>
+                </div>
+
+                <div class="col-12 m-2">
+                    <input type="text" class="form-control" id="departmentHead" name="departmentHead">
+                </div>
+
+            </div>
+            <div class="row">
+
+                <div class="col-12 m-2">
+                    <label for="departmentHeadEmail" class="col-12 form-label">DEPARTMENT HEAD EMAIL</label>
+                </div>
+
+                <div class="col-12 m-2">
+                    <input type="text" class="form-control" id="departmentHeadEmail" name="departmentHeadEmail">
+                </div>
+
+            </div>
+            <div class="row">
+
+                <div class="col-12 m-2">
+                    <label for="departmentHeadContact" class="col-12 form-label">DEPARTMENT HEAD CONTACT</label>
+                </div>
+
+                <div class="col-12 m-2">
+                    <input type="text" class="form-control" id="departmentHeadContact" name="departmentHeadContact">
+                </div>
+
+            </div>
+            <div class="row">
+
+                <div class="col-12 m-2">
+                    <label for="departmentHeadDesignation" class="col-12 form-label">DESIGNATION</label>
+                </div>
+
+                <div class="col-12 m-2">
+                    <input type="text" class="form-control" id="departmentHeadDesignation" name="departmentHeadDesignation">
+                </div>
+
+            </div>
             <div id="unitListSection" class="unit-list-section">
                 <div class="unit-list-header">
                     <h5 class="unit-list-title">Department Units</h5>
@@ -98,3 +141,115 @@
 
     </div>
 </div>
+
+<div id="unit2OverLay" class="obligation-panel-overlay" style="z-index:1000; width:30%!important"></div>
+
+<div id="unit2Container" class="obligation-side-panel" onclick="event.stopPropagation()">
+
+    <div class="obligation-side-panel-header">
+        <h3 id="unitTitle">Department</h3>
+        <button class="panel-close" onclick="closeUnitPanel()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+
+    <div id="unitPanel" class="obligation-side-panel-body">
+
+        <form id="unitForm" class="grc-law-form m-5">
+            <input type="hidden" id="parentId">
+            <input type="hidden" id="unitId">
+            <input type="hidden" id="isUnitEdit">
+
+            <div class="row">
+
+                <div class="col-12 m-2">
+                    <label for="unitCode" class="col-12 form-label">UNIT CODE</label>
+                </div>
+
+                <div class="col-12 m-2">
+                    <input type="text" class="form-control" id="unitCode" name="unitCode">
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-12 m-2">
+                    <label for="unitName" class="col-12 form-label">UNIT NAME</label>
+                </div>
+
+                <div class="col-12 m-2">
+                    <input type="text" class="form-control" id="unitName" name="unitName">
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-12 m-2">
+                    <label for="unitHead" class="col-12 form-label">UNIT HEAD (FULL NAME)</label>
+                </div>
+
+                <div class="col-12 m-2">
+                    <input type="text" class="form-control" id="unitHead" name="unitHead">
+                </div>
+
+            </div>
+            <div class="row">
+
+                <div class="col-12 m-2">
+                    <label for="unitContactEmail" class="col-12 form-label">UNIT HEAD EMAIL</label>
+                </div>
+
+                <div class="col-12 m-2">
+                    <input type="text" class="form-control" id="unitContactEmail" name="unitContactEmail">
+                </div>
+
+            </div>
+            <div class="row">
+
+                <div class="col-12 m-2">
+                    <label for="unitContactNumber" class="col-12 form-label">UNIT HEAD CONTACT</label>
+                </div>
+
+                <div class="col-12 m-2">
+                    <input type="text" class="form-control" id="unitContactNumber" name="unitContactNumber">
+                </div>
+
+            </div>
+            <div class="row">
+
+                <div class="col-12 m-2">
+                    <label for="unitHeadDesignation" class="col-12 form-label">DESIGNATION</label>
+                </div>
+
+                <div class="col-12 m-2">
+                    <input type="text" class="form-control" id="unitHeadDesignation" name="unitHeadDesignation">
+                </div>
+
+            </div>
+            <div class="row mb-5">
+
+                <div class="col-12">
+                    <div class="row mb-3">
+                        <div class="col-2">
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveUnit(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                        </div>
+                        <div class="col-2">
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeUnitPanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                        </div>
+                        <div class="col-8"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+@{
+    Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/department-script.js");
+}

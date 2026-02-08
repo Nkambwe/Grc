@@ -14,6 +14,16 @@ namespace Grc.ui.App.Http.Responses {
         public string DepartmentName { get; set; }
         [JsonPropertyName("departmentAlias")]
         public string DepartmentAlias { get; set; }
+        [JsonPropertyName("headFullName")]
+        public string HeadFullName { get; set; }
+        [JsonPropertyName("headEmail")]
+        public string HeadEmail { get; set; }
+        [JsonPropertyName("headContact")]
+        public string HeadContact { get; set; }
+        [JsonPropertyName("headDesignation")]
+        public string HeadDesignation { get; set; }
+        [JsonPropertyName("headComment")]
+        public string HeadComment { get; set; }
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; } = false;
         [JsonPropertyName("createdOn")]

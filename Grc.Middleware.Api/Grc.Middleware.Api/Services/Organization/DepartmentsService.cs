@@ -8,6 +8,8 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Data.Entities.System;
+using Grc.Middleware.Api.Data.Entities.Support;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Grc.Middleware.Api.Services.Organization {
 
@@ -238,21 +240,39 @@ namespace Grc.Middleware.Api.Services.Organization {
             }
         }
 
-        public async Task<bool> InsertDepartmentAsync(DepartmentRequest request) {
+        public async Task<bool> InsertDepartmentAsync(DepartmentRequest request, string username) {
             using var uow = UowFactory.Create();
              try {
+
+                
+                var branch = (await uow.BranchRepository.GetAllAsync(false)).FirstOrDefault();
+
 
                 //..create department record
                 var department = new Department(){ 
                     DepartmentCode = request.DepartmentCode,
                     DepartmentName = request.DepartmentName,
+                    BranchId = branch.Id,
                     Alias = request.Alias,
-                    BranchId = request.BranchId,
-                    CreatedBy = $"{request.UserId}",
+                    CreatedBy =$"{username}",
                     CreatedOn = DateTime.Now,
-                    LastModifiedBy = $"{request.UserId}",
+                    LastModifiedBy = $"{username}",
                     LastModifiedOn = DateTime.Now,
+                    Responsibilities = new List<Responsebility>() {
+                        new() {
+                            ContactName = request.HeadFullName,
+                            ContactEmail = request.HeadEmail,
+                            ContactPhone = request.HeadContact,
+                            ContactPosition = request.HeadDesignation,
+                            Description = request.HeadComment,
+                            CreatedBy =$"{username}",
+                            CreatedOn = DateTime.Now,
+                            LastModifiedBy = $"{username}",
+                            LastModifiedOn = DateTime.Now
+                        }
+                    }
                 };
+
 
                 //..log the department data being saved
                 var departmentJson = JsonSerializer.Serialize(department, new JsonSerializerOptions { 
@@ -297,7 +317,7 @@ namespace Grc.Middleware.Api.Services.Organization {
              }
         }
         
-        public async Task<bool> UpdateDepartmentAsync(DepartmentRequest request) {
+        public async Task<bool> UpdateDepartmentAsync(DepartmentRequest request, string username) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update department with ID {request.UserId}", "INFO");
     
@@ -312,7 +332,38 @@ namespace Grc.Middleware.Api.Services.Organization {
                     department.IsDeleted = request.IsDeleted;
                     department.BranchId = request.BranchId;
                     department.LastModifiedOn = DateTime.Now;
-                    department.LastModifiedBy = $"{request.UserId}";
+                    department.LastModifiedBy = $"{username}";
+
+                    if(department.BranchId == 0) {
+                        var branch = (await uow.BranchRepository.GetAllAsync(false)).FirstOrDefault();
+                        department.BranchId = branch.Id;
+                    } 
+
+                    //..get representative
+                    var head = await uow.ResponsebilityRepository.GetAsync(r=>r.Description.Contains($"{request.HeadComment}"));
+                    if(head == null) { 
+                        department.Responsibilities = department.Responsibilities  ?? new List<Responsebility>();
+                        department.Responsibilities.Add( new Responsebility() {
+                            DepartmentId = department.Id,
+                            ContactName = request.HeadFullName,
+                            ContactEmail = request.HeadEmail,
+                            ContactPhone = request.HeadContact,
+                            ContactPosition = request.HeadDesignation,
+                            Description = request.HeadComment,
+                            CreatedBy =$"{username}",
+                            CreatedOn = DateTime.Now,
+                            LastModifiedBy = $"{username}",
+                            LastModifiedOn = DateTime.Now
+                        });
+                    } else {
+                        head.DepartmentId = department.Id;
+                        head.ContactName = request.HeadFullName;
+                        head.ContactEmail = request.HeadEmail;
+                        head.ContactPhone = request.HeadContact;
+                        head.ContactPosition = request.HeadDesignation;
+                        head.LastModifiedBy = $"{username}";
+                        head.LastModifiedOn = DateTime.Now;
+                    }
 
                     //..check entity state
                     _= await uow.DepartmentRepository.UpdateAsync(department);

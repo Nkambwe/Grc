@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Grc.Middleware.Api.Http.Responses {
-    public class  DepartmentUnitResponse {
+namespace Grc.ui.App.Models {
+    public class DepartmentFullUnitModel {
         [JsonPropertyName("id")]
         public long Id { get; set; }
         [JsonPropertyName("departmentId")]
@@ -22,13 +22,14 @@ namespace Grc.Middleware.Api.Http.Responses {
         public string UnitHeadDesignation { get; set; }
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
-        [JsonPropertyName("creatdOn")]
-        public DateTime CreatdOn { get; set; }
+        [JsonPropertyName("createdOn")]
+        public DateTime CreatedOn { get; set; }
         [JsonPropertyName("createdBy")]
-        public string CreatedBy { get; set; } = "";
+        public string CreatedBy { get; set; }
         [JsonPropertyName("modifiedOn")]
         public DateTime? ModifiedOn { get; set; }
         [JsonPropertyName("modifiedBy")]
         public string ModifiedBy { get; set; }
     }
+
 }

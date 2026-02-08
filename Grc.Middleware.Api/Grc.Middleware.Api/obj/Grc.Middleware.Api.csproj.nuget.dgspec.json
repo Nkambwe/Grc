@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj": {}
+    "C:\\Projects\\Grc\\Grc2\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj": {}
   },
   "projects": {
-    "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj": {
+    "C:\\Projects\\Grc\\Grc2\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj",
+        "projectUniqueName": "C:\\Projects\\Grc\\Grc2\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj",
         "projectName": "Grc.Middleware.Api",
-        "projectPath": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj",
-        "packagesPath": "C:\\Users\\mark.nkambwe\\.nuget\\packages\\",
-        "outputPath": "C:\\Projects\\cs\\GRC\\github_17102025\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\obj\\",
+        "projectPath": "C:\\Projects\\Grc\\Grc2\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj",
+        "packagesPath": "C:\\Users\\Macjohnan\\.nuget\\packages\\",
+        "outputPath": "C:\\Projects\\Grc\\Grc2\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\mark.nkambwe\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Macjohnan\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -45,7 +45,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net7.0": {
@@ -101,24 +101,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[7.0.20, 7.0.20]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[7.0.20, 7.0.20]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[7.0.20, 7.0.20]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[7.0.20, 7.0.20]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -127,7 +109,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -93,6 +93,7 @@ function initRoleTable() {
                 minWidth: 200,
                 widthGrow: 4,
                 headerSort: true,
+                headerFilter: "input",
                 frozen: true,
                 formatter: (cell) => `<span class="clickable-title" onclick="editRole(${cell.getRow().getData().id})">${cell.getValue()}</span>`
             },
@@ -102,7 +103,7 @@ function initRoleTable() {
                 minWidth: 200,
                 widthGrow: 4,
                 headerSort: true,
-                frozen: true
+                headerFilter: "input"
             },
             {
                 title: "ROLE GROUP",
@@ -110,12 +111,13 @@ function initRoleTable() {
                 minWidth: 200,
                 widthGrow: 4,
                 headerSort: true,
-                frozen: true,
+                headerFilter: "input",
                 formatter: (cell) => `<span class="clickable-title" onclick="viewGroup(${cell.getRow().getData().groupId})">${cell.getValue()}</span>`
             },
             {
                 title: "STATUS",
                 field: "isDelete",
+                headerFilter: "input",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
                     let value = rowData.isDeleted;
@@ -140,6 +142,7 @@ function initRoleTable() {
             {
                 title: "APPROVED",
                 field: "isApproved",
+                headerFilter: "input",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
                     let value = rowData.isVerified;
@@ -202,9 +205,6 @@ function initRoleTable() {
             { title: "", field: "endTab", maxWidth: 50, headerSort: false, formatter: () => `<span class="record-tab"></span>` }
         ]
     });
-
-    // Search roles
-    initRoleSearch();
 }
 
 function initGroupListSelect2() {
@@ -299,7 +299,6 @@ function saveRole(e) {
         return;
     }
 
-    console.log("Valid Record:", recordData);
     persistRole(isEdit, recordData);
 }
 
@@ -309,23 +308,20 @@ function openRoleEditor(title, role, isEdit) {
     $("#isEdit").val(isEdit);
     $("#roleName").val(role?.roleName || "");
     $("#roleDescription").val(role?.roleDescription || "");
-    //$("#dpRoleGroups").val(role?.groupId || 0).trigger('change');
-    $("#dpRoleGroups").val(role?.groupId || 0).trigger('change.select2');
+    $("#dpRoleGroups").val(role?.groupId || '0').trigger('change');
     $('#isRoleDeleted').prop('checked', role?.isDeleted || false);
     $('#isVerified').prop('checked', role?.isVerified || true);
     $('#isApproved').prop('checked', role?.isApproved || true);
 
     if (isEdit) {
-        console.log("Edit Window");
         $('#edit-pane').show();
     } else {
-        console.log("New Window");
         $('#parentInfo').hide();
     }
 
     // Show overlay panel
     $('#rolePanelTitle').text(title);
-    $('.role-overlay').addClass('active');
+    $('#adminRoleOverLay').addClass('active');
     $('#rolePanel').addClass('active');
 }
 
@@ -464,7 +460,7 @@ function openRoleGroupEditor(title, group, isEdit) {
     }
 
     $('#panelTitle').text(title);
-    $('.groupOverlay').addClass('active');
+    $('#adminRoleOverLay').addClass('active');
     $('#groupPanel').addClass('active');
 }
 
@@ -512,7 +508,7 @@ function persistRole(isEdit, payload) {
                 }
             }
 
-            closeGroupPanel();
+            closeRolePanel();
         },
         error: function (xhr) {
             Swal.close();
@@ -559,8 +555,8 @@ function deleteRole(id) {
             success: function (res) {
                 if (res && res.success) {
                     toastr.success(res.message || "System Role successfully.");
-                    if (roleGroupTable) {
-                        roleGroupTable.replaceData();
+                    if (roleTable) {
+                        roleTable.replaceData();
                     }
                 } else {
                     toastr.error(res?.message || "Delete failed.");

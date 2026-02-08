@@ -8,21 +8,6 @@ namespace Grc.Middleware.Api.Http.Requests {
         [JsonPropertyName("id")]
         public long Id { get; set; }
         /// <summary>
-        /// Get or Set ID of user sending request
-        /// </summary>
-        [JsonPropertyName("userId")]
-        public long UserId { get; set; }
-        /// <summary>
-        /// Get or Set User IP Address
-        /// </summary>
-        [JsonPropertyName("ipAddress")]
-        public string IPAddress { get; set; }
-        /// <summary>
-        /// Get or Set Intended action
-        /// </summary>
-        [JsonPropertyName("action")]
-        public string Action { get; set; }
-        /// <summary>
         /// Get or Set unit code
         /// </summary>
         [JsonPropertyName("unitCode")]
@@ -37,6 +22,32 @@ namespace Grc.Middleware.Api.Http.Requests {
         /// </summary>
         [JsonPropertyName("departmentId")]
         public long DepartmentId { get; set; }
+        [JsonPropertyName("contactName")]
+        public string ContactName { get; set; }
+        [JsonPropertyName("contactEmail")]
+        public string ContactEmail { get; set; }
+        [JsonPropertyName("contactNumber")]
+        public string ContactNumber { get; set; }
+        [JsonPropertyName("contactDesignation")]
+        public string ContactDesignation { get; set; }
+        [JsonPropertyName("headComment")]
+        public string HeadComment { get; set; }
+        /// <summary>
+        /// Get or Set ID of user sending request
+        /// </summary>
+        [JsonPropertyName("userId")]
+        public long UserId { get; set; }
+        /// <summary>
+        /// Get or Set User IP Address
+        /// </summary>
+        [JsonPropertyName("ipAddress")]
+        public string IPAddress { get; set; }
+        /// <summary>
+        /// Get or Set Intended action
+        /// </summary>
+        [JsonPropertyName("action")]
+        public string Action { get; set; }
+       
         /// <summary>
         /// Get or Set whether unit is deleted
         /// </summary>

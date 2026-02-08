@@ -123,15 +123,15 @@ namespace Grc.Middleware.Api.Services {
 
         Task<IList<SystemRoleGroup>> GetAllRoleGroupsAsync(bool includeDeleted = false);
 
-        Task<bool> InsertRoleGroupAsync(RoleGroupRequest request);
+        Task<bool> InsertRoleGroupAsync(RoleGroupRequest request, string username);
 
-        Task<bool> InsertRoleGroupWithRolesAsync(RoleGroupRequest request);
+        Task<bool> InsertRoleGroupWithRolesAsync(RoleGroupRequest request, string username);
 
-        Task<bool> InsertRoleGroupWithPermissionSetsAsync(RoleGroupRequest request);
+        Task<bool> InsertRoleGroupWithPermissionSetsAsync(RoleGroupRequest request, string username);
 
-        bool UpdateRoleGroup(RoleGroupRequest request, bool includeDeleted = false);
+        bool UpdateRoleGroup(RoleGroupRequest request, bool includeDeleted = false, string username="");
 
-        Task<bool> UpdateRoleGroupAsync(RoleGroupRequest request, bool includeDeleted = false);
+        Task<bool> UpdateRoleGroupAsync(RoleGroupRequest request, bool includeDeleted = false, string username = "");
 
         bool DeleteRoleGroup(IdRequest request);
 

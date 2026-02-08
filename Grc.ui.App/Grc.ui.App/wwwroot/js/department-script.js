@@ -160,11 +160,16 @@ function findDepartment(id) {
 }
 
 function openDepartmentPane(title, record, isEdit) {
+    console.log(record);
     $('#isEdit').val(isEdit);
     $('#departmentId').val(record?.id || 0);
     $('#departmentCode').val(record?.code || '');
     $('#departmentAlias').val(record?.alias || '');
     $('#departmentName').val(record?.departmentName || '');
+    $('#departmentHead').val(record?.departmentHead || '');
+    $('#departmentHeadEmail').val(record?.departmentHeadEmail || '');
+    $('#departmentHeadContact').val(record?.departmentHeadContact || '');
+    $('#departmentHeadDesignation').val(record?.departmentHeadDesignation || '');
 
     //..add list of numits
     addDepartmentUnits(record.units);
@@ -207,8 +212,18 @@ function addDepartmentUnits(units) {
 }
 
 function addNewUnit() {
-    const deptId = $("#departmentId").val() || 0;
-    alert("Parent ID >> " + deptId);
+    const parentId = $("#departmentId").val() || 0;
+    openUnitPane("New Department Unit", {
+        id:0,
+        departmentId:parentId,
+        unitCode:'',
+        unitName:'',
+        unitHead:'',
+        departmentHead:'',
+        unitContactEmail:'',
+        unitContactNumber:'',
+        unitHeadDesignation:''
+    }, false)
 }
 
 function addDepartmentUnits(units) {
@@ -231,13 +246,13 @@ function addDepartmentUnits(units) {
         tr.innerHTML = `
             <td>${unit.unitCode || ''}</td>
             <td>${unit.unitName || ''}</td>
-            <td class="text-center">
-                <button class="grc-table-btn grc-btn-edit me-2" 
+            <td class="unit-action-container">
+                <button class="grc-table-btn grc-btn-edit me-2 text-center" 
                         onclick="editUnit(${unit.id || 0})"
                         title="Edit Unit">
                     <i class="mdi mdi-pencil-outline"></i>
                 </button>
-                <button class="grc-table-btn grc-btn-delete" 
+                <button class="grc-table-btn grc-btn-delete text-center" 
                         onclick="deleteUnit(${unit.id || 0})"
                         title="Delete Unit">
                     <i class="mdi mdi-trash-can-outline"></i>
@@ -248,16 +263,234 @@ function addDepartmentUnits(units) {
     });
 }
 
-
 // Handler for editing unit
-function editUnit(unitId) {
-    // Open modal or form with unit data
-    alert('Edit unit:', unitId);
+function editUnit(id) {
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Retrieving department unit record...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => Swal.showLoading()
+    });
+    findUnit(id)
+        .then(record => {
+            Swal.close();
+            if (record) {
+                openUnitPane('Modify unit record', record, true);
+            } else {
+                Swal.fire({ title: 'NOT FOUND', text: 'Department unit not found' });
+            }
+        })
+        .catch(() => {
+            Swal.close();
+            Swal.fire({ title: 'Error', text: 'Failed to load unit details.' });
+        });
 }
 
-// Handler for deleting unit
-function deleteUnit(unitId) {
-    alert('Delete >> ' + unitId)
+function findUnit(id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/admin/support/organization/departments/unit-retrieve/${id}`,
+            type: "POST",
+            dataType: "json",
+            success: function (response) {
+                if (response.success === true && response.data) {
+                    resolve(response.data);
+                } else {
+                    reject(response.message || "Department unit not found");
+                }
+            },
+            error: function (xhr) {
+                reject(xhr.responseJSON?.message || "Server error");
+            }
+        });
+    });
+}
+
+function openUnitPane(title, record, isEdit) {
+    console.log(record);
+    $('#isUnitEdit').val(isEdit);
+    $('#unitId').val(record?.id || 0);
+    $('#parentId').val(record?.departmentId || 0);
+    $('#unitCode').val(record?.unitCode || '');
+    $('#unitName').val(record?.unitName || '');
+    $('#unitHead').val(record?.unitHead || '');
+    $('#unitContactEmail').val(record?.unitContactEmail || '');
+    $('#unitContactNumber').val(record?.unitContactNumber || '');
+    $('#unitHeadDesignation').val(record?.unitHeadDesignation || '');
+
+    $('#unitTitle').text(title);
+    $('#unit2OverLay').addClass('active');
+    $('#unit2Container').addClass('active');
+}
+
+function saveUnit(e) {
+    e.preventDefault();
+
+    const isEdit = $('#isUnitEdit').val();
+    const id = parseInt($('#unitId').val()) || 0;
+    const departmentId = parseInt($('#parentId').val()) || 0;
+    const unitCode = $('#unitCode').val();
+    const unitName = $('#unitName').val();
+    const unitHead = $('#unitHead').val();
+    const unitContactEmail = $('#unitContactEmail').val();
+    const unitContactNumber =  $('#unitContactNumber').val();
+    const unitHeadDesignation =  $('#unitHeadDesignation').val();
+    
+    const unitData = {
+        id: id,
+        departmentId:departmentId,
+        unitCode: unitCode,
+        unitName: unitName,
+        unitHead:unitHead,
+        unitContactEmail:unitContactEmail,
+        unitContactNumber:unitContactNumber,
+        unitHeadDesignation:unitHeadDesignation
+    }
+
+    let errors = [];
+    if (!unitData.unitName)
+        errors.push("Unit name is required.");
+
+    if (!unitData.unitCode)
+        errors.push("unit code field is required");
+
+    if (!unitData.unitHead)
+        errors.push("Unit head name is required.");
+
+    if (!unitData.unitContactEmail)
+        errors.push("unit head email field is required");
+
+    if (!unitData.unitContactNumber)
+        errors.push("Unit head Phone number field is required");
+        
+    if (!unitData.unitHeadDesignation)
+        errors.push("Unit head designation/title field is required");
+
+    if (errors.length > 0) {
+        departmentErrorField("#unitName", !unitData.unitName);
+        departmentErrorField("#unitCode", !unitData.unitCode);
+        departmentErrorField("#unitHead", !unitData.unitHead);
+        departmentErrorField("#unitContactEmail", !unitData.unitContactEmail);
+        departmentErrorField("#unitContactNumber", !unitData.unitContactNumber);
+        departmentErrorField("#unitHeadDesignation", !unitData.unitHeadDesignation);
+        Swal.fire({
+            title: "Department unit data Validation",
+            html: `<div style="text-align:left;">${errors.join("<br>")}</div>`,
+        });
+        return;
+    }
+
+    //..call backend
+    saveUnitRecord(unitData, isEdit);
+}
+
+function saveUnitRecord(record, isEdit) {
+    const url = (isEdit === true || isEdit === "true")
+        ? "/admin/support/organization/departments/update-unit"
+        : "/admin/support/organization/departments/create-unit";
+
+    Swal.fire({
+        title: isEdit ? "Updating unit record..." : "Saving unit record...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    console.log("Unit record >> ", record);
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(record),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getDepartmentToken()
+        },
+        success: function (res) {
+            Swal.close();
+            if (!res.success) {
+                Swal.fire({
+                    title: "Invalid record",
+                    html: res.message.replaceAll("; ", "<br>")
+                });
+                return;
+            }
+
+            Swal.fire(res.message || "Unit record saved successfully")
+                .then(() => {
+                    //..close panel
+                    closeUnitPanel();
+                    window.location.reload();
+                });
+        },
+        error: function (xhr) {
+            Swal.close();
+
+            let errorMessage = "Unexpected error occurred.";
+            try {
+                let response = JSON.parse(xhr.responseText);
+                if (response.message) errorMessage = response.message;
+            } catch (e) { }
+
+            Swal.fire({
+                title: isEdit ? "Update Failed" : "Save Failed",
+                text: errorMessage
+            });
+        }
+    });
+}
+
+function closeUnitPanel() {
+    $('#unit2OverLay').removeClass('active');
+    $('#unit2Container').removeClass('active');
+}
+
+function deleteUnit(id) {
+    if (!id && id !== 0) {
+        toastr.error("Invalid id for delete.");
+        return;
+    }
+
+    Swal.fire({
+        title: "Delete Department Unit",
+        text: "Are you sure you want to delete this unit?",
+        showCancelButton: true,
+        confirmButtonColor: "#450354",
+        confirmButtonText: "Delete",
+        cancelButtonColor: "#f41369",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+
+        if (!result.isConfirmed)
+            return;
+
+        $.ajax({
+            url: `/admin/support/organization/departments/unit-delete/${encodeURIComponent(id)}`,
+            type: 'POST',
+            contentType: 'application/json',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getDepartmentToken()
+            },
+            success: function (res) {
+                if (res && res.success) {
+                    toastr.success(res.message || "Unit deleted successfully.");
+                    if (departmentTable) {
+                        departmentTable.replaceData();
+                    }
+                } else {
+                    toastr.error(res?.message || "Delete failed.");
+                }
+            },
+            error: function (xhr, status, error) {
+                toastr.error(xhr.responseJSON?.message || "Request failed.");
+            }
+        });
+    });
 }
 
 function saveDepartment(e) {
@@ -267,12 +500,20 @@ function saveDepartment(e) {
     const code = $('#departmentCode').val();
     const alias = $('#departmentAlias').val();
     const isEdit = $('#isEdit').val();
-
+    const departmentHead =  $('#departmentHead').val();
+    const departmentHeadEmail =  $('#departmentHeadEmail').val();
+    const departmentHeadContact =  $('#departmentHeadContact').val();
+    const departmentHeadDesignation =  $('#departmentHeadDesignation').val();
+    
     const deptData = {
         id: id,
         departmentName: departmentName,
         departmentCode: code,
-        departmentAlias: alias
+        departmentAlias: alias,
+        departmentHead:departmentHead,
+        departmentHeadEmail:departmentHeadEmail,
+        departmentHeadContact:departmentHeadContact,
+        departmentHeadDesignation:departmentHeadDesignation
     }
 
     let errors = [];
@@ -285,10 +526,26 @@ function saveDepartment(e) {
     if (!deptData.departmentAlias)
         errors.push("Department alias field is required");
 
+    if (!deptData.departmentHead)
+        errors.push("HOD name is required.");
+
+    if (!deptData.departmentHeadEmail)
+        errors.push("HOD email field is required");
+
+    if (!deptData.departmentHeadContact)
+        errors.push("HOD Phone number field is required");
+        
+    if (!deptData.departmentHeadDesignation)
+        errors.push("HOD designation/title field is required");
+
     if (errors.length > 0) {
         departmentErrorField("#departmentName", !deptData.departmentName);
         departmentErrorField("#departmentCode", !deptData.departmentCode);
         departmentErrorField("#departmentAlias", !deptData.departmentAlias);
+        departmentErrorField("#departmentHead", !deptData.departmentHead);
+        departmentErrorField("#departmentHeadEmail", !deptData.departmentHeadEmail);
+        departmentErrorField("#departmentHeadContact", !deptData.departmentHeadContact);
+        departmentErrorField("#departmentHeadDesignation", !deptData.departmentHeadDesignation);
         Swal.fire({
             title: "Department data Validation",
             html: `<div style="text-align:left;">${errors.join("<br>")}</div>`,
@@ -297,10 +554,10 @@ function saveDepartment(e) {
     }
 
     //..call backend
-    saveDepartmentRecord(isEdit, deptData, isEdit);
+    saveDepartmentRecord(deptData, isEdit);
 }
 
-function saveDepartmentRecord(isEdit, record, isEdit) {
+function saveDepartmentRecord(record, isEdit) {
     const url = (isEdit === true || isEdit === "true")
         ? "/admin/support/organization/departments/update-department"
         : "/admin/support/organization/departments/create-department";
@@ -384,13 +641,13 @@ function deleteDepartment(id) {
             contentType: 'application/json',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': getBranchToken()
+                'X-CSRF-TOKEN': getDepartmentToken()
             },
             success: function (res) {
                 if (res && res.success) {
                     toastr.success(res.message || "Department deleted successfully.");
-                    if (branchesTable) {
-                        branchesTable.replaceData();
+                    if (departmentTable) {
+                        departmentTable.replaceData();
                     }
                 } else {
                     toastr.error(res?.message || "Delete failed.");
@@ -425,12 +682,20 @@ $(document).ready(function () {
             id: 0,
             departmentName: '',
             departmentCode: '',
-            departmentAlias: ''
+            departmentAlias: '',
+            departmentHead:'',
+            departmentHeadEmail:'',
+            departmentHeadContact:'',
+            departmentHeadDesignation:''
         },
         false);
     });
 
     $('#departmentForm').on('submit', function (e) {
+        e.preventDefault();
+    });
+    
+    $('#unitForm').on('submit', function (e) {
         e.preventDefault();
     });
 

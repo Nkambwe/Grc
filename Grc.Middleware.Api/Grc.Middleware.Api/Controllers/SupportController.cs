@@ -1259,8 +1259,11 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(response));
                 }
 
+                //..get current user record
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                var username = currentUser != null ? $"{currentUser.Username}": $"{request.UserId}";
                 //..save department
-                var result = await _departmentsService.InsertDepartmentAsync(request);
+                var result = await _departmentsService.InsertDepartmentAsync(request, username);
                 
                 if (result) {
                     response.Status = true;
@@ -1332,8 +1335,12 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(response));
                 }
 
+                //..get current user record
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                var username = currentUser != null ? $"{currentUser.Username}": $"{request.UserId}";
+
                 //..update department
-                var status = await _departmentsService.UpdateDepartmentAsync(request);
+                var status = await _departmentsService.UpdateDepartmentAsync(request,username);
                 if(!status){
                     var error = new ResponseError(
                         ResponseCodes.NOTUPDATE,
@@ -1449,7 +1456,7 @@ namespace Grc.Middleware.Api.Controllers {
                         "Invalid request body"
                     );
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<List<DepartmentResponse>>(error));
+                    return Ok(new GrcResponse<DepartmentResponse>(error));
                 }
 
                 Logger.LogActivity($"REQUEST >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
@@ -1458,12 +1465,20 @@ namespace Grc.Middleware.Api.Controllers {
                 //..map response
                 DepartmentResponse result;
                 if(dataRecord != null) { 
+                    //..get head details
+                    var head = await _departmentUnitService.GetDepartmentHeadAsync($"HOD - {dataRecord.DepartmentName}");
+
                     result = new DepartmentResponse() { 
                         Id = dataRecord.Id,
                         BranchId = dataRecord.BranchId,
                         Branch = dataRecord.Branch != null ? dataRecord.Branch.BranchName : string.Empty,
                         DepartmentCode = dataRecord.DepartmentCode,
                         DepartmentName = dataRecord.DepartmentName,
+                        HeadFullName = head?.ContactName ?? string.Empty,
+                        HeadEmail = head?.ContactEmail ?? string.Empty,
+                        HeadContact = head?.ContactPhone ?? string.Empty,
+                        HeadDesignation = head?.ContactPosition ?? string.Empty,
+                        HeadComment = head?.Description ?? string.Empty,
                         DepartmentAlias = dataRecord.Alias,
                         DepartmentUnits = dataRecord.Units != null && dataRecord.Units.Any() ?
                         dataRecord.Units.Select(u => new DepartmentUnitResponse() {
@@ -1518,25 +1533,85 @@ namespace Grc.Middleware.Api.Controllers {
                     $"System Error - {ex.Message}"
                 );
                 Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
-                return Ok(new GrcResponse<List<DepartmentResponse>>(error));
+                return Ok(new GrcResponse<DepartmentResponse>(error));
             }
         }
         
         [HttpPost("departments/getUnitById")]
         public async Task<IActionResult> GetUnitById([FromBody] IdRequest request) { 
-            var data = await Task.FromResult(new DepartmentUnitResponse() {
-                Id = request.RecordId,
-                DepartmentId = 1,
-                UnitCode = "EBK",
-                UnitName = "E-Banking",
-                Department= "Operations Department",
-                IsDeleted = false,
-                CreatdOn= DateTime.Now.AddDays(-59),
-                CreatedBy= "Mark",
-                ModifiedOn= DateTime.Now.AddDays(-12),
-                ModifiedBy= "Mark",
-            });
-            return Ok(new GrcResponse<DepartmentUnitResponse>(data));
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+
+                ResponseError error = null;
+                if (request == null) {
+                    error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<DepartmentUnitResponse>(error));
+                }
+
+                Logger.LogActivity($"REQUEST >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var dataRecord = await _departmentUnitService.GetUnitByIdAsync(request.RecordId, true);
+
+                //..map response
+                DepartmentUnitResponse result;
+                if(dataRecord != null) { 
+                    //..get head details
+                    var head = await _departmentUnitService.GetDepartmentHeadAsync($"Unit Head - {dataRecord.UnitName}");
+
+                    result = new DepartmentUnitResponse() { 
+                        Id = dataRecord.Id,
+                        DepartmentId = dataRecord.DepartmentId,
+                        UnitCode = dataRecord.UnitCode,
+                        UnitName = dataRecord.UnitName,
+                        UnitHead = head?.ContactName ?? string.Empty,
+                        UnitContactEmail = head?.ContactEmail ?? string.Empty,
+                        UnitContactNumber = head?.ContactPhone ?? string.Empty,
+                        UnitHeadDesignation = head?.ContactPosition ?? string.Empty
+                    };
+                    Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(result)}");
+                    return Ok(new GrcResponse<DepartmentUnitResponse>(result));
+                }
+                    
+                error = new ResponseError(ResponseCodes.FAILED, "An error occurred while retriving unit", "Get help from your administrtor");
+                return Ok(new GrcResponse<DepartmentUnitResponse>(error));
+            } catch (Exception ex) {
+                Logger.LogActivity($"{ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+                   
+                var conpany = await CompanyService.GetDefaultCompanyAsync();
+                long companyId = conpany != null ? conpany.Id : 1;
+                SystemError errorObj = new(){ 
+                    ErrorMessage = ex.Message,
+                    ErrorSource = "SUPPORT-MIDDLEWARE-COTROLLER",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                var result = await SystemErrorService.SaveErrorAsync(errorObj);
+                var response = new GeneralResponse();
+                if(result){
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = "Error captured and saved successfully";  
+                    Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else { 
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to capture error to database. An error occurrred";  
+                    Logger.LogActivity($"SUPPORT-MIDDLEWARE-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                var error = new ResponseError(
+                    ResponseCodes.BADREQUEST,
+                    "Oops! Something went wrong",
+                    $"System Error - {ex.Message}"
+                );
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                return Ok(new GrcResponse<DepartmentResponse>(error));
+            }
         }
 
         [HttpPost("departments/getUnits")]
@@ -1711,8 +1786,11 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(response));
                 }
 
+                //..get current user record
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                var username = currentUser != null ? $"{currentUser.Username}": $"{request.UserId}";
                 //..save department unit
-                var result = await _departmentUnitService.InsertUnitAsync(request);
+                var result = await _departmentUnitService.InsertUnitAsync(request, currentUser.Username);
                 
                 if (result) {
                     response.Status = true;
@@ -1784,8 +1862,11 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(response));
                 }
 
+                //..get current user record
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                var username = currentUser != null ? $"{currentUser.Username}": $"{request.UserId}";
                 //..update unit
-                var status = await _departmentUnitService.UpdateUnitAsync(request);
+                var status = await _departmentUnitService.UpdateUnitAsync(request, currentUser.Username);
                 if(!status){
                     var error = new ResponseError(
                         ResponseCodes.NOTUPDATE,

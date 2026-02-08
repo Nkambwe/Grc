@@ -2397,8 +2397,11 @@ namespace Grc.Middleware.Api.Controllers {
                     }
                 }
 
+                var user = await _accessService.GetByIdAsync(request.UserId);
+                var username = user?.Username??$"{request.UserId}";
+
                 //..create role group
-                var result = await _accessService.InsertRoleGroupAsync(request);
+                var result = await _accessService.InsertRoleGroupAsync(request, username);
                 var response = new GeneralResponse();
                 if (result)
                 {
@@ -2456,8 +2459,11 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                var user = await _accessService.GetByIdAsync(request.UserId);
+                var username = user?.Username??$"{request.UserId}";
+
                 //..update role group
-                var result = await _accessService.UpdateRoleGroupAsync(request);
+                var result = await _accessService.UpdateRoleGroupAsync(request, true, username);
                 var response = new GeneralResponse();
                 if (result)
                 {
@@ -2556,8 +2562,11 @@ namespace Grc.Middleware.Api.Controllers {
                     }
                 }
 
+                var user = await _accessService.GetByIdAsync(request.UserId);
+                var username = user?.Username??$"{request.UserId}";
+
                 //..create role group
-                var result = await _accessService.InsertRoleGroupAsync(request);
+                var result = await _accessService.InsertRoleGroupAsync(request, username);
                 var response = new GeneralResponse();
                 if (result)
                 {

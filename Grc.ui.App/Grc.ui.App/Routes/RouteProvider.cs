@@ -385,7 +385,7 @@
                name: "admin-support-departments-retrieve",
                pattern: "admin/support/organization/departments-retrieve/{id:long}",
                defaults: new { area = "Admin", controller = "Support", action = "GetDepartment" }
-           );
+            );
             routeBuilder.MapControllerRoute(
                name: "admin-support-departments-list",
                pattern: "admin/support/organization/departments-all",
@@ -405,6 +405,37 @@
                 name: "admin-configuration-departments-delete",
                 pattern: "admin/support/organization/departments/delete/{id:long}",
                 defaults: new { area = "Admin", controller = "Support", action = "DeleteDepartment" }
+            );
+            
+            routeBuilder.MapControllerRoute(
+               name: "admin-support-department-units-retrieve",
+               pattern: "admin/support/organization/departments/unit-retrieve/{id:long}",
+               defaults: new { area = "Admin", controller = "Support", action = "GetUnit" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-support-department-units",
+               pattern: "admin/support/organization/departments/units-list",
+               defaults: new { area = "Admin", controller = "Support", action = "GetUnits" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-support-department-units-list",
+               pattern: "admin/support/organization/departments/units-all",
+               defaults: new { area = "Admin", controller = "Support", action = "AllUnits" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-department-units-create",
+               pattern: "admin/support/organization/departments/create-unit",
+               defaults: new { area = "Admin", controller = "Support", action = "CreateUnit" }
+            );
+            routeBuilder.MapControllerRoute(
+               name: "admin-configuration-department-units-update",
+               pattern: "admin/support/organization/departments/update-unit",
+               defaults: new { area = "Admin", controller = "Support", action = "UpdateUnit" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-configuration-department-units-delete",
+                pattern: "admin/support/organization/departments/unit-delete/{id:long}",
+                defaults: new { area = "Admin", controller = "Support", action = "DeleteUnit" }
             );
             routeBuilder.MapControllerRoute(
                 name: "admin-settings",

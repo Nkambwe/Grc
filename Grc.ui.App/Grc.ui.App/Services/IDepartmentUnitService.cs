@@ -4,11 +4,11 @@ using Grc.ui.App.Models;
 
 namespace Grc.ui.App.Services {
     public interface IDepartmentUnitService : IGrcBaseService {
-        Task<GrcResponse<DepartmentUnitModel>> GetUnitById(GrcIdRequest request);
-        Task<GrcResponse<List<DepartmentUnitModel>>> GetUnitsAsync(GrcRequest request);
-        Task<GrcResponse<PagedResponse<DepartmentUnitModel>>> GetDepartmentUnitsAsync(TableListRequest request);
-        Task<GrcResponse<ServiceResponse>> InsertDepartmentUnitAsync(GrcInsertRequest<DepartmentUnitRequest> data);
-        Task<GrcResponse<ServiceResponse>> UpdateDepartmentUnitAsync(GrcInsertRequest<DepartmentUnitRequest> data);
+        Task<GrcResponse<GrcDepartmentUnitResponse>> GetUnitById(GrcIdRequest request);
+        Task<GrcResponse<List<GrcDepartmentUnitResponse>>> GetUnitsAsync(GrcRequest request);
+        Task<GrcResponse<PagedResponse<GrcDepartmentUnitResponse>>> GetDepartmentUnitsAsync(TableListRequest request);
+        Task<GrcResponse<ServiceResponse>> InsertDepartmentUnitAsync(DepartmentFullUnitModel data, long userId, string ipAddress);
+        Task<GrcResponse<ServiceResponse>> UpdateDepartmentUnitAsync(DepartmentFullUnitModel data, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> DeleteDepartmentUnitAsync(long id, long userId, string ipAddress = null);
         
     }

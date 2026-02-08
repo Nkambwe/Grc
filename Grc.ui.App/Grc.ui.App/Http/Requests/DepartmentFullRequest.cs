@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace Grc.ui.App.Http.Requests {
-    public class DepartmentUnitRequest {
+    public class DepartmentFullRequest { 
         /// <summary>
         /// Get or Set ID for the unit
         /// </summary>
@@ -23,33 +23,28 @@ namespace Grc.ui.App.Http.Requests {
         [JsonPropertyName("action")]
         public string Action { get; set; }
         /// <summary>
-        /// Get or Set unit code
+        /// Get or Set department code
         /// </summary>
-        [JsonPropertyName("unitCode")]
-        public string UnitCode { get; set; }
+        [JsonPropertyName("departmentCode")]
+        public string DepartmentCode { get; set; }
         /// <summary>
-        /// Get or Set unit name
+        /// Get or Set department name
         /// </summary>
-        [JsonPropertyName("unitName")]
-        public string UnitName { get; set; }
+        [JsonPropertyName("departmentName")]
+        public string DepartmentName { get; set; }
         /// <summary>
-        /// Get or Set ID of department
+        /// Get or Set department alias
         /// </summary>
-        [JsonPropertyName("departmentId")]
-        public long DepartmentId { get; set; }
-        /// <summary>
-        /// Get or Set whether unit is deleted
-        /// </summary>
-        [JsonPropertyName("isDeleted")]
-        public bool IsDeleted { get; set; }
-        [JsonPropertyName("contactName")]
-        public string ContactName { get; set; }
-        [JsonPropertyName("contactEmail")]
-        public string ContactEmail { get; set; }
-        [JsonPropertyName("contactNumber")]
-        public string ContactNumber { get; set; }
-        [JsonPropertyName("contactDesignation")]
-        public string ContactDesignation { get; set; }
+        [JsonPropertyName("alias")]
+        public string Alias { get; set; }
+        [JsonPropertyName("headFullName")]
+        public string HeadFullName { get; set; }
+        [JsonPropertyName("headEmail")]
+        public string HeadEmail { get; set; }
+        [JsonPropertyName("headContact")]
+        public string HeadContact { get; set; }
+        [JsonPropertyName("headDesignation")]
+        public string HeadDesignation { get; set; }
         [JsonPropertyName("headComment")]
         public string HeadComment { get; set; }
     }
