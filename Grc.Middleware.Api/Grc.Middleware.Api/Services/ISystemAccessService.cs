@@ -151,7 +151,7 @@ namespace Grc.Middleware.Api.Services {
         Task<List<SystemPermission>> GetAllPermissionsAsync();
 
         Task<List<SystemPermissionSet>> GetRolePermissionSetsAsync(IdRequest request);
-
+        Task<RoleMinResponse> GetRoleWithPermissionsAsync(IdRequest request);
         Task<List<SystemPermission>> GetRolePermissionsAsync(IdRequest request);
 
         Task<bool> UpdateRolePermissionSetsAsync(long roleId, List<long> newPermissionSetIds);

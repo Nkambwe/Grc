@@ -3,6 +3,7 @@ using Azure.Core;
 using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Logging;
 using Grc.Middleware.Api.Data.Entities.System;
+using Grc.Middleware.Api.Data.Repositories;
 using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
@@ -2990,31 +2991,42 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
+        public async Task<RoleMinResponse> GetRoleWithPermissionsAsync(IdRequest request) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieve role with permissions", "INFO");
+
+            try {
+                return await uow.RoleRepository.GetRoleWithPermissionsAsync(request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve role permissions: {ex.Message}", "ERROR");
+                throw;
+            }
+        }
+
         public async Task<List<SystemPermission>> GetRolePermissionsAsync(IdRequest request) {
             using var uow = UowFactory.Create();
             Logger.LogActivity("Retrieve list of Role permissions", "INFO");
 
             try {
-                var roles = await uow.RoleRepository.GetAllAsync(
+                var role = await uow.RoleRepository.GetAllAsync(
                     r => r.Id == request.RecordId,
                     request.MarkAsDeleted,
                     r => r.Group,
                     r => r.PermissionSets,
-                    r => r.Group.PermissionSets
+                    r => r.PermissionSets.Select(ps => ps.PermissionSet.Permissions),
+                    r => r.Group.PermissionSets,
+                    r => r.Group.PermissionSets.Select(gps => gps.PermissionSet.Permissions)
                 );
 
-                var role = roles.FirstOrDefault();
-                if (role == null)
+                var roleEntity = role.FirstOrDefault();
+                if (roleEntity == null)
                     return new List<SystemPermission>();
 
-                //..collect all permission sets
-                var rolePermissionSets = role.PermissionSets
-                    .Select(rp => rp.PermissionSet)
-                    .Where(ps => ps != null);
+                var rolePermissionSets = roleEntity.PermissionSets
+                    .Select(rp => rp.PermissionSet);
 
-                var groupPermissionSets = role.Group?.PermissionSets?
+                var groupPermissionSets = roleEntity.Group?.PermissionSets
                     .Select(gp => gp.PermissionSet)
-                    .Where(ps => ps != null)
                     ?? Enumerable.Empty<SystemPermissionSet>();
 
                 var allPermissionSets = rolePermissionSets
@@ -3022,24 +3034,15 @@ namespace Grc.Middleware.Api.Services {
                     .DistinctBy(ps => ps.Id)
                     .ToList();
 
-                foreach (var ps in allPermissionSets) {
-                    await uow.Context.Entry(ps)
-                        .Collection(p => p.Permissions)
-                        .Query()
-                        .Include(pp => pp.Permission)
-                        .LoadAsync();
-                }
-
-                var allPermissions = allPermissionSets
+                var permissions = allPermissionSets
                     .SelectMany(ps => ps.Permissions)
                     .Select(pp => pp.Permission)
                     .DistinctBy(p => p.Id)
                     .ToList();
 
-                return allPermissions;
-            }
-            catch (Exception ex)
-            {
+                return permissions;
+
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve role permissions: {ex.Message}", "ERROR");
 
                 var innerEx = ex.InnerException;
@@ -3938,6 +3941,7 @@ namespace Grc.Middleware.Api.Services {
         #endregion
 
         #region private methods
+
         private void LogError(IUnitOfWork uow, Exception ex)
         {
             Logger.LogActivity($"Failed to retrieve permission set: {ex.Message}", "ERROR");

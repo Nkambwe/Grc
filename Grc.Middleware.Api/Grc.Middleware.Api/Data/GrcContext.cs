@@ -54,7 +54,8 @@ namespace Grc.Middleware.Api.Data {
         public DbSet<SubmissionNotification> Notifications { get; set; }
         public DbSet<SystemConfiguration> SystemConfiguration { get; set; }
         public DbSet<SystemPermission> SystemPermissions { get; set; }
-        public DbSet<SystemPermissionPermissionSet> SystemPermissionSets { get; set; }
+        public DbSet<SystemPermissionSet> SystemPermissionSets { get; set; }
+        public DbSet<SystemPermissionPermissionSet> SystemPermissionPermissionSets { get; set; }
         public DbSet<ProcessApproval> ProcessApprovals { get; set; }
         public DbSet<MailSettings> MailSettings { get; set; }
         public DbSet<MailRecord> MailRecords { get; set; }

@@ -7,13 +7,16 @@ namespace Grc.Middleware.Api.Http.Responses
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
+        [JsonPropertyName("setId")]
+        public long SetId { get; set; } = 0;
+
         [JsonPropertyName("permissionName")]
         public string PermissionName { get; set; }
 
         [JsonPropertyName("isAssigned")]
         public bool IsAssigned { get; set; }
 
-        [JsonPropertyName("description")]
+        [JsonPropertyName("permissionDescription")]
         public string PermissionDescription { get; set; }
        
     }
