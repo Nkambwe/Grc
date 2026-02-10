@@ -78,6 +78,10 @@ async function performLogout(event) {
     }
 }
 
+function changePassword(e) {
+    e.preventDefault();
+}
+
 function getAntiForgeryToken() {
     //..get token from meta tag
     let token = $('meta[name="csrf-token"]').attr('content');

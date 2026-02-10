@@ -147,8 +147,19 @@ namespace Grc.ui.App.Controllers {
                     return HandleUsernameValidationError(LocalizationService.GetLocalizedLabel("App.Message.InvalidPassword"), model);
                 }
 
+                //..check password expiration
+                bool passwordExpired = IsPasswordExpired(data);
+                if (passwordExpired) {
+                    return Json(new {
+                        success = true,
+                        stage = "password-expired",
+                        message = "Password expired",
+                        lastPasswordChange = data.LastPasswordChange
+                    });
+                }
+
                 await _authService.SignInAsync(data, model.RememberMe);
-                 Logger.LogActivity($"User successfully authenticated: {model.Username}");
+                Logger.LogActivity($"User successfully authenticated: {model.Username}");
 
                 //..determine redirect URL based on user roles
                 string redirectUrl = DetermineRedirectUrl(response.Data.RoleGroup);
@@ -220,6 +231,84 @@ namespace Grc.ui.App.Controllers {
                 //..capture error to bug tracker
                  _= await ProcessErrorAsync(ex.Message, "APPLICATIONCONTROLLER-VALIDATEUSERNAME", ex.StackTrace);
                 return HandleUsernameValidationError(LocalizationService.GetLocalizedLabel("App.Authentication.Failed"), model);
+            }
+        }
+
+        [HttpPost]
+        [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
+        public async Task<IActionResult> ChangeExpiredPassword([FromBody] ChangePasswordModel model){
+            try {
+
+                if(model == null){ 
+                    return Json(new { success = false, message = "Invalid request object" });
+                }
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                Logger.LogActivity($"User: {model.Username} password change", "INFO");
+
+                if (!long.TryParse(userId, out long id))
+                    id = 0;
+
+                var request = new GrcChangePasswordRequest(){ 
+                    UserId = id,
+                    RecordId = id,
+                    OldPassword = model.OldPassword,
+                    NewPassword = model.NewPassword,
+                    Username = model.Username,
+                    IPAddress = ipAddress,
+                    Action = $"User password change for '{model.Username}'"
+                    
+                };
+
+                var result = await _authService.ChangePasswordAsync(request);
+                if (result.HasError)
+                    return Json(new { success = false, message = result.Error.Message });
+
+                return Json(new { success = true });
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Password changevalidation error: {ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                //..capture error to bug tracker
+                 _= await ProcessErrorAsync(ex.Message, "APPLICATIONCONTROLLER-PASSWORD-CHANGE", ex.StackTrace);
+                return HandleUsernameValidationError("Password change failed. An error occurred", new LoginModel() {
+                    Username = model.Username,
+                    Password = string.Empty,
+                    IsUsernameValidated = false,
+                    DisplayName = string.Empty,
+                });
+            }
+            
+        }
+
+        public async Task<IActionResult> ChangePassword() {
+             try{
+
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    var model = new LoginModel() {
+                        Username = "Unknown",
+                        DisplayName = "Unknown",
+                        CurrentStage = LoginStage.Username,
+                    };
+                    return HandleLoginError(new GrcResponse<UserModel>(grcResponse.Error), model);
+                }
+
+                var data = await _dashboardFactory.PrepareUserDashboardModelAsync(grcResponse.Data);
+                data.WelcomeMessage = "Change Password";
+                return View(data);
+            } catch(Exception ex){ 
+                Logger.LogActivity($"Error openning password change page: {ex.Message}", "ERROR");
+                 _= await ProcessErrorAsync(ex.Message, "APPLICATIONCONTROLLER-DASHBORAD", ex.StackTrace);
+                var errModel = new GrcResponseError(500, "Error openning password change page", "");
+                var model = new LoginModel() {
+                    Username = "Unknown",
+                    DisplayName = "Unknown",
+                    CurrentStage = LoginStage.Username,
+                };
+                Logger.LogActivity($"LOGIN ERROR: {JsonSerializer.Serialize(errModel)}");
+                return HandleLoginError(new GrcResponse<UserModel>(errModel), model);
             }
         }
 
@@ -408,6 +497,15 @@ namespace Grc.ui.App.Controllers {
         }
 
         #region Helper Methods
+        private static bool IsPasswordExpired(UserModel data) {
+            if (data.ForcePasswordChange)
+                return true;
+
+            if (!data.LastPasswordChange.HasValue)
+                return true;
+
+            return data.LastPasswordChange.Value.AddDays(30) < DateTime.UtcNow;
+        }
 
         private IActionResult HandleValidationErrors(LoginModel model) {
 

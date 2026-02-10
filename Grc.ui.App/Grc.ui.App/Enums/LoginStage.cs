@@ -1,6 +1,7 @@
 ﻿namespace Grc.ui.App.Enums {
     public enum LoginStage {
         Username = 1,
-        Password = 2
+        Password = 2,
+        passwordChange=3
     }
 }

@@ -4,10 +4,21 @@ namespace Grc.Middleware.Api.Http.Requests {
 
     public class PasswordChangeRequest {
         /// <summary>
+        /// Get or Set ID of user making request
+        /// </summary>
+        [JsonPropertyName("userId")]
+        public long UserId { get; set; }
+        /// <summary>
         /// Get or Set record ID
         /// </summary>
         [JsonPropertyName("recordId")]
         public long RecordId { get; set; }
+        /// <summary>
+        /// Username
+        /// </summary>
+        [JsonPropertyName("username")]
+        public string Username { get; set; }
+
         /// <summary>
         /// Get or Set user password
         /// </summary>
@@ -18,11 +29,7 @@ namespace Grc.Middleware.Api.Http.Requests {
         /// </summary>
         [JsonPropertyName("newPassword")]
         public string NewPassword { get; set; }
-        /// <summary>
-        /// Get or Set ID of user making request
-        /// </summary>
-        [JsonPropertyName("userId")]
-        public long UserId { get; set; }
+       
         /// <summary>
         /// Get or Set User IP Address
         /// </summary>

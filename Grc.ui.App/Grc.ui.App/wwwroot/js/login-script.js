@@ -5,6 +5,7 @@
     const $usernameForm = $('#username-form');
     const $passwordForm = $('#password-form');
     const $backButton = $('#back-to-username');
+    const $expiryStage = $('#password-expiry-stage');
     
     //..username form submission
     $usernameForm.on('submit', async function(e) {
@@ -39,7 +40,7 @@
         formData.append('Username', username);
         formData.append('Password', password);
         console.log("Username >> ", username);
-        console.log("Username >> ", password);
+        console.log("Password >> ", password);
 
         //..add any other form fields
         $form.find('input, select, textarea').each(function() {
@@ -154,17 +155,19 @@
             });
             
             console.log('Authentication response:', response);
-            
             if (response.success) {
-                //..show success stage
+                console.log('stage here :', response.stage);
+                if (response.stage === "password-expired") {
+                    slideToStage('password-expired');
+                    return;
+                }
+
                 slideToStage('success');
-                
-                //..redirect after showing success
+
                 setTimeout(() => {
-                    const redirectUrl = response.redirectUrl || '/dashboard/';
+                    const redirectUrl = response.redirectUrl || '/login/validate-username';
                     window.location.href = redirectUrl;
                 }, 1500);
-                
             } else {
                 //..handle different types of errors
                 let errorMessage = 'Authentication failed. Please try again.';
@@ -211,10 +214,12 @@
     }
 
     function slideToStage(stageName) {
-        const $stages = $usernameStage.add($passwordStage).add($successStage);
+        const $stages = $usernameStage
+                        .add($passwordStage)
+                        .add($expiryStage)
+                        .add($successStage);
         
         $stages.removeClass('active slide-out-left');
-        
         let $targetStage;
         switch(stageName) {
             case 'username':
@@ -222,6 +227,9 @@
                 break;
             case 'password':
                 $targetStage = $passwordStage;
+                break;
+            case 'password-expired':
+                $targetStage = $expiryStage;
                 break;
             case 'success':
                 $targetStage = $successStage;
@@ -280,6 +288,113 @@
         }
     }
     
+   $('#password-expiry-form').on('submit', async function (e) {
+        e.preventDefault();
+
+        clearError('new-password-change');
+        clearError('confirm-password-change');
+
+        const oldPwd = $('#oldPassword').val().trim();
+        const newPwd = $('#newPassword').val().trim();
+        const confirmPwd = $('#confirmPassword').val().trim();
+        const username = $('#validated-username').val();
+
+            var record = {
+                username: username,
+                oldPassword: oldPwd,
+                newPassword: newPwd,
+                confirmPassword: confirmPwd
+            }
+        
+        if (!oldPwd) {
+            showFieldError('oldPassword', 'old-password-change-error', 'Current password is required');
+            return;
+        }
+
+        if (!newPwd) {
+            showFieldError('newPassword', 'new-password-change-error', 'New password is required');
+            return;
+        }
+
+        if (!confirmPwd) {
+            showFieldError('confirmPassword', 'confirm-password-change-error', 'Confirm password is required');
+            return;
+        }
+
+        if (newPwd !== confirmPwd) {
+            showFieldError('confirmPassword', 'confirm-password-change-error', 'Passwords do not match');
+            showFieldError('newPassword', 'new-password-change-error', 'Passwords do not match');
+            return;
+        }
+
+        const $button = $('#password-expiry-form .btn-login');
+        setButtonLoading($button, true);
+
+        try {
+
+            const response = await $.ajax({
+                url: '/login/expired-password',
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(record),
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': getAntiForgeryToken()
+                }
+            });
+
+            if (response.success) {
+                slideToStage('success');
+                setTimeout(() => {
+                    window.location.href = response.redirectUrl || '/grc/compliance';
+                }, 1200);
+            } else {
+                showError('new-password-change', response.message || 'Password change failed');
+            }
+
+        } catch (xhr) {
+
+            let errorMessage = "Password not changed. An unexpected error occurred";
+
+            if (xhr.responseJSON?.message)
+                errorMessage = xhr.responseJSON.message;
+
+            showError('confirm-password-change', errorMessage);
+            showError('new-password-change', errorMessage);
+
+        } finally {
+            setButtonLoading($button, false);
+        }
+
+    });
+
+   $('#newPassword, #confirmPassword').on('input', function () {
+        $('#new-password-change-error').removeClass('show');
+        $('#confirm-password-change-error').removeClass('show');
+
+        const newPwd = $('#newPassword').val();
+        const confirmPwd = $('#confirmPassword').val();
+
+        if (newPwd && confirmPwd && newPwd !== confirmPwd) {
+            showFieldError('confirmPassword', 'confirm-password-change-error', 'Passwords do not match');
+        }
+    });
+
+    function showFieldError(inputId, errorId, message) {
+        const $errorElement = $('#' + errorId);
+        const $inputElement = $('#' + inputId);
+
+        if ($errorElement.length && $inputElement.length) {
+            $errorElement.text(message).addClass('show');
+            $inputElement.addClass('error');
+
+            $inputElement.one('input', function () {
+                $errorElement.removeClass('show');
+                $inputElement.removeClass('error');
+            });
+        }
+    }
+
     function getAntiForgeryToken() {
         // Get token from meta tag (with your current typo)
         let token = $('meta[name="csrf-token"]').attr('content');
@@ -289,12 +404,35 @@
         
         return token || '';
     }
-    
+
     // Focus username input on load
     $('#username-input').focus();
-
-     $('#toggle-password').on('click', function () {
+    $('#toggle-password').on('click', function () {
         const $passwordInput = $('#password-input');
+        const isPassword = $passwordInput.attr('type') === 'password';
+
+        $passwordInput.attr('type', isPassword ? 'text' : 'password');
+        $(this).toggleClass('mdi-eye').toggleClass('mdi-eye-off');
+    });
+
+    $('#toggle-new-password').on('click', function () {
+        const $passwordInput = $('#newPassword');
+        const isPassword = $passwordInput.attr('type') === 'password';
+
+        $passwordInput.attr('type', isPassword ? 'text' : 'password');
+        $(this).toggleClass('mdi-eye').toggleClass('mdi-eye-off');
+    });
+    
+    $('#toggle-old-password').on('click', function () {
+        const $passwordInput = $('#oldPassword');
+        const isPassword = $passwordInput.attr('type') === 'password';
+
+        $passwordInput.attr('type', isPassword ? 'text' : 'password');
+        $(this).toggleClass('mdi-eye').toggleClass('mdi-eye-off');
+    });
+
+    $('#toggle-confirm-password').on('click', function () {
+        const $passwordInput = $('#confirmPassword');
         const isPassword = $passwordInput.attr('type') === 'password';
 
         $passwordInput.attr('type', isPassword ? 'text' : 'password');

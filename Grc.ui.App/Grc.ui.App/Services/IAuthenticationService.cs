@@ -1,4 +1,5 @@
-﻿using Grc.ui.App.Http.Responses;
+﻿using Grc.ui.App.Http.Requests;
+using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Models;
 
 namespace Grc.ui.App.Services {
@@ -47,6 +48,7 @@ namespace Grc.ui.App.Services {
         /// </returns>
         Task<bool> IsSignedIn();
 
+        Task<GrcResponse<ServiceResponse>> ChangePasswordAsync(GrcChangePasswordRequest request);
     }
 
 }

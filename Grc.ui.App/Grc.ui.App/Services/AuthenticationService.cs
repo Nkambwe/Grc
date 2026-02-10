@@ -9,6 +9,7 @@ using Grc.ui.App.Models;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Net;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -190,6 +191,29 @@ namespace Grc.ui.App.Services {
                 Logger.LogActivity($"Unexpected IsSignedIn error: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message,"AUTHENTICATION-SERVICE" , ex.StackTrace);
                 return false;
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> ChangePasswordAsync(GrcChangePasswordRequest request) {
+            try {
+                if(request == null) {
+                    Logger.LogActivity($"BAD REQUEST:Invalid password change request");
+                    return new GrcResponse<ServiceResponse>(new ServiceResponse(){ 
+                        Status=false,
+                        Message="An unexpeceted error occurred during password change",
+                        StatusCode=500,
+                    });
+                }
+                var endpoint = $"{EndpointProvider.Sam.Users}/password-change";
+                return await HttpHandler.PostAsync<GrcChangePasswordRequest, ServiceResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error while changing user password: {ex.Message}", "Error");
+                await ProcessErrorAsync(ex.Message,"AUTHENTICATION-SERVICE" , ex.StackTrace);
+                return new GrcResponse<ServiceResponse>(new ServiceResponse(){ 
+                    Status=false,
+                    Message="An unexpeceted error occurred during password change",
+                    StatusCode=500,
+                });
             }
         }
 

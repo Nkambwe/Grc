@@ -74,6 +74,12 @@ namespace Grc.Middleware.Api.Http.Responses {
 
         [JsonPropertyName("isAuthenticated")]
         public bool IsAuthenticated { get; set; }
+        
+        [JsonPropertyName("lastPasswordChange")]
+        public DateTime? LastPasswordChange { get; set; }
+        
+        [JsonPropertyName("forcePasswordChange")]
+        public bool ForcePasswordChange { get; set; }
 
         [JsonPropertyName("isAdmin")]
         public bool IsAdministrator { get; set; }

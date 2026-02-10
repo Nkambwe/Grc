@@ -7,5 +7,4 @@
         public bool IsPersistent { get; set; }
     }
 
-
 }

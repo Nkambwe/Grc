@@ -10597,9 +10597,17 @@
       "Grc.Middleware.Api.Http.Requests.PasswordChangeRequest": {
         "type": "object",
         "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
           "recordId": {
             "type": "integer",
             "format": "int64"
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
           },
           "oldPassword": {
             "type": "string",
@@ -10608,10 +10616,6 @@
           "newPassword": {
             "type": "string",
             "nullable": true
-          },
-          "userId": {
-            "type": "integer",
-            "format": "int64"
           },
           "ipAddress": {
             "type": "string",

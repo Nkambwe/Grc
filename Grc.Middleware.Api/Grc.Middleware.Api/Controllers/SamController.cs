@@ -12,6 +12,7 @@ using Grc.Middleware.Api.Services;
 using Grc.Middleware.Api.Services.Organization;
 using Grc.Middleware.Api.TaskHandler;
 using Grc.Middleware.Api.Utils;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Concurrent;
 using System.Text.Json;
@@ -877,7 +878,9 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
-                var userRecord = await _accessService.GetByIdAsync(request.RecordId);
+                SystemUser userRecord = !string.IsNullOrWhiteSpace(request.Username)
+                    ? await _accessService.GetUserByUsernameAsync(request.Username)
+                    : await _accessService.GetByIdAsync(request.RecordId);
                 if (userRecord == null){
                     var error = new ResponseError(ResponseCodes.NOTFOUND,"Record Not Found","User record not found in the database");
                     Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
@@ -885,7 +888,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 //..varify user password
-                bool isValid = ExtendedHashMapper.VerifyPassword(request.OldPassword, userRecord.PasswordHash);
+                bool isValid = ExtendedHashMapper.VerifyPassword(request.OldPassword, HashGenerator.DecryptString(userRecord.PasswordHash));
                 if(!isValid){ 
                     var error = new ResponseError(ResponseCodes.FAILED,"Authetication Error","Provided old password is not correct");
                     Logger.LogActivity($"AUTHENTICATION ERROR: {JsonSerializer.Serialize(error)}");

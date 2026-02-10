@@ -182,6 +182,7 @@ namespace Grc.Middleware.Api.Services {
                     Password = u.PasswordHash,
                     PFNumber = u.PFNumber,
                     SolId = u.BranchSolId ?? "MAIN",
+                    LastPasswordChange = u.LastPasswordChange,
                     RoleId = u.RoleId,
                     RoleName = u.Role.RoleName,
                     RoleGroup = u.Role.Group.GroupCategory,
@@ -209,6 +210,49 @@ namespace Grc.Middleware.Api.Services {
                 includeDeleted: true
             );
 
+            //..force user to change password for the first time logins
+            if (!response.LastPasswordChange.HasValue) {
+                response.ForcePasswordChange = true;
+            } else {
+                // Check for password expiration
+                const int DEFAULT_EXPIRY_DAYS = 30;
+    
+                var passwordConfig = await uow.SystemConfigurationRepository.GetAsync(s => s.ParameterName == "SECURITY_EXPIRYPERIOD");
+                int expiryDays = DEFAULT_EXPIRY_DAYS;
+    
+                if (passwordConfig == null) {
+                    // Configuration missing - create it
+                    await uow.SystemConfigurationRepository.InsertAsync(new SystemConfiguration() {
+                        ParameterName = "SECURITY_EXPIRYPERIOD",
+                        ParameterValue = DEFAULT_EXPIRY_DAYS.ToString(),
+                        ParameterType = "FLAG",
+                        IsDeleted = false,
+                        CreatedBy = "SYSTEM",
+                        CreatedOn = DateTime.Now
+                    });
+                    await uow.SaveChangesAsync();
+                } else if (string.IsNullOrWhiteSpace(passwordConfig.ParameterValue)) {
+                    //..configuration exists but has no value,update it
+                    passwordConfig.ParameterValue = DEFAULT_EXPIRY_DAYS.ToString();
+                    passwordConfig.IsDeleted = false;
+                    passwordConfig.LastModifiedBy = "SYSTEM";
+                    passwordConfig.LastModifiedOn = DateTime.Now;
+                    await uow.SystemConfigurationRepository.UpdateAsync(passwordConfig, true);
+                    await uow.SaveChangesAsync();
+                } else {
+                    //..parse the configured value
+                    if (!int.TryParse(passwordConfig.ParameterValue, out expiryDays) || expiryDays <= 0) {
+                        expiryDays = DEFAULT_EXPIRY_DAYS;
+                    }
+                }
+    
+                //..check if password has expired
+                var passwordExpiryDate = response.LastPasswordChange.Value.AddDays(expiryDays);
+                if (passwordExpiryDate <= DateTime.Now) {
+                    response.ForcePasswordChange = true;
+                }
+            }
+            
             if (response == null) {
                 return new AuthenticationResponse {
                     IsAuthenticated = false,

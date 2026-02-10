@@ -35,7 +35,7 @@ namespace Grc.Middleware.Api.Services {
         bool UpdateUser(UserRecordRequest request, string username, bool includeDeleted = false);
 
         Task<bool> UpdateUserAsync(UserRecordRequest request, string username, bool includeDeleted = false);
-        
+
         bool DeleteUser(IdRequest request);
 
         Task<bool> DeleteUserAsync(IdRequest request);

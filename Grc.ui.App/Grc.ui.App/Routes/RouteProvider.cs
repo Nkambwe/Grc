@@ -2251,6 +2251,17 @@
                 defaults: new { controller = "Application", action = "ValidateUsername" }
             );
 
+            routeBuilder.MapControllerRoute(
+                name: "application-password-change",
+                pattern: "/application/passwords-change",
+                defaults: new { controller = "Application", action = "ChangeExpiredPassword" }
+            );
+            
+            routeBuilder.MapControllerRoute(
+                name: "login-password-change-expired",
+                pattern: "/login/expired-password",
+                defaults: new { controller = "Application", action = "ChangePassword" }
+            );
             // login user
             routeBuilder.MapControllerRoute(
                 name: "login",
