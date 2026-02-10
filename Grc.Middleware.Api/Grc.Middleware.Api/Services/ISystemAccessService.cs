@@ -26,7 +26,7 @@ namespace Grc.Middleware.Api.Services {
 
         Task<bool> InsertUserAsync(SystemUser userRecord);
 
-        Task<bool> ChangePasswordAsync(long recordId, string passwordHash, string username);
+        Task<bool> ChangePasswordAsync(string passwordHash, string username);
 
         Task<bool> ResetPasswordAsync(long recordId, string passwordHash, string username);
 

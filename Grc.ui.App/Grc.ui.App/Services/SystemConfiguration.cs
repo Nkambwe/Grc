@@ -206,5 +206,26 @@ namespace Grc.ui.App.Services {
             }
         }
 
+        public async Task<GrcResponse<GrcPasswordChangeResponse>> GetPasswordSettingAsync(long userId, string iPAddress) {
+            try {
+                var request = new GrcRequest() {
+                    UserId = userId,
+                    IPAddress = iPAddress,
+                    Action = "Get password settings",
+                    EncryptFields = Array.Empty<string>(),
+                    DecryptFields = Array.Empty<string>(),
+                };
+
+                var endpoint = $"{EndpointProvider.Organization.OrganizationBase}/password-settings";
+                return await HttpHandler.PostAsync<GrcRequest, GrcPasswordChangeResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<GrcPasswordChangeResponse>(error);
+            }
+        }
+
     }
 }

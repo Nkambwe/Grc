@@ -572,7 +572,6 @@ function saveDepartmentRecord(record, isEdit) {
         }
     });
 
-    console.log("Department record >> ", record);
     $.ajax({
         url: url,
         type: "POST",

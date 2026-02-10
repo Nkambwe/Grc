@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -20,11 +22,13 @@ namespace Grc.ui.App.Factories {
         private readonly IReturnsService _returnsService;
         private readonly IPolicyService _policyService;
         private readonly IAuditService _auditService;
+        private readonly ISystemConfiguration _configService;
         public DashboardFactory(IMapper mapper,
                                 IQuickActionService quickActionService,
                                 IReturnsService returnsService,
                                 IPolicyService policyService,
                                 IAuditService auditService,
+                                ISystemConfiguration configService,
                                 SessionManager session) {  
             _quickActionService = quickActionService;
             _mapper = mapper;
@@ -32,6 +36,7 @@ namespace Grc.ui.App.Factories {
             _returnsService = returnsService;
             _policyService = policyService;
             _auditService = auditService;
+            _configService = configService;
         }
 
         public async Task<UserDashboardModel>  PrepareUserDashboardModelAsync(UserModel currentUser) {
@@ -60,7 +65,7 @@ namespace Grc.ui.App.Factories {
                 Statistics = stats
             };
 
-            return await Task.FromResult(model);
+            return model;
         }
 
         public async Task<UserDashboardModel> PrepareUserModelAsync(UserModel currentUser) {
@@ -252,6 +257,35 @@ namespace Grc.ui.App.Factories {
             };
 
             return await Task.FromResult(model);
+        }
+
+        public async Task<PasswordChangeModel> PrepareUserPasswordModelAsync(UserModel currentUser) {
+            var grcResponse = await _configService.GetPasswordSettingAsync(currentUser.UserId, currentUser.IPAddress);
+            GrcPasswordChangeResponse pwdSettings = new();
+            if (!grcResponse.HasError) {
+                var data = grcResponse.Data;
+                pwdSettings.MinimumLength = data.MinimumLength;
+                pwdSettings.IncludeUpperChar = data.IncludeUpperChar;
+                pwdSettings.IncludeLowerChar = data.IncludeLowerChar;
+                pwdSettings.IncludeSpecialChar = data.IncludeSpecialChar;
+                pwdSettings.CanReusePasswords = data.CanReusePasswords;
+                pwdSettings.IncludeNumericChar = data.IncludeNumericChar;
+            }
+
+            var workspace = _sessionManager.GetWorkspace();
+            return new PasswordChangeModel {
+                UserId = workspace?.CurrentUser?.UserId ?? currentUser.UserId,
+                Username = workspace?.CurrentUser?.Username ?? currentUser.UserName,
+                WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName} - Change Password",
+                Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
+                Workspace = workspace,
+                MinimumLength = pwdSettings.MinimumLength,
+                IncludeUpperChar = pwdSettings.IncludeUpperChar,
+                IncludeLowerChar = pwdSettings.IncludeLowerChar,
+                IncludeSpecialChar = pwdSettings.IncludeSpecialChar,
+                IncludeNumericChar = pwdSettings.IncludeNumericChar,
+                CanReusePasswords = pwdSettings.CanReusePasswords
+            };
         }
 
         #region Audits

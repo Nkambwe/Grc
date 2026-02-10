@@ -495,12 +495,12 @@
                defaults: new { area = "Admin", controller = "Configuration", action = "NewBugs" }
             );
             routeBuilder.MapControllerRoute(
-               name: "admin-configuration-bugs-infix",
+               name: "admin-configuration-bugs-in-progress",
                pattern: "admin/configuration/bugs/in-progress",
                defaults: new { area = "Admin", controller = "Configuration", action = "BugProgress" }
             );
             routeBuilder.MapControllerRoute(
-               name: "admin-configuration-bugs-infix",
+               name: "admin-configuration-bugs-in-fix",
                pattern: "admin/configuration/bugs/bugs-closed",
                defaults: new { area = "Admin", controller = "Configuration", action = "BugFixes" }
             );
@@ -515,17 +515,17 @@
                defaults: new { area = "Admin", controller = "Configuration", action = "GetAllBugs" }
             );
             routeBuilder.MapControllerRoute(
-               name: "admin-configuration-bugs-new",
+               name: "admin-configuration-bugs-new-list",
                pattern: "admin/configuration/bugs/new-bugs",
                defaults: new { area = "Admin", controller = "Configuration", action = "GetNewErrorList" }
             );
             routeBuilder.MapControllerRoute(
-               name: "admin-configuration-bugs-closed",
+               name: "admin-configuration-bugs-closed-list",
                pattern: "admin/configuration/bugs/closed-bugs",
                defaults: new { area = "Admin", controller = "Configuration", action = "GetClosedErrorList" }
             );
             routeBuilder.MapControllerRoute(
-               name: "admin-configuration-bugs-progress",
+               name: "admin-configuration-bugs-progress-list",
                pattern: "admin/configuration/bugs/progress-bugs",
                defaults: new { area = "Admin", controller = "Configuration", action = "GetProgressErrorList" }
             );
@@ -555,13 +555,10 @@
               defaults: new { area = "Admin", controller = "Configuration", action = "GetBug" }
             );
 
-
-
-
             /*----------------------- Admin Support*/
             routeBuilder.MapControllerRoute(
                 name: "admin-support",
-                pattern: "admin/support",
+                pattern: "admin/support-grc",
                 defaults: new { area = "Admin", controller = "Support", action = "Index" }
             );
             routeBuilder.MapControllerRoute(
@@ -2252,15 +2249,20 @@
             );
 
             routeBuilder.MapControllerRoute(
-                name: "application-password-change",
-                pattern: "/application/passwords-change",
+                name: "login-password-change-expired",
+                pattern: "/login/expired-password",
                 defaults: new { controller = "Application", action = "ChangeExpiredPassword" }
             );
             
             routeBuilder.MapControllerRoute(
-                name: "login-password-change-expired",
-                pattern: "/login/expired-password",
+                name: "application-password-change",
+                pattern: "/application/passwords-change",
                 defaults: new { controller = "Application", action = "ChangePassword" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "application-password-change-persist",
+                pattern: "/application/passwords/persist-pwd",
+                defaults: new { controller = "Application", action = "PersistPassword" }
             );
             // login user
             routeBuilder.MapControllerRoute(

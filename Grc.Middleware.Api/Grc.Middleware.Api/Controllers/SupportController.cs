@@ -813,6 +813,26 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
+        [HttpPost("organization/password-settings")]
+        public async Task<IActionResult> GetPasswordSetting([FromBody] GeneralRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PasswordChangeResponse>(error));
+                }
+
+                Logger.LogActivity($"REQUEST >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var response = await _configService.GetPasswordSettingAsync();
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                return Ok(new GrcResponse<PasswordChangeResponse>(response));
+            } catch (Exception ex) {
+                return Ok(new GrcResponse<PasswordChangeResponse>(await ResponseErrorAsync(ex)));
+            }
+        }
+
         #endregion
 
         #region Bugs

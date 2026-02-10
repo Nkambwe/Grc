@@ -836,12 +836,12 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<bool> ChangePasswordAsync(long recordId, string passwordHash, string username) {
+        public async Task<bool> ChangePasswordAsync(string passwordHash, string username) {
             using var uow = UowFactory.Create();
             Logger.LogActivity("Update System User request", "INFO");
 
             try {
-                var user = await uow.UserRepository.GetAsync(a => a.Id == recordId);
+                var user = await uow.UserRepository.GetAsync(a => a.Username == username);
                 if (user != null) {
                     //..update System User password
                     user.PasswordHash = (passwordHash ?? string.Empty).Trim();

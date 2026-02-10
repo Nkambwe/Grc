@@ -11,7 +11,5 @@ namespace Grc.ui.App.Http.Responses {
 
         [JsonPropertyName("barChart")]
         public Dictionary<string, Dictionary<string, int>> BarChart { get; set; }
-
-
     }
 }

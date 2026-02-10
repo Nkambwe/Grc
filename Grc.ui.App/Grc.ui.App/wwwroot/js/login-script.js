@@ -331,7 +331,7 @@
         setButtonLoading($button, true);
 
         try {
-
+            console.log("Clicked >> ", record);
             const response = await $.ajax({
                 url: '/login/expired-password',
                 type: "POST",

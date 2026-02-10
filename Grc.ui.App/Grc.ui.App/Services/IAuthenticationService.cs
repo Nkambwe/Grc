@@ -49,6 +49,7 @@ namespace Grc.ui.App.Services {
         Task<bool> IsSignedIn();
 
         Task<GrcResponse<ServiceResponse>> ChangePasswordAsync(GrcChangePasswordRequest request);
+        Task<GrcResponse<ServiceResponse>> ResetPasswordAsync(GrcChangePasswordRequest request);
     }
 
 }

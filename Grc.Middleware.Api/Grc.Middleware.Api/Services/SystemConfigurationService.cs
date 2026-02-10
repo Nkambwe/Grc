@@ -43,6 +43,19 @@ namespace Grc.Middleware.Api.Services
             }
         }
 
+        public async Task<PasswordChangeResponse> GetPasswordSettingAsync() {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieving password settings", "INFO");
+
+            try {
+                var settings = await GetPasswordSettingsFromDatabase(uow);
+                return MapToPasswordChangeResponse(settings);
+            } catch (Exception ex) {
+                LogExceptionWithInnerExceptions(ex, "Failed to retrieve password settings");
+                throw;
+            }
+        }
+
         public async Task<ConfigurationResponse> GetAllConfigurationAsync() {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Retrieve all application configurations", "INFO");
@@ -308,7 +321,54 @@ namespace Grc.Middleware.Api.Services
         }
 
         #region Private Methods
+        private async Task<Dictionary<string, string>> GetPasswordSettingsFromDatabase(IUnitOfWork uow) {
+            var passwordParameters = new[]
+            {
+                "SECURITY_CANUSEOLDPASSWORDS",
+                "MINIMUMPASSWORDLENGTH",
+                "INCLUDEUPPERCASECHAR",
+                "INCLUDELOWERCASECHAR",
+                "INCLUDELOWERSPECIALCHAR",
+                "INCLUDEONENUMBER"
+            };
 
+            var settingsList = await uow.SystemConfigurationRepository
+                .GetAllAsync(s => passwordParameters.Contains(s.ParameterName), true);
+
+            return settingsList?.ToDictionary(s => s.ParameterName, s => s.ParameterValue)
+                   ?? new Dictionary<string, string>();
+        }
+
+        private PasswordChangeResponse MapToPasswordChangeResponse(Dictionary<string, string> settings) {
+            return new PasswordChangeResponse {
+                MinimumLength = GetIntSetting(settings, "MINIMUMPASSWORDLENGTH", defaultValue: 12),
+                IncludeUpperChar = GetBoolSetting(settings, "INCLUDEUPPERCASECHAR", defaultValue: true),
+                IncludeLowerChar = GetBoolSetting(settings, "INCLUDELOWERCASECHAR", defaultValue: true),
+                IncludeSpecialChar = GetBoolSetting(settings, "INCLUDELOWERSPECIALCHAR", defaultValue: true),
+                CanReusePasswords = GetBoolSetting(settings, "SECURITY_CANUSEOLDPASSWORDS", defaultValue: false),
+                IncludeNumericChar = GetBoolSetting(settings, "INCLUDEONENUMBER", defaultValue: false)
+            };
+        }
+
+        private bool GetBoolSetting(Dictionary<string, string> settings, string key, bool defaultValue) {
+            var value = settings.GetValueOrDefault(key);
+            return string.IsNullOrEmpty(value) ? defaultValue : ToBool(value);
+        }
+
+        private int GetIntSetting(Dictionary<string, string> settings, string key, int defaultValue) {
+            var value = settings.GetValueOrDefault(key);
+            return string.IsNullOrEmpty(value) ? defaultValue : ToInt(value);
+        }
+
+        private void LogExceptionWithInnerExceptions(Exception ex, string message) {
+            Logger.LogActivity($"{message}: {ex.Message}", "ERROR");
+
+            var innerEx = ex.InnerException;
+            while (innerEx != null) {
+                Logger.LogActivity($"Inner Exception: {innerEx.Message}", "ERROR");
+                innerEx = innerEx.InnerException;
+            }
+        }
         private static string NormalizeValue(string value, string parameterType) {
             if (string.IsNullOrWhiteSpace(value))
                 return string.Empty;

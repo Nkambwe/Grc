@@ -217,6 +217,29 @@ namespace Grc.ui.App.Services {
             }
         }
 
+        public async Task<GrcResponse<ServiceResponse>> ResetPasswordAsync(GrcChangePasswordRequest request) {
+            try {
+                if (request == null) {
+                    Logger.LogActivity($"BAD REQUEST:Invalid password reset request");
+                    return new GrcResponse<ServiceResponse>(new ServiceResponse() {
+                        Status = false,
+                        Message = "An unexpeceted error occurred during password change",
+                        StatusCode = 500,
+                    });
+                }
+                var endpoint = $"{EndpointProvider.Sam.Users}/password-reset";
+                return await HttpHandler.PostAsync<GrcChangePasswordRequest, ServiceResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error while changing user password: {ex.Message}", "Error");
+                await ProcessErrorAsync(ex.Message, "AUTHENTICATION-SERVICE", ex.StackTrace);
+                return new GrcResponse<ServiceResponse>(new ServiceResponse() {
+                    Status = false,
+                    Message = "An unexpeceted error occurred during password change",
+                    StatusCode = 500,
+                });
+            }
+        }
+
         public async Task SignInAsync(UserModel user, bool isPersistent = false) {
             if (user == null) 
                 throw new ArgumentNullException(nameof(user));

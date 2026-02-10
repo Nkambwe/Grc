@@ -5,6 +5,7 @@ namespace Grc.ui.App.Factories {
     public interface IDashboardFactory {
 
         Task<UserDashboardModel> PrepareUserDashboardModelAsync(UserModel currentUser);
+        Task<PasswordChangeModel> PrepareUserPasswordModelAsync(UserModel currentUser);
         Task<UserDashboardModel> PrepareUserModelAsync(UserModel currentUser);
         Task<PolicyRegisterViewModel> PrepareReturnSupportItemsModelAsync(UserModel data);
         Task<PolicyDashboardModel> PreparePolicyMinModelAsync(UserModel data, string status);

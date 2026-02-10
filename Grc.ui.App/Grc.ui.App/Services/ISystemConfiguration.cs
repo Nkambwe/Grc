@@ -16,5 +16,6 @@ namespace Grc.ui.App.Services {
         Task<GrcResponse<ServiceResponse>> CreateErrorAsync(GrcBugRequest request);
         Task<GrcResponse<ServiceResponse>> ChangeErrorStausAsync(GrcBugStatusRequest request);
         Task<GrcResponse<ServiceResponse>> UpdateErrorAsync(GrcBugRequest request);
+        Task<GrcResponse<GrcPasswordChangeResponse>> GetPasswordSettingAsync(long userId, string iPAddress);
     }
 }

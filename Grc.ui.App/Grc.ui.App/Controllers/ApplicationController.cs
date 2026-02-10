@@ -281,6 +281,7 @@ namespace Grc.ui.App.Controllers {
             
         }
 
+        [HttpGet]
         public async Task<IActionResult> ChangePassword() {
              try{
 
@@ -295,8 +296,8 @@ namespace Grc.ui.App.Controllers {
                     return HandleLoginError(new GrcResponse<UserModel>(grcResponse.Error), model);
                 }
 
-                var data = await _dashboardFactory.PrepareUserDashboardModelAsync(grcResponse.Data);
-                data.WelcomeMessage = "Change Password";
+                var currentUser = grcResponse.Data;
+                var data = await _dashboardFactory.PrepareUserPasswordModelAsync(currentUser);
                 return View(data);
             } catch(Exception ex){ 
                 Logger.LogActivity($"Error openning password change page: {ex.Message}", "ERROR");
@@ -309,6 +310,51 @@ namespace Grc.ui.App.Controllers {
                 };
                 Logger.LogActivity($"LOGIN ERROR: {JsonSerializer.Serialize(errModel)}");
                 return HandleLoginError(new GrcResponse<UserModel>(errModel), model);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PersistPassword([FromBody]ChangePasswordModel model) {
+            try {
+
+                if (model == null) {
+                    return Json(new { success = false, message = "Invalid request object" });
+                }
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                Logger.LogActivity($"User: {model.Username} password change", "INFO");
+
+                if (!long.TryParse(userId, out long id))
+                    id = 0;
+
+                var request = new GrcChangePasswordRequest() {
+                    UserId = id,
+                    RecordId = id,
+                    OldPassword = model.OldPassword,
+                    NewPassword = model.NewPassword,
+                    Username = model.Username,
+                    IPAddress = ipAddress,
+                    Action = $"User password change for '{model.Username}'"
+
+                };
+
+                var result = await _authService.ChangePasswordAsync(request);
+                if (result.HasError)
+                    return Json(new { success = false, message = result.Error.Message });
+
+                return Json(new { success = true, message="Password Successfully updated" });
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Password reset error: {ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
+
+                //..capture error to bug tracker
+                _ = await ProcessErrorAsync(ex.Message, "APPLICATIONCONTROLLER-PASSWORD-CHANGE", ex.StackTrace);
+                return HandleUsernameValidationError("Password change failed. An error occurred", new LoginModel() {
+                    Username = model.Username,
+                    Password = string.Empty,
+                    IsUsernameValidated = false,
+                    DisplayName = string.Empty,
+                });
             }
         }
 

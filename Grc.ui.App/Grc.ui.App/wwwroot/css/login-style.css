@@ -401,6 +401,16 @@ input:valid ~ label {
     color: #666;
 }
 
+div#password-expiry-stage {
+    padding: 20px !important;
+}
+
+.login-inner-header {
+    padding: 10px;
+    text-align: center;
+    background: var(--white-base);
+}
+
 /* Responsive */
 @media (max-width: 480px) {
     .login-container {

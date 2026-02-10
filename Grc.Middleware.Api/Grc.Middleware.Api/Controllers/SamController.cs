@@ -895,21 +895,12 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<RoleResponse>(error));
                 }
 
-                //..get username
-                var currentUser = await _accessService.GetByIdAsync(request.UserId);
-                string username;
-                if (currentUser != null) {
-                    username = currentUser.Username;
-                } else {
-                    username= $"{request.UserId}";
-                }
-
                 //..hash the password
                 var passwordHash = HashGenerator.EncryptString(ExtendedHashMapper.HashPassword(request.NewPassword.Trim()));
                 Logger.LogActivity($"USER PASSWORD CHANGE >> : {passwordHash}");
 
                 //..update user record
-                var result = await _accessService.ChangePasswordAsync(request.UserId, passwordHash, username);
+                var result = await _accessService.ChangePasswordAsync(passwordHash, request.Username);
                 var response = new GeneralResponse();
                 if (result) {
                     response.Status = true;

@@ -125,6 +125,7 @@ class BugTrackingManager {
             setTimeout(() => this.startConnection(), 5000);
         }
     }
+
     async joinAdminGroup() {
         if (this.isConnected) {
             try {
