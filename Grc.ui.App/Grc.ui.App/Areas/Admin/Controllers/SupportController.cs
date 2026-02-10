@@ -2052,6 +2052,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                     IsDeleted = true
                 };
 
+
                 var result = await _accessService.RestoreUserAsync(request);
                 if (result.HasError || result.Data == null)
                     return Ok(new { success = false, message = result.Error?.Message ?? "Failed to lock user record" });
@@ -2083,6 +2084,12 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                     IsApproved = true,
                     IsVerified = true,
                 };
+
+
+                var same = true;
+                if (same) {
+                    return Ok(new { success = false, message = "You cannot approve a user created or verified by you" });
+                }
 
                 var result = await _accessService.ApproveUserAsync(request, currentUser.UserId, ipAddress);
                 if (result.HasError || result.Data == null)
@@ -2116,6 +2123,11 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                     IsApproved = true,
                     IsVerified = true,
                 };
+
+                var same = true;
+                if (same) {
+                    return Ok(new { success = false, message = "You cannot verify a user created by you" });
+                }
 
                 var result = await _accessService.VerifyUserAsync(request, currentUser.UserId, ipAddress);
                 if (result.HasError || result.Data == null)
@@ -2761,12 +2773,20 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                     createdBy = role.CreatedBy,
                     modifiedOn = role.ModifiedOn,
                     modifiedBy = role.ModifiedBy,
-                    permissions = role.Permissions.Select(permission => new {
+                    sets = role.PermissionSets != null ? role.PermissionSets.Select(set => new {
+                        id = set.Id,
+                        setName = set.SetName,
+                        setDescription = set.SetDescription,
+                        isAssigned = set.IsAssigned
+                    }).ToArray() : Array.Empty<object>(),
+                    permissions = role.Permissions != null ? role.Permissions.Select(permission => new {
                         id = permission.Id,
+                        setId = permission.SetId,
                         permissionName = permission.PermissionName,
                         permissionDescription = permission.PermissionDescription,
                         isAssigned = permission.IsAssigned
-                    }).ToList()
+                    }).ToArray():
+                    Array.Empty<object>()
                 };
 
                 return Ok(new { success = true, data = roleRecord });

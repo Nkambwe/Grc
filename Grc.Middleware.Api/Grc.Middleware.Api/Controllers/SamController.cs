@@ -2766,93 +2766,41 @@ namespace Grc.Middleware.Api.Controllers {
 
         [HttpPost("sam/permissions/getrole-permissions")]
         public async Task<IActionResult> GetRolePermissions([FromBody] IdRequest request) {
-            try
-            {
+            try {
                 Logger.LogActivity("Get role permissions", "INFO");
 
-                if (request == null)
-                {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "Invalid request body"
-                    );
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty", "Invalid request body");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<RoleResponse>(error));
+                    return Ok(new GrcResponse<RoleMinResponse>(error));
                 }
 
-                if (request.RecordId == 0)
-                {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request Role ID is required",
-                        "Invalid request Role ID"
-                    );
+                if (request.RecordId == 0) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request Role ID is required", "Invalid request Role ID");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<RoleResponse>(error));
+                    return Ok(new GrcResponse<RoleMinResponse>(error));
                 }
 
                 //..check if role exist
-                if (!await _accessService.RoleExistsAsync(r => r.Id == request.RecordId))
-                {
-                    var error = new ResponseError(
-                        ResponseCodes.NOTFOUND,
-                        "Record Not Found",
-                        "System Role record not found in the database"
-                    );
-
+                if (!await _accessService.RoleExistsAsync(r => r.Id == request.RecordId)){
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found","System Role record not found in the database");
                     Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<RoleResponse>(error));
                 }
-
-                //..log request
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
 
-                //..get role record
-                var roleRecord = await _accessService.GetRoleByIdAsync(request);
-                if(roleRecord == null) {
-                    var error = new ResponseError(
-                        ResponseCodes.NOTFOUND,
-                        "Record Not Found",
-                        "System Role record not found in the database"
-                    );
-
-                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<RoleResponse>(error));
-                }
-
-                var roleResponse = new RoleResponse() {
-                    Id = roleRecord.Id,
-                    RoleName = roleRecord.RoleName,
-                    Description = roleRecord.Description,
-                    GroupId = roleRecord.GroupId,
-                    GroupName = roleRecord.Group?.GroupName ?? string.Empty,
-                    IsActive = roleRecord.IsDeleted,
-                };
-
                 //..get permissions
-                var rolePermissions = await _accessService.GetRolePermissionsAsync(request);
-                if (rolePermissions != null)
-                {
-                    //..map response
-                    roleResponse.Permissions = rolePermissions.Select(Mapper.Map<PermissionResponse>).ToList();
-                    return Ok(new GrcResponse<RoleResponse>(roleResponse));
-                }
-                else
-                {
-                    var error = new ResponseError(
-                        ResponseCodes.FAILED,
-                        "Role not found",
-                        "No role matched the provided ID"
-                    );
+                var role = await _accessService.GetRoleWithPermissionsAsync(request);
+                if (role != null){
+                    return Ok(new GrcResponse<RoleMinResponse>(role));
+                } else {
+                    var error = new ResponseError(ResponseCodes.FAILED, "Role not found", "No role matched the provided ID");
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<RoleResponse>(error));
+                    return Ok(new GrcResponse<RoleMinResponse>(error));
                 }
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 var error = await HandleErrorAsync(ex);
-                return Ok(new GrcResponse<List<PermissionResponse>>(error));
+                return Ok(new GrcResponse<List<RoleMinResponse>>(error));
             }
         }
 

@@ -158,13 +158,86 @@ function openRolePermissionEditor(title, record) {
     $("#roleName").val(record?.roleName || "");
     $("#roleDescription").val(record?.roleDescription || "");
 
-    $('#panelTitle').text(title);
-    $('.role-permission-overlay').addClass('active');
+    //..render permissions
+     renderRolePermissions(record); 
+
+    $('#rolePanelTitle').text(title);
+    $('#rolePermOverlay').addClass('active');
     $('#rolePermissionPanel').addClass('active');
 }
 
+function renderRolePermissions(role) {
+    const container = $('#rolePermissionListContainer');
+    container.empty();
+
+    if (!role.sets || role.sets.length === 0) {
+        container.html('<div class="text-muted">No permission sets available.</div>');
+        return;
+    }
+
+    let html = '';
+    role.sets.forEach(set => {
+        const setPermissions = role.permissions ? role.permissions.filter(p => p.setId === set.id) : [];
+        const allChecked = setPermissions.length > 0 && setPermissions.every(p => p.isAssigned);
+
+        html += `
+            <div class="permission-set-block">
+                <div class="permission-set-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-0">
+                                <i class="bi bi-shield-lock"></i> ${set.setDescription }
+                            </h6>
+                        </div>
+                        ${setPermissions.length > 0 ? `
+                        <div class="form-check">
+                            <input class="form-check-input select-all-checkbox"
+                                   type="checkbox"
+                                   data-set-id="${set.id}"
+                                   ${allChecked ? 'checked' : ''}>
+                            <label class="form-check-label text-white small">Select All</label>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+                <div class="permission-set-body">
+        `;
+
+        if (setPermissions.length === 0) {
+            html += `<div class="text-muted small text-center py-3"><em>No permissions in this set.</em></div>`;
+        } else {
+            setPermissions.forEach(p => {
+                html += `
+                    <div class="form-check permission-item">
+                        <input class="form-check-input permission-checkbox"
+                               type="checkbox"
+                               id="perm-${p.id}"
+                               data-permission-id="${p.id}"
+                               data-set-id="${p.setId}"
+                               ${p.isAssigned ? 'checked' : ''}>
+                        <label class="form-check-label" for="perm-${p.id}">
+                            <span class="permission-name">${p.permissionDescription }</span>
+                        </label>
+                    </div>
+                `;
+            });
+        }
+
+        html += `</div></div>`;
+    });
+
+    container.html(html);
+
+    // Add select-all functionality
+    $('.select-all-checkbox').on('change', function () {
+        const setId = $(this).data('set-id');
+        const isChecked = $(this).prop('checked');
+        $(`.permission-checkbox[data-set-id="${setId}"]`).prop('checked', isChecked);
+    });
+}
+
 function closeRolePermPanel() {
-    $('.role-permission-overlay').removeClass('active');
+    $('#rolePermOverlay').removeClass('active');
     $('#rolePermissionPanel').removeClass('active');
 }
 
@@ -176,8 +249,6 @@ function viewRolePermissions(id) {
         allowEscapeKey: false,
         didOpen: () => Swal.showLoading()
     });
-
-    console.log("ID >> " + id);
     findRolePermissionRecord(id)
         .then(record => {
 
@@ -195,6 +266,35 @@ function viewRolePermissions(id) {
         });
 }
 
+function saveRolePermissions(event) {
+    event.preventDefault();
+
+    const roleId = currentRoleId;
+    const permissionIds = $('.permission-checkbox:checked')
+        .map(function () { return $(this).data('permission-id'); })
+        .get();
+
+    $.ajax({
+        url: '/admin/support/role-permissions-save',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            roleId: roleId,
+            permissionIds: permissionIds
+        }),
+        success: function (res) {
+            if (res.success) {
+                Swal.fire('Saved', 'Permissions updated successfully', 'success');
+                closeRolePermPanel();
+            } else {
+                Swal.fire('Error', res.message || 'Failed to save');
+            }
+        },
+        error: function () {
+            Swal.fire('Error', 'Server error');
+        }
+    });
+}
 
 function getRolePermissionsAntiForgeryToken() {
     return $('meta[name="csrf-token"]').attr('content');
@@ -208,14 +308,11 @@ $(document).ready(function () {
     });
 
     $(".action-btn-new-role").on("click", function () {
-        //createRole();
+        window.location.href = '/admin/support/system-roles';
     });
 
     $('#rolePermissionForm').on('submit', function (e) {
         e.preventDefault();
     });
 
-    $('#groupInnerForm').on('submit', function (e) {
-        //e.preventDefault();
-    });
 });
