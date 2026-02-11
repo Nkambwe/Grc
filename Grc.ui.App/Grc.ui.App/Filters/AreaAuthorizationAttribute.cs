@@ -47,9 +47,7 @@ namespace Grc.ui.App.Filters {
             return Task.CompletedTask;
         }
 
-
         private static IActionResult RedirectToUserDashboard(string roleGroup) {
-            //..redirect back to their authorized area
             if (IsAdminGroup(roleGroup)) {
                 return new RedirectToActionResult("Index", "Support", new { area = "Admin" });
             } else if (IsOperationsGroup(roleGroup)) {

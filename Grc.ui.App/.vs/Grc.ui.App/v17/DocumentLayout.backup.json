@@ -1,44 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_0902026\\grc\\grc.ui.app\\grc.ui.app\\controllers\\complianceauditcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\controllers\\complianceauditcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_0902026\\grc\\grc.ui.app\\grc.ui.app\\controllers\\compliancepolicycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\controllers\\compliancepolicycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_0902026\\grc\\grc.ui.app\\grc.ui.app\\controllers\\compliancereturncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\controllers\\compliancereturncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_0902026\\grc\\grc.ui.app\\grc.ui.app\\controllers\\applicationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\controllers\\applicationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_0902026\\grc\\grc.ui.app\\grc.ui.app\\areas\\admin\\controllers\\supportcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\admin\\controllers\\supportcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_0902026\\grc\\grc.ui.app\\grc.ui.app\\areas\\admin\\controllers\\configurationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\admin\\controllers\\configurationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_0902026\\grc\\grc.ui.app\\grc.ui.app\\areas\\admin\\controllers\\adminbasecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\admin\\controllers\\adminbasecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_0902026\\grc\\grc.ui.app\\grc.ui.app\\factories\\supportdashboardfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\factories\\supportdashboardfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_0902026\\grc\\grc.ui.app\\grc.ui.app\\factories\\isupportdashboardfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\factories\\isupportdashboardfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -46,7 +9,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 125,
-          "SelectedChildIndex": 18,
+          "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -95,144 +58,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "AdminBaseController.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Controllers\\AdminBaseController.cs",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Admin\\Controllers\\AdminBaseController.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Controllers\\AdminBaseController.cs",
-              "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Controllers\\AdminBaseController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAXAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-11T14:48:51.213Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "ConfigurationController.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Controllers\\ConfigurationController.cs",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Admin\\Controllers\\ConfigurationController.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Controllers\\ConfigurationController.cs",
-              "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Controllers\\ConfigurationController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAA/AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-11T14:48:46.378Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "SupportController.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Controllers\\SupportController.cs",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Admin\\Controllers\\SupportController.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Controllers\\SupportController.cs",
-              "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Controllers\\SupportController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-11T14:48:42.032Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "ApplicationController.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\Controllers\\ApplicationController.cs",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Controllers\\ApplicationController.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\Controllers\\ApplicationController.cs",
-              "RelativeToolTip": "Grc.ui.App\\Controllers\\ApplicationController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAXAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-11T14:48:06.146Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ComplianceReturnController.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\Controllers\\ComplianceReturnController.cs",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Controllers\\ComplianceReturnController.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\Controllers\\ComplianceReturnController.cs",
-              "RelativeToolTip": "Grc.ui.App\\Controllers\\ComplianceReturnController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-11T14:48:04.642Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "CompliancePolicyController.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\Controllers\\CompliancePolicyController.cs",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Controllers\\CompliancePolicyController.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\Controllers\\CompliancePolicyController.cs",
-              "RelativeToolTip": "Grc.ui.App\\Controllers\\CompliancePolicyController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAABBAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-11T14:48:03.5Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "ComplianceAuditController.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\Controllers\\ComplianceAuditController.cs",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Controllers\\ComplianceAuditController.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\Controllers\\ComplianceAuditController.cs",
-              "RelativeToolTip": "Grc.ui.App\\Controllers\\ComplianceAuditController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAABAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-11T13:12:25.273Z",
-              "EditorCaption": ""
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "Orientation": 0,
-      "VerticalTabListWidth": 256,
-      "FloatingWindowState": {
-        "Id": "9d46b47f-4630-4205-b5bf-80794d54aeff",
-        "Display": 0,
-        "X": 191,
-        "Y": 79,
-        "Width": 1025,
-        "Height": 737,
-        "WindowState": 2
-      },
-      "DocumentGroups": [
-        {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "SupportDashboardFactory.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\Factories\\SupportDashboardFactory.cs",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Factories\\SupportDashboardFactory.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\Factories\\SupportDashboardFactory.cs",
-              "RelativeToolTip": "Grc.ui.App\\Factories\\SupportDashboardFactory.cs",
-              "ViewState": "AgIAAEsAAAAAAAAAAAAAAFwAAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-11T14:22:49.722Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "ISupportDashboardFactory.cs",
-              "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\Factories\\ISupportDashboardFactory.cs",
-              "RelativeDocumentMoniker": "Grc.ui.App\\Factories\\ISupportDashboardFactory.cs",
-              "ToolTip": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\Factories\\ISupportDashboardFactory.cs",
-              "RelativeToolTip": "Grc.ui.App\\Factories\\ISupportDashboardFactory.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAjAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-11T14:22:44.839Z",
-              "EditorCaption": ""
             }
           ]
         }

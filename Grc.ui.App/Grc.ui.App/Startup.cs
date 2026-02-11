@@ -73,14 +73,15 @@ namespace Grc.ui.App {
             //..register application session 
             var sessionOptions = _configuration.GetSection("MiddlewareOptions").Get<MiddlewareOptions>();
             int timeOut = sessionOptions?.IdleSessionTime ?? 30;
-            services.AddApplicationSession(options => 
-            {
+            services.AddApplicationSession(options =>  {
                 options.IdleTimeout = TimeSpan.FromMinutes(timeOut);
                 options.Cookie.Name = ".Grc.Session";
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
-                options.Cookie.SameSite = SameSiteMode.Lax;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.None;
+                //..use for https
+                //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
             });
 
             //..add anti-forgery services
@@ -88,7 +89,7 @@ namespace Grc.ui.App {
                 options.HeaderName = "X-CSRF-TOKEN";
                 options.Cookie.Name = "__RequestVerificationToken";
                 options.Cookie.HttpOnly = true;
-                options.Cookie.SameSite = SameSiteMode.Strict;
+                options.Cookie.SameSite = SameSiteMode.Lax;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
             });
             services.AddScoped<GrcAntiForgeryTokenAttribute>();
@@ -98,8 +99,8 @@ namespace Grc.ui.App {
                 options.Cookie.Name = CookieDefaults.UserCookie;
                 options.Cookie.HttpOnly = true;
                 options.Cookie.SameSite = SameSiteMode.Lax;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-
+                //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                 options.LoginPath = "/login/userlogin";
                 options.LogoutPath = "/app/logout";
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
