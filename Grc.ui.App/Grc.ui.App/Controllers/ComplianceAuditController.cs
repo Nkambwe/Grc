@@ -1,5 +1,4 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Bibliography;
 using Grc.ui.App.Defaults;
 using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
@@ -12,11 +11,7 @@ using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using OpenXmlPowerTools;
-using System.Composition;
-using System.Security.Cryptography.Xml;
 using System.Text.Json;
 
 namespace Grc.ui.App.Controllers {

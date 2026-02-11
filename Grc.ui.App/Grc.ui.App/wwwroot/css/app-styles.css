@@ -1211,6 +1211,7 @@ div.input-group.date {
     }
 
 .stat-number {
+    font-size: 2em;
     height: 60px;
     display: flex;
     flex-direction: column;

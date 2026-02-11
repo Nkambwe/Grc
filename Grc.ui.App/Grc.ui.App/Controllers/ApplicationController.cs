@@ -19,7 +19,7 @@ using System.Text.Json;
 
 namespace Grc.ui.App.Controllers {
 
-     //[AreaAuthorization("COMPLIANCEDEPT", "COMPLIANCEADMIN", "COMPLIANCEGUESTS")]
+    [AreaAuthorization("COMPLIANCEDEPT", "COMPLIANCEADMIN", "COMPLIANCEGUESTS")]
     public class ApplicationController : GrcBaseController {
         private readonly IAuthenticationService _authService;
         private readonly ISystemAccessService _accessService;

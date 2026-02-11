@@ -83,8 +83,9 @@ function initUserTable() {
                 title: "", field: "startTab",
                 maxWidth: 50,
                 headerSort: false,
+                headerFilter: "input",
                 frozen: true,
-                frozen: true, formatter: () => `<span class="record-tab"></span>`
+                formatter: () => `<span class="record-tab"></span>`
             },
             {
                 title: "USERNAME",
@@ -92,6 +93,7 @@ function initUserTable() {
                 minWidth: 200,
                 widthGrow: 4,
                 headerSort: true,
+                headerFilter: "input",
                 frozen: true,
                 formatter: (cell) => `<span class="clickable-title" onclick="viewRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`
             },
@@ -101,6 +103,7 @@ function initUserTable() {
                 minWidth: 200,
                 widthGrow: 4,
                 headerSort: true,
+                headerFilter: "input",
                 frozen: true
             },
             {
@@ -109,11 +112,12 @@ function initUserTable() {
                 minWidth: 500,
                 widthGrow: 4,
                 headerSort: true,
+                headerFilter: "input",
                 frozen: true
             },
-            { title: "ROLE", field: "roleName", minWidth: 300 },
-            { title: "DEPARTMENT", field: "department", minWidth: 300 },
-            { title: "PF NUMBER", field: "pfNumber", minWidth: 200 },
+            { title: "ROLE", field: "roleName", minWidth: 300, headerFilter: "input" },
+            { title: "DEPARTMENT", field: "department", minWidth: 300, headerFilter: "input" },
+            { title: "PF NUMBER", field: "pfNumber", minWidth: 200, headerFilter: "input" },
             {
                 title: "PASSWORD",
                 formatter: function (cell) {
@@ -160,12 +164,6 @@ function initUserTable() {
         ]
     });
 
-    // Search init
-    initUserSearch();
-}
-
-function initUserSearch() {
-
 }
 
 function addUser() {
@@ -191,10 +189,9 @@ function addUser() {
 }
 
 function openUserPane(title, record, isEdit) {
-
     $('#isEdit').val(isEdit);
     $('#recordId').val(record?.id || '');
-    $('#isVerify').val(record?.isVerify || false);
+    $('#isVerify').val(record?.isVerified || false);
     $('#isApprove').val(record?.isApprove || false);
     $('#firstName').val(record?.firstName || '');
     $('#lastName').val(record?.lastName || '');
@@ -204,15 +201,13 @@ function openUserPane(title, record, isEdit) {
     $('#displayName').val(record?.displayName || '');
     $('#phoneNumber').val(record?.phoneNumber || '');
     $('#pfNumber').val(record?.pfNumber || '');
-
     $('#isActive').prop('checked', record?.isActive || false);
-
     $('#solId').val(record?.solId || 'Unknown').trigger('change');
 
     if (isEdit) {
         $('#roleId').val(record.roleId).trigger('change');
         $('#departmentId').val(record.departmentId).trigger('change');
-        $('#roleGroupId').val(record.roleGroupId || '0').trigger('change');
+        $('#roleGroupId').val(record.roleGroup || '0').trigger('change');
         $('#unitCode').val(record.unitCode || '0').trigger('change');
     } else {
         $('#roleId').val('0');
@@ -226,6 +221,39 @@ function openUserPane(title, record, isEdit) {
     $('#newUserContainer').addClass('active');
 }
 
+function ajaxJson(url, type = "GET", data = null) {
+    return new Promise((resolve) => {
+        $.ajax({
+            url: url,
+            type: type,
+            data: data,
+            dataType: "json",
+            success: function (response) {
+                //..application-level errors
+                if (response.success) {
+                    resolve({ data: response.data });
+                } else {
+                    resolve({ error: response.message || "Unknown error occurred" });
+                }
+            },
+            error: function (xhr) {
+                // Handle auth issues
+                if (xhr.status === 401) {
+                    window.location = "/login/userlogin";
+                    return;
+                }
+                if (xhr.status === 403) {
+                    resolve({ error: "You do not have permission to perform this action." });
+                    return;
+                }
+
+                // Network or server errors
+                resolve({ error: "Unexpected server error occurred." });
+            }
+        });
+    });
+}
+
 function viewRecord(id) {
     Swal.fire({
         title: 'Loading...',
@@ -234,18 +262,23 @@ function viewRecord(id) {
         allowEscapeKey: false,
         didOpen: () => Swal.showLoading()
     });
-    findUser(id)
-        .then(record => {
+
+    ajaxJson(`/admin/support/users-retrieve/${id}`)
+        .then(result => {
             Swal.close();
-            if (record) {
-                openUserPane('Edit User', record, true);
-            } else {
-                Swal.fire({ title: 'NOT FOUND', text: 'User not found' });
+
+            if (result.error) {
+                Swal.fire("Error", result.error, "warning");
+                return;
             }
-        })
-        .catch(() => {
-            Swal.close();
-            Swal.fire({ title: 'Error', text: 'Failed to load user details.' });
+
+            if (!result.data) {
+                Swal.fire("NOT FOUND", "User not found", "info");
+                return;
+            }
+
+            //..open slide-out pane
+            openUserPane('Edit User', result.data, true);
         });
 }
 
@@ -256,14 +289,24 @@ function findUser(id) {
             type: "GET",
             dataType: "json",
             success: function (response) {
-                if (response.success && response.data) {
-                    resolve(response.data);
-                    resolve(null);
+                if (response.success) {
+                    resolve(response.data); 
+                } else {
+                    //..pass the message
+                    resolve({ errorMessage: response.message || "User not found" });
                 }
             },
-            error: function (xhr, status, error) {
-                Swal.fire("Error", error);
-                return;
+            error: function (xhr) {
+                //..handle 401/403 properly
+                if (xhr.status === 401) {
+                    window.location = "/login/userlogin";
+                    return;
+                }
+                if (xhr.status === 403) {
+                    resolve({ errorMessage: "You do not have permission to view this user." });
+                    return;
+                }
+                resolve({ errorMessage: "Unexpected server error occurred." });
             }
         });
     });
@@ -369,8 +412,6 @@ function saveUserRecord(isEdit, record) {
             Swal.showLoading();
         }
     });
-
-    console.log("User record >> ", record);
     $.ajax({
         url: url,
         type: "POST",
@@ -411,6 +452,53 @@ function saveUserRecord(isEdit, record) {
                 text: errorMessage
             });
         }
+    });
+}
+
+function deleteUser(id) {
+    console.log("My ID >> " + id)
+
+    let l_id = Number(!id );
+    if (l_id !== 0) {
+        Swal.fire({
+            title: "Delete User",
+            text: "User ID is required",
+            showCancelButton: false,
+            okButtonText: "Ok"
+        })
+        return;
+    }
+
+    Swal.fire({
+        title: "Delete User",
+        text: "Are you sure you want to delete user account?",
+        showCancelButton: true,
+        confirmButtonColor: "#450354",
+        confirmButtonText: "Delete",
+        cancelButtonColor: "#f41369",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        $.ajax({
+            url: `/admin/support/users-delete/${encodeURIComponent(id)}`,
+            type: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getPostToken()
+            },
+            success: function (res) {
+                if (res && res.success) {
+                    toastr.success(res.message || "User account has been deleted successfully");
+                    userTable.setPage(1, true);
+                } else {
+                    toastr.error(res?.message || "Failed to delete user account");
+                }
+            },
+            error: function () {
+                toastr.error("Request failed.");
+            }
+        });
     });
 }
 
@@ -472,50 +560,6 @@ function lockUser(id) {
                     userTable.setPage(1, true);
                 } else {
                     toastr.error(res?.message || "Failed to lock user account");
-                }
-            },
-            error: function () {
-                toastr.error("Request failed.");
-            }
-        });
-    });
-}
-
-function deleteUser(id) {
-    if (!id && id !== 0) {
-        Swal.fire({
-            title: "Delete User",
-            text: "User ID is required",
-            showCancelButton: false,
-            okButtonText: "Ok"
-        })
-        return;
-    }
-
-    Swal.fire({
-        title: "Delete User",
-        text: "Are you sure you want to delete user account?",
-        showCancelButton: true,
-        confirmButtonColor: "#450354",
-        confirmButtonText: "Delete",
-        cancelButtonColor: "#f41369",
-        cancelButtonText: "Cancel"
-    }).then((result) => {
-        if (!result.isConfirmed) return;
-
-        $.ajax({
-            url: `/admin/support/users-delete/${encodeURIComponent(id)}`,
-            type: 'POST',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': getPostToken()
-            },
-            success: function (res) {
-                if (res && res.success) {
-                    toastr.success(res.message || "User account has been deleted successfully");
-                    userTable.setPage(1, true);
-                } else {
-                    toastr.error(res?.message || "Failed to delete user account");
                 }
             },
             error: function () {

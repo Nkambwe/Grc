@@ -93,13 +93,40 @@ namespace Grc.ui.App {
             });
             services.AddScoped<GrcAntiForgeryTokenAttribute>();
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options => {
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options => {
                 options.Cookie.Name = CookieDefaults.UserCookie;
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+
                 options.LoginPath = "/login/userlogin";
                 options.LogoutPath = "/app/logout";
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
                 options.SlidingExpiration = true;
+
+                options.Events.OnRedirectToLogin = context => {
+                    if (IsAjaxRequest(context.Request)) {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return Task.CompletedTask;
+                    }
+
+                    context.Response.Redirect(context.RedirectUri);
+                    return Task.CompletedTask;
+                };
+
+                options.Events.OnRedirectToAccessDenied = context => {
+                    if (IsAjaxRequest(context.Request)) {
+                        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                        return Task.CompletedTask;
+                    }
+
+                    context.Response.Redirect(context.RedirectUri);
+                    return Task.CompletedTask;
+                };
             });
+
+
             services.AddAuthorization();
         
             //..configure HttpClient middleware client
@@ -129,11 +156,11 @@ namespace Grc.ui.App {
 
             //..add MVC
             services.AddControllersWithViews(options => {
-                // Require authentication by default on all controllers
-                //var policy = new AuthorizationPolicyBuilder()
-                //    .RequireAuthenticatedUser()
-                //    .Build();
-                //options.Filters.Add(new AuthorizeFilter(policy));
+                //..require authentication by default on all controllers
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
                 options.Filters.AddService<RecentMenuItemAttribute>();
             });
 
@@ -179,7 +206,7 @@ namespace Grc.ui.App {
 
             //..add authorization
             app.UseAuthorization();
-            //app.UseMiddleware<AreaAccessMiddleware>();
+            app.UseMiddleware<AreaAccessMiddleware>();
         
             //..add session middleware
             var middlewareOptions = _configuration.GetSection("MiddlewareOptions").Get<MiddlewareOptions>();
@@ -205,6 +232,11 @@ namespace Grc.ui.App {
             var routePublisher = app.Services.GetRequiredService<IRoutePublisher>();
             routePublisher.RegisterRoutes(app);
         }
-    
+
+        private static bool IsAjaxRequest(HttpRequest request) {
+            return request.Headers["X-Requested-With"] == "XMLHttpRequest"
+                || request.Headers["Accept"].Any(h => h.Contains("application/json"));
+        }
+
     }
 }

@@ -851,6 +851,11 @@
 
             /*----------------------- Compliance application routes*/
             routeBuilder.MapControllerRoute(
+                name: "app-compliance-access-denied",
+                pattern: "/application/access-denied",
+                defaults: new { controller = "Application", action = "AccessDenied" }
+            );
+            routeBuilder.MapControllerRoute(
                 name: "app-compliance-dashboard",
                 pattern: "/grc/compliance",
                 defaults: new { controller = "Application", action = "Dashboard" }

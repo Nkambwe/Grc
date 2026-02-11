@@ -52,6 +52,55 @@ namespace Grc.ui.App.Factories {
                     foreach(var action in quickies){ 
                         quickActions.Add(_mapper.Map<QuickActionModel>(action));
                     }
+                } else {
+                    quickActions.Add(new QuickActionModel() {
+                        Label = "App.Menu.Home",
+                        IconClass = "mdi mdi-home-outline",
+                        Action = "Index",
+                        Controller = "Support",
+                        Area = "Admin",
+                        CssClass = ""
+                    });
+                    quickActions.Add(new QuickActionModel() {
+                        Label = "App.Menu.Users.Accounts",
+                        IconClass = "mdi mdi-account-outline",
+                        Action = "Users",
+                        Controller = "Support",
+                        Area = "Admin",
+                        CssClass = ""
+                    });
+                    quickActions.Add(new QuickActionModel() {
+                        Label = "App.Menu.Configurations.SystemRoles",
+                        IconClass = "mdi mdi-account-box-outline",
+                        Action = "Roles",
+                        Controller = "Support",
+                        Area = "Admin",
+                        CssClass = ""
+                    });
+                    quickActions.Add(new QuickActionModel() {
+                        Label = "App.Menu.Permissions",
+                        IconClass = "mdi mdi-shield-check-outline",
+                        Action = "AssignPermissions",
+                        Controller = "Configuration",
+                        Area = "Admin",
+                        CssClass = ""
+                    });
+                    quickActions.Add(new QuickActionModel() {
+                        Label = "App.Menu.Permissions.Sets",
+                        IconClass = "mdi-key-change",
+                        Action = "PermissionSets",
+                        Controller = "Support",
+                        Area = "Admin",
+                        CssClass = ""
+                    });
+                    quickActions.Add(new QuickActionModel() {
+                        Label = "Bugs",
+                        IconClass = "mdi mdi-spider",
+                        Action = "BugReporter",
+                        Controller = "Configuration",
+                        Area = "Admin",
+                        CssClass = ""
+                    });
                 }
             }
 

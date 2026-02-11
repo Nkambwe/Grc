@@ -1516,7 +1516,7 @@ li.no-report-items {
             box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
         }
 
-.form-label {
+.grc-form-label {
     position: absolute;
     left: 1rem;
     top: 0.875rem;
@@ -1571,11 +1571,11 @@ li.no-report-items {
     color: var(--pearl-purple-dark-50)
 }
 
-.form-group input:focus + .form-label,
-.form-group input:valid + .form-label {
+.form-group input:focus + .grc-form-label,
+.form-group input:valid + .grc-form-label {
     top: -0.5rem;
     font-size: 0.75rem;
-    font-weight:600;
+    font-weight: 600;
     color: var(--amber-dark);
 }
 

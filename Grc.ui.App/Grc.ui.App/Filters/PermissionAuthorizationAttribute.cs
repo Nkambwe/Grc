@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Text.Json;
 
@@ -7,52 +8,68 @@ namespace Grc.ui.App.Filters {
     /// Restricts access based on specific permissions
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
-    public class PermissionAuthorizationAttribute : Attribute, IAuthorizationFilter {
+    public class PermissionAuthorizationAttribute : Attribute, IAsyncAuthorizationFilter {
         private readonly string[] _requiredPermissions;
         private readonly bool _requireAll;
 
+        /// <summary>
+        /// Attach permission to an endpoint
+        /// </summary>
         /// <param name="requireAll">If true, user must have ALL permissions. If false, user needs ANY permission.</param>
+        /// <param name="requiredPermissions"></param>
         public PermissionAuthorizationAttribute(bool requireAll = false, params string[] requiredPermissions) {
             _requiredPermissions = requiredPermissions ?? Array.Empty<string>();
             _requireAll = requireAll;
         }
 
-        public void OnAuthorization(AuthorizationFilterContext context) {
+        public Task OnAuthorizationAsync(AuthorizationFilterContext context) {
+            // Proper AllowAnonymous detection
+            var endpoint = context.HttpContext.GetEndpoint();
+            if (endpoint?.Metadata?.GetMetadata<IAllowAnonymous>() != null)
+                return Task.CompletedTask;
+
             var user = context.HttpContext.User;
 
-            // Check if user is authenticated
             if (!user.Identity?.IsAuthenticated ?? true) {
-                context.Result = new RedirectToActionResult("Login", "Account", new { area = "" });
-                return;
+                context.Result = new RedirectToActionResult("Login", "Application", new { area = "" });
+                return Task.CompletedTask;
             }
 
-            // Get user permissions from claims
             var permissionsClaim = user.FindFirst("Permissions")?.Value;
+
             if (string.IsNullOrEmpty(permissionsClaim)) {
                 context.Result = new ForbidResult();
-                return;
+                return Task.CompletedTask;
             }
 
             List<string> userPermissions;
+
             try {
-                userPermissions = JsonSerializer.Deserialize<List<string>>(permissionsClaim) ?? new List<string>();
+                userPermissions = JsonSerializer.Deserialize<List<string>>(permissionsClaim) ?? new();
             } catch {
-                userPermissions = new List<string>();
+                userPermissions = new();
             }
 
-            //..check permissions
             bool hasAccess = _requireAll
                 ? _requiredPermissions.All(p => userPermissions.Contains(p, StringComparer.OrdinalIgnoreCase))
                 : _requiredPermissions.Any(p => userPermissions.Contains(p, StringComparer.OrdinalIgnoreCase));
 
             if (!hasAccess) {
-                //..log unauthorized access attempt
-                var logger = context.HttpContext.RequestServices.GetService<ILogger<PermissionAuthorizationAttribute>>();
-                logger?.LogWarning($"Permission denied for user {user.Identity.Name}. Required: {string.Join(", ", _requiredPermissions)}");
-
-                context.Result = new RedirectToActionResult("AccessDenied", "Account", new { area = "" });
-                return;
+                if (IsAjaxRequest(context.HttpContext.Request)) {
+                    context.Result = new StatusCodeResult(StatusCodes.Status403Forbidden);
+                } else {
+                    context.Result = new RedirectToActionResult("AccessDenied", "Application", new { area = "" });
+                }     
             }
+
+            return Task.CompletedTask;
         }
+
+        private static bool IsAjaxRequest(HttpRequest request) {
+            return request.Headers["X-Requested-With"] == "XMLHttpRequest"
+                || request.Headers["Accept"].Any(h => h.Contains("application/json"));
+        }
+
+
     }
 }

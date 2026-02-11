@@ -130,13 +130,6 @@ function initDeletedTable() {
             { title: "", field: "endTab", maxWidth: 50, headerSort: false, formatter: () => `<span class="record-tab"></span>` }
         ]
     });
-
-    // Search init
-    initDeletedSearch();
-}
-
-function initDeletedSearch() {
-
 }
 
 function openDeletePane(title, record) {

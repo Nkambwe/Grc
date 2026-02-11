@@ -9,10 +9,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <grc-antiforgery-token as-meta="true"></grc-antiforgery-token>
         <title>@await Html.GenerateTitleAsync()</title>
+        <link href="" rel="stylesheet" />
 
         @{
             // Add all your CSS files
-            Html.AddCssFileParts("~/lib/bootstrap/dist/css/bootstrap.css");
+            Html.AddCssFileParts("~/lib/bootstrap/dist/css/bootstrap.min.css");
             Html.AddCssFileParts("~/lib/icons/metro/icons.css");
             Html.AddCssFileParts("~/lib/icons/material-design/css/materialdesignicons.css");
             Html.AddCssFileParts("~/css/material-icons.css");

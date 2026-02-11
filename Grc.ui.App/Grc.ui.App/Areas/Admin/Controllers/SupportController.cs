@@ -1132,7 +1132,44 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 return Json(new { results = new List<object>() });
             }
         }
-        
+
+        [HttpGet]
+        public async Task<IActionResult> GetUnitsMiniList(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = Array.Empty<object>() });
+                }
+
+                if (id == 0) {
+                    return BadRequest(new { success = false, message = "User Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                var result = await _accessService.GetSelectedUnitsAsync(currentUser.UserId, id, ipAddress);
+                if (result.HasError || result.Data == null) {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving department units";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = Array.Empty<object>() });
+                }
+
+                var unitData = result.Data;
+                var listData = unitData.Select(unit => new {
+                    code = unit.UnitCode,
+                    unitName = unit.UnitName
+                }).ToList();
+
+                return Ok(new { success = true, data = listData });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving user record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { success = false, data = Array.Empty<object>() });
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetUnits() { 
             try {
@@ -1464,7 +1501,8 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         #endregion
 
         #region System Users
-        
+
+        [PermissionAuthorization(true, "CANVIEWUSER")]
         public async Task<IActionResult> Users() {
             var model = new AdminDashboardModel();
             try {
@@ -1492,15 +1530,12 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [LogActivityResult("Retrieve User", "User retrieved user record", ActivityTypeDefaults.USER_RETRIEVED, "SystemUser")]
-        //[PermissionAuthorization(false, "VIEW_USER")]
-        public async Task<IActionResult> GetUser(long id)
-        {
-            try
-            {
+        [PermissionAuthorization(true, "CANVIEWUSER")]
+        public async Task<IActionResult> GetUser(long id) {
+            try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
                 var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (userResponse.HasError || userResponse.Data == null)
-                {
+                if (userResponse.HasError || userResponse.Data == null) {
                     var msg = "Unable to resolve current user";
                     Logger.LogActivity(msg);
                     return Ok(new { success = false, message = msg, data = new { } });
@@ -1560,7 +1595,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             }
         }
 
-        //[PermissionAuthorization(false, "CREATE_USER", "MANAGE_USERS")]
+        [PermissionAuthorization(true, "CANVIEWUSER")]
         public async Task<IActionResult> GetUsers()
         {
             try
@@ -1646,6 +1681,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             }
         }
 
+        [PermissionAuthorization(true, "CANVIEWUSER")]
         public async Task<IActionResult> GetPagedUsers([FromBody] TableListRequest request) {
             try
             {
@@ -1699,7 +1735,8 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 return Ok(new { last_page = 0, data = new List<object>() });
             }
         }
-        
+
+        [PermissionAuthorization(true, "CANVIEWUSER", "CANMODIFYUSER", "CANAPPROVEUSER")]
         public async Task<IActionResult> GetUnapprovedUsers([FromBody] TableListRequest request) {
             try
             {
@@ -1752,7 +1789,8 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 return Ok(new { last_page = 0, data = new List<object>() });
             }
         }
-        
+
+        [PermissionAuthorization(true, "CANVIEWUSER", "CANMODIFYUSER", "CANLOCKUSERACCOUNT")]
         public async Task<IActionResult> GetLockedUsers([FromBody] TableListRequest request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1802,7 +1840,8 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 return Ok(new { last_page = 0, data = new List<object>() });
             }
         }
-        
+
+        [PermissionAuthorization(true, "CANVIEWUSER", "CANMODIFYUSER", "CANVERIFYUSERACCOUNT")]
         public async Task<IActionResult> GetUnverifiedUsers([FromBody] TableListRequest request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1852,7 +1891,8 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 return Ok(new { last_page = 0, data = new List<object>() });
             }
         }
-        
+
+        [PermissionAuthorization(true, "CANVIEWUSER", "CANMODIFYUSER", "CANDELETEUSER")]
         public async Task<IActionResult> GetDeletedAccounts([FromBody] TableListRequest request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1905,7 +1945,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         [HttpPost]
         [LogActivityResult("User Added", "User added user record", ActivityTypeDefaults.USER_ADDED, "SystemUser")]
-        //[PermissionAuthorization(false, "CREATE_USER", "MANAGE_USERS")]
+        [PermissionAuthorization(true, "CANVIEWUSER", "CANADDUSER")]
         public async Task<IActionResult> CreateUser([FromBody] UserViewModel request)
         {
             try
@@ -1963,6 +2003,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         [HttpPost]
         [LogActivityResult("User Edited", "User updated user record", ActivityTypeDefaults.USER_EDITED, "SystemUser")]
+        [PermissionAuthorization(true, "CANVIEWUSER", "CANMODIFYUSER")]
         public async Task<IActionResult> UpdateUser([FromBody] UserViewModel request) {
             try
             {
@@ -2002,6 +2043,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         [HttpPost]
         [LogActivityResult("User Deleted", "User deleted User record", ActivityTypeDefaults.USER_DELETED, "SystemUser")]
+        [PermissionAuthorization(true, "CANVIEWUSER", "CANMODIFYUSER", "CANDELETEUSER")]
         public async Task<IActionResult> DeleteUser(long id) {
             try
             {
@@ -2037,6 +2079,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWUSER", "CANMODIFYUSER", "CANLOCKUSERACCOUNT")]
         public async Task<IActionResult> RestoreUserAccount(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2069,6 +2112,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
         
         [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWUSER", "CANMODIFYUSER", "CANAPPROVEUSER")]
         public async Task<IActionResult> ApproveUser(long id) {
             try
             {
@@ -2108,6 +2152,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
         
         [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWUSER", "CANMODIFYUSER", "CANVERIFYUSERACCOUNT")]
         public async Task<IActionResult> VerifyUser(long id) {
             try
             {
@@ -2146,6 +2191,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
         
         [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWUSER", "CANMODIFYUSER", "CANLOCKUSERACCOUNT")]
         public async Task<IActionResult> LockUserAccount(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2176,6 +2222,8 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             }
         }
 
+        [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWUSER", "CANMODIFYUSER", "CANLOCKUSERACCOUNT")]
         public async Task<IActionResult> UnLockUserAccount(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2207,6 +2255,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWUSER", "CANMODIFYUSER", "CANRESETUSERPASSWORDS")]
         public async Task<IActionResult> PasswordReset(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2237,79 +2286,8 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             }
         }
 
-        public async Task<IActionResult> GetRoleGroupsMiniList(long id) {
-            try {
-                var ipAddress = WebHelper.GetCurrentIpAddress();
-                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (userResponse.HasError || userResponse.Data == null) {
-                    var msg = "Unable to resolve current user";
-                    Logger.LogActivity(msg);
-                    return Ok(new { success = false, message = msg, data = Array.Empty<object>() });
-                }
-
-                if (id == 0) {
-                    return BadRequest(new { success = false, message = "User Id is required", data = new { } });
-                }
-
-                var currentUser = userResponse.Data;
-                var result = await _accessService.GetSelectedRoleGroupsAsync(currentUser.UserId, id, ipAddress);
-                if (result.HasError || result.Data == null) {
-                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving role groups";
-                    Logger.LogActivity(errMsg);
-                    return Ok(new { success = false, message = errMsg, data = Array.Empty<object>() });
-                }
-
-                var roleData = result.Data;
-                var listData = roleData.Select(roleGroup => new {
-                    id = roleGroup.Id,
-                    groupName = roleGroup.GroupName
-                }).ToList();
-                
-                return Ok(new { success = true, data = listData });
-            } catch (Exception ex) {
-                Logger.LogActivity($"Error retrieving user record: {ex.Message}", "ERROR");
-                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
-                return Json(new { success=false, data = Array.Empty<object>()});
-            }
-        }
-
-        public async Task<IActionResult> GetUnitsMiniList(long id) {
-            try {
-                var ipAddress = WebHelper.GetCurrentIpAddress();
-                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (userResponse.HasError || userResponse.Data == null) {
-                    var msg = "Unable to resolve current user";
-                    Logger.LogActivity(msg);
-                    return Ok(new { success = false, message = msg, data = Array.Empty<object>() });
-                }
-
-                if (id == 0) {
-                    return BadRequest(new { success = false, message = "User Id is required", data = new { } });
-                }
-
-                var currentUser = userResponse.Data;
-                var result = await _accessService.GetSelectedUnitsAsync(currentUser.UserId, id, ipAddress);
-                if (result.HasError || result.Data == null) {
-                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving department units";
-                    Logger.LogActivity(errMsg);
-                    return Ok(new { success = false, message = errMsg, data = Array.Empty<object>() });
-                }
-
-                var unitData = result.Data;
-                var listData = unitData.Select(unit => new {
-                    code = unit.UnitCode,
-                    unitName = unit.UnitName
-                }).ToList();
-                
-                return Ok(new { success = true, data = listData });
-            } catch (Exception ex) {
-                Logger.LogActivity($"Error retrieving user record: {ex.Message}", "ERROR");
-                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
-                return Json(new { success=false, data = Array.Empty<object>()});
-            }
-        }
-
         [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWUSER", "CANDOWNLOADUSERREPORT")]
         public async Task<IActionResult> ExportUserList() {
 
             var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2460,6 +2438,42 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 Logger.LogActivity($"Error retrieving role record: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
                 return Json(new { results = new List<object>() });
+            }
+        }
+
+        public async Task<IActionResult> GetRoleGroupsMiniList(long id) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null) {
+                    var msg = "Unable to resolve current user";
+                    Logger.LogActivity(msg);
+                    return Ok(new { success = false, message = msg, data = Array.Empty<object>() });
+                }
+
+                if (id == 0) {
+                    return BadRequest(new { success = false, message = "User Id is required", data = new { } });
+                }
+
+                var currentUser = userResponse.Data;
+                var result = await _accessService.GetSelectedRoleGroupsAsync(currentUser.UserId, id, ipAddress);
+                if (result.HasError || result.Data == null) {
+                    var errMsg = result.Error?.Message ?? "Error occurred while retrieving role groups";
+                    Logger.LogActivity(errMsg);
+                    return Ok(new { success = false, message = errMsg, data = Array.Empty<object>() });
+                }
+
+                var roleData = result.Data;
+                var listData = roleData.Select(roleGroup => new {
+                    id = roleGroup.Id,
+                    groupName = roleGroup.GroupName
+                }).ToList();
+
+                return Ok(new { success = true, data = listData });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving user record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { success = false, data = Array.Empty<object>() });
             }
         }
 
