@@ -55,6 +55,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         [LogActivityResult("User Login", "User logged in to the Operations Workflow Portal", ActivityTypeDefaults.USER_LOGIN, "SystemUser")]
+        //[PermissionAuthorization(false, "VIEW_OPERATIONS", "OPERATIONS_DASHBOARD")]
         public async Task<IActionResult> Index() {
             OperationsDashboardModel model;
             UserModel currentUser = null;

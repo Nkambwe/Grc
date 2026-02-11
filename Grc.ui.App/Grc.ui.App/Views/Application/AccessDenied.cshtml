@@ -1,0 +1,31 @@
+﻿@model PasswordChangeModel
+@{
+    var username = Model.Username;
+    if(Model.Workspace?.CurrentUser != null)
+    {
+        username = $"{Model.Workspace?.CurrentUser?.FirstName} {Model.Workspace?.CurrentUser?.LastName}";
+    }
+}
+<div class="password-change-container">
+    <div class="password-change-container-Header">
+        <div class="back-container">
+            <button type="button" class="action-btn-home">
+                <span><i class="mdi mdi-home-outline"></i></span>
+            </button>
+        </div>
+        <div class="back-container-header">
+            <h4 class="password-header-label text-danger">@username, This area has restricted access!</h4>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center">
+                <i class="fas fa-lock fa-5x text-danger mb-4"></i>
+                <h1 class="display-4">Access Denied</h1>
+                <p class="lead">You don't have permission to access this resource.</p>
+                <a href="@Url.Action("Application", "Login")" class="btn btn-primary">Exit</a>
+            </div>
+        </div>
+    </div>
+</div>

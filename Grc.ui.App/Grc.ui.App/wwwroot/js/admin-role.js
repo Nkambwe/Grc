@@ -303,6 +303,7 @@ function saveRole(e) {
 }
 
 function openRoleEditor(title, role, isEdit) {
+    console.log("Role Record >> ", role);
     // Populate form fields
     $("#roleId").val(role?.id || "");
     $("#isEdit").val(isEdit);

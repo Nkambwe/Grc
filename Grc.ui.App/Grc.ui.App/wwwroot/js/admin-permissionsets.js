@@ -82,6 +82,7 @@ function initPermissionSetTable() {
             {
                 title: "SET NAME",
                 field: "setDescription",
+                headerFilter: "input",
                 minWidth: 250,
                 formatter: (cell) => `<span class="clickable-title" onclick="editSetRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`
             },
@@ -90,6 +91,7 @@ function initPermissionSetTable() {
                 field: "isDeleted",
                 hozAlign: "center",
                 headerHozAlign: "center",
+                headerFilter: "input",
                 width: 150,
                 formatter: (cell) => {
                     const isDeleted = !!cell.getValue();
@@ -106,6 +108,7 @@ function initPermissionSetTable() {
                 field: "createdOn",
                 hozAlign: "center",
                 headerHozAlign: "center",
+                headerFilter: "input",
                 width: 200,
                 formatter: (cell) => {
                     const value = cell.getValue();
@@ -133,9 +136,6 @@ function initPermissionSetTable() {
             }
         ]
     });
-
-    //..search permission sets
-    initSetSearch();
 }
 
 function findSetRecord(id) {
@@ -259,9 +259,9 @@ function openSetEditor(title, set, isEdit) {
         });
     }
 
-    $('#panelTitle').text(title);
-    $('#permsetOverLay').addClass('active');
-    $('#permsetPanel').addClass('active');
+    $('#setTitle').text(title);
+    $('#permissionSetOverlay').addClass('active');
+    $('#permissionSetPanel').addClass('active');
 }
 
 function deleteSetRecord(id) {
@@ -325,7 +325,7 @@ function savePermissionSet(e) {
 
     if (!recordData.setName)
         errors.push("Permission set name is required.");
-
+        
     if (!recordData.setDescription)
         errors.push("Permission set description is required.");
 
@@ -345,7 +345,6 @@ function savePermissionSet(e) {
         return;
     }
 
-    console.log("Valid Record:", recordData);
     persistPermissionSet(isEdit, recordData);
 }
 
@@ -417,8 +416,8 @@ function persistPermissionSet(isEdit, payload) {
 }
 
 function closeSetPanel() {
-    $('#permsetOverLay').removeClass('active');
-    $('#permsetPanel').removeClass('active');
+    $('#permissionSetOverlay').removeClass('active');
+    $('#permissionSetPanel').removeClass('active');
 }
 
 function initSetSearch() {

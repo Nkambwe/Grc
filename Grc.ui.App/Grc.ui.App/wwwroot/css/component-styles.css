@@ -706,6 +706,48 @@ div#contentArea {
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
 }
 
+.permission-set-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1100;
+    display: none;
+}
+
+.permission-set-overlay.active {
+    display: block;
+}
+
+.permission-set-panel {
+    position: fixed;
+    top: 0;
+    right: -80vw !important;
+    height: 100%;
+    width: 80vw !important;
+    overflow-y: auto;
+    background-color: var(--white-base);
+    z-index: 1150;
+    transition: right 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+}
+
+    .permission-set-panel.active {
+        right: 0 !important;
+        width: 80vw !important;
+    }
+
+.permission-set-panel-body {
+    flex: 1;
+    padding: 10px;
+    height: 100vh;
+    overflow: auto!important;
+}
+
 .role-permission-panel {
     position: fixed;
     top: 0;

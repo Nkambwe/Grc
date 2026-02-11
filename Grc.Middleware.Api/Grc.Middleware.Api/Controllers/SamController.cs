@@ -2523,34 +2523,19 @@ namespace Grc.Middleware.Api.Controllers {
         }
 
         [HttpPost("sam/roles/create-rolegroup-permissionsets")]
-        public async Task<IActionResult> CreateRoleGroupPermissionSets([FromBody] RoleGroupRequest request)
-        {
-            try
-            {
+        public async Task<IActionResult> CreateRoleGroupPermissionSets([FromBody] RoleGroupRequest request) {
+            try {
                 Logger.LogActivity("Creating new role group", "INFO");
-                if (request == null)
-                {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "The role group record cannot be null"
-                    );
-
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The role group record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
-                if (!string.IsNullOrWhiteSpace(request.GroupName))
-                {
-                    if (await _accessService.RoleGroupExistsAsync(r => r.GroupName == request.GroupName))
-                    {
-                        var error = new ResponseError(
-                            ResponseCodes.DUPLICATE,
-                            "Duplicate Record",
-                            "Another Role Group found with same group name"
-                        );
-
+                if (!string.IsNullOrWhiteSpace(request.GroupName)) {
+                    if (await _accessService.RoleGroupExistsAsync(r => r.GroupName == request.GroupName)) {
+                        var error = new ResponseError(ResponseCodes.DUPLICATE, "Duplicate Record", "Another Role Group found with same group name");
                         Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
                         return Ok(new GrcResponse<GeneralResponse>(error));
                     }
@@ -2605,7 +2590,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
-                if (!await _accessService.RoleExistsAsync(r => r.Id == request.Id))
+                if (!await _accessService.RoleGroupExistsAsync(r => r.Id == request.Id))
                 {
                     var error = new ResponseError(
                         ResponseCodes.NOTFOUND,

@@ -240,10 +240,28 @@ namespace Grc.ui.App.Services {
             }
         }
 
+        public List<string> GetCurrentUserPermissions() {
+            var permissionsClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("Permissions")?.Value;
+    
+            if (string.IsNullOrEmpty(permissionsClaim)) {
+                return new List<string>();
+            }
+    
+            try {
+                return JsonSerializer.Deserialize<List<string>>(permissionsClaim) ?? new List<string>();
+            } catch {
+                return new List<string>();
+            }
+        }
+
+        public bool HasPermission(string permissionName) {
+            var permissions = GetCurrentUserPermissions();
+            return permissions.Contains(permissionName, StringComparer.OrdinalIgnoreCase);
+        }
+
         public async Task SignInAsync(UserModel user, bool isPersistent = false) {
             if (user == null) 
                 throw new ArgumentNullException(nameof(user));
-
             try {
                  var claims = new List<Claim>{
                     new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
@@ -257,10 +275,12 @@ namespace Grc.ui.App.Services {
                     new("PhoneNumber", $"{user.PhoneNumber}" ?? ""),
                     new("PFNumber", $"{user.PFNumber}" ?? ""),
                     new("UnitCode", $"{user.UnitCode}" ?? ""),
-                    new("DepartmentId", $"{user.DepartmentId}" ?? "")
-
+                    new("DepartmentId", $"{user.DepartmentId}" ?? ""),
+            
+                    //..permissions as serialized claims
+                    new("Permissions", JsonSerializer.Serialize(user.Permissions ?? new List<string>()))
                  };
-
+         
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties {
                     IsPersistent = isPersistent,
@@ -268,16 +288,14 @@ namespace Grc.ui.App.Services {
                     IssuedUtc = DateTimeOffset.UtcNow,
                     ExpiresUtc = DateTimeOffset.UtcNow.AddHours(24)
                 };
-
                 await _httpContextAccessor.HttpContext.SignInAsync("Cookies",
                     new ClaimsPrincipal(claimsIdentity), 
                     authProperties);
-
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"SignIn failed (network): {httpEx.Message}", "ERROR");
                 await ProcessErrorAsync(httpEx.Message,"AUTHENTICATION-SERVICE" , httpEx.StackTrace);
                 throw new GRCException("Unable to sign in. Please check your connection.", httpEx);
-               
+       
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected SignIn error: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message,"AUTHENTICATION-SERVICE" , ex.StackTrace);

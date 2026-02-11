@@ -93,6 +93,7 @@ function initGroupTable() {
             {
                 title: "GROUP NAME / PERMISSION SET",
                 field: "groupName",
+                headerFilter: "input",
                 minWidth: 250,
                 formatter: function (cell) {
                     const data = cell.getRow().getData();
@@ -111,6 +112,7 @@ function initGroupTable() {
             {
                 title: "DESCRIPTION",
                 field: "groupDescription",
+                headerFilter: "input",
                 minWidth: 250,
                 formatter: function (cell) {
                     const data = cell.getRow().getData();
@@ -120,6 +122,7 @@ function initGroupTable() {
             {
                 title: "CATEGORY / STATUS",
                 field: "groupCategory",
+                headerFilter: "input",
                 minWidth: 180,
                 formatter: function (cell) {
                     const data = cell.getRow().getData();
@@ -140,6 +143,7 @@ function initGroupTable() {
                 title: "CREATED ON",
                 field: "createdOn",
                 hozAlign: "center",
+                headerFilter: "input",
                 headerHozAlign: "center",
                 width: 180,
                 formatter: function (cell) {
@@ -178,9 +182,6 @@ function initGroupTable() {
             }
         ]
     });
-
-    //..search role group
-    initGroupPermissionsSearch();
 }
 
 function findGroupPermission(id) {
@@ -320,9 +321,9 @@ function openGroupEditor(title, group, isEdit) {
     }
 
     // Show overlay panel
-    $('#panelTitle').text(title);
-    $('.overlay').addClass('active');
-    $('#setPanel').addClass('active');
+    $('#setTitle').text(title);
+    $('#rolePermOverlay').addClass('active');
+    $('#rolePermPanel').addClass('active');
 }
 
 function deleteGroup(id) {
@@ -379,7 +380,7 @@ function saveGroupPermissions(e) {
         groupDescription: $('#groupDescription').val()?.trim(),
         groupScope:"",
         groupCategory: "",
-        department: "",
+        departmentName: "",
         departmentId: 0,
         attachedTo: "",
         isDeleted: $('#isDeleted').is(':checked') ? true : false,
@@ -485,33 +486,10 @@ function persistGroupPermissions(isEdit, payload) {
 }
 
 function closeGroupPermissionPanel() {
-    console.log('Button clicked');
-    $('.overlay').removeClass('active');
-    $('#setPanel').removeClass('active');
+    $('#rolePermOverlay').removeClass('active');
+    $('#rolePermPanel').removeClass('active');
 }
 
-function initGroupPermissionsSearch() {
-    const searchInput = $('#roleGroupSearchbox');
-    let typingTimer;
-
-    searchInput.on('input', function () {
-        clearTimeout(typingTimer);
-        const searchTerm = $(this).val().trim();
-
-        typingTimer = setTimeout(function () {
-            if (searchTerm && searchTerm.length >= 2) {
-                roleGroupPermissionsTable.setFilter([
-                    { field: "groupName", type: "like", value: searchTerm },
-                    { field: "groupDescription", type: "like", value: searchTerm }
-                ]);
-            } else {
-                roleGroupPermissionsTable.clearFilter();
-            }
-        }, 300);
-    });
-}
-
-//..get antiforegery token from meta tag
 function getGroupPermissionAntiForgeryToken() {
     return $('meta[name="csrf-token"]').attr('content');
 }

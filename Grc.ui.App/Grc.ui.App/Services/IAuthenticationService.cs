@@ -50,6 +50,17 @@ namespace Grc.ui.App.Services {
 
         Task<GrcResponse<ServiceResponse>> ChangePasswordAsync(GrcChangePasswordRequest request);
         Task<GrcResponse<ServiceResponse>> ResetPasswordAsync(GrcChangePasswordRequest request);
+        /// <summary>
+        /// Helper method to check if user has a specific permission
+        /// </summary>
+        /// <param name="permissionName">Permission to look for</param>
+        /// <returns></returns>
+        bool HasPermission(string permissionName);
+        /// <summary>
+        /// Get current user permissions
+        /// </summary>
+        /// <returns></returns>
+        List<string> GetCurrentUserPermissions();
     }
 
 }
