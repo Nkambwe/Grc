@@ -7,16 +7,16 @@
       "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\admin\\views\\configuration\\bugprogress.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_0902026\\grc\\grc.ui.app\\grc.ui.app\\areas\\admin\\views\\configuration\\newbugs.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\admin\\views\\configuration\\newbugs.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_0902026\\grc\\grc.ui.app\\grc.ui.app\\areas\\admin\\views\\configuration\\bugfixes.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\admin\\views\\configuration\\bugfixes.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_0902026\\grc\\grc.ui.app\\grc.ui.app\\areas\\admin\\controllers\\supportcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\admin\\controllers\\supportcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_0902026\\grc\\grc.ui.app\\grc.ui.app\\areas\\admin\\views\\configuration\\newbugs.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\areas\\admin\\views\\configuration\\newbugs.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_0902026\\grc\\grc.ui.app\\grc.ui.app\\views\\shared\\components\\bugtracker\\default.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -121,8 +121,7 @@
               "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
               "ViewState": "AgIAANgAAAAAAAAAAAAAAB4AAABRAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-10T16:56:05.776Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-10T16:56:05.776Z"
             },
             {
               "$type": "Document",
@@ -134,12 +133,11 @@
               "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\app-admin-bugs.js",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-02-10T16:44:28.926Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-10T16:44:28.926Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "NewBugs.cshtml",
               "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Views\\Configuration\\NewBugs.cshtml",
               "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Admin\\Views\\Configuration\\NewBugs.cshtml",
@@ -160,8 +158,7 @@
               "RelativeToolTip": "Grc.ui.App\\Views\\Shared\\Components\\BugTracker\\Default.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-10T16:14:01.107Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-10T16:14:01.107Z"
             },
             {
               "$type": "Document",
@@ -173,8 +170,7 @@
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\SupportController.cs",
               "ViewState": "AgIAACIAAAAAAAAAAAAQwC8AAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-10T12:16:21.32Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-10T12:16:21.32Z"
             },
             {
               "$type": "Document",
@@ -186,8 +182,7 @@
               "RelativeToolTip": "Grc.ui.App\\Routes\\RouteProvider.cs",
               "ViewState": "AgIAAO8BAAAAAAAAAAAqwAoCAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-10T15:28:52.785Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-10T15:28:52.785Z"
             }
           ]
         }
@@ -220,8 +215,7 @@
               "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\app-new-bugs.js",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-02-10T16:23:25.406Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-10T16:23:25.406Z"
             },
             {
               "$type": "Document",
@@ -233,8 +227,7 @@
               "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\app-fixed-bugs.js",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-02-10T16:23:18.892Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-10T16:23:18.892Z"
             },
             {
               "$type": "Document",
@@ -246,8 +239,7 @@
               "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\app-progress-bugs.js",
               "ViewState": "AgIAAAQAAAAAAAAAAAAAAAQAAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-02-10T16:23:31.916Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-10T16:23:31.916Z"
             },
             {
               "$type": "Document",
@@ -259,8 +251,7 @@
               "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Controllers\\ConfigurationController.cs",
               "ViewState": "AgIAAEEBAAAAAAAAAAAcwKABAABRAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-10T16:11:36.535Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-10T16:11:36.535Z"
             },
             {
               "$type": "Document",
@@ -277,7 +268,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "BugFixes.cshtml",
               "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Views\\Configuration\\BugFixes.cshtml",
               "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Admin\\Views\\Configuration\\BugFixes.cshtml",
@@ -285,12 +276,11 @@
               "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Views\\Configuration\\BugFixes.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-10T16:13:35.04Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-10T16:13:35.04Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "SupportController.cs",
               "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\Areas\\Admin\\Controllers\\SupportController.cs",
               "RelativeDocumentMoniker": "Grc.ui.App\\Areas\\Admin\\Controllers\\SupportController.cs",
@@ -298,8 +288,7 @@
               "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Controllers\\SupportController.cs",
               "ViewState": "AgIAAD0AAAAAAAAAAAAxwGIFAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-10T08:04:19.771Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-10T08:04:19.771Z"
             }
           ]
         }
