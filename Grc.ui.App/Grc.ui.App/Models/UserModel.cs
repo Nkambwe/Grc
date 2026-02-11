@@ -120,6 +120,9 @@ namespace Grc.ui.App.Models {
 
         [JsonPropertyName("modifiedBy")]
         public string ModifiedBy { get; set; }
+
+        [JsonPropertyName("permissions")]
+        public List<string> Permissions { get; set; } = new List<string>();
     }
 
 }

@@ -10,7 +10,9 @@ using Grc.ui.App.Middleware;
 using Grc.ui.App.Routes;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Razor;
 
 namespace Grc.ui.App {
@@ -127,6 +129,11 @@ namespace Grc.ui.App {
 
             //..add MVC
             services.AddControllersWithViews(options => {
+                // Require authentication by default on all controllers
+                //var policy = new AuthorizationPolicyBuilder()
+                //    .RequireAuthenticatedUser()
+                //    .Build();
+                //options.Filters.Add(new AuthorizeFilter(policy));
                 options.Filters.AddService<RecentMenuItemAttribute>();
             });
 
@@ -172,6 +179,7 @@ namespace Grc.ui.App {
 
             //..add authorization
             app.UseAuthorization();
+            //app.UseMiddleware<AreaAccessMiddleware>();
         
             //..add session middleware
             var middlewareOptions = _configuration.GetSection("MiddlewareOptions").Get<MiddlewareOptions>();

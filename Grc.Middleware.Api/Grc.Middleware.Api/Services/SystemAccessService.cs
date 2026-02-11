@@ -168,7 +168,7 @@ namespace Grc.Middleware.Api.Services {
 
         public async Task<AuthenticationResponse> AuthenticateUserAsync(string username) {
             using var uow = UowFactory.Create();
-
+    
             var response = await uow.UserRepository.GetLookupAsync(
                 u => u.Username.ToLower() == username.ToLower(),
                 u => new AuthenticationResponse {
@@ -189,39 +189,69 @@ namespace Grc.Middleware.Api.Services {
                     DepartmentId = u.DepartmentId,
                     DepartmentCode = u.Department.DepartmentCode,
                     DepartmentName = u.Department.DepartmentName,
-                    UnitCode = u.DepartmentUnit,
+                    UnitCode = u.DepartmentUnit ?? string.Empty,
+                    Message = string.Empty,
+                    RedirectUrl = string.Empty,
                     IsActive = u.IsActive,
                     IsDeleted = u.IsDeleted,
                     IsVerified = u.IsVerified ?? false,
                     IsApproved = u.IsApproved ?? false,
-
                     IsAdministrator =
                         u.Role.RoleName == "Administrator" ||
                         u.Role.RoleName == "Support",
-
-                    Permissions = u.Role.Group.PermissionSets
-                        .SelectMany(g => g.PermissionSet.Permissions)
-                        .Select(p => p.Permission.PermissionName)
-                        .Distinct()
-                        .ToList(),
-
+                    Permissions = new List<string>(),
+                    Views = new List<string>(),
+                    Favourites = new List<string>(),
                     Claims = new Dictionary<string, object>()
                 },
                 includeDeleted: true
             );
 
+            //..permissions
+            if (response != null) {
+
+                //..get user with Role and RoleGroup permission set IDs
+                var userLookup = await uow.UserRepository.GetLookupAsync(
+                    u => u.Username.ToLower() == username.ToLower(),
+                    u => new {
+                        User = u,
+                        RolePermissionSetIds = u.Role.PermissionSets.Select(x => x.PermissionSetId),
+                        GroupPermissionSetIds = u.Role.Group.PermissionSets.Select(x => x.PermissionSetId)
+                    },
+                    includeDeleted: true
+                );
+
+                if (userLookup != null || userLookup.User != null) { 
+                    //..combine and get distinct permission set IDs
+                    var permissionSetIds = userLookup.RolePermissionSetIds
+                        .Concat(userLookup.GroupPermissionSetIds)
+                        .Distinct()
+                        .ToList();
+
+                    //..get actual permission names from those permission sets
+                    if (permissionSetIds.Any()) {
+                        var context = ((UnitOfWork)uow).Context;
+                        response.Permissions = await context.SystemPermissionPermissionSets
+                            .Where(x => permissionSetIds.Contains(x.PermissionSetId))
+                            .Select(x => x.Permission.PermissionName)
+                            .Distinct()
+                            .ToListAsync();
+                    }
+                }
+               
+            }
+
             //..force user to change password for the first time logins
-            if (!response.LastPasswordChange.HasValue) {
+            if (response != null && !response.LastPasswordChange.HasValue) {
                 response.ForcePasswordChange = true;
-            } else {
-                // Check for password expiration
+            } else if (response != null) {
+                //..check for password expiration
                 const int DEFAULT_EXPIRY_DAYS = 30;
     
                 var passwordConfig = await uow.SystemConfigurationRepository.GetAsync(s => s.ParameterName == "SECURITY_EXPIRYPERIOD");
                 int expiryDays = DEFAULT_EXPIRY_DAYS;
     
                 if (passwordConfig == null) {
-                    // Configuration missing - create it
                     await uow.SystemConfigurationRepository.InsertAsync(new SystemConfiguration() {
                         ParameterName = "SECURITY_EXPIRYPERIOD",
                         ParameterValue = DEFAULT_EXPIRY_DAYS.ToString(),
@@ -232,7 +262,6 @@ namespace Grc.Middleware.Api.Services {
                     });
                     await uow.SaveChangesAsync();
                 } else if (string.IsNullOrWhiteSpace(passwordConfig.ParameterValue)) {
-                    //..configuration exists but has no value,update it
                     passwordConfig.ParameterValue = DEFAULT_EXPIRY_DAYS.ToString();
                     passwordConfig.IsDeleted = false;
                     passwordConfig.LastModifiedBy = "SYSTEM";
@@ -240,26 +269,25 @@ namespace Grc.Middleware.Api.Services {
                     await uow.SystemConfigurationRepository.UpdateAsync(passwordConfig, true);
                     await uow.SaveChangesAsync();
                 } else {
-                    //..parse the configured value
                     if (!int.TryParse(passwordConfig.ParameterValue, out expiryDays) || expiryDays <= 0) {
                         expiryDays = DEFAULT_EXPIRY_DAYS;
                     }
                 }
     
-                //..check if password has expired
                 var passwordExpiryDate = response.LastPasswordChange.Value.AddDays(expiryDays);
                 if (passwordExpiryDate <= DateTime.Now) {
                     response.ForcePasswordChange = true;
                 }
             }
-            
+    
             if (response == null) {
                 return new AuthenticationResponse {
                     IsAuthenticated = false,
                     Message = $"Username {username} not found",
                     Favourites = new List<string>(),
                     Views = new List<string>(),
-                    Claims = new Dictionary<string, object>()
+                    Claims = new Dictionary<string, object>(),
+                    Permissions = new List<string>()
                 };
             }
 
@@ -284,38 +312,38 @@ namespace Grc.Middleware.Api.Services {
         }
 
         public async Task<bool> UpdateLoginStatusAsync(long userId, DateTime loginTime) {
-            using var uow = UowFactory.Create();
-            Logger.LogActivity($"Update the logout of user with ID {userId}", "INFO");
+                using var uow = UowFactory.Create();
+                Logger.LogActivity($"Update the logout of user with ID {userId}", "INFO");
 
-            try {
+                try {
 
-                var user = await uow.UserRepository.GetAsync(u => u.Id == userId);
-                if (user != null) {
-                    //..update system users
-                    user.IsLoggedIn = false;
-                    user.LastLoginDate = DateTime.Now;
+                    var user = await uow.UserRepository.GetAsync(u => u.Id == userId);
+                    if (user != null) {
+                        //..update system users
+                        user.IsLoggedIn = false;
+                        user.LastLoginDate = DateTime.Now;
 
-                    //..check entity state
-                    _ = await uow.UserRepository.UpdateAsync(user);
-                    var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
-                    Logger.LogActivity($"Entity state after Update: {entityState}", "DEBUG");
+                        //..check entity state
+                        _ = await uow.UserRepository.UpdateAsync(user);
+                        var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
+                        Logger.LogActivity($"Entity state after Update: {entityState}", "DEBUG");
 
-                    var result = await uow.SaveChangesAsync();
-                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
-                    return result > 0;
-                }
+                        var result = await uow.SaveChangesAsync();
+                        Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                        return result > 0;
+                    }
 
-                return false;
-            } catch (Exception ex) {
-                Logger.LogActivity($"Failed to retrieve user role: {ex.Message}", "ERROR");
+                    return false;
+                } catch (Exception ex) {
+                    Logger.LogActivity($"Failed to retrieve user role: {ex.Message}", "ERROR");
 
-                //..log inner exceptions here too
-                var innerEx = ex.InnerException;
-                while (innerEx != null) {
-                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
-                    innerEx = innerEx.InnerException;
-                }
-                throw;
+                    //..log inner exceptions here too
+                    var innerEx = ex.InnerException;
+                    while (innerEx != null) {
+                        Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                        innerEx = innerEx.InnerException;
+                    }
+                    throw;
             }
         }
 
@@ -2305,24 +2333,51 @@ namespace Grc.Middleware.Api.Services {
         public async Task<bool> InsertRoleGroupAsync(RoleGroupRequest request, string username) {
             using var uow = UowFactory.Create();
             Logger.LogActivity("Save role group record >>>>");
-            try
-            {
+            try {
                 //..map Role Group request to Role Group entity
-                var roleGroup = Mapper.Map<RoleGroupRequest, SystemRoleGroup>(request);
-                roleGroup.CreatedBy = username;
-                roleGroup.CreatedOn = DateTime.Now;
+                var roleGroup = new SystemRoleGroup {
+                    GroupName = request.GroupName,
+                    GroupCategory = request.GroupCategory,
+                    Description =request. GroupDescription,
+                    Scope = (GroupScope)request.GroupScope,
+                    Department = "Unknown",
+                    Type = (RoleGroup)request.Type,
+                    CreatedBy = username,
+                    IsApproved = request.IsApproved,
+                    IsVerified = request.IsVerified,
+                    IsDeleted = false,
+                    CreatedOn = DateTime.Now,
+                    LastModifiedBy= username,
+                    LastModifiedOn = DateTime.Now
+                };
+
+                //..map sets
+                if (request.PermissionSets != null && request.PermissionSets.Any()) {
+                    roleGroup.PermissionSets = request.PermissionSets
+                        .Select(psId => new SystemRoleGroupPermissionSet {
+                            PermissionSetId = psId,
+                            RoleGroup = roleGroup 
+                        })
+                        .ToList();
+                }
+
+                //..map roles
+                if (request.Roles != null && request.Roles.Any()) {
+                     var roles = await uow.RoleRepository.GetAllAsync(r => request.Roles.Contains(r.Id), false);
+                    if (roles.Any()) {
+                        roleGroup.Roles = roles.ToList();
+                    }
+                }
 
                 //..log the Role Group data being saved
-                var groupJson = JsonSerializer.Serialize(roleGroup, new JsonSerializerOptions
-                {
+                var groupJson = JsonSerializer.Serialize(roleGroup, new JsonSerializerOptions {
                     WriteIndented = true,
                     ReferenceHandler = ReferenceHandler.IgnoreCycles
                 });
                 Logger.LogActivity($"Role Group data: {groupJson}", "DEBUG");
 
                 var added = await uow.RoleGroupRepository.InsertAsync(roleGroup);
-                if (added)
-                {
+                if (added) {
                     //..check object state
                     var entityState = ((UnitOfWork)uow).Context.Entry(roleGroup).State;
                     Logger.LogActivity($"Entity state after insert: {entityState}", "DEBUG");
@@ -2515,15 +2570,13 @@ namespace Grc.Middleware.Api.Services {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update Role Group request", "INFO");
 
-            try
-            {
+            try {
                 var roleGroup = uow.RoleGroupRepository.Get(a => a.Id == request.Id);
-                if (roleGroup != null)
-                {
+                if (roleGroup != null) {
                     //..update Role Group record
                     roleGroup.GroupName = (request.GroupName ?? string.Empty).Trim();
                     roleGroup.Description = (request.GroupDescription ?? string.Empty).Trim();
-                    roleGroup.GroupCategory = (request.GroupCategory?? "ADMINSUPPORT").Trim();
+                    roleGroup.GroupCategory = (request.GroupCategory ?? "ADMINSUPPORT").Trim();
                     roleGroup.Scope = (GroupScope)request.GroupScope;
                     roleGroup.Type = (RoleGroup)request.Type;
                     roleGroup.Department = (request.DepartmentName ?? string.Empty).Trim();
@@ -2533,26 +2586,52 @@ namespace Grc.Middleware.Api.Services {
                     roleGroup.LastModifiedOn = DateTime.Now;
                     roleGroup.LastModifiedBy = $"{username}";
 
+                    //..update PermissionSets
+                    if (request.PermissionSets != null) {
+                        //..clear existing permission sets
+                        roleGroup.PermissionSets?.Clear();
+            
+                        //..add new permission sets
+                        if (request.PermissionSets.Any()) {
+                            roleGroup.PermissionSets = request.PermissionSets
+                                .Select(psId => new SystemRoleGroupPermissionSet {
+                                    PermissionSetId = psId,
+                                    RoleGroupId = roleGroup.Id,
+                                    RoleGroup = roleGroup
+                                })
+                                .ToList();
+                        }
+                    }
+
+                    //..update Roles
+                    if (request.Roles != null) {
+                        //..clear existing roles
+                        roleGroup.Roles?.Clear();
+            
+                        //..add new roles
+                        if (request.Roles.Any()) {
+                            var roles = uow.RoleRepository.GetAll(r => request.Roles.Contains(r.Id), false);
+                            if (roles.Any()) {
+                                roleGroup.Roles = roles.ToList();
+                            }
+                        }
+                    }
+
                     //..check entity state
                     _ = uow.RoleGroupRepository.Update(roleGroup, includeDeleted);
                     var entityState = ((UnitOfWork)uow).Context.Entry(roleGroup).State;
                     Logger.LogActivity($"Role Group state after Update: {entityState}", "DEBUG");
-
                     var result = uow.SaveChanges();
                     Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
                     return result > 0;
                 }
-
                 return false;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to update Role Group record: {ex.Message}", "ERROR");
 
                 //..log inner exceptions here too
                 var innerEx = ex.InnerException;
-                while (innerEx != null)
-                {
+                while (innerEx != null) {
                     Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
                     innerEx = innerEx.InnerException;
                 }
@@ -2561,8 +2640,7 @@ namespace Grc.Middleware.Api.Services {
 
                 var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
                 long companyId = company != null ? company.Id : 1;
-                SystemError errorObj = new()
-                {
+                SystemError errorObj = new() {
                     ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
                     ErrorSource = "SYSTEM-ACCESS-SERVICE",
                     StackTrace = ex.StackTrace,
@@ -2577,20 +2655,17 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<bool> UpdateRoleGroupAsync(RoleGroupRequest request, bool includeDeleted = false, string username = "")
-        {
+        public async Task<bool> UpdateRoleGroupAsync(RoleGroupRequest request, bool includeDeleted = false, string username = "") {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Update Role Group", "INFO");
 
-            try
-            {
-                var roleGroup = await uow.RoleGroupRepository.GetAsync(a => a.Id == request.Id);
-                if (roleGroup != null)
-                {
+            try {
+                var roleGroup = uow.RoleGroupRepository.Get(a => a.Id == request.Id);
+                if (roleGroup != null) {
                     //..update Role Group record
                     roleGroup.GroupName = (request.GroupName ?? string.Empty).Trim();
                     roleGroup.Description = (request.GroupDescription ?? string.Empty).Trim();
-                    roleGroup.GroupCategory = (request.GroupCategory ?? string.Empty).Trim();
+                    roleGroup.GroupCategory = (request.GroupCategory ?? "ADMINSUPPORT").Trim();
                     roleGroup.Scope = (GroupScope)request.GroupScope;
                     roleGroup.Type = (RoleGroup)request.Type;
                     roleGroup.Department = (request.DepartmentName ?? string.Empty).Trim();
@@ -2600,16 +2675,45 @@ namespace Grc.Middleware.Api.Services {
                     roleGroup.LastModifiedOn = DateTime.Now;
                     roleGroup.LastModifiedBy = $"{username}";
 
+                    //..update PermissionSets
+                    if (request.PermissionSets != null) {
+                        //..clear existing permission sets
+                        roleGroup.PermissionSets?.Clear();
+            
+                        //..add new permission sets
+                        if (request.PermissionSets.Any()) {
+                            roleGroup.PermissionSets = request.PermissionSets
+                                .Select(psId => new SystemRoleGroupPermissionSet {
+                                    PermissionSetId = psId,
+                                    RoleGroupId = roleGroup.Id,
+                                    RoleGroup = roleGroup
+                                })
+                                .ToList();
+                        }
+                    }
+
+                    //..update Roles
+                    if (request.Roles != null) {
+                        //..clear existing roles
+                        roleGroup.Roles?.Clear();
+            
+                        //..add new roles
+                        if (request.Roles.Any()) {
+                            var roles = await uow.RoleRepository.GetAllAsync(r => request.Roles.Contains(r.Id), false);
+                            if (roles.Any()) {
+                                roleGroup.Roles = roles.ToList();
+                            }
+                        }
+                    }
+
                     //..check entity state
-                    _ = await uow.RoleGroupRepository.UpdateAsync(roleGroup, includeDeleted);
+                    _ = uow.RoleGroupRepository.Update(roleGroup, includeDeleted);
                     var entityState = ((UnitOfWork)uow).Context.Entry(roleGroup).State;
                     Logger.LogActivity($"Role Group state after Update: {entityState}", "DEBUG");
-
                     var result = uow.SaveChanges();
                     Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
                     return result > 0;
                 }
-
                 return false;
             }
             catch (Exception ex)

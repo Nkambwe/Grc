@@ -22,6 +22,8 @@ namespace Grc.ui.App.Enums {
         [Description("Compliance External Users")]
         COMPLIANCEGUESTS = 8,
         [Description("Application Developer")]
-        DEVELOPER = 9
+        DEVELOPER = 9,
+        [Description("Application Support")]
+        ADMINSUPPORT = 10,
     }
 }

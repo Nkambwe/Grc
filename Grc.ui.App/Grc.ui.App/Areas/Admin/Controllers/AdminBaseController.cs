@@ -1,5 +1,6 @@
 ﻿using Grc.ui.App.Extensions.Http;
 using Grc.ui.App.Factories;
+using Grc.ui.App.Filters;
 using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Services;
@@ -9,6 +10,7 @@ using System.Text.Json;
 
 namespace Grc.ui.App.Areas.Admin.Controllers {
 
+    //[AreaAuthorization("DEVELOPER", "SYSTEM", "ADMINSUPPORT", "ADMINISTRATOR", "APPLICATIONSUPPORT")]
     public class AdminBaseController : Controller   {
         protected readonly IErrorService ErrorService;
         protected readonly IGrcErrorFactory ErrorFactory;

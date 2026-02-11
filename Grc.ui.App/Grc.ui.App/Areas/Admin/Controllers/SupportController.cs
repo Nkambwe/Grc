@@ -59,6 +59,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [LogActivityResult("User Login", "User logged in to the system", ActivityTypeDefaults.USER_LOGIN, "SystemUser")]
+        //[PermissionAuthorization(false, "VIEW_DASHBOARD", "ADMIN_ACCESS")]
         public async Task<IActionResult> Index()
         {
             var model = new AdminDashboardModel();
@@ -265,7 +266,6 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             return View(model);
         }
 
-        
         public async Task<IActionResult> ActivityRecord()
         {
             var model = new AdminDashboardModel();
@@ -1492,6 +1492,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [LogActivityResult("Retrieve User", "User retrieved user record", ActivityTypeDefaults.USER_RETRIEVED, "SystemUser")]
+        //[PermissionAuthorization(false, "VIEW_USER")]
         public async Task<IActionResult> GetUser(long id)
         {
             try
@@ -1559,6 +1560,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             }
         }
 
+        //[PermissionAuthorization(false, "CREATE_USER", "MANAGE_USERS")]
         public async Task<IActionResult> GetUsers()
         {
             try
@@ -1903,6 +1905,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         [HttpPost]
         [LogActivityResult("User Added", "User added user record", ActivityTypeDefaults.USER_ADDED, "SystemUser")]
+        //[PermissionAuthorization(false, "CREATE_USER", "MANAGE_USERS")]
         public async Task<IActionResult> CreateUser([FromBody] UserViewModel request)
         {
             try
@@ -2441,6 +2444,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                     id = role.Id,
                     roleName = role.RoleName,
                     roleDescription = role.Description,
+                    groupId = role.GroupId,
                     groupName = role.GroupName,
                     isDeleted = role.IsDeleted,
                     createdOn = role.CreatedOn,
@@ -3469,18 +3473,15 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         [HttpPost]
         [LogActivityResult("Role Group Permissions Added", "User added system role group permissions", ActivityTypeDefaults.ROLE_GROUP_ADDED_WITH_PERMISSIONS, "SystemRoleGroup")]
         public async Task<IActionResult> CreateRoleGroupPermissions([FromBody] RoleGroupViewModel request) {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
+            try {
+                if (!ModelState.IsValid) {
                     var errors = ModelState.Values
                         .SelectMany(v => v.Errors)
                         .Select(e => e.ErrorMessage)
                         .ToList();
 
                     string combinedErrors = string.Join("; ", errors);
-                    return Ok(new
-                    {
+                    return Ok(new {
                         success = false,
                         message = $"Please correct these errors: {combinedErrors}",
                         data = (object)null

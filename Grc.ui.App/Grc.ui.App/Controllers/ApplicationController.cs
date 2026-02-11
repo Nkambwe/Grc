@@ -11,6 +11,7 @@ using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Security.Claims;
@@ -18,6 +19,7 @@ using System.Text.Json;
 
 namespace Grc.ui.App.Controllers {
 
+     //[AreaAuthorization("COMPLIANCEDEPT", "COMPLIANCEADMIN", "COMPLIANCEGUESTS")]
     public class ApplicationController : GrcBaseController {
         private readonly IAuthenticationService _authService;
         private readonly ISystemAccessService _accessService;
@@ -56,6 +58,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("User Login", "User logged in to the system", ActivityTypeDefaults.USER_LOGIN, "SystemUser")]
+        //[PermissionAuthorization(false, "VIEW_COMPLIANCE", "COMPLIANCE_DASHBOARD")]
         public async Task<IActionResult> Dashboard() {
 
             try{
@@ -113,6 +116,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Login() {
             var loginModel = await _loginFactory.PrepareLoginModelAsync();
             return View(loginModel);
@@ -120,6 +124,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
+        [AllowAnonymous]
         public virtual async Task<IActionResult> Login([FromBody] LoginModel model) {
 
             if (!ModelState.IsValid) {
@@ -190,6 +195,7 @@ namespace Grc.ui.App.Controllers {
         
         [HttpPost]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
+        [AllowAnonymous]
         public async Task<IActionResult> ValidateUsername(LoginModel model) {
             if (string.IsNullOrWhiteSpace(model.Username)) {
                 return HandleUsernameValidationError(LocalizationService.GetLocalizedLabel("App.Message.EnterUsername"), model);
@@ -236,6 +242,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
+        [AllowAnonymous]
         public async Task<IActionResult> ChangeExpiredPassword([FromBody] ChangePasswordModel model){
             try {
 
@@ -282,6 +289,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> ChangePassword() {
              try{
 
@@ -314,6 +322,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> PersistPassword([FromBody]ChangePasswordModel model) {
             try {
 
@@ -360,6 +369,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("User Logout", "User logged out of the system", ActivityTypeDefaults.USER_LOGOUT, "SystemUser")]
+        [AllowAnonymous]
         public async Task<IActionResult> Logout() {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -397,6 +407,7 @@ namespace Grc.ui.App.Controllers {
         }
         
         [HttpGet]
+        [AllowAnonymous]
         public virtual async Task<IActionResult> Register() { 
             var model = await _registrationFactory.PrepareCompanyRegistrationModelAsync();
             return View(model);
@@ -404,6 +415,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
+        [AllowAnonymous]
         public virtual async Task<IActionResult> Register(CompanyRegistrationModel model) {
             if (!ModelState.IsValid) {
                 return HandleValidationErrors(model);
@@ -434,11 +446,13 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public virtual IActionResult ChangeLanguage(string language) {
             LocalizationService.SaveCurrentLanguage(language);
             return RedirectToAction("Register", "Application");
         }
 
+        [AllowAnonymous]
         public  async Task<IActionResult> NoService(){
             var model = await _registrationFactory.PrepareNoServiceModelAsync();
             return View(model);
@@ -683,6 +697,7 @@ namespace Grc.ui.App.Controllers {
                 //..route to admin
                 if (RoleCategory.DEVELOPER.ToString().Equals(roleGroup.ToUpper()) ||
                     RoleCategory.SYSTEM.ToString().Equals(roleGroup.ToUpper()) ||
+                    RoleCategory.ADMINSUPPORT.ToString().Equals(roleGroup.ToUpper()) ||
                     RoleCategory.ADMINISTRATOR.ToString().Equals(roleGroup.ToUpper()) ||
                     RoleCategory.APPLICATIONSUPPORT.ToString().Equals(roleGroup.ToUpper())) {
                     return Url.Action("Index", "Support", new { area = "Admin" });
@@ -706,6 +721,24 @@ namespace Grc.ui.App.Controllers {
 
             //..redirect to login for unknow roles
             return Url.Action("Login", "Application");
+        }
+
+         public async Task<IActionResult> AccessDenied() {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError) {
+                    return Redirect("Login");
+                }
+
+                var currentUser = grcResponse.Data;
+                var data = await _dashboardFactory.PrepareUserPasswordModelAsync(currentUser);
+                return View(data);
+            } catch (Exception ex){
+                Logger.LogActivity($"Error retrieving role record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Redirect("Login");
+            }
         }
 
         #endregion
