@@ -1318,6 +1318,13 @@ div.input-group.date {
     color: var(--pearl-orange);
 }
 
+    .stat-number span:first-child {
+        font-size: 1.5rem;
+    }
+
+    .stat-number span:last-child {
+        font-size: 1.5rem;
+    }
 .stat-card.stat-card-light .stat-title,
 .stat-card.stat-card-light .stat-number span {
     color: var(--pearl-purple-dark-40);
