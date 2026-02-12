@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Azure;
+using Azure.Core;
 using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Support;
 using Grc.Middleware.Api.Data.Entities.System;
@@ -15,6 +16,7 @@ using System.Globalization;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Grc.Middleware.Api.Services
 {
@@ -100,6 +102,12 @@ namespace Grc.Middleware.Api.Services
                 response.SecuritySettings.ExipreyPeriod = ToInt(settings.GetValueOrDefault("SECURITY_EXPIRYPERIOD"));
                 response.SecuritySettings.CanUseOldPassword = ToBool(settings.GetValueOrDefault("SECURITY_CANUSEOLDPASSWORDS"));
                 response.SecuritySettings.AllowAdmininsToResetPasswords = ToBool(settings.GetValueOrDefault("SECURITY_ALLOWMANUALPASSWORDCHANGE"));
+                response.SecuritySettings.AllowPasswordReuse = ToBool(settings.GetValueOrDefault("SECURITY_ALLOWMANUALPASSWORDCHANGE"));
+                response.SecuritySettings.MinimumPasswordLength = ToInt(settings.GetValueOrDefault("SECURITY_MINIMUMPASSWORDLENGTH"));
+                response.SecuritySettings.IncludeUpperCharacters = ToBool(settings.GetValueOrDefault("SECURITY_INCLUDEUPPERCASECHAR"));
+                response.SecuritySettings.IncludeLowerCharacters = ToBool(settings.GetValueOrDefault("SECURITY_INCLUDELOWERCASECHAR"));
+                response.SecuritySettings.IncludeSpecialCharacters = ToBool(settings.GetValueOrDefault("SECURITY_INCLUDELOWERSPECIALCHAR"));
+                response.SecuritySettings.IncludeNumericCharacters = ToBool(settings.GetValueOrDefault("SECURITY_INCLUDEONENUMBER"));
 
                 return response;
             } catch (Exception ex) {
@@ -282,7 +290,7 @@ namespace Grc.Middleware.Api.Services
             Logger.LogActivity("Save policy configurations", "INFO");
 
             try {
-                var settings = await uow.SystemConfigurationRepository.GetAllAsync(s => s.ParameterName.StartsWith("POLICY"), true);
+                var settings = await uow.SystemConfigurationRepository.GetAllAsync(s => s.ParameterName.StartsWith("SECURITY"), true);
                 if (settings == null || !settings.Any()) {
                     return false;
                 }
@@ -298,11 +306,11 @@ namespace Grc.Middleware.Api.Services
                     ("SECURITY_EXPIRYPERIOD", request.DaysUntilPasswordExpiration.ToString(), "NUMBER"),
                     ("SECURITY_CANUSEOLDPASSWORDS", request.AllowPasswordReuse.ToString(), "FLAG"),
                     ("SECURITY_ALLOWMANUALPASSWORDCHANGE", request.AllowManualPasswordReset.ToString(), "FLAG"),
-                    ("MINIMUMPASSWORDLENGTH", request.MinimumPasswordLength.ToString(), "NUMBER"),
-                    ("INCLUDEUPPERCASECHAR", request.IncludeUppercaseCharacters.ToString(), "FLAG"),
-                    ("INCLUDELOWERCASECHAR", request.IncludeLowercaseCharacters.ToString(), "FLAG"),
-                    ("INCLUDELOWERSPECIALCHAR", request.IncludeSpecialCharacters.ToString(), "FLAG"),
-                    ("INCLUDEONENUMBER", request.IncludeNumericCharacters.ToString(), "FLAG"),
+                    ("SECURITY_MINIMUMPASSWORDLENGTH", request.MinimumPasswordLength.ToString(), "NUMBER"),
+                    ("SECURITY_INCLUDEUPPERCASECHAR", request.IncludeUppercaseCharacters.ToString(), "FLAG"),
+                    ("SECURITY_INCLUDELOWERCASECHAR", request.IncludeLowercaseCharacters.ToString(), "FLAG"),
+                    ("SECURITY_INCLUDELOWERSPECIALCHAR", request.IncludeSpecialCharacters.ToString(), "FLAG"),
+                    ("SECURITY_INCLUDEONENUMBER", request.IncludeNumericCharacters.ToString(), "FLAG"),
                 };
 
                 foreach (var (paramName, newValue, paramType) in updates) {
@@ -374,14 +382,13 @@ namespace Grc.Middleware.Api.Services
 
         #region Private Methods
         private async Task<Dictionary<string, string>> GetPasswordSettingsFromDatabase(IUnitOfWork uow) {
-            var passwordParameters = new[]
-            {
+            var passwordParameters = new[] {
                 "SECURITY_CANUSEOLDPASSWORDS",
-                "MINIMUMPASSWORDLENGTH",
-                "INCLUDEUPPERCASECHAR",
-                "INCLUDELOWERCASECHAR",
-                "INCLUDELOWERSPECIALCHAR",
-                "INCLUDEONENUMBER"
+                "SECURITY_MINIMUMPASSWORDLENGTH",
+                "SECURITY_INCLUDEUPPERCASECHAR",
+                "SECURITY_INCLUDELOWERCASECHAR",
+                "SECURITY_INCLUDELOWERSPECIALCHAR",
+                "SECURITY_INCLUDEONENUMBER"
             };
 
             var settingsList = await uow.SystemConfigurationRepository
@@ -393,12 +400,12 @@ namespace Grc.Middleware.Api.Services
 
         private PasswordChangeResponse MapToPasswordChangeResponse(Dictionary<string, string> settings) {
             return new PasswordChangeResponse {
-                MinimumLength = GetIntSetting(settings, "MINIMUMPASSWORDLENGTH", defaultValue: 12),
-                IncludeUpperChar = GetBoolSetting(settings, "INCLUDEUPPERCASECHAR", defaultValue: true),
-                IncludeLowerChar = GetBoolSetting(settings, "INCLUDELOWERCASECHAR", defaultValue: true),
-                IncludeSpecialChar = GetBoolSetting(settings, "INCLUDELOWERSPECIALCHAR", defaultValue: true),
-                CanReusePasswords = GetBoolSetting(settings, "SECURITY_CANUSEOLDPASSWORDS", defaultValue: false),
-                IncludeNumericChar = GetBoolSetting(settings, "INCLUDEONENUMBER", defaultValue: false)
+                MinimumLength = GetIntSetting(settings, "SECURITY_MINIMUMPASSWORDLENGTH", defaultValue: 12),
+                IncludeUpperChar = GetBoolSetting(settings, "SECURITY_CANUSEOLDPASSWORDS", defaultValue: true),
+                IncludeLowerChar = GetBoolSetting(settings, "SECURITY_INCLUDEUPPERCASECHAR", defaultValue: true),
+                IncludeSpecialChar = GetBoolSetting(settings, "SECURITY_INCLUDELOWERCASECHAR", defaultValue: true),
+                CanReusePasswords = GetBoolSetting(settings, "SECURITY_INCLUDELOWERSPECIALCHAR", defaultValue: false),
+                IncludeNumericChar = GetBoolSetting(settings, "SECURITY_INCLUDEONENUMBER", defaultValue: false)
             };
         }
 
