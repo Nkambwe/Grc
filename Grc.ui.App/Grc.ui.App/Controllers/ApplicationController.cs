@@ -470,57 +470,6 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
-        public async Task<IActionResult> PasswordConfigurations([FromBody]PasswordConfigurationModel model) {
-            try {
-                var ipAddress = WebHelper.GetCurrentIpAddress();
-                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
-                if (userResponse.HasError || userResponse.Data == null) {
-                    var msg = "Unable to resolve current user";
-                    Logger.LogActivity(msg);
-                    return Ok(new { success = false, message = msg, data = new { } });
-                }
-
-                if (model == null) {
-                    return BadRequest(new { success = false, message = "Invalid request data", data = new { } });
-                }
-
-                var currentUser = userResponse.Data;
-                GrcPasswordConfigurationsRequest request = new() {
-                    EnforcePasswordExpiration = model.ExpirePassword,
-                    DaysUntilPasswordExpiration = model.ExipryDays,
-                    MinimumPasswordLength = model.MinimumLength,
-                    AllowManualPasswordReset = model.AllowMaualReset,
-                    AllowPasswordReuse = model.AllowPwsReuse,
-                    IncludeUppercaseCharacters = model.IncludeUpper,
-                    IncludeLowercaseCharacters = model.IncludeLower,
-                    IncludeSpecialCharacters = model.IncludeSpecial,
-                    IncludeNumericCharacters = model.IncludeNumerics,
-                    UserId = currentUser.UserId,
-                    IPAddress = ipAddress,
-                    Action = "Update password policy Configurations"
-                };
-
-                var result = await _configService.SavePasswordPolicyConfigurationsAsync(request);
-                if (result.HasError || result.Data == null)
-                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to save settings" });
-
-
-                var response = result.Data;
-                if (!response.Status) {
-                    return Ok(new { success = false, message = response.Message });
-                }
-
-                //..success
-                return Ok(new { success = true, message = "Settings saved successfully", data = new { } });
-
-            } catch (Exception ex) {
-                Logger.LogActivity($"Unexpected error save configurations: {ex.Message}", "ERROR");
-                _ = await ProcessErrorAsync(ex.Message, "APPLICATION-CONTROLLER", ex.StackTrace);
-                return Ok(new { success = false, message = "Unable to save configurations.Something went wrong" });
-            }
-        }
-
-        [HttpPost]
         public async Task<IActionResult> SaveGeneralConfigurations([FromBody] GeneralConfigurationModel model) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();

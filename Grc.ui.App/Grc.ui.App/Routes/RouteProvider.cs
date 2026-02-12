@@ -2306,8 +2306,8 @@
             /*----------------------- Application settings routes*/
             routeBuilder.MapControllerRoute(
                 name: "applications-password-policy",
-                pattern: "/grc/application/configurations/pwd-policy",
-                defaults: new { controller = "Application", action = "PasswordConfigurations" }
+                pattern: "/admin/aupport/pwd-policy",
+                defaults: new { controller = "Support", action = "PasswordConfigurations", area="admin" }
             );
 
             // 404

@@ -15,10 +15,16 @@ function getActiveTab() {
 //..dirty state
 document.querySelectorAll(".setting-input").forEach(input => {
     input.addEventListener("change", () => {
-        const saveBar = getActiveTab().querySelector(".settings-header-actions");
+        const activeTab = getActiveTab();
+        if (!activeTab) return;
+
+        const saveBar = activeTab.querySelector(".settings-header-actions");
+        if (!saveBar) return;
+
         saveBar.classList.add("show");
     });
 });
+
 
 //..save button handler
 document.addEventListener("click", function (e) {
@@ -26,8 +32,9 @@ document.addEventListener("click", function (e) {
 
     const tabId = getActiveTab().id;
 
-    if (tabId === "general") saveGeneralSettings();
-    if (tabId === "policies") savePolicySettings();
+    //if (tabId === "general") saveGeneralSettings();
+    //if (tabId === "policies") savePolicySettings();
+    if (tabId === "security") savePasswordSettings();
 });
 
 function buildGeneralSettings() {
@@ -58,20 +65,20 @@ function buildPasswordSettings() {
     };
 }
 
-function saveGeneralSettings() {
-    saveSettings("/grc/compliance/configurations/general-config", buildGeneralSettings());
-}
+//function saveGeneralSettings() {
+//    saveSettings("/grc/compliance/configurations/general-config", buildGeneralSettings());
+//}
 
-function savePolicySettings() {
-    saveSettings("/grc/compliance/configurations/policy-config", buildPolicySettings());
-}
+//function savePolicySettings() {
+//    saveSettings("/grc/compliance/configurations/policy-config", buildPolicySettings());
+//}
 
 function savePasswordSettings() {
-    saveSettings("/grc/compliance/configurations/policy-config", buildPasswordSettings());
+    saveSettings("/admin/aupport/pwd-policy", buildPasswordSettings());
 }
 
 function saveSettings(url, record) {
-
+    console.log(record);
     Swal.fire({
         title: "Saving settings...",
         allowOutsideClick: false,
