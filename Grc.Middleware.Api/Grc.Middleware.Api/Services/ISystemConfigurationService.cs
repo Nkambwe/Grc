@@ -15,6 +15,7 @@ namespace Grc.Middleware.Api.Services {
         Task<IList<SystemConfiguration>> GetAllAsync(Expression<Func<SystemConfiguration, bool>> predicate, bool includeDeleted);
         Task<PagedResult<SystemConfiguration>> PagedUsersAsync(CancellationToken token, int page, int size, Expression<Func<SystemConfiguration, bool>> predicate = null, bool includeDeleted = false);
         Task<bool> SavePolicyConfigurationsAsync(PolicyConfigurationsRequest request, string username);
+        Task<bool> SavePasswordPolicyConfigurationsAsync(PasswordConfigurationsRequest request, string username);
         Task<bool> SaveGeneralConfigurationsAsync(GeneralConfigurationsRequest request, string username);
         Task<PasswordChangeResponse> GetPasswordSettingAsync();
     }

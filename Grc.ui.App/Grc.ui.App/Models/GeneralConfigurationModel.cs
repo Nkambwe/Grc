@@ -3,5 +3,4 @@
         public bool SoftDeleteRecords { get; set; }
         public bool IncludeDeletedRecord { get; set; }
     }
-
 }

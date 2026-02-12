@@ -7903,6 +7903,37 @@
         }
       }
     },
+    "/grc/organization/password-policy-configuration": {
+      "post": {
+        "tags": [
+          "Support"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.PasswordConfigurationsRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.PasswordConfigurationsRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.PasswordConfigurationsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/grc/organization/password-settings": {
       "post": {
         "tags": [
@@ -10653,6 +10684,53 @@
             "nullable": true
           },
           "action": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Grc.Middleware.Api.Http.Requests.PasswordConfigurationsRequest": {
+        "type": "object",
+        "properties": {
+          "enforcePasswordExpiration": {
+            "type": "boolean"
+          },
+          "daysUntilPasswordExpiration": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minimumPasswordLength": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "allowManualPasswordReset": {
+            "type": "boolean"
+          },
+          "allowPasswordReuse": {
+            "type": "boolean"
+          },
+          "includeUppercaseCharacters": {
+            "type": "boolean"
+          },
+          "includeLowercaseCharacters": {
+            "type": "boolean"
+          },
+          "includeSpecialCharacters": {
+            "type": "boolean"
+          },
+          "includeNumericCharacters": {
+            "type": "boolean"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          },
+          "ipAddress": {
             "type": "string",
             "nullable": true
           }

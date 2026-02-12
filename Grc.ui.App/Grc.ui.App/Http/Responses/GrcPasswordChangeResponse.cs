@@ -12,7 +12,6 @@ namespace Grc.ui.App.Http.Responses {
         public bool IncludeSpecialChar { get; set; } = true;
         [JsonPropertyName("canReusePasswords")]
         public bool CanReusePasswords { get; set; } = false;
-
         [JsonPropertyName("includeNumericChar")]
         public bool IncludeNumericChar { get; set; } = true;
     }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure;
 using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Support;
 using Grc.Middleware.Api.Data.Entities.System;
@@ -251,6 +252,57 @@ namespace Grc.Middleware.Api.Services
                 var updates = new[] {
                     ("POLICY_SENDNOTIFICATIONS", request.SendPolicyNotifications.ToString(), "FLAG"),
                     ("POLICY_MAXIMUMNUMBEROFNOTIFICATIONS", request.MaximumNumberOfNotifications.ToString(), "NUMBER")
+                };
+
+                foreach (var (paramName, newValue, paramType) in updates) {
+                    if (settingsDict.TryGetValue(paramName, out var setting)) {
+                        var normalizedValue = NormalizeValue(newValue, paramType);
+                        if (setting.ParameterValue != normalizedValue) {
+                            setting.ParameterValue = normalizedValue;
+                            setting.LastModifiedBy = username;
+                            setting.LastModifiedOn = now;
+                            entitiesToUpdate.Add(setting);
+                        }
+                    }
+                }
+
+                if (entitiesToUpdate.Count > 0) {
+                    return await uow.SystemConfigurationRepository.BulkyUpdateAsync(entitiesToUpdate.ToArray());
+                }
+
+                return false;
+            } catch (Exception ex) {
+                _ = await uow.SystemErrorRespository.InsertAsync(CreateErrorObject(uow, ex));
+                throw;
+            }
+        }
+
+        public async Task<bool> SavePasswordPolicyConfigurationsAsync(PasswordConfigurationsRequest request, string username) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Save policy configurations", "INFO");
+
+            try {
+                var settings = await uow.SystemConfigurationRepository.GetAllAsync(s => s.ParameterName.StartsWith("POLICY"), true);
+                if (settings == null || !settings.Any()) {
+                    return false;
+                }
+
+                //..convert to dictionary for lookups
+                var settingsDict = settings.ToDictionary(s => s.ParameterName);
+                var now = DateTime.Now;
+                var entitiesToUpdate = new List<SystemConfiguration>(settingsDict.Count);
+
+                //..define configuration updates
+                var updates = new[] {
+                    ("SECURITY_EXPIRPASSWORDS", request.EnforcePasswordExpiration.ToString(), "FLAG"),
+                    ("SECURITY_EXPIRYPERIOD", request.DaysUntilPasswordExpiration.ToString(), "NUMBER"),
+                    ("SECURITY_CANUSEOLDPASSWORDS", request.AllowPasswordReuse.ToString(), "FLAG"),
+                    ("SECURITY_ALLOWMANUALPASSWORDCHANGE", request.AllowManualPasswordReset.ToString(), "FLAG"),
+                    ("MINIMUMPASSWORDLENGTH", request.MinimumPasswordLength.ToString(), "NUMBER"),
+                    ("INCLUDEUPPERCASECHAR", request.IncludeUppercaseCharacters.ToString(), "FLAG"),
+                    ("INCLUDELOWERCASECHAR", request.IncludeLowercaseCharacters.ToString(), "FLAG"),
+                    ("INCLUDELOWERSPECIALCHAR", request.IncludeSpecialCharacters.ToString(), "FLAG"),
+                    ("INCLUDEONENUMBER", request.IncludeNumericCharacters.ToString(), "FLAG"),
                 };
 
                 foreach (var (paramName, newValue, paramType) in updates) {

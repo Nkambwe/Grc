@@ -356,6 +356,26 @@
 
                         </li>
 
+                        <li class="sidebar-separator">
+
+                            <span class="separator-label">
+                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Configuration"))
+                            </span>
+
+                            <span class="separator-line"></span>
+
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a asp-controller="Support" asp-action="ApplicationSetting">
+                                <span class="menu-icon">
+                                    <i class="mif-equalizer"></i>
+                                </span>
+                                <span>
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Compliance.Configuration.Settings"))
+                                </span>
+                            </a>
+                        </li>
                     </ul>
 
                     <div class="sidebar-footer">

@@ -1365,6 +1365,22 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "SavePasswordPolicyConfigurations",
+    "RelativePath": "grc/organization/password-policy-configuration",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.PasswordConfigurationsRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
     "Method": "GetPasswordSetting",
     "RelativePath": "grc/organization/password-settings",
     "HttpMethod": "POST",
