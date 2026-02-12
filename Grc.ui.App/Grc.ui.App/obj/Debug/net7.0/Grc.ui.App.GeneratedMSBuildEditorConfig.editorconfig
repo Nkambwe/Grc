@@ -72,6 +72,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU3VwcG9ydFxBY3Rpdml0eVJlY29yZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Projects/cs/GRC/github_0902026/Grc/Grc.ui.App/Grc.ui.App/Areas/Admin/Views/Support/ApplicationSetting.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU3VwcG9ydFxBcHBsaWNhdGlvblNldHRpbmcuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Projects/cs/GRC/github_0902026/Grc/Grc.ui.App/Grc.ui.App/Areas/Admin/Views/Support/DeletedUsers.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU3VwcG9ydFxEZWxldGVkVXNlcnMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

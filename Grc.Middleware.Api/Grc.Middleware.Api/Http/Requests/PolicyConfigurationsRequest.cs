@@ -29,5 +29,4 @@ namespace Grc.Middleware.Api.Http.Requests {
         public string IPAddress { get; set; } = string.Empty;
 
     }
-
 }

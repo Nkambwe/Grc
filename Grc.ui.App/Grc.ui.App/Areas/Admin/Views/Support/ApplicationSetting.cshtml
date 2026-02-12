@@ -5,6 +5,7 @@
     var auditConfi = Model.AuditSettings;
     var obliConfi = Model.ObligationSettings;
     var mappingConfi = Model.MappingSettings;
+    var securityConfi = Model.SecuritySettings;
 }
 <div class="settings-page">
     <!-- Left Tabs -->
@@ -14,6 +15,7 @@
         <button class="tab" data-tab="obligations">Obligations</button>
         <button class="tab" data-tab="mapping">Compliance Mapping</button>
         <button class="tab" data-tab="audits">Compliance Audits</button>
+        <button class="tab" data-tab="security">System Security</button>
     </div>
 
     <!-- Right Content -->
@@ -272,10 +274,169 @@
 
         </div>
 
+        <div class="tab-content configuration-content" id="security">
+
+            <div class="tab-header">
+
+                <h2>Password Polciy</h2>
+
+                <div id="saveBar" class="save-bar">
+                    <span>You have unsaved changes</span>
+                    <button class="btn btn-primary btn-sm">Save Changes</button>
+                </div>
+
+            </div>
+
+            <div class="tab-content-area">
+
+                <div class="row g-4">
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 m-2">
+                        <div class="settings-card">
+                            <div class="settings-info">
+                                <h6>User password should expire</h6>
+                                <p>Force users to periodically change their password by limiting usage period.</p>
+                            </div>
+                            <div class="settings-control">
+                                <div class="form-check form-switch">
+                                    <input asp-for="@securityConfi.ExpirePassword" class="form-check-input setting-input" type="checkbox" id="expirePassword" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 m-2">
+                        <div class="settings-card">
+                            <div class="settings-info">
+                                <h6>Password usage period (In Days)</h6>
+                                <p>Set the number of days a user can use the same password</p>
+                            </div>
+                            <div class="settings-control">
+                                <input asp-for="@securityConfi.ExipreyPeriod" class="form-control setting-input" type="number" min="1" max="100" id="exipryDays" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 m-2">
+                        <div class="settings-card">
+                            <div class="settings-info">
+                                <h6>Allow users to use an old password</h6>
+                                <p>System allows users to set a once used password again</p>
+                            </div>
+                            <div class="settings-control">
+                                <div class="form-check form-switch">
+                                    <input asp-for="@securityConfi.CanUseOldPassword" class="form-check-input setting-input" type="checkbox" id="allowPasswordReuse" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 m-2">
+                        <div class="settings-card">
+                            <div class="settings-info">
+                                <h6>Allow manual password reset</h6>
+                                <p>Allow system administrators to set new password for users</p>
+                            </div>
+                            <div class="settings-control">
+                                <div class="form-check form-switch">
+                                    <input asp-for="@securityConfi.AllowAdmininsToResetPasswords" class="form-check-input setting-input" type="checkbox" id="allowManualReset" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 m-2">
+                        <div class="settings-card">
+                            <div class="settings-info">
+                                <h6>Allow password reuse</h6>
+                                <p>Allow users to reuse their old passwords</p>
+                            </div>
+                            <div class="settings-control">
+                                <div class="form-check form-switch">
+                                    <input asp-for="@securityConfi.AllowPasswordReuse" class="form-check-input setting-input" type="checkbox" id="allowPasswordReuse" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 m-2">
+                        <div class="settings-card">
+                            <div class="settings-info">
+                                <h6>Password Length</h6>
+                                <p>Set required minimum password length</p>
+                            </div>
+                            <div class="settings-control">
+                                <input asp-for="@securityConfi.MinimumPasswordLength" class="form-control setting-input" type="number" min="12" max="100" id="passwordLength" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 m-2">
+                        <div class="settings-card">
+                            <div class="settings-info">
+                                <h6>Include uppercase characters</h6>
+                                <p>Include atleast one uppercase character</p>
+                            </div>
+                            <div class="settings-control">
+                                <div class="form-check form-switch">
+                                    <input asp-for="@securityConfi.IncludeUpperCharacters" class="form-check-input setting-input" type="checkbox" id="includeUpper" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 m-2">
+                        <div class="settings-card">
+                            <div class="settings-info">
+                                <h6>Include lower characters</h6>
+                                <p>Include atleast one lowercase character</p>
+                            </div>
+                            <div class="settings-control">
+                                <div class="form-check form-switch">
+                                    <input asp-for="@securityConfi.IncludeLowerCharacters" class="form-check-input setting-input" type="checkbox" id="includeLower" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 m-2">
+                        <div class="settings-card">
+                            <div class="settings-info">
+                                <h6>Include special characters</h6>
+                                <p>Include atleast one special character</p>
+                            </div>
+                            <div class="settings-control">
+                                <div class="form-check form-switch">
+                                    <input asp-for="@securityConfi.IncludeSpecialCharacters" class="form-check-input setting-input" type="checkbox" id="includeSpecial" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 m-2">
+                        <div class="settings-card">
+                            <div class="settings-info">
+                                <h6>Include numeric characters</h6>
+                                <p>Include atleast one numeric character</p>
+                            </div>
+                            <div class="settings-control">
+                                <div class="form-check form-switch">
+                                    <input asp-for="@securityConfi.IncludeNumericCharacters" class="form-check-input setting-input" type="checkbox" id="includeNumerics" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 </div>
 
 @{
     Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
-    Html.AddScriptParts(ResourceLocation.Footer, "~/js/compliance-settings.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/application-settings.js");
 }

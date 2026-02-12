@@ -7,6 +7,7 @@ namespace Grc.ui.App.Services {
         Task<GrcResponse<GrcConfigurationResponse>> GetConfigurationAsync(long userId, string iPAddress);
         Task<GrcResponse<GrcBooleanConfigurationResponse>> GetIncludeDeletedRecordAsync(GrcConfigurationParamRequest request);
         Task<GrcResponse<ServiceResponse>> SaveGeneralConfigurationsAsync(GrcGeneralConfigurationsRequest request);
+        Task<GrcResponse<ServiceResponse>> SavePasswordPolicyConfigurationsAsync(GrcPasswordConfigurationsRequest request);
         Task<GrcResponse<ServiceResponse>> SavePolicyConfigurationsAsync(GrcPolicyConfigurationsRequest request);
         Task<GrcResponse<ServiceResponse>> UpdateConfigurationAsync(GrcSystemConfigurationRequest request);
         Task<GrcResponse<GrcBugResponse>> GetErrorAsync(long id, long userId, string iPAddress);

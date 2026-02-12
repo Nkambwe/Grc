@@ -2303,6 +2303,13 @@
                 defaults: new { controller = "Application", action = "ChangeLanguage" }
             );
 
+            /*----------------------- Application settings routes*/
+            routeBuilder.MapControllerRoute(
+                name: "applications-password-policy",
+                pattern: "/grc/application/configurations/pwd-policy",
+                defaults: new { controller = "Application", action = "PasswordConfigurations" }
+            );
+
             // 404
             routeBuilder.MapControllerRoute(
                 name: "404",

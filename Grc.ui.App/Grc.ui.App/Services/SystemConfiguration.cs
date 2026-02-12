@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using DocumentFormat.OpenXml.EMMA;
-using DocumentFormat.OpenXml.Office2010.Excel;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Http.Requests;
@@ -37,7 +35,7 @@ namespace Grc.ui.App.Services {
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
-                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "CONFIGURATION-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<GrcConfigurationResponse>(error);
             }
@@ -50,7 +48,7 @@ namespace Grc.ui.App.Services {
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
-                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "CONFIGURATION-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<GrcBooleanConfigurationResponse>(error);
             }
@@ -63,7 +61,7 @@ namespace Grc.ui.App.Services {
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
-                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "CONFIGURATION-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<ServiceResponse>(error);
             }
@@ -76,7 +74,7 @@ namespace Grc.ui.App.Services {
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
-                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "CONFIGURATION-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<ServiceResponse>(error);
             }
@@ -89,7 +87,20 @@ namespace Grc.ui.App.Services {
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
-                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "CONFIGURATION-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<ServiceResponse>> SavePasswordPolicyConfigurationsAsync(GrcPasswordConfigurationsRequest request) {
+            try {
+                var endpoint = $"{EndpointProvider.Organization.OrganizationBase}/password-policy-configuration";
+                return await HttpHandler.PostAsync<GrcPasswordConfigurationsRequest, ServiceResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "CONFIGURATION-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<ServiceResponse>(error);
             }
@@ -109,7 +120,7 @@ namespace Grc.ui.App.Services {
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
-                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "CONFIGURATION-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<GrcBugResponse>(error);
             }
@@ -135,7 +146,7 @@ namespace Grc.ui.App.Services {
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
-                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "CONFIGURATION-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<PagedResponse<GrcBugItemResponse>>(error);
             }
@@ -148,7 +159,7 @@ namespace Grc.ui.App.Services {
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
-                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "CONFIGURATION-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<ListResponse<GrcBugResponse>>(error);
             }
@@ -161,7 +172,7 @@ namespace Grc.ui.App.Services {
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
-                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "CONFIGURATION-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<PagedResponse<GrcBugResponse>>(error);
             }
@@ -174,7 +185,7 @@ namespace Grc.ui.App.Services {
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
-                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "CONFIGURATION-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<ServiceResponse>(error);
             }
@@ -187,7 +198,7 @@ namespace Grc.ui.App.Services {
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
-                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "CONFIGURATION-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<ServiceResponse>(error);
             }
@@ -200,7 +211,7 @@ namespace Grc.ui.App.Services {
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
-                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "CONFIGURATION-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<ServiceResponse>(error);
             }
@@ -221,7 +232,7 @@ namespace Grc.ui.App.Services {
             } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
-                await ProcessErrorAsync(ex.Message, "RETURNS-SERVICE", ex.StackTrace);
+                await ProcessErrorAsync(ex.Message, "CONFIGURATION-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<GrcPasswordChangeResponse>(error);
             }
