@@ -1,8 +1,9 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\",
+  "WorkspaceRootPath": "C:\\Projects\\Grc\\Grc2\\Grc\\Grc.ui.App\\",
   "Documents": [
     {
+<<<<<<< HEAD
       "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\cs\\grc\\github_0902026\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\js\\admin-deleted-script.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\js\\admin-deleted-script.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
@@ -11,6 +12,26 @@
     },
     {
       "AbsoluteMoniker": "D:0:0:{375AA3AB-3F07-F168-211C-D54F18C990E9}|..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj|c:\\projects\\cs\\grc\\github_0902026\\grc\\grc.middleware.api\\grc.middleware.api\\controllers\\samcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+=======
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc\\grc2\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\js\\admin-permissionsets.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\js\\admin-permissionsets.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc\\grc2\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\js\\admin-role.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\js\\admin-role.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc\\grc2\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\js\\admin-rolegroup-permissions.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\js\\admin-rolegroup-permissions.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc\\grc2\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\js\\admin-role-groups.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\js\\admin-role-groups.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|c:\\projects\\grc\\grc2\\grc\\grc.ui.app\\grc.ui.app\\wwwroot\\js\\admin-role-permissions.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{29905720-B9DC-47E3-8AD4-91A184A99994}|Grc.ui.App\\Grc.ui.App.csproj|solutionrelative:grc.ui.app\\wwwroot\\js\\admin-role-permissions.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+>>>>>>> 2f12ebc1d25055876e05992a2545bf0cd35cd7ac
     }
   ],
   "DocumentGroupContainers": [
@@ -19,12 +40,12 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 362,
-          "SelectedChildIndex": 12,
+          "DockedWidth": 139,
+          "SelectedChildIndex": 16,
           "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
               "$type": "Bookmark",
@@ -32,11 +53,15 @@
             },
             {
               "$type": "Bookmark",
-              "Name": "ST:1:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
             },
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
             },
             {
               "$type": "Bookmark",
@@ -67,6 +92,7 @@
               "Name": "ST:130:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
+<<<<<<< HEAD
               "$type": "Bookmark",
               "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
             },
@@ -81,11 +107,37 @@
               "ViewState": "AgIAABsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
               "WhenOpened": "2026-02-13T05:52:12.507Z",
+=======
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "admin-role-permissions.js",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc2\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-role-permissions.js",
+              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\js\\admin-role-permissions.js",
+              "ToolTip": "C:\\Projects\\Grc\\Grc2\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-role-permissions.js",
+              "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\admin-role-permissions.js",
+              "ViewState": "AgIAAFMAAAAAAAAAAAAIwGoAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-02-13T02:11:01.844Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "admin-role-groups.js",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc2\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-role-groups.js",
+              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\js\\admin-role-groups.js",
+              "ToolTip": "C:\\Projects\\Grc\\Grc2\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-role-groups.js",
+              "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\admin-role-groups.js",
+              "ViewState": "AgIAAFkAAAAAAAAAAAAIwGoAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-02-13T02:10:16.358Z",
+>>>>>>> 2f12ebc1d25055876e05992a2545bf0cd35cd7ac
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
+<<<<<<< HEAD
               "Title": "SamController.cs",
               "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\SamController.cs",
               "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\SamController.cs",
@@ -94,10 +146,22 @@
               "ViewState": "AgIAAOcAAAAAAAAAAAAQwEAHAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-12T17:36:04.513Z"
+=======
+              "Title": "admin-rolegroup-permissions.js",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc2\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-rolegroup-permissions.js",
+              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\js\\admin-rolegroup-permissions.js",
+              "ToolTip": "C:\\Projects\\Grc\\Grc2\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-rolegroup-permissions.js",
+              "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\admin-rolegroup-permissions.js",
+              "ViewState": "AgIAAGsAAAAAAAAAAAAIwHYAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-02-13T02:09:12.539Z",
+              "EditorCaption": ""
+>>>>>>> 2f12ebc1d25055876e05992a2545bf0cd35cd7ac
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+<<<<<<< HEAD
               "Title": "SupportController.cs",
               "DocumentMoniker": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\SupportController.cs",
               "RelativeDocumentMoniker": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\SupportController.cs",
@@ -106,6 +170,29 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-12T17:36:03.303Z",
+=======
+              "Title": "admin-role.js",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc2\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-role.js",
+              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\js\\admin-role.js",
+              "ToolTip": "C:\\Projects\\Grc\\Grc2\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-role.js",
+              "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\admin-role.js",
+              "ViewState": "AgIAAFwAAAAAAAAAAAAIwGwAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-02-13T02:08:33.122Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "admin-permissionsets.js",
+              "DocumentMoniker": "C:\\Projects\\Grc\\Grc2\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-permissionsets.js",
+              "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\js\\admin-permissionsets.js",
+              "ToolTip": "C:\\Projects\\Grc\\Grc2\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-permissionsets.js",
+              "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\admin-permissionsets.js",
+              "ViewState": "AgIAAFMAAAAAAAAAAAAIwF4AAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-02-13T02:07:26.501Z",
+>>>>>>> 2f12ebc1d25055876e05992a2545bf0cd35cd7ac
               "EditorCaption": ""
             }
           ]
