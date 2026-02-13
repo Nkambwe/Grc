@@ -399,31 +399,16 @@
 
 /************************************************************* Custom Tabulator Styles */
 
-/*.tabulator .tabulator-tableholder .tabulator-table {
-    width: 100% !important;
-}*/
-
-/*.tabulator-tree-control {
-    display: inline-block !important;
-    visibility: visible !important;
-    width: 16px !important;
-    height: 16px !important;
-    margin-right: 5px;
-    cursor: pointer;
+.tabulator-placeholder-contents {
+    display: inline-block;
+    text-align: center;
+    padding: 10px;
+    color: #ccc;
+    font-weight: 700;
+    font-size: 2em !important;
+    white-space: normal;
 }
 
-.tabulator-tree-control-expand:before {
-    content: "►" !important;
-    font-size: 12px;
-    color: #666;
-}
-
-.tabulator-tree-control-collapse:before {
-    content: "▼" !important;
-    font-size: 12px;
-    color: #666;
-}
-*/
 .tabulator-row,
 .tabulator-row.tabulator-tree-level-1 {
     background-color: var(--grey-light-extra);
