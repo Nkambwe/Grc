@@ -1381,7 +1381,25 @@ namespace Grc.Middleware.Api.Services {
                 throw;
             }
         }
-        
+
+        public async Task<bool> IsVerifiedBySameAsync(long recordId, string username) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Check current user permission to approve record", "INFO");
+
+            try {
+                var user = await uow.UserRepository.GetAsync(a => a.Id == recordId, true);
+                if (user != null) {
+                    return user.LastModifiedBy.Trim().Equals(username.Trim(), StringComparison.CurrentCultureIgnoreCase);
+                }
+
+                return true;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to update System User record: {ex.Message}", "ERROR");
+                await LogErrorAsync(uow, ex);
+                throw;
+            }
+        }
+
         public async Task<bool> ApproveUserAsync(long userId, bool isApproved, bool isVerified, string currentUser) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Upprove System User", "INFO");
@@ -1435,10 +1453,28 @@ namespace Grc.Middleware.Api.Services {
                     return result > 0;
                 }
 
-                return false;
+                return true;
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to update System User record: {ex.Message}", "ERROR");
                  await LogErrorAsync(uow, ex);
+                throw;
+            }
+        }
+
+        public async Task<bool> IsCreatedBySameAsync(long recordId, string username){
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Check current user permission to verify record", "INFO");
+
+            try {
+                var user = await uow.UserRepository.GetAsync(a => a.Id == recordId, true);
+                if (user != null) {
+                    return user.CreatedBy.Trim().Equals(username.Trim(), StringComparison.CurrentCultureIgnoreCase);
+                }
+
+                return true;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to update System User record: {ex.Message}", "ERROR");
+                await LogErrorAsync(uow, ex);
                 throw;
             }
         }

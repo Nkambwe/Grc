@@ -18,5 +18,7 @@ namespace Grc.Middleware.Api.Services {
         Task<bool> SavePasswordPolicyConfigurationsAsync(PasswordConfigurationsRequest request, string username);
         Task<bool> SaveGeneralConfigurationsAsync(GeneralConfigurationsRequest request, string username);
         Task<PasswordChangeResponse> GetPasswordSettingAsync();
+        Task<UserAccountResponse> GetUserAccountConfigurationAsync();
+        Task<bool> SaveUserAccountConfigurationsAsync(UserAccountConfigurationsRequest request, string username);
     }
 }

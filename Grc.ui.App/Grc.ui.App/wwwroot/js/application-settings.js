@@ -32,23 +32,19 @@ document.addEventListener("click", function (e) {
 
     const tabId = getActiveTab().id;
 
-    //if (tabId === "general") saveGeneralSettings();
-    //if (tabId === "policies") savePolicySettings();
+    if (tabId === "useraccount") saveUserAccountSettings();
     if (tabId === "security") savePasswordSettings();
 });
 
-function buildGeneralSettings() {
+function buildUserAccountSettings() {
     return {
-        softDeleteRecords: $('#softDelete').is(':checked'), 
-        includeDeletedRecord: $('#includeDeleted').is(':checked'),
+        canVerifySame: $('#canVerifySame').is(':checked'), 
+        canApproveSame: $('#canApproveSame').is(':checked'),
     };
 }
 
-function buildPolicySettings() {
-    return {
-        sendPolicyNotifications: $('#policySendNotifications').is(':checked'), 
-        maximumNumberOfNotifications: Number($('#policyMaxNotifications').val()) || 0 
-    };
+function saveUserAccountSettings() {
+    saveSettings("/admin/support/configuration/user-accounts", buildUserAccountSettings());
 }
 
 function buildPasswordSettings() {
@@ -65,16 +61,8 @@ function buildPasswordSettings() {
     };
 }
 
-//function saveGeneralSettings() {
-//    saveSettings("/grc/compliance/configurations/general-config", buildGeneralSettings());
-//}
-
-//function savePolicySettings() {
-//    saveSettings("/grc/compliance/configurations/policy-config", buildPolicySettings());
-//}
-
 function savePasswordSettings() {
-    saveSettings("/admin/aupport/pwd-policy", buildPasswordSettings());
+    saveSettings("/admin/support/configuration/pwd-policy", buildPasswordSettings());
 }
 
 function saveSettings(url, record) {

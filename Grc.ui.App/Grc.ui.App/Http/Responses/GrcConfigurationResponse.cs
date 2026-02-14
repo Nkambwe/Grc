@@ -21,6 +21,9 @@ namespace Grc.ui.App.Http.Responses {
 
         [JsonPropertyName("security")]
         public GrcSecuritySettings SecuritySettings { get; set; } = new();
+
+        [JsonPropertyName("userAccount")]
+        public GrcUserAccountSettings UserAccountettings { get; set; } = new();
     }
 
 }

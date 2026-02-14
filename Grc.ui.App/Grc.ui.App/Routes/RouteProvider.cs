@@ -2306,8 +2306,13 @@
             /*----------------------- Application settings routes*/
             routeBuilder.MapControllerRoute(
                 name: "applications-password-policy",
-                pattern: "/admin/aupport/pwd-policy",
+                pattern: "/admin/support/configuration/pwd-policy",
                 defaults: new { controller = "Support", action = "PasswordConfigurations", area="admin" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "applications-user-account-config",
+                pattern: "/admin/support/configuration/user-accounts",
+                defaults: new { controller = "Support", action = "SaveUserAccountConfigurations", area = "admin" }
             );
 
             // 404

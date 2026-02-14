@@ -249,7 +249,6 @@ namespace Grc.ui.App.Services {
             }
         }
 
-
         public async Task<GrcResponse<UserResponse>> GetUserByEmailAsync(string email, long requestingUserId, string ipAddress)
         {
 
@@ -883,6 +882,98 @@ namespace Grc.ui.App.Services {
             }
         }
         
+        public async Task<GrcResponse<GrcBooleanResponse>> IsVerifiedBySameAsync(long recordId, long userId, string ipAddress) {
+
+            try {
+                //..map request
+                Logger.LogActivity($"CHECK IF USER SAME USER CREATED RECORD");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Sam.Users}/same-verifier";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcBooleanResponse>(endpoint, new GrcIdRequest() {
+                    RecordId = recordId,
+                    UserId = userId,
+                    IPAddress = ipAddress,
+                    Action = "Check whether current user can approve user record"
+                });
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "SYSTEM-ACCESS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<GrcBooleanResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<GrcBooleanResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<GrcBooleanResponse>> AllowSameApproverAsync(long userId, string ipAddress) {
+            try {
+                //..map request
+                Logger.LogActivity($"CHECK IF USER CAN APPROVE USER RECORD");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Sam.Users}/allow-same-approver";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcRequest, GrcBooleanResponse>(endpoint, new GrcRequest() {
+                    UserId = userId,
+                    IPAddress = ipAddress,
+                    Action = "Check whether current user can approve user record"
+                });
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "SYSTEM-ACCESS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<GrcBooleanResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<GrcBooleanResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<GrcBooleanResponse>> AllowSameVerifierAsync(long userId, string ipAddress) {
+            try {
+                //..map request
+                Logger.LogActivity($"CHECK IF USER CAN VERIFY USER RECORD");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Sam.Users}/allow-same-verifier";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcRequest, GrcBooleanResponse>(endpoint, new GrcRequest() {
+                    UserId = userId,
+                    IPAddress = ipAddress,
+                    Action = "Check whether current user can verify user record"
+                });
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "SYSTEM-ACCESS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<GrcBooleanResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<GrcBooleanResponse>(error);
+            }
+        }
+
         public async Task<GrcResponse<ServiceResponse>> ApproveUserAsync(ApproveUserViewModel model, long userId, string ipAddress) {
             if (model == null) {
                 var error = new GrcResponseError( GrcStatusCodes.BADREQUEST, "Request record cannot be null","Invalid user record");
@@ -923,6 +1014,38 @@ namespace Grc.ui.App.Services {
                 await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
+        public async Task<GrcResponse<GrcBooleanResponse>> IsCreatedBySameAsync(long recordId, long userId, string ipAddress) {
+
+            try {
+                //..map request
+                Logger.LogActivity($"CHECK IF USER CAN VERIFY USER RECORD");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Sam.Users}/same-creator";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcIdRequest, GrcBooleanResponse>(endpoint, new GrcIdRequest() {
+                    RecordId = recordId,
+                    UserId = userId,
+                    IPAddress = ipAddress,
+                    Action = "Check whether current user can verify user record"
+                });
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "SYSTEM-ACCESS-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<GrcBooleanResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "SYSTEM_ACCESS-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<GrcBooleanResponse>(error);
             }
         }
 

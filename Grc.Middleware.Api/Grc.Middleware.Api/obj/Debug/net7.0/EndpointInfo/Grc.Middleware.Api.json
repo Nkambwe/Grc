@@ -6384,6 +6384,99 @@
         }
       }
     },
+    "/grc/sam/users/allow-same-approver": {
+      "post": {
+        "tags": [
+          "Sam"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/sam/users/allow-same-verifier": {
+      "post": {
+        "tags": [
+          "Sam"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/sam/users/same-verifier": {
+      "post": {
+        "tags": [
+          "Sam"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/grc/sam/users/approve-user": {
       "post": {
         "tags": [
@@ -6404,6 +6497,37 @@
             "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ApproveUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/sam/users/same-creator": {
+      "post": {
+        "tags": [
+          "Sam"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.IdRequest"
               }
             }
           }
@@ -7861,6 +7985,37 @@
             "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.GeneralConfigurationsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/grc/organization/user-account-configurations": {
+      "post": {
+        "tags": [
+          "Support"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.UserAccountConfigurationsRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.UserAccountConfigurationsRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.UserAccountConfigurationsRequest"
               }
             }
           }
@@ -12308,6 +12463,33 @@
             "nullable": true
           },
           "action": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Grc.Middleware.Api.Http.Requests.UserAccountConfigurationsRequest": {
+        "type": "object",
+        "properties": {
+          "canVerifySame": {
+            "type": "boolean"
+          },
+          "canApproveSame": {
+            "type": "boolean"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          },
+          "ipAddress": {
             "type": "string",
             "nullable": true
           }

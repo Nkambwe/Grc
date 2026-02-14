@@ -73,7 +73,7 @@
                     <ul class="sidebar-menu">
 
                         <li class="sidebar-item">
-                            <a asp-controller="Support" asp-action="Index" asp-area="Admin" >
+                            <a asp-controller="Support" asp-action="Index" asp-area="Admin" require-permission="CANVIEWUSER">
                                 <span class="menu-icon">
                                     <i class="mdi mdi-home-outline"></i></>
                                 </span>
@@ -167,7 +167,7 @@
                         </li>
 
                         <li class="sidebar-item with-submenu">
-                            <a href="" class="toggle-submenu" data-id="roles-menu">
+                            <a href="" class="toggle-submenu" data-id="roles-menu" require-permission="ManageRoles">
                                 <span class="menu-icon">
                                     <i class="mdi mdi-account-settings"></i>
                                 </span>
@@ -208,7 +208,7 @@
 
                         <li class="sidebar-item with-submenu">
 
-                            <a href="" class="toggle-submenu" data-id="permissions-menu">
+                            <a href="" class="toggle-submenu" data-id="permissions-menu" require-permission="ManagePermissions">
                                 <span class="menu-icon">
                                     <i class="mdi mdi-key"></i>
                                 </span>
@@ -332,7 +332,7 @@
                             <ul id="company-menu" class="sidebar-submenu">
 
                                 <li class="sidebar-item with-submenu">
-                                    <a asp-controller="Configuration" asp-action="Branches" asp-area="Admin">
+                                    <a asp-controller="Configuration" asp-action="Branches" asp-area="Admin" require-permission="ManageBranches">
                                         <span class="menu-icon">
                                             <i class="mdi mdi-view-grid-outline"></i>
                                         </span>
@@ -342,7 +342,7 @@
                                     </a>
                                 </li>
                                 <li class="sidebar-item with-submenu">
-                                    <a asp-controller="Support" asp-action="Departments" asp-area="Admin">
+                                    <a asp-controller="Support" asp-action="Departments" asp-area="Admin" require-permission="ManageDepartments">
                                         <span class="menu-icon">
                                             <i class="mdi mdi-widgets-outline"></i>
                                         </span>
@@ -366,8 +366,9 @@
 
                         </li>
 
+                        
                         <li class="sidebar-item">
-                            <a asp-controller="Support" asp-action="ApplicationSetting">
+                            <a asp-controller="Support" asp-action="ApplicationSetting" require-permission="ManageSystemSettings">
                                 <span class="menu-icon">
                                     <i class="mif-equalizer"></i>
                                 </span>

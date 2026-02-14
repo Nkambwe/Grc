@@ -1476,6 +1476,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SupportController",
+    "Method": "SaveUserAccountConfigurations",
+    "RelativePath": "grc/organization/user-account-configurations",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.UserAccountConfigurationsRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "GetPagedSections",
     "RelativePath": "grc/paged-statute-sections-list",
@@ -3893,6 +3909,38 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "AllowSameApprover",
+    "RelativePath": "grc/sam/users/allow-same-approver",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "AllowSameVerifier",
+    "RelativePath": "grc/sam/users/allow-same-verifier",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.GeneralRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
     "Method": "ApproveUser",
     "RelativePath": "grc/sam/users/approve-user",
     "HttpMethod": "POST",
@@ -4279,6 +4327,38 @@
     "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
     "Method": "GetSelectedRoleGroups",
     "RelativePath": "grc/sam/users/role-rolegroup-list",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "SameCreator",
+    "RelativePath": "grc/sam/users/same-creator",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Grc.Middleware.Api.Http.Requests.IdRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Grc.Middleware.Api.Controllers.SamController",
+    "Method": "SameVerifier",
+    "RelativePath": "grc/sam/users/same-verifier",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,

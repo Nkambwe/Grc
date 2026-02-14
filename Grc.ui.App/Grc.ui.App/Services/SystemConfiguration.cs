@@ -238,5 +238,18 @@ namespace Grc.ui.App.Services {
             }
         }
 
+        public async Task<GrcResponse<ServiceResponse>> SaveUserAccountConfigurationsAsync(GrcUserAccountConfigurationsRequest request) {
+            try {
+                var endpoint = $"{EndpointProvider.Organization.OrganizationBase}/user-account-configurations";
+                return await HttpHandler.PostAsync<GrcUserAccountConfigurationsRequest, ServiceResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "CONFIGURATION-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
+            }
+        }
+
     }
 }

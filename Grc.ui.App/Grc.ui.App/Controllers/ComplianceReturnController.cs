@@ -345,6 +345,7 @@ namespace Grc.ui.App.Controllers {
             return Redirect(Url.Action("Dashboard", "Application"));
         }
 
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCERETURNS", "CANMANAGECOMPLIANCERETURNS")]
         public async Task<IActionResult> ReturnsRegister() {
             if (User.Identity?.IsAuthenticated == true) {
                 //..try getting current user logged in
@@ -365,6 +366,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Retrieve Return", "User retrieved return/report", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_RETURN, "StatutoryReturn")]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCERETURNS", "CANMANAGECOMPLIANCERETURNS")]
         public async Task<IActionResult> GetReturn(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -429,6 +431,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Add Return", "User added return/report", ActivityTypeDefaults.COMPLIANCE_CREATE_RETURN, "StatutoryReturn")]
+        [PermissionAuthorization(false, "CreateRegulatoryReturns", "CANCREATECOMPLIANCERETURNS")]
         public async Task<IActionResult> CreateReturn([FromBody] StatutoryReturnViewModel request) {
             try {
                 if (!ModelState.IsValid) {
@@ -468,6 +471,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Update Return", "User updated return/repor", ActivityTypeDefaults.COMPLIANCE_EDITED_RETURN, "StatutoryReturn")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCERETURNS", "CANCREATECOMPLIANCERETURNS")]
         public async Task<IActionResult> UpdateReturn([FromBody] StatutoryReturnViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -495,6 +499,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Delete Return", "User delete return/report", ActivityTypeDefaults.COMPLIANCE_DELETED_RETURN, "StatutoryReturn")]
+        [PermissionAuthorization(true, "DeleteRegulatoryReturns", "CANDELETECOMPLIANCERETURNS")]
         public async Task<IActionResult> DeleteReturn(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -526,6 +531,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "CANVIEWFREQUENCIES", "CANCREATEFREQUENCIES", "ManageSubmissionFrequency")]
         public async Task<IActionResult> GetFrequencyReturns([FromBody] TableListRequest request) {
             try {
 
@@ -577,6 +583,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCERETURNS", "CANMANAGECOMPLIANCERETURNS")]
         public async Task<IActionResult> GetPagedReturnsList([FromBody] TableListRequest request) {
             try {
                 //..get user IP address
@@ -638,6 +645,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCESUBMISSIONS", "CANCREATECOMPLIANCESUBMISSIONS")]
         public async Task<IActionResult> GetPagedReturnSubmissions([FromBody] TableListRequest request) {
             try {
                 //..get user IP address
@@ -1505,8 +1513,8 @@ namespace Grc.ui.App.Controllers {
         #endregion
 
         #region Circular
-
-       public async Task<IActionResult> GetCircularRecord(long id) {
+        [PermissionAuthorization(true, "CANVIEWCIRCULARS")]
+        public async Task<IActionResult> GetCircularRecord(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
                 var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -1586,6 +1594,7 @@ namespace Grc.ui.App.Controllers {
             }
         }
 
+        [PermissionAuthorization(true, "CANVIEWCIRCULARS")]
         public async Task<IActionResult> GetPagedCircularList([FromBody] TableListRequest request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1635,6 +1644,8 @@ namespace Grc.ui.App.Controllers {
             }
         }
 
+        [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWCIRCULARS", "CANADDCIRCULARS")]
         public async Task<IActionResult> CreateCircularRecord([FromBody] CircularViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1670,6 +1681,8 @@ namespace Grc.ui.App.Controllers {
             }
         }
 
+        [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWCIRCULARS", "CANMODIFYCIRCULARS")]
         public async Task<IActionResult> UpdateCircularRecord([FromBody] CircularViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1691,6 +1704,7 @@ namespace Grc.ui.App.Controllers {
             }
         }
 
+        [PermissionAuthorization(true, "CANVIEWCIRCULARS", "CANMODIFYCIRCULARS", "CANDELETECIRCULARS")]
         public async Task<IActionResult> DeleteCircularRecord(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1730,6 +1744,7 @@ namespace Grc.ui.App.Controllers {
         #region Circular Issues
 
         [LogActivityResult("Retrieve Circular Issue", "User retrieved circular issue", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_ISSUE, "CircularIssue")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEISSUES")]
         public async Task<IActionResult> GetCircularIssue(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1781,6 +1796,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Retrieve list of circular Issue", "User retrieved list of circular issues", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_ISSUE, "CircularIssue")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEISSUES")]
         public async Task<IActionResult> GetAllCircularIssues(GrcCircularIssueListRequest request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1823,6 +1839,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Create Circular Issue", "User added new circular issue", ActivityTypeDefaults.COMPLIANCE_CREATE_ISSUE, "CircularIssue")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEISSUES", "CANCREATECOMPLIANCEISSUES")]
         public async Task<IActionResult> CreateCircularIssue([FromBody] CircularIssueViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1859,6 +1876,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Update Circular issue", "User updated circular issue", ActivityTypeDefaults.COMPLIANCE_EDITED_ISSUE, "CircularIssue")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEISSUES", "CANUPDATECOMPLIANCEISSUES")]
         public async Task<IActionResult> UpdateCircularIssue([FromBody] CircularIssueViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1894,6 +1912,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Delete Circular Issue", "User deleted circular issue", ActivityTypeDefaults.COMPLIANCE_DELETED_ISSUE, "CircularIssue")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEISSUES", "CANUPDATECOMPLIANCEISSUES", "CANDELETECOMPLIANCEISSUES")]
         public async Task<IActionResult> DeleteCircularIssue(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2335,6 +2354,7 @@ namespace Grc.ui.App.Controllers {
         #region Return Reports
 
         [HttpPost]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> DailyReturnsReport() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -2444,6 +2464,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> WeeklyReturnsReport() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -2555,6 +2576,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> QuarterlyReturnsReport() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -2664,6 +2686,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> MonthlyReturnsReport() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -2798,6 +2821,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> AnnuallyReturnsReport() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -2906,6 +2930,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> BreachedReport() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -3004,6 +3029,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> MonthlySummeryReport() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -3196,6 +3222,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> BreachedAgingReport() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -3333,6 +3360,7 @@ namespace Grc.ui.App.Controllers {
         #region Circular Reports
 
         [HttpPost]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> MofReport() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -3435,6 +3463,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> DpfReport() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -3540,6 +3569,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> UraReport() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -3645,6 +3675,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> PpdaReport() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -3750,6 +3781,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> BouReport() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -3855,6 +3887,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> OthersReport() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -3960,6 +3993,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> CircularSummeryReport() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);

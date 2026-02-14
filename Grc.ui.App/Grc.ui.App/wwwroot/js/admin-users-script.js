@@ -1,8 +1,23 @@
 ﻿
+//..check permissions
+window.hasPermission = function (permissionName) {
+    return window.userPermissions.some(p => p.toLowerCase() === permissionName.toLowerCase());
+};
+
+//..check if user has ANY of the permissions
+window.hasAnyPermission = function (...permissionNames) {
+    return permissionNames.some(p => window.hasPermission(p));
+};
+
+//..check if user has ALL of the permissions
+window.hasAllPermissions = function (...permissionNames) {
+    return permissionNames.every(p => window.hasPermission(p));
+};
+
 let userTable;
 function initUserTable() {
     userTable = new Tabulator("#adminUsersTable", {
-        ajaxURL: "/admin/support/users-all",
+        ajaxURL: "/admin/support/system-users/list",
         paginationMode: "remote",
         filterMode: "remote",
         sortMode: "remote",
@@ -126,11 +141,24 @@ function initUserTable() {
                 headerSort: true,
                 headerFilter: "input",
                 frozen: true,
-                formatter: (cell) => `<span class="clickable-title" onclick="viewRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`
+                formatter: (cell) => {
+                    const username = cell.getValue();
+                    const rowData = cell.getRow().getData();
+
+                    //..if user has permission to view/edit
+                    if (hasPermission("CANMODIFYUSER")) {
+                        return `<span class="clickable-title" onclick="viewRecord(${rowData.id}, 'edit')">${username}</span>`;
+                    }else if (hasPermission("CANVIEWUSER")) {
+                        return `<span class="clickable-title" onclick="viewRecord(${rowData.id}, 'view')">${username}</span>`;
+                    }
+
+                    //..return plain text
+                    return `<span>${username}</span>`;
+                }
             },
             {
                 title: "FULL NAME",
-                field: "displayName",
+                field: "fullName",
                 minWidth: 200,
                 widthGrow: 4,
                 headerSort: true,
@@ -153,6 +181,15 @@ function initUserTable() {
                 title: "PASSWORD",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
+                    const canReset = hasPermission("CANRESETUSERPASSWORDS");
+
+                    if (!canReset) {
+                        return `<button class="grc-table-btn grc-btn-view grc-view-action disabled" disabled style="opacity: 0.5; cursor: not-allowed;">
+                              <span><i class="mdi mdi-account-key-outline" aria-hidden="true"></i></span>
+                               <span>RESET</span>
+                         </button>`;
+                    }
+
                     return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="passwordReset(${rowData.id})">
                         <span><i class="mdi mdi-account-key-outline" aria-hidden="true"></i></span>
                         <span>RESET</span>
@@ -167,6 +204,16 @@ function initUserTable() {
                 title: "LOCK",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
+                    //..check if user has lock permission
+                    const canLock = hasPermission("CANLOCKUSERACCOUNT");
+
+                    if (!canLock) {
+                        return `<button class="grc-table-btn grc-btn-view grc-view-action disabled" disabled style="opacity: 0.5; cursor: not-allowed;">
+                             <span><i class="mdi mdi-account-lock-outline" aria-hidden="true"></i></span>
+                             <span>LOCK</span>
+                         </button>`;
+                    }
+
                     return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="lockUser(${rowData.id})">
                         <span><i class="mdi mdi-account-lock-outline" aria-hidden="true"></i></span>
                         <span>LOCK</span>
@@ -181,6 +228,18 @@ function initUserTable() {
                 title: "DELETE",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
+
+                    //..check if user has delete permission
+                    const canDelete = hasPermission("CANDELETEUSER");
+
+                    if (!canDelete) {
+                         return `<button class="grc-table-btn grc-btn-delete" disabled style="opacity: 0.5; cursor: not-allowed;">
+                             <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                             <span>DELETE</span>
+                         </button>`;
+                    }
+
+                    //..show button
                     return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteUser(${rowData.id})">
                         <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
                         <span>DELETE</span>
@@ -285,7 +344,8 @@ function ajaxJson(url, type = "GET", data = null) {
     });
 }
 
-function viewRecord(id) {
+function viewRecord(id, mode) {
+    console.log(mode);
     Swal.fire({
         title: 'Loading...',
         text: 'Retrieving user...',
@@ -679,6 +739,8 @@ function isValidEmail(email) {
 
 $(document).ready(function () {
     initUserTable();
+
+    console.log(window.userPermissions);
 
     $('#userForm').on('submit', function (e) {
         e.preventDefault();
