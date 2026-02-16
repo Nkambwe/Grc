@@ -1,6 +1,21 @@
 ﻿
 let exceptionsTable;
 
+//..check permissions
+window.hasPermission = function (permissionName) {
+    return window.userPermissions.some(p => p.toLowerCase() === permissionName.toLowerCase());
+};
+
+//..check if user has ANY of the permissions
+window.hasAnyPermission = function (...permissionNames) {
+    return permissionNames.some(p => window.hasPermission(p));
+};
+
+//..check if user has ALL of the permissions
+window.hasAllPermissions = function (...permissionNames) {
+    return permissionNames.every(p => window.hasPermission(p));
+};
+
 function initExceptionTable() {
     exceptionsTable = new Tabulator("#exceptionsTable", {
         ajaxURL: "/grc/compliance/audit/exceptions/mini-report-list",
@@ -54,7 +69,28 @@ function initExceptionTable() {
                     },
                     error: function (xhr, status, error) {
                         console.error("AJAX Error:", error);
+                       //..hide permission alert
+                        $('#permissionAlert').hide();
+
+                        if (xhr.status === 401) {
+                            window.location = "/login/userlogin";
+                        }
+
+                        if (xhr.status === 403) {
+                            $('#permissionAlert').show();
+
+                            //..return empty dataset
+                            resolve({
+                                data: [],
+                                last_page: 1,
+                                total_records: 0
+                            });
+
+                            return;
+                        }
+
                         reject(error);
+                        return;
                     }
                 });
             });
@@ -81,8 +117,13 @@ function initExceptionTable() {
                 headerSort: true,
                 resizable: false,
                 formatter: function (cell) {
-                    const id = cell.getRow().getData().id;
-                    return `<span class="clickable-title" onclick="viewReport(${id})">${cell.getValue()}</span>`;
+                    //..if user has permission to view/edit
+                    if (hasPermission("CANUPDATECOMPLIANCEAUDITEXCEPTIONS")) {
+                          const id = cell.getRow().getData().id;
+                        return `<span class="clickable-title" onclick="viewReport(${id})">${cell.getValue()}</span>`;
+                    } else {
+                        return `<span >${cell.getValue()}</span>`
+                    }
                 }
             },
             {

@@ -1,17 +1,11 @@
 ﻿<div class="grc-tabulator-container">
-
-    <div class="grc-tabulator-search">
-        <div class="field-search-group">
-            <label class="form-searchbox-label text-right">
-                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Search.User.Unapproved"))
-            </label>
-            <input id="userSearchbox" type="text" class="form-control searchbox-field">
-        </div>
-        <div class="field-search-buttons">
-            <button id="btnUserExportFiltered" class="btn btn-primary">
-                <i class="mdi mdi-file-excel-outline"></i> @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.ExportFiltered"))
-            </button>
-        </div>
+    <div class="grc-permission-alert" id="permissionAlert" style="display: none;">
+        <span><i class="mdi mdi-alert-circle"></i></span>
+        <span>Access Denied! You do not have permissions to view these records</span>
+    </div>
+    <div class="grc-error-alert" id="errorAlert" style="display: none;">
+        <span><i class="mdi mdi-alert-octagon"></i></span>
+        <span id="errorAlertMessage">An error occurred while loading data</span>
     </div>
     <div id="unapprovedTable"></div>
 </div>

@@ -6,18 +6,47 @@
 }
 
 @{
+    var permissionsClaim = User.FindFirst("Permissions")?.Value;
+    var permissions = string.IsNullOrEmpty(permissionsClaim)
+        ? new List<string>()
+        : System.Text.Json.JsonSerializer.Deserialize<List<string>>(permissionsClaim) ?? new List<string>();
+
+    var leftActions = new List<ComponentAction>
+    {
+        new ComponentAction {
+            ActionKey = ActionKey.AuditHome.GetDescription(), 
+            Icon = "mdi mdi-home-outline", 
+            Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home")
+        }
+    };
+
+    if (permissions.Contains("CANCREATECOMPLIANCEAUDITTYPES"))
+    {
+        leftActions.Add(new ComponentAction { ActionKey = ActionKey.Separator.GetDescription() });
+        leftActions.Add(new ComponentAction
+                {
+                    ActionKey = ActionKey.AuditType.GetDescription(),
+                    Icon = "mdi mdi-plus",
+                    Tooltip = ILocalize.GetLocalizedLabel("App.Label.New")
+                });
+    }
+
+    if (permissions.Contains("CANVIEWCOMPLIANCEAUDITREPORTS"))
+    {
+        leftActions.Add(new ComponentAction { ActionKey = ActionKey.Separator.GetDescription() });
+        leftActions.Add(new ComponentAction
+        {
+            ActionKey = ActionKey.ExportToExcel.GetDescription(),
+            Icon = "mdi mdi-file-excel-outline",
+            Tooltip = ILocalize.GetLocalizedLabel("App.Label.Export")
+        });
+    }
+
     var component = new PageComponentViewModel
     {
         ComponentId = $"0",
         ComponentKey = "Audit.Types",
-        LeftActions = new List<ComponentAction>
-        {
-            new ComponentAction { ActionKey = ActionKey.AuditHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home") },
-            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
-            new ComponentAction { ActionKey = ActionKey.AuditType.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") },
-            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
-            new ComponentAction { ActionKey = ActionKey.ExportToExcel.GetDescription(), Icon = "mdi mdi-file-excel-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Export") },
-        }
+        LeftActions = leftActions
     };
 }
 

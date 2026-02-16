@@ -1,4 +1,20 @@
 ﻿let roleGroupTable;
+
+//..check permissions
+window.hasPermission = function (permissionName) {
+    return window.userPermissions.some(p => p.toLowerCase() === permissionName.toLowerCase());
+};
+
+//..check if user has ANY of the permissions
+window.hasAnyPermission = function (...permissionNames) {
+    return permissionNames.some(p => window.hasPermission(p));
+};
+
+//..check if user has ALL of the permissions
+window.hasAllPermissions = function (...permissionNames) {
+    return permissionNames.every(p => window.hasPermission(p));
+};
+
 function initGroupTable() {
     roleGroupTable = new Tabulator("#roleGroupTable", {
         ajaxURL: "/admin/support/system-role-groups/list",
@@ -59,15 +75,15 @@ function initGroupTable() {
                         resolve(response);
                     },
                     error: function (xhr, status, error) {
+                        //..hide permission alert
+                        $('#permissionAlert').hide();
+
                         if (xhr.status === 401) {
                             window.location = "/login/userlogin";
                         }
 
                         if (xhr.status === 403) {
-                            Swal.fire({
-                                title: "Access Denied!",
-                                text: "You do not have permission to access this resource."
-                            });
+                            $('#permissionAlert').show();
 
                             //..return empty dataset
                             resolve({
@@ -101,10 +117,33 @@ function initGroupTable() {
         },
         ajaxError: function (error) {
             console.error("Tabulator AJAX Error:", error);
-             Swal.fire({
-                title: "System Error!",
-                text: "Failed to load system roles. Please try again."
-            });
+            
+            //..hide permission alert
+            $('#permissionAlert').hide();
+        
+            //..determine error message
+            let errorMessage = "Failed to load data. Please try again.";
+        
+            if (error.status === 403) {
+                //..permission error,show permission alert instead
+                $('#permissionAlert').show();
+            } else if (error.status === 404) {
+                errorMessage = "The requested resource was not found.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else if (error.status === 500) {
+                errorMessage = "Server error occurred. Please contact support.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else if (error.status === 0) {
+                errorMessage = "Network error. Please check your connection.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else {
+                //..generic error - show error alert
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            }
         },
         layout: "fitColumns",
         dataTree: false,
@@ -115,7 +154,14 @@ function initGroupTable() {
                 field: "groupName",
                 headerFilter: "input",
                 minWidth: 250,
-                formatter: (cell) => `<span class="clickable-title" onclick="editGroup(${cell.getRow().getData().id})">${cell.getValue()}</span>`
+                formatter: function (cell) {
+                    //..if user has permission to view/edit
+                    if (hasPermission("CANMODIFYROLEGROUPS") || hasPermission("EditRoleGroup")) {
+                        return `<span class="clickable-title" onclick="editGroup(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
+                    } else {
+                            `<span class="clickable-title">${cell.getValue()}</span>`
+                    }
+                }
             },
             {
                 title: "GROUP DESCRIPTION",
@@ -175,8 +221,6 @@ function initGroupTable() {
         ]
     });
 
-    //..search role group
-    initGroupSearch();
 }
 
 function findGroup(id) {
@@ -352,7 +396,74 @@ function deleteGroup(id) {
             error: function (xhr, status, error) {
                 console.error("Delete error:", error);
                 console.error("Response:", xhr.responseText);
-                toastr.error(xhr.responseJSON?.message || "Request failed.");
+                 //..handle different error status codes
+                if (xhr.status === 403) {
+                    //..permission denied
+                    Swal.fire({
+                        title: 'Access Denied',
+                        html: `<p>You do not have permission to delete role groups.</p>
+                               <p class="text-muted" style="font-size: 0.9em; margin-top: 10px;">
+                                  Contact your administrator if you believe this is an error.
+                               </p>`,
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
+                if (xhr.status === 401) {
+                    //..unauthorized - session expired
+                    Swal.fire({
+                        title: 'Session Expired',
+                        text: 'Your session has expired. Please log in again.',
+                        confirmButtonText: 'Go to Login'
+                    }).then(() => {
+                        window.location.href = '/login/userlogin';
+                    });
+                    return;
+                }
+
+                if (xhr.status === 404) {
+                    Swal.fire({
+                        title: 'Delete Failed',
+                        text: 'The requested resource was not found.'
+                    });
+                    return;
+                }
+            
+                if (xhr.status === 500) {
+                    Swal.fire({
+                        title: 'Server Error',
+                        text: 'A server error occurred. Please try again or developer team.'
+                    });
+                    return;
+                }
+            
+                if (xhr.status === 0) {
+                    Swal.fire({
+                        title: 'Network Error',
+                        text: 'Unable to connect to the server. Please check your internet connection.'
+                    });
+                    return;
+                }
+
+                //..generic error handling
+                let errorMessage = "An unexpected error occurred.";
+                try {
+                    let response = JSON.parse(xhr.responseText);
+                    if (response.message) {
+                        errorMessage = response.message;
+                    }
+                } catch (e) {
+                    //..if we can't parse the response, use the status text
+                    if (xhr.statusText && xhr.statusText !== 'error') {
+                        errorMessage = xhr.statusText;
+                    }
+                }
+            
+                Swal.fire({
+                    title: "Unexpected error!",
+                    text: errorMessage
+                });
             }
         });
     });
@@ -403,11 +514,8 @@ function saveGroup(e) {
         });
         return;
     }
-
-    console.log("Valid Record:", recordData);
     persistGroup(isEdit, recordData);
 }
-
 
 function highlightGroupField(selector, hasError, message) {
     const $field = $(selector);
@@ -428,7 +536,7 @@ function persistGroup(isEdit, payload) {
     const url = (isEdit === true || isEdit === "true")
         ? "/admin/support/role-groups-modify"
         : "/admin/support/role-groups-create";
-
+    
     Swal.fire({
         title: isEdit ? "Updating role group..." : "Saving role group...",
         text: "Please wait while we process your request.",
@@ -438,9 +546,9 @@ function persistGroup(isEdit, payload) {
             Swal.showLoading();
         }
     });
-
-    //..debugging
+    
     console.log("Sending data to server:", JSON.stringify(payload));
+    
     $.ajax({
         url: url,
         type: "POST",
@@ -451,17 +559,16 @@ function persistGroup(isEdit, payload) {
             'X-CSRF-TOKEN': getGroupAntiForgeryToken()
         },
         success: function (res) {
-            //..lose loader and show success message
             Swal.close();
+            
             if (!res.success) {
-                //..error from the server
                 Swal.fire({
                     title: "Invalid record",
                     html: res.message.replaceAll("; ", "<br>")
                 });
                 return;
             }
-
+            
             if (roleGroupTable) {
                 if (isEdit && res.data) {
                     roleGroupTable.updateData([res.data]);
@@ -471,20 +578,78 @@ function persistGroup(isEdit, payload) {
                     roleGroupTable.replaceData();
                 }
             }
-
+            
             closeGroupPanel();
         },
         error: function (xhr) {
             Swal.close();
-
-            let errorMessage = "Unexpected error occurred.";
+            
+            //..handle different error status codes
+            if (xhr.status === 403) {
+                // Permission denied
+                Swal.fire({
+                    title: 'Access Denied',
+                    html: `<p>You do not have permission to ${isEdit ? 'update' : 'create'} role groups.</p>
+                           <p class="text-muted" style="font-size: 0.9em; margin-top: 10px;">
+                              Contact your administrator if you believe this is an error.
+                           </p>`,
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+            
+            if (xhr.status === 401) {
+                //..unauthorized - session expired
+                Swal.fire({
+                    title: 'Session Expired',
+                    text: 'Your session has expired. Please log in again.',
+                    confirmButtonText: 'Go to Login'
+                }).then(() => {
+                    window.location.href = '/login/userlogin';
+                });
+                return;
+            }
+            
+            if (xhr.status === 404) {
+                Swal.fire({
+                    title: isEdit ? 'Update Failed' : 'Save Failed',
+                    text: 'The requested resource was not found.'
+                });
+                return;
+            }
+            
+            if (xhr.status === 500) {
+                Swal.fire({
+                    title: 'Server Error',
+                    text: 'A server error occurred. Please try again or contact support.'
+                });
+                return;
+            }
+            
+            if (xhr.status === 0) {
+                Swal.fire({
+                    title: 'Network Error',
+                    text: 'Unable to connect to the server. Please check your internet connection.'
+                });
+                return;
+            }
+            
+            //..generic error handling
+            let errorMessage = "An unexpected error occurred.";
             try {
                 let response = JSON.parse(xhr.responseText);
-                if (response.message) errorMessage = response.message;
-            } catch (e) { }
-
+                if (response.message) {
+                    errorMessage = response.message;
+                }
+            } catch (e) {
+                //..if we can't parse the response, use the status text
+                if (xhr.statusText && xhr.statusText !== 'error') {
+                    errorMessage = xhr.statusText;
+                }
+            }
+            
             Swal.fire({
-                title: isEdit ? "Update Failed" : "Save Failed",
+                title: isEdit ? 'Update Failed' : 'Save Failed',
                 text: errorMessage
             });
         }
@@ -494,27 +659,6 @@ function persistGroup(isEdit, payload) {
 function closeGroupPanel() {
     $('#roleGroupOverLay').removeClass('active');
     $('#roleGroupPane').removeClass('active');
-}
-
-function initGroupSearch() {
-    const searchInput = $('#roleGroupSearchbox');
-    let typingTimer;
-
-    searchInput.on('input', function () {
-        clearTimeout(typingTimer);
-        const searchTerm = $(this).val().trim();
-
-        typingTimer = setTimeout(function () {
-            if (searchTerm && searchTerm.length >= 2) {
-                roleGroupTable.setFilter([
-                    { field: "groupName", type: "like", value: searchTerm },
-                    { field: "groupDescription", type: "like", value: searchTerm }
-                ]);
-            } else {
-                roleGroupTable.clearFilter();
-            }
-        }, 300);
-    });
 }
 
 //..get antiforegery token from meta tag
@@ -536,7 +680,6 @@ $(document).ready(function () {
     $(".action-btn-admin-home").on("click", function () {
         window.location.href = '/admin/support';
     });
-
 
     //..new role group
     $(".action-btn-new-role-group").on("click", function () {

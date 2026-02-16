@@ -1,9 +1,21 @@
 ﻿
-$(document).ready(function () {
-    initRegulatoryCategoryTable();
-});
-
 let regulatoryCategoryTable;
+
+//..check permissions
+window.hasPermission = function (permissionName) {
+    return window.userPermissions.some(p => p.toLowerCase() === permissionName.toLowerCase());
+};
+
+//..check if user has ANY of the permissions
+window.hasAnyPermission = function (...permissionNames) {
+    return permissionNames.some(p => window.hasPermission(p));
+};
+
+//..check if user has ALL of the permissions
+window.hasAllPermissions = function (...permissionNames) {
+    return permissionNames.every(p => window.hasPermission(p));
+};
+
 function initRegulatoryCategoryTable() {
     regulatoryCategoryTable = new Tabulator("#category-table", {
         ajaxURL: "/grc/compliance/support/paged-categories-all",
@@ -66,7 +78,28 @@ function initRegulatoryCategoryTable() {
                         resolve(response);
                     },
                     error: function (xhr, status, error) {
+                        //..hide permission alert
+                        $('#permissionAlert').hide();
+
+                        if (xhr.status === 401) {
+                            window.location = "/login/userlogin";
+                        }
+
+                        if (xhr.status === 403) {
+                            $('#permissionAlert').show();
+
+                            //..return empty dataset
+                            resolve({
+                                data: [],
+                                last_page: 1,
+                                total_records: 0
+                            });
+
+                            return;
+                        }
+
                         reject(error);
+                        return;
                     }
                 });
             });
@@ -79,7 +112,33 @@ function initRegulatoryCategoryTable() {
             };
         },
         ajaxError: function (error) {
-            Swal.fire("Failed to load regulatory categories. Please try again.");
+            
+            //..hide permission alert
+            $('#permissionAlert').hide();
+        
+            //..determine error message
+            let errorMessage = "Failed to load data. Please try again.";
+        
+            if (error.status === 403) {
+                //..permission error,show permission alert instead
+                $('#permissionAlert').show();
+            } else if (error.status === 404) {
+                errorMessage = "The requested resource was not found.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else if (error.status === 500) {
+                errorMessage = "Server error occurred. Please contact support.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else if (error.status === 0) {
+                errorMessage = "Network error. Please check your connection.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else {
+                //..generic error - show error alert
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            }
         },
         layout: "fitColumns",
         responsiveLayout: "hide",
@@ -91,8 +150,14 @@ function initRegulatoryCategoryTable() {
                 widthGrow: 4,
                 headerSort: true,
                 formatter: function (cell) {
-                    return `<span class="clickable-title" onclick="viewRegulatoryCategoryRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
+                    //..if user has permission to view/edit
+                    if (hasPermission("EditRegulatoryTypes")) {
+                         return `<span class="clickable-title" onclick="viewRegulatoryCategoryRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
+                    } else {
+                        return `<span >${cell.getValue()}</span>`
+                    }
                 }
+
             },
             {
                 title: "COMMENTS",
@@ -127,12 +192,18 @@ function initRegulatoryCategoryTable() {
                 title: "ACTION",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                    return `
+                     if (hasPermission("DeleteRegulatoryTypes")) { 
+                         return `
                         <button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteRegulatoryCategoryRecord(${rowData.id})">
-                        <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
-                        <span>DELETE</span>
-                        </button>
-                    `;
+                            <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                            <span>DELETE</span>
+                        </button>`;
+                    } else {
+                             return `<button class="grc-table-btn grc-btn-delete grc-delete-action disabled" disabled>
+                                <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                                <span>DELETE</span>
+                            </button>`; 
+                    }
                 },
                 width: 200,
                 hozAlign: "center",
@@ -142,9 +213,6 @@ function initRegulatoryCategoryTable() {
             }
         ]
     });
-
-    // Initialize search
-    initRegulatoryCategorySearch();
 }
 
 //..route to home
@@ -428,23 +496,6 @@ function closeRegulatoryCategoryPanel() {
     $('#slidePanel').removeClass('active');
 }
 
-function initRegulatoryCategorySearch() {
-    let typingTimer;
-    $("#categorySearchbox").on("keyup", function () {
-        clearTimeout(typingTimer);
-        let searchValue = $(this).val();
-
-        typingTimer = setTimeout(function () {
-            if (searchValue.length >= 2) {  
-                regulatoryCategoryTable.setFilter("globalSearch", "like", searchTerm);
-                regulatoryCategoryTable.setPage(1, true);
-            } else {
-                regulatoryCategoryTable.clearFilter();
-            }
-        }, 300);
-    });
-}
-
 //..get antiforegery token from meta tag
 function getCategoryAntiForgeryToken() {
     return $('meta[name="csrf-token"]').attr('content');
@@ -465,3 +516,8 @@ function highlightCategoryField(selector, hasError, message) {
         }
     }
 }
+
+$(document).ready(function () {
+    initRegulatoryCategoryTable();
+});
+

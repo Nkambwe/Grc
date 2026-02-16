@@ -267,7 +267,6 @@
     Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-users-script.js");
 }
 
-
 <script>
     //..make permissions available globally
     window.userPermissions = @Html.Raw(JsonSerializer.Serialize(permissions ?? new List<string>()));

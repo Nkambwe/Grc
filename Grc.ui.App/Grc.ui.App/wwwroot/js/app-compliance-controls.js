@@ -64,13 +64,45 @@ function initControlList() {
                         resolve(response);
                     },
                     error: function (xhr, status, error) {
-                        console.error("AJAX Error:", error);
+                        if (xhr.status === 401) {
+                            window.location = "/login/userlogin";
+                        }
+
+                        if (xhr.status === 403) {
+                            Swal.fire({
+                                title: "Access Denied!",
+                                text: "You do not have permission to access this resource."
+                            });
+
+                            //..return empty dataset
+                            resolve({
+                                data: [],
+                                last_page: 1,
+                                total_records: 0
+                            });
+
+                            return;
+                        }
+
                         reject(error);
+                        return;
                     }
                 });
             });
         },
         ajaxResponse: function (url, params, response) {
+
+            if(response?.status === 403 || response?.hasPermission === false){
+
+                this.clearData();
+                this.setPlaceholder("You do not have permission to view these records.");
+
+                return {
+                    data: [],
+                    last_page: 1
+                };
+            }
+
             const treeData = (response.data || []).map(category => ({
                 rowType: "category",
                 categoryId: category.categoryId,
@@ -96,7 +128,10 @@ function initControlList() {
         },
         ajaxError: function (error) {
             console.error("Tabulator AJAX Error:", error);
-            alert("Failed to load compliance controls. Please try again.");
+            Swal.fire({
+                title: "System Error!",
+                text: "Failed to load compliance controls. Please try again."
+            });
         },
         layout: "fitColumns",
         responsiveLayout: "hide",

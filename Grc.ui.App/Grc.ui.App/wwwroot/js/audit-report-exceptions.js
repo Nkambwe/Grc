@@ -1,6 +1,21 @@
 ﻿//..route to home
 let auditReportTable;
 
+//..check permissions
+window.hasPermission = function (permissionName) {
+    return window.userPermissions.some(p => p.toLowerCase() === permissionName.toLowerCase());
+};
+
+//..check if user has ANY of the permissions
+window.hasAnyPermission = function (...permissionNames) {
+    return permissionNames.some(p => window.hasPermission(p));
+};
+
+//..check if user has ALL of the permissions
+window.hasAllPermissions = function (...permissionNames) {
+    return permissionNames.every(p => window.hasPermission(p));
+};
+
 function initAuditExceptionTable() {
     auditReportTable = new Tabulator("#auditExceptionTable", {
         ajaxURL: "/grc/compliance/audit/exceptions",
@@ -61,7 +76,28 @@ function initAuditExceptionTable() {
                     },
                     error: function (xhr, status, error) {
                         console.error("AJAX Error:", error);
+                        //..hide permission alert
+                        $('#permissionAlert').hide();
+
+                        if (xhr.status === 401) {
+                            window.location = "/login/userlogin";
+                        }
+
+                        if (xhr.status === 403) {
+                            $('#permissionAlert').show();
+
+                            //..return empty dataset
+                            resolve({
+                                data: [],
+                                last_page: 1,
+                                total_records: 0
+                            });
+
+                            return;
+                        }
+
                         reject(error);
+                        return;
                     }
                 });
             });
@@ -75,7 +111,7 @@ function initAuditExceptionTable() {
         },
         ajaxError: function (error) {
             console.error("Tabulator AJAX Error:", error);
-            alert("Failed to load audit exceptions. Please try again.");
+            Swal.fire("Failed to load audit exceptions. Please try again.");
         },
         layout: "fitColumns",
         responsiveLayout: "hide",
@@ -89,7 +125,14 @@ function initAuditExceptionTable() {
                 widthGrow: 2,
                 headerSort: true,
                 frozen: true,
-                formatter: (cell) => `<span class="clickable-title" onclick="viewAuditException(${cell.getRow().getData().id})">${cell.getValue()}</span>`
+                formatter: function (cell) {
+                    //..if user has permission to view/edit
+                    if (hasPermission("CANUPDATECOMPLIANCEAUDITEXCEPTIONS")) {
+                        return `<span class="clickable-title" onclick="viewAuditException(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
+                    } else {
+                        return `<span >${cell.getValue()}</span>`
+                    }
+                }
             },
             { title: "RECOMMENDATION", field: "recomendations", minWidth: 200, widthGrow: 3, headerFilter: "input" },
             { title: "EXCUTIONER", field: "excutioner", minWidth: 200, widthGrow: 3, headerFilter: "input" },

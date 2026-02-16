@@ -1,6 +1,20 @@
 ﻿let selectedCategory = null;
 let selectedLaw = null;
-//let flatpickr1Instances = {};
+
+//..check permissions
+window.hasPermission = function (permissionName) {
+    return window.userPermissions.some(p => p.toLowerCase() === permissionName.toLowerCase());
+};
+
+//..check if user has ANY of the permissions
+window.hasAnyPermission = function (...permissionNames) {
+    return permissionNames.some(p => window.hasPermission(p));
+};
+
+//..check if user has ALL of the permissions
+window.hasAllPermissions = function (...permissionNames) {
+    return permissionNames.every(p => window.hasPermission(p));
+};
 
 function loadRegulatoryTree() {
 
@@ -41,44 +55,65 @@ function loadRegulatoryTree() {
                 const tree = $(this).jstree(true);
                 const node = data.node;
 
-                console.log("EVENT FIRED");
-                console.log(node);
-
                 // Expand node if it has children
                 if (node.children.length > 0) {
                     tree.toggle_node(node);
                 }
 
-                // Category logic
-                if (node.type === "category") {
-                    selectedCategory = parseInt(node.id.replace("C_", ""));
-                    selectedLaw = null;
+                if (hasPermission("CANVIEWSTATUTE")) {
+                     // Category logic
+                     if (node.type === "category") {
 
-                    $("#categoryView").removeClass("d-none");
-                    $("#lawView").addClass("d-none");
+                        selectedCategory = parseInt(node.id.replace("C_", ""));
+                        selectedLaw = null;
 
-                    $("#regulatoryBreadcrumb").html(
-                        `<li class="breadcrumb-item active">${node.text}</li>`
-                    );
+                        $("#categoryView").removeClass("d-none");
+                        $("#lawView").addClass("d-none");
 
-                    lawsTable.setData();
-                    showBreadcrubs(node.text);
-                    loadLaws(selectedCategory);
-                }
+                        $("#regulatoryBreadcrumb").html(
+                            `<li class="breadcrumb-item active">${node.text}</li>`
+                        );
 
-                // Law logic
-                if (node.type === "law") {
+                        lawsTable.setData();
+                        showBreadcrubs(node.text);
+                        loadLaws(selectedCategory);
+                    }
+
+                    // Law logic
+                    if (node.type === "law") {
                     
-                    selectedLaw = parseInt(node.id.replace("L_", ""));
-                    selectedCategory = parseInt(node.parent.replace("C_", ""));
-                    showLawView(node.text);
-                    loadActs(selectedLaw);
-                }
+                        selectedLaw = parseInt(node.id.replace("L_", ""));
+                        selectedCategory = parseInt(node.parent.replace("C_", ""));
+                        showLawView(node.text);
+                        loadActs(selectedLaw);
+                    }
+                } 
             });
         },
         error: function (xhr, status, error) {
             console.error("Error loading tree:", error);
             console.error("Response:", xhr.responseText);
+            $('#permissionAlert').hide();
+
+            if (xhr.status === 401) {
+                window.location = "/login/userlogin";
+            }
+
+            if (xhr.status === 403) {
+                $('#permissionAlert').show();
+
+                //..return empty dataset
+                resolve({
+                    data: [],
+                    last_page: 1,
+                    total_records: 0
+                });
+
+                return;
+            }
+
+            reject(error);
+            return;
         }
     });
 }
@@ -137,8 +172,28 @@ let lawsTable = new Tabulator("#lawsTable", {
                     resolve(response);
                 },
                 error: function (xhr, status, error) {
-                    console.error("AJAX Error:", error);
+                    //..hide permission alert
+                    $('#permissionAlert').hide();
+
+                    if (xhr.status === 401) {
+                        window.location = "/login/userlogin";
+                    }
+
+                    if (xhr.status === 403) {
+                        $('#permissionAlert').show();
+
+                        //..return empty dataset
+                        resolve({
+                            data: [],
+                            last_page: 1,
+                            total_records: 0
+                        });
+
+                        return;
+                    }
+
                     reject(error);
+                    return;
                 }
             });
         });
@@ -164,14 +219,26 @@ let lawsTable = new Tabulator("#lawsTable", {
             minWidth: 280,
             headerSort: true,
             formatter: function (cell) {
-                return `<span class="clickable-title" onclick="viewLaw(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
+                //..if user has permission to view/edit
+                if (hasPermission("CANVIEWSTATUTE")) {
+                       return `<span class="clickable-title" onclick="viewLaw(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
+                } else {
+                    return `<span >${cell.getValue()}</span>`
+                }
             }
         },
         { title: "REF CODE", field: "lawCode", width: 200 },
         { title: "STATUS", field: "status", width: 200 },
         {
             title: "VIEW ACT/SECTION",
-            formatter: () => `<button class="btn btn-sm btn-link">ACTS/SECTIONS</button>`,
+            formatter: function (cell) {
+                //..if user has permission to view/edit
+                if (hasPermission("CANVIEWSTATUTE")) {
+                       return`<button class="btn btn-sm btn-link">ACTS/SECTIONS</button>`;
+                } else {
+                    return `<button class="btn btn-sm btn-link disabled" disabled>ACTS/SECTIONS</button>`;
+                }
+            },
             cellClick: function (e, cell) {
                 let law = cell.getRow().getData();
                 selectedLaw = law.id;
@@ -235,8 +302,28 @@ let actsTable = new Tabulator("#actsTable", {
                     resolve(response);
                 },
                 error: function (xhr, status, error) {
-                    console.error("AJAX Error:", error);
+                    //..hide permission alert
+                    $('#permissionAlert').hide();
+
+                    if (xhr.status === 401) {
+                        window.location = "/login/userlogin";
+                    }
+
+                    if (xhr.status === 403) {
+                        $('#permissionAlert').show();
+
+                        //..return empty dataset
+                        resolve({
+                            data: [],
+                            last_page: 1,
+                            total_records: 0
+                        });
+
+                        return;
+                    }
+
                     reject(error);
+                    return;
                 }
             });
         });
@@ -259,12 +346,21 @@ let actsTable = new Tabulator("#actsTable", {
             field: "sectionNumber",
             headerFilter: "input",
             width: 120,
+            field: "lawName",
+            widthGrow: 4,
+            minWidth: 280,
+            headerSort: true,
             formatter: function (cell) {
-                const id = cell.getRow().getData().id;
-                return `<span class="clickable-title"
-                         onclick="viewSection(${id})">
+                 const id = cell.getRow().getData().id;
+                //..if user has permission to view/edit
+                if (hasPermission("CANUPDATESTATUTE")) {
+                    return `<span class="clickable-title"
+                            onclick="viewSection(${id})">
                         ${cell.getValue()}
                     </span>`;
+                } else {
+                    return `<span >${cell.getValue()}</span>`
+                }
             }
         },
         {
