@@ -20,6 +20,9 @@ namespace Grc.Middleware.Api.Http.Responses {
 
         [JsonPropertyName("security")]
         public SecuritySettings SecuritySettings { get; set; } = new();
+
+        [JsonPropertyName("userAccount")]
+        public UserAccountSettings UserAccountettings { get; set; } = new();
     }
 
 }

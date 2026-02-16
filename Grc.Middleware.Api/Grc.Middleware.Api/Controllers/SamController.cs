@@ -27,7 +27,7 @@ namespace Grc.Middleware.Api.Controllers {
         private readonly IPinnedItemService _pinnedItemService;
         private readonly IMailTaskQueue _mailTask;
         private readonly IRoleRepository _roleService;
-         private readonly ISystemConfigurationService _configService;
+        private readonly ISystemConfigurationService _configService;
         public SamController(IObjectCypher cypher, 
                             IServiceLoggerFactory loggerFactory, 
                             IMapper mapper, 
@@ -816,24 +816,22 @@ namespace Grc.Middleware.Api.Controllers {
 
                 //..get username
                 var currentUser = await _accessService.GetByIdAsync(request.UserId);
-                if (currentUser != null)
-                {
-                    userRecord.CreatedBy = currentUser.Username;
-                    userRecord.CreatedOn = DateTime.Now;
-                    userRecord.LastModifiedBy = currentUser.Username;
-                    userRecord.LastModifiedOn = DateTime.Now;
+                var response = new GeneralResponse();
+                if (currentUser == null) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.NOTFOUND;
+                    response.Message = "Logged in user record not found";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
                 }
-                else
-                {
-                    userRecord.CreatedBy = $"{request.UserId}";
-                    userRecord.CreatedOn = DateTime.Now;
-                    userRecord.LastModifiedBy = $"{request.UserId}";
-                    userRecord.LastModifiedOn = DateTime.Now;
-                }
+
+                userRecord.CreatedBy = currentUser.Username;
+                userRecord.CreatedOn = DateTime.Now;
+                userRecord.LastModifiedBy = currentUser.Username;
+                userRecord.LastModifiedOn = DateTime.Now;
 
                 //..create company
                 var result = await _accessService.InsertUserAsync(userRecord);
-                var response = new GeneralResponse();
+                
                 if (result) {
                     //..send mail for password change
                     _mailTask.Enqueue(async (sp, token) => {
@@ -1030,12 +1028,17 @@ namespace Grc.Middleware.Api.Controllers {
                 Cypher.EncryptProperties(request, request.EncryptFields);
 
                 //..get username
-                var currentUser = await _accessService.GetByIdAsync(request.UserId);
-                string username =currentUser != null?currentUser.Username:$"{request.UserId}";
-
-                //..update role
-                var result = await _accessService.UpdateUserAsync(request, username);
                 var response = new GeneralResponse();
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser == null) {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.NOTFOUND;
+                    response.Message = "Logged in user record not found";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                var username = currentUser.Username;
+                var result = await _accessService.UpdateUserAsync(request, username);
                 if (result) {
                     response.Status = true;
                     response.StatusCode = (int)ResponseCodes.SUCCESS;
@@ -1533,7 +1536,99 @@ namespace Grc.Middleware.Api.Controllers {
                 return Ok(new GrcResponse<PagedResponse<UserResponse>>(error));
             }
         }
-        
+
+        [HttpPost("sam/users/allow-same-approver")]
+        public async Task<IActionResult> AllowSameApprover([FromBody] GeneralRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<BooleanResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+
+                //..check allow same configuration
+                var canApproveSame = await _configService.GetConfigurationAsync<bool>("USER_CANAPPROVESAME");
+                if (canApproveSame.Value) {
+                    return Ok(new GrcResponse<BooleanResponse>(new BooleanResponse() {
+                        TrueOrFalse = true
+                    }));
+                }
+
+                return Ok(new GrcResponse<BooleanResponse>(new BooleanResponse() {
+                    TrueOrFalse = false
+                }));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<BooleanResponse>(error));
+            }
+        }
+
+        [HttpPost("sam/users/allow-same-verifier")]
+        public async Task<IActionResult> AllowSameVerifier([FromBody] GeneralRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<BooleanResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+
+                //..check allow same configuration
+                var canApproveSame = await _configService.GetConfigurationAsync<bool>("USER_CANVERIFYSAME");
+                if (canApproveSame.Value) {
+                    return Ok(new GrcResponse<BooleanResponse>(new BooleanResponse() {
+                        TrueOrFalse = true
+                    }));
+                }
+
+                return Ok(new GrcResponse<BooleanResponse>(new BooleanResponse() {
+                    TrueOrFalse = false
+                }));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<BooleanResponse>(error));
+            }
+        }
+
+        [HttpPost("sam/users/same-verifier")]
+        public async Task<IActionResult> SameVerifier([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<BooleanResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if(currentUser == null) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "User record not found", "Logged in user record not found");
+                    Logger.LogActivity($"NOR FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<BooleanResponse>(error));
+                }
+                string username =currentUser.Username;
+                var allowed = await _accessService.IsVerifiedBySameAsync(request.RecordId, username);
+                var response = new BooleanResponse() {
+                    TrueOrFalse = allowed
+                };
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                return Ok(new GrcResponse<BooleanResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<BooleanResponse>(error));
+            }
+        }
+
         [HttpPost("sam/users/approve-user")]
         public async Task<IActionResult> ApproveUser([FromBody] ApproveUserRequest request) {
             try {
@@ -1580,7 +1675,37 @@ namespace Grc.Middleware.Api.Controllers {
                 return Ok(new GrcResponse<GeneralResponse>(error));
             }
         }
-        
+
+        [HttpPost("sam/users/same-creator")]
+        public async Task<IActionResult> SameCreator([FromBody] IdRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<BooleanResponse>(error));
+                }
+
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser == null) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "User record not found", "Logged in user record not found");
+                    Logger.LogActivity($"NOR FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<BooleanResponse>(error));
+                }
+                string username = currentUser.Username;
+                var allowed = await _accessService.IsCreatedBySameAsync(request.RecordId, username);
+                var response = new BooleanResponse() {
+                    TrueOrFalse = allowed
+                };
+                Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                return Ok(new GrcResponse<BooleanResponse>(response));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<BooleanResponse>(error));
+            }
+        }
+
         [HttpPost("sam/users/verify-user")]
         public async Task<IActionResult> VerifyUser([FromBody] ApproveUserRequest request) {
             try {

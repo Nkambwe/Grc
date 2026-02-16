@@ -97,6 +97,10 @@ namespace Grc.Middleware.Api.Services
                 response.MappingSettings.LimitNumberOfItemsOnControl = ToBool(settings.GetValueOrDefault("MAPPING_LIMITNUMBEROFCONTROLS"));
                 response.MappingSettings.MaximumNumberOfItemsOnControl = ToInt(settings.GetValueOrDefault("MAPPING_MAXIMUMNUMBEROFCONTROLITEMS"));
 
+                //..user settings
+                response.UserAccountettings.CanVerifySame = ToBool(settings.GetValueOrDefault("USER_CANVERIFYSAME"));
+                response.UserAccountettings.CanApproveSame = ToBool(settings.GetValueOrDefault("USER_CANAPPROVESAME"));
+
                 //..security
                 response.SecuritySettings.ExpirePassword = ToBool(settings.GetValueOrDefault("SECURITY_EXPIRPASSWORDS"));
                 response.SecuritySettings.ExipreyPeriod = ToInt(settings.GetValueOrDefault("SECURITY_EXPIRYPERIOD"));
@@ -285,6 +289,63 @@ namespace Grc.Middleware.Api.Services
             }
         }
 
+        public async Task<UserAccountResponse> GetUserAccountConfigurationAsync() {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieving user account settings", "INFO");
+
+            try {
+                var settings = await GetUserAccountSettingsFromDatabase(uow);
+                return MapToUserSettingsResponse(settings);
+            } catch (Exception ex) {
+                LogExceptionWithInnerExceptions(ex, "Failed to retrieve user account settings");
+                throw;
+            }
+        }
+
+        public async Task<bool> SaveUserAccountConfigurationsAsync(UserAccountConfigurationsRequest request, string username) {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Save user account configurations", "INFO");
+
+            try {
+                var settings = await uow.SystemConfigurationRepository.GetAllAsync(s => s.ParameterName.StartsWith("USER"), true);
+                if (settings == null || !settings.Any()) {
+                    return false;
+                }
+
+                //..convert to dictionary for lookups
+                var settingsDict = settings.ToDictionary(s => s.ParameterName);
+                var now = DateTime.Now;
+                var entitiesToUpdate = new List<SystemConfiguration>(settingsDict.Count);
+
+                //..define configuration updates
+                var updates = new[] {
+                    ("USER_CANVERIFYSAME", request.CanVerifySame.ToString(), "FLAG"),
+                    ("USER_CANAPPROVESAME", request.CanApproveSame.ToString(), "FLAG")
+                };
+
+                foreach (var (paramName, newValue, paramType) in updates) {
+                    if (settingsDict.TryGetValue(paramName, out var setting)) {
+                        var normalizedValue = NormalizeValue(newValue, paramType);
+                        if (setting.ParameterValue != normalizedValue) {
+                            setting.ParameterValue = normalizedValue;
+                            setting.LastModifiedBy = username;
+                            setting.LastModifiedOn = now;
+                            entitiesToUpdate.Add(setting);
+                        }
+                    }
+                }
+
+                if (entitiesToUpdate.Count > 0) {
+                    return await uow.SystemConfigurationRepository.BulkyUpdateAsync(entitiesToUpdate.ToArray());
+                }
+
+                return false;
+            } catch (Exception ex) {
+                _ = await uow.SystemErrorRespository.InsertAsync(CreateErrorObject(uow, ex));
+                throw;
+            }
+        }
+
         public async Task<bool> SavePasswordPolicyConfigurationsAsync(PasswordConfigurationsRequest request, string username) {
             using var uow = UowFactory.Create();
             Logger.LogActivity("Save policy configurations", "INFO");
@@ -381,6 +442,27 @@ namespace Grc.Middleware.Api.Services
         }
 
         #region Private Methods
+
+        private async Task<Dictionary<string, string>> GetUserAccountSettingsFromDatabase(IUnitOfWork uow) {
+            var passwordParameters = new[] {
+                "USER_CANAPPROVESAME",
+                "USER_CANVERIFYSAME"
+            };
+
+            var settingsList = await uow.SystemConfigurationRepository
+                .GetAllAsync(s => passwordParameters.Contains(s.ParameterName), true);
+
+            return settingsList?.ToDictionary(s => s.ParameterName, s => s.ParameterValue)
+                   ?? new Dictionary<string, string>();
+        }
+
+        private UserAccountResponse MapToUserSettingsResponse(Dictionary<string, string> settings) {
+            return new UserAccountResponse {
+                CanApproveSame = GetBoolSetting(settings, "USER_CANAPPROVESAME", defaultValue: true),
+                CanVerifySame = GetBoolSetting(settings, "USER_CANVERIFYSAME", defaultValue: true)
+            };
+        }
+
         private async Task<Dictionary<string, string>> GetPasswordSettingsFromDatabase(IUnitOfWork uow) {
             var passwordParameters = new[] {
                 "SECURITY_CANUSEOLDPASSWORDS",

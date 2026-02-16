@@ -157,6 +157,25 @@ namespace Grc.ui.App.Services {
         /// <returns>Task containing update status of this user</returns>
         Task<GrcResponse<ServiceResponse>> UpdateUserAsync(UserViewModel userRecord, long userId, string ipAddress);
         /// <summary>
+        /// Check whether current user can verified this record
+        /// </summary>
+        /// <param name="recordId"record to approve</param>
+        /// <param name="userId">Current user ID</param>
+        /// <param name="ipAddress">User IP Address</param>
+        /// <returns></returns>
+        Task<GrcResponse<GrcBooleanResponse>> IsVerifiedBySameAsync(long recordId, long userId, string ipAddress);
+
+        /// <summary>
+        /// Check whether same system allow same verifier to approve record
+        /// </summary>
+        /// <returns></returns>
+        Task<GrcResponse<GrcBooleanResponse>> AllowSameApproverAsync(long userId, string ipAddress);
+        /// <summary>
+        /// Check whether same system allow same creator to verify record
+        /// </summary>
+        /// <returns></returns>
+        Task<GrcResponse<GrcBooleanResponse>> AllowSameVerifierAsync(long userId, string ipAddress);
+        /// <summary>
         /// Verify or approve user record
         /// </summary>
         /// <param name="userRecord"></param>
@@ -164,6 +183,14 @@ namespace Grc.ui.App.Services {
         /// <param name="ipAddress"></param>
         /// <returns></returns>
         Task<GrcResponse<ServiceResponse>> ApproveUserAsync(ApproveUserViewModel userRecord, long userId, string ipAddress);
+        /// <summary>
+        /// Check whether current user created this record
+        /// </summary>
+        /// <param name="recordId"record to verify</param>
+        /// <param name="userId">Current user ID</param>
+        /// <param name="ipAddress">User IP Address</param>
+        /// <returns></returns>
+        Task<GrcResponse<GrcBooleanResponse>> IsCreatedBySameAsync(long recordId, long userId, string ipAddress);
         /// <summary>
         /// Verify user account
         /// </summary>
@@ -356,7 +383,7 @@ namespace Grc.ui.App.Services {
         Task<GrcResponse<ServiceResponse>> UpdatePermissionSetAsync(GrcPermissionSetViewModel roleRecord, long userId, string ipAddress);
 
         Task<GrcResponse<ServiceResponse>> DeletePermissionSetAsync(GrcIdRequest request);
-        
+
         #endregion
 
     }

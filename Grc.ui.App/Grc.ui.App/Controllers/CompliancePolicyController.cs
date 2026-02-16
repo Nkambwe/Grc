@@ -224,6 +224,7 @@ namespace Grc.ui.App.Controllers {
 
         #region Policy Registers
 
+        [PermissionAuthorization(false, "ManageRegulationAndGuides", "ViewRegulationAndGuides")]
         public async Task<IActionResult> PoliciesRegisters() {
             try
             {
@@ -261,6 +262,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Retrieve Policy", "User retrieved policy", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_POLICY, "Policy")]
+        [PermissionAuthorization(false, "ManageRegulationAndGuides", "ViewRegulationAndGuides")]
         public async Task<IActionResult> GetPolicy(long id)
         {
             try
@@ -347,6 +349,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Add Policy", "User added policy", ActivityTypeDefaults.COMPLIANCE_CREATE_POLICY, "Policy")]
+        [PermissionAuthorization(true, "CreateRegulationAndGuides")]
         public async Task<IActionResult> CreatePolicy([FromBody] PolicyViewModel request) {
             try
             {
@@ -398,6 +401,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Update Policy", "User updated policy", ActivityTypeDefaults.COMPLIANCE_EDITED_POLICY, "Policy")]
+        [PermissionAuthorization(true, "EditRegulationAndGuides")]
         public async Task<IActionResult> UpdatePolicy([FromBody] PolicyViewModel request)
         {
             try
@@ -430,6 +434,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Lock Policy", "User locked policy", ActivityTypeDefaults.COMPLIANCE_LOCK_POLICY, "Policy")]
+        [PermissionAuthorization(true, "CANLOCKPOLICYDOCUMENT")]
         public async Task<IActionResult> LockPolicy([FromBody] PolicyLockViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -457,6 +462,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Delete Policy", "User delete policy", ActivityTypeDefaults.COMPLIANCE_DELETED_POLICY, "Policy")]
+        [PermissionAuthorization(true, "DeleteRegulationAndGuides")]
         public async Task<IActionResult> DeletePolicy(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -489,6 +495,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Export Policy", "User exported policies to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_POLICY, "Policy")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public IActionResult ExcelExportPolicies([FromBody] List<PolicyDocumentResponse> data) {
             using var workbook = new XLWorkbook();
             var ws = workbook.Worksheets.Add("Policies");
@@ -574,6 +581,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Export Policy", "User exported policies to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_POLICY, "Policy")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> ExportAll() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -680,6 +688,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> ExportAllSummery() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -813,6 +822,7 @@ namespace Grc.ui.App.Controllers {
         }
         
         [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> ExportReview() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -919,6 +929,7 @@ namespace Grc.ui.App.Controllers {
         }
         
         [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> ExportUpdated() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -1028,6 +1039,7 @@ namespace Grc.ui.App.Controllers {
         }
         
         [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> ExportDue() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -1136,6 +1148,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> ExportSmt() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -1244,6 +1257,7 @@ namespace Grc.ui.App.Controllers {
         }
         
         [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> ExportSmtSummery() {
            var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -1378,6 +1392,7 @@ namespace Grc.ui.App.Controllers {
         }
         
         [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> ExportBod() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -1485,6 +1500,7 @@ namespace Grc.ui.App.Controllers {
         }
         
         [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> ExportBodSummery() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -1618,6 +1634,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpGet]
+        [PermissionAuthorization(false, "ManageRegulationAndGuides", "ViewRegulationAndGuides")]
         public async Task<IActionResult> GetAllPolicies()
         {
             try
@@ -1677,6 +1694,7 @@ namespace Grc.ui.App.Controllers {
             }
         }
 
+        [PermissionAuthorization(false, "ManageRegulationAndGuides", "ViewRegulationAndGuides")]
         public async Task<IActionResult> AllPolicies([FromBody] TableListRequest request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2216,6 +2234,7 @@ namespace Grc.ui.App.Controllers {
         #endregion
 
         #region Policy Documents
+        [PermissionAuthorization(false, "ManageRegulationAndGuides", "ViewRegulationAndGuides")]
         public async Task<IActionResult> PoliciesDocuments()
         {
             try

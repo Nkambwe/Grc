@@ -14,5 +14,6 @@ namespace Grc.ui.App.Models {
         public GrcObligationSettings ObligationSettings { get; set; } = new();
         public GrcMappingSettings MappingSettings { get; set; } = new();
         public GrcSecuritySettings SecuritySettings { get; set; } = new();
+        public GrcUserAccountSettings UserAccountSettings { get; set; } = new();
     }
 }

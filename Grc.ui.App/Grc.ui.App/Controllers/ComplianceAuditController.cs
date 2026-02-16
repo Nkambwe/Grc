@@ -323,6 +323,7 @@ namespace Grc.ui.App.Controllers {
         #region Audits
 
         [LogActivityResult("Retrieve Audit", "User retrieved audit", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_AUDIT, "Audit")]
+        [PermissionAuthorization(false, "ViewComplianceAudits", "CANVIEWCOMPLIANCEAUDITS")]
         public async Task<IActionResult> GetAudit(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -373,6 +374,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "ViewComplianceAudits", "CANVIEWCOMPLIANCEAUDITS")]
         public async Task<IActionResult> GetAudits([FromBody] TableListRequest request) {
             try {
                 //..get user IP address
@@ -430,6 +432,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Add Audit", "User added audit", ActivityTypeDefaults.COMPLIANCE_CREATE_AUDIT, "Audit")]
+        [PermissionAuthorization(false, "CreateComplianceAudits", "CANCREATECOMPLIANCEAUDITS")]
         public async Task<IActionResult> CreateAudit([FromBody] AuditViewModel request) {
             try {
                 if (!ModelState.IsValid) {
@@ -469,6 +472,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Update audit", "User updated audit", ActivityTypeDefaults.COMPLIANCE_EDITED_AUDIT, "Audit")]
+        [PermissionAuthorization(false, "EditComplianceAudits", "CANUPDATECOMPLIANCEAUDITS")]
         public async Task<IActionResult> UpdateAudit([FromBody] AuditViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -496,6 +500,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Delete Audit", "User delete audit", ActivityTypeDefaults.COMPLIANCE_DELETED_AUDIT, "Audit")]
+        [PermissionAuthorization(false, "DeleteComplianceAudits", "CANDELETECOMPLIANCEAUDITS")]
         public async Task<IActionResult> DeleteAudit(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -531,6 +536,7 @@ namespace Grc.ui.App.Controllers {
         #region Audit Types
 
         [LogActivityResult("Retrieve Audit type", "User retrieved audit type", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_AUDIT_TYPE, "AuditType")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITTYPES")]
         public async Task<IActionResult> GetAuditType(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -578,6 +584,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITTYPES")]
         public async Task<IActionResult> GetAuditTypes([FromBody] TableListRequest request) {
             try {
                 //..get user IP address
@@ -632,6 +639,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Add Audit type", "User added audit type", ActivityTypeDefaults.COMPLIANCE_CREATE_AUDIT_TYPE, "AuditType")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITTYPES", "CANCREATECOMPLIANCEAUDITTYPES")]
         public async Task<IActionResult> CreateAuditType([FromBody] AuditTypeViewModel request) {
             try {
                 if (!ModelState.IsValid) {
@@ -671,6 +679,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Update audit type", "User updated audit type", ActivityTypeDefaults.COMPLIANCE_EDITED_AUDIT_TYPE, "AuditType")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITTYPES", "CANUPDATECOMPLIANCEAUDITTYPES")]
         public async Task<IActionResult> UpdateAuditType([FromBody] AuditTypeViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -698,6 +707,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Delete Audit type", "User delete audit type", ActivityTypeDefaults.COMPLIANCE_DELETED_AUDIT_TYPE, "AuditType")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITTYPES", "CANUPDATECOMPLIANCEAUDITTYPES", "CANDELETECOMPLIANCEAUDITTYPES")]
         public async Task<IActionResult> DeleteAuditType(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -733,6 +743,7 @@ namespace Grc.ui.App.Controllers {
         #region Audit Report
 
         [LogActivityResult("Retrieve Audit report", "User retrieved audit report", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_AUDIT_TASK, "AuditReport")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITREPORTS")]
         public async Task<IActionResult> GeAuditReport(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -816,6 +827,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITREPORTS")]
         public async Task<IActionResult> GetAuditReports([FromBody] TableListRequest request) {
             try {
                 //..get user IP address
@@ -906,6 +918,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Add Audit report", "User added audit report", ActivityTypeDefaults.COMPLIANCE_CREATE_AUDIT_TASK, "AuditReport")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITREPORTS", "CANCREATECOMPLIANCEAUDITREPORTS")]
         public async Task<IActionResult> CreateAuditReport([FromBody] AuditReportViewModel request) {
             try {
                 if (!ModelState.IsValid) {
@@ -945,6 +958,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Update audit report", "User updated audit report", ActivityTypeDefaults.COMPLIANCE_EDITED_AUDIT_TASK, "AuditReport")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITREPORTS", "CANUPDATECOMPLIANCEAUDITREPORTS")]
         public async Task<IActionResult> UpdateAuditReport([FromBody] AuditReportViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -972,6 +986,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Delete Audit report", "User delete audit report", ActivityTypeDefaults.COMPLIANCE_DELETED_AUDIT_TASK, "AuditReport")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITREPORTS", "CANUPDATECOMPLIANCEAUDITREPORTS", "CANDELETECOMPLIANCEAUDITREPORTS")]
         public async Task<IActionResult> DeleteAuditReport(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1007,6 +1022,7 @@ namespace Grc.ui.App.Controllers {
         #region Categories
 
         [HttpPost]
+        [PermissionAuthorization(false, "ViewComplianceAudits", "ManageComplianceAudits", "CANVIEWCOMPLIANCEAUDITS")]
         public async Task<IActionResult> AllCategories([FromBody] TableListRequest request) {
             try {
 
@@ -1058,6 +1074,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "ViewComplianceAudits", "ManageComplianceAudits", "CANVIEWCOMPLIANCEAUDITS")]
         public async Task<IActionResult> GetAuditLists([FromBody] AuditListViewModel request) {
 
             try {
@@ -1100,6 +1117,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITREPORTS")]
         public async Task<IActionResult> GetAuditReportsList([FromBody] AuditListViewModel request) {
             try {
 
@@ -1149,6 +1167,7 @@ namespace Grc.ui.App.Controllers {
         #region Audit Exceptions
 
         [LogActivityResult("Retrieve Audit exception", "User retrieved audit exception", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_EXCEPTIONS, "AuditException")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITEXCEPTIONS")]
         public async Task<IActionResult> GetAuditException(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1220,6 +1239,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITEXCEPTIONS")]
         public async Task<IActionResult> GetAuditExceptions([FromBody] TableListRequest request) {
             try {
                 //..get user IP address
@@ -1280,6 +1300,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Add Audit exception", "User added audit exception", ActivityTypeDefaults.COMPLIANCE_CREATE_EXCEPTION, "AuditException")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITEXCEPTIONS", "CANCREATECOMPLIANCEAUDITEXCEPTIONS")]
         public async Task<IActionResult> CreateExecption([FromBody] AuditExceptionViewModel request) {
             try {
                 if (!ModelState.IsValid) {
@@ -1319,6 +1340,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Update audit exception", "User updated audit exception", ActivityTypeDefaults.COMPLIANCE_EDITED_EXCEPTION, "AuditException")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITEXCEPTIONS", "CANUPDATECOMPLIANCEAUDITEXCEPTIONS")]
         public async Task<IActionResult> UpdateException([FromBody] AuditExceptionViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1346,6 +1368,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Delete Audit exception", "User delete audit exception", ActivityTypeDefaults.COMPLIANCE_DELETED_EXCEPTION, "AuditException")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITEXCEPTIONS", "CANUPDATECOMPLIANCEAUDITEXCEPTIONS", "CANDELETECOMPLIANCEAUDITEXCEPTIONS")]
         public async Task<IActionResult> DeleteException(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1381,6 +1404,7 @@ namespace Grc.ui.App.Controllers {
         #region Audit Tasks
 
         [LogActivityResult("Retrieve Audit task", "User retrieved audit task", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_AUDIT_TASK, "AuditTask")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITTASKS")]
         public async Task<IActionResult> GeExceptionTask(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1431,6 +1455,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITTASKS")]
         public async Task<IActionResult> GetExceptionTasks([FromBody] GrcExceptionTaskViewModel request) {
             try {
                 //..get user IP address
@@ -1485,6 +1510,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Add Audit task", "User added audit task", ActivityTypeDefaults.COMPLIANCE_CREATE_AUDIT_TASK, "AuditTask")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITTASKS", "CANCREATECOMPLIANCEAUDITTASKS")]
         public async Task<IActionResult> CreateExecptionTask([FromBody] GrcAuditTaskViewModel request) {
             try {
                 if (!ModelState.IsValid) {
@@ -1524,6 +1550,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Update audit task", "User updated audit task", ActivityTypeDefaults.COMPLIANCE_EDITED_AUDIT_TASK, "AuditTask")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITTASKS", "CANUPDATECOMPLIANCEAUDITTASKS")]
         public async Task<IActionResult> UpdateAuditTask([FromBody] GrcAuditTaskViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1551,6 +1578,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Delete Audit task", "User delete audit task", ActivityTypeDefaults.COMPLIANCE_DELETED_AUDIT_TASK, "AuditTask")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITTASKS", "CANUPDATECOMPLIANCEAUDITTASKS", "CANDELETECOMPLIANCEAUDITTASKS")]
         public async Task<IActionResult> DeleteAuditTask(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1586,6 +1614,7 @@ namespace Grc.ui.App.Controllers {
         #region Audit Notes
 
         [LogActivityResult("Retrieve Audit notes", "User retrieved audit notes", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_AUDIT_NOTES, "AuditNotes")]
+        [PermissionAuthorization(false, "ViewComplianceAudits", "CANVIEWCOMPLIANCEAUDITS")]
         public async Task<IActionResult> GetAuditNotes(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1638,6 +1667,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "ViewComplianceAudits", "CANVIEWCOMPLIANCEAUDITS")]
         public async Task<IActionResult> GetReportNotes([FromBody] GrcAuditMiniUpdateRequest request) {
             try {
                 //..get user IP address
@@ -1696,6 +1726,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Add Audit notes", "User added audit notes", ActivityTypeDefaults.COMPLIANCE_CREATE_AUDIT_NOTES, "AuditNotes")]
+        [PermissionAuthorization(false, "EditComplianceAudits", "CANUPDATECOMPLIANCEAUDITS")]
         public async Task<IActionResult> CreateNotes([FromBody] AuditUpdateViewModel request) {
             try {
                 if (!ModelState.IsValid) {
@@ -1735,6 +1766,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Update audit notes", "User updated audit notes", ActivityTypeDefaults.COMPLIANCE_EDITED_AUDIT_NOTES, "AuditNotes")]
+        [PermissionAuthorization(false, "EditComplianceAudits", "CANUPDATECOMPLIANCEAUDITS")]
         public async Task<IActionResult> UpdateNotes([FromBody] AuditUpdateViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1762,6 +1794,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Delete Audit notes", "User delete audit notes", ActivityTypeDefaults.COMPLIANCE_DELETED_AUDIT_NOTES, "AuditNotes")]
+        [PermissionAuthorization(false, "DeleteComplianceAudits", "CANDELETECOMPLIANCEAUDITS")]
         public async Task<IActionResult> DeleteNotes(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1797,6 +1830,7 @@ namespace Grc.ui.App.Controllers {
         #region Reports
 
         [HttpPost()]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITREPORTS", "CANCREATECOMPLIANCEAUDITREPORTS")]
         public async Task<IActionResult> GetExceptionSummaryReport() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);

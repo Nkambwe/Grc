@@ -1,15 +1,74 @@
 ﻿@model ConfigurationModel
 @{
+    var userConfi = Model.UserAccountSettings;
     var securityConfi = Model.SecuritySettings;
 }
 <div class="settings-page">
     <!-- Left Tabs -->
     <div class="settings-tabs">
+        <button class="tab active" data-tab="useraccount">User Account Settings</button>
         <button class="tab" data-tab="security">System Security</button>
     </div>
 
     <!-- Right Content -->
     <div class="settings-content">
+
+        <div class="tab-content configuration-content active" id="useraccount">
+
+            <div class="tab-header">
+
+                <h2>User Account Settings</h2>
+
+                <div class="settings-header-actions">
+                    <span class="dirty-indicator">Unsaved changes</span>
+                    <button class="btn btn-sm btn-primary save-settings-btn">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+
+            <div class="tab-content-area">
+
+                <div class="row g-4"> 
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 m-2">
+                        <div class="settings-card">
+                            <div class="settings-info">
+                                <h6>Can verify the same</h6>
+                                <p>User can verify a user account created by them</p>
+                            </div>
+                            <div class="settings-control">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input setting-input"
+                                           type="checkbox"
+                                           id="canVerifySame"
+                                           asp-for="@userConfi.CanVerifySame" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 m-2">
+                        <div class="settings-card">
+                            <div class="settings-info">
+                                <h6>Can approve the same</h6>
+                                <p>User can approve a user account created by them</p>
+                            </div>
+                            <div class="settings-control">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input setting-input"
+                                           type="checkbox"
+                                           id="canApproveSame"
+                                           asp-for="@userConfi.CanApproveSame" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
 
         <div class="tab-content configuration-content active" id="security">
 
@@ -170,6 +229,7 @@
         </div>
 
     </div>
+
 </div>
 
 @{

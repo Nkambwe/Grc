@@ -2,5 +2,4 @@
     public class GrcBooleanConfigurationResponse : GrcConfigurationTypeResponse {
         public bool ParameterValue { get; set; }
     }
-
 }

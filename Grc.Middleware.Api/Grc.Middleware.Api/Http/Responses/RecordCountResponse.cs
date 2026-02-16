@@ -2,4 +2,5 @@
     public class RecordCountResponse {
         public int Count { get; set; }
     }
+
 }

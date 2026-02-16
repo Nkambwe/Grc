@@ -1,4 +1,9 @@
 ﻿@model UserSupportViewModel
+@{
+     var permissionsClaim = User.FindFirst("Permissions")?.Value;
+        var permissions = string.IsNullOrEmpty(permissionsClaim) ? new List<string>()
+        : JsonSerializer.Deserialize<List<string>>(permissionsClaim);
+}
 
 <div class="grc-tabulator-container">
     <div class="grc-tabulator-search">
@@ -261,3 +266,10 @@
     Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
     Html.AddScriptParts(ResourceLocation.Footer, "~/js/admin-users-script.js");
 }
+
+
+<script>
+    //..make permissions available globally
+    window.userPermissions = @Html.Raw(JsonSerializer.Serialize(permissions ?? new List<string>()));
+
+</script>

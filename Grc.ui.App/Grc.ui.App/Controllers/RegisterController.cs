@@ -11,6 +11,7 @@ using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -57,6 +58,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         #region Law Registers
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCERETURNS", "CANMANAGECOMPLIANCERETURNS", "CANVIEWSTATUTE")]
         public async Task<IActionResult> GetLawList() {
             try {
                 if (User.Identity?.IsAuthenticated == true) {
@@ -137,6 +139,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Add Law/Regulation", "User added law/regulation", ActivityTypeDefaults.COMPLIANCE_CREATE_ACT, "RegulatoryLaw")]
+        [PermissionAuthorization(false, "CreateRegulatoryReturns", "CANCREATECOMPLIANCERETURNS", "CANCREATESTATUTE")]
         public async Task<IActionResult> CreateLaw([FromBody] StatuteViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -171,6 +174,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Update Law/Regulation", "User updated law/regulation", ActivityTypeDefaults.COMPLIANCE_EDITED_ACT, "RegulatoryLaw")]
+        [PermissionAuthorization(false, "CANUPDATECOMPLIANCERETURNS", "CANUPDATESTATUTE")]
         public async Task<IActionResult> UpdateLaw([FromBody] StatuteViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -204,6 +208,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Delete Law/Regulation", "User delete law/regulation", ActivityTypeDefaults.COMPLIANCE_DELETED_ACT, "RegulatoryLaw")]
+        [PermissionAuthorization(true, "CANUPDATECOMPLIANCERETURNS", "DeleteRegulatoryReturns", "CANDELETECOMPLIANCERETURNS", "CANDELETESTATUTE")]
         public async Task<IActionResult> DeleteLaw(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -235,6 +240,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCERETURNS", "CANMANAGECOMPLIANCERETURNS", "CANVIEWSTATUTE")]
         public async Task<IActionResult> GetRegulatoryLaws([FromBody] StatueListRequest request) {
 
             try {
@@ -276,6 +282,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCERETURNS", "CANMANAGECOMPLIANCERETURNS", "CANVIEWSTATUTE")]
         public async Task<IActionResult> GetPagedRegulatoryLaws([FromBody] StatueListRequest request) {
             try {
 
@@ -319,6 +326,7 @@ namespace Grc.ui.App.Controllers {
 
         #region Acts Registers
 
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCERETURNS", "CANMANAGECOMPLIANCERETURNS", "CANVIEWSTATUTE")]
         public async Task<IActionResult> RegulationList() {
             try {
                 if (User.Identity?.IsAuthenticated == true)  {
@@ -354,6 +362,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Retrieve Act", "User retrieved legal act", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_ACTS, "RegulatoryAct")]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCERETURNS", "CANMANAGECOMPLIANCERETURNS", "CANVIEWSTATUTE")]
         public async Task<IActionResult> GetRegulatoryAct(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -421,6 +430,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Add Act", "User added legal act", ActivityTypeDefaults.COMPLIANCE_CREATE_ACT, "RegulatoryAct")]
+        [PermissionAuthorization(false, "CreateRegulatoryReturns", "CANCREATECOMPLIANCERETURNS", "CANCREATESTATUTE")]
         public async Task<IActionResult> CreateRegulatoryAct([FromBody] StatuteSectionViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -455,6 +465,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Update Act", "User updated legal act", ActivityTypeDefaults.COMPLIANCE_EDITED_ACT, "RegulatoryAct")]
+        [PermissionAuthorization(false, "CANUPDATECOMPLIANCERETURNS", "CANUPDATESTATUTE")]
         public async Task<IActionResult> UpdateRegulatoryAct([FromBody] StatuteSectionViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -488,6 +499,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Delete Act", "User delete legal act", ActivityTypeDefaults.COMPLIANCE_DELETED_ACT, "RegulatoryAct")]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCERETURNS", "CANMANAGECOMPLIANCERETURNS", "CANVIEWSTATUTE")]
         public async Task<IActionResult> DeleteRegulatory(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -520,6 +532,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCERETURNS", "CANMANAGECOMPLIANCERETURNS", "CANVIEWSTATUTE")]
         public async Task<IActionResult> GetRegulatoryActs([FromBody] StatueListRequest request) {
             try {
 
@@ -565,6 +578,7 @@ namespace Grc.ui.App.Controllers {
 
         #region Obligations
 
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCERETURNS", "CANMANAGECOMPLIANCERETURNS", "CANVIEWSTATUTE")]
         public async Task<IActionResult> RegulationObligations() {
             try {
                 if (User.Identity?.IsAuthenticated == true) {
@@ -593,6 +607,7 @@ namespace Grc.ui.App.Controllers {
             }
         }
 
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCERETURNS", "CANMANAGECOMPLIANCERETURNS", "CANVIEWSTATUTE")]
         public async Task<IActionResult> GetObligationList([FromBody] TableListRequest request) {
 
             try {
@@ -666,6 +681,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Retrieve Act", "User retrieved legal act", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_ACTS, "RegulatoryAct")]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCERETURNS", "CANMANAGECOMPLIANCERETURNS", "CANVIEWSTATUTE")]
         public async Task<IActionResult> GetObligation(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -723,6 +739,7 @@ namespace Grc.ui.App.Controllers {
             }
         }
 
+        [PermissionAuthorization(false, "CreateRegulatoryReturns", "CANCREATECOMPLIANCERETURNS", "CANCREATESTATUTE")]
         public async Task<IActionResult> CreateComplianceMap([FromBody] ObligationMapViewModel request) {
             try {
                 Logger.LogActivity("Create Obligation Compliance Map", "INFO");
@@ -759,6 +776,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost()]
+        [AllowAnonymous]
         public async Task<IActionResult> GetObligationSummary() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -936,6 +954,7 @@ namespace Grc.ui.App.Controllers {
         #region Compliance Issues
 
         [LogActivityResult("Retrieve Compliance Issue", "User retrieved compliance issue", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_ISSUE, "ComplianceIssue")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEISSUES")]
         public async Task<IActionResult> GetIssue(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -985,6 +1004,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Create Compliance Issue", "User added new compliance issue", ActivityTypeDefaults.COMPLIANCE_CREATE_ISSUE, "ComplianceIssue")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEISSUES", "CANCREATECOMPLIANCEISSUES")]
         public async Task<IActionResult> CreateIssue([FromBody] IssueViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1021,6 +1041,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Update Compliance issue", "User updated compliance issue", ActivityTypeDefaults.COMPLIANCE_EDITED_ISSUE, "ComplianceIssue")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEISSUES", "CANUPDATECOMPLIANCEISSUES")]
         public async Task<IActionResult> UpdateIssue([FromBody] IssueViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1056,6 +1077,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Delete Compliance Issue", "User deleted control item", ActivityTypeDefaults.COMPLIANCE_DELETED_ISSUE, "ControlItem")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEISSUES", "CANUPDATECOMPLIANCEISSUES", "CANDELETECOMPLIANCEISSUES")]
         public async Task<IActionResult> DeleteIssue(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1090,6 +1112,7 @@ namespace Grc.ui.App.Controllers {
             }
         }
 
+        [PermissionAuthorization(true, "CANMAPCOMPLIANCECONTROLS")]
         public async Task<IActionResult> ComplianceMapping([FromBody] ComplianceMapViewModel model) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1129,6 +1152,7 @@ namespace Grc.ui.App.Controllers {
 
         #region Compliance Controls
 
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCERETURNS", "CANMANAGECOMPLIANCERETURNS", "CANVIEWSTATUTE")]
         public async Task<IActionResult> ComplianceControl() {
             try {
                 if (User.Identity?.IsAuthenticated == true) {
@@ -1157,6 +1181,7 @@ namespace Grc.ui.App.Controllers {
             }
         }
 
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCERETURNS", "CANMANAGECOMPLIANCERETURNS", "CANVIEWSTATUTE")]
         public async Task<IActionResult> GetCategoryControlList([FromBody] TableListRequest request) {
             try {
 
@@ -1217,6 +1242,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Retrieve Compliance control", "User retrieved compliance control", ActivityTypeDefaults.COMPLIANCE_CONTROLCATEGORY_RETRIVE, "ControlCategory")]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCERETURNS", "CANMANAGECOMPLIANCERETURNS", "CANVIEWSTATUTE")]
         public async Task<IActionResult> GetControlCategory(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1272,6 +1298,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Add Compliance control", "User added new compliance control", ActivityTypeDefaults.COMPLIANCE_CONTROLCATEGORY_CREATE, "ControlCategory")]
+        [PermissionAuthorization(false, "CreateRegulatoryReturns", "CANCREATECOMPLIANCERETURNS", "CANCREATESTATUTE")]
         public async Task<IActionResult> CreateControlCategory([FromBody] ControlCategoryViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1305,6 +1332,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Update Compliance control", "User updated compliance control", ActivityTypeDefaults.COMPLIANCE_CONTROLCATEGORY_UPDATE, "ControlCategory")]
+        [PermissionAuthorization(false, "CANUPDATECOMPLIANCERETURNS", "CANUPDATESTATUTE")]
         public async Task<IActionResult> UpdateControlCategory([FromBody] ControlCategoryViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1337,6 +1365,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Retrieve control item", "User retrieved control item", ActivityTypeDefaults.COMPLIANCE_CONTROLCATEGORY_RETRIVE, "ControlItem")]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCERETURNS", "CANMANAGECOMPLIANCERETURNS", "CANVIEWSTATUTE")]
         public async Task<IActionResult> GetControlItem(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1387,6 +1416,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Add control item", "User retrieved added new control item", ActivityTypeDefaults.COMPLIANCE_CONTROLITEM_CREATE, "ControlItem")]
+        [PermissionAuthorization(false, "CreateRegulatoryReturns", "CANCREATECOMPLIANCERETURNS", "CANCREATESTATUTE")]
         public async Task<IActionResult> CreateControlItem([FromBody] ItemViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1420,6 +1450,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Update control item", "User modified control item", ActivityTypeDefaults.COMPLIANCE_CONTROLITEM_UPDATE, "ControlItem")]
+        [PermissionAuthorization(false, "CANUPDATECOMPLIANCERETURNS", "CANUPDATESTATUTE")]
         public async Task<IActionResult> UpdateControlItem([FromBody] ItemViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1452,6 +1483,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Delete control item", "User deleted control item", ActivityTypeDefaults.COMPLIANCE_CONTROLITEM_DELETE, "ControlItem")]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCERETURNS", "CANMANAGECOMPLIANCERETURNS", "CANVIEWSTATUTE")]
         public async Task<IActionResult> DeleteControlItem(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1486,6 +1518,7 @@ namespace Grc.ui.App.Controllers {
 
         #region support - Regulatory Categories
 
+        [PermissionAuthorization(false, "ManageRegulatoryTypes", "ViewRegulatoryTypes")]
         public async Task<IActionResult> ComplianceRegulatoryCategories() {
             try {
                 if (User.Identity?.IsAuthenticated == true) {
@@ -1523,6 +1556,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Retrieve Category", "User retrieved regulatory category", ActivityTypeDefaults.COMPLIACE_RETRIVE_CATEGORY, "Category")]
+        [PermissionAuthorization(false, "ManageRegulatoryTypes", "ViewRegulatoryTypes")]
         public async Task<IActionResult> GetRegulatoryCategory(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1766,6 +1800,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Export Categories", "User exported regulatory categories to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_CATEGORY, "Category")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public IActionResult ExportToExcel([FromBody] List<GrcRegulatoryCategoryResponse> data) {
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Regulation Categories");
@@ -1798,6 +1833,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Export Categories", "User exported regulatory categories to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_CATEGORY, "Category")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> ExportAllCategories() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -1858,6 +1894,7 @@ namespace Grc.ui.App.Controllers {
             );
         }
 
+        [PermissionAuthorization(false, "ManageRegulatoryTypes", "ViewRegulatoryTypes")]
         public async Task<IActionResult> GetRegulatoryCategories() {
             try {
                 //..get user IP address
@@ -1910,6 +1947,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "ManageRegulatoryTypes", "ViewRegulatoryTypes")]
         public async Task<IActionResult> GetPagedCategories([FromBody] TableListRequest request) {
             try {
                 //..get user IP address
@@ -2004,6 +2042,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Retrieve Type", "User retrieved regulatory type", ActivityTypeDefaults.COMPLIACE_RETRIVE_TYPE, "Regulatory_Type")]
+        [PermissionAuthorization(false, "ManageRegulatoryTypes", "ViewRegulatoryTypes")]
         public async Task<IActionResult> GetRegulatoryType(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2072,6 +2111,7 @@ namespace Grc.ui.App.Controllers {
         [HttpPost]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
         [LogActivityResult("Add Type", "User added regulatory type", ActivityTypeDefaults.COMPLIACE_CREATE_TYPE, "Regulatory_Type")]
+        [PermissionAuthorization(true,"CreateRegulatoryTypes")]
         public async Task<IActionResult> CreateRegulatoryType([FromBody] RegulatoryViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2128,6 +2168,7 @@ namespace Grc.ui.App.Controllers {
         [HttpPost]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
         [LogActivityResult("Update type", "User modified regulatory type", ActivityTypeDefaults.COMPLIANCE_EDITED_TYPE, "Regulatory_Type")]
+        [PermissionAuthorization(true, "EditRegulatoryTypes")]
         public async Task<IActionResult> UpdateRegulatoryType([FromBody] RegulatoryViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2184,6 +2225,7 @@ namespace Grc.ui.App.Controllers {
         [HttpDelete]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
         [LogActivityResult("Delete type", "User deleted regulatory type", ActivityTypeDefaults.COMPLIANCE_DELETED_TYPE, "Regulatory_Type")]
+        [PermissionAuthorization(true, "EditRegulatoryTypes", "DeleteRegulatoryTypes")]
         public async Task<IActionResult> DeleteRegulatoryType(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2239,6 +2281,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Export types", "User exported regulatory types to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_TYPE, "Regulatory_Type")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public IActionResult ExcelExportTypes([FromBody] List<GrcRegulatoryTypeResponse> data) {
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Regulation Types");
@@ -2269,6 +2312,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Export types", "User exported regulatory types to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_TYPE, "Regulatory_Type")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> ExcelExportAllTypes() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -2327,6 +2371,7 @@ namespace Grc.ui.App.Controllers {
             );
         }
 
+        [PermissionAuthorization(false, "ManageRegulatoryTypes", "ViewRegulatoryTypes")]
         public async Task<IActionResult> AllRegulatoryTypes([FromBody] TableListRequest request) {
             try {
                 //..get user IP address
@@ -2379,6 +2424,7 @@ namespace Grc.ui.App.Controllers {
 
         #region support - Authorities
 
+        [PermissionAuthorization(false, "ManageAuthorities", "ViewAuthorities")]
         public async Task<IActionResult> ComplianceAuthorities() {
             try {
                 if (User.Identity?.IsAuthenticated == true) {
@@ -2410,6 +2456,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Retrieve Authority", "User retrieved regulatory authority", ActivityTypeDefaults.COMPLIACE_RETRIVE_AUTHORITY, "Authorities")]
+        [PermissionAuthorization(false, "ManageAuthorities", "ViewAuthorities")]
         public async Task<IActionResult> GetRegulatoryAuthority(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2480,6 +2527,7 @@ namespace Grc.ui.App.Controllers {
             }
         }
 
+        [PermissionAuthorization(false, "ManageAuthorities", "ViewAuthorities")]
         public async Task<IActionResult> AllRegulatoryAuthorities([FromBody] TableListRequest request) {
             try {
                 //..get user IP address
@@ -2531,6 +2579,7 @@ namespace Grc.ui.App.Controllers {
         [HttpPost]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
         [LogActivityResult("Add Authority", "User added regulatory authority", ActivityTypeDefaults.COMPLIACE_CREATE_AUTHORITY, "Authorities")]
+        [PermissionAuthorization(true, "CreateAuthority")]
         public async Task<IActionResult> CreateRegulatoryAuthority([FromBody] RegulatoryAuthorityRequest request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2591,6 +2640,7 @@ namespace Grc.ui.App.Controllers {
         [HttpPost]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
         [LogActivityResult("Update Authority", "User modified regulatory authority", ActivityTypeDefaults.COMPLIANCE_EDITED_AUTHORITY, "Authorities")]
+        [PermissionAuthorization(true, "EditAuthority")]
         public async Task<IActionResult> UpdateRegulatoryAuthority([FromBody] RegulatoryAuthorityRequest request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2651,6 +2701,7 @@ namespace Grc.ui.App.Controllers {
         [HttpDelete]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
         [LogActivityResult("Delete Authority", "User deleted regulatory authority", ActivityTypeDefaults.COMPLIANCE_DELETED_AUTHORITY, "Authorities")]
+        [PermissionAuthorization(true, "EditAuthority", "DeleteAuthority")]
         public async Task<IActionResult> DeleteRegulatoryAuthority(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2713,6 +2764,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Export authorities", "User exported regulatory authorities to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_AUTHORITY, "Authorities")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public IActionResult ExcelExportAuthorities([FromBody] List<GrcRegulatoryAuthorityResponse> data) {
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Regulation Authorities");
@@ -2745,6 +2797,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Export authorities", "User exported regulatory authorities to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_AUTHORITY, "Authorities")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> ExcelExportAllAuthorities() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -2809,6 +2862,7 @@ namespace Grc.ui.App.Controllers {
 
         #region support - Document Types
 
+        [PermissionAuthorization(true, "ManageReturnTypes", "ViewReturnType")]
         public async Task<IActionResult> ComplianceDocumentType() {
             try {
                 if (User.Identity?.IsAuthenticated == true) {
@@ -2844,6 +2898,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpGet]
+        [PermissionAuthorization(true, "ManageReturnTypes", "ViewReturnType")]
         public async Task<IActionResult> GetDocumentTypes() {
             try {
                 //..get user IP address
@@ -2897,6 +2952,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpGet]
+        [PermissionAuthorization(true, "ManageReturnTypes", "ViewReturnType")]
         public async Task<IActionResult> GetDocumentType(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2942,6 +2998,7 @@ namespace Grc.ui.App.Controllers {
         [HttpPost]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
         [LogActivityResult("Add document type", "User added document type", ActivityTypeDefaults.COMPLIANCE_CREATE_DOCTYPE, "Document")]
+        [PermissionAuthorization(true, "CreateReturnType")]
         public async Task<IActionResult> CreateDocumentType([FromBody] DocumentTypeViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2968,6 +3025,7 @@ namespace Grc.ui.App.Controllers {
         [HttpPost]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
         [LogActivityResult("Modify document type", "User modified document type", ActivityTypeDefaults.COMPLIANCE_EDITED_DOCTYPE, "Document")]
+        [PermissionAuthorization(true, "EditReturnType")]
         public async Task<IActionResult> UpdateDocumentType([FromBody] DocumentTypeViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2994,6 +3052,7 @@ namespace Grc.ui.App.Controllers {
         [HttpDelete]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
         [LogActivityResult("Export document types", "User exported document types to excel", ActivityTypeDefaults.COMPLIANCE_DELETED_DOCTYPE, "Document")]
+        [PermissionAuthorization(true, "DeleteReturnType")]
         public async Task<IActionResult> DeleteDocumentType(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -3034,6 +3093,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(true, "ManageReturnTypes", "ViewReturnType")]
         public async Task<IActionResult> AllDocumentTypes([FromBody] TableListRequest request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -3078,6 +3138,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Export document types", "User exported document types to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_AUTHORITY, "Document")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public IActionResult ExcelExportDoctypes([FromBody] List<DocumentTypeResponse> data) {
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Document Types");
@@ -3108,6 +3169,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Export document types", "User exported document types to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_AUTHORITY, "Document")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> ExcelExportAllDoctypes() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -3170,6 +3232,7 @@ namespace Grc.ui.App.Controllers {
 
         #region support - Departments
 
+        [PermissionAuthorization(true, "ManageDepartments", "ManageDepartments")]
         public async Task<IActionResult> ComplianceDepartments() {
             try {
                 if (User.Identity?.IsAuthenticated == true) {
@@ -3204,6 +3267,7 @@ namespace Grc.ui.App.Controllers {
 
         #region support - Responsibilities
 
+        [PermissionAuthorization(false, "ManageReturnOwners", "ViewReturnOwners")]
         public async Task<IActionResult> ComplianceResponsibilities() {
             try {
                 if (User.Identity?.IsAuthenticated == true)
@@ -3236,7 +3300,9 @@ namespace Grc.ui.App.Controllers {
             }
 
         }
+
         [HttpGet]
+        [PermissionAuthorization(false, "ManageReturnOwners", "ViewReturnOwners")]
         public async Task<IActionResult> GetResponsibilities() {
             try {
                 //..get user IP address
@@ -3293,6 +3359,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpGet]
+        [PermissionAuthorization(false, "ManageReturnOwners", "ViewReturnOwners")]
         public async Task<IActionResult> GetResponsibility(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -3341,6 +3408,7 @@ namespace Grc.ui.App.Controllers {
         [HttpPost]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
         [LogActivityResult("Add document owner", "User added document owner", ActivityTypeDefaults.COMPLIANCE_CREATE_DOCOWNER, "Responsibility")]
+        [PermissionAuthorization(true, "CreateReturnOwners")]
         public async Task<IActionResult> CreateResponsibility([FromBody] OwnerViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -3384,6 +3452,7 @@ namespace Grc.ui.App.Controllers {
         [HttpPost]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
         [LogActivityResult("Modify document owner", "User modified document owner", ActivityTypeDefaults.COMPLIANCE_EDITED_DOCOWNER, "Responsibility")]
+        [PermissionAuthorization(true, "EditReturnOwners")]
         public async Task<IActionResult> UpdateResponsibility([FromBody] OwnerViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -3427,6 +3496,7 @@ namespace Grc.ui.App.Controllers {
         [HttpDelete]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
         [LogActivityResult("Export document owner", "User exported document owners to excel", ActivityTypeDefaults.COMPLIANCE_DELETED_DOCOWNER, "Responsibility")]
+        [PermissionAuthorization(true, "EditReturnOwners", "DeleteReturnOwners")]
         public async Task<IActionResult> DeleteResponsibility(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -3467,6 +3537,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
+        [PermissionAuthorization(false, "ManageReturnOwners", "ViewReturnOwners")]
         public async Task<IActionResult> AllResponsibilities([FromBody] TableListRequest request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -3521,6 +3592,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Export document owners", "User exported document owners to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_DOCOWNER, "Responsibility")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public IActionResult ExcelExportResponsibilities([FromBody] List<OwnerResponse> data) {
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Document Owners");
@@ -3555,6 +3627,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Export document owners", "User exported document owners to excel", ActivityTypeDefaults.COMPLIANCE_EXPORT_DOCOWNER, "Responsibility")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEREPORTS", "CANCREATECOMPLIANCEREPORTS")]
         public async Task<IActionResult> ExcelExportAllResponsibilities() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -3620,6 +3693,7 @@ namespace Grc.ui.App.Controllers {
         #endregion
 
         #region Users
+        [PermissionAuthorization(true, "ViewDelegatedPermissions", "DelegatePermissions")]
         public async Task<IActionResult> ComplianceUsers() {
             try {
                 if (User.Identity?.IsAuthenticated == true) {
@@ -3654,6 +3728,7 @@ namespace Grc.ui.App.Controllers {
         #endregion
 
         #region Delegation
+        [PermissionAuthorization(true, "ViewDelegatedPermissions", "DelegatePermissions")]
         public async Task<IActionResult> ComplianceDelegation() {
             try {
                 if (User.Identity?.IsAuthenticated == true) {
@@ -3687,7 +3762,6 @@ namespace Grc.ui.App.Controllers {
         }
 
         #endregion
-
 
     }
 }

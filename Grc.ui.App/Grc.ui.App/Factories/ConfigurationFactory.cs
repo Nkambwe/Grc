@@ -29,6 +29,7 @@ namespace Grc.ui.App.Factories {
                 response.ObligationSettings = new();
                 response.MappingSettings = new();
                 response.SecuritySettings = new();
+                response.UserAccountettings = new();
             } else {
                 var data = grcResponse.Data;
                 response.GeneralSettings = data.GeneralSettings;
@@ -37,6 +38,7 @@ namespace Grc.ui.App.Factories {
                 response.ObligationSettings = data.ObligationSettings;
                 response.MappingSettings = data.MappingSettings;
                 response.SecuritySettings = data.SecuritySettings;
+                response.UserAccountettings = data.UserAccountettings;
             }
 
             return new ConfigurationModel {
@@ -48,7 +50,8 @@ namespace Grc.ui.App.Factories {
                 AuditSettings = response.AuditSettings,
                 ObligationSettings = response.ObligationSettings,
                 MappingSettings = response.MappingSettings,
-                SecuritySettings = response.SecuritySettings
+                SecuritySettings = response.SecuritySettings,
+                UserAccountSettings = response.UserAccountettings
             };
         }
 

@@ -775,6 +775,45 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
+        [HttpPost("organization/user-account-configurations")]
+        public async Task<IActionResult> SaveUserAccountConfigurations([FromBody] UserAccountConfigurationsRequest request) {
+            try {
+
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<BooleanConfigurationResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser == null) {
+                    var error = new ResponseError(ResponseCodes.RESTRICTED, "Authentication Error", "User ID could not be verified");
+                    Logger.LogActivity($"RESTRICTED: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                string username = currentUser != null ? currentUser.Username : "SYSTEM";
+                var successful = await _configService.SaveUserAccountConfigurationsAsync(request, username);
+                if (!successful) {
+                    var error = new ResponseError(ResponseCodes.FAILED, "System Error! Could not save configuration. An error occurred", $"Could not save configuration. An error occurred");
+                    Logger.LogActivity($"SYSTEM ERROR: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+                var result = new GeneralResponse() {
+                    Status = true,
+                    Message = "Settings Saved successfully",
+                    StatusCode = 200
+                };
+                Logger.LogActivity($"SETTINGS-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(result)}");
+                return Ok(new GrcResponse<GeneralResponse>(result));
+            } catch (Exception ex) {
+                return Ok(new GrcResponse<GeneralResponse>(await ResponseErrorAsync(ex)));
+            }
+        }
+
+
         [HttpPost("organization/policy-configurations")]
         public async Task<IActionResult> SavePolicyConfigurations([FromBody] PolicyConfigurationsRequest request) {
             try {
