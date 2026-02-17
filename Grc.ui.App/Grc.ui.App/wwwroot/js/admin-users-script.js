@@ -52,13 +52,13 @@ function initUserTable() {
                     sortDirection: "Ascending"
                 };
 
-                // Sorting
+                //..sorting
                 if (params.sort && params.sort.length > 0) {
                     requestBody.sortBy = params.sort[0].field;
                     requestBody.sortDirection = params.sort[0].dir === "asc" ? "Ascending" : "Descending";
                 }
 
-                // Filtering
+                //..filtering
                 if (params.filter && params.filter.length > 0) {
                     let filter = params.filter.find(f =>
                         ["displayName", "userName", "emailAddress", "roleName", "roleGroup", "pfNumber"].includes(f.field)
@@ -102,8 +102,15 @@ function initUserTable() {
             });
         },
         ajaxResponse: function (url, params, response) {
+            //..hide alerts by default
+            $('#permissionAlert').hide();
+            $('#errorAlert').hide();
+
             if(response?.status === 403 || response?.hasPermission === false){
 
+                 //..show permission alert
+                $('#permissionAlert').show();
+            
                 this.clearData();
                 this.setPlaceholder("You do not have permission to view these records.");
 
@@ -116,11 +123,34 @@ function initUserTable() {
             return response;
         },
         ajaxError: function (error) {
-            console.error("Tabulator AJAX Error:", error);
-             Swal.fire({
-                title: "System Error!",
-                text: "Failed to load system roles. Please try again."
-            });
+           console.error("Tabulator AJAX Error:", error);
+        
+            //..hide permission alert
+            $('#permissionAlert').hide();
+        
+            //..determine error message
+            let errorMessage = "Failed to load data. Please try again.";
+        
+            if (error.status === 403) {
+                //..permission error,show permission alert instead
+                $('#permissionAlert').show();
+            } else if (error.status === 404) {
+                errorMessage = "The requested resource was not found.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else if (error.status === 500) {
+                errorMessage = "Server error occurred. Please contact support.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else if (error.status === 0) {
+                errorMessage = "Network error. Please check your connection.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else {
+                //..generic error - show error alert
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            }
         },
         layout: "fitColumns",
         responsiveLayout: "hide",
@@ -275,10 +305,10 @@ function addUser() {
         pfNumber: '',
         unitCode: '',
         isActive:  false,
-    }, false);
+    }, false, "add");
 }
 
-function openUserPane(title, record, isEdit) {
+function openUserPane(title, record, isEdit, mode) {
     $('#isEdit').val(isEdit);
     $('#recordId').val(record?.id || '');
     $('#isVerify').val(record?.isVerified || false);
@@ -344,8 +374,25 @@ function ajaxJson(url, type = "GET", data = null) {
     });
 }
 
-function viewRecord(id, mode) {
-    console.log(mode);
+function viewRecord(id, mode = 'edit') {
+    //..check permissions based on mode
+    if (mode === 'edit' && !hasPermission("CANMODIFYUSER")) {
+        //..user clicked but doesn't have edit permission, switch to view mode
+        mode = 'view';
+    }
+    
+    if (mode === 'view' && !hasPermission("CANVIEWUSER")) {
+        Swal.fire({
+            title: 'Access Denied',
+            html: `<p>You do not have permission to view user details.</p>
+                   <p class="text-muted" style="font-size: 0.9em; margin-top: 10px;">
+                      Contact your administrator if you believe this is an error.
+                   </p>`,
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+    
     Swal.fire({
         title: 'Loading...',
         text: 'Retrieving user...',
@@ -353,23 +400,46 @@ function viewRecord(id, mode) {
         allowEscapeKey: false,
         didOpen: () => Swal.showLoading()
     });
-
+    
     ajaxJson(`/admin/support/users-retrieve/${id}`)
         .then(result => {
             Swal.close();
-
+            
+            //..handle errors
             if (result.error) {
-                Swal.fire("Error", result.error, "warning");
+                Swal.fire({
+                    title: "Warning!",
+                    text: result.error
+                });
                 return;
             }
-
+            
             if (!result.data) {
-                Swal.fire("NOT FOUND", "User not found", "info");
+                Swal.fire({
+                    title: "NOT FOUND",
+                    text: "User not found"
+                });
                 return;
             }
-
-            //..open slide-out pane
-            openUserPane('Edit User', result.data, true);
+            
+            // Determine the title and edit mode based on permissions
+            const canEdit = hasPermission("CANMODIFYUSER");
+            const isEdit = mode === 'edit' && canEdit;
+            const title = isEdit ? 'Edit User' : 'View User';
+            
+            // Open slide-out pane with appropriate mode
+            openUserPane(title, result.data, isEdit, mode === 'view');
+        })
+        .catch(error => {
+            Swal.close();
+            
+            // Handle AJAX errors (if your ajaxJson doesn't already)
+            console.error("Error retrieving user:", error);
+            
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to retrieve user details. Please try again.'
+            });
         });
 }
 
@@ -547,7 +617,6 @@ function saveUserRecord(isEdit, record) {
 }
 
 function deleteUser(id) {
-    console.log("My ID >> " + id)
 
     let l_id = Number(!id );
     if (l_id !== 0) {

@@ -76,7 +76,7 @@
             routeBuilder.MapControllerRoute(
                 name: "admin-users",
                 pattern: "admin/support/system-users",
-                defaults: new { area = "Admin", controller = "Support", action = "Users" }
+                defaults: new { area = "Admin", controller = "Support", action = "ActiveUsers" }
             );
             routeBuilder.MapControllerRoute(
                 name: "admin-users-list",

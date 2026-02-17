@@ -1,9 +1,20 @@
 ﻿
-$(document).ready(function () {
-    initRegulatoryTypeTable();
-});
-
 let regulatoryTypeTable;
+
+//..check permissions
+window.hasPermission = function (permissionName) {
+    return window.userPermissions.some(p => p.toLowerCase() === permissionName.toLowerCase());
+};
+
+//..check if user has ANY of the permissions
+window.hasAnyPermission = function (...permissionNames) {
+    return permissionNames.some(p => window.hasPermission(p));
+};
+
+//..check if user has ALL of the permissions
+window.hasAllPermissions = function (...permissionNames) {
+    return permissionNames.every(p => window.hasPermission(p));
+};
 
 function initRegulatoryTypeTable() {
     regulatoryTypeTable = new Tabulator("#regulatory-types-table", {
@@ -66,8 +77,28 @@ function initRegulatoryTypeTable() {
                         resolve(response);
                     },
                     error: function (xhr, status, error) {
-                        console.error("AJAX Error:", error);
+                        //..hide permission alert
+                        $('#permissionAlert').hide();
+
+                        if (xhr.status === 401) {
+                            window.location = "/login/userlogin";
+                        }
+
+                        if (xhr.status === 403) {
+                            $('#permissionAlert').show();
+
+                            //..return empty dataset
+                            resolve({
+                                data: [],
+                                last_page: 1,
+                                total_records: 0
+                            });
+
+                            return;
+                        }
+
                         reject(error);
+                        return;
                     }
                 });
             });
@@ -80,7 +111,33 @@ function initRegulatoryTypeTable() {
             };
         },
         ajaxError: function (error) {
-            Swal.fire("Failed to load regulatory types. Please try again.");
+           
+            //..hide permission alert
+            $('#permissionAlert').hide();
+        
+            //..determine error message
+            let errorMessage = "Failed to load data. Please try again.";
+        
+            if (error.status === 403) {
+                //..permission error,show permission alert instead
+                $('#permissionAlert').show();
+            } else if (error.status === 404) {
+                errorMessage = "The requested resource was not found.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else if (error.status === 500) {
+                errorMessage = "Server error occurred. Please contact support.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else if (error.status === 0) {
+                errorMessage = "Network error. Please check your connection.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else {
+                //..generic error - show error alert
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            }
         },
         layout: "fitColumns",
         responsiveLayout: "hide",
@@ -92,7 +149,12 @@ function initRegulatoryTypeTable() {
                 widthGrow: 4,
                 headerSort: true,
                 formatter: function (cell) {
-                    return `<span class="clickable-title" onclick="viewRegulatoryTypeRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
+                    //..if user has permission to view/edit
+                    if (hasPermission("EditRegulatoryTypes")) {
+                          return `<span class="clickable-title" onclick="viewRegulatoryTypeRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
+                    } else {
+                        return `<span >${cell.getValue()}</span>`
+                    }
                 }
             },
             {
@@ -112,12 +174,17 @@ function initRegulatoryTypeTable() {
                 title: "ACTION",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                    return `
-                        <button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteRegulatoryTypeRecord(${rowData.id})">
-                        <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
-                        <span>DELETE</span>
-                        </button>
-                    `;
+                     if (hasPermission("DeleteRegulatoryTypes")) { 
+                         return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteRegulatoryTypeRecord(${rowData.id})">
+                                <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                                <span>DELETE</span>
+                            </button>`;
+                    } else {
+                            return `<button class="grc-table-btn grc-btn-delete grc-delete-action disabled" disabled>
+                                <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                                <span>DELETE</span>
+                            </button>`; 
+                    }
                 },
                 width: 200,
                 hozAlign: "center",
@@ -127,9 +194,6 @@ function initRegulatoryTypeTable() {
             }
         ]
     });
-
-    // Initialize search
-    initRegulatoryTypeSearch();
 }
 
 //..route to home
@@ -427,4 +491,8 @@ function initRegulatoryTypeSearch() {
 function getRegulationTypeAntiForgeryToken() {
     return $('meta[name="csrf-token"]').attr('content');
 }
+
+$(document).ready(function () {
+    initRegulatoryTypeTable();
+});
 

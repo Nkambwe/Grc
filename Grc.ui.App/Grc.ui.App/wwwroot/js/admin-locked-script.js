@@ -61,16 +61,15 @@ function initLockedTable() {
                         resolve(response);
                     },
                     error: function (xhr, status, error) {
+                         //..hide permission alert
+                        $('#permissionAlert').hide();
 
                         if (xhr.status === 401) {
                             window.location = "/login/userlogin";
                         }
 
                         if (xhr.status === 403) {
-                            Swal.fire({
-                                title: "Access Denied!",
-                                text: "You do not have permission to access this resource."
-                            });
+                            $('#permissionAlert').show();
 
                             //..return empty dataset
                             resolve({
@@ -103,8 +102,37 @@ function initLockedTable() {
             return response;
         },
         ajaxError: function (error) {
-            console.error("Tabulator AJAX Error:", error);
-            alert("Failed to load users records. Please try again.");
+             console.error("Tabulator AJAX Error:", error);
+             //..hide permission alert
+            $('#permissionAlert').hide();
+        
+            //..determine error message
+            let errorMessage = "Failed to load users records. Please try again.";
+        
+            if (error.status === 403) {
+                //..permission error,show permission alert instead
+                $('#permissionAlert').show();
+                $('#adminUsersTable').hide();
+            } else if (error.status === 404) {
+                errorMessage = "The requested resource was not found.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+                $('#adminUsersTable').hide();
+            } else if (error.status === 500) {
+                errorMessage = "Server error occurred. Please contact support.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+                $('#adminUsersTable').hide();
+            } else if (error.status === 0) {
+                errorMessage = "Network error. Please check your connection.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+                $('#adminUsersTable').hide();
+            } else {
+                //..generic error - show error alert
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            }
         },
         layout: "fitColumns",
         responsiveLayout: "hide",

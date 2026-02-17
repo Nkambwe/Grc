@@ -1,15 +1,36 @@
 ﻿@{
     Layout = "_Layout";
     ViewData["Title"] = "REGULATORY LIST";
+    var permissionsClaim = User.FindFirst("Permissions")?.Value;
+    var permissions = string.IsNullOrEmpty(permissionsClaim)
+        ? new List<string>()
+        : System.Text.Json.JsonSerializer.Deserialize<List<string>>(permissionsClaim) ?? new List<string>();
+
+    var leftActions = new List<ComponentAction>
+    {
+        new ComponentAction {
+            ActionKey = ActionKey.ComplianceHome.GetDescription(), 
+            Icon = "mdi mdi-home-outline", 
+            Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home")
+        }
+    };
+
+    //..add User actions
+    if (permissions.Contains("CANCREATESTATUTE"))
+    {
+        leftActions.Add(new ComponentAction { ActionKey = ActionKey.Separator.GetDescription() });
+        leftActions.Add(new ComponentAction
+        {
+            ActionKey = ActionKey.RegulatoryActNew.GetDescription(),
+            Icon = "mdi mdi-plus",
+            Tooltip = ILocalize.GetLocalizedLabel("App.Label.New")
+        });
+    }
     var component = new PageComponentViewModel
     {
-        ComponentId = $"0",
-        ComponentKey = "RegulatoryRegister",
-        LeftActions = new List<ComponentAction> {
-            new ComponentAction {ActionKey = ActionKey.ComplianceHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home")},
-            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
-            new ComponentAction { ActionKey = ActionKey.RegulatoryActNew.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") },
-        }
+            ComponentId = $"0",
+            ComponentKey = "RegulatoryRegister",
+            LeftActions = leftActions
     };
 }
 

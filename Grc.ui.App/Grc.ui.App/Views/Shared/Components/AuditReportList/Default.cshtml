@@ -1,5 +1,9 @@
 ﻿@model AuditSupportViewModel
-
+@{
+    var permissionsClaim = User.FindFirst("Permissions")?.Value;
+    var permissions = string.IsNullOrEmpty(permissionsClaim) ? new List<string>()
+    : JsonSerializer.Deserialize<List<string>>(permissionsClaim);
+}
 <div class="container-fluid regulatory-container">
 
     <div class="row regulatory-inner-container">
@@ -9,7 +13,7 @@
 
             <div class="category-list-box d-flex justify-content-between align-items-center mb-2">
                 <strong class="category-list-box-title">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Audit.Category"))</strong>
-                <button class="btn btn-sm grc-btn-outline-primary" id="btnAddCategory">
+                <button class="btn btn-sm grc-btn-outline-primary" id="btnAddCategory" require-permission="CANCREATECOMPLIANCEAUDITS">
                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Button.Category"))
                 </button>
             </div>
@@ -40,7 +44,7 @@
                         <h6 class="p-2 m-0">
                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Header.Audit"))
                         </h6>
-                        <button class="btn btn-sm btn-primary" id="btnAddAudit">
+                        <button class="btn btn-sm btn-primary" id="btnAddAudit" require-permission="CANCREATECOMPLIANCEAUDITS">
                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Button.Audit"))
                         </button>
                     </div>
@@ -54,7 +58,7 @@
                         <h6 class="p-2 m-0">
                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Header.Reports"))
                         </h6>
-                        <button class="btn btn-sm btn-primary" id="btnAddReport">
+                        <button class="btn btn-sm btn-primary" id="btnAddReport" require-permission="CANCREATECOMPLIANCEAUDITREPORTS">
                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Button.Report"))
                         </button>
                     </div>
@@ -124,13 +128,13 @@
 
             <div class="col-sm-12">
                 <div class="row mb-3">
-                    <div class="col-sm-2">
+                    <div class="col-2">
                         <button class="btn btn-grc-primary" style="width:100%;" onclick="saveAuditType(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-2">
                         <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeAuditCategory()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
                     </div>
-                    <div class="col-sm-8"></div>
+                    <div class="col-8"></div>
                 </div>
             </div>
         </form>
@@ -239,13 +243,13 @@
                 
                 <div class="col-sm-12">
                     <div class="row mb-3">
-                        <div class="col-sm-1">
+                        <div class="col-2">
                             <button class="btn btn-grc-primary" style="width:100%;" onclick="saveAudit(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
                         </div>
-                        <div class="col-sm-1">
+                        <div class="col-2">
                             <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeAudit()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
                         </div>
-                        <div class="col-sm-10"></div>
+                        <div class="col-8"></div>
                     </div>
                 </div>
 
@@ -457,13 +461,13 @@
 
                                         <div class="col-sm-12">
                                             <div class="row mb-3">
-                                                <div class="col-sm-1">
+                                                <div class="col-2">
                                                     <button class="btn btn-grc-primary" style="width:100%;" onclick="saveReport(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
                                                 </div>
-                                                <div class="col-sm-1">
+                                                <div class="col-2">
                                                     <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeAuditReport()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
                                                 </div>
-                                                <div class="col-sm-10"></div>
+                                                <div class="col-8"></div>
                                             </div>
                                         </div>
 
@@ -720,13 +724,13 @@
 
                 <div class="col-sm-12">
                     <div class="row mb-3">
-                        <div class="col-sm-2">
+                        <div class="col-2">
                             <button class="btn btn-grc-primary" style="width:100%;" onclick="saveException(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
                         </div>
-                        <div class="col-sm-2">
+                        <div class="col-2">
                             <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeException()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
                         </div>
-                        <div class="col-sm-8"></div>
+                        <div class="col-8"></div>
                     </div>
                 </div>
 
@@ -848,13 +852,13 @@
 
                 <div class="col-sm-12">
                     <div class="row mb-3">
-                        <div class="col-sm-2">
+                        <div class="col-2">
                             <button class="btn btn-grc-primary" style="width:100%;" onclick="saveUpdate(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
                         </div>
-                        <div class="col-sm-2">
+                        <div class="col-2">
                             <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeUpdate()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
                         </div>
-                        <div class="col-sm-8"></div>
+                        <div class="col-8"></div>
                     </div>
                 </div>
 
@@ -869,3 +873,9 @@
     Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
     Html.AddScriptParts(ResourceLocation.Footer, "~/js/audit-reports-script.js");
 }
+
+<script>
+    //..make permissions available globally
+    window.userPermissions = @Html.Raw(JsonSerializer.Serialize(permissions ?? new List<string>()));
+
+</script>

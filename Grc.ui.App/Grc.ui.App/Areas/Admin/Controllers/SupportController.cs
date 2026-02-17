@@ -12,6 +12,7 @@ using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Security.Claims;
@@ -532,7 +533,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
-        [PermissionAuthorization(false, "ManageBranches", "ViewBranches")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetBranches() { 
             try {
 
@@ -864,7 +865,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpGet]
-        [PermissionAuthorization(false, "ManageDepartments","ManageDepartments")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetDepartments() {
             try {
 
@@ -1135,7 +1136,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpGet]
-        [PermissionAuthorization(false, "ManageDepartments", "ManageDepartments", "ManageSystemSettings")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetUnitsMiniList(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2599,7 +2600,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             }
         }
 
-        [PermissionAuthorization(true, "CANVIEWROLES")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetRoleGroupsMiniList(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -3166,7 +3167,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             }
         }
 
-        [PermissionAuthorization(false, "CANVIEWROLES", "CANVIEWROLEGROUPS", "ViewRoles", "ViewRoleGroups")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetRoleGroupLists() {
             try
             {

@@ -6,6 +6,21 @@ let flatpickrInstances = {};
 //..route to home
 let auditReportTable;
 
+//..check permissions
+window.hasPermission = function (permissionName) {
+    return window.userPermissions.some(p => p.toLowerCase() === permissionName.toLowerCase());
+};
+
+//..check if user has ANY of the permissions
+window.hasAnyPermission = function (...permissionNames) {
+    return permissionNames.some(p => window.hasPermission(p));
+};
+
+//..check if user has ALL of the permissions
+window.hasAllPermissions = function (...permissionNames) {
+    return permissionNames.every(p => window.hasPermission(p));
+};
+
 function loadAuditTree() {
 
     const request = {
@@ -51,27 +66,31 @@ function loadAuditTree() {
                 }
 
                 //..category logic
-                if (node.type === "category") {
-                    selectedCategory = parseInt(node.id.replace("C_", ""));
-                    selectedAudit = null;
+                if (hasPermission("CANVIEWCOMPLIANCEAUDITS")) {
+                    if (node.type === "category") {
+                        selectedCategory = parseInt(node.id.replace("C_", ""));
+                        selectedAudit = null;
 
-                    $("#auditView").removeClass("d-none");
-                    $("#reportView").addClass("d-none");
-                    $("#auditBreadcrumb").html(`<li class="breadcrumb-item active">${node.text}</li>`);
+                        $("#auditView").removeClass("d-none");
+                        $("#reportView").addClass("d-none");
+                        $("#auditBreadcrumb").html(`<li class="breadcrumb-item active">${node.text}</li>`);
 
-                    auditTable.setData();
-                    showAuditBreadcrubs(node.text);
-                    loadAudits(selectedCategory);
+                        auditTable.setData();
+                        showAuditBreadcrubs(node.text);
+                        loadAudits(selectedCategory);
+                    }
+
+                    // Audit logic
+                    if (node.type === "audit") {
+
+                        selectedAudit = parseInt(node.id.replace("L_", ""));
+                        selectedCategory = parseInt(node.parent.replace("C_", ""));
+                        showAuditView(node.text);
+                        loadReports(selectedAudit);
+                    }
                 }
 
-                // Audit logic
-                if (node.type === "audit") {
-
-                    selectedAudit = parseInt(node.id.replace("L_", ""));
-                    selectedCategory = parseInt(node.parent.replace("C_", ""));
-                    showAuditView(node.text);
-                    loadReports(selectedAudit);
-                }
+               
             });
         },
         error: function (xhr, status, error) {
@@ -136,7 +155,28 @@ let auditTable = new Tabulator("#auditTable", {
                 },
                 error: function (xhr, status, error) {
                     console.error("AJAX Error:", error);
+                    //..hide permission alert
+                    $('#permissionAlert').hide();
+
+                    if (xhr.status === 401) {
+                        window.location = "/login/userlogin";
+                    }
+
+                    if (xhr.status === 403) {
+                        $('#permissionAlert').show();
+
+                        //..return empty dataset
+                        resolve({
+                            data: [],
+                            last_page: 1,
+                            total_records: 0
+                        });
+
+                        return;
+                    }
+
                     reject(error);
+                    return;
                 }
             });
         });
@@ -162,7 +202,12 @@ let auditTable = new Tabulator("#auditTable", {
             minWidth: 200,
             headerSort: true,
             formatter: function (cell) {
-                return `<span class="clickable-title" onclick="viewAudit(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
+                //..if user has permission to view/edit
+                if (hasPermission("CANUPDATECOMPLIANCEAUDITS")) {
+                     return `<span class="clickable-title" onclick="viewAudit(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
+                } else {
+                    return `<span >${cell.getValue()}</span>`
+                }
             }
         },
         { title: "TYPE", field: "typeName", width: 200 },
@@ -170,7 +215,14 @@ let auditTable = new Tabulator("#auditTable", {
         { title: "COMMENT", field: "notes", widthGrow: 4, minWidth: 280 },
         {
             title: "VIEW REPORTS",
-            formatter: () => `<button class="btn btn-sm btn-link">AUDIT REPORTS</button>`,
+            formatter: function (cell) {
+                //..if user has permission to view/edit
+                if (hasPermission("CANVIEWCOMPLIANCEAUDITREPORTS")) {
+                     return `<button class="btn btn-sm btn-link">AUDIT REPORTS</button>`;
+                } else {
+                    return `<button class="btn btn-sm btn-link disabled" disabled>AUDIT REPORTS</button>`
+                }
+            },
             cellClick: function (e, cell) {
                 let audit = cell.getRow().getData();
                 selectedAudit = audit.id;
@@ -235,7 +287,28 @@ let reportTable = new Tabulator("#reportsTable", {
                 },
                 error: function (xhr, status, error) {
                     console.error("AJAX Error:", error);
+                     //..hide permission alert
+                    $('#permissionAlert').hide();
+
+                    if (xhr.status === 401) {
+                        window.location = "/login/userlogin";
+                    }
+
+                    if (xhr.status === 403) {
+                        $('#permissionAlert').show();
+
+                        //..return empty dataset
+                        resolve({
+                            data: [],
+                            last_page: 1,
+                            total_records: 0
+                        });
+
+                        return;
+                    }
+
                     reject(error);
+                    return;
                 }
             });
         });
@@ -258,11 +331,16 @@ let reportTable = new Tabulator("#reportsTable", {
             field: "reference",
             width: 280,
             formatter: function (cell) {
-                const id = cell.getRow().getData().id;
+                //..if user has permission to view/edit
+                if (hasPermission("CANUPDATECOMPLIANCEAUDITREPORTS")) {
+                      const id = cell.getRow().getData().id;
                 return `<span class="clickable-title"
                          onclick="viewReport(${id})">
                         ${cell.getValue()}
                     </span>`;
+                } else {
+                    return `<span >${cell.getValue()}</span>`
+                }
             }
         },
         {

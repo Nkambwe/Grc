@@ -4,16 +4,38 @@
 }
 @model AdminDashboardModel
 @{
-    var component = new PageComponentViewModel
+
+    var permissionsClaim = User.FindFirst("Permissions")?.Value;
+    var permissions = string.IsNullOrEmpty(permissionsClaim)
+        ? new List<string>()
+        : System.Text.Json.JsonSerializer.Deserialize<List<string>>(permissionsClaim) ?? new List<string>();
+
+
+    var leftActions = new List<ComponentAction> {
+        new ComponentAction {
+            ActionKey = ActionKey.AdminHome.GetDescription(),
+            Icon = "mdi mdi-home-outline",
+            Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home")
+        }
+    };
+
+    if (permissions.Contains("CreateRoleGroup") || permissions.Contains("CANADDROLEGROUPS"))
     {
+        leftActions.Add(new ComponentAction { ActionKey = ActionKey.Separator.GetDescription() });
+        leftActions.Add(new ComponentAction
+                {
+                    ActionKey = ActionKey.RoleGroupNew.GetDescription(),
+                    Icon = "mdi mdi-plus",
+                    Tooltip = ILocalize.GetLocalizedLabel("App.Label.Role.Group")
+                });
+    }
+
+    var component = new PageComponentViewModel {
         ComponentId = "1",
         ComponentKey = "RolePermissions",
-        LeftActions = new List<ComponentAction>
-        {
-            new ComponentAction { ActionKey = ActionKey.RoleGroupNew.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Role.Group") },
-        }
+        LeftActions = leftActions
     };
 }
 
-<!-- role list -->
+<!-- goup permissions list -->
 @await Component.InvokeAsync("BaseComponent", new { model = component, content = Component.InvokeAsync("GroupPermissionsList") })

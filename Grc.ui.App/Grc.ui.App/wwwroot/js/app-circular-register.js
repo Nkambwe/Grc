@@ -1,5 +1,20 @@
 ﻿let circularTable;
 
+//..check permissions
+window.hasPermission = function (permissionName) {
+    return window.userPermissions.some(p => p.toLowerCase() === permissionName.toLowerCase());
+};
+
+//..check if user has ANY of the permissions
+window.hasAnyPermission = function (...permissionNames) {
+    return permissionNames.some(p => window.hasPermission(p));
+};
+
+//..check if user has ALL of the permissions
+window.hasAllPermissions = function (...permissionNames) {
+    return permissionNames.every(p => window.hasPermission(p));
+};
+
 function initCircularTable() {
     circularTable = new Tabulator("#circular-register-table", {
         ajaxURL: "/grc/returns/circular-returns/circular-register",
@@ -10,6 +25,7 @@ function initCircularTable() {
         paginationSize: 10,
         paginationSizeSelector: [10, 20, 35, 40, 50],
         paginationCounter: "rows",
+        placeholder: "No records found",
         ajaxConfig: {
             method: "POST",
             headers: { "Content-Type": "application/json" }
@@ -59,22 +75,52 @@ function initCircularTable() {
                         resolve(response);
                     },
                     error: function (xhr, status, error) {
-                        console.error("AJAX Error:", error);
+                        //..hide permission alert
+                        $('#permissionAlert').hide();
+
+                        if (xhr.status === 401) {
+                            window.location = "/login/userlogin";
+                        }
+
+                        if (xhr.status === 403) {
+                            $('#permissionAlert').show();
+
+                            //..return empty dataset
+                            resolve({
+                                data: [],
+                                last_page: 1,
+                                total_records: 0
+                            });
+
+                            return;
+                        }
+
                         reject(error);
+                        return;
                     }
                 });
             });
         },
         ajaxResponse: function (url, params, response) {
-            return {
-                data: response.data || [],
-                last_page: response.last_page || 1,
-                total_records: response.total_records || 0
-            };
+            if(response?.status === 403 || response?.hasPermission === false){
+
+                this.clearData();
+                this.setPlaceholder("You do not have permission to view these records.");
+
+                return {
+                    data: [],
+                    last_page: 1
+                };
+            }
+
+            return response;
         },
         ajaxError: function (error) {
             console.error("Tabulator AJAX Error:", error);
-            alert("Failed to load returns. Please try again.");
+             Swal.fire({
+                title: "System Error!",
+                text: "Failed to load returns. Please try again."
+            });
         },
         layout: "fitColumns",
         responsiveLayout: "hide",
@@ -87,7 +133,14 @@ function initCircularTable() {
                 widthGrow: 4,
                 headerSort: true,
                 frozen: true,
-                formatter: (cell) => `<span class="clickable-title" onclick="viewCircular(${cell.getRow().getData().id})">${cell.getValue()}</span>`
+                formatter: function (cell) {
+                    //..if user has permission to view/edit
+                    if (hasPermission("CANMODIFYCIRCULARS")) {
+                        return  `<span class="clickable-title" onclick="viewCircular(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
+                    } else {
+                        return `<span >${cell.getValue()}</span>`
+                    }
+                }
             },
             { title: "AUTHORITY", field: "authority", minWidth: 200, frozen: true, headerSort: true, headerFilter: "input" },
             { title: "DEPARTMENT", field: "department", minWidth: 200, headerFilter: "input" },
@@ -178,13 +231,18 @@ function initCircularTable() {
                 field: "hasIssues",
                 headerFilter: "input",
                 formatter: function (cell) {
-                    let rowData = cell.getRow().getData();
-                    let value = rowData.hasIssues;
-                    let hasIssues = value === true ? "" : "disabled";
-                    return `<button class="grc-table-btn grc-btn-default grc-task-action ${hasIssues}" ${hasIssues} onclick="viewIssues(${rowData.id})">
-                            <span><i class="mdi mdi-link-lock" aria-hidden="true"></i></span>
-                            <span>ISSUES</span>
-                        </button>`;
+                    //..if user has permission to view/edit
+                    if (hasPermission("CANUPDATECOMPLIANCEISSUES")) {
+                        let rowData = cell.getRow().getData();
+                        let value = rowData.hasIssues;
+                        let hasIssues = value === true ? "" : "disabled";
+                        return `<button class="grc-table-btn grc-btn-default grc-task-action ${hasIssues}" ${hasIssues} onclick="viewIssues(${rowData.id})">
+                                <span><i class="mdi mdi-link-lock" aria-hidden="true"></i></span>
+                                <span>ISSUES</span>
+                            </button>`;
+                    } else {
+                        return `<span >${cell.getValue()}</span>`
+                    }
                 },
                 width: 200,
                 hozAlign: "left",
@@ -194,11 +252,18 @@ function initCircularTable() {
             {
                 title: "ACTION",
                 formatter: function (cell) {
-                    let rowData = cell.getRow().getData();
-                    return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteCircular(${rowData.id})">
-                            <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
-                            <span>DELETE</span>
-                        </button>`;
+                    if (hasPermission("CANUPDATECOMPLIANCEISSUES")) {
+                         let rowData = cell.getRow().getData();
+                        return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteCircular(${rowData.id})">
+                                <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                                <span>DELETE</span>
+                            </button>`;
+                    } else {
+                         return `<button class="grc-table-btn grc-btn-delete grc-delete-action disabled" disabled>
+                                <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                                <span>DELETE</span>
+                            </button>`;
+                    }
                 },
                 width: 200,
                 hozAlign: "center",

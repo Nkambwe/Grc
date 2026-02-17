@@ -1,26 +1,101 @@
 ﻿@{
     Layout = "_Layout";
     ViewData["Title"] = "POLICY REGISTER";
-    var component = new PageComponentViewModel
+
+    var permissionsClaim = User.FindFirst("Permissions")?.Value;
+    var permissions = string.IsNullOrEmpty(permissionsClaim)
+        ? new List<string>()
+        : System.Text.Json.JsonSerializer.Deserialize<List<string>>(permissionsClaim) ?? new List<string>();
+
+    var leftActions = new List<ComponentAction>  {
+        new ComponentAction {
+            ActionKey = ActionKey.ComplianceHome.GetDescription(),
+            Icon = "mdi mdi-home-outline",
+            Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home")
+        }
+    };
+
+    //..add User actions
+    if (permissions.Contains("CreateRegulationAndGuides"))
     {
+        leftActions.Add(new ComponentAction { ActionKey = ActionKey.Separator.GetDescription() });
+        leftActions.Add(new ComponentAction {
+            ActionKey = ActionKey.NewPolicy.GetDescription(),
+            Icon = "mdi mdi-plus",
+            Tooltip = ILocalize.GetLocalizedLabel("App.Label.New")
+        });
+    }
+
+    //..add new actions
+    if (permissions.Contains("CANVIEWCOMPLIANCEREPORTS") || permissions.Contains("CANCREATECOMPLIANCEREPORTS"))
+    {
+        leftActions.Add(new ComponentAction { ActionKey = ActionKey.Separator.GetDescription() });
+        leftActions.Add(new ComponentAction {
+            ActionKey = ActionKey.PolReportAll.GetDescription(),
+            Icon = "mdi mdi-file-excel-outline",
+            Tooltip = "All"
+        });
+        leftActions.Add(new ComponentAction
+        {
+            ActionKey = ActionKey.PolReportSummery.GetDescription(),
+            Icon = "mdi mdi-file-excel-outline",
+            Tooltip = "All Summery"
+        });
+        leftActions.Add(new ComponentAction
+        {
+            ActionKey = ActionKey.PolReportSummery.GetDescription(),
+            Icon = "mdi mdi-file-excel-outline",
+            Tooltip = "All Summery"
+        });
+        leftActions.Add(new ComponentAction
+        {
+            ActionKey = ActionKey.PolReportReview.GetDescription(),
+            Icon = "mdi mdi-file-excel-outline",
+            Tooltip = "Reviews"
+        });
+        leftActions.Add(new ComponentAction
+        {
+            ActionKey = ActionKey.PolReportUptodate.GetDescription(),
+            Icon = "mdi mdi-file-excel-outline",
+            Tooltip = "Updated"
+        });
+        leftActions.Add(new ComponentAction
+        {
+            ActionKey = ActionKey.PolReportDue.GetDescription(),
+            Icon = "mdi mdi-file-excel-outline",
+            Tooltip = "Not Updated"
+        });
+        leftActions.Add(new ComponentAction
+        {
+            ActionKey = ActionKey.PolReportBoard.GetDescription(),
+            Icon = "mdi mdi-file-excel-outline",
+            Tooltip = "BSO"
+        });
+        leftActions.Add(new ComponentAction
+        {
+            ActionKey = ActionKey.PolReportBoardSummery.GetDescription(),
+            Icon = "mdi mdi-file-excel-outline",
+            Tooltip = "BSO Summery"
+        });
+        leftActions.Add(new ComponentAction
+        {
+            ActionKey = ActionKey.PolReportSmt.GetDescription(),
+            Icon = "mdi mdi-file-excel-outline",
+            Tooltip = "SMT"
+        });
+        leftActions.Add(new ComponentAction
+        {
+            ActionKey = ActionKey.PolReportSmtSummery.GetDescription(),
+            Icon = "mdi mdi-file-excel-outline",
+            Tooltip = "SMT Summery"
+        });
+    }
+
+
+    var component = new PageComponentViewModel {
         ComponentId = $"0",
         ComponentKey = "PolicyRegister",
-        LeftActions = new List<ComponentAction> {
-            new ComponentAction {ActionKey = ActionKey.ComplianceHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home")},
-            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
-            new ComponentAction { ActionKey = ActionKey.NewPolicy.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") },
-            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
-            new ComponentAction { ActionKey = ActionKey.PolReportAll.GetDescription(), Icon = "mdi mdi-file-excel-outline", Tooltip = "All" },
-            new ComponentAction { ActionKey = ActionKey.PolReportSummery.GetDescription(), Icon = "mdi mdi-file-excel-outline", Tooltip = "All Summery"},
-            new ComponentAction { ActionKey = ActionKey.PolReportReview.GetDescription(), Icon = "mdi mdi-file-excel-outline", Tooltip = "Reviews"},
-            new ComponentAction { ActionKey = ActionKey.PolReportUptodate.GetDescription(), Icon = "mdi mdi-file-excel-outline", Tooltip = "Updated"},
-            new ComponentAction { ActionKey = ActionKey.PolReportDue.GetDescription(), Icon = "mdi mdi-file-excel-outline", Tooltip = "Not Updated" },
-            new ComponentAction { ActionKey = ActionKey.PolReportBoard.GetDescription(), Icon = "mdi mdi-file-excel-outline", Tooltip = "BSO" },
-            new ComponentAction { ActionKey = ActionKey.PolReportBoardSummery.GetDescription(), Icon = "mdi mdi-file-excel-outline", Tooltip = "BSO Summery" },
-            new ComponentAction { ActionKey = ActionKey.PolReportSmt.GetDescription(), Icon = "mdi mdi-file-excel-outline", Tooltip = "SMT"},
-            new ComponentAction { ActionKey = ActionKey.PolReportSmtSummery.GetDescription(), Icon = "mdi mdi-file-excel-outline", Tooltip = "SMT Summery" },
-            
-        }
+        LeftActions = leftActions
     };
 }
 

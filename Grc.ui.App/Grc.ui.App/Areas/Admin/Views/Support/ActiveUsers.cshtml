@@ -4,17 +4,50 @@
 }
 @model AdminDashboardModel
 @{
+    var permissionsClaim = User.FindFirst("Permissions")?.Value;
+    var permissions = string.IsNullOrEmpty(permissionsClaim)
+        ? new List<string>()
+        : System.Text.Json.JsonSerializer.Deserialize<List<string>>(permissionsClaim) ?? new List<string>();
+
+    var leftActions = new List<ComponentAction>
+    {
+        new ComponentAction {
+            ActionKey = ActionKey.AdminHome.GetDescription(),
+            Icon = "mdi mdi-home-outline",
+            Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home")
+        }
+    };
+
+    //..add User actions
+    if (permissions.Contains("CANADDUSER"))
+    {
+        leftActions.Add(new ComponentAction { ActionKey = ActionKey.Separator.GetDescription() });
+        leftActions.Add(new ComponentAction
+                {
+                    ActionKey = ActionKey.NewUser.GetDescription(),
+                    Icon = "mdi mdi-account-multiple-plus-outline",
+                    Tooltip = ILocalize.GetLocalizedLabel("App.Label.New")
+                });
+    }
+
+    //..add Export actions
+    if (permissions.Contains("CANDOWNLOADUSERREPORT"))
+    {
+        leftActions.Add(new ComponentAction { ActionKey = ActionKey.Separator.GetDescription() });
+        leftActions.Add(new ComponentAction
+                {
+                    ActionKey = ActionKey.ExportToExcel.GetDescription(),
+                    Icon = "mdi mdi-download",
+                    Tooltip = "Active Report"
+                });
+    }
+
+
     var component = new PageComponentViewModel
     {
         ComponentId = "1",
         ComponentKey = "ActiveUsers",
-        LeftActions = new List<ComponentAction> {
-            new ComponentAction { ActionKey = ActionKey.AdminHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home") },
-            new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
-            new ComponentAction { ActionKey = ActionKey.NewUser.GetDescription(), Icon = "mdi mdi-account-multiple-plus-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") },
-            new ComponentAction { ActionKey = ActionKey.EditUser.GetDescription(), Icon = "mdi mdi-account-edit-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Edit") },
-            new ComponentAction { ActionKey = ActionKey.DeleteUser.GetDescription(), Icon = "mdi mdi-account-minus-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Delete") },
-        }
+        LeftActions = leftActions
     };
 }
 

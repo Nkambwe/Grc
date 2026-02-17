@@ -61,15 +61,15 @@ function initDeletedTable() {
                         resolve(response);
                     },
                     error: function (xhr, status, error) {
+                        //..hide permission alert
+                        $('#permissionAlert').hide();
+
                         if (xhr.status === 401) {
                             window.location = "/login/userlogin";
                         }
 
                         if (xhr.status === 403) {
-                            Swal.fire({
-                                title: "Access Denied!",
-                                text: "You do not have permission to access this resource."
-                            });
+                            $('#permissionAlert').show();
 
                             //..return empty dataset
                             resolve({
@@ -103,7 +103,10 @@ function initDeletedTable() {
         },
         ajaxError: function (error) {
             console.error("Tabulator AJAX Error:", error);
-            alert("Failed to load users records. Please try again.");
+            Swal.fire({
+                title: "System Error!",
+                text: "Failed to load users records. Please try again."
+            });
         },
         layout: "fitColumns",
         responsiveLayout: "hide",

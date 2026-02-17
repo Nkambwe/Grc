@@ -1,5 +1,20 @@
 ﻿let auditTypeTable;
 
+//..check permissions
+window.hasPermission = function (permissionName) {
+    return window.userPermissions.some(p => p.toLowerCase() === permissionName.toLowerCase());
+};
+
+//..check if user has ANY of the permissions
+window.hasAnyPermission = function (...permissionNames) {
+    return permissionNames.some(p => window.hasPermission(p));
+};
+
+//..check if user has ALL of the permissions
+window.hasAllPermissions = function (...permissionNames) {
+    return permissionNames.every(p => window.hasPermission(p));
+};
+
 function initAuditType2Table() {
     auditTypeTable = new Tabulator("#auditTypetable", {
         ajaxURL: "/grc/compliance/audit/types",
@@ -60,7 +75,28 @@ function initAuditType2Table() {
                     },
                     error: function (xhr, status, error) {
                         console.error("AJAX Error:", error);
+                        //..hide permission alert
+                        $('#permissionAlert').hide();
+
+                        if (xhr.status === 401) {
+                            window.location = "/login/userlogin";
+                        }
+
+                        if (xhr.status === 403) {
+                            $('#permissionAlert').show();
+
+                            //..return empty dataset
+                            resolve({
+                                data: [],
+                                last_page: 1,
+                                total_records: 0
+                            });
+
+                            return;
+                        }
+
                         reject(error);
+                        return;
                     }
                 });
             });
@@ -74,7 +110,7 @@ function initAuditType2Table() {
         },
         ajaxError: function (error) {
             console.error("Tabulator AJAX Error:", error);
-            alert("Failed to load audit types. Please try again.");
+            Swal.fire("Failed to load audit types. Please try again.");
         },
         layout: "fitColumns",
         responsiveLayout: "hide",
@@ -87,17 +123,32 @@ function initAuditType2Table() {
                 widthGrow: 2,
                 headerSort: true,
                 frozen: true,
-                formatter: (cell) => `<span class="clickable-title" onclick="viewAuditType(${cell.getRow().getData().id})">${cell.getValue()}</span>`
+                formatter: function (cell) {
+                    //..if user has permission to view/edit
+                    if (hasPermission("CANUPDATECOMPLIANCEAUDITTYPES")) {
+                        return `<span class="clickable-title" onclick="viewAuditType(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
+                    } else {
+                        return `<span >${cell.getValue()}</span>`
+                    }
+                },
+                formatter: (cell) => 
             },
             { title: "DESCRIPTION", field: "description", minWidth: 200, widthGrow: 3 },
             {
                 title: "ACTION",
-                formatter: function (cell) {
-                    let rowData = cell.getRow().getData();
-                    return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteAuditType(${rowData.id})">
-                            <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
-                            <span>DELETE</span>
-                        </button>`;
+                 formatter: function (cell) {
+                    if (hasPermission("CANDELETECOMPLIANCEAUDITTYPES")) {
+                        let rowData = cell.getRow().getData();
+                        return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteAuditType(${rowData.id})">
+                                <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                                <span>DELETE</span>
+                            </button>`;
+                    } else {
+                         return `<button class="grc-table-btn grc-btn-delete grc-delete-action disabled" disabled>
+                                <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                                <span>DELETE</span>
+                            </button>`;
+                    }
                 },
                 width: 200,
                 hozAlign: "center",

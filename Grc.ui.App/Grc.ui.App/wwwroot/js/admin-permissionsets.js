@@ -1,4 +1,20 @@
 ﻿let permissionSetTable;
+
+//..check permissions
+window.hasPermission = function (permissionName) {
+    return window.userPermissions.some(p => p.toLowerCase() === permissionName.toLowerCase());
+};
+
+//..check if user has ANY of the permissions
+window.hasAnyPermission = function (...permissionNames) {
+    return permissionNames.some(p => window.hasPermission(p));
+};
+
+//..check if user has ALL of the permissions
+window.hasAllPermissions = function (...permissionNames) {
+    return permissionNames.every(p => window.hasPermission(p));
+};
+
 function initPermissionSetTable() {
     permissionSetTable = new Tabulator("#adminPermissionSetTable", {
         ajaxURL: "/admin/support/permission-sets/list",
@@ -59,15 +75,15 @@ function initPermissionSetTable() {
                         resolve(response);
                     },
                     error: function (xhr, status, error) {
+                        //..hide permission alert
+                        $('#permissionAlert').hide();
+
                         if (xhr.status === 401) {
                             window.location = "/login/userlogin";
                         }
 
                         if (xhr.status === 403) {
-                            Swal.fire({
-                                title: "Access Denied!",
-                                text: "You do not have permission to access this resource."
-                            });
+                            $('#permissionAlert').show();
 
                             //..return empty dataset
                             resolve({
@@ -101,10 +117,33 @@ function initPermissionSetTable() {
         },
         ajaxError: function (error) {
             console.error("Tabulator AJAX Error:", error);
-             Swal.fire({
-                title: "System Error!",
-                text: "Failed to load system roles. Please try again."
-            });
+            
+            //..hide permission alert
+            $('#permissionAlert').hide();
+        
+            //..determine error message
+            let errorMessage = "Failed to load data. Please try again.";
+        
+            if (error.status === 403) {
+                //..permission error,show permission alert instead
+                $('#permissionAlert').show();
+            } else if (error.status === 404) {
+                errorMessage = "The requested resource was not found.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else if (error.status === 500) {
+                errorMessage = "Server error occurred. Please contact support.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else if (error.status === 0) {
+                errorMessage = "Network error. Please check your connection.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else {
+                //..generic error - show error alert
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            }
         },
         layout: "fitColumns",
         dataTree: false, 
@@ -115,7 +154,14 @@ function initPermissionSetTable() {
                 field: "setDescription",
                 headerFilter: "input",
                 minWidth: 250,
-                formatter: (cell) => `<span class="clickable-title" onclick="editSetRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`
+                formatter: function (cell) {
+                    //..if user has permission to view/edit
+                    if (hasPermission("CANMODIFYPERMISSIONSET") || hasPermission("EditPermissionSet")) {
+                        return  `<span class="clickable-title" onclick="editSetRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
+                    } else {
+                            `<span class="clickable-title">${cell.getValue()}</span>`
+                    }
+                }
             },
             {
                 title: "STATUS",
@@ -155,10 +201,18 @@ function initPermissionSetTable() {
                 title: "ACTION",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                    return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteSetRecord(${rowData.id})">
-                        <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
-                        <span>DELETE</span>
-                    </button>`;
+
+                     if (hasPermission("CANDELETEROLE") || hasPermission("DeleteRole")) { 
+                        return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteSetRecord(${rowData.id})">
+                            <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                            <span>DELETE</span>
+                        </button>`;
+                    } else {
+                             return `<button class="grc-table-btn grc-btn-delete grc-delete-action disabled" disabled>
+                                <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                                <span>DELETE</span>
+                            </button>`; 
+                    }
                 },
                 width: 200,
                 hozAlign: "center",
@@ -503,8 +557,8 @@ $(document).ready(function () {
 
     initPermissionSetTable();
 
-    $('.admin-home').on('click', function () {
-        window.location.href = '/admin/support/permission/sets';
+    $('.action-btn-admin-home').on('click', function () {
+        window.location.href = '/admin/support';
     });
 
     //..new permission set
