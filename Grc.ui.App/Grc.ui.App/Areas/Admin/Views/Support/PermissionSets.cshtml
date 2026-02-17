@@ -22,10 +22,10 @@
         leftActions.Add(new ComponentAction { ActionKey = ActionKey.Separator.GetDescription() });
         leftActions.Add(new ComponentAction
                 {
-                    ActionKey = ActionKey.RoleNew.GetDescription(),
-                    Icon = "mdi mdi-plus",
-                    Tooltip = ILocalize.GetLocalizedLabel("App.Label.Role")
-                });
+            ActionKey = ActionKey.NewSet.GetDescription(),
+                Icon = "mdi mdi-plus",
+                Tooltip = "New Set"
+            });
     }
 
     var component = new PageComponentViewModel

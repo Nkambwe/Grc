@@ -24,6 +24,8 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
             builder.Property(u => u.IsActive).HasColumnName("Is_active");
             builder.Property(u => u.IsApproved).HasColumnName("Is_approved").IsRequired(false);
             builder.Property(u => u.IsVerified).HasColumnName("Is_verified").IsRequired(false);
+            builder.Property(u => u.IsLocked).HasColumnName("is_locked");
+            builder.Property(u => u.LockedOn).HasColumnName("locked_on").IsRequired(false);
             builder.Property(u => u.IsLoggedIn).HasColumnName("Is_loggedin");
             builder.Property(u => u.LastLoginDate).HasColumnName("Last_login_date").IsRequired(false);
             builder.Property(u => u.IsDeleted).HasColumnName("Is_deleted");

@@ -48,6 +48,9 @@ namespace Grc.Middleware.Api.Http.Requests {
         [JsonPropertyName("isActive")]
         public bool IsActive { get; set; }
 
+        [JsonPropertyName("isLocked")]
+        public bool IsLocked { get; set; }
+
         [JsonPropertyName("isVerified")]
         public bool IsVerified { get; set; }
 

@@ -272,13 +272,6 @@ function initCircularTable() {
             }
         ]
     });
-
-    //..initialize search
-    initReturnSearch();
-}
-
-function initReturnSearch() {
-
 }
 
 $('.action-btn-return-new').on('click', function () {
@@ -528,7 +521,6 @@ function viewCircular(id) {
         didOpen: () => Swal.showLoading()
     });
 
-    console.log("ID >> " + id);
     findCircularRecord(id)
         .then(record => {
             Swal.close();

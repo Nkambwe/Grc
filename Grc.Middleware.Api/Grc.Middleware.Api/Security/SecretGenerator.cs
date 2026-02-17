@@ -6,7 +6,7 @@ namespace Grc.Middleware.Api.Security {
         private const string Uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         private const string Lowercase = "abcdefghijklmnopqrstuvwxyz";
         private const string Digits    = "0123456789";
-        private const string Special   = "!@#$%^&*()-_=+[]{}<>?";
+        private const string Special = "!@#$%^*()-_=+[]?";
 
         private static readonly string AllCharacters =
             Uppercase + Lowercase + Digits + Special;

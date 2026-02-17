@@ -683,7 +683,6 @@ $(document).ready(function () {
 
     //..new role group
     $(".action-btn-new-role-group").on("click", function () {
-        console.log(`Clicked new set`);
         addGroupRecord();
     });
 

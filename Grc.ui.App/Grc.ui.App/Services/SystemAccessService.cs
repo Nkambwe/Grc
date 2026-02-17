@@ -1823,10 +1823,21 @@ namespace Grc.ui.App.Services {
 
             try {
                 //..build request object
-                var request = Mapper.Map<GrcRoleGroupRequest>(groupModel);
-                request.UserId = userId;
-                request.IpAddress = ipAddress;
-                request.Action = Activity.ROLE_GROUP_ADDED.GetDescription();
+                var request = new GrcRoleGroupRequest {
+                    Id = groupModel.Id,
+                    GroupName = groupModel.GroupName,
+                    GroupDescription = groupModel.GroupDescription,
+                    GroupCategory = groupModel.AttachedTo,
+                    GroupScope = 2,
+                    IsApproved = true,
+                    IsVerified = true,
+                    IsDeleted = groupModel.IsDeleted,
+                    PermissionSets = groupModel.PermissionSets ?? new(),
+                    Roles = groupModel.Roles ?? new(),
+                    UserId = userId,
+                    IpAddress = ipAddress,
+                    Action = Activity.ROLE_GROUP_EDITED.GetDescription()
+                };
 
                 //..map request
                 Logger.LogActivity($"UPDATE ROLE GROUP REQUEST : {JsonSerializer.Serialize(request)}");
@@ -1878,10 +1889,20 @@ namespace Grc.ui.App.Services {
             try {
 
                 //..build request object
-                var request = Mapper.Map<GrcRoleGroupRequest>(groupModel);
-                request.UserId = userId;
-                request.IpAddress = ipAddress;
-                request.Action = Activity.ROLE_GROUP_ADDED.GetDescription();
+                var request = new GrcRoleGroupRequest {
+                    GroupName = groupModel.GroupName,
+                    GroupDescription = groupModel.GroupDescription,
+                    GroupCategory = groupModel.AttachedTo,
+                    GroupScope = 2,
+                    IsApproved = true,
+                    IsVerified = true,
+                    IsDeleted = false,
+                    PermissionSets = groupModel.PermissionSets ?? new(),
+                    Roles = groupModel.Roles ?? new(),
+                    UserId = userId,
+                    IpAddress = ipAddress,
+                    Action = Activity.ROLE_GROUP_ADDED.GetDescription()
+                };
 
                 //..map request
                 Logger.LogActivity($"CREATE ROLE GROUP REQUEST : {JsonSerializer.Serialize(request)}");

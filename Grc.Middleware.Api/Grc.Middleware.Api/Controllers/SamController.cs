@@ -135,75 +135,53 @@ namespace Grc.Middleware.Api.Controllers {
         public async Task<IActionResult> AuthenticateAsync([FromBody] LoginRequest request) {
             try {
                 Logger.LogActivity("Authenticate user at login", "INFO");
-        
-                if (request == null || string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password)) { 
-                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Username and password are required", "Invalid login credentials");
-                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<AuthenticationResponse>(error));
+
+                if (request == null || string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password)) {
+                    return Ok(new GrcResponse<AuthenticationResponse>(
+                        new ResponseError(ResponseCodes.BADREQUEST, "Username and password are required", "Invalid login credentials")));
                 }
 
-                Logger.LogActivity($"Authentication Request >> {JsonSerializer.Serialize(new { request.Username, HasPassword = !string.IsNullOrEmpty(request.Password) })}", "INFO");
                 var response = await _accessService.AuthenticateUserAsync(request.Username);
-                if(response != null) {  
-                    //..decrypt sensitive fields 
-                    if(!string.IsNullOrEmpty(response.Username) || !string.IsNullOrEmpty(response.EmailAddress)){ 
-                        request.DecryptFields = new string[] { "PFNumber", "EmailAddress", "FirstName", "LastName", "MiddleName", "PhoneNumber", "Password" };
-                        response = Cypher.DecryptProperties(response, request.DecryptFields);
-                    }
-
-                    //..authenticate user
-                    if(response.IsActive && !response.IsDeleted) { 
-                        response.IsAuthenticated = ExtendedHashMapper.VerifyPassword(request.Password, response.Password);
-                    }
-
-                    if (response.IsAuthenticated) {
-                        //..update the last login for user
-                         await _accessService.UpdateLastLoginAsync(response.UserId, DateTime.Now);
-                    } else { 
-                        //..lock account if attempts completed
-                         await _accessService.LockUserAccountAsync(response.UserId);
-                    }
-
-                    Logger.LogActivity($"AUTHENTICATION SUCCESS: User {request.Username} authenticated successfully");
-                    return Ok(new GrcResponse<AuthenticationResponse>(response));
-                } else { 
-                    var error = new ResponseError(ResponseCodes.UNAUTHORIZED, "Invalid username or password", "Authentication failed - please check your credentials"); 
-                    Logger.LogActivity($"AUTHENTICATION FAILED: {JsonSerializer.Serialize(error)}");
-                    return Ok(new GrcResponse<AuthenticationResponse>(error));
+                if (response == null) {
+                    return Ok(new GrcResponse<AuthenticationResponse>(
+                        new ResponseError(ResponseCodes.UNAUTHORIZED, "Invalid username or password", "Authentication failed")));
                 }
-            } catch (Exception ex) { 
+
+                //..decrypt sensitive fields 
+                request.DecryptFields = new string[] { "PFNumber", "EmailAddress", "FirstName", "LastName", "MiddleName", "PhoneNumber", "Password" };
+                response = Cypher.DecryptProperties(response, request.DecryptFields);
+
+                //..block locked user first
+                if (response.IsLocked) {
+                    await _accessService.LockUserAccountAsync(request.UserId, request.Username);
+                    return Ok(new GrcResponse<AuthenticationResponse>(
+                        new ResponseError(ResponseCodes.RESTRICTED, "Account locked",
+                        "Your account has been locked after 3 failed login attempts.")));
+                }
+
+                //..authenticate user
+                response.IsAuthenticated = ExtendedHashMapper.VerifyPassword(request.Password,response.Password);
+
+                if (response.IsAuthenticated) {
+                    //..reset failed attempts for successful users
+                    await _accessService.ResetFailedAttemptsAsync(response.UserId, request.IPAddress);
+                    await _accessService.UpdateLastLoginAsync(response.UserId, DateTime.Now);
+                } else {
+                    //..increment attempts for failed users
+                    int attempts = await _accessService.IncrementFailedAttemptsAsync(response.UserId, request.IPAddress);
+
+                    if (attempts >= 3) {
+                        await _accessService.LockUserAccountAsync(response.UserId, request.Username);
+                        return Ok(new GrcResponse<AuthenticationResponse>(
+                            new ResponseError(ResponseCodes.RESTRICTED, "Account locked",
+                            "Your account has been locked after 3 failed login attempts.")));
+                    }
+                }
+
+                return Ok(new GrcResponse<AuthenticationResponse>(response));
+            } catch (Exception ex) {
                 Logger.LogActivity($"Authentication Error: {ex.Message}", "ERROR");
-                Logger.LogActivity($"{ex.StackTrace}", "STACKTRACE");
-                
-                var conpany = await CompanyService.GetDefaultCompanyAsync();
-                long companyId = conpany != null ? conpany.Id : 1;
-                SystemError errorObj = new(){ 
-                    ErrorMessage = ex.Message,
-                    ErrorSource = "MIDDLEWARE-SAM-COTROLLER",
-                    StackTrace = ex.StackTrace,
-                    Severity = "CRITICAL",
-                    ReportedOn = DateTime.Now,
-                    CompanyId = companyId
-                };
-
-                //..save error object to the database
-                var result = await SystemErrorService.SaveErrorAsync(errorObj);
-                var response = new GeneralResponse();
-                if(result){
-                    response.Status = true;
-                    response.StatusCode = (int)ResponseCodes.SUCCESS;
-                    response.Message = "Error captured and saved successfully";  
-                    Logger.LogActivity($"MIDDLEWARE-SAM-CONTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
-                } else { 
-                    response.Status = true;
-                    response.StatusCode = (int)ResponseCodes.FAILED;
-                    response.Message = "Failed to capture error to database. An error occurrred";  
-                    Logger.LogActivity($"MIDDLEWARE-SAM-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
-                }
-
-                var error = new ResponseError(ResponseCodes.SERVERERROR, "Authentication service temporarily unavailable", $"System Error - {ex.Message}");
-                Logger.LogActivity($"MIDDLEWARE-SAM RESPONSE: {JsonSerializer.Serialize(error)}");
-                return Ok(new GrcResponse<AuthenticationResponse>(error));
+                throw;
             }
         }
 
@@ -839,7 +817,6 @@ namespace Grc.Middleware.Api.Controllers {
                         var logger = sp.GetRequiredService<IServiceLoggerFactory>().CreateLogger();
 
                         await SendMailAsync(Logger, mailService, firstname, email, username, userPwd);
-                        //await SendMailAsync(Logger, mailService, firstname, email, username, userPwd, true); 
                     });
 
                     //..set response
@@ -956,9 +933,10 @@ namespace Grc.Middleware.Api.Controllers {
 
                 //..hash the password
                 var genPassword = SecurePasswordGenerator.Generate();
-                Logger.LogActivity($"USER RESET PWD >> : {genPassword}");
+                var securedPwd = genPassword;
+                Logger.LogActivity($"USER RESET PWD >> : {securedPwd}");
                 var passwordHash = HashGenerator.EncryptString(ExtendedHashMapper.HashPassword(genPassword));
-
+               
                 //..update role
                 var result = await _accessService.ResetPasswordAsync(request.RecordId, passwordHash, username);
                 var response = new GeneralResponse();
@@ -967,7 +945,7 @@ namespace Grc.Middleware.Api.Controllers {
                     _mailTask.Enqueue(async (sp, token) => {
                         var mailService = sp.GetRequiredService<IMailService>();
                         var logger = sp.GetRequiredService<IServiceLoggerFactory>().CreateLogger();
-                        await SendMailAsync(Logger, mailService, firstName, email, accountName, genPassword, true); 
+                        await SendMailAsync(Logger, mailService, firstName, email, accountName, securedPwd, true); 
                     });
 
                     response.Status = true;

@@ -95,11 +95,6 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(dest => dest.IsCovered, opt => opt.MapFrom(src => src.IsCovered))
                 .ForMember(dest => dest.FrequencyId, opt => opt.MapFrom(src => src.FrequencyId))
                 .ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.OwnerId))
-                //.ForMember(dest => dest.Interval, reg => reg.MapFrom(o => o.Interval))
-                //.ForMember(dest => dest.IntervalType, reg => reg.MapFrom(o => o.IntervalType))
-                //.ForMember(dest => dest.Reminder, reg => reg.MapFrom(o => o.Reminder))
-                //.ForMember(dest => dest.RequiredSubmissionDate, reg => reg.MapFrom(o => o.RequiredSubmissionDate))
-                //.ForMember(dest => dest.RequiredSubmissionDay, reg => reg.MapFrom(o => o.RequiredSubmissionDay))
                 .ForMember(dest => dest.ComplianceAssurance, opt => opt.MapFrom(src => src.ComplianceAssurance))
                 .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments));
 
@@ -117,6 +112,7 @@ namespace Grc.ui.App.Helpers {
                 .ForMember(u => u.Password, reg => reg.MapFrom(o => (o.Password ?? string.Empty).Trim()))
                 .ForMember(u => u.IsPersistent, reg => reg.MapFrom(o => o.RememberMe))
                 .ForMember(u => u.IsValidated, reg => reg.MapFrom(o => o.IsUsernameValidated))
+                .ForMember(u => u.IsLocked, reg => reg.MapFrom(o => o.IsLocked))
                 .ForMember(u => u.Action, opt => opt.MapFrom(src => Activity.AUTHENTICATE.GetDescription()))
                 .ForMember(u => u.EncryptFields, opt => opt.MapFrom(src => new string[]{ }))
                 .ForMember(u => u.DecryptFields, opt => opt.MapFrom(src => new string[]{"FirstName", "LastName", "MiddleName", "Email", "PhoneNumber", "PFNumber"}));
