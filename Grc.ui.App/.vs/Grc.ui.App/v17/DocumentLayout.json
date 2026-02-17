@@ -77,7 +77,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 362,
-          "SelectedChildIndex": 12,
+          "SelectedChildIndex": 11,
           "Children": [
             {
               "$type": "Bookmark",
@@ -86,10 +86,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:1:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
             },
             {
               "$type": "Bookmark",
@@ -150,8 +146,7 @@
               "RelativeToolTip": "Grc.ui.App\\Views\\Shared\\Components\\UserList\\Default.cshtml",
               "ViewState": "AgIAAPkAAAAAAAAAAAAAABEBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-14T15:51:43.206Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-14T15:51:43.206Z"
             },
             {
               "$type": "Document",
@@ -163,8 +158,7 @@
               "RelativeToolTip": "Grc.ui.App\\Views\\Application\\ComplianceSettings.cshtml",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAAAsAAABPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-14T15:03:00.323Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-14T15:03:00.323Z"
             },
             {
               "$type": "Document",
@@ -176,8 +170,7 @@
               "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Views\\Support\\ApplicationSetting.cshtml",
               "ViewState": "AgIAAHIAAAAAAAAAAAAAAE4AAABIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-14T15:02:15.79Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-14T15:02:15.79Z"
             },
             {
               "$type": "Document",
@@ -189,8 +182,7 @@
               "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Views\\Shared\\_AdminLayout.cshtml",
               "ViewState": "AgIAADwAAAAAAAAAAAAAAE4AAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-14T14:39:34.796Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-14T14:39:34.796Z"
             },
             {
               "$type": "Document",
@@ -202,8 +194,7 @@
               "RelativeToolTip": "Grc.ui.App\\Routes\\RouteProvider.cs",
               "ViewState": "AgIAADIAAAAAAAAAAAAYwFMAAABfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-14T14:21:00.183Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-14T14:21:00.183Z"
             },
             {
               "$type": "Document",
@@ -215,8 +206,7 @@
               "RelativeToolTip": "Grc.ui.App\\Areas\\Admin\\Controllers\\SupportController.cs",
               "ViewState": "AgIAAAwIAAAAAAAAAAAkwF0IAAB2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-14T07:56:34.056Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-14T07:56:34.056Z"
             },
             {
               "$type": "Document",
@@ -228,8 +218,7 @@
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\SamController.cs",
               "ViewState": "AgIAANABAAAAAAAAAADwv9kBAABaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-14T13:47:18.828Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-14T13:47:18.828Z"
             },
             {
               "$type": "Document",
@@ -241,8 +230,7 @@
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Controllers\\SupportController.cs",
               "ViewState": "AgIAAHgCAAAAAAAAAAAmwJgCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-14T13:44:18.376Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-14T13:44:18.376Z"
             }
           ]
         }
@@ -273,7 +261,7 @@
               "RelativeDocumentMoniker": "Grc.ui.App\\wwwroot\\js\\admin-users-script.js",
               "ToolTip": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\Grc.ui.App\\wwwroot\\js\\admin-users-script.js",
               "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\admin-users-script.js",
-              "ViewState": "AgIAAIkAAAAAAAAAAAAAwFwBAAAPAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFwBAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
               "WhenOpened": "2026-02-14T15:52:11.983Z",
               "EditorCaption": ""
@@ -288,8 +276,7 @@
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\SystemConfigurationService.cs",
               "ViewState": "AgIAADsAAAAAAAAAAAAiwAgAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-14T13:44:39.729Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-14T13:44:39.729Z"
             },
             {
               "$type": "Document",
@@ -301,8 +288,7 @@
               "RelativeToolTip": "Grc.ui.App\\Services\\SystemConfiguration.cs",
               "ViewState": "AgIAAH8AAAAAAAAAAADwv80AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-14T13:43:59.985Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-14T13:43:59.985Z"
             },
             {
               "$type": "Document",
@@ -314,8 +300,7 @@
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\SystemAccessService.cs",
               "ViewState": "AgIAABgFAAAAAAAAAIAwwLoFAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-14T13:13:13.278Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-14T13:13:13.278Z"
             },
             {
               "$type": "Document",
@@ -327,8 +312,7 @@
               "RelativeToolTip": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Services\\ISystemAccessService.cs",
               "ViewState": "AgIAACkAAAAAAAAAAAAAwDMAAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-14T12:58:13.023Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-14T12:58:13.023Z"
             },
             {
               "$type": "Document",
@@ -340,8 +324,7 @@
               "RelativeToolTip": "Grc.ui.App\\Services\\ISystemAccessService.cs",
               "ViewState": "AgIAAJQAAAAAAAAAAAAqwK8AAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-14T12:31:49.318Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-14T12:31:49.318Z"
             },
             {
               "$type": "Document",
@@ -353,8 +336,7 @@
               "RelativeToolTip": "Grc.ui.App\\Services\\SystemAccessService.cs",
               "ViewState": "AgIAAAADAAAAAAAAAAAmwAIEAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-14T12:40:46.34Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-14T12:40:46.34Z"
             },
             {
               "$type": "Document",
@@ -366,8 +348,7 @@
               "RelativeToolTip": "Grc.ui.App\\wwwroot\\js\\application-settings.js",
               "ViewState": "AgIAADUAAAAAAAAAAAAgwC4AAABXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-02-14T14:54:29.312Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-14T14:54:29.312Z"
             },
             {
               "$type": "Document",
@@ -379,8 +360,7 @@
               "RelativeToolTip": "Grc.ui.App\\Services\\ISystemConfiguration.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAABcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-14T14:14:16.746Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-14T14:14:16.746Z"
             }
           ]
         }
