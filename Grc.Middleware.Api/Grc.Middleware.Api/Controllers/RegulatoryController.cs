@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Grc.Middleware.Api.Data.Entities.Compliance.Audits;
 using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
+using Grc.Middleware.Api.Sanitizer;
 using Grc.Middleware.Api.Security;
 using Grc.Middleware.Api.Services;
 using Grc.Middleware.Api.Services.Compliance.Audits;
@@ -15,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using RTools_NTS.Util;
 using System.Drawing;
 using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Grc.Middleware.Api.Controllers {
 
@@ -791,33 +794,33 @@ namespace Grc.Middleware.Api.Controllers {
             try {
                 Logger.LogActivity("Creating new policy document", "INFO");
                 if (request == null) {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "The policy document record cannot be null"
-                    );
-
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","The policy document record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..check for malicious patterns before processing
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.DocumentName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.DocumentStatus, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!string.IsNullOrWhiteSpace(request.DocumentName) && !string.IsNullOrWhiteSpace(request.DocumentStatus)) {
                     if (await _regulatoryDocuments.ExistsAsync(r => r.DocumentName == request.DocumentName)) {
-                        var error = new ResponseError(
-                            ResponseCodes.DUPLICATE,
-                            "Duplicate Record",
-                            "Another Policy document found with similar name"
-                        );
+                        var error = new ResponseError(ResponseCodes.DUPLICATE, "Duplicate Record", "Another Policy document found with similar name");
                         Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
                         return Ok(new GrcResponse<GeneralResponse>(error));
                     }
                 } else {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "The document name is required"
-                    );
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The document name is required");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
@@ -862,24 +865,27 @@ namespace Grc.Middleware.Api.Controllers {
             try {
                 Logger.LogActivity("Update policy document", "INFO");
                 if (request == null) {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "The policy document record cannot be null"
-                    );
-
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","The policy document record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..check for malicious patterns before processing
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.DocumentName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.DocumentStatus, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!await _regulatoryDocuments.ExistsAsync(r => r.Id == request.Id)) {
-                    var error = new ResponseError(
-                        ResponseCodes.NOTFOUND,
-                        "Record Not Found",
-                        "Policy document record not found in the database"
-                    );
-
+                    var error = new ResponseError(ResponseCodes.NOTFOUND,"Record Not Found","Policy document record not found in the database");
                     Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
@@ -1086,11 +1092,6 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
-        [HttpPost("registers/create-compliance-map")]
-        public async Task<IActionResult> CreateComplianceMap([FromBody] ObligationMapRequest request) {
-            return Ok(new { success = true, message = "Success" });
-        }
-
         [HttpPost("registers/paged-maps-list")]
         public async Task<IActionResult> GetPagedMapList([FromBody] ListRequest request) {
             try {
@@ -1270,24 +1271,23 @@ namespace Grc.Middleware.Api.Controllers {
             try {
                 Logger.LogActivity("Creating new regulatory type", "INFO");
                 if (request == null) {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "The regulatory type record cannot be null"
-                    );
-
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","The regulatory type record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..check for malicious patterns before processing
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.TypeName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!string.IsNullOrWhiteSpace(request.TypeName)) {
                     if (await _regulatoryType.ExistsAsync(t => t.TypeName == request.TypeName)) {
-                        var error = new ResponseError(
-                            ResponseCodes.DUPLICATE,
-                            "Duplicate Record",
-                            "Another regulatory type found with similar name"
-                        );
+                        var error = new ResponseError(ResponseCodes.DUPLICATE,"Duplicate Record","Another regulatory type found with similar name");
                         Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
                         return Ok(new GrcResponse<GeneralResponse>(error));
                     }
@@ -1345,6 +1345,14 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The regulatory type record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.TypeName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -1585,33 +1593,28 @@ namespace Grc.Middleware.Api.Controllers {
             try {
                 Logger.LogActivity("Creating new document type", "INFO");
                 if (request == null) {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "The document type record cannot be null"
-                    );
-
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","The document type record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.DocumentType, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!string.IsNullOrWhiteSpace(request.DocumentType)) {
                     if (await _documentTypeService.ExistsAsync(t => t.DocumentType == request.DocumentType)) {
-                        var error = new ResponseError(
-                            ResponseCodes.DUPLICATE,
-                            "Duplicate Record",
-                            "Another document type found with similar name"
-                        );
+                        var error = new ResponseError(ResponseCodes.DUPLICATE,"Duplicate Record","Another document type found with similar name");
                         Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
                         return Ok(new GrcResponse<GeneralResponse>(error));
                     }
                 } else {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "The type name is required"
-                    );
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","The type name is required");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
@@ -1660,6 +1663,14 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The document type record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.DocumentType, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -1743,21 +1754,13 @@ namespace Grc.Middleware.Api.Controllers {
             try {
                 Logger.LogActivity("Get regulatory category by ID", "INFO");
                 if (request == null) {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "Invalid request body"
-                    );
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","Invalid request body");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<RegulatoryCategoryResponse>(error));
                 }
 
                 if (request.RecordId == 0) {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request regulatory category ID is required",
-                        "Invalid regulatory category request ID"
-                    );
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request regulatory category ID is required","Invalid regulatory category request ID");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<RegulatoryCategoryResponse>(error));
                 }
@@ -1765,11 +1768,7 @@ namespace Grc.Middleware.Api.Controllers {
 
                 var register = await _categoryService.GetAsync(d => d.Id == request.RecordId, false);
                 if (register == null) {
-                    var error = new ResponseError(
-                        ResponseCodes.FAILED,
-                        "Regulatory category not found",
-                        "No regulatory category matched the provided ID"
-                    );
+                    var error = new ResponseError(ResponseCodes.FAILED,"Regulatory category not found","No regulatory category matched the provided ID");
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<RegulatoryCategoryResponse>(error));
                 }
@@ -1903,33 +1902,33 @@ namespace Grc.Middleware.Api.Controllers {
             try {
                 Logger.LogActivity("Creating new regulatory category", "INFO");
                 if (request == null) {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "The regulatory category record cannot be null"
-                    );
-
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","The regulatory category record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.CategoryName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Comments, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!string.IsNullOrWhiteSpace(request.CategoryName)) {
                     if (await _categoryService.ExistsAsync(t => t.CategoryName == request.CategoryName)) {
-                        var error = new ResponseError(
-                            ResponseCodes.DUPLICATE,
-                            "Duplicate Record",
-                            "Another regulatory category found with similar name"
-                        );
+                        var error = new ResponseError(ResponseCodes.DUPLICATE,"Duplicate Record","Another regulatory category found with similar name");
                         Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
                         return Ok(new GrcResponse<GeneralResponse>(error));
                     }
                 } else {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "The regulatory category name is required"
-                    );
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","The regulatory category name is required");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
@@ -1978,6 +1977,19 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The regulatory category record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.CategoryName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Comments, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 if (string.IsNullOrWhiteSpace(request.CategoryName)) {
@@ -2269,6 +2281,19 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Code, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.RegulatoryName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!string.IsNullOrWhiteSpace(request.RegulatoryName) && !string.IsNullOrWhiteSpace(request.Code)) {
                     if (await _regulatoryService.ExistsAsync(s => s.RegulatoryName == request.RegulatoryName || s.Code == request.Code)) {
@@ -2326,6 +2351,19 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The regulatory statute record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Code, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.RegulatoryName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 if (string.IsNullOrWhiteSpace(request.RegulatoryName) || string.IsNullOrWhiteSpace(request.Code)) {
@@ -2623,6 +2661,29 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Section, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Comments, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Obligation, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ReviewFrequency, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!string.IsNullOrWhiteSpace(request.Section) && !string.IsNullOrWhiteSpace(request.Summery)) {
                     if (await _articleService.ExistsAsync(s => s.Article == request.Section || s.Summery == request.Summery)) {
@@ -2680,6 +2741,29 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The regulatory statute record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Section, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Comments, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Obligation, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ReviewFrequency, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 if (string.IsNullOrWhiteSpace(request.Section) || string.IsNullOrWhiteSpace(request.Summery) || string.IsNullOrWhiteSpace(request.Obligation)) {
@@ -2881,24 +2965,28 @@ namespace Grc.Middleware.Api.Controllers {
             try {
                 Logger.LogActivity("Creating new authority", "INFO");
                 if (request == null) {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "The authority record cannot be null"
-                    );
-
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty","The authority record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.AuthorityName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.AuthorityAlias, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!string.IsNullOrWhiteSpace(request.AuthorityName) || !string.IsNullOrWhiteSpace(request.AuthorityAlias)) {
                     if (await _authorityService.ExistsAsync(a => a.AuthorityName == request.AuthorityName || a.AuthorityAlias == request.AuthorityAlias)) {
-                        var error = new ResponseError(
-                            ResponseCodes.DUPLICATE,
-                            "Duplicate Record",
-                            "Another authority found with similar name or alias"
-                        );
+                        var error = new ResponseError(ResponseCodes.DUPLICATE,"Duplicate Record","Another authority found with similar name or alias");
                         Logger.LogActivity($"DUPLICATE RECORD: {JsonSerializer.Serialize(error)}");
                         return Ok(new GrcResponse<GeneralResponse>(error));
                     }
@@ -2956,6 +3044,19 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The regulatory authority record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.AuthorityName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.AuthorityAlias, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -3148,6 +3249,19 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.CategoryName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Comments, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!string.IsNullOrWhiteSpace(request.CategoryName)) {
                     if (await _controlCategoryService.ExistsAsync(t => t.CategoryName == request.CategoryName)) {
@@ -3197,6 +3311,19 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The control category record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.CategoryName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Comments, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 if (string.IsNullOrWhiteSpace(request.CategoryName)) {
@@ -3290,6 +3417,19 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ItemName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Comments, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!string.IsNullOrWhiteSpace(request.ItemName)) {
                     if (await _itemService.ExistsAsync(t => t.ItemName == request.ItemName)) {
@@ -3339,6 +3479,19 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The control item record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ItemName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Comments, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 if (string.IsNullOrWhiteSpace(request.ItemName)) {
@@ -3539,6 +3692,19 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Description, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Comments, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!string.IsNullOrWhiteSpace(request.Description)) {
                     if (await _issueService.ExistsAsync(i => i.Description == request.Description)) {
@@ -3597,6 +3763,19 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The Compliance issue record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Description, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Comments, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -3748,6 +3927,34 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ReturnName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Risk, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Interval, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Reminder, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Comments, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!string.IsNullOrWhiteSpace(request.ReturnName)) {
                     if (await _returnService.ExistsAsync(i => i.ReturnName == request.ReturnName)) {
@@ -3827,6 +4034,34 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The return/report record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ReturnName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Risk, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Interval, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Reminder, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Comments, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -4427,6 +4662,49 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.SubmissionReference, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.CircularTitle, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Requirement, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.BreachReason, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.BreachRisk, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Interval, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.IntervalType, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Comments, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!string.IsNullOrWhiteSpace(request.CircularTitle)) {
                     if (await _circularService.ExistsAsync(t => t.CircularTitle == request.CircularTitle)) {
@@ -4491,6 +4769,49 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The circular record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.SubmissionReference, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.CircularTitle, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Requirement, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.BreachReason, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.BreachRisk, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Interval, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.IntervalType, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Comments, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -4713,6 +5034,29 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.IssueDescription, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Resolution, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Status, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.UserName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!string.IsNullOrWhiteSpace(request.IssueDescription)) {
                     if (await _circularIssueService.ExistsAsync(i => i.IssueDescription == request.IssueDescription)) {
@@ -4771,6 +5115,29 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The circular issue record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.IssueDescription, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Resolution, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Status, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.UserName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -5023,6 +5390,39 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The submission record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Reference, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Status, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.FilePath, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.BreachReason, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.SubmittedBy, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Comments, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -5411,6 +5811,19 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.AuditName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Notes, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!string.IsNullOrWhiteSpace(request.AuditName)) {
                     if (await _auditService.ExistsAsync(t => t.AuditName == request.AuditName)) {
@@ -5463,6 +5876,19 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The audit record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.AuditName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Notes, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -5741,6 +6167,39 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Reference, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ReportName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Summery, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Status, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ManagementComment, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.AdditionalNotes, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!string.IsNullOrWhiteSpace(request.ReportName)) {
                     if (await _auditReportService.ExistsAsync(t => t.ReportName == request.ReportName)) {
@@ -5793,6 +6252,39 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The audit report record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Reference, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ReportName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Summery, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Status, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ManagementComment, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.AdditionalNotes, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} >> ${request.IpAddress}", "INFO");
@@ -6089,6 +6581,54 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Findings, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Recomendations, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ProposedAction, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Status, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.CorrectiveAction, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Notes, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Executioner, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.RiskLevel, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.RiskLevel, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!string.IsNullOrWhiteSpace(request.Findings)) {
                     if (await _auditExceptionService.ExistsAsync(e => e.AuditFinding == request.Findings && e.Id == request.ReportId)) {
@@ -6141,6 +6681,54 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The audit type record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Findings, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Recomendations, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ProposedAction, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Status, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.CorrectiveAction, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Notes, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Executioner, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.RiskLevel, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.RiskLevel, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -6348,6 +6936,24 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.UpdateNotes, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ReminderMessage, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.SendToEmails, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!string.IsNullOrWhiteSpace(request.UpdateNotes)) {
                     if (await _auditUpdateService.ExistsAsync(e => e.Notes == request.UpdateNotes && e.Id == request.ReportId)) {
@@ -6400,6 +7006,24 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The audit notes record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.UpdateNotes, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ReminderMessage, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.SendToEmails, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -6581,6 +7205,24 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.TypeCode, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.TypeName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Description, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!string.IsNullOrWhiteSpace(request.TypeName)) {
                     if (await _auditTypeService.ExistsAsync(t => t.TypeName == request.TypeName)) {
@@ -6633,6 +7275,24 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The audit type record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.TypeCode, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.TypeName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Description, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -6822,6 +7482,34 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.TaskName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Description, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Interval, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.IntervalType, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Reminder, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!string.IsNullOrWhiteSpace(request.TaskName)) {
                     if (await _auditTaskService.ExistsAsync(t => t.TaskName == request.TaskName)) {
@@ -6874,6 +7562,34 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The audit task record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.TaskName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Description, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Interval, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.IntervalType, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Reminder, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");

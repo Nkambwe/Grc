@@ -267,44 +267,6 @@
                             </ul>
                         </li>
 
-                      @*   <li class="sidebar-item with-submenu">
-                            <a href="" class="toggle-submenu" data-id="settings-menu">
-                                <span class="menu-icon">
-                                    <i class="mif-equalizer"></i>
-                                </span>
-                                <span>
-                                    @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Configurations.Settings"))
-                                </span>
-                                <span class="drop-icon">
-                                    <i class="mdi mdi-chevron-down"></i>
-                                </span>
-                            </a>
-                            <ul id="settings-menu" class="sidebar-submenu">
-
-                                <li class="sidebar-item with-submenu">
-                                    <a asp-controller="OperationsConfiguration" class="disabled" disabled asp-action="General" asp-area="Operations">
-                                        <span class="menu-icon">
-                                            <i class="mdi mdi-shuffle-disabled"></i>
-                                        </span>
-                                        <span class="sidebar-text">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Configurations.General"))
-                                        </span>
-                                    </a>
-                                </li>
-                                 
-                                <li class="sidebar-item with-submenu">
-                                    <a asp-controller="OperationsConfiguration" class="disabled" disabled asp-action="Additional" asp-area="Operations">
-                                        <span class="menu-icon">
-                                            <i class="mdi mdi-shuffle-variant"></i>
-                                        </span>
-                                        <span class="sidebar-text">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Configurations.Additional"))
-                                        </span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li> *@
-
                     </ul>
 
                 </nav>
@@ -381,6 +343,17 @@
                                             <hr class="dropdown-divider">
                                         </li>
                                         <li>
+                                            <a class="dropdown-item" asp-controller="Application" asp-action="ChangePassword">
+                                                <span>
+                                                    <i class="mdi mdi-form-textbox-password"></i>
+                                                </span>
+                                                <span>Change Password</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li>
                                             <a href="" class="dropdown-item" onclick="performLogout(event)">
                                                 <span>
                                                     <i class="mdi mdi-logout"></i>
@@ -415,8 +388,6 @@
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/select-2/js/select2.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/lib/bootstrap/dist/js/bootstrap.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/component-script.js");
-        Html.AddScriptParts(ResourceLocation.Footer, "~/js/department-units-script.js");
-        Html.AddScriptParts(ResourceLocation.Footer, "~/js/department-script.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-script.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-other-script.js");
         Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-table-script.js");

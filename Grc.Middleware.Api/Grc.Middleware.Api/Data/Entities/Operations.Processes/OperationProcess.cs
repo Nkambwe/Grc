@@ -31,8 +31,10 @@ namespace Grc.Middleware.Api.Data.Entities.Operations.Processes {
         public virtual ICollection<ProcessApproval> Approvals { get; set; } = new List<ProcessApproval>();
         public virtual ICollection<ProcessProcessTag> Tags { get; set; } = new List<ProcessProcessTag>();
         public ICollection<ProcessProcessGroup> Groups { get; set; } = new List<ProcessProcessGroup>();
-        public virtual ICollection<ProcessActivity> Activities { get; set; }
-
+        public virtual ICollection<ProcessActivity> Activities { get; set; } = new List<ProcessActivity>();
+        public virtual ICollection<ProcessRisk> RiskAssessments { get; set; } = new List<ProcessRisk>();
+        public virtual ICollection<ProcessVersion> Versions { get; set; } = new List<ProcessVersion>();
+        public virtual ICollection<ProcessWorkflow> Workflows { get; set; } = new List<ProcessWorkflow>();
     }
 
 }

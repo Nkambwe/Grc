@@ -1,5 +1,6 @@
 ﻿let selectedCategory = null;
 let selectedLaw = null;
+let flatpickr1Instances = {};
 
 //..check permissions
 window.hasPermission = function (permissionName) {
@@ -17,7 +18,6 @@ window.hasAllPermissions = function (...permissionNames) {
 };
 
 function loadRegulatoryTree() {
-
     const request = {
         activityTypeId: 0,
         searchTerm: "",
@@ -26,14 +26,13 @@ function loadRegulatoryTree() {
         sortBy: "",
         sortDirection: "ASC"
     };
-
     $.ajax({
         url: "/grc/compliance/support/categories-all",
         type: "POST",
         contentType: "application/json",
-        data: JSON.stringify(request), 
+        data: JSON.stringify(request),
         success: function (res) {
-           
+
             //..destroy previous tree if exists (optional but safe)
             if ($('#regulatoryTree').jstree(true)) {
                 $('#regulatoryTree').jstree("destroy");
@@ -42,7 +41,16 @@ function loadRegulatoryTree() {
             // Initialize jsTree
             $('#regulatoryTree').jstree({
                 core: {
-                    data: res,
+                    data: function (node, cb) {
+                        //..sanitize the data before passing to jsTree
+                        const sanitizedData = res.map(item => ({
+                            ...item,
+                            text: escapeHtml(item.text), // Escape the text
+                            //..if there are other fields that might contain malicious content
+                            id: escapeHtml(item.id),
+                        }));
+                        cb(sanitizedData);
+                    },
                     multiple: false,
                     themes: { dots: false, icons: false }
                 },
@@ -55,14 +63,14 @@ function loadRegulatoryTree() {
                 const tree = $(this).jstree(true);
                 const node = data.node;
 
-                // Expand node if it has children
+                //..expand node if it has children
                 if (node.children.length > 0) {
                     tree.toggle_node(node);
                 }
 
                 if (hasPermission("CANVIEWSTATUTE")) {
-                     // Category logic
-                     if (node.type === "category") {
+                    // Category logic
+                    if (node.type === "category") {
 
                         selectedCategory = parseInt(node.id.replace("C_", ""));
                         selectedLaw = null;
@@ -81,13 +89,13 @@ function loadRegulatoryTree() {
 
                     // Law logic
                     if (node.type === "law") {
-                    
+
                         selectedLaw = parseInt(node.id.replace("L_", ""));
                         selectedCategory = parseInt(node.parent.replace("C_", ""));
                         showLawView(node.text);
                         loadActs(selectedLaw);
                     }
-                } 
+                }
             });
         },
         error: function (xhr, status, error) {
@@ -116,6 +124,35 @@ function loadRegulatoryTree() {
             return;
         }
     });
+}
+
+//..helper function to escape HTML
+function escapeHtml(unsafe) {
+    if (!unsafe) return unsafe;
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;")
+        .replace(/\(/g, "&#40;")
+        .replace(/\)/g, "&#41;")
+        .replace(/\//g, "&#47;");
+}
+
+function sanitizeInput(input) {
+    if (!input) return input;
+    //..remove any script tags, SQL injection attempts, etc.
+    return input
+        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+        .replace(/onerror\s*=/gi, 'data-blocked-onerror=')
+        .replace(/onload\s*=/gi, 'data-blocked-onload=')
+        .replace(/javascript:/gi, 'blocked:')
+        //..remove SQL comment attempts
+        .replace(/--/g, '') 
+
+        //..remove SQL statement terminators
+        .replace(/;/g, ''); 
 }
 
 let lawsTable = new Tabulator("#lawsTable", {
@@ -752,9 +789,6 @@ function saveLawRecord(isEdit, payload) {
             Swal.showLoading();
         }
     });
-
-    //..debugging
-    console.log("Sending data to server:", JSON.stringify(payload));  
 
     $.ajax({
         url: url,

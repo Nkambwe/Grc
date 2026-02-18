@@ -988,7 +988,7 @@ namespace Grc.Middleware.Api.Services {
                     user.PasswordHash = (passwordHash ?? string.Empty).Trim();
                     user.LastModifiedOn = DateTime.Now;
                     user.LastModifiedBy = $"{username}";
-                    user.LastPasswordChange = DateTime.Now;
+                    user.LastPasswordChange = null;
 
                     //..check entity state
                     _ = await uow.UserRepository.UpdateAsync(user);
@@ -4138,17 +4138,17 @@ namespace Grc.Middleware.Api.Services {
                 Logger.LogActivity($"Activity Log ID: {request.RecordId}", "DEBUG");
 
                 //..get activity log
-                var role = await uow.ActivityLogRepository.GetAsync(a => a.Id == request.RecordId, true, a => a.ActivityType, a => a.User);
+                var activity = await uow.ActivityLogRepository.GetAsync(a => a.Id == request.RecordId, true, a => a.ActivityType, a => a.User);
 
                 //..log activity log record
-                var roleJson = JsonSerializer.Serialize(role, new JsonSerializerOptions
+                var roleJson = JsonSerializer.Serialize(activity, new JsonSerializerOptions
                 {
                     WriteIndented = true,
                     ReferenceHandler = ReferenceHandler.IgnoreCycles
                 });
                 Logger.LogActivity($"Activity Log record: {roleJson}", "DEBUG");
 
-                return role;
+                return activity;
             }
             catch (Exception ex)
             {

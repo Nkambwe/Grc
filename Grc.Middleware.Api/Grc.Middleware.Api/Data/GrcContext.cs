@@ -112,6 +112,11 @@ namespace Grc.Middleware.Api.Data {
             ProcessActivityEntityConfiguration.Configure(modelBuilder.Entity<ProcessActivity>());
             ProcessTaskEntityConfiguration.Configure(modelBuilder.Entity<ProcessTask>());
             OperationProcessEntityConfiguration.Configure(modelBuilder.Entity<OperationProcess>());
+            ProcessRiskEntityConfiguration.Configure(modelBuilder.Entity<ProcessRisk>());
+            ProcessVersionEntityConfiguration.Configure(modelBuilder.Entity<ProcessVersion>());
+            ProcessWorkflowEntityConfiguration.Configure(modelBuilder.Entity<ProcessWorkflow>());
+            ProcessWorkflowStepEntityConfiguration.Configure(modelBuilder.Entity<ProcessWorkflowStep>());
+            ProcessWorkflowActionEntityConfiguration.Configure(modelBuilder.Entity<ProcessWorkflowAction>());
             ProcessApprovalsEntityConfiguration.Configure(modelBuilder.Entity<ProcessApproval>());
             ProcessProcessTagEntityConfiguration.Configure(modelBuilder.Entity<ProcessProcessTag>());
             ProcessProcessGroupEntityConfiguration.Configure(modelBuilder.Entity<ProcessProcessGroup>());

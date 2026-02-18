@@ -38,13 +38,13 @@ function initProcessRegisterTable() {
                     sortDirection: "Ascending"
                 };
 
-                // Sorting
+                //..sorting
                 if (params.sort && params.sort.length > 0) {
                     requestBody.sortBy = params.sort[0].field;
                     requestBody.sortDirection = params.sort[0].dir === "asc" ? "Ascending" : "Descending";
                 }
 
-                // Filtering
+                //..filtering
                 if (params.filter && params.filter.length > 0) {
                     let filter = params.filter.find(f =>
                         ["processName", "description", "typeName", "ownerName", "assigneeName", "unitName"].includes(f.field)
@@ -87,56 +87,95 @@ function initProcessRegisterTable() {
                 minWidth: 200,
                 widthGrow: 2,
                 headerSort: true,
-                frozen: true,
+                headerFilter: "input",
                 formatter: (cell) => `<span class="clickable-title" onclick="viewProcess(${cell.getRow().getData().id})">${cell.getValue()}</span>`
             },
-            { title: "PROCESS DESCRIPTION", field: "description", widthGrow: 1, minWidth: 400, frozen: true, headerSort: false },
-            { title: "PROCESS OWNER", field: "ownerName", headerSort: true, minWidth: 200 },
-            { title: "ATTACHED UNIT", field: "unitName", minWidth: 250 },
-            { title: "PROCESS MANAGER", field: "assigneeName", minWidth: 400 },
             {
-                title: "REVIEW",
-                formatter: function (cell) {
-                    let rowData = cell.getRow().getData();
-                    return `<button 
-                                class="grc-table-btn grc-btn-view grc-view-action" 
-                                onclick='initiateReview(${JSON.stringify(rowData)})'>
-                                <span><i class="mdi mdi-cog-play-outline" aria-hidden="true"></i></span>
-                                <span>INITIATE</span>
-                            </button>`;
-                },
-                width: 200,
-                hozAlign: "center",
-                headerHozAlign: "center",
+                title: "PROCESS DESCRIPTION",
+                field: "description",
+                widthGrow: 1,
+                minWidth: 400,
+                headerFilter: "input",
+                frozen: true,
                 headerSort: false
             },
             {
-                title: "LOCK FILE",
-                formatter: function (cell) {
-                    let rowData = cell.getRow().getData();
-                    let isLocked = rowData.isLockProcess ?? false;
-                    if (isLocked) {
-                        return `<button class="grc-table-btn disabled" disabled>
-                            <span><i class="mdi mdi-file-lock-outline" aria-hidden="true"></i></span>
-                            <span>LOCKED</span>
-                        </button>`;
-                    } else {
-                        return `<button class="grc-table-btn grc-table-btn-open disabled" disabled>
-                            <span><i class="mdi mdi-file-lock-open-outline" aria-hidden="true"></i></span>
-                            <span>UNLOCKED</span>
-                        </button>`;
-                    }
-                },
-                width: 150,
+                title: "PROCESS OWNER",
+                field: "ownerName",
+                headerSort: true,
+                headerFilter: "input",
+                minWidth: 200
+            },
+            {
+                title: "STATUS",
+                field: "processStatus",
+                minWidth: 150,
+                formatter: statusBadgeFormatter
+            },
+            {
+                title: "CURRENT STAGE",
+                field: "workflowStage",
+                minWidth: 200
+            },
+            {
+                title: "VERSION",
+                field: "version",
                 hozAlign: "center",
-                headerHozAlign: "center",
+                minWidth: 120
+            },
+            {
+                title: "RISK",
+                field: "riskRating",
+                minWidth: 120,
+                hozAlign: "center",
+                formatter: riskFormatter
+            },
+            {
+                title: "LAST UPDATED",
+                field: "lastReviewDate",
+                minWidth: 180
+            },
+            {
+                title: "ACTIONS",
+                formatter: processActionsFormatter,
+                width: 260,
+                hozAlign: "center",
                 headerSort: false
             }
         ]
     });
+}
+function statusBadgeFormatter(cell) {
+    let val = cell.getValue();
+    let map = {
+        Draft: "secondary",
+        UnderReview: "warning",
+        Approved: "success",
+        Archived: "dark"
+    };
+    return `<span class="badge bg-${map[val] || 'primary'}">${val}</span>`;
+}
 
-    // Search init
-    initProcessSearch();
+function processActionsFormatter(cell) {
+    let row = cell.getRow().getData();
+
+    let btns = `<button class="grc-table-btn grc-table-btn-open" onclick="viewProcess(${row.id})">VIEW</button>`;
+    if (row.status === "DRAFT") {
+        btns += `<button class="grc-table-btn grc-btn-edit" onclick="editProcess(${row.id})">EDIT</button>
+                 <button class="grc-table-btn grc-btn-submit" onclick="submitProcess(${row.id})">SUBMIT</button>`;
+    }
+
+    return btns;
+}
+
+function riskFormatter(cell) {
+    let val = cell.getValue();
+    let map = {
+        Low: "success",
+        Medium: "warning",
+        High: "danger"
+    };
+    return `<span class="badge bg-${map[val] || 'secondary'}">${val}</span>`;
 }
 
 function createProcess() {
