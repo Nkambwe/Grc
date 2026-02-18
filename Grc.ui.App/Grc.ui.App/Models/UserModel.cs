@@ -70,7 +70,16 @@ namespace Grc.ui.App.Models {
 
         [JsonPropertyName("isAuthenticated")]
         public bool IsAuthenticated { get; set; }
-        
+
+        [JsonPropertyName("failedAttempts")]
+        public int FailedAttempts { get; set; }
+
+        [JsonPropertyName("isLocked")]
+        public bool IsLocked { get; set; }
+
+        [JsonPropertyName("lockOn")]
+        public DateTime? LockOn { get; set; }
+
         [JsonPropertyName("lastPasswordChange")]
         public DateTime? LastPasswordChange { get; set; }
         

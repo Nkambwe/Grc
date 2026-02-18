@@ -66,6 +66,12 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("isVerified")]
         public bool IsVerified { get; set; }
 
+        [JsonPropertyName("failedAttempts")]
+        public int FailedAttempts { get; set; }
+
+        [JsonPropertyName("isLocked")]
+        public bool IsLocked { get; set; }
+
         [JsonPropertyName("isApproved")]
         public bool IsApproved { get; set; }
 

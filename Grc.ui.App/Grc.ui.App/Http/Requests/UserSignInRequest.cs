@@ -5,6 +5,7 @@
         public string Password { get; set; }
         public bool IsValidated { get; set; } = false;
         public bool IsPersistent { get; set; }
+        public bool IsLocked { get; set; }
     }
 
 }

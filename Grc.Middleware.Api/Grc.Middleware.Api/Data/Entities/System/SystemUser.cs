@@ -1,6 +1,5 @@
 ﻿using Grc.Middleware.Api.Data.Entities.Logging;
 using Grc.Middleware.Api.Data.Entities.Org;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Grc.Middleware.Api.Data.Entities.System {
 
@@ -21,6 +20,8 @@ namespace Grc.Middleware.Api.Data.Entities.System {
         public bool? IsVerified { get; set; }
         public bool IsActive { get; set; }
         public bool IsLoggedIn { get; set; }
+        public bool IsLocked { get; set; }
+        public DateTime? LockedOn { get; set; }
         public DateTime? LastLoginDate { get; set; }
         public DateTime? LastPasswordChange { get; set; }
         public virtual Department Department { get; set; }

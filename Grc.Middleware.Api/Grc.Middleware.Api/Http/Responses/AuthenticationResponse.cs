@@ -68,7 +68,13 @@ namespace Grc.Middleware.Api.Http.Responses {
 
         [JsonPropertyName("approved")]
         public bool IsApproved { get; set; }
-        
+
+        [JsonPropertyName("isLocked")]
+        public bool IsLocked { get; set; }
+
+        [JsonPropertyName("lockOn")]
+        public DateTime? LockedOn { get; set; }
+
         [JsonPropertyName("checkApproval")]
         public bool CheckApproval { get; set; }
 

@@ -8,6 +8,7 @@ namespace Grc.ui.App.Models {
         public string Password { get; set; } = string.Empty;
         public bool RememberMe { get; set; }
         public bool IsUsernameValidated { get; set; } = false;
+        public bool IsLocked { get; set; } = false;
         public string DisplayName { get; set; } = string.Empty; 
         public LoginStage CurrentStage { get; set; } = LoginStage.Username;
     }

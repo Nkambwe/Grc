@@ -329,7 +329,7 @@ function addPermissionSet() {
         groupDescription: '',
         setDescription: '',
         groupScope: '',
-        groupCategory: '',
+        attachedTo: '',
         department: '',
         isDeleted: false,
         isVerified: false,
@@ -341,11 +341,14 @@ function addPermissionSet() {
 
 function openGroupEditor(title, group, isEdit) {
     // Populate form fields
+    console.log(group);
     $("#groupId").val(group?.id || "");
     $("#isEdit").val(isEdit);
     $("#groupName").val(group?.groupName || "");
     $("#groupDescription").val(group?.groupDescription || "");
     $('#isDeleted').prop('checked', group?.isDeleted || false);
+
+    $('#groupCategory').val(group.attachedTo || 'NONE').trigger('change');
 
     // Show temporary message
     $("#roleGroupListContainer").html("<div class='text-muted p-2'>Loading permission sets...</div>");
@@ -533,16 +536,14 @@ function deleteGroup(id) {
 function saveGroupPermissions(e) {
     if (e) e.preventDefault();
     let isEdit = $('#isEdit').val();
-
     let recordData = {
         id: parseInt($('#groupId').val()) || 0,
         groupName: $('#groupName').val()?.trim(),
         groupDescription: $('#groupDescription').val()?.trim(),
         groupScope:"",
-        groupCategory: "",
+        attachedTo: $('#groupCategory').val()?.trim(),
         departmentName: "",
         departmentId: 0,
-        attachedTo: "",
         isDeleted: $('#isDeleted').is(':checked') ? true : false,
         isVerified:true,
         isApproved: true,
@@ -559,6 +560,9 @@ function saveGroupPermissions(e) {
     if (!recordData.groupDescription)
         errors.push("Role Group description is required.");
 
+    if (!recordData.attachedTo)
+        errors.push("Group category is required.");
+
     if (recordData.permissionSets.length == 0)
         errors.push("Please select set permission sets.");
 
@@ -566,6 +570,7 @@ function saveGroupPermissions(e) {
     if (errors.length > 0) {
 
         highlightPermissionField("#groupName", !recordData.groupName);
+        highlightPermissionField("#groupCategory", !recordData.attachedTo);
         highlightPermissionField("#groupDescription", !recordData.groupDescription);
 
         Swal.fire({
@@ -739,13 +744,33 @@ $(document).ready(function () {
 
     initGroupTable();
 
+    $('#groupCategory').select2({
+        width: '100%',
+        dropdownParent: $('#rolePermPanel')
+    });
+
+    //..validate groupName: allow only alphanumeric, NO spaces, NO special chars
+    $('#groupName').on('input', function () {
+        const clean = this.value.replace(/[^a-zA-Z0-9]/g, '');
+        if (this.value !== clean) {
+            this.value = clean;
+        }
+    });
+
+    //..validate groupDescription: allow alphanumeric,space,comma and period
+    $('#groupDescription').on('input', function () {
+        const clean = this.value.replace(/[^a-zA-Z0-9 ,.]/g, '');
+        if (this.value !== clean) {
+            this.value = clean;
+        }
+    });
+
     $('.action-btn-admin-home').on('click', function () {
         window.location.href = '/admin/support';
     });
 
     //..new role group
     $(".action-btn-new-role-group").on("click", function () {
-        console.log(`Clicked new set`);
         addPermissionSet();
     });
 

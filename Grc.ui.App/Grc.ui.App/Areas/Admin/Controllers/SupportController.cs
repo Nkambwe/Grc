@@ -1705,6 +1705,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                     department = user.DepartmentName,
                     unitCode = user.UnitCode,
                     isActive = user.IsActive,
+                    isLocked = user.IsLocked,
                     isVerified = user.IsVerified,
                     createdOn = user.CreatedOn,
                     createdBy = user.CreatedBy,
@@ -1792,6 +1793,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                         department = user.DepartmentName,
                         unitCode = user.UnitCode,
                         isActive = user.IsActive,
+                        isLocked = user.IsLocked,
                         isVerified = user.IsVerified,
                         createdOn = user.CreatedOn,
                         createdBy = user.CreatedBy,
@@ -1848,6 +1850,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                         departmentName = user.DepartmentName,
                         unitCode = user.UnitCode,
                         isActive = user.IsActive,
+                        isLocked = user.IsLocked,
                         isVerified = user.IsVerified,
                         createdOn = user.CreatedOn,
                         createdBy = user.CreatedBy,
@@ -1900,6 +1903,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                         departmentName = user.DepartmentName,
                         unitCode = user.UnitCode,
                         isActive = user.IsActive,
+                        isLocked = user.IsLocked,
                         isVerified = user.IsVerified,
                         createdOn = user.CreatedOn.ToString("yyyy-MM-dd"),
                         createdBy = user.CreatedBy ?? string.Empty,
@@ -1956,6 +1960,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                         departmentName = user.DepartmentName,
                         unitCode = user.UnitCode,
                         isActive = user.IsActive,
+                        isLocked = user.IsLocked,
                         isVerified = user.IsVerified,
                         createdOn = user.CreatedOn.ToString("yyyy-MM-dd"),
                         createdBy = user.CreatedBy ?? string.Empty,
@@ -3372,7 +3377,9 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         [LogActivityResult("Role Group Added", "User added system role group", ActivityTypeDefaults.ROLE_GROUP_ADDED, "SystemRoleGroup")]
         [PermissionAuthorization(false, "CreateRoleGroup","CANADDROLEGROUPS")]
         public async Task<IActionResult> CreateRoleGroup([FromBody] RoleGroupViewModel request) {
+
             try {
+
                 if (!ModelState.IsValid) {
                     var errors = ModelState.Values
                         .SelectMany(v => v.Errors)
@@ -3414,9 +3421,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                     }
                 });
 
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Error create role group: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
                 return Json(new { results = new List<object>() });
@@ -3575,6 +3580,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                     groupDescription = roleGroup.Description,
                     groupScope = roleGroup.GroupScope,
                     groupCategory = roleGroup.GroupCategory,
+                    attachedTo = CheckGroupValue(roleGroup.GroupCategory),
                     groupType = roleGroup.GroupType,
                     department = roleGroup.DepartmentName,
                     isDeleted = roleGroup.IsDeleted,
@@ -4117,6 +4123,16 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         #endregion
 
         #region Protected methods
+
+
+        private static string CheckGroupValue(string groupCategory) {
+            if (groupCategory.Equals("ADMINSUPPORT")) {
+                groupCategory = "APPLICATIONSUPPORT";
+            }
+
+            return groupCategory;
+        }
+
         private static void SetSafeDate(IXLCell cell, DateTime? date) {
             if (!date.HasValue) {
                 cell.Value = string.Empty;

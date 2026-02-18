@@ -196,6 +196,8 @@ namespace Grc.Middleware.Api.Services {
                     IsDeleted = u.IsDeleted,
                     IsVerified = u.IsVerified ?? false,
                     IsApproved = u.IsApproved ?? false,
+                    IsLocked = u.IsLocked,
+                    LockedOn = u.LockedOn,
                     IsAdministrator =
                         u.Role.RoleName == "Administrator" ||
                         u.Role.RoleName == "Support",
@@ -382,7 +384,7 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<bool> LogFailedLoginAsync(long userId, string ipAddress) {
+        public async Task LogFailedLoginAsync(long userId, string ipAddress, bool success) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Log Failed Login for user with ID {userId}", "INFO");
 
@@ -391,7 +393,7 @@ namespace Grc.Middleware.Api.Services {
                     UserId = userId,
                     IpAddress = ipAddress,
                     AttemptTime = DateTime.UtcNow,
-                    IsSuccessful = false,
+                    IsSuccessful = success,
                     CreatedBy = $"{userId}",
                     CreatedOn = DateTime.Now,
                     LastModifiedOn = DateTime.Now,
@@ -413,11 +415,6 @@ namespace Grc.Middleware.Api.Services {
 
                 var result = await uow.SaveChangesAsync();
                 Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
-
-                //..check if user should be locked due to too many failed attempts
-                await LockUserAccountAsync(userId);
-                Logger.LogActivity($"Logged failed login attempt for user: {userId} from IP: {ipAddress}");
-                return result > 0;
             } catch (Exception ex) {
                 Logger.LogActivity($"CreateCompanyAsync failed: {ex.Message}", "ERROR");
 
@@ -433,7 +430,7 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task LockUserAccountAsync(long userId, string username="") {
+        public async Task LockUserAccountAsync(long userId, string username="", string ipAddress="") {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Lock user accounts for User ID {userId}", "INFO");
 
@@ -443,17 +440,14 @@ namespace Grc.Middleware.Api.Services {
 
                 //..get attempts
                 var failedAttempts = await uow.AttemptRepository.CountAsync(u => u.UserId == userId && u.AttemptTime >= cutoffTime && !u.IsSuccessful, true);
-                if (failedAttempts >= 5) {
+                if (failedAttempts >= 3) {
 
                     var user = await uow.UserRepository.GetAsync(userId);
-                    if (user != null && !user.IsActive) {
+                    if (user != null) {
                         //..update system users
                         user.IsLoggedIn = false;
-                        user.IsActive = false;
-                        user.IsApproved = false;
-                        user.IsVerified = false;
-                        user.LastLoginDate = DateTime.Now;
-                        user.LastModifiedOn = DateTime.Now;
+                        user.IsLocked = true;
+                        user.LockedOn = DateTime.UtcNow;
 
                         if (!string.IsNullOrWhiteSpace(username)) {
                             user.LastModifiedBy = username;
@@ -463,6 +457,18 @@ namespace Grc.Middleware.Api.Services {
 
                         //..check entity state
                         _ = await uow.UserRepository.UpdateAsync(user);
+
+                        //..log failed access
+                        var type = await uow.ActivityTypeRepository.GetAsync(t => t.Name == "User Login");
+                        _ = await uow.ActivityLogRepository.InsertAsync(new ActivityLog() { 
+                            TypeId = type.Id,
+                            UserId = userId,
+                            EntityName = type.Description,
+                            IpAddress = ipAddress,
+                            Comment = $"Failed system access for user '{username}'. Account has beed locked",
+                            CreatedBy = "SYSTEM",
+                            CreatedOn = DateTime.Now
+                        });
                         var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
                         Logger.LogActivity($"Entity state after Update: {entityState}", "DEBUG");
 
@@ -473,6 +479,71 @@ namespace Grc.Middleware.Api.Services {
                 }
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve user role: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                throw;
+            }
+        }
+
+        public async Task ResetFailedAttemptsAsync(long userId, string ipAddress){
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Lock user accounts for User ID {userId}", "INFO");
+
+            try {
+                var attempt = new LoginAttempt {
+                    UserId = userId,
+                    IpAddress = ipAddress,
+                    AttemptTime = DateTime.UtcNow,
+                    IsSuccessful = true,
+                    IsDeleted = false,
+                    CreatedBy = "SYSTEM",
+                    CreatedOn = DateTime.Now,
+                };
+                await uow.AttemptRepository.InsertAsync(attempt);
+                await uow.SaveChangesAsync();
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to update user login: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+
+                throw;
+            }
+        }
+
+        public async Task<int> IncrementFailedAttemptsAsync(long userId, string ipAddress) {
+            using var uow = UowFactory.Create();
+
+            try {
+                //..log failed attempt
+                var attempt = new LoginAttempt {
+                    UserId = userId,
+                    IpAddress = ipAddress,
+                    AttemptTime = DateTime.UtcNow,
+                    IsSuccessful = false,
+                    IsDeleted = false,
+                    CreatedBy = "SYSTEM",
+                    CreatedOn = DateTime.Now,
+                };
+
+                await uow.AttemptRepository.InsertAsync(attempt);
+                await uow.SaveChangesAsync();
+
+                //..count failures in rolling window
+                var cutoffTime = DateTime.UtcNow.AddMinutes(-15);
+                return await uow.AttemptRepository.CountAsync(u => u.UserId == userId && u.AttemptTime >= cutoffTime && !u.IsSuccessful, true);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to update user login: {ex.Message}", "ERROR");
 
                 //..log inner exceptions here too
                 var innerEx = ex.InnerException;
@@ -747,8 +818,7 @@ namespace Grc.Middleware.Api.Services {
                 var user = await uow.UserRepository.GetAsync(u => u.Username == username);
 
                 //..log user record
-                var companyJson = JsonSerializer.Serialize(user, new JsonSerializerOptions
-                {
+                var companyJson = JsonSerializer.Serialize(user, new JsonSerializerOptions {
                     WriteIndented = true,
                     ReferenceHandler = ReferenceHandler.IgnoreCycles
                 });
@@ -783,8 +853,7 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<List<SystemUser>> GetAllUsersAsync(bool includeDeleted)
-        {
+        public async Task<List<SystemUser>> GetAllUsersAsync(bool includeDeleted) {
             using var uow = UowFactory.Create();
             Logger.LogActivity("Retrieve list of user records", "INFO");
 
@@ -982,6 +1051,8 @@ namespace Grc.Middleware.Api.Services {
                     user.BranchSolId = (request.SolId ?? string.Empty).Trim();
                     user.DepartmentUnit = (request.UnitCode ?? string.Empty).Trim();
                     user.IsActive = request.IsActive;
+                    user.IsLocked = request.IsLocked;
+                    user.LockedOn = DateTime.Now;
                     user.IsVerified = request.IsVerified;
                     user.IsApproved = request.IsApproved;
                     user.RoleId = request.RoleId;
@@ -1033,6 +1104,7 @@ namespace Grc.Middleware.Api.Services {
                     user.IsActive = request.IsActive;
                     user.IsVerified = request.IsVerified;
                     user.IsApproved = request.IsApproved;
+                    user.IsLocked = false;
                     user.RoleId = request.RoleId;
                     user.DepartmentId = request.DepartmentId;
                     user.IsDeleted = request.IsDeleted;
@@ -2387,6 +2459,10 @@ namespace Grc.Middleware.Api.Services {
                     LastModifiedOn = DateTime.Now
                 };
 
+                //..department
+                var deparmentName = GetDepartmentName(request.GroupCategory);
+
+
                 //..map sets
                 if (request.PermissionSets != null && request.PermissionSets.Any()) {
                     roleGroup.PermissionSets = request.PermissionSets
@@ -2455,6 +2531,15 @@ namespace Grc.Middleware.Api.Services {
                 _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
                 throw;
             }
+        }
+
+        private static string GetDepartmentName(string groupCategory) {
+            string name = groupCategory switch {
+                "COMPLIANCEDEPT" or "COMPLIANCEADMIN" or "COMPLIANCEGUESTS" => "Compliance",
+                "OPERATIONSERVICES" or "OPERATIONADMIN" or "OPERATIONGUESTS" => "Operations",
+                _ => "Business Technology",
+            };
+            return name;
         }
 
         public async Task<bool> InsertRoleGroupWithRolesAsync(RoleGroupRequest request, string username) {

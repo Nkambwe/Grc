@@ -36,33 +36,65 @@
             <input type="hidden" id="isEdit">
 
             <div class="row main-row">
+
                 <!-- Top section - form fields -->
                 <div class="col-sm-12 form-fields-section">
+
                     <div class="row">
-                        <div class="col-sm-6">
+
+                        <div class="col-6">
                             <!-- Group Name -->
                             <div class="row mb-3">
-                                <label for="groupName" class="col-sm-4 col-form-label text-sm-end">
+                                <label for="groupName" class="col-12 col-form-label">
                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Role.Group.Name"))
                                 </label>
-                                <div class="col-sm-8">
+                                <div class="col-12">
                                     <input type="text" id="groupName" name="groupName" class="form-control" />
                                 </div>
                             </div>
                         </div>
+
                         <!-- group description-->
-                        <div class="col-sm-6">
+                        <div class="col-6">
                             <div class="row mb-3">
-                                <label for="groupDescription" class="col-sm-4 col-form-label text-sm-end">
+                                <label for="groupDescription" class="col-12 col-form-label">
                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Role.Group.Description"))
                                 </label>
-                                <div class="col-sm-8">
+                                <div class="col-12">
                                     <input type="text" id="groupDescription" name="groupDescription" class="form-control" />
                                 </div>
                             </div>
                         </div>
-                        <!-- Active status -->
-                        <div class="col-sm-6 d-flex justify-content-end">
+
+                        <!-- group category -->
+                        <div class="col-6">
+                            <div class="row mb-3">
+                                <label for="groupCategory" class="col-12 form-label">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Type"))
+                                </label>
+                                <div class="col-12">
+                                    <select class="js-group-category-id form-control" id="groupCategory" name="groupCategory">
+                                        <option value="NONE">Select category...</option>
+                                        <option value="SYSTEM">System</option>
+                                        <option value="DEVELOPER">System Developers</option>
+                                        <option value="APPLICATIONSUPPORT">IT Support</option>
+                                        <option value="ADMINISTRATOR">System Administrators</option>
+                                        <option value="COMPLIANCEADMIN">Compliance Administrators</option>
+                                        <option value="COMPLIANCEDEPT">Compliance Users</option>
+                                        <option value="COMPLIANCEGUESTS">Compliance External Users</option>
+                                        <option value="OPERATIONADMIN">Operations Administrators</option>
+                                        <option value="OPERATIONSERVICES">Operations Users</option>
+                                        <option value="OPERATIONGUESTS">Operations External Users</option>
+                                    </select>
+
+                                    <span id="hodStatus-description" class="sr-only">
+                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6 d-flex">
                             <div class="form-check form-switch mt-2">
                                 <input class="form-check-input" type="checkbox" id="isDeleted" name="isDeleted">
                                 <label class="form-check-label" for="isDeleted">
@@ -70,7 +102,9 @@
                                 </label>
                             </div>
                         </div>
+
                     </div>
+
                 </div>
 
                 <!-- Middle section - permission list -->
