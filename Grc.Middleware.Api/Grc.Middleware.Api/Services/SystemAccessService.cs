@@ -142,6 +142,17 @@ namespace Grc.Middleware.Api.Services {
                     };
                 }
 
+                 // Check if user is active
+                if (user.IsLocked) {
+                    Logger.LogActivity($"Locked user attempted login: {username}", "WARN");
+                    return new UsernameValidationResponse {
+                        IsValid = false,
+                        Message = "User account has been locked",
+                        DisplayName = string.Empty,
+                        UserId = 0
+                    };
+                }
+
                 Logger.LogActivity($"Username validation successful: {username}", "DEBUG");
                 return new UsernameValidationResponse {
                     IsValid = true,
@@ -4156,6 +4167,42 @@ namespace Grc.Middleware.Api.Services {
                 long companyId = company != null ? company.Id : 1;
                 SystemError errorObj = new()
                 {
+                    ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
+                    ErrorSource = "SYSTEM-ACCESS-SERVICE",
+                    StackTrace = ex.StackTrace,
+                    Severity = "CRITICAL",
+                    ReportedOn = DateTime.Now,
+                    CompanyId = companyId
+                };
+
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(errorObj);
+                throw;
+            }
+        }
+
+        public async Task<IList<ActivityLog>> GetSystemActivitiesAsync() {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity("Retrieve first 100000 user activities", "INFO");
+
+            try {
+
+                //..get activity log
+                return await uow.ActivityLogRepository.GetTopAsync(a => !a.IsDeleted, 10000, false, a => a.ActivityType, a => a.User);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve activity log: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
+                long companyId = company != null ? company.Id : 1;
+                SystemError errorObj = new() {
                     ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
                     ErrorSource = "SYSTEM-ACCESS-SERVICE",
                     StackTrace = ex.StackTrace,

@@ -222,5 +222,7 @@ namespace Grc.ui.App.Enums {
         BugExport,
         [Description("new-dept")]
         NewDept,
+        [Description("excel-export")]
+        ExportActivityExcelToExcel,
     }
 }

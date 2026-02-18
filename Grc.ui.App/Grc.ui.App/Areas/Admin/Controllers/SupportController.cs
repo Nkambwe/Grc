@@ -749,6 +749,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         #endregion
 
         #region Activities
+
         [HttpPost("support/activities/allActivities")]
         public async Task<IActionResult> AllActivities([FromBody] TableListRequest request) {
 
@@ -779,12 +780,20 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                     Logger.LogActivity($"ACTIVITY DATA - {JsonSerializer.Serialize(activityList)}");
                 }
 
-                activityList.Entities ??= new();
-                return Ok(new {
-                    data = activityList.Entities,
-                    recordsTotal = activityList.TotalCount ,
-                    recordsFiltered = activityList.TotalCount 
-                });
+                 var list = activityList.Entities ??= new();
+                var data = list.Select(activity => new {
+                        id = activity.Id,
+                        action = activity.Comment,
+                        userId = activity.Id,
+                        entityName = activity.EntityName,
+                        activityType = activity.TypeDescription,
+                        accessedBy = $"{activity.UserFirstName} {activity.UserLastName}",
+                        ipAddress = activity.IpAddress,
+                        activityDate = activity.CreatedOn
+                    }).ToList();
+
+                var totalPages = (int)Math.Ceiling((double)activityList.TotalCount / activityList.Size);
+                return Ok(new { last_page = totalPages, total_records = activityList.TotalCount, data = list });
             } catch(Exception ex){
                 Logger.LogActivity($"Error retrieving activity logs: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message,"SUPPORT-CONTROLLER" , ex.StackTrace);
@@ -1543,6 +1552,34 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         #region System Activity
 
+        [HttpGet]
+        public async Task<IActionResult> UserActivities() {
+            var model = new AdminDashboardModel();
+            try {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError)
+                {
+                    await ProcessErrorAsync(grcResponse.Error.Message, "SUPPORT-CONTROLLER", string.Empty);
+                    return View(model);
+                }
+
+                var currentUser = grcResponse.Data;
+                currentUser.IPAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _dDashboardFactory.PrepareDefaultModelAsync(currentUser);
+            } catch (Exception ex) {
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return View(model);
+            }
+
+            return View(model);
+        }
+
         [LogActivityResult("System Activity Retrieve", "User retrieved system activity", ActivityTypeDefaults.ACTIVITY_RETRIEVED, "SystemActivity")]
         public async Task<IActionResult> GetSystemActivity(long id) {
             try {
@@ -1588,6 +1625,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             }
         }
 
+        [HttpPost]
         public async Task<IActionResult> GetPagedSystemActivities([FromBody] TableListRequest request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1624,7 +1662,95 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 return Ok(new { last_page = 0, data = new List<object>() });
             }
         }
+        
+        [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWUSER", "CANDOWNLOADUSERREPORT")]
+        public async Task<IActionResult> ExportUserActivities() {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+                return Ok(new { success = false, message = "Unable to resolve current user" });
 
+            var request = new GrcRequest {
+                UserId = userResponse.Data.UserId,
+                IPAddress = ipAddress,
+                EncryptFields = Array.Empty<string>(),  
+                DecryptFields = Array.Empty<string>(),
+                Action = Activity.USER_LIST.GetDescription()
+            };
+
+            var result = await _accessService.GetActivityListAsync(request);
+            if (result.HasError || result.Data == null)
+                return Ok(new { success = false, message = result.Error.Message ?? "Failed to retrieve user data" });
+
+            var data = result.Data.Data ?? new List<GrcSystemActivityList>();
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("GRC Active users");
+
+            //..headers
+            string[] headers = {
+                "USER NAME",
+                "SYSTEM NAME",
+                "IP ADRESS.",
+                "ACTVITY",
+                "ACCESSED ENTITY",
+                "ENTITY TYPE",
+                "ACCESSED ON"
+            };
+
+            for (int col = 0; col < headers.Length; col++) {
+                ws.Cell(1, col + 1).Value = headers[col];
+            }
+
+            //..header styling
+            var header = ws.Range(1, 1, 1, headers.Length);
+            header.Style.Font.Bold = true;
+            header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            header.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            //..header height
+            ws.Row(1).Height = 30;
+
+            //..add data
+            int row = 2;
+            foreach (var p in data) {
+                ws.Cell(row, 1).Value = p.FullName;
+                ws.Cell(row, 2).Value = (p.Username ?? string.Empty).Trim();
+                ws.Cell(row, 3).Value = (p.IpAddress ?? string.Empty).Trim();
+                ws.Cell(row, 4).Value = (p.Action ?? string.Empty).Trim();
+                ws.Cell(row, 5).Value = (p.EntityName ?? string.Empty).Trim();
+                ws.Cell(row, 6).Value = p.ActivityDate;
+                ws.Cell(row, 6).Style.DateFormat.Format = "dd-MMM-yyyy";
+                row++;
+            }
+
+            int lastDataRow = row - 1;
+
+            ws.Range(2, 1, lastDataRow, 1).Style.Fill.BackgroundColor = XLColor.LightGray;
+            ws.Range(2, 2, lastDataRow, 2).Style.Fill.BackgroundColor = XLColor.Gray;
+            ws.Range(2, 6, lastDataRow, 6).Style.Fill.BackgroundColor = XLColor.Gray;
+            //..add header filtersfilters
+            ws.Range(1, 1, 1, headers.Length).SetAutoFilter();
+
+            //..freeze header
+            ws.SheetView.FreezeRows(1);
+            ws.Column(10).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            //..auto-fit columns to content
+            ws.Columns().AdjustToContents(10, 60);
+            ws.Column(1).Width = 20;
+            ws.Column(2).Width = 20;
+            ws.Column(3).Width = 20;
+            ws.Column(4).Width = 70;
+            ws.Column(5).Width = 20;
+            ws.Column(6).Width = 20;
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"GRCUSERS-{DateTime.Today:yyyy-MM}.xlsx");
+        }
         #endregion
 
         #region System Users
@@ -4123,7 +4249,6 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         #endregion
 
         #region Protected methods
-
 
         private static string CheckGroupValue(string groupCategory) {
             if (groupCategory.Equals("ADMINSUPPORT")) {

@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Grc.Middleware.Api.Http.Responses
-{
+namespace Grc.Middleware.Api.Http.Responses {
     public class PermissionSetResponse {
         [JsonPropertyName("id")]
         public long Id { get; set; }
@@ -39,16 +38,5 @@ namespace Grc.Middleware.Api.Http.Responses
         [JsonPropertyName("roleGroups")]
         public List<RoleGroupResponse> RoleGroups { get; set; } = new();
 
-    }
-
-    public class PermissionSetMinResponse {
-        [JsonPropertyName("id")]
-        public long Id { get; set; }
-
-        [JsonPropertyName("setName")]
-        public string SetName { get; set; }
-
-        [JsonPropertyName("setDescription")]
-        public string SetDescription { get; set; }
     }
 }

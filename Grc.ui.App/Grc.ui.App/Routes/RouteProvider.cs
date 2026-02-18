@@ -18,11 +18,26 @@
                name: "admin-support-activeusers-export",
                pattern: "admin/support/users/export-list",
                defaults: new { area = "Admin", controller = "Support", action = "ExportUserList" }
-           );
+            );
             routeBuilder.MapControllerRoute(
                 name: "admin-support-lockedusers",
                 pattern: "admin/support/users-locked",
                 defaults: new { area = "Admin", controller = "Support", action = "LockedUsers" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-support-users-activity",
+                pattern: "admin/support/users/actvities",
+                defaults: new { area = "Admin", controller = "Support", action = "UserActivities" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-support-users-activitiy-all",
+                pattern: "admin/support/users/actvities/all",
+                defaults: new { area = "Admin", controller = "Support", action = "GetPagedSystemActivities" }
+            );
+            routeBuilder.MapControllerRoute(
+                name: "admin-support-users-activitiy-export-list",
+                pattern: "admin/support/users/activities/export-list",
+                defaults: new { area = "Admin", controller = "Support", action = "ExportUserActivities" }
             );
             routeBuilder.MapControllerRoute(
                 name: "admin-support-unapprovedUsers",

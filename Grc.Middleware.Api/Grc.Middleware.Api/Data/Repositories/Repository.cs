@@ -429,6 +429,28 @@ namespace Grc.Middleware.Api.Data.Repositories {
             return await query.Where(where).Take(top).ToListAsync();
         }
 
+        public async Task<IList<T>> GetTopAsync(Expression<Func<T, bool>> where, int top = 10, bool includeDeleted = false, params Expression<Func<T, object>>[] includes) {
+            IQueryable<T> query = context.Set<T>();
+
+            // Soft delete filtering
+            if (!includeDeleted) {
+                query = query.Where(e => EF.Property<bool>(e, "IsDeleted") == false);
+            }
+
+            // Apply filter
+            query = query.Where(where);
+
+            // Apply eager-loading includes
+            if (includes != null && includes.Length > 0) {
+                foreach (var include in includes) {
+                    query = query.Include(include);
+                }
+            }
+
+            return await query.Take(top).ToListAsync();
+        }
+
+
         public bool Insert(T entity) {
             ArgumentNullException.ThrowIfNull(entity);
             var dbSet = context.Set<T>();

@@ -1091,6 +1091,23 @@ namespace Grc.ui.App.Services {
                 return new GrcResponse<ServiceResponse>(error);
             }
         }
+        
+        public async  Task<GrcResponse<ListResponse<GrcSystemActivityList>>> GetActivityListAsync(GrcRequest request) {
+            if (request == null) {
+                var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid request", "Request body cannot be null");
+                Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                return new GrcResponse<ListResponse<GrcSystemActivityList>>(error);
+            }
+
+            try {
+                var endpoint = $"{EndpointProvider.Sam.Users}/user-activities";
+                return await HttpHandler.PostAsync<GrcRequest, ListResponse<GrcSystemActivityList>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve user activities: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SYSTEM-ACCESS-SERVICE", ex.StackTrace);
+                throw new GRCException("Uanble to retrieve user activities.", ex);
+            }
+        }
 
         #endregion
 

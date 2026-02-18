@@ -383,6 +383,8 @@ namespace Grc.ui.App.Services {
         Task<GrcResponse<ServiceResponse>> UpdatePermissionSetAsync(GrcPermissionSetViewModel roleRecord, long userId, string ipAddress);
 
         Task<GrcResponse<ServiceResponse>> DeletePermissionSetAsync(GrcIdRequest request);
+       
+        Task<GrcResponse<ListResponse<GrcSystemActivityList>>> GetActivityListAsync(GrcRequest request);
 
         #endregion
 

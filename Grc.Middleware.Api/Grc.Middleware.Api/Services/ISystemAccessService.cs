@@ -207,6 +207,7 @@ namespace Grc.Middleware.Api.Services {
         Task<ActivityLog> GetActivityLogAsync(IdRequest request);
 
         Task<PagedResult<ActivityLog>> GetPagedActivityLogAsync(int pageIndex = 1, int pageSize = 10, bool includeDeleted = false);
+        Task<IList<ActivityLog>> GetSystemActivitiesAsync();
 
         #endregion
 

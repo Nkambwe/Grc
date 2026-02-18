@@ -14,6 +14,7 @@ using Grc.Middleware.Api.TaskHandler;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Concurrent;
 using System.Text.Json;
 
@@ -3880,7 +3881,15 @@ namespace Grc.Middleware.Api.Controllers {
 
                 //..map to response DTOs
                 var activities = filteredEntities
-                    .Select(Mapper.Map<SystemActivityResponse>)
+                    .Select(e => new SystemActivityResponse(){
+                        EntityName = e.EntityName,
+                        ActivityType = e.ActivityType?.Name,
+                        UserId = e.UserId,
+                        AccessedBy = $"{e.User?.FirstName} {e.User?.FirstName}",
+                        IpAddress = e.IpAddress,
+                        Action = e.Comment,
+                        ActivityDate = e.CreatedOn
+                    })
                     .ToList();
 
                 return Ok(new GrcResponse<PagedResponse<SystemActivityResponse>>(new PagedResponse<SystemActivityResponse>(
@@ -3894,6 +3903,65 @@ namespace Grc.Middleware.Api.Controllers {
             {
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<PagedResponse<SystemActivityResponse>>(error));
+            }
+        }
+
+        [HttpPost("sam/users/user-activities")]
+        public async Task<IActionResult> GetUserActivityList([FromBody] GeneralRequest request) {
+
+            try {
+
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ListResponse<SystemActivityListResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var activities = await _accessService.GetSystemActivitiesAsync();
+                if (activities == null || !activities.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No user activities sets found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ListResponse<SystemActivityListResponse>>(error));
+                }
+
+                //..fields to decrypt
+                var fieldsToDecrypt = new[] { "FirstName", "LastName", "MiddleName" };
+
+                //..decrypt user info
+                var decryptedUserIds = new ConcurrentDictionary<long, bool>(); // thread-safe
+                Parallel.ForEach(activities, activity => {
+                    var user = activity.User;
+                    if (user != null && decryptedUserIds.TryAdd(user.Id, true)) {
+                        activity.User = Cypher.DecryptProperties(user, fieldsToDecrypt);
+                    }
+                });
+
+                //..map to response DTOs
+                var activityList = activities
+                    .Select(e => new SystemActivityListResponse(){
+                        FullName = $"{e.User?.FirstName} {e.User?.FirstName}",
+                        Username = e.User?.Username,
+                        EntityName = e.EntityName,
+                        ActivityType = e.ActivityType?.Name,
+                        IpAddress = e.IpAddress,
+                        Action = e.Comment,
+                        ActivityDate = e.CreatedOn
+                    })
+                    .ToList();
+
+                return Ok(new GrcResponse<ListResponse<SystemActivityListResponse>>(
+                    new ListResponse<SystemActivityListResponse>()  {
+                        Data = activityList.OrderByDescending(a => a.ActivityDate).ToList()
+                    }
+                ));
+
+            }
+            catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<ListResponse<SystemActivityListResponse>>(error));
             }
         }
 

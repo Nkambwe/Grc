@@ -357,6 +357,20 @@
                         </li>
 
                         <li class="sidebar-separator">
+                            <span class="separator-label">SYSTEM ACTIVITIES</span>
+                            <span class="separator-line"></span>
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a asp-controller="Support" asp-action="UserActivities" require-permission="CANVIEWUSERACTIVITIES">
+                                <span class="menu-icon">
+                                    <i class="mdi mdi-target-account"></i>
+                                </span>
+                                <span>User Activities</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-separator">
 
                             <span class="separator-label">
                                 @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Configuration"))

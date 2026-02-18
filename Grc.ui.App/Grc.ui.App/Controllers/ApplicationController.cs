@@ -209,7 +209,8 @@ namespace Grc.ui.App.Controllers {
                 
                 var data = grcResponse.Data;
                 if(data == null || !data.IsValid) {
-                    return HandleUsernameValidationError(LocalizationService.GetLocalizedLabel("App.Message.InvalidUsername"), model);
+                    var msg = data.Message??LocalizationService.GetLocalizedLabel("App.Message.InvalidUsername");
+                    return HandleUsernameValidationError(msg, model);
                 }
 
                 //..username is valid, prepare for password stage

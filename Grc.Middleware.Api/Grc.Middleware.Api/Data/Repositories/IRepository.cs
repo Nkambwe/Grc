@@ -191,6 +191,7 @@ namespace Grc.Middleware.Api.Data.Repositories {
         /// <param name="includeDeleted">Flag whether to include deleted records in the search</param>
         /// <returns>Task containg a collection of all entities that fit predicate</returns>
         Task<IList<T>> GetTopAsync(Expression<Func<T, bool>> where, int top, bool includeDeleted = false);
+        Task<IList<T>> GetTopAsync(Expression<Func<T, bool>> where, int top = 10, bool includeDeleted = false, params Expression<Func<T, object>>[] includes);
 
         /// <summary>
         /// Insert new entity to the database
