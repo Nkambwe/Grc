@@ -145,8 +145,14 @@ namespace Grc.Middleware.Api.Extensions {
             services.AddScoped<ISystemConfigurationService, SystemConfigurationService>();
             services.AddScoped<IBugService, BugService>();
             services.AddScoped<IMailService, MailService>();
+            services.AddScoped<IProcessRiskService, ProcessRiskService>();
+            services.AddScoped<IProcessVersionService, ProcessVersionService>();
+            services.AddScoped<IProcessWorkflowService, ProcessWorkflowService>();
+            services.AddScoped<IProcessWorkflowStepService, ProcessWorkflowStepService>();
+            services.AddScoped<IProcessWorkflowActionService, ProcessWorkflowActionService>();
+
+            //..allow html helpers to acces current action context
             services.AddSingleton<IMailTaskQueue, MailTaskQueue>();
-            //allow html helpers to acces current action context
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         }
 

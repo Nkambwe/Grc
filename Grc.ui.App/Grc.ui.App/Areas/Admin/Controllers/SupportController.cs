@@ -412,6 +412,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         [HttpPost]
         [LogActivityResult("User Logout", "User logged out of the system", ActivityTypeDefaults.USER_LOGOUT, "SystemUser")]
+        [AllowAnonymous]
         public async Task<IActionResult> Logout()
         {
             try
@@ -421,7 +422,6 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
                 var username = User.Identity?.Name;
                 Logger.LogActivity($"Admin user logging out: {username}", "INFO");
 
-                // Update logged_in status in database before signing out
                 long id = 0;
                 if (!string.IsNullOrEmpty(userId))
                 {

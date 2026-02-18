@@ -2245,22 +2245,6 @@
   },
   {
     "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
-    "Method": "CreateComplianceMap",
-    "RelativePath": "grc/registers/create-compliance-map",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "request",
-        "Type": "Grc.Middleware.Api.Http.Requests.ObligationMapRequest",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "Grc.Middleware.Api.Controllers.RegulatoryController",
     "Method": "CreateControlCategory",
     "RelativePath": "grc/registers/create-control-category",
     "HttpMethod": "POST",

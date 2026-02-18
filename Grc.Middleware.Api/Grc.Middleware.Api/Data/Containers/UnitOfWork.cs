@@ -73,7 +73,11 @@ namespace Grc.Middleware.Api.Data.Containers {
         public IPermissionSetRepository PermissionSetRepository { get; set; }
         public IMailSettingsRepository MailSettingsRepository { get; set; }
         public IMailRecordRepository MailRecordRepository { get; set; }
-
+        public IProcessRiskRepository ProcessRiskRepository { get; set; }
+        public IProcessVersionRepository ProcessVersionRepository { get; set; }
+        public IProcessWorkflowRepository ProcessWorkflowRepository { get; set; }
+        public IProcessWorkflowStepRepository ProcessWorkflowStepRepository { get; set; }
+        public IProcessWorkflowActionRepository ProcessWorkflowActionRepository { get; set; }
         #endregion
 
         public UnitOfWork(IServiceLoggerFactory loggerFactory, IDbContextFactory<GrcContext> contextFactory, IServiceProvider serviceProvider) {
@@ -141,6 +145,11 @@ namespace Grc.Middleware.Api.Data.Containers {
             PermissionSetRepository = new PermissionSetRepository(_loggerFactory, Context);
             MailSettingsRepository = new MailSettingsRepository(_loggerFactory, Context);
             MailRecordRepository = new MailRecordRepository(_loggerFactory, Context);
+            ProcessRiskRepository = new ProcessRiskRepository(_loggerFactory, Context);
+            ProcessVersionRepository = new ProcessVersionRepository(_loggerFactory, Context);
+            ProcessWorkflowRepository = new ProcessWorkflowRepository(_loggerFactory, Context);
+            ProcessWorkflowStepRepository = new ProcessWorkflowStepRepository(_loggerFactory, Context);
+            ProcessWorkflowActionRepository = new ProcessWorkflowActionRepository(_loggerFactory, Context);
         }
 
         /// <summary>
@@ -309,6 +318,11 @@ namespace Grc.Middleware.Api.Data.Containers {
                     PermissionSetRepository = null;
                     MailSettingsRepository = null;
                     MailRecordRepository = null;
+                    ProcessRiskRepository = null;
+                    ProcessVersionRepository = null;
+                    ProcessWorkflowRepository = null;
+                    ProcessWorkflowStepRepository = null;
+                    ProcessWorkflowActionRepository = null;
                 }
             }
             _disposed = true;

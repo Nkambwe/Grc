@@ -30,6 +30,15 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("processStatus")]
         public string ProcessStatus { get; set; }
 
+        [JsonPropertyName("workflowStage")]
+        public string WorkflowStage { get; set; }
+
+        [JsonPropertyName("version")]
+        public string Version { get; set; }
+
+        [JsonPropertyName("riskRating")]
+        public int RiskRating { get; set; }
+
         [JsonPropertyName("comments")]
         public string Comments { get; set; }
 

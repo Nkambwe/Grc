@@ -1,6 +1,64 @@
 ﻿
 $(document).ready(function () {
-     initDocTypeTable();
+    initDocTypeTable();
+
+    $('#typeName').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty (but don't show error until submit/blur)
+        if (!value) {
+            highlightTypeField('#typeName', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightTypeField('#typeName', true, 'Invalid characters detected');
+        } else if (value.length > 100) {
+            highlightTypeField('#typeName', true, 'Maximum length exceeded');
+        } else {
+            highlightTypeField('#typeName', false);
+        }
+    });
+
+    // Clear error when field gains focus
+    $('#typeName').on('focus', function () {
+        highlightTypeField('#typeName', false);
+    });
+
+    // Validate on blur (when leaving the field)
+    $('#typeName').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightTypeField('#typeName', true, 'Type name is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightTypeField('#typeName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else if (value.length < 2) {
+            highlightTypeField('#typeName', true, 'Type name must be at least 2 characters');
+        } else if (value.length > 100) {
+            highlightTypeField('#typeName', true, 'Type name cannot exceed 100 characters');
+        } else {
+            highlightTypeField('#typeName', false);
+        }
+    });
+
+    // Optional: Auto-clean on blur (if you want to remove invalid chars automatically)
+    $('#typeName').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightTypeField('#typeName', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightTypeField('#typeName', false);
+                }, 2000);
+            }
+        }
+    });
 });
 
 let regulatoryTypeTable;
@@ -205,14 +263,44 @@ function openDocumentType2Panel(title, record, isEdit) {
 }
 
 function saveDocumentTypeRecord(e) {
-    e.preventDefault(); 
+    e.preventDefault();
 
     let isEdit = $('#isEdit').val();
+    let typeName = $('#typeName').val().trim();
+    let isValid = true;
+
+    // Validate - check if empty
+    if (!typeName) {
+        highlightTypeField('#typeName', true, 'Type name is required');
+        isValid = false;
+    }
+    // Validate format - only alphanumeric, commas, periods, and spaces
+    else if (!/^[a-zA-Z0-9\s,.]*$/.test(typeName)) {
+        highlightTypeField('#typeName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+    // Check minimum length
+    else if (typeName.length < 2) {
+        highlightTypeField('#typeName', true, 'Type name must be at least 2 characters');
+        isValid = false;
+    }
+    // Check maximum length
+    else if (typeName.length > 100) {
+        highlightTypeField('#typeName', true, 'Type name cannot exceed 100 characters');
+        isValid = false;
+    } else {
+        // Clear any existing error
+        highlightTypeField('#typeName', false);
+    }
+
+    if (!isValid) {
+        return; // Stop submission
+    }
 
     //..build record payload from form
     let recordData = {
         id: parseInt($('#recordId').val()) || 0,
-        typeName: $('#typeName').val(),
+        typeName: typeName,
         isActive: $('#isActive').is(':checked') ? true : false
     };
 
@@ -261,6 +349,70 @@ function saveDocumentType(isEdit, payload) {
             Swal.fire(isEdit ? "Update document type" : "Save document type", errorMessage);
         }
     });
+}
+
+function validateInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[a-zA-Z0-9]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightTypeField('#typeName', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightTypeField('#typeName', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightTypeField('#typeName', false);
+        return true;
+    }
+
+    //..block everything else and show error on the field
+    event.preventDefault();
+    highlightTypeField('#typeName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+    return false;
+}
+
+//..handle paste events to clean pasted content
+function handlePaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightTypeField('#typeName', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightTypeField('#typeName', false);
+    }
 }
 
 function deleteDocTypeRecord(id) {
@@ -399,6 +551,21 @@ function initDoctypeSearch() {
             }
         }, 300);
     });
+}
+
+function highlightTypeField(selector, hasError, message) {
+    const $field = $(selector);
+    const $formGroup = $field.closest('.form-group');
+    // Remove existing error
+    $field.removeClass('is-invalid');
+    $formGroup.find('.field-error').remove();
+
+    if (hasError) {
+        $field.addClass('is-invalid');
+        if (message) {
+            $formGroup.append(`<div class="field-error text-danger small mt-1 text-end">${message}</div>`);
+        }
+    }
 }
 
 //..get antiforegery token from meta tag

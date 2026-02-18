@@ -4,6 +4,7 @@ using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
+using Grc.Middleware.Api.Sanitizer;
 using Grc.Middleware.Api.Security;
 using Grc.Middleware.Api.Services;
 using Grc.Middleware.Api.Services.Organization;
@@ -429,14 +430,22 @@ namespace Grc.Middleware.Api.Controllers {
 
                 Logger.LogActivity("Process unit data record for persistance", "INFO");
                 if (request == null) {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "No data found to save, process has been cancelled"
-                    );
-
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty", "No data found to save, process has been cancelled");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.SolId, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.BranchName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"REQUEST >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -515,6 +524,19 @@ namespace Grc.Middleware.Api.Controllers {
             try {
                 var response = new GeneralResponse();
                 Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.SolId, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.BranchName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
 
                 //..check if record exists
                 bool exists = await _branchService.ExistsByIdAsync(request.Id);
@@ -1105,6 +1127,34 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ErrorMessage, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Source, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Severity, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Status, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.AssignedTo, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 //..get username
 
@@ -1144,6 +1194,14 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Status, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!await _accessService.UserExistsAsync(r => r.Id == request.RecordId)) {
                     var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "User record not found in the database");
@@ -1174,6 +1232,34 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The system error record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ErrorMessage, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Source, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Severity, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Status, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.AssignedTo, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -1332,14 +1418,52 @@ namespace Grc.Middleware.Api.Controllers {
 
                 Logger.LogActivity("Process department data record for persistance", "INFO");
                 if (request == null) {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "No data found to save, process has been cancelled"
-                    );
-
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","No data found to save, process has been cancelled");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.DepartmentCode, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.DepartmentName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Alias, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.HeadFullName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.HeadEmail, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.HeadContact, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.HeadDesignation, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.HeadComment, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"REQUEST >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -1420,6 +1544,49 @@ namespace Grc.Middleware.Api.Controllers {
         public async Task<IActionResult> UpdateDepartment([FromBody] DepartmentRequest request) {
             try {
                 Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.DepartmentCode, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.DepartmentName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Alias, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.HeadFullName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.HeadEmail, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.HeadContact, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.HeadDesignation, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.HeadComment, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
 
                 //..check if record exists
                 var response = new GeneralResponse();
@@ -1859,14 +2026,47 @@ namespace Grc.Middleware.Api.Controllers {
 
                 Logger.LogActivity("Process unit data record for persistance", "INFO");
                 if (request == null) {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "No data found to save, process has been cancelled"
-                    );
-
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","No data found to save, process has been cancelled");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.UnitCode, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.UnitName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ContactName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ContactEmail, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ContactNumber, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ContactDesignation, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.HeadComment, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"REQUEST >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -1947,7 +2147,45 @@ namespace Grc.Middleware.Api.Controllers {
         public async Task<IActionResult> UpdateUnit([FromBody] DepartmentUnitRequest request) {
             try {
                 Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IPAddress}", "INFO");
-                
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.UnitCode, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.UnitName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ContactName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ContactEmail, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ContactNumber, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.ContactDesignation, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.HeadComment, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 //..check if record exists
                 var response = new GeneralResponse();
                 bool exists = await _departmentUnitService.ExistsAsync(request);

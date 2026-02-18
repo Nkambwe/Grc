@@ -7,6 +7,7 @@ using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
+using Grc.Middleware.Api.Sanitizer;
 using Grc.Middleware.Api.Security;
 using Grc.Middleware.Api.Services;
 using Grc.Middleware.Api.Services.Organization;
@@ -762,6 +763,59 @@ namespace Grc.Middleware.Api.Controllers {
                      return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.FirstName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.MiddleName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.LastName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.UserName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.DisplayName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.EmailAddress, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.PhoneNumber, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.PFNumber, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.SolId, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.UnitCode, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
 
                 //..get activity type
@@ -979,6 +1033,59 @@ namespace Grc.Middleware.Api.Controllers {
                     var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The user record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.FirstName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.MiddleName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.LastName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.UserName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.DisplayName, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.EmailAddress, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.PhoneNumber, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.PFNumber, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.SolId, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.UnitCode, request.IPAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -2070,16 +2177,23 @@ namespace Grc.Middleware.Api.Controllers {
             try
             {
                 Logger.LogActivity("Creating new system role", "INFO");
-                if (request == null)
-                {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "The system role record cannot be null"
-                    );
-
+                if (request == null){
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","The system role record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.RoleName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.RoleDescription, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -2148,24 +2262,27 @@ namespace Grc.Middleware.Api.Controllers {
 
                 Logger.LogActivity("Update system role", "INFO");
                 if (request == null) {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "The system role record cannot be null"
-                    );
-
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","The system role record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.RoleName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.RoleDescription, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!await _accessService.RoleExistsAsync(r => r.Id == request.Id)) {
-                    var error = new ResponseError(
-                        ResponseCodes.NOTFOUND,
-                        "Record Not Found",
-                        "System Role record not found in the database"
-                    );
-
+                    var error = new ResponseError(ResponseCodes.NOTFOUND,"Record Not Found","System Role record not found in the database");
                     Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
@@ -2467,21 +2584,37 @@ namespace Grc.Middleware.Api.Controllers {
             try
             {
                 Logger.LogActivity("Creating new role group", "INFO");
-                if (request == null)
-                {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "The role group record cannot be null"
-                    );
-
+                if (request == null){
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","The role group record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.GroupName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.GroupDescription, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.DepartmentName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.GroupCategory, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
-                if (!string.IsNullOrWhiteSpace(request.GroupName))
-                {
+                if (!string.IsNullOrWhiteSpace(request.GroupName)) {
                     if (await _accessService.RoleGroupExistsAsync(r => r.GroupName == request.GroupName))
                     {
                         var error = new ResponseError(
@@ -2527,32 +2660,41 @@ namespace Grc.Middleware.Api.Controllers {
         }
 
         [HttpPost("sam/roles/updaterolegroup")]
-        public async Task<IActionResult> UpdateRoleGroup([FromBody] RoleGroupRequest request)
-        {
-            try
-            {
+        public async Task<IActionResult> UpdateRoleGroup([FromBody] RoleGroupRequest request) {
+            try {
                 Logger.LogActivity("Update role group", "INFO");
-                if (request == null)
-                {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "The role group record cannot be null"
-                    );
-
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty","The role group record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
-                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
-                if (!await _accessService.RoleExistsAsync(r => r.Id == request.Id))
-                {
-                    var error = new ResponseError(
-                        ResponseCodes.NOTFOUND,
-                        "Record Not Found",
-                        "Role Group record not found in the database"
-                    );
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.GroupName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
 
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.GroupDescription, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.DepartmentName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.GroupCategory, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _accessService.RoleExistsAsync(r => r.Id == request.Id)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND,"Record Not Found","Role Group record not found in the database");
                     Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
@@ -2636,6 +2778,29 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.GroupName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.GroupDescription, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.DepartmentName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.GroupCategory, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
                 if (!string.IsNullOrWhiteSpace(request.GroupName)) {
                     if (await _accessService.RoleGroupExistsAsync(r => r.GroupName == request.GroupName)) {
@@ -2681,16 +2846,33 @@ namespace Grc.Middleware.Api.Controllers {
             try
             {
                 Logger.LogActivity("Update role group", "INFO");
-                if (request == null)
-                {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "The role group record cannot be null"
-                    );
-
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The role group record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.GroupName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.GroupDescription, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.DepartmentName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.GroupCategory, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -2893,13 +3075,8 @@ namespace Grc.Middleware.Api.Controllers {
             {
                 Logger.LogActivity("Get role permissions", "INFO");
 
-                if (request == null)
-                {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "Invalid request body"
-                    );
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","Invalid request body");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
@@ -3300,16 +3477,23 @@ namespace Grc.Middleware.Api.Controllers {
             try
             {
                 Logger.LogActivity("Creating new permission set", "INFO");
-                if (request == null)
-                {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "The permission set record cannot be null"
-                    );
-
+                if (request == null){
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","The permission set record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.SetName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Description, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
@@ -3360,15 +3544,23 @@ namespace Grc.Middleware.Api.Controllers {
             {
                 Logger.LogActivity("Get permission sets", "INFO");
 
-                if (request == null)
-                {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "Invalid request body"
-                    );
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty","Invalid request body");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..sanitize record
+                bool is_safe = true;
+                GrcResponse<GeneralResponse> checkResponse;
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.SetName, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
+                }
+
+                (is_safe, checkResponse) = FieldSanitizer.SanitizeField(Logger, request.Description, request.IpAddress);
+                if (!is_safe) {
+                    return Ok(checkResponse);
                 }
 
                 if (request.Id == 0)

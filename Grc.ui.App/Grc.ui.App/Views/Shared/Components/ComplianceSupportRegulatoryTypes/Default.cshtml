@@ -38,7 +38,7 @@
             <div class="col-sm-12">
                 <div class="row field-group">
                     <label for="typeName" class="form-label text-right col-12">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Type.Header"))</label>
-                    <input type="text" id="typeName" name="typeName" class="col-12 form-control" required>
+                    <input type="text" id="typeName" name="typeName" class="col-12 form-control" onkeypress="return validateInput(event)" onpaste="handlePaste(event)" maxlength="100">
                 </div>
             </div>
 

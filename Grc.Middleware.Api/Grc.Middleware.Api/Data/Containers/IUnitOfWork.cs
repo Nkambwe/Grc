@@ -59,6 +59,12 @@ namespace Grc.Middleware.Api.Data.Containers {
         IPermissionSetRepository PermissionSetRepository { get; set; }
         IMailSettingsRepository MailSettingsRepository { get; set; }
         IMailRecordRepository MailRecordRepository { get; set; }
+        IProcessRiskRepository ProcessRiskRepository { get; set; }
+        IProcessVersionRepository ProcessVersionRepository { get; set; }
+        IProcessWorkflowRepository ProcessWorkflowRepository { get; set; }
+        IProcessWorkflowStepRepository ProcessWorkflowStepRepository { get; set; }
+        IProcessWorkflowActionRepository ProcessWorkflowActionRepository { get; set; }
+
         Task<int> SaveChangesAsync(); 
         int SaveChanges(); 
     }
