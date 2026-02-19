@@ -94,7 +94,7 @@
 
     <div class="law-side-panel-body">
 
-        <form id="categoryForm" class="grc-law-form">
+        <form id="categoryForm" class="grc-form row g-3 m-3">
             <input type="hidden" id="categoryId" name="categoryId">
             <input type="hidden" id="isCategoryEdit" name="isCategoryEdit">
 
@@ -102,33 +102,33 @@
 
                 <div class="row mb-3">
                     <div class="mb-3">
-                        <label for="categoryName" class="form-label">
+                        <label for="categoryName" class="col-12 form-label">
                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Category"))
                         </label>
-                        <input type="text" class="form-control" id="categoryName" required>
+                        <input type="text" class="col-12 form-control" id="categoryName" onkeypress="return validateNameInput(event)" onpaste="handleNamePaste(event)">
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="mb-3">
-                        <label for="comments" class="form-label">
+                        <label for="comments" class="col-12 form-label">
                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Comments"))
                         </label>
-                        <textarea class="form-control" id="comments" rows="3"></textarea>
+                        <textarea class="col-12 form-control" id="comments" rows="3" onkeypress="return validateCommentInput(event)" onpaste="handleCommentPaste(event)"></textarea>
                     </div>
                 </div>
 
             </div>
 
-            <div class="col-sm-12">
+            <div class="col-12">
                 <div class="row mb-3">
-                    <div class="col-sm-2">
+                    <div class="col-3">
                         <button class="btn btn-grc-primary" style="width:100%;" onclick="saveLawCategory(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-3">
                         <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeLawCategory()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
                     </div>
-                    <div class="col-sm-8"></div>
+                    <div class="col-6"></div>
                 </div>
             </div>
         </form>
@@ -150,7 +150,7 @@
 
     <div class="law-side-panel-body">
 
-        <form id="lawForm" class="grc-law-form">
+        <form id="lawForm" class="grc-form row g-3 m-3">
             <input type="hidden" id="lawId" name="lawId">
             <input type="hidden" id="lawCategoryId" name="lawCategoryId">
             <input type="hidden" id="isLawEdit" name="isLawEdit">
@@ -161,19 +161,19 @@
 
                     <div class="row mb-3">
                         <div class="mb-3">
-                            <label for="lawReference" class="form-label">
+                            <label for="lawReference" class="col-12 form-label">
                                 @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Reference"))
                             </label>
-                            <input type="text" class="form-control" id="lawReference" name="lawReference">
+                            <input type="text" class="col-12 form-control" id="lawReference" name="lawReference" onkeypress="return validateLawInput(event)" onpaste="handleLawPaste(event)">
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="mb-3">
-                            <label for="lawName" class="form-label">
+                            <label for="lawName" class="col-12 form-label">
                                 @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.LawName"))
                             </label>
-                            <input type="text" class="form-control" id="lawName" name="lawName">
+                            <input type="text" class="col-12 form-control" id="lawName" name="lawName" onkeypress="return validateLawNameInput(event)" onpaste="handleLawNamePaste(event)">
                         </div>
                     </div>
 
@@ -182,10 +182,10 @@
                 <div class="col-6">
 
                     <div class="row mb-3">
-                        <label for="authorityId" class="col-sm-4 col-form-label text-sm-end">
+                        <label for="authorityId" class="col-12 col-form-label text-sm-end">
                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Authority"))
                         </label>
-                        <div class="col-sm-8">
+                        <div class="col-12">
                             <select class="js-act-authority-id form-control" id="authorityId" name="authorityId">
                                 <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Select.Authority"))</option>
                                 @if (Model?.Authorities != null && Model.Authorities.Any()) {
@@ -202,10 +202,10 @@
                 <div class="col-6">
 
                     <div class="row mb-3">
-                        <label for="typeId" class="col-sm-4 col-form-label text-sm-end">
+                        <label for="typeId" class="col-12 col-form-label text-sm-end">
                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Type"))
                         </label>
-                        <div class="col-sm-8">
+                        <div class="col-12">
                             <select class="js-act-law-type-id form-control" id="typeId" name="typeId">
                                 <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Select.Type"))</option>
                                 @if (Model?.StatuteTypes != null && Model.StatuteTypes.Any()) {
@@ -219,15 +219,15 @@
 
                 </div>
 
-                <div class="col-sm-12">
+                <div class="col-12">
                     <div class="row mb-3">
-                        <div class="col-sm-1">
+                        <div class="col-3">
                             <button class="btn btn-grc-primary" style="width:100%;" onclick="saveLaw(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
                         </div>
-                        <div class="col-sm-1">
+                        <div class="col-3">
                             <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeLaw()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
                         </div>
-                        <div class="col-sm-10"></div>
+                        <div class="col-6"></div>
                     </div>
                 </div>
 
@@ -252,7 +252,7 @@
 
     <div class="law-side-panel-body">
 
-        <form id="actForm" class="grc-law-form">
+        <form id="actForm" class="grc-form row g-3 m-3">
 
             <input type="hidden" id="actId" name="actId">
             <input type="hidden" id="actLawId" name="actLawId">
@@ -263,37 +263,37 @@
                 <div class="col-12">
 
                     <div class="row mb-1">
-                        <div class="mb-2">
-                            <label for="section" class="form-label">
+                        <div class="form-group mb-2">
+                            <label for="section" class="col-12 form-label">
                                 @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Number"))
                             </label>
-                            <input type="text" class="form-control" id="section" required>
+                            <input type="text" class="col-12 form-control" id="section" onkeypress="return validateSectionInput(event)" onpaste="handleSectionPaste(event)">
                         </div>
                     </div>
 
                     <div class="row mb-1">
-                        <div class="mb-2">
-                            <label for="summery" class="form-label">
+                        <div class="form-group mb-2">
+                            <label for="summery" class="col-12 form-label">
                                 @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Summery"))
                             </label>
-                            <input type="text" class="form-control" id="summery" required>
+                            <input type="text" class="col-12 form-control" id="summery" onkeypress="return validateSummeryInput(event)" onpaste="handleSummeryPaste(event)">
                         </div>
                     </div>
 
                     <div class="row mb-1">
                         <div class="mb-3">
-                            <label for="obligation" class="form-label">
+                            <label for="obligation" class="col-12 form-label">
                                 @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Obligation"))
                             </label>
-                            <textarea class="form-control" id="obligation" rows="4"></textarea>
+                            <textarea class="col-12 form-control" id="obligation" rows="4" onkeypress="return validateObligationInput(event)" onpaste="handleObligationPaste(event)"></textarea>
                         </div>
                     </div>
 
                  </div>
 
-                <div class="col-sm-6">
-                    <div class="row field-group mt-1 mb-1">
-                        <div class="col-6">
+                <div class="col-6">
+                    <div class="row mt-1 mb-1">
+                        <div class="col-12">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="isMandatory">
                                 <label class="form-check-label" for="isMandatory">
@@ -308,11 +308,11 @@
                     
                     <div class="row mb-3">
 
-                        <div class="col-6">
-                            <label for="actFrequencyId" class="col-sm-4 col-form-label">
+                        <div class="form-group col-6">
+                            <label for="actFrequencyId" class="col-12 col-form-label">
                                 @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Frequency"))
                             </label>
-                            <div class="col-sm-8">
+                            <div class="col-12">
                                 <select class="js-act-frequency-id form-control" id="actFrequencyId" name="actFrequencyId">
                                     <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Select.Frequency"))</option>
                                     @if (Model?.Frequencies != null && Model.Frequencies.Any()) {
@@ -324,11 +324,11 @@
                             </div>
                         </div>
 
-                        <div class="col-6">
-                            <label for="actResponsibleId" class="col-sm-4 col-form-label">
+                        <div class="form-group col-6">
+                            <label for="actResponsibleId" class="col-12 col-form-label">
                                 @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Responsible"))
                             </label>
-                            <div class="col-sm-8">
+                            <div class="col-12">
                                 <select class="js-act-frequency-id form-control" id="actResponsibleId" name="actResponsibleId">
                                     <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Select.Responsibility"))</option>
                                     @if (Model?.Responsibilities != null && Model.Responsibilities.Any()) {
@@ -349,7 +349,7 @@
             <div class="col-12">
 
                 <div class="row mb-1">
-                    <div class="mb-1">
+                    <div class="form-group mb-1">
                         <label for="assurance" class="form-label">
                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Assurance"))
                             <span id="assuranceValue" class="fw-bold ms-2">0%</span>
@@ -358,7 +358,7 @@
                     </div>
                 </div>
                 <div class="row mb-1">
-                    <div class="mb-1">
+                    <div class="form-group mb-1">
                         <label for="coverage" class="form-label">
                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Coverage"))
                             <span id="coverageValue" class="fw-bold ms-2">0%</span>
@@ -371,24 +371,24 @@
 
             <div class="col-12">
                 <div class="row mb-1">
-                    <div class="mb-1">
+                    <div class="col-12 form-group mb-1">
                         <label for="actComments" class="form-label">
                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Law.Label.Comments"))
                          </label>
-                        <textarea class="form-control" id="actComments" rows="4"></textarea>
+                        <textarea class="col-12 form-control" id="actComments" rows="4" onkeypress="return validateActCommentsInput(event)" onpaste="handleActCommentPaste(event)"></textarea>
                     </div>
                 </div>
             </div>
 
-            <div class="col-sm-12">
+            <div class="col-12">
                 <div class="row mb-3">
-                    <div class="col-sm-1">
+                    <div class="col-3">
                         <button class="btn btn-grc-primary" style="width:100%;" onclick="saveAct(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
                     </div>
-                    <div class="col-sm-1">
+                    <div class="col-3">
                         <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeLawAct()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
                     </div>
-                    <div class="col-sm-10"></div>
+                    <div class="col-6"></div>
                 </div>
             </div>
         </form>

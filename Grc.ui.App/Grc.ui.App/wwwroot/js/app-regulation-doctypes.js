@@ -14,8 +14,6 @@ $(document).ready(function () {
         // Show real-time feedback but don't block typing
         if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
             highlightTypeField('#typeName', true, 'Invalid characters detected');
-        } else if (value.length > 100) {
-            highlightTypeField('#typeName', true, 'Maximum length exceeded');
         } else {
             highlightTypeField('#typeName', false);
         }
@@ -34,10 +32,6 @@ $(document).ready(function () {
             highlightTypeField('#typeName', true, 'Type name is required');
         } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
             highlightTypeField('#typeName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
-        } else if (value.length < 2) {
-            highlightTypeField('#typeName', true, 'Type name must be at least 2 characters');
-        } else if (value.length > 100) {
-            highlightTypeField('#typeName', true, 'Type name cannot exceed 100 characters');
         } else {
             highlightTypeField('#typeName', false);
         }
@@ -273,28 +267,14 @@ function saveDocumentTypeRecord(e) {
     if (!typeName) {
         highlightTypeField('#typeName', true, 'Type name is required');
         isValid = false;
-    }
-    // Validate format - only alphanumeric, commas, periods, and spaces
-    else if (!/^[a-zA-Z0-9\s,.]*$/.test(typeName)) {
+    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(typeName)) {
         highlightTypeField('#typeName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
         isValid = false;
     }
-    // Check minimum length
-    else if (typeName.length < 2) {
-        highlightTypeField('#typeName', true, 'Type name must be at least 2 characters');
-        isValid = false;
-    }
-    // Check maximum length
-    else if (typeName.length > 100) {
-        highlightTypeField('#typeName', true, 'Type name cannot exceed 100 characters');
-        isValid = false;
-    } else {
-        // Clear any existing error
-        highlightTypeField('#typeName', false);
-    }
-
+    
     if (!isValid) {
-        return; // Stop submission
+        // Stop submission
+        return; 
     }
 
     //..build record payload from form
@@ -555,7 +535,7 @@ function initDoctypeSearch() {
 
 function highlightTypeField(selector, hasError, message) {
     const $field = $(selector);
-    const $formGroup = $field.closest('.form-group');
+    const $formGroup = $field.closest('.form-group, .field-group');
     // Remove existing error
     $field.removeClass('is-invalid');
     $formGroup.find('.field-error').remove();

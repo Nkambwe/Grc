@@ -577,7 +577,7 @@ function addPolicyDocument() {
 
 function openPolicyDocPanel(title, record, isEdit) {
 
-    console.log(record);
+    console.log("Document", record);
     $('#isEdit').val(isEdit);
     $('#recordId').val(record.id);
     $('#documentName').val(record.documentName || '');
@@ -593,18 +593,18 @@ function openPolicyDocPanel(title, record, isEdit) {
     $('#reminderMessage').val(record.reminderMessage || '');
 
     //..use setDate
-    const today = new Date();
-    if (record.lastReviewDate) {
-        flatpickrInstances["lastReviewDate"].setDate(record.lastReviewDate, true, "Y-m-d");
-    } else {
-        flatpickrInstances["lastReviewDate"].setDate(today, true, "Y-m-d");
-    }
+    //const today = new Date();
+    //if (record.lastReviewDate) {
+    //    flatpickrInstances["lastReviewDate"].setDate(record.lastReviewDate, true, "Y-m-d");
+    //} else {
+    //    flatpickrInstances["lastReviewDate"].setDate(today, true, "Y-m-d");
+    //}
 
-    if (record.nextReviewDate) {
-        flatpickrInstances["nextReviewDate"].setDate(record.nextReviewDate, true, "Y-m-d");
-    } else {
-        flatpickrInstances["nextReviewDate"].setDate(today, true, "Y-m-d");
-    }
+    //if (record.nextReview) {
+    //    flatpickrInstances["nextReviewDate"].setDate(record.nextReview, true, "Y-m-d");
+    //} else {
+    //    flatpickrInstances["nextReviewDate"].setDate(today, true, "Y-m-d");
+    //}
 
     $('#documentStatus').val(record.documentStatus).trigger('change');
     $('#isAligned').prop('checked', record.isAligned);
@@ -613,11 +613,11 @@ function openPolicyDocPanel(title, record, isEdit) {
     $('#needBoardApproval').val(record.boardApproval).trigger('change');
     $('#onIntranet').val(record.onIntranet).trigger('change');
 
-    if (record.approvalDate) {
-        flatpickrInstances["approvalDate"].setDate(record.approvalDate, true, "Y-m-d");
-    } else {
-        flatpickrInstances["approvalDate"].setDate(today, true, "Y-m-d");
-    }
+    //if (record.approvalDate) {
+    //    flatpickrInstances["approvalDate"].setDate(record.approvalDate, true, "Y-m-d");
+    //} else {
+    //    flatpickrInstances["approvalDate"].setDate(today, true, "Y-m-d");
+    //}
 
     $('#approver').val(record.approver).trigger('change');
 
@@ -640,11 +640,48 @@ function openPolicyDocPanel(title, record, isEdit) {
 function savePolicyDocument(e) {
     if (e) e.preventDefault();
     let isEdit = $('#isEdit').val();
-    // --- gather form values ---
+    let documentName = $('#documentName').val()?.trim();
+    let comments = $('#comments').val().trim();
+    let interval = $('#interval').val()?.trim();
+    let reminderMessage =  $('#reminderMessage').val()?.trim();
+
+    let isValid = true;
+    if (!documentName) {
+        highlightRegualtionField('#documentName', true, 'Document name is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(documentName)) {
+        highlightRegualtionField('#documentName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+
+    if (!comments) {
+        highlightRegualtionField('#comments', true, 'Document comment field is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(comments)) {
+        highlightRegualtionField('#comments', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+    
+    if (!interval && !/^[a-zA-Z0-9]*$/.test(interval)) {
+        highlightRegualtionField('#interval', true, 'Only letters and numbers allowed');
+        isValid = false;
+    }
+    
+    if (!reminderMessage && !/^[a-zA-Z0-9\s,.]*$/.test(reminderMessage)){
+        highlightRegualtionField('#reminderMessage', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+
+    if (!isValid) {
+        //..stop submission
+        return; 
+    }
+
+    //...gather form values ---
     let recordData = {
         id: parseInt($('#recordId').val()) || 0,
-        documentName: $('#documentName').val()?.trim(),
-        comments: $('#comments').val()?.trim(),
+        documentName: documentName,
+        comments: comments,
         documentTypeId: Number($('#documentTypeId').val()),
         departmentId: Number($('#departmentId').val()),
         frequencyId: Number($('#frequencyId').val()),
@@ -660,9 +697,9 @@ function savePolicyDocument(e) {
         isApproved: Number($('#isApproved').val()),
         approvalDate: flatpickrInstances["approvalDate"].input.value || null,
         approver: $('#approver').val()?.trim(),
-        interval: $('#interval').val()?.trim(),
+        interval: interval,
         intervalType: $('#intervalType').val()?.trim(),
-        reminderMessage: $('#reminderMessage').val()?.trim()
+        reminderMessage: reminderMessage
     };
    
     // --- validate required fields ---
@@ -697,14 +734,14 @@ function savePolicyDocument(e) {
     // --- stop if validation fails ---
     if (errors.length > 0) {
 
-        highlightField("#documentName", !recordData.documentName);
-        highlightField("#documentStatus", !recordData.documentStatus);
-        highlightField("#comments", !recordData.comments);
-        highlightField("#documentTypeId", !recordData.documentTypeId || recordData.documentTypeId === 0);
-        highlightField("#frequencyId", !recordData.frequencyId || recordData.frequencyId === 0);
-        highlightField("#ownerId", !recordData.ownerId || recordData.ownerId === 0);
-        highlightField("#lastReviewDate", !recordData.lastReview || recordData.lastReview === null);
-        highlightField("#nextReviewDate", !recordData.nextReview || recordData.nextReview === null);
+        highlightRegualtionField("#documentName", !recordData.documentName);
+        highlightRegualtionField("#documentStatus", !recordData.documentStatus);
+        highlightRegualtionField("#comments", !recordData.comments);
+        highlightRegualtionField("#documentTypeId", !recordData.documentTypeId || recordData.documentTypeId === 0);
+        highlightRegualtionField("#frequencyId", !recordData.frequencyId || recordData.frequencyId === 0);
+        highlightRegualtionField("#ownerId", !recordData.ownerId || recordData.ownerId === 0);
+        highlightRegualtionField("#lastReviewDate", !recordData.lastReview || recordData.lastReview === null);
+        highlightRegualtionField("#nextReviewDate", !recordData.nextReview || recordData.nextReview === null);
 
         Swal.fire({
             title: "Document Record Validation",
@@ -789,9 +826,275 @@ function savePolicy(isEdit, payload) {
     });
 }
 
-function highlightField(selector, isError) {
-    if (isError) $(selector).addClass("input-error");
-    else $(selector).removeClass("input-error");
+//..name input validation
+function validateDocNameInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightRegualtionField('#documentName', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightRegualtionField('#documentName', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightRegualtionField('#documentName', false);
+        return true;
+    }
+
+    //..block everything else and show error on the field
+    event.preventDefault();
+    highlightRegualtionField('#documentName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+    return false;
+}
+
+function handleDocNamePaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightRegualtionField('#documentName', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightRegualtionField('#documentName', false);
+    }
+}
+
+//..comments input validation
+function validateDocCommentInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightRegualtionField('#comments', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightRegualtionField('#comments', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightRegualtionField('#comments', false);
+        return true;
+    }
+
+    //..block everything else and show error on the field
+    event.preventDefault();
+    highlightRegualtionField('#comments', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+    return false;
+}
+
+function handleDocCommentPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightRegualtionField('#comments', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightRegualtionField('#comments', false);
+    }
+}
+
+//..interval input validation
+function validateIntervalInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[a-zA-Z0-9]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightRegualtionField('#interval', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightRegualtionField('#interval', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightRegualtionField('#interval', false);
+        return true;
+    }
+
+    //..block everything else and show error on the field
+    event.preventDefault();
+    highlightRegualtionField('#interval', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+    return false;
+}
+
+function handleIntervalPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightRegualtionField('#interval', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightRegualtionField('#interval', false);
+    }
+}
+
+//..message input validation
+function validateReminderInput(event) {
+      var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightRegualtionField('#reminderMessage', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightRegualtionField('#reminderMessage', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightRegualtionField('#reminderMessage', false);
+        return true;
+    }
+
+    //..block everything else and show error on the field
+    event.preventDefault();
+    highlightRegualtionField('#reminderMessage', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+    return false;
+}
+
+function handleReminderPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightRegualtionField('#reminderMessage', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightRegualtionField('#reminderMessage', false);
+    }
+}
+
+function highlightRegualtionField(selector, hasError, message) {
+    const $field = $(selector);
+    const $formGroup = $field.closest('.form-group, .mb-3, .col-sm-8, .field-group');
+
+    // Remove existing error
+    $field.removeClass('is-invalid');
+    $formGroup.find('.field-error').remove();
+
+    if (hasError) {
+        $field.addClass('is-invalid');
+        if (message) {
+            $formGroup.append(`<div class="field-error text-danger small mt-1">${message}</div>`);
+        }
+    }
 }
 
 function closePolicyPanel() {
@@ -1092,6 +1395,201 @@ $(document).ready(function () {
         lockPolicyDocument(id, isLocked);
     });
 
+    //..category name validation 
+    $('#documentName').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightRegualtionField('#documentName', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightRegualtionField('#documentName', true, 'Invalid characters detected');
+        } else {
+            highlightRegualtionField('#documentName', false);
+        }
+    });
+
+    $('#documentName').on('focus', function () {
+        highlightRegualtionField('#documentName', false);
+    });
+
+    $('#documentName').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightRegualtionField('#documentName', true, 'Document name is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightRegualtionField('#documentName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightRegualtionField('#documentName', false);
+        }
+    });
+
+    $('#documentName').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightRegualtionField('#documentName', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightRegualtionField('#documentName', false);
+                }, 2000);
+            }
+        }
+    });
+
+    //..comments validation 
+    $('#comments').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightRegualtionField('#comments', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightRegualtionField('#comments', true, 'Invalid characters detected');
+        } else {
+            highlightRegualtionField('#comments', false);
+        }
+    });
+
+    $('#comments').on('focus', function () {
+        highlightRegualtionField('#comments', false);
+    });
+
+    $('#comments').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightRegualtionField('#comments', true, 'Comments is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightRegualtionField('#comments', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightRegualtionField('#comments', false);
+        }
+    });
+
+    $('#comments').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightRegualtionField('#comments', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightRegualtionField('#comments', false);
+                }, 2000);
+            }
+        }
+    });
+    
+    //..interval validation 
+    $('#interval').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightRegualtionField('#interval', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightRegualtionField('#interval', true, 'Invalid characters detected');
+        } else {
+            highlightRegualtionField('#interval', false);
+        }
+    });
+
+    $('#interval').on('focus', function () {
+        highlightRegualtionField('#interval', false);
+    });
+
+    $('#interval').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value && !/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightRegualtionField('#interval', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightRegualtionField('#interval', false);
+        }
+    });
+
+    $('#interval').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightRegualtionField('#interval', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightRegualtionField('#interval', false);
+                }, 2000);
+            }
+        }
+    });
+
+    //..message validation 
+    $('#reminderMessage').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightRegualtionField('#reminderMessage', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightRegualtionField('#reminderMessage', true, 'Invalid characters detected');
+        } else {
+            highlightRegualtionField('#reminderMessage', false);
+        }
+    });
+
+    $('#reminderMessage').on('focus', function () {
+        highlightRegualtionField('#reminderMessage', false);
+    });
+
+    $('#reminderMessage').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value && !/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightRegualtionField('#reminderMessage', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightRegualtionField('#reminderMessage', false);
+        }
+    });
+
+    $('#reminderMessage').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightRegualtionField('#reminderMessage', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightRegualtionField('#reminderMessage', false);
+                }, 2000);
+            }
+        }
+    });
 });
 
 

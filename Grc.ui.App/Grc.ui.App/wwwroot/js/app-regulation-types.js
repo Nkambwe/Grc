@@ -201,7 +201,6 @@ $('.action-btn-complianceHome').on('click', function () {
     try {
         window.location.href = '/grc/compliance';
     } catch (error) {
-        console.error('Navigation failed:', error);
         showToast(error, type = 'error');
     }
 });
@@ -239,6 +238,10 @@ $('#btnTypeExportFiltered').on('click', function () {
 });
 
 $('.action-btn-type-export').on('click', function () {
+    exportToExcel();
+});
+
+function exportToExcel() {
     $.ajax({
         url: '/grc/compliance/settings/types-export-full',
         type: 'POST',
@@ -255,11 +258,7 @@ $('.action-btn-type-export').on('click', function () {
             toastr.error("Export failed. Please try again.");
         }
     });
-});
-
-$('.action-btn-newType').on('click', function () {
-    exportToExcel();
-});
+}
 
 //..open slide panel
 function openRegulatoryTypePanel(title, record, isEdit) {
@@ -278,10 +277,27 @@ function saveRegulatoryTypeRecord(e) {
     e.preventDefault(); 
 
     let isEdit = $('#isEdit').val();
+    let typeName = $('#typeName').val().trim();
+    let isValid = true;
+
+    // Validate - check if empty
+    if (!typeName) {
+        highlightType2Field('#typeName', true, 'Type name is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(typeName)) {
+        highlightType2Field('#typeName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+    
+    if (!isValid) {
+        // Stop submission
+        return; 
+    }
+
     //..build record payload from form
     let recordData = {
         id: parseInt($('#recordId').val()) || 0,
-        typeName: $('#typeName').val(),
+        typeName: typeName,
         isActive: $('#isActive').is(':checked') ? true : false,
     };
 
@@ -331,6 +347,70 @@ function saveRegulatoryType(isEdit, payload) {
         }
 
     });
+}
+
+function validateInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[a-zA-Z0-9]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightType2Field('#typeName', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightType2Field('#typeName', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightType2Field('#typeName', false);
+        return true;
+    }
+
+    //..block everything else and show error on the field
+    event.preventDefault();
+    highlightType2Field('#typeName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+    return false;
+}
+
+//..handle paste events to clean pasted content
+function handlePaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightType2Field('#typeName', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightType2Field('#typeName', false);
+    }
 }
 
 function deleteRegulatoryTypeRecord(id) {
@@ -467,6 +547,20 @@ function addRegulatoryTypeRecordToData(data, newRecord) {
     data.push(newRecord);
 }
 
+function highlightType2Field(selector, hasError, message) {
+    const $field = $(selector);
+    const $formGroup = $field.closest('.form-group, .field-group');
+    // Remove existing error
+    $field.removeClass('is-invalid');
+    $formGroup.find('.field-error').remove();
+
+    if (hasError) {
+        $field.addClass('is-invalid');
+        if (message) {
+            $formGroup.append(`<div class="field-error text-danger small mt-1 text-end">${message}</div>`);
+        }
+    }
+}
 //..function to manually reload table data
 function initRegulatoryTypeSearch() {
     const searchInput = $('#typeSearchbox');
@@ -494,5 +588,56 @@ function getRegulationTypeAntiForgeryToken() {
 
 $(document).ready(function () {
     initRegulatoryTypeTable();
+
+    $('#typeName').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightType2Field('#typeName', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightType2Field('#typeName', true, 'Invalid characters detected');
+        } else {
+            highlightType2Field('#typeName', false);
+        }
+    });
+
+    // Clear error when field gains focus
+    $('#typeName').on('focus', function () {
+        highlightType2Field('#typeName', false);
+    });
+
+    // Validate on blur (when leaving the field)
+    $('#typeName').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightType2Field('#typeName', true, 'Type name is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightType2Field('#typeName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightType2Field('#typeName', false);
+        }
+    });
+
+    $('#typeName').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightType2Field('#typeName', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightType2Field('#typeName', false);
+                }, 2000);
+            }
+        }
+    });
 });
 

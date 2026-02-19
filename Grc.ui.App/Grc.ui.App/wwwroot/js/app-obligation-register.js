@@ -1148,7 +1148,7 @@ function attachControlCheckboxHandlers() {
 
 function highlightError(selector, hasError, message) {
     const $field = $(selector);
-    const $formGroup = $field.closest('.form-group, .mb-3, .col-sm-8');
+    const $formGroup = $field.closest('.form-group, .mb-3, .col-sm-8, .field-group');
 
     // Remove existing error
     $field.removeClass('is-invalid');

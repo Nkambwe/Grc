@@ -157,13 +157,6 @@ function initAuditType2Table() {
             }
         ]
     });
-
-    //..initialize search
-    initAuditTypeSearch();
-}
-
-function initAuditTypeSearch() {
-
 }
 
 $('.action-btn-audit-type-new').on('click', function () {
@@ -203,7 +196,6 @@ function viewAuditType(id) {
         didOpen: () => Swal.showLoading()
     });
 
-    console.log("ID >> " + id);
     findTypeRecord(id)
         .then(record => {
             Swal.close();
@@ -289,13 +281,43 @@ function saveAuditTypePane(e) {
     e.preventDefault();
     let id = Number($('#typeId').val()) || 0;
     let isEdit = $('#isTypeEdit').val() || false;
+    let typeCode = $('#typeCode').val().trim();
+    let typeName = $('#typeName').val().trim();
+    let description = $('#description').val().trim();
+    
+    let isValid = true;
+    if (!typeCode) {
+        highlightAuditTypeField('#typeCode', true, 'Type code is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9]*$/.test(typeCode)) {
+        highlightAuditTypeField('#typeCode', true, 'Only letters and numbers  allowed');
+        isValid = false;
+    }
+
+    if (!typeName) {
+        highlightAuditTypeField('#typeName', true, 'Type name is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(typeName)) {
+        highlightAuditTypeField('#typeName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+    
+    if (!description && !/^[a-zA-Z0-9\s,.]*$/.test(description)) {
+        highlightAuditTypeField('#description', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+    
+    if (!isValid) {
+        // Stop submission
+        return; 
+    }
 
     //..build record payload from form
     let recordData = {
         id: id,
-        typeCode: $('#typeCode').val()?.trim(),
-        typeName: $('#typeName').val()?.trim(),
-        description: $('#description').val()?.trim(),
+        typeCode: typeCode,
+        typeName: typeName,
+        description: description,
         isDeleted: $('#isIssueDeleted').prop('checked'),
     };
 
@@ -308,8 +330,8 @@ function saveAuditTypePane(e) {
         errors.push("Type name field is required.");
 
     if (errors.length > 0) {
-        highlightError("#typeCode", !recordData.typeCode);
-        highlightError("#typeName", !recordData.typeName);
+        highlightAuditTypeField("#typeCode", !recordData.typeCode);
+        highlightAuditTypeField("#typeName", !recordData.typeName);
         Swal.fire({
             title: "Audit type Validation",
             html: `<div style="text-align:left;">${errors.join("<br>")}</div>`,
@@ -390,6 +412,198 @@ function closeAuditTypePane() {
     $('#auditTypePanel').removeClass('active');
 }
 
+//...validate name
+function validateNameInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    if (/[a-zA-Z0-9]/.test(keyChar)) {
+        highlightAuditTypeField('#typeName', false);
+        return true;
+    }
+
+
+    if (keyChar == ',' || keyChar == '.') {
+        highlightAuditTypeField('#typeName', false);
+        return true;
+    }
+
+    if (keyChar == ' ') {
+        highlightAuditTypeField('#typeName', false);
+        return true;
+    }
+
+    event.preventDefault();
+    highlightAuditTypeField('#typeName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+    return false;
+}
+
+function handleNamePaste(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    if (/[a-zA-Z0-9]/.test(keyChar)) {
+        highlightAuditTypeField('#typeName', false);
+        return true;
+    }
+
+    if (keyChar == ',' || keyChar == '.') {
+        highlightAuditTypeField('#typeName', false);
+        return true;
+    }
+
+    if (keyChar == ' ') {
+        highlightAuditTypeField('#typeName', false);
+        return true;
+    }
+
+    event.preventDefault();
+    highlightAuditTypeField('#typeName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+    return false;
+}
+
+//..validate code
+function validateCodeInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    if (/[a-zA-Z0-9]/.test(keyChar)) {
+        highlightAuditTypeField('#typeCode', false);
+        return true;
+    }
+
+    event.preventDefault();
+    highlightAuditTypeField('#typeCode', true, 'Only letters and numbers');
+    return false;
+}
+
+function handleCodePaste(event) {
+    event.preventDefault();
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9]/g, '');
+
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    if (pastedText !== cleanedText) {
+        highlightAuditTypeField('#typeCode', true, 'Some characters were removed - only letters and numbers allowed');
+    } else {
+        highlightAuditTypeField('#typeCode', false);
+    }
+}
+
+//..validate description
+function validateDescrInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    if (/[a-zA-Z0-9]/.test(keyChar)) {
+        highlightAuditTypeField('#typeName', false);
+        return true;
+    }
+
+
+    if (keyChar == ',' || keyChar == '.') {
+        highlightAuditTypeField('#typeName', false);
+        return true;
+    }
+
+    if (keyChar == ' ') {
+        highlightAuditTypeField('#typeName', false);
+        return true;
+    }
+
+    event.preventDefault();
+    highlightAuditTypeField('#typeName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+    return false;
+}
+
+function handleDescrPaste(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    if (/[a-zA-Z0-9]/.test(keyChar)) {
+        highlightAuditTypeField('#description', false);
+        return true;
+    }
+
+    if (keyChar == ',' || keyChar == '.') {
+        highlightAuditTypeField('#description', false);
+        return true;
+    }
+
+    if (keyChar == ' ') {
+        highlightAuditTypeField('#description', false);
+        return true;
+    }
+
+    event.preventDefault();
+    highlightAuditTypeField('#description', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+    return false;
+}
+
+
+//..handle paste events to clean pasted content
+function handlePaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightType2Field('#typeName', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightType2Field('#typeName', false);
+    }
+}
+
 $('.action-btn-audit-home').on('click', function () {
     try {
         window.location.href = '/grc/compliance/audit/dashboard';
@@ -399,8 +613,170 @@ $('.action-btn-audit-home').on('click', function () {
     }
 });
 
+function highlightAuditTypeField(selector, hasError, message) {
+    const $field = $(selector);
+    const $formGroup = $field.closest('.form-group, .field-group');
+    // Remove existing error
+    $field.removeClass('is-invalid');
+    $formGroup.find('.field-error').remove();
+
+    if (hasError) {
+        $field.addClass('is-invalid');
+        if (message) {
+            $formGroup.append(`<div class="field-error text-danger small mt-1 text-end">${message}</div>`);
+        }
+    }
+}
+
 $(document).ready(function () {
     initAuditType2Table();
+
+    //..type code validation
+    $('#typeCode').on('keyup', function () {
+        var value = $(this).val();
+        if (!value) {
+            highlightAuditTypeField('#typeCode', false);
+            return;
+        }
+
+        if (!/^[a-zA-Z0-9]*$/.test(value)) {
+            highlightAuditTypeField('#typeCode', true, 'Invalid characters detected');
+        } else {
+            highlightAuditTypeField('#typeCode', false);
+        }
+    });
+
+    $('#typeCode').on('focus', function () {
+        highlightAuditTypeField('#typeCode', false);
+    });
+
+    $('#typeCode').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightAuditTypeField('#typeCode', true, 'Type code is required');
+        } else if (!/^[a-zA-Z0-9]*$/.test(value)) {
+            highlightAuditTypeField('#typeCode', true, 'Only letters and numbers  allowed');
+        } else {
+            highlightAuditTypeField('#typeCode', false);
+        }
+    });
+
+    $('#typeCode').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightAuditTypeField('#typeCode', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightAuditTypeField('#typeCode', false);
+                }, 2000);
+            }
+        }
+    });
+
+    //..type name validation 
+    $('#typeName').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightAuditTypeField('#typeName', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightAuditTypeField('#typeName', true, 'Invalid characters detected');
+        } else {
+            highlightAuditTypeField('#typeName', false);
+        }
+    });
+
+    $('#typeName').on('focus', function () {
+        highlightAuditTypeField('#typeName', false);
+    });
+
+    $('#typeName').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightAuditTypeField('#typeName', true, 'Type name is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightAuditTypeField('#typeName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightAuditTypeField('#typeName', false);
+        }
+    });
+
+    $('#typeName').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightAuditTypeField('#typeName', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightAuditTypeField('#typeName', false);
+                }, 2000);
+            }
+        }
+    });
+    
+    //..type name validation 
+    $('#description').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightAuditTypeField('#description', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightAuditTypeField('#description', true, 'Invalid characters detected');
+        } else {
+            highlightAuditTypeField('#description', false);
+        }
+    });
+
+    $('#description').on('focus', function () {
+        highlightAuditTypeField('#description', false);
+    });
+
+    $('#description').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightAuditTypeField('#description', true, 'Type description is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightAuditTypeField('#description', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightAuditTypeField('#description', false);
+        }
+    });
+
+    $('#description').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightAuditTypeField('#description', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightAuditTypeField('#description', false);
+                }, 2000);
+            }
+        }
+    });
 
     $('#auditTypeForm').on('submit', function (e) {
         e.preventDefault();
