@@ -135,8 +135,6 @@ function escapeHtml(unsafe) {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;")
-        .replace(/\(/g, "&#40;")
-        .replace(/\)/g, "&#41;")
         .replace(/\//g, "&#47;");
 }
 
@@ -388,6 +386,7 @@ let actsTable = new Tabulator("#actsTable", {
             minWidth: 280,
             headerSort: true,
             formatter: function (cell) {
+                console.log(cell.getValue());
                  const id = cell.getRow().getData().id;
                 //..if user has permission to view/edit
                 if (hasPermission("CANUPDATESTATUTE")) {
@@ -544,14 +543,37 @@ function saveLawCategory(e) {
     e.preventDefault(); 
 
     let isEdit = $('#isEdit').val();
+    let categoryName = $('#categoryName').val()?.trim();
+    let comments = $('#comments').val().trim();
+
+    let isValid = true;
+    if (!categoryName) {
+        highlightErrorField('#categoryName', true, 'Category name is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(categoryName)) {
+        highlightErrorField('#categoryName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+
+    if (!comments) {
+        highlightErrorField('#comments', true, 'Category comment field is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(comments)) {
+        highlightErrorField('#comments', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+    
+    if (!isValid) {
+        //..stop submission
+        return; 
+    }
 
     //..build record payload from form
     let recordData = {
         id: parseInt($('#recordId').val()) || 0,
-        categoryName: $('#categoryName').val(),
-        comments: $('#comments').val()
+        categoryName: categoryName,
+        comments: comments
     };
-
 
     //..validate required fields
     let errors = [];
@@ -732,12 +754,35 @@ function saveLaw(e) {
 
     let isEdit = $('#isLawEdit').val();
     let categoryId = $('#lawCategoryId').val() || 0;
+    let lawName = $('#lawName').val()?.trim();
+    let lawCode = $('#lawReference').val().trim();
 
+    let isValid = true;
+    if (!lawName) {
+        highlightErrorField('#lawName', true, 'Law name is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(lawName)) {
+        highlightErrorField('#lawName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+
+    if (!lawCode) {
+        highlightErrorField('#lawCode', true, 'Law reference field is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(lawCode)) {
+        highlightErrorField('#lawCode', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+    
+    if (!isValid) {
+        //..stop submission
+        return; 
+    }
     //..build record payload from form
     let recordData = {
         id: Number($('#lawId').val()) || 0,
-        lawCode: $('#lawReference').val(),
-        lawName: $('#lawName').val(),
+        lawCode: lawCode,
+        lawName: lawName,
         typeId: Number($('#typeId').val()),
         authorityId: Number($('#authorityId').val()),
         categoryId: Number(categoryId),
@@ -960,15 +1005,61 @@ function saveAct(e) {
     let lawId = Number($('#actLawId').val()) || 0;
     let coverage = Number($('#coverage').val()) || 0;
     let assurance = Number($('#assurance').val()) || 0;
-    //let submissionDay = Number($('#submissionDay').val()) || 0;
 
+    let section = $('#section').val()?.trim();
+    let summery =  $('#summery').val().trim();
+    let obligation = $('#obligation').val()?.trim();
+    let actComments =  $('#actComments').val().trim();
+
+    let isValid = true;
+    if (!section) {
+        highlightErrorField('#section', true, 'Law section/act field is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9.(),\s]*$/.test(section)) {
+        highlightErrorField('#section', true, 'Only letters, numbers, commas, periods, brackets and spaces allowed');
+        isValid = false;
+    }
+
+    if (!summery) {
+        highlightErrorField('#summery', true, 'Law/act summery field is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(summery)) {
+        highlightErrorField('#summery', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+    
+    if (!obligation) {
+        highlightErrorField('#obligation', true, 'Law/act obligation field is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(obligation)) {
+        highlightErrorField('#obligation', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+    
+    if (!actComments) {
+        highlightErrorField('#actComments', true, 'Law/act comment field is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(actComments)) {
+        highlightErrorField('#actComments', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+    
+    if (!assurance && (!/^[a-zA-Z0-9\s,.]*$/).test(assurance)) {
+        highlightErrorField('#assurance', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+    
+    if (!isValid) {
+        //..stop submission
+        return; 
+    }
     //..build record payload from form
     let recordData = {
         id: Number($('#actId').val()) || 0,
         statutoryId: lawId,
-        section: $('#section').val(),
-        summery: $('#summery').val(),
-        obligation: $('#obligation').val(),
+        section: section,
+        summery: summery,
+        obligation: obligation,
         isMandatory: $('#isMandatory').is(':checked') ? true : false,
         frequencyId: Number($('#actFrequencyId').val() || 0),
         ownerId: Number($('#actResponsibleId').val() || 0),
@@ -977,7 +1068,7 @@ function saveAct(e) {
         isDeleted: false,
         exclude: false,
         assurance: assurance,
-        comments: $('#actComments').val(),
+        comments: actComments,
     };
 
     //..validate required fields
@@ -997,6 +1088,7 @@ function saveAct(e) {
 
     if (!recordData.comments)
         errors.push("Act/Section comments is required.");
+        
 
     if (errors.length > 0) {
         highlightErrorField("#section", !recordData.section);
@@ -1096,6 +1188,515 @@ $(document).on('keydown', function (e) {
     }
 })
 
+//..name input validation
+function validateNameInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightErrorField('#categoryName', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightErrorField('#categoryName', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightErrorField('#categoryName', false);
+        return true;
+    }
+
+    //..block everything else and show error on the field
+    event.preventDefault();
+    highlightErrorField('#categoryName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+    return false;
+}
+
+function handleNamePaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightErrorField('#categoryName', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightErrorField('#categoryName', false);
+    }
+}
+
+//..comments input validation
+function validateCommentInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightErrorField('#comments', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightErrorField('#comments', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightErrorField('#comments', false);
+        return true;
+    }
+
+    //..block everything else and show error on the field
+    event.preventDefault();
+    highlightErrorField('#comments', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+    return false;
+}
+
+function handleCommentPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightErrorField('#comments', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightErrorField('#comments', false);
+    }
+}
+
+//..name input validation
+function validateLawInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightErrorField('#lawReference', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightErrorField('#lawReference', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightErrorField('#lawReference', false);
+        return true;
+    }
+
+    //..block everything else and show error on the field
+    event.preventDefault();
+    highlightErrorField('#lawReference', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+    return false;
+}
+
+function handleLawPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightErrorField('#lawName', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightErrorField('#lawName', false);
+    }
+}
+
+//..comments input validation
+function validateLawNameInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightErrorField('#comments', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightErrorField('#comments', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightErrorField('#comments', false);
+        return true;
+    }
+
+    //..block everything else and show error on the field
+    event.preventDefault();
+    highlightErrorField('#comments', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+    return false;
+}
+
+function handleLawNamePaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightErrorField('#comments', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightErrorField('#comments', false);
+    }
+}
+
+//..section input validation
+function validateSectionInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9.,()\s]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightErrorField('#section', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightErrorField('#section', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightErrorField('#section', false);
+        return true;
+    }
+
+    //..block everything else and show error on the field
+    event.preventDefault();
+    highlightErrorField('#section', true, 'Only letters, numbers, brackets, periods, and spaces allowed');
+    return false;
+}
+
+function handleSectionPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9.,()\s]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightErrorField('#section', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightErrorField('#section', false);
+    }
+}
+
+//..summery input validation
+function validateSummeryInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightErrorField('#summery', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightErrorField('#summery', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightErrorField('#summery', false);
+        return true;
+    }
+
+    //..block everything else and show error on the field
+    event.preventDefault();
+    highlightErrorField('#summery', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+    return false;
+}
+
+function handleSummeryPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightErrorField('#summery', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightErrorField('#summery', false);
+    }
+}
+
+//..obligation input validation
+function validateObligationInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightErrorField('#obligation', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightErrorField('#obligation', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightErrorField('#obligation', false);
+        return true;
+    }
+
+    //..block everything else and show error on the field
+    event.preventDefault();
+    highlightErrorField('#obligation', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+    return false;
+}
+
+function handleObligationPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightErrorField('#obligation', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightErrorField('#obligation', false);
+    }
+}
+
+//..act ocomments input validation
+function validateActCommentsInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightErrorField('#actComments', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightErrorField('#actComments', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightErrorField('#actComments', false);
+        return true;
+    }
+
+    //..block everything else and show error on the field
+    event.preventDefault();
+    highlightErrorField('#actComments', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+    return false;
+}
+
+function handleActCommentPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightErrorField('#actComments', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightErrorField('#actComments', false);
+    }
+}
+
 function init2Dates() {
 
     flatpickr1Instances["submissionDate"] = flatpickr("#submissionDate", {
@@ -1139,6 +1740,406 @@ $(document).ready(function () {
 
     $('#assurance').on('input', function () {
         $('#assuranceValue').text(this.value + '%');
+    });
+
+    //..category name validation 
+    $('#categoryName').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightErrorField('#categoryName', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightErrorField('#categoryName', true, 'Invalid characters detected');
+        } else {
+            highlightErrorField('#categoryName', false);
+        }
+    });
+
+    $('#categoryName').on('focus', function () {
+        highlightErrorField('#categoryName', false);
+    });
+
+    $('#categoryName').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightErrorField('#categoryName', true, 'Category name is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightErrorField('#categoryName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightErrorField('#categoryName', false);
+        }
+    });
+
+    $('#categoryName').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightErrorField('#categoryName', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightErrorField('#categoryName', false);
+                }, 2000);
+            }
+        }
+    });
+
+    //..comments validation 
+    $('#comments').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightErrorField('#comments', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightErrorField('#comments', true, 'Invalid characters detected');
+        } else {
+            highlightErrorField('#comments', false);
+        }
+    });
+
+    $('#comments').on('focus', function () {
+        highlightErrorField('#comments', false);
+    });
+
+    $('#comments').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightErrorField('#comments', true, 'Comments field is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightErrorField('#comments', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightErrorField('#comments', false);
+        }
+    });
+
+    $('#comments').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightErrorField('#comments', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightErrorField('#comments', false);
+                }, 2000);
+            }
+        }
+    });
+
+    //..law reference validation 
+    $('#lawReference').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightErrorField('#lawReference', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightErrorField('#lawReference', true, 'Invalid characters detected');
+        } else {
+            highlightErrorField('#lawReference', false);
+        }
+    });
+
+    $('#lawReference').on('focus', function () {
+        highlightErrorField('#lawReference', false);
+    });
+
+    $('#lawReference').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightErrorField('#lawReference', true, 'Law reference is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightErrorField('#lawReference', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightErrorField('#lawReference', false);
+        }
+    });
+
+    $('#lawReference').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightErrorField('#lawReference', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightErrorField('#lawReference', false);
+                }, 2000);
+            }
+        }
+    });
+
+    //..law name validation 
+    $('#lawName').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightErrorField('#lawName', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightErrorField('#lawName', true, 'Invalid characters detected');
+        } else {
+            highlightErrorField('#lawName', false);
+        }
+    });
+
+    $('#lawName').on('focus', function () {
+        highlightErrorField('#lawName', false);
+    });
+
+    $('#lawName').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightErrorField('#lawName', true, 'Law name field is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightErrorField('#lawName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightErrorField('#lawName', false);
+        }
+    });
+
+    $('#lawName').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightErrorField('#lawName', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightErrorField('#lawName', false);
+                }, 2000);
+            }
+        }
+    });
+    
+    //..section validation 
+    $('#section').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightErrorField('#section', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9.()]+$/.test(value)) {
+            highlightErrorField('#section', true, 'Invalid characters detected');
+        } else {
+            highlightErrorField('#section', false);
+        }
+    });
+
+    $('#section').on('focus', function () {
+        highlightErrorField('#section', false);
+    });
+
+    $('#section').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightErrorField('#section', true, 'Law section field is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightErrorField('#section', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightErrorField('#section', false);
+        }
+    });
+
+    $('#section').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightErrorField('#section', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightErrorField('#section', false);
+                }, 2000);
+            }
+        }
+    });
+
+    //..summery validation 
+    $('#summery').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightErrorField('#summery', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightErrorField('#summery', true, 'Invalid characters detected');
+        } else {
+            highlightErrorField('#summery', false);
+        }
+    });
+
+    $('#summery').on('focus', function () {
+        highlightErrorField('#summery', false);
+    });
+
+    $('#summery').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightErrorField('#summery', true, 'Law summery field is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightErrorField('#summery', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightErrorField('#summery', false);
+        }
+    });
+
+    $('#summery').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightErrorField('#summery', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightErrorField('#summery', false);
+                }, 2000);
+            }
+        }
+    });
+    
+    //..obligation validation 
+    $('#obligation').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightErrorField('#obligation', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightErrorField('#obligation', true, 'Invalid characters detected');
+        } else {
+            highlightErrorField('#obligation', false);
+        }
+    });
+
+    $('#obligation').on('focus', function () {
+        highlightErrorField('#obligation', false);
+    });
+
+    $('#obligation').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightErrorField('#obligation', true, 'Obligations field is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightErrorField('#obligation', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightErrorField('#obligation', false);
+        }
+    });
+
+    $('#obligation').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightErrorField('#obligation', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightErrorField('#obligation', false);
+                }, 2000);
+            }
+        }
+    });
+
+    //..act comments validation 
+    $('#actComments').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightErrorField('#actComments', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightErrorField('#actComments', true, 'Invalid characters detected');
+        } else {
+            highlightErrorField('#actComments', false);
+        }
+    });
+
+    $('#actComments').on('focus', function () {
+        highlightErrorField('#actComments', false);
+    });
+
+    $('#actComments').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightErrorField('#actComments', true, 'Comments field is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightErrorField('#actComments', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightErrorField('#actComments', false);
+        }
+    });
+
+    $('#actComments').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightErrorField('#actComments', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightErrorField('#actComments', false);
+                }, 2000);
+            }
+        }
     });
 
 });

@@ -36,16 +36,16 @@
             <input type="hidden" id="recordId">
             <input type="hidden" id="isEdit">
 
-            <div class="col-sm-12">
+            <div class="col-12">
                 <div class="row field-group">
                     <label for="categoryName" class="form-label text-right  col-12">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Category.Header"))</label>
-                    <input type="text" id="categoryName" name="categoryName" class="form-control col-12" required>
+                    <input type="text" id="categoryName" name="categoryName" class="form-control col-12"  onkeypress="return validateCategoryInput(event)" onpaste="handleCategoryPaste(event)">
                 </div>
             </div>
 
-            <div class="col-sm-6">
+            <div class="col-6">
                 <div class="row field-group mt-5 mb-5">
-                    <div id="isActive" class="col-6">
+                    <div id="isActive" class="col-12">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="isActive">
                             <label class="form-check-label" for="isActive">Remove Category from list</label>
@@ -57,19 +57,19 @@
             <div class="row mb-3">
                 <div class="mb-3">
                     <label for="comments" class="form-label">Comment</label>
-                    <textarea class="form-control" id="comments" rows="3"></textarea>
+                    <textarea class="form-control" id="comments" rows="3" onkeypress="return validateCategoryCommentInput(event)" onpaste="handleCategoryCommentPaste(event)"></textarea>
                 </div>
             </div>
 
-            <div class="col-sm-12">
+            <div class="col-12">
                 <div class="row mb-3">
-                    <div class="col-2">
+                    <div class="col-3">
                         <button class="btn btn-grc-primary" style="width:100%;" onclick="saveRegulatoryCategoryRecord(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
                     </div>
-                    <div class="col-2">
+                    <div class="col-3">
                         <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeRegulatoryCategoryPanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
                     </div>
-                    <div class="col-8"></div>
+                    <div class="col-6"></div>
                 </div>
             </div>
 

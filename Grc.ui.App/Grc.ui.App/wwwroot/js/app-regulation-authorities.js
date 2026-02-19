@@ -3,6 +3,103 @@
 
 $(document).ready(function () {
     initRegulatoryAuthorityTable();
+
+     //..authority alias validation
+    $('#authorityAlias').on('keyup', function () {
+        var value = $(this).val();
+        if (!value) {
+            highlightAuthorityField('#authorityAlias', false);
+            return;
+        }
+
+        if (!/^[a-zA-Z0-9]*$/.test(value)) {
+            highlightAuthorityField('#typeCode', true, 'Invalid characters detected');
+        } else {
+            highlightAuthorityField('#typeCode', false);
+        }
+    });
+
+    $('#authorityAlias').on('focus', function () {
+        highlightAuthorityField('#authorityAlias', false);
+    });
+
+    $('#authorityAlias').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightAuthorityField('#authorityAlias', true, 'Authority alias is required');
+        } else if (!/^[a-zA-Z0-9]*$/.test(value)) {
+            highlightAuthorityField('#authorityAlias', true, 'Only letters and numbers  allowed');
+        } else {
+            highlightAuthorityField('#authorityAlias', false);
+        }
+    });
+
+    $('#authorityAlias').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightAuthorityField('#authorityAlias', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightAuthorityField('#authorityAlias', false);
+                }, 2000);
+            }
+        }
+    });
+
+    //..authority name validation 
+    $('#authorityName').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightAuthorityField('#authorityName', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightAuthorityField('#authorityName', true, 'Invalid characters detected');
+        } else {
+            highlightAuthorityField('#authorityName', false);
+        }
+    });
+
+    $('#authorityName').on('focus', function () {
+        highlightAuthorityField('#authorityName', false);
+    });
+
+    $('#authorityName').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightAuthorityField('#authorityName', true, 'Authority name is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightAuthorityField('#authorityName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightAuthorityField('#authorityName', false);
+        }
+    });
+
+    $('#authorityName').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightAuthorityField('#authorityName', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightAuthorityField('#authorityName', false);
+                }, 2000);
+            }
+        }
+    });
 });
 
 let regulatoryAuthorityTable;
@@ -227,14 +324,56 @@ function saveRegulatoryAuthorityRecord(e) {
     e.preventDefault(); 
 
     let isEdit = $('#isEdit').val();
+    let alias = $('#authorityAlias').val().trim();
+    let name = $('#authorityName').val().trim();
 
+    let isValid = true;
+    if (!alias) {
+        highlightAuthorityField('#authorityAlias', true, 'Authority alias is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9]*$/.test(alias)) {
+        highlightAuthorityField('#authorityAlias', true, 'Only letters and numbers  allowed');
+        isValid = false;
+    }
+
+    if (!name) {
+        highlightAuthorityField('#authorityName', true, 'Authority name is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(name)) {
+        highlightAuthorityField('#authorityName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+    
+    if (!isValid) {
+        //..stop submission
+        return; 
+    }
+    
     //..build record payload from form
     let recordData = {
         id: parseInt($('#recordId').val()) || 0,
-        authorityName: $('#authorityName').val(),
-        authorityAlias: $('#authorityAlias').val(),
+        authorityAlias: alias,
+        authorityName: name,
+        
         isActive: $('#isActive').is(':checked') ? true : false
     };
+    //..validate required fields
+    let errors = [];
+    if (!recordData.authorityAlias)
+        errors.push("Authority alias field is required.");
+
+    if (!recordData.authorityName)
+        errors.push("Authority name field is required.");
+
+    if (errors.length > 0) {
+        highlightAuthorityField("#authorityAlias", !recordData.authorityAlias);
+        highlightAuthorityField("#authorityName", !recordData.authorityName);
+        Swal.fire({
+            title: "Authority Validation",
+            html: `<div style="text-align:left;">${errors.join("<br>")}</div>`,
+        });
+        return;
+    }
 
     //..call backend
     saveRegulatoryAuthority(isEdit, recordData);
@@ -334,6 +473,108 @@ function deleteRegulatoryAuthorityRecord(id) {
     });
 }
 
+//..validate alias
+function validateAliasInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    if (/[a-zA-Z0-9]/.test(keyChar)) {
+        highlightAuthorityField('#authorityAlias', false);
+        return true;
+    }
+
+    event.preventDefault();
+    highlightAuthorityField('#authorityAlias', true, 'Only letters and numbers');
+    return false;
+}
+
+function handleAliasPaste(event) {
+    event.preventDefault();
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9]/g, '');
+
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    if (pastedText !== cleanedText) {
+        highlightAuthorityField('#authorityAlias', true, 'Some characters were removed - only letters and numbers allowed');
+    } else {
+        highlightAuthorityField('#authorityAlias', false);
+    }
+}
+
+//..validate name
+function validateAuthorityName(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    if (/[a-zA-Z0-9]/.test(keyChar)) {
+        highlightAuthorityField('#authorityName', false);
+        return true;
+    }
+
+
+    if (keyChar == ',' || keyChar == '.') {
+        highlightAuthorityField('#authorityName', false);
+        return true;
+    }
+
+    if (keyChar == ' ') {
+        highlightAuthorityField('#authorityName', false);
+        return true;
+    }
+
+    event.preventDefault();
+    highlightAuthorityField('#authorityName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+    return false;
+}
+
+function handleAuthorityNamePaste(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    if (/[a-zA-Z0-9]/.test(keyChar)) {
+        highlightAuthorityField('#authorityName', false);
+        return true;
+    }
+
+    if (keyChar == ',' || keyChar == '.') {
+        highlightAuthorityField('#authorityName', false);
+        return true;
+    }
+
+    if (keyChar == ' ') {
+        highlightAuthorityField('#authorityName', false);
+        return true;
+    }
+
+    event.preventDefault();
+    highlightAuthorityField('#authorityName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+    return false;
+}
+
 //..view regulatory authority record
 function viewRegulatoryAuthorityRecord(id) {
     Swal.fire({
@@ -431,5 +672,19 @@ function initRegulatoryAuthoritySearch() {
 //..get antiforegery token from meta tag
 function getAuthAntiForgeryToken() {
     return $('meta[name="csrf-token"]').attr('content');
+}
+
+function highlightAuthorityField(selector, hasError, message) {
+    const $field = $(selector);
+    const $formGroup = $field.closest('.form-group, .field-group');
+    $field.removeClass('is-invalid');
+    $formGroup.find('.field-error').remove();
+
+    if (hasError) {
+        $field.addClass('is-invalid');
+        if (message) {
+            $formGroup.append(`<div class="field-error text-danger small mt-1 text-end">${message}</div>`);
+        }
+    }
 }
 

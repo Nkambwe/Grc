@@ -29,27 +29,27 @@
 
     <div class="obligation-side-panel-body">
 
-        <form id="recordForm" class="grc-form row g-3">
+        <form id="recordForm" class="grc-form row g-3 m-3">
             <input type="hidden" id="recordId">
             <input type="hidden" id="isEdit">
 
             <div class="col-sm-12">
                 <div class="row field-group">
                     <label for="authorityName" class="form-label text-right col-12">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Authority.Name"))</label>
-                    <input type="text" id="authorityName" name="authorityName" class="col-12 form-control" required>
+                    <input type="text" id="authorityName" name="authorityName" class="col-12 form-control" onkeypress="return validateAuthorityName(event)" onpaste="handleAuthorityNamePaste(event)">
                 </div>
             </div>
 
-            <div class="col-sm-6">
+            <div class="col-12">
                 <div class="row field-group">
                     <label for="authorityAlias" class="form-label text-right col-12">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Authority.Alias"))</label>
-                    <input type="text" id="authorityAlias" name="authorityAlias" class="col-12 form-control" required>
+                    <input type="text" id="authorityAlias" name="authorityAlias" class="col-12 form-control" onkeypress="return validateAliasInput(event)" onpaste="handleAliasPaste(event)">
                 </div>
             </div>
 
-            <div class="col-sm-6">
+            <div class="col-6">
                 <div class="row field-group m-5">
-                    <div id="isActive" class="col-6">
+                    <div id="isActive" class="col-12">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="isActive">
                             <label class="form-check-label" for="isActive">
@@ -60,15 +60,15 @@
                 </div>
             </div>
 
-            <div class="col-sm-12">
+            <div class="col-12">
                 <div class="row mb-3">
-                    <div class="col-sm-1">
+                    <div class="col-3">
                         <button class="btn btn-grc-primary" style="width:100%;" onclick="saveRegulatoryAuthorityRecord(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
                     </div>
-                    <div class="col-sm-1">
+                    <div class="col-3">
                         <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeRegulatoryAuthorityPanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
                     </div>
-                    <div class="col-sm-10"></div>
+                    <div class="col-6"></div>
                 </div>
             </div>
 

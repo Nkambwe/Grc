@@ -72,8 +72,8 @@
                                         <label for="documentName" class="col-sm-12 col-form-label text-sm-start">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Name"))
                                         </label>
-                                        <div class="col-sm-12">
-                                            <input type="text" id="documentName" name="documentName" class="form-control" required />
+                                        <div class="col-12">
+                                            <input type="text" id="documentName" name="documentName" class="form-control" onkeypress="return validateDocNameInput(event)" onpaste="handleDocNamePaste(event)">
                                         </div>
                                     </div>
                                 </div>
@@ -85,7 +85,7 @@
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Description"))
                                         </label>
                                         <div class="col-sm-12">
-                                            <textarea id="comments" name="comments" class="form-control" rows="3"></textarea>
+                                            <textarea id="comments" name="comments" class="form-control" rows="3" onkeypress="return validateDocCommentInput(event)" onpaste="handleDocCommentPaste(event)"></textarea>
                                         </div>
                                     </div>
 
@@ -93,7 +93,7 @@
 
                                 <div class="col-6">
                                     <div class="row mb-3">
-                                        <label for="documentTypeId" class="col-sm-12 col-form-label text-sm-end">
+                                        <label for="documentTypeId" class="col-sm-12 col-form-label text-sm-start">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Type"))
                                         </label>
                                         <div class="col-sm-12">
@@ -113,7 +113,7 @@
                                 <div class="col-6">
 
                                     <div class="row mb-3">
-                                        <label for="departmentId" class="col-sm-12 col-form-label text-sm-end">
+                                        <label for="departmentId" class="col-sm-12 col-form-label text-sm-start">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Department"))
                                         </label>
                                         <div class="col-sm-12">
@@ -133,7 +133,7 @@
                                 <div class="col-6">
 
                                     <div class="row mb-3">
-                                        <label for="ownerId" class="col-sm-12 col-form-label text-sm-end">
+                                        <label for="ownerId" class="col-sm-12 col-form-label">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Responsible"))
                                         </label>
                                         <div class="col-sm-12">
@@ -189,7 +189,7 @@
                                 <!-- Last review Date -->
                                 <div class="col-6">
                                     <div class="row mb-3">
-                                        <label for="lastReviewDate" class="col-sm-12 col-form-label">
+                                        <label for="lastReviewDate" class="col-sm-12 col-form-label text-sm-start">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Task.LastDate"))
                                         </label>
                                         <div class="col-sm-12">
@@ -201,7 +201,7 @@
                                 <!-- Next review Date -->
                                 <div class="col-6">
                                     <div class="row mb-3">
-                                        <label for="nextReviewDate" class="col-sm-12 col-form-label">
+                                        <label for="nextReviewDate" class="col-sm-12 col-form-label text-sm-start">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Task.NextDate"))
                                         </label>
                                         <div class="col-sm-12">
@@ -213,7 +213,7 @@
                                 <!-- Frequency -->
                                 <div class="col-6">
                                     <div class="row mb-3">
-                                        <label for="frequencyId" class="col-sm-12 col-form-label">
+                                        <label for="frequencyId" class="col-sm-12 col-form-label text-sm-start">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Select.Frequency"))
                                         </label>
                                         <div class="col-sm-12">
@@ -233,7 +233,7 @@
                                 <div class="col-6">
 
                                     <div class="row mb-3">
-                                        <label for="documentStatus" class="col-sm-12 col-form-label">
+                                        <label for="documentStatus" class="col-sm-12 col-form-label text-sm-start">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Procedure.Status"))
                                         </label>
                                         <div class="col-sm-12">
@@ -322,7 +322,7 @@
                                 <div class="col-6">
 
                                     <div class="row mb-3">
-                                        <label for="isApproved" class="col-sm-12 col-form-label">
+                                        <label for="isApproved" class="col-sm-12 col-form-label text-sm-start">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Procedure.IsApproved"))
                                         </label>
                                         <div class="col-sm-12">
@@ -339,7 +339,7 @@
                                 <!-- Approval Date -->
                                 <div class="col-6">
                                     <div class="row mb-3">
-                                        <label for="approvalDate" class="col-sm-12 col-form-label">
+                                        <label for="approvalDate" class="col-sm-12 col-form-label text-sm-start">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.ApprovalDate"))
                                         </label>
                                         <div class="col-sm-12">
@@ -351,7 +351,7 @@
                                 <div class="col-6">
 
                                     <div class="row mb-3">
-                                        <label for="approver" class="col-sm-12 col-form-label">
+                                        <label for="approver" class="col-sm-12 col-form-label text-sm-start">
                                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.ApprovedBy"))
                                         </label>
                                         <div class="col-sm-12">
@@ -397,11 +397,11 @@
 
                                     <div class="col-sm-7">
                                         <div class="row mb-3">
-                                            <label for="interval" class="col-5 form-label mt-3">
+                                            <label for="interval" class="col-5 form-label mt-3 text-sm-start">
                                                 Send Reiminders every
                                             </label>
                                             <div class="col-7 mt-2">
-                                                <input type="text" id="interval" name="interval" class="form-control" />
+                                                <input type="text" id="interval" name="interval" class="form-control" onkeypress="return validateIntervalInput(event)" onpaste="handleIntervalPaste(event)">
                                             </div>
                                         </div>
                                     </div>
@@ -423,11 +423,11 @@
 
                                 <div class="row mb-3">
 
-                                    <label for="reminderMessage" class="col-12 form-label mb-3">
+                                    <label for="reminderMessage" class="col-12 form-label mb-3 text-sm-start">
                                         @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Update.Label.Reminder"))
                                     </label>
                                     <div class="col-12">
-                                        <textarea class="form-control" id="reminderMessage" name="reminderMessage" rows="2"></textarea>
+                                        <textarea class="form-control" id="reminderMessage" name="reminderMessage" rows="2" onkeypress="return validateReminderInput(event)" onpaste="handleReminderPaste(event)"></textarea>
                                     </div>
 
                                 </div>
@@ -441,15 +441,15 @@
 
             </div>
 
-            <div class="col-sm-12 p-4">
+            <div class="col-12 p-4">
                 <div class="row mb-3">
-                    <div class="col-sm-2">
+                    <div class="col-3">
                         <button class="btn btn-grc-primary" style="width:100%;" onclick="savePolicyDocument()">Save</button>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-3">
                         <button class="btn btn-grc-secondary" style="width:100%;" onclick="closePolicyPanel()">Cancle</button>
                     </div>
-                    <div class="col-sm-8"></div>
+                    <div class="col-6"></div>
                 </div>
             </div>
 

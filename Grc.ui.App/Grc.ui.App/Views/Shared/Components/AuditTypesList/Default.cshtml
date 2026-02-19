@@ -32,32 +32,32 @@
 
     <div class="obligation-side-panel-body">
 
-        <form id="auditTypeForm" class="grc-law-form">
+        <form id="auditTypeForm" class="grc-form row g-3 m-3">
             <input type="hidden" id="typeId" name="typeId" />
             <input type="hidden" id="isTypeEdit" name="isTypeEdit" />
 
             <div class="row m-3">
 
                 <!-- code -->
-                <div class="col-sm-12">
+                <div class="col-12">
                     <label for="typeCode" class="form-label m-3">
                         @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Type.Code"))
                     </label>
-                    <input class="form-control" id="typeCode" name="typeCode" />
+                    <input class="form-control" id="typeCode" name="typeCode" onkeypress="return validateCodeInput(event)" onpaste="handleCodePaste(event)">
                 </div>
 
                 <!-- typeName -->
-                <div class="col-sm-12">
+                <div class="col-12">
                     <label for="typeName" class="form-label m-3">
                         @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Type.Name"))
                     </label>
-                    <input class="form-control" id="typeName" name="typeName" />
+                    <input class="form-control" id="typeName" name="typeName" onkeypress="return validateNameInput(event)" onpaste="handleNamePaste(event)">
                 </div>
 
                 <!-- deleted -->
-                <div class="col-sm-6">
+                <div class="col-6">
                     <div class="row field-group mt-5 mb-5">
-                        <div class="col-6">
+                        <div class="col-12">
                             <div class="form-check">
                                 <input class="form-check-input pe-none" type="checkbox" id="isDeleted" onclick="return false;">
                                 <label class="form-check-label" for="isDeleted">
@@ -69,22 +69,22 @@
                 </div>
 
                 <!-- description -->
-                <div class="col-sm-12 mt-3 mb-3">
+                <div class="col-12 mt-3 mb-3">
                     <label for="description" class="form-label m-3">
                         @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Type.Description"))
                     </label>
-                    <textarea class="form-control" id="description" name="description" rows="2"></textarea>
+                    <textarea class="form-control" id="description" name="description" rows="2" onkeypress="return validateDescrInput(event)" onpaste="handleDescrPaste(event)"></textarea>
                 </div>
 
-                <div class="col-sm-12">
+                <div class="col-12">
                     <div class="row mb-3">
-                        <div class="col-2">
+                        <div class="col-3">
                             <button class="btn btn-grc-primary" style="width:100%;" onclick="saveAuditTypePane(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
                         </div>
-                        <div class="col-2">
+                        <div class="col-3">
                             <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeAuditTypePane()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
                         </div>
-                        <div class="col-8"></div>
+                        <div class="col-6"></div>
                     </div>
                 </div>
 
