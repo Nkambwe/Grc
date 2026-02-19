@@ -127,6 +127,45 @@ namespace Grc.Middleware.Api.Services
             }
         }
 
+        public async Task<SecuritySettingsResponse> GetPasswordConfigurationAsync() {
+            using var uow = UowFactory.Create();
+            Logger.LogActivity($"Retrieve all application configurations", "INFO");
+
+
+            var response = new SecuritySettingsResponse();
+            try {
+                var settings = (await uow.SystemConfigurationRepository.GetAllAsync(s => s.ParameterName.StartsWith("SECURITY"), true))
+                               ?.ToDictionary(s => s.ParameterName, s => s.ParameterValue)
+                               ?? new Dictionary<string, string>();
+                if (settings == null || !settings.Any()) {
+                    return response;
+                }
+
+                //..security
+                response.ExpirePassword = ToBool(settings.GetValueOrDefault("SECURITY_EXPIRPASSWORDS"));
+                response.ExipreyPeriod = ToInt(settings.GetValueOrDefault("SECURITY_EXPIRYPERIOD"));
+                response.CanUseOldPassword = ToBool(settings.GetValueOrDefault("SECURITY_CANUSEOLDPASSWORDS"));
+                response.AllowAdmininsToResetPasswords = ToBool(settings.GetValueOrDefault("SECURITY_ALLOWMANUALPASSWORDCHANGE"));
+                response.AllowPasswordReuse = ToBool(settings.GetValueOrDefault("SECURITY_ALLOWMANUALPASSWORDCHANGE"));
+                response.MinimumPasswordLength = ToInt(settings.GetValueOrDefault("SECURITY_MINIMUMPASSWORDLENGTH"));
+                response.IncludeUpperCharacters = ToBool(settings.GetValueOrDefault("SECURITY_INCLUDEUPPERCASECHAR"));
+                response.IncludeLowerCharacters = ToBool(settings.GetValueOrDefault("SECURITY_INCLUDELOWERCASECHAR"));
+                response.IncludeSpecialCharacters = ToBool(settings.GetValueOrDefault("SECURITY_INCLUDELOWERSPECIALCHAR"));
+                response.IncludeNumericCharacters = ToBool(settings.GetValueOrDefault("SECURITY_INCLUDEONENUMBER"));
+
+                return response;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to retrieve system configuration: {ex.Message}", "ERROR");
+
+                //..log inner exceptions here too
+                var innerEx = ex.InnerException;
+                while (innerEx != null) {
+                    Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
+                    innerEx = innerEx.InnerException;
+                }
+                throw;
+            }
+        }
         public async Task<ConfigurationParameterResponse<T>> GetConfigurationAsync<T>(string paramName) {
 
             using var uow = UowFactory.Create();

@@ -17,8 +17,6 @@
             showError('username', 'Username is required');
             return;
         }
-
-        console.log('Username:', username);
         await validateUsername(username);
     });
     
@@ -39,8 +37,6 @@
         const formData = new FormData();
         formData.append('Username', username);
         formData.append('Password', password);
-        console.log("Username >> ", username);
-        console.log("Password >> ", password);
 
         //..add any other form fields
         $form.find('input, select, textarea').each(function() {
@@ -304,8 +300,8 @@
                 oldPassword: oldPwd,
                 newPassword: newPwd,
                 confirmPassword: confirmPwd
-            }
-        
+       }
+
         if (!oldPwd) {
             showFieldError('oldPassword', 'old-password-change-error', 'Current password is required');
             return;
@@ -325,13 +321,20 @@
             showFieldError('confirmPassword', 'confirm-password-change-error', 'Passwords do not match');
             showFieldError('newPassword', 'new-password-change-error', 'Passwords do not match');
             return;
-        }
+       }
+
+       //..validate password against policy
+       const policyError = validatePasswordPolicy(oldPwd, newPwd, settingsData);
+
+       if (policyError) {
+           showFieldError('newPassword', 'new-password-change-error', policyError);
+           return;
+       }
 
         const $button = $('#password-expiry-form .btn-login');
         setButtonLoading($button, true);
 
         try {
-            console.log("Clicked >> ", record);
             const response = await $.ajax({
                 url: '/login/expired-password',
                 type: "POST",
@@ -366,7 +369,45 @@
             setButtonLoading($button, false);
         }
 
-    });
+   });
+
+    function validatePasswordPolicy(oldPwd, newPwd, settingsData) {
+
+        if (settingsData.minimumPasswordLength &&
+            newPwd.length < settingsData.minimumPasswordLength) {
+            return `Password must be at least ${settingsData.minimumPasswordLength} characters long.`;
+        }
+
+        if (settingsData.includeLowerCharacters &&
+            !/[a-z]/.test(newPwd)) {
+            return "Password must contain at least one lowercase letter.";
+        }
+
+        if (settingsData.includeUpperCharacters &&
+            !/[A-Z]/.test(newPwd)) {
+            return "Password must contain at least one uppercase letter.";
+        }
+
+        if (settingsData.includeNumericCharacters &&
+            !/[0-9]/.test(newPwd)) {
+            return "Password must contain at least one number.";
+        }
+
+        if (settingsData.includeSpecialCharacters &&
+            !/[!@#$%^&*(),.?\":{}|<>]/.test(newPwd)) {
+            return "Password must contain at least one special character.";
+        }
+
+        if (settingsData.allowPasswordReuse === false &&
+            oldPwd === newPwd) {
+            return "New password cannot be the same as your current password.";
+        }
+
+        //..valid password
+        return null;
+    }
+
+
 
    $('#newPassword, #confirmPassword').on('input', function () {
         $('#new-password-change-error').removeClass('show');

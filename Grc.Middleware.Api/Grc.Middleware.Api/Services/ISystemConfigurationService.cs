@@ -9,8 +9,9 @@ namespace Grc.Middleware.Api.Services {
     public interface ISystemConfigurationService : IBaseService {
 
         Task<bool> ExistsAsync(Expression<Func<SystemConfiguration, bool>> predicate, bool excludeDeleted = false, CancellationToken token = default);
-        Task<ConfigurationParameterResponse<T>> GetConfigurationAsync<T>(string paramName);
+        Task<ConfigurationParameterResponse<T>> GetConfigurationAsync<T>(string paramName); 
         Task<ConfigurationResponse> GetAllConfigurationAsync();
+        Task<SecuritySettingsResponse> GetPasswordConfigurationAsync();
         Task<bool> UpdateConfigurationAsync(SystemConfigurationRequest request, string username);
         Task<IList<SystemConfiguration>> GetAllAsync(Expression<Func<SystemConfiguration, bool>> predicate, bool includeDeleted);
         Task<PagedResult<SystemConfiguration>> PagedUsersAsync(CancellationToken token, int page, int size, Expression<Func<SystemConfiguration, bool>> predicate = null, bool includeDeleted = false);

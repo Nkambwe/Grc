@@ -855,10 +855,6 @@ function validateDocNameInput(event) {
         return true;
     }
 
-    //..block everything else and show error on the field
-    event.preventDefault();
-    highlightRegualtionField('#documentName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
-    return false;
 }
 
 function handleDocNamePaste(event) {
@@ -919,10 +915,6 @@ function validateDocCommentInput(event) {
         return true;
     }
 
-    //..block everything else and show error on the field
-    event.preventDefault();
-    highlightRegualtionField('#comments', true, 'Only letters, numbers, commas, periods, and spaces allowed');
-    return false;
 }
 
 function handleDocCommentPaste(event) {
@@ -983,10 +975,6 @@ function validateIntervalInput(event) {
         return true;
     }
 
-    //..block everything else and show error on the field
-    event.preventDefault();
-    highlightRegualtionField('#interval', true, 'Only letters, numbers, commas, periods, and spaces allowed');
-    return false;
 }
 
 function handleIntervalPaste(event) {
@@ -1047,10 +1035,6 @@ function validateReminderInput(event) {
         return true;
     }
 
-    //..block everything else and show error on the field
-    event.preventDefault();
-    highlightRegualtionField('#reminderMessage', true, 'Only letters, numbers, commas, periods, and spaces allowed');
-    return false;
 }
 
 function handleReminderPaste(event) {
@@ -1265,23 +1249,23 @@ function setPolicyPanelReadOnly(isLocked) {
 
     const $form = $("#recordForm");
 
-    // Disable all standard inputs
+    //..disable all standard inputs
     $form.find("input:not(#isLocked), textarea, select").prop("disabled", isLocked);
 
-    // Allow hidden fields
+    //..allow hidden fields
     $form.find("input[type='hidden']").prop("disabled", false);
 
-    // Flatpickr (important!)
+    //..flatpickr
     Object.values(flatpickrInstances).forEach(fp => {
         if (!fp) return;
         fp.set("clickOpens", !isLocked);
         fp.input.disabled = isLocked;
     });
 
-    // Disable switches explicitly
+    //..disable switches explicitly
     $("#isDeleted, #isAligned").prop("disabled", isLocked);
 
-    // Disable Save button
+    //..disable Save button
     $form.find("button[onclick='savePolicyDocument()']")
         .prop("disabled", isLocked)
         .toggleClass("disabled", isLocked);

@@ -4,6 +4,7 @@
 @{
     Layout = "_Login_Layout";
     ViewData["Title"] = "GRC LOGIN";
+    var settingsJson = JsonSerializer.Serialize(Model.PasswordSettings);
 }
 
 <!--antiforegry token-->
@@ -146,3 +147,7 @@
     </div>
 
 </div>
+
+<script>
+    const settingsData = @Html.Raw(settingsJson);
+</script>

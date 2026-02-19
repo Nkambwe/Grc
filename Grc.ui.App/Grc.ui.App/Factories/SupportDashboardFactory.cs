@@ -189,13 +189,7 @@ namespace Grc.ui.App.Factories {
                         Controller = "Configuration",
                         Action = "BugFixes"
                     }
-                    //new(){
-                    //    Title = _localizationService.GetLocalizedLabel("App.Admin.Dashboard.Labels.UserReported"),
-                    //    Value = stats.UserReportedBugs,
-                    //    CssClass = "stat-separator-colored-pearl-orange",
-                    //    Controller = "Configuration",
-                    //    Action = "UserReportedBugs"
-                    //}
+                    
                 }
             };
 

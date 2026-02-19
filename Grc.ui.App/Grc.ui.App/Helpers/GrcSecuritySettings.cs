@@ -11,5 +11,5 @@
         public bool AllowPasswordReuse { get; set; }
         public bool IncludeNumericCharacters { get; set; }
     }
-
+    
 }
