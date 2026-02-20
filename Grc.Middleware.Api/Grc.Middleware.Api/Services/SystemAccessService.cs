@@ -266,7 +266,10 @@ namespace Grc.Middleware.Api.Services {
                 int expiryDays = DEFAULT_EXPIRY_DAYS;
     
                 if (passwordConfig == null) {
+                    var company = (await uow.CompanyRepository.GetActiveCompaniesAsync())?.FirstOrDefault();
+                    var companyId = company?.Id;
                     await uow.SystemConfigurationRepository.InsertAsync(new SystemConfiguration() {
+                        CompanyId = companyId ?? 1,
                         ParameterName = "SECURITY_EXPIRYPERIOD",
                         ParameterValue = DEFAULT_EXPIRY_DAYS.ToString(),
                         ParameterType = "FLAG",

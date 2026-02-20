@@ -21,11 +21,6 @@ namespace Grc.Middleware.Api {
             // calling ConfigureServices method
             startup.ConfigureServices(builder.Services);
 
-            ////run API as windows service
-            //builder.Host.UseWindowsService(options => {
-            //    options.ServiceName = "GRCMiddleware";
-            //});
-
             // calling Configure method
             var app = builder.Build();
             startup.Configure(app);
