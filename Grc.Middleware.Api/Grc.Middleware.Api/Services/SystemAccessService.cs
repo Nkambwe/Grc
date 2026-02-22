@@ -209,6 +209,7 @@ namespace Grc.Middleware.Api.Services {
                     IsApproved = u.IsApproved ?? false,
                     IsLocked = u.IsLocked,
                     LockedOn = u.LockedOn,
+                    IsLoggedin = u.IsLoggedIn,
                     IsAdministrator =
                         u.Role.RoleName == "Administrator" ||
                         u.Role.RoleName == "Support",
@@ -265,7 +266,10 @@ namespace Grc.Middleware.Api.Services {
                 int expiryDays = DEFAULT_EXPIRY_DAYS;
     
                 if (passwordConfig == null) {
+                    var company = (await uow.CompanyRepository.GetActiveCompaniesAsync())?.FirstOrDefault();
+                    var companyId = company?.Id;
                     await uow.SystemConfigurationRepository.InsertAsync(new SystemConfiguration() {
+                        CompanyId = companyId ?? 1,
                         ParameterName = "SECURITY_EXPIRYPERIOD",
                         ParameterValue = DEFAULT_EXPIRY_DAYS.ToString(),
                         ParameterType = "FLAG",
@@ -314,6 +318,12 @@ namespace Grc.Middleware.Api.Services {
             if (response.IsDeleted) {
                 response.IsAuthenticated = false;
                 response.Message = "User account was deleted";
+                return response;
+            }
+
+            if (response.IsLoggedin) {
+                response.IsAuthenticated = false;
+                response.Message = "User already loggedin. Please logout and try again";
                 return response;
             }
 
@@ -1018,10 +1028,9 @@ namespace Grc.Middleware.Api.Services {
                 var user = await uow.UserRepository.GetAsync(a => a.Id == recordId);
                 if (user != null) {
                     //..update System User password
-                    user.IsActive = false;
+                    user.IsLocked = false;
                     user.LastModifiedOn = DateTime.Now;
                     user.LastModifiedBy = $"{username}";
-                    user.LastPasswordChange = DateTime.Now;
 
                     //..check entity state
                     _ = await uow.UserRepository.UpdateAsync(user);
@@ -1436,7 +1445,7 @@ namespace Grc.Middleware.Api.Services {
             Logger.LogActivity($"Retrieve unapproved User records", "INFO");
 
             try{
-                return await uow.UserRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, u => !u.IsActive, u => u.Role, u => u.Department);
+                return await uow.UserRepository.PageAllAsync(pageIndex, pageSize, includeDeleted, u => u.IsLocked, u => u.Role, u => u.Department);
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve user records : {ex.Message}", "ERROR");
                 var innerEx = ex.InnerException;

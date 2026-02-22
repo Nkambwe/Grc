@@ -24,5 +24,4 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("userAccount")]
         public UserAccountSettings UserAccountettings { get; set; } = new();
     }
-
 }

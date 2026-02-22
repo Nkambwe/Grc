@@ -861,6 +861,7 @@ namespace Grc.Middleware.Api.Controllers {
                 userRecord.CreatedOn = DateTime.Now;
                 userRecord.LastModifiedBy = currentUser.Username;
                 userRecord.LastModifiedOn = DateTime.Now;
+                userRecord.LastPasswordChange = null;
 
                 //..create company
                 var result = await _accessService.InsertUserAsync(userRecord);

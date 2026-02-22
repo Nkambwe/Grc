@@ -674,6 +674,26 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
+        [HttpPost("organization/confurations-pwd")]
+        public async Task<IActionResult> GetPasswordConfiguration([FromBody] GeneralRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<SecuritySettingsResponse>(error));
+                }
+
+                Logger.LogActivity($"REQUEST >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var response = await _configService.GetPasswordConfigurationAsync();
+                Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                return Ok(new GrcResponse<SecuritySettingsResponse>(response));
+            } catch (Exception ex) {
+                return Ok(new GrcResponse<SecuritySettingsResponse>(await ResponseErrorAsync(ex)));
+            }
+        }
+
         [HttpPost("organization/include-deleted")]
         public async Task<IActionResult> GetIncludeDeletedRecord([FromBody] ConfigurationParamRequest request) {
             try {

@@ -1,6 +1,10 @@
 {
   "Version": 1,
+<<<<<<< HEAD
   "WorkspaceRootPath": "C:\\Projects\\Grc\\Grc2\\Grc\\Grc.ui.App\\",
+=======
+  "WorkspaceRootPath": "C:\\Projects\\cs\\GRC\\github_0902026\\Grc\\Grc.ui.App\\",
+>>>>>>> 8f103190f14919ad8cc01aadee3889ce41e04b06
   "Documents": [],
   "DocumentGroupContainers": [
     {
@@ -8,12 +12,16 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
+<<<<<<< HEAD
           "DockedWidth": 139,
+=======
+          "DockedWidth": 362,
+>>>>>>> 8f103190f14919ad8cc01aadee3889ce41e04b06
           "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
             },
             {
               "$type": "Bookmark",
@@ -21,15 +29,7 @@
             },
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
               "$type": "Bookmark",
@@ -58,6 +58,13 @@
             {
               "$type": "Bookmark",
               "Name": "ST:130:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+<<<<<<< HEAD
+=======
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+>>>>>>> 8f103190f14919ad8cc01aadee3889ce41e04b06
             }
           ]
         }

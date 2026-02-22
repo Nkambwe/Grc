@@ -102,7 +102,7 @@
                         <label for="typeCode" class="form-label">
                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Type.Code"))
                         </label>
-                        <input type="text" class="form-control" id="typeCode" name="typeCode" required>
+                        <input type="text" class="form-control" id="typeCode" name="typeCode" onkeypress="return validateTypeCodeInput(event)" onpaste="handleTypeCodePaste(event)">
                     </div>
                 </div>
 
@@ -111,7 +111,7 @@
                         <label for="typeName" class="form-label">
                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Type.Name"))
                         </label>
-                        <input type="text" class="form-control" id="typeName" name="typeName">
+                        <input type="text" class="form-control" id="typeName" name="typeName" onkeypress="return validateTypeNameInput(event)" onpaste="handleTypeNamePaste(event)">
                     </div>
                 </div>
 
@@ -120,7 +120,7 @@
                         <label for="description" class="form-label">
                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Type.Description"))
                         </label>
-                        <textarea class="form-control" id="description" rows="3"></textarea>
+                        <textarea class="form-control" id="description" rows="3" onkeypress="return validateDescrInput(event)" onpaste="handleDescrPaste(event)"></textarea>
                     </div>
                 </div>
 
@@ -170,7 +170,7 @@
                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Audit.Label.Name"))
                         </label>
                         <div class="col-12">
-                            <input type="text" class="form-control" id="auditName" name="auditName">
+                            <input type="text" class="form-control" id="auditName" name="auditName" onkeypress="return validateAuditNameInput(event)" onpaste="handleAuditNamePaste(event)">
                         </div>
                     </div>
 
@@ -235,7 +235,7 @@
                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Audit.Label.Description"))
                         </label>
                         <div class="col-12">
-                            <textarea class="form-control" id="description" rows="3"></textarea>
+                            <textarea class="form-control" id="description" rows="3" onkeypress="return validateAuditDescrInput(event)" onpaste="handleAuditDescrPaste(event)"></textarea>
                         </div>
                     </div>
 
@@ -326,7 +326,7 @@
                                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Report.Label.Reference"))
                                                 </label>
                                                 <div class="col-12">
-                                                    <input type="text" class="form-control" id="reference" name="reference">
+                                                    <input type="text" class="form-control" id="reference" name="reference" onkeypress="return validateAuditReferenceInput(event)" onpaste="handleAuditReferencePaste(event)">
                                                 </div>
                                             </div>
 
@@ -335,7 +335,7 @@
                                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Report.Label.Name"))
                                                 </label>
                                                 <div class="col-12">
-                                                    <input type="text" class="form-control" id="reportName" name="reportName">
+                                                    <input type="text" class="form-control" id="reportName" name="reportName" onkeypress="return validateReportNameInput(event)" onpaste="handleReportNamePaste(event)">
                                                 </div>
                                             </div>
 
@@ -344,7 +344,7 @@
                                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Report.Label.Summery"))
                                                 </label>
                                                 <div class="col-12">
-                                                    <textarea class="form-control" id="summery" name="summery" rows="4"></textarea>
+                                                    <textarea class="form-control" id="summery" name="summery" rows="4" onkeypress="return validateReportSummeryInput(event)" onpaste="handleReportSummeryPaste(event)"></textarea>
                                                 </div>
                                             </div>
 
@@ -444,7 +444,7 @@
                                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Report.Label.Additional"))
                                                 </label>
                                                 <div class="col-12">
-                                                    <textarea class="form-control" id="additionalNotes" name="additionalNotes" rows="2"></textarea>
+                                                    <textarea class="form-control" id="additionalNotes" name="additionalNotes" rows="2" onkeypress="return validateAdditionalNotesInput(event)" onpaste="handleAdditionalNotesPaste(event)"></textarea>
                                                 </div>
                                             </div>
 
@@ -453,7 +453,7 @@
                                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Report.Label.Management"))
                                                 </label>
                                                 <div class="col-12">
-                                                    <textarea class="form-control" id="managementComments" name="managementComments" rows="2"></textarea>
+                                                    <textarea class="form-control" id="managementComments" name="managementComments" rows="2" onkeypress="return validateManagementNotesInput(event)" onpaste="handleManagementNotesPaste(event)"></textarea>
                                                 </div>
                                             </div>
 
@@ -461,13 +461,13 @@
 
                                         <div class="col-sm-12">
                                             <div class="row mb-3">
-                                                <div class="col-2">
+                                                <div class="col-3">
                                                     <button class="btn btn-grc-primary" style="width:100%;" onclick="saveReport(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
                                                 </div>
-                                                <div class="col-2">
+                                                <div class="col-3">
                                                     <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeAuditReport()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
                                                 </div>
-                                                <div class="col-8"></div>
+                                                <div class="col-6"></div>
                                             </div>
                                         </div>
 
@@ -566,7 +566,7 @@
                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Exceptions.Label.Findings"))
                         </label>
                         <div class="col-12">
-                            <input type="text" class="form-control" id="findings" name="findings">
+                            <input type="text" class="form-control" id="findings" name="findings" onkeypress="return validateFindingInput(event)" onpaste="handleFindingPaste(event)">
                         </div>
                     </div>
 
@@ -576,7 +576,7 @@
                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Exceptions.Label.Recomendations"))
                         </label>
                         <div class="col-12">
-                            <textarea class="form-control" id="recomendations" name="recomendations" rows="2"></textarea>
+                            <textarea class="form-control" id="recomendations" name="recomendations" rows="2" onkeypress="return validateRecommendationInput(event)" onpaste="handleRecommendationPaste(event)"></textarea>
                         </div>
 
                     </div>
@@ -587,7 +587,7 @@
                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Exceptions.Label.Proposal"))
                         </label>
                         <div class="col-12">
-                            <textarea class="form-control" id="proposedAction" name="proposedAction" rows="2"></textarea>
+                            <textarea class="form-control" id="proposedAction" name="proposedAction" rows="2" onkeypress="return validateProposedInput(event)" onpaste="handleProposedPaste(event)"></textarea>
                         </div>
 
                     </div>
@@ -598,7 +598,7 @@
                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Audits.Exceptions.Label.Corrective"))
                         </label>
                         <div class="col-12">
-                            <textarea class="form-control" id="correctiveAction" name="correctiveAction" rows="2"></textarea>
+                            <textarea class="form-control" id="correctiveAction" name="correctiveAction" rows="2" onkeypress="return validateCorrectiveInput(event)" onpaste="handleCorrectivePaste(event)"></textarea>
                         </div>
 
                     </div>
@@ -724,13 +724,13 @@
 
                 <div class="col-sm-12">
                     <div class="row mb-3">
-                        <div class="col-2">
+                        <div class="col-3">
                             <button class="btn btn-grc-primary" style="width:100%;" onclick="saveException(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
                         </div>
-                        <div class="col-2">
+                        <div class="col-3">
                             <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeException()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
                         </div>
-                        <div class="col-8"></div>
+                        <div class="col-6"></div>
                     </div>
                 </div>
 

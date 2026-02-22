@@ -147,10 +147,10 @@ function sanitizeInput(input) {
         .replace(/onload\s*=/gi, 'data-blocked-onload=')
         .replace(/javascript:/gi, 'blocked:')
         //..remove SQL comment attempts
-        .replace(/--/g, '') 
+        .replace(/--/g, '')
 
         //..remove SQL statement terminators
-        .replace(/;/g, ''); 
+        .replace(/;/g, '');
 }
 
 let lawsTable = new Tabulator("#lawsTable", {
@@ -256,7 +256,7 @@ let lawsTable = new Tabulator("#lawsTable", {
             formatter: function (cell) {
                 //..if user has permission to view/edit
                 if (hasPermission("CANVIEWSTATUTE")) {
-                       return `<span class="clickable-title" onclick="viewLaw(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
+                    return `<span class="clickable-title" onclick="viewLaw(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
                 } else {
                     return `<span >${cell.getValue()}</span>`
                 }
@@ -269,7 +269,7 @@ let lawsTable = new Tabulator("#lawsTable", {
             formatter: function (cell) {
                 //..if user has permission to view/edit
                 if (hasPermission("CANVIEWSTATUTE")) {
-                       return`<button class="btn btn-sm btn-link">ACTS/SECTIONS</button>`;
+                    return `<button class="btn btn-sm btn-link">ACTS/SECTIONS</button>`;
                 } else {
                     return `<button class="btn btn-sm btn-link disabled" disabled>ACTS/SECTIONS</button>`;
                 }
@@ -387,7 +387,7 @@ let actsTable = new Tabulator("#actsTable", {
             headerSort: true,
             formatter: function (cell) {
                 console.log(cell.getValue());
-                 const id = cell.getRow().getData().id;
+                const id = cell.getRow().getData().id;
                 //..if user has permission to view/edit
                 if (hasPermission("CANUPDATESTATUTE")) {
                     return `<span class="clickable-title"
@@ -484,7 +484,7 @@ function loadLaws(categoryId) {
 
     $("#categoryView").removeClass("d-none");
     $("#lawView").addClass("d-none");
-    lawsTable.setData(); 
+    lawsTable.setData();
 }
 
 //..show acts/sections for the law
@@ -540,7 +540,7 @@ function openCategoryPanel(title, record, isEdit) {
 }
 
 function saveLawCategory(e) {
-    e.preventDefault(); 
+    e.preventDefault();
 
     let isEdit = $('#isEdit').val();
     let categoryName = $('#categoryName').val()?.trim();
@@ -562,10 +562,10 @@ function saveLawCategory(e) {
         highlightErrorField('#comments', true, 'Only letters, numbers, commas, periods, and spaces allowed');
         isValid = false;
     }
-    
+
     if (!isValid) {
         //..stop submission
-        return; 
+        return;
     }
 
     //..build record payload from form
@@ -655,7 +655,7 @@ $("#btnAddLaw").on("click", function () {
     if (!selectedCategory) {
         toastr.error(res?.message || "No category selected");
         return;
-    } 
+    }
 
     addLaw({ categoryId: selectedCategory });
 });
@@ -669,7 +669,7 @@ function addLaw(category) {
         comments: '',
         typeId: 0,
         authorityId: 0,
-        isActive:false,
+        isActive: false,
         categoryId: categoryId,
     }, false);
 }
@@ -773,10 +773,10 @@ function saveLaw(e) {
         highlightErrorField('#lawCode', true, 'Only letters, numbers, commas, periods, and spaces allowed');
         isValid = false;
     }
-    
+
     if (!isValid) {
         //..stop submission
-        return; 
+        return;
     }
     //..build record payload from form
     let recordData = {
@@ -899,14 +899,14 @@ function addAct(law) {
         summery: '',
         obligation: '',
         frequencyId: 0,
-        ownerId:0,
+        ownerId: 0,
         isMandatory: true,
         coverage: 0,
-        isCovered:false,
+        isCovered: false,
         exclude: false,
-        assurance:0,
+        assurance: 0,
         isDeleted: false,
-        comments:''
+        comments: ''
     }, false);
 }
 
@@ -1007,9 +1007,9 @@ function saveAct(e) {
     let assurance = Number($('#assurance').val()) || 0;
 
     let section = $('#section').val()?.trim();
-    let summery =  $('#summery').val().trim();
+    let summery = $('#summery').val().trim();
     let obligation = $('#obligation').val()?.trim();
-    let actComments =  $('#actComments').val().trim();
+    let actComments = $('#actComments').val().trim();
 
     let isValid = true;
     if (!section) {
@@ -1027,7 +1027,7 @@ function saveAct(e) {
         highlightErrorField('#summery', true, 'Only letters, numbers, commas, periods, and spaces allowed');
         isValid = false;
     }
-    
+
     if (!obligation) {
         highlightErrorField('#obligation', true, 'Law/act obligation field is required');
         isValid = false;
@@ -1035,7 +1035,7 @@ function saveAct(e) {
         highlightErrorField('#obligation', true, 'Only letters, numbers, commas, periods, and spaces allowed');
         isValid = false;
     }
-    
+
     if (!actComments) {
         highlightErrorField('#actComments', true, 'Law/act comment field is required');
         isValid = false;
@@ -1043,15 +1043,15 @@ function saveAct(e) {
         highlightErrorField('#actComments', true, 'Only letters, numbers, commas, periods, and spaces allowed');
         isValid = false;
     }
-    
+
     if (!assurance && (!/^[a-zA-Z0-9\s,.]*$/).test(assurance)) {
         highlightErrorField('#assurance', true, 'Only letters, numbers, commas, periods, and spaces allowed');
         isValid = false;
     }
-    
+
     if (!isValid) {
         //..stop submission
-        return; 
+        return;
     }
     //..build record payload from form
     let recordData = {
@@ -1073,7 +1073,7 @@ function saveAct(e) {
 
     //..validate required fields
     let errors = [];
-   
+
     if (!recordData.section)
         errors.push("Act/Section section number is required.");
 
@@ -1088,7 +1088,7 @@ function saveAct(e) {
 
     if (!recordData.comments)
         errors.push("Act/Section comments is required.");
-        
+
 
     if (errors.length > 0) {
         highlightErrorField("#section", !recordData.section);
@@ -1217,10 +1217,6 @@ function validateNameInput(event) {
         return true;
     }
 
-    //..block everything else and show error on the field
-    event.preventDefault();
-    highlightErrorField('#categoryName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
-    return false;
 }
 
 function handleNamePaste(event) {
@@ -1281,10 +1277,6 @@ function validateCommentInput(event) {
         return true;
     }
 
-    //..block everything else and show error on the field
-    event.preventDefault();
-    highlightErrorField('#comments', true, 'Only letters, numbers, commas, periods, and spaces allowed');
-    return false;
 }
 
 function handleCommentPaste(event) {
@@ -1344,10 +1336,6 @@ function validateLawInput(event) {
         return true;
     }
 
-    //..block everything else and show error on the field
-    event.preventDefault();
-    highlightErrorField('#lawReference', true, 'Only letters, numbers, commas, periods, and spaces allowed');
-    return false;
 }
 
 function handleLawPaste(event) {
@@ -1408,10 +1396,6 @@ function validateLawNameInput(event) {
         return true;
     }
 
-    //..block everything else and show error on the field
-    event.preventDefault();
-    highlightErrorField('#comments', true, 'Only letters, numbers, commas, periods, and spaces allowed');
-    return false;
 }
 
 function handleLawNamePaste(event) {
@@ -1472,10 +1456,6 @@ function validateSectionInput(event) {
         return true;
     }
 
-    //..block everything else and show error on the field
-    event.preventDefault();
-    highlightErrorField('#section', true, 'Only letters, numbers, brackets, periods, and spaces allowed');
-    return false;
 }
 
 function handleSectionPaste(event) {
@@ -1535,10 +1515,6 @@ function validateSummeryInput(event) {
         return true;
     }
 
-    //..block everything else and show error on the field
-    event.preventDefault();
-    highlightErrorField('#summery', true, 'Only letters, numbers, commas, periods, and spaces allowed');
-    return false;
 }
 
 function handleSummeryPaste(event) {
@@ -1599,10 +1575,6 @@ function validateObligationInput(event) {
         return true;
     }
 
-    //..block everything else and show error on the field
-    event.preventDefault();
-    highlightErrorField('#obligation', true, 'Only letters, numbers, commas, periods, and spaces allowed');
-    return false;
 }
 
 function handleObligationPaste(event) {
@@ -1663,10 +1635,6 @@ function validateActCommentsInput(event) {
         return true;
     }
 
-    //..block everything else and show error on the field
-    event.preventDefault();
-    highlightErrorField('#actComments', true, 'Only letters, numbers, commas, periods, and spaces allowed');
-    return false;
 }
 
 function handleActCommentPaste(event) {
@@ -1941,7 +1909,7 @@ $(document).ready(function () {
             }
         }
     });
-    
+
     //..section validation 
     $('#section').on('keyup', function () {
         var value = $(this).val();
@@ -2041,7 +2009,7 @@ $(document).ready(function () {
             }
         }
     });
-    
+
     //..obligation validation 
     $('#obligation').on('keyup', function () {
         var value = $(this).val();
@@ -2182,8 +2150,8 @@ function coverageIconFormatter(cell) {
 function progressFormatter(cell) {
     let value = Number(cell.getValue()) || 0;
 
-    let color = "#FF3A1A";     
-    if (value >= 80) color = "#25C756";      
+    let color = "#FF3A1A";
+    if (value >= 80) color = "#25C756";
     else if (value >= 50) color = "#FF9A17";
 
     return `
@@ -2203,6 +2171,3 @@ function percentFormatter(cell) {
         ? `${value}%`
         : "-";
 }
-
-
-

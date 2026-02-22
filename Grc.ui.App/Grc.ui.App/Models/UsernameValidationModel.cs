@@ -1,4 +1,6 @@
-﻿namespace Grc.ui.App.Models {
+﻿using Grc.ui.App.Http.Responses;
+
+namespace Grc.ui.App.Models {
     public class UsernameValidationModel { 
         public string Username { get; set; } = string.Empty;
         public string IPAddress { get; set; } = string.Empty;

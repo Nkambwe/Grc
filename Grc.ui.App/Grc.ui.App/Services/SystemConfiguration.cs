@@ -41,6 +41,25 @@ namespace Grc.ui.App.Services {
             }
         }
 
+        public async Task<GrcResponse<GrcSecuritySettingsResponse>> GetPasswordConfigurationAsync(long userId, string iPAddress) {
+            try {
+                var request = new GrcRequest() {
+                    UserId = userId,
+                    IPAddress = iPAddress,
+                    Action = "Get password policy settings"
+                };
+
+                var endpoint = $"{EndpointProvider.Organization.OrganizationBase}/confurations-pwd";
+                return await HttpHandler.PostAsync<GrcRequest, GrcSecuritySettingsResponse>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "CONFIGURATION-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<GrcSecuritySettingsResponse>(error);
+            }
+        }
+
         public async Task<GrcResponse<GrcBooleanConfigurationResponse>> GetIncludeDeletedRecordAsync(GrcConfigurationParamRequest request) {
             try {
                 var endpoint = $"{EndpointProvider.Organization.OrganizationBase}/include-deleted";

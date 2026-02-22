@@ -11,7 +11,7 @@ window.hasPermission = function (permissionName) {
     return window.userPermissions.some(p => p.toLowerCase() === permissionName.toLowerCase());
 };
 
-//..check if user has ANY of the permissions
+//..check if user has any of the permissions
 window.hasAnyPermission = function (...permissionNames) {
     return permissionNames.some(p => window.hasPermission(p));
 };
@@ -47,10 +47,18 @@ function loadAuditTree() {
             //..initialize jsTree
             $('#categoryTree').jstree({
                 core: {
-                    data: res,
+                    data: function (node, cb) {
+                        //..sanitize the data
+                        const sanitizedData = res.map(item => ({
+                            //...item
+                            text: escapeAuditHtml(item.text),
+                            id: escapeAuditHtml(item.id),
+                        }));
+                        cb(sanitizedData);
+                    },
                     multiple: false,
                     themes: { dots: false, icons: false }
-                },
+                }, 
                 plugins: ["types"],
                 types: {
                     category: { icon: "jstree-folder" },
@@ -80,17 +88,14 @@ function loadAuditTree() {
                         loadAudits(selectedCategory);
                     }
 
-                    // Audit logic
+                    //..audit logic
                     if (node.type === "audit") {
-
                         selectedAudit = parseInt(node.id.replace("L_", ""));
                         selectedCategory = parseInt(node.parent.replace("C_", ""));
                         showAuditView(node.text);
                         loadReports(selectedAudit);
                     }
                 }
-
-               
             });
         },
         error: function (xhr, status, error) {
@@ -417,6 +422,18 @@ let reportTable = new Tabulator("#reportsTable", {
 
 });
 
+//..helper function to escape HTML
+function escapeAuditHtml(unsafe) {
+    if (!unsafe) return unsafe;
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;")
+        .replace(/\//g, "&#47;");
+}
+
 $('#categoryTree').on("select_node.jstree", function (e, data) {
 
     let node = data.node;
@@ -502,16 +519,44 @@ function saveAuditType(e) {
 
     let id = Number($('#auditTypeId').val()) || 0;
     let isEdit = false;
+    let typeCode = $('#typeCode').val()?.trim();
+    let typeName = $('#typeName').val()?.trim();
+    let description = $('#description').val()?.trim();
+
+    let isValid = true;
+    if (!typeCode) {
+        highlightErrorField('#typeCode', true, 'Type code is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s_-]*$/.test(categoryName)) {
+        highlightErrorField('#typeCode', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+
+    if (!typeName) {
+        highlightErrorField('#typeName', true, 'Type name field is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(typeName)) {
+        highlightErrorField('#typeName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+
+    if (!description && !/^[a-zA-Z0-9\s,.]*$/.test(description)) {
+        highlightErrorField('#description', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+
+    if (!isValid) {
+        //..stop submission
+        return;
+    }
 
     let recordData = {
         id: id,
-        typeCode: $('#typeCode').val()?.trim(),
-        typeName: $('#typeName').val()?.trim(),
-        description: $('#description').val()?.trim(),
+        typeCode: typeCode,
+        typeName: typeName,
+        description: description,
     };
 
-
-    console.log();
     //..validate required fields
     let errors = [];
     if (!recordData.typeCode)
@@ -529,7 +574,6 @@ function saveAuditType(e) {
         });
         return;
     }
-
 
     //..call backend
     saveAuditType2Record(isEdit, recordData);
@@ -703,15 +747,36 @@ function saveAudit(e) {
     e.preventDefault();
 
     let isEdit = $('#isAuditEdit').val();
+    let auditName = $('#auditName').val()?.trim();
+    let description = $('#description').val()?.trim();
+
+    let isValid = true;
+    if (!auditName) {
+        highlightErrorField('#auditName', true, 'Audit name field is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(auditName)) {
+        highlightErrorField('#auditName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+
+    if (!description && !/^[a-zA-Z0-9\s,.]*$/.test(description)) {
+        highlightErrorField('#description', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+
+    if (!isValid) {
+        //..stop submission
+        return;
+    }
 
     //..build record payload from form
     let recordData = {
         id: parseInt($('#auditId').val()) || 0,
         authorityId: parseInt($('#authorityId').val()) || 0,
         typeId: parseInt($('#typeId').val()) || 0,
-        auditName: $('#auditName').val(),
+        auditName: auditName,
         isDeleted: $('#isAuditDeleted').is(':checked') ? true : false,
-        description: $('#description').val()
+        description: description
     };
 
 
@@ -798,6 +863,426 @@ function saveAuditRecord(isEdit, record) {
             });
         }
     });
+}
+
+//..audit name input validation
+function validateAuditNameInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightAuditField('#auditName', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightAuditField('#auditName', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightAuditField('#auditName', false);
+        return true;
+    }
+
+}
+
+function handleAuditNamePaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightAuditField('#auditName', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightAuditField('#auditName', false);
+    }
+}
+
+//..description input validation
+function validateAuditDescrInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightAuditField('#description', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightAuditField('#description', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightAuditField('#description', false);
+        return true;
+    }
+
+}
+
+function handleAuditDescrPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightAuditField('#description', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightAuditField('#description', false);
+    }
+}
+
+//..report name input validation
+function validateAuditReferenceInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s_-]/.test(keyChar)) {
+        //..clear any existing error when user starts typing valid chars
+        highlightAuditField('#reference', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightAuditField('#reference', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightAuditField('#reference', false);
+        return true;
+    }
+
+}
+
+function handleAuditReferencePaste(event) {
+    event.preventDefault();
+
+    //..get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    //..clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    //..move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightAuditField('#reference', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightAuditField('#reference', false);
+    }
+}
+
+//..report name input validation
+function validateReportNameInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        //..clear any existing error when user starts typing valid chars
+        highlightAuditField('#reportName', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightAuditField('#reportName', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightAuditField('#reportName', false);
+        return true;
+    }
+
+}
+
+function handleReportNamePaste(event) {
+    event.preventDefault();
+
+    //..get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    //..clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    //..move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightAuditField('#reportName', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightAuditField('#reportName', false);
+    }
+}
+
+//..report summery input validation
+function validateReportSummeryInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightAuditField('#summery', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightAuditField('#summery', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightAuditField('#summery', false);
+        return true;
+    }
+
+}
+
+function handleReportSummeryPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightAuditField('#summery', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightAuditField('#summery', false);
+    }
+}
+
+//..additional notes input validation
+function validateAdditionalNotesInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightAuditField('#additionalNotes', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightAuditField('#additionalNotes', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightAuditField('#additionalNotes', false);
+        return true;
+    }
+
+}
+
+function handleAdditionalNotesPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightAuditField('#additionalNotes', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightAuditField('#additionalNotes', false);
+    }
+}
+
+//..management comments input validation
+function validateManagementNotesInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightAuditField('#managementComments', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightAuditField('#managementComments', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightAuditField('#managementComments', false);
+        return true;
+    }
+
+}
+
+function handleManagementNotesPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9]/g, '');
+
+    //..insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    //..move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    //..show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightAuditField('#managementComments', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightAuditField('#managementComments', false);
+    }
 }
 
 function closeAudit() {
@@ -923,21 +1408,67 @@ function saveReport(e) {
     e.preventDefault();
 
     let isEdit = $('#isReportEdit').val();
-   
+    let reference = $('#reference').val()?.trim();
+    let reportName = $('#reportName').val()?.trim();
+    let summery = $('#summery').val()?.trim();
+    let additionalNotes = $('#additionalNotes').val()?.trim();
+    let managementComments = $('#managementComments').val()?.trim();
+
+
+    let isValid = true;
+    if (!reference) {
+        highlightAuditField('#reference', true, 'Audit reference field is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s_-]*$/.test(auditName)) {
+        highlightAuditField('#reference', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+
+    if (!reportName) {
+        highlightAuditField('#reportName', true, 'Report name field is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s.,]*$/.test(auditName)) {
+        highlightAuditField('#reportName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+
+    if (!summery) {
+        highlightAuditField('#summery', true, 'Report summery field is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(summery)) {
+        highlightAuditField('#summery', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+
+    if (!additionalNotes && !/^[a-zA-Z0-9\s,.]*$/.test(additionalNotes)) {
+        highlightAuditField('#additionalNotes', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+
+    if (!managementComments && !/^[a-zA-Z0-9\s,.]*$/.test(managementComments)) {
+        highlightAuditField('#managementComments', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+
+    if (!isValid) {
+        //..stop submission
+        return;
+    }
+
     //..payload
     let recordData = {
         id: parseInt($('#reportId').val()) || 0,
-        reference: $('#reference').val(),
-        reportName: $('#reportName').val(),
-        summery: $('#summery').val(),
+        reference: reference,
+        reportName: reportName,
+        summery: summery,
         reportDate: $('#reportDate').val()?.trim(),
         responseDate: $('#responseDate').val()?.trim(),
         exceptionCount: parseInt($('#exceptionCount').val()) || 0,
         isDeleted: $('#isReportDeleted').is(':checked') ? true : false,
         auditId: Number($('#auditId').val() || 0),
         reportStatus: $('#reportStatus').val() || "UNKNOWN",
-        additionalNotes: $('#additionalNotes').val(),
-        managementComments: $('#managementComments').val(),
+        additionalNotes: additionalNotes,
+        managementComments: managementComments
     };
 
     //..validate required fields
@@ -1340,12 +1871,49 @@ function saveException(e) {
     e.preventDefault();
 
     let isEdit = $('#isExceptionEdit').val();
+    let findings = $('#findings').val()?.trim();
+    let recomendations = $('#recomendations').val()?.trim();
+    let proposedAction = $('#proposedAction').val()?.trim();
+    let executioner = $('#executioner').val()?.trim();
+
+    let isValid = true;
+    if (!findings) {
+        highlightAuditField('#findings', true, 'Notes field is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(findings)) {
+        highlightAuditField('#findings', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+
+    if (!recomendations) {
+        highlightAuditField('#recomendations', true, 'Recommendation field is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(recomendations)) {
+        highlightAuditField('#recomendations', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+
+    if (!proposedAction && !/^[a-zA-Z0-9\s,.]*$/.test(proposedAction)) {
+        highlightAuditField('#proposedAction', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+
+    if (!executioner && !/^[a-zA-Z0-9\s.,]*$/.test(executioner)) {
+        highlightAuditField('#executioner', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+
+    if (!isValid) {
+        //..stop submission
+        return;
+    }
+
 
     //..payload
     let recordData = {
         id: parseInt($('#exceptionId').val()) || 0,
         reportId: parseInt($('#parentId').val()) || 0,
-        findings: $('#findings').val() || '',
+        findings: findings,
         recomendations: $('#recomendations').val() || '',
         proposedAction: $('#proposedAction').val() || '',
         correctiveAction: $('#proposedAction').val() || '',
@@ -1398,21 +1966,289 @@ function saveException(e) {
     saveAuditException(isEdit, recordData);
 }
 
+//..description input validation
+function validateFindingInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightAuditField('#findings', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightAuditField('#findings', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightAuditField('#findings', false);
+        return true;
+    }
+
+}
+
+function handleFindingPaste(event) {
+    event.preventDefault();
+
+    //..get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    //..clean the pasted content,remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9]/g, '');
+
+    //..insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    //..move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    //..show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightAuditField('#findings', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightAuditField('#findings', false);
+    }
+}
+
+//..description input validation
+function validateRecommendationInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightAuditField('#recomendations', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightAuditField('#recomendations', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightAuditField('#recomendations', false);
+        return true;
+    }
+
+}
+
+function handleRecommendationPaste(event) {
+    event.preventDefault();
+
+    //..get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    //..clean the pasted content,remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9]/g, '');
+
+    //..insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    //..move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    //..show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightAuditField('#recomendations', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightAuditField('#recomendations', false);
+    }
+}
+
+//..description input validation
+function validateProposedInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightAuditField('#proposedAction', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightAuditField('#proposedAction', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightAuditField('#proposedAction', false);
+        return true;
+    }
+
+}
+
+function handleProposedPaste(event) {
+    event.preventDefault();
+
+    //..get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    //..clean the pasted content,remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9]/g, '');
+
+    //..insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    //..move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    //..show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightAuditField('#proposedAction', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightAuditField('#proposedAction', false);
+    }
+}
+
+//..description input validation
+function validateCorrectiveInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightAuditField('#correctiveAction', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightAuditField('#correctiveAction', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightAuditField('#correctiveAction', false);
+        return true;
+    }
+
+}
+
+function handleCorrectivePaste(event) {
+    event.preventDefault();
+
+    //..get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    //..clean the pasted content,remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9]/g, '');
+
+    //..insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    //..move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    //..show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightAuditField('#correctiveAction', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightAuditField('#correctiveAction', false);
+    }
+}
+
 function saveUpdate(e) {
     e.preventDefault();
 
     let isEdit = $('#isUpdateEdit').val();
+    let updateNotes = $('#updateNotes').val()?.trim();
+    let reminderMessage = $('#reminderMessage').val()?.trim();
+    let addedBy = $('#addedBy').val()?.trim();
+
+
+    let isValid = true;
+    if (!updateNotes) {
+        highlightAuditField('#updateNotes', true, 'Notes field is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(auditName)) {
+        highlightAuditField('#updateNotes', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+
+    if (!reminderMessage && !/^[a-zA-Z0-9\s_-]*$/.test(auditName)) {
+        highlightAuditField('#reminderMessage', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+
+    if (!addedBy && !/^[a-zA-Z0-9\s_-]*$/.test(addedBy)) {
+        highlightAuditField('#addedBy', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+    }
+
+    if (!isValid) {
+        //..stop submission
+        return;
+    }
 
     //..payload
     let recordData = {
         id: parseInt($('#updateId').val()) || 0,
         reportId: parseInt($('#updateReportId').val()) || 0,
-        updateNotes: $('#updateNotes').val() || '',
+        updateNotes:updateNotes,
         sendReminders: $('#sendReminders').is(':checked') ? true : false,
         isDeleted: $('#upDeleted').is(':checked') ? true : false,
-        reminderMessage: $('#reminderMessage').val() || '',
+        reminderMessage: reminderMessage,
         sendToEmails: $('#sendToEmails').val() || '',
-        addedBy: $('#addedBy').val() || '',
+        addedBy: addedBy,
         sendDate: $('#sendDate').val()?.trim()
 
     };
@@ -1574,6 +2410,186 @@ function saveAuditUpdate(isEdit, record) {
     });
 }
 
+//..description input validation
+function validateFindingInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightAuditField('#description', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightAuditField('#description', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightAuditField('#description', false);
+        return true;
+    }
+
+}
+
+function handleDescrPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightAuditField('#description', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightAuditField('#description', false);
+    }
+}
+
+//..type name
+function validateTypeNameInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightAuditField('#typeName', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightAuditField('#typeName', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightAuditField('#typeName', false);
+        return true;
+    }
+
+}
+
+function handleTypeNamePaste(event) {
+    event.preventDefault();
+
+    //..set pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    //..clean the pasted content, remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightAuditField('#typeName', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightAuditField('#typeName', false);
+    }
+}
+
+//..type code
+function validateTypeCodeInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s_-]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightAuditField('#typeCode', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightAuditField('#typeCode', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightAuditField('#typeCode', false);
+        return true;
+    }
+
+}
+
+function handleTypeCodePaste(event) {
+    event.preventDefault();
+
+    //..set pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    //..clean the pasted content, remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9]/g, '');
+
+    //..insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    //..move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    //..show warning if content was modified, using the field error
+    if (pastedText !== cleanedText) {
+        highlightAuditField('#typeCode', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightAuditField('#typeCode', false);
+    }
+}
+
 function closeAuditReport() {
     closeAuditPanels();
     $('#reportPanel').removeClass('active');
@@ -1728,7 +2744,7 @@ $(document).ready(function () {
     //..ensure initial state
     $notificationBox.toggle($sendReminders.is(':checked'));
 
-    // Toggle on change
+    //..toggle on change
     $sendReminders.on('change', function () {
         if (this.checked) {
             $notificationBox.slideDown(200);
@@ -1737,4 +2753,300 @@ $(document).ready(function () {
         }
     });
 
+    //..type code validation 
+    $('#typeCode').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightAuditField('#typeCode', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s_-]*$/.test(value)) {
+            highlightAuditField('#typeCode', true, 'Invalid characters detected');
+        } else {
+            highlightAuditField('#typeCode', false);
+        }
+    });
+
+    $('#typeCode').on('focus', function () {
+        highlightAuditField('#typeCode', false);
+    });
+
+    $('#typeCode').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightAuditField('#typeCode', true, 'Category name is required');
+        } else if (!/^[a-zA-Z0-9\s_-]*$/.test(value)) {
+            highlightAuditField('#typeCode', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightAuditField('#typeCode', false);
+        }
+    });
+
+    $('#typeCode').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s_-]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightAuditField('#typeCode', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightAuditField('#typeCode', false);
+                }, 2000);
+            }
+        }
+    });
+
+    //..type name validation 
+    $('#typeName').on('keyup', function () {
+        var value = $(this).val();
+
+        //..clear error if field is empty
+        if (!value) {
+            highlightAuditField('#typeName', false);
+            return;
+        }
+
+        //..show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s_-]*$/.test(value)) {
+            highlightAuditField('#typeName', true, 'Invalid characters detected');
+        } else {
+            highlightAuditField('#typeName', false);
+        }
+    });
+
+    $('#typeName').on('focus', function () {
+        highlightAuditField('#typeName', false);
+    });
+
+    $('#typeName').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightAuditField('#typeName', true, 'Type name is required');
+        } else if (!/^[a-zA-Z0-9\s_-]*$/.test(value)) {
+            highlightAuditField('#typeName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightAuditField('#typeName', false);
+        }
+    });
+
+    $('#typeName').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s_-]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightAuditField('#typeName', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightAuditField('#typeName', false);
+                }, 2000);
+            }
+        }
+    });
+
+    //..type description
+    $('#description').on('keyup', function () {
+        var value = $(this).val();
+
+        //..clear error if field is empty
+        if (!value) {
+            highlightAuditField('#description', false);
+            return;
+        }
+
+        //..show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s_-]*$/.test(value)) {
+            highlightAuditField('#description', true, 'Invalid characters detected');
+        } else {
+            highlightAuditField('#description', false);
+        }
+    });
+
+    $('#description').on('focus', function () {
+        highlightAuditField('#description', false);
+    });
+
+    $('#description').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightAuditField('#description', true, 'Type name is required');
+        } else if (!/^[a-zA-Z0-9\s_-]*$/.test(value)) {
+            highlightAuditField('#description', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightAuditField('#description', false);
+        }
+    });
+
+    $('#description').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s_-]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightAuditField('#description', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightAuditField('#description', false);
+                }, 2000);
+            }
+        }
+    });
+
+    $('#reference').on('keyup', function () {
+        var value = $(this).val();
+
+        //..clear error if field is empty
+        if (!value) {
+            highlightAuditField('#reference', false);
+            return;
+        }
+
+        //..show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightAuditField('#reference', true, 'Invalid characters detected');
+        } else {
+            highlightAuditField('#reference', false);
+        }
+    });
+
+    $('#reference').on('focus', function () {
+        highlightAuditField('#reference', false);
+    });
+
+    $('#reference').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightAuditField('#reference', true, 'Type name is required');
+        } else if (!/^[a-zA-Z0-9\s.,]*$/.test(value)) {
+            highlightAuditField('#reference', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightAuditField('#reference', false);
+        }
+    });
+
+    $('#reference').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s_-]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightAuditField('#reference', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightAuditField('#reference', false);
+                }, 2000);
+            }
+        }
+    });
+
+    $('#reportName').on('keyup', function () {
+        var value = $(this).val();
+
+        //..clear error if field is empty
+        if (!value) {
+            highlightAuditField('#reportName', false);
+            return;
+        }
+
+        //..show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightAuditField('#reportName', true, 'Invalid characters detected');
+        } else {
+            highlightAuditField('#reportName', false);
+        }
+    });
+
+    $('#reportName').on('focus', function () {
+        highlightAuditField('#reportName', false);
+    });
+
+    $('#reportName').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightAuditField('#reportName', true, 'Report name is required');
+        } else if (!/^[a-zA-Z0-9\s.,]*$/.test(value)) {
+            highlightAuditField('#reportName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightAuditField('#reportName', false);
+        }
+    });
+
+    $('#reportName').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s_-]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightAuditField('#reportName', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightAuditField('#reportName', false);
+                }, 2000);
+            }
+        }
+    });
+
+    $('#summery').on('keyup', function () {
+        var value = $(this).val();
+
+        //..clear error if field is empty
+        if (!value) {
+            highlightAuditField('#summery', false);
+            return;
+        }
+
+        //..show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightAuditField('#summery', true, 'Invalid characters detected');
+        } else {
+            highlightAuditField('#summery', false);
+        }
+    });
+
+    $('#summery').on('focus', function () {
+        highlightAuditField('#summery', false);
+    });
+
+    $('#summery').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightAuditField('#summery', true, 'Report name is required');
+        } else if (!/^[a-zA-Z0-9\s.,]*$/.test(value)) {
+            highlightAuditField('#summery', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightAuditField('#summery', false);
+        }
+    });
+
+    $('#summery').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s_-]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightAuditField('#summery', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightAuditField('#summery', false);
+                }, 2000);
+            }
+        }
+    });
 });
