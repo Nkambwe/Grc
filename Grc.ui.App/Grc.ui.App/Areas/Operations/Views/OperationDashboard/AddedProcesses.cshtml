@@ -2,7 +2,7 @@
 @model CategoryExtensionResponse
 @{
     Layout = "_OperationLayout";
-    ViewData["Title"] = "PROPOSED PROCESSES";
+    ViewData["Title"] = "CANCELLED PROCESSES";
 
     var chartsJson = JsonSerializer.Serialize(Model);
 }
@@ -66,11 +66,10 @@
             </table>
         </div>
     </div>
-
 </div>
 
 <!-- Overlay -->
-<div id="panelOverlay" class="obligation-panel-overlay" onclick="closeRegulatoryAuthorityPanel()"></div>
+<div id="panelOverlay" class="obligation-panel-overlay"></div>
 
 <div id="viewPanel" class="obligation-side-panel" onclick="event.stopPropagation()">
 
@@ -112,6 +111,6 @@
 }
 <script>
      const dashboardRecord = @Html.Raw(chartsJson);
-     const cardColor = "card-category-proposed";
-     const category = "Proposed";
+     const cardColor = "card-category-cancelled";
+     const category = "Draft";
 </script>

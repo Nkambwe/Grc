@@ -31,6 +31,7 @@ namespace Grc.Middleware.Api.Controllers {
         private readonly IProcessApprovalService _approvalService;
         private readonly IMailTaskQueue _mailTask;
         private readonly IResponsebilityService _officersService;
+        private readonly IDepartmentUnitService _unitService;
 
         public OperationProcessesController(IObjectCypher cypher, 
                                             IServiceLoggerFactory loggerFactory, 
@@ -45,6 +46,7 @@ namespace Grc.Middleware.Api.Controllers {
                                             IProcessApprovalService approvalService,
                                             ISystemAccessService accessService,
                                             IMailTaskQueue mailTask,
+                                            IDepartmentUnitService unitService,
                                             IResponsebilityService officersService
                                             ) 
                                             : base(cypher, 
@@ -61,6 +63,7 @@ namespace Grc.Middleware.Api.Controllers {
             _accessService = accessService;
             _approvalService = approvalService;
             _officersService = officersService;
+            _unitService = unitService;
         }
 
         #region Statistics Endpoints
@@ -825,6 +828,45 @@ namespace Grc.Middleware.Api.Controllers {
                 Logger.LogActivity($"Error deleting operation process by user {request.UserId}: {ex.Message}", "ERROR");
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("processes/unt-category-processes")]
+        public async Task<IActionResult> GetUnitCategoryProcesses([FromBody] UnitProcessRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body" );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<ProcessRegisterResponse>>(error));
+                }
+
+                var unit = await _unitService.GetUnitByNameAsync(GetUnitName(request.Unit));
+                if(unit == null) { 
+                     return Ok(new GrcResponse<List<MiniProcessResponse>>(new List<MiniProcessResponse>()));
+                }
+
+                var processes = await _processService.GetAllAsync(p=>p.UnitId == unit.Id && p.ProcessStatus == request.Category);
+                if (processes == null || !processes.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data","No operation process records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<MiniProcessResponse>>(new List<MiniProcessResponse>()));
+                }
+
+                List<MiniProcessResponse> processList = new();
+                var records = processes.ToList();
+                records.ForEach(register => processList.Add(new(){
+                    Id = register.Id,
+                    ProcessName = register.ProcessName ?? string.Empty,
+                    Description = register.Description ?? string.Empty,
+                    CurrentVersion = register.CurrentVersion ?? string.Empty,
+                    Status = register.ProcessStatus ?? string.Empty
+                }));
+
+                return Ok(new GrcResponse<List<MiniProcessResponse>>(processList));
+            }  catch (Exception ex)  {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<List<MiniProcessResponse>>(error));
             }
         }
 
@@ -2780,6 +2822,35 @@ namespace Grc.Middleware.Api.Controllers {
             };
         }
         
+        private static string GetUnitName(string unit) {
+            string name = unit switch {
+                "Cash" => "Cash and Treasury Operations",
+                "Channels" => "Channel Operations",
+                "AccountServices" => "Account Services",
+                "CustomerExp" => "Customer Experience",
+                "Reconciliation" => "Reconciliation And Support",
+                "RecordsMgt" => "Records Management",
+                "Payments" => "Trade And Payments",
+                _ => "E-Wallets",
+            };
+            return name;
+        }
+
+        private static string GetCategory(string category) {
+            string name = category switch {
+                "Draft" => "DRAFT",
+                "UpToDate" => "UPTODATE",
+                "Unchanged" => "UNCHANGED",
+                "Proposed" => "PROPOSED",
+                "Dormant" => "DORMANT",
+                "Cancelled" => "CANCELLED",
+                "On Hold" => "ONHOLD",
+                "Obsolete" => "OBSOLETE",
+                _ => "INREVIEW",
+            };
+            return name;
+        }
+
         #endregion
 
     }

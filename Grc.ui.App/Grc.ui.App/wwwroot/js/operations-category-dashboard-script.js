@@ -90,9 +90,113 @@ function renderPiechart(record) {
     });
 }
 
-function viewProcesses(unit) {
-    //..TODO: implement view processes logic
-    console.log("Unit Description >>" + unit);
+function viewProcesses(unit, category) {
+    
+    Swal.fire({
+        title: "Retrieving records. Please wait...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+     getUnitProcess(unit, category)
+        .then(record => {
+            Swal.close();
+            if (record) {
+                openPanel(record, category, unit);
+            } else {
+                Swal.fire({ title: 'NOT FOUND', text: 'Process record found' });
+            }
+        })
+        .catch(() => {
+            Swal.close();
+            Swal.fire({ title: 'Error', text: 'Failed to load process details.' });
+        });
+
+}
+
+function getUnitProcess(unit, category) {
+    let payload = {
+        unit: unit,
+        category: category
+    };
+
+    return fetch("/operations/workflow/processes/unit-processes", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "RequestVerificationToken": getCatToken(),
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Request failed");
+        return res.json();
+    });
+}
+
+function openPanel(record, category, unit) {
+
+    const title = `${unit} - ${category} Processes`;
+    $('#panelTitle').text(title);
+
+    const processes = record.processes || [];
+
+    let table = `
+        <table class="table table-sm table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Process Name</th>
+                    <th>Version</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    if (processes.length === 0) {
+        table += `
+            <tr>
+                <td colspan="5" class="text-center text-muted">
+                    No processes found
+                </td>
+            </tr>
+        `;
+    } else {
+        processes.forEach((p, i) => {
+            table += `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${p.processName}</td>
+                    <td>${p.version ?? ''}</td>
+                    <td>
+                        <span class="badge bg-warning">${p.status}</span>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    table += `</tbody></table>`;
+
+    $('#categoryTable').html(table);
+
+    $('#panelOverlay').addClass('active');
+    $('#viewPanel').addClass('active');
+}
+
+function closePanel() {
+    $('#panelOverlay').removeClass('active');
+    $('#viewPanel').removeClass('active');
+}
+
+function getCatToken() {
+    return $('meta[name="csrf-token"]').attr('content');
+
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -108,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function () {
         tr.innerHTML = `<td>${label}</td>
                         <td>${value}</td>
                         <td>
-                            <button class="btn btn-category-button ${disabled}" ${disabled} onclick="viewProcesses('${label}')">
+                            <button class="btn btn-category-button ${disabled}" ${disabled} onclick="viewProcesses('${label}', '${category || ''}')">
                                 <span style="display:inline-block; width:15px; height:15px; border-radius:50px; background-color:${cardColors[label].bg};"></span>
                                 <span style="display:inline-block; margin-left:10px;"><i class="mdi mdi-eye"></i></span>
                             </button>

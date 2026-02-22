@@ -92,8 +92,7 @@ function renderPiechart(record) {
 }
 
 function viewProcesses(unit) {
-    //..TODO: implement view processes logic
-    console.log("Unit Description >>" + unit);
+    alert("Unit >> " + unit);
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -109,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
         tr.innerHTML = `<td>${label}</td>
                         <td>${value}</td>
                         <td>
-                            <button class="btn btn-category-button ${disabled}" ${disabled} onclick="viewProcesses('${label}')">
+                            <button class="btn btn-category-button ${disabled}" ${disabled} onclick="viewProcesses('${value}')">
                                 <span style="display:inline-block; width:15px; height:15px; border-radius:50px; background-color:${cardColors[label].bg};"></span>
                                 <span style="display:inline-block; margin-left:10px;"><i class="mdi mdi-eye"></i></span>
                             </button>

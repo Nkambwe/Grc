@@ -4,11 +4,14 @@ using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Filters;
+using Grc.ui.App.Http.Requests;
+using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace Grc.ui.App.Areas.Operations.Controllers {
 
@@ -24,7 +27,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         private readonly IDepartmentFactory _departmentfactory;
         private readonly IBranchService _branchService;
         private readonly IDepartmentUnitService _departmentUnitService;
-
+        private readonly IProcessesService _processService;
         public OperationDashboardController(IApplicationLoggerFactory loggerFactory,
                                  IEnvironmentProvider environment,
                                  IWebHelper webHelper,
@@ -39,6 +42,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                                  IGrcErrorFactory errorFactory,
                                  IDepartmentUnitService departmentUnitService,
                                  IBranchService branchService,
+                                 IProcessesService processService,
                                  IOperationsDashboardFactory operationsDashboardFactory,
                                  SessionManager sessionManager)
             : base(loggerFactory, environment, webHelper, localizationService,
@@ -51,6 +55,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             _activityService = activityService;
             _departmentUnitService = departmentUnitService;
             _branchService = branchService;
+             _processService = processService;
             _operationsDashboardFactory = operationsDashboardFactory;
         }
 
@@ -285,7 +290,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
-                model = await _operationsDashboardFactory.PrepareCategoryExtensionsModelAsync(currentUser, ProcessCategories.Unchanged.GetDescription());
+                model = await _operationsDashboardFactory.PrepareCategoryExtensionsModelAsync(currentUser, ProcessCategories.Draft.GetDescription());
             }
             catch (Exception ex)
             {
@@ -316,7 +321,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 currentUser.IPAddress = ipAddress;
 
                 //..prepare user dashboard
-                model = await _operationsDashboardFactory.PrepareCategoryExtensionsModelAsync(currentUser, ProcessCategories.Unchanged.GetDescription());
+                model = await _operationsDashboardFactory.PrepareCategoryExtensionsModelAsync(currentUser, ProcessCategories.Review.GetDescription());
             }
             catch (Exception ex)
             {
@@ -608,5 +613,101 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
 
             return View(model);
         }
+
+        
+        public async Task<IActionResult> UnitCategoryProcesses([FromBody] UnitCategoryViewModel model) {
+             try
+             {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError)
+                {
+                    Logger.LogActivity($"UNIT CATEGORY ERROR: Failed to retrieve current user record - {JsonSerializer.Serialize(grcResponse)}");
+                }
+
+                var currentUser = grcResponse.Data;
+                if (currentUser == null)
+                {
+                    //..session has expired
+                    return RedirectToAction("Login", "Application");
+                }
+                GrcUnitProcessRequest request = new() {
+                    Unit =  GetUnitName(model.Unit),
+                    Category = GetCategory(model.Category) ,
+                    UserId = currentUser.UserId,
+                    Action = "Retrieve unit-category processes",
+                    IPAddress = ipAddress
+                };
+
+                //..get list of all processes
+                var processList = await _processService.GetUnitProcessesAsync(request);
+
+                List<GrcMiniProcessResponse> processes;
+                if (processList.HasError)
+                {
+                    processes = new();
+                    Logger.LogActivity($"PROCESSES DATA ERROR: Failed to retrieve processes - {JsonSerializer.Serialize(processList)}");
+                }
+                else
+                {
+                    processes = processList.Data;
+                    Logger.LogActivity($"ROLE GROUP DATA - {JsonSerializer.Serialize(processes)}");
+                }
+
+                //..get ajax data
+                List<object> listData = new();
+                if (processes.Any()) {
+                    listData = processes.Select(p => new {
+                        id = p.Id,
+                        processName = p.ProcessName,
+                        description = p.Description,
+                        Version = p.CurrentVersion,
+                        status = p.Status
+                    }).Cast<object>().ToList();
+                }
+
+                return Json(new { processes = listData });
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error retrieving roles: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "SUPPORT-CONTROLLER", ex.StackTrace);
+                return Json(new { processes = new List<object>() });
+            }
+        }
+
+        #region Private methods
+
+        private static string GetUnitName(string unit) {
+            string name = unit switch {
+                "Cash" => "Cash",
+                "Channels" => "Channels",
+                "Account Services" => "AccountServices",
+                "Customer Experience" => "CustomerExp",
+                "Reconciliation" => "Reconciliation",
+                "Records Management" => "RecordsMgt",
+                "Payment" => "Payments",
+                _ => "Wallets",
+            };
+            return name;
+        }
+
+        private static string GetCategory(string category) {
+            string name = category switch {
+                "Draft" => "DRAFT",
+                "UpToDate" => "UPTODATE",
+                "Unchanged" => "UNCHANGED",
+                "Proposed" => "PROPOSED",
+                "Dormant" => "DORMANT",
+                "Cancelled" => "CANCELLED",
+                "On Hold" => "ONHOLD",
+                "Obsolete" => "OBSOLETE",
+                _ => "INREVIEW",
+            };
+            return name;
+        }
+
+        #endregion
     }
 }

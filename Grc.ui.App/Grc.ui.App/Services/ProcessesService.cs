@@ -1627,6 +1627,24 @@ namespace Grc.ui.App.Services {
             }
         }
 
+        public async  Task<GrcResponse<List<GrcMiniProcessResponse>>> GetUnitProcessesAsync(GrcUnitProcessRequest request) {
+            try {
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object","Request object cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<List<GrcMiniProcessResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/unt-category-processes";
+                return await HttpHandler.PostAsync<GrcUnitProcessRequest, List<GrcMiniProcessResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR,"An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<List<GrcMiniProcessResponse>>(error);
+            }
+        }
         #endregion
     }
 

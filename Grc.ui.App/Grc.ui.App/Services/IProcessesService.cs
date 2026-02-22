@@ -99,6 +99,7 @@ namespace Grc.ui.App.Services
         Task<GrcResponse<ServiceResponse>> InitiateProcessReviewAsync(ProcessReviewModel request, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> HoldProcessReviewAsync(ProcessHoldModel request, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> RequestProcessApprovalAsync(GrcIdRequest request);
+        Task<GrcResponse<List<GrcMiniProcessResponse>>> GetUnitProcessesAsync(GrcUnitProcessRequest request);
 
         #endregion
     }

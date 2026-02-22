@@ -3,7 +3,7 @@
 namespace Grc.ui.App.Enums
 {
     public enum OperationUnit {
-        [Description("Unclassified")]
+        [Description("Ùnknown")]
         Ùnknown = 0,
         [Description("Account Services")]
         AccountServices = 1,

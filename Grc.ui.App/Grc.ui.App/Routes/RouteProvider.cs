@@ -594,6 +594,12 @@
             );
 
             routeBuilder.MapControllerRoute(
+                name: "ops-dashboard-category-unit-processes",
+                pattern: "/operations/workflow/processes/unit-processes",
+                defaults: new { area = "Operations", controller = "OperationDashboard", action = "UnitCategoryProcesses" }
+            );
+
+            routeBuilder.MapControllerRoute(
                 name: "ops-dashboard-totalprocs",
                 pattern: "/operations/dashboard/totalprocs",
                 defaults: new { area = "Operations", controller = "OperationDashboard", action = "TotalProcesses" }
