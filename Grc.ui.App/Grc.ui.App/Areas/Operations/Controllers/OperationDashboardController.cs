@@ -264,6 +264,68 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
 
             return View(model);
         }
+        
+        public async Task<IActionResult> AddedProcesses() {
+            CategoryExtensionResponse model;
+            UserModel currentUser = null;
+            try
+            {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError)
+                {
+                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-UNCHANGEDPROCESSES", string.Empty);
+                    model = await _operationsDashboardFactory.PrepareDefaultExtensionCategoryErrorModelAsync(currentUser);
+                }
+
+                currentUser = grcResponse.Data;
+                currentUser.IPAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _operationsDashboardFactory.PrepareCategoryExtensionsModelAsync(currentUser, ProcessCategories.Unchanged.GetDescription());
+            }
+            catch (Exception ex)
+            {
+                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-UNCHANGEDPROCESSES", ex.StackTrace);
+                model = await _operationsDashboardFactory.PrepareDefaultExtensionCategoryErrorModelAsync(currentUser);
+            }
+
+            return View(model);
+        }
+        
+        public async Task<IActionResult> ReviewProcesses() {
+            CategoryExtensionResponse model;
+            UserModel currentUser = null;
+            try
+            {
+                //..get user IP address
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+
+                //..get current authenticated user record
+                var grcResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (grcResponse.HasError)
+                {
+                    await ProcessErrorAsync(grcResponse.Error.Message, "OPERATION-DASHBOARD-UNCHANGEDPROCESSES", string.Empty);
+                    model = await _operationsDashboardFactory.PrepareDefaultExtensionCategoryErrorModelAsync(currentUser);
+                }
+
+                currentUser = grcResponse.Data;
+                currentUser.IPAddress = ipAddress;
+
+                //..prepare user dashboard
+                model = await _operationsDashboardFactory.PrepareCategoryExtensionsModelAsync(currentUser, ProcessCategories.Unchanged.GetDescription());
+            }
+            catch (Exception ex)
+            {
+                await ProcessErrorAsync(ex.Message, "OPERATION-DASHBOARD-UNCHANGEDPROCESSES", ex.StackTrace);
+                model = await _operationsDashboardFactory.PrepareDefaultExtensionCategoryErrorModelAsync(currentUser);
+            }
+
+            return View(model);
+        }
 
         public async Task<IActionResult> Due() {
             CategoryExtensionResponse model;

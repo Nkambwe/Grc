@@ -10,8 +10,8 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
             builder.ToTable("TBL_GRC_PROCESS_RISK");
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Id).HasColumnName("id");
-            builder.Property(p => p.Description).HasColumnName("risk_description").HasColumnType("NVARCHAR(MAX)").IsRequired();
-            builder.Property(p => p.Control).HasColumnName("control").HasColumnType("NVARCHAR(MAX)").IsRequired();
+            builder.Property(p => p.RiskLevel).HasColumnName("risk_description").HasColumnType("NVARCHAR(MAX)").IsRequired();
+            builder.Property(p => p.IsCurrent).HasColumnName("is_current");
             builder.Property(p => p.Impact).HasColumnName("risk_impact");
             builder.Property(p => p.Liklyhood).HasColumnName("liklyhood");
             builder.Property(p => p.Score).HasColumnName("risk_score");

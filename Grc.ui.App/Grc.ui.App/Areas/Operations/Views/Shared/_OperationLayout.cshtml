@@ -200,73 +200,7 @@
                                 </span>
                             </a>
                         </li>
-                        <li class="sidebar-separator">
-                            <span class="separator-label">
-                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Configurations"))
-                            </span>
-                            <span class="separator-line"></span>
-                        </li>
-
-                        <li class="sidebar-item with-submenu">
-                            <a href="" class="toggle-submenu" data-id="access-menu">
-                                <span class="menu-icon">
-                                    <i class="mdi mdi-account-key-outline"></i>
-                                </span>
-                                <span>
-                                    @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Configurations.Access"))
-                                </span>
-                                <span class="drop-icon">
-                                    <i class="mdi mdi-chevron-down"></i>
-                                </span>
-                            </a>
-                            <ul id="access-menu" class="sidebar-submenu">
-
-                                <li class="sidebar-item with-submenu">
-                                    <a asp-controller="OperationsConfiguration" asp-action="Departments" asp-area="Operations" class="disabled-link">
-                                        <span class="menu-icon">
-                                            <i class="mdi mdi-brightness-1"></i>
-                                        </span>
-                                        <span class="sidebar-text">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Configurations.Departments"))
-                                        </span>
-                                    </a>
-                                </li>
-
-                                <li class="sidebar-item with-submenu">
-                                    <a asp-controller="OperationsConfiguration" asp-action="Teams" asp-area="Operations" class="disabled-link">
-                                        <span class="menu-icon">
-                                            <i class="mdi mdi-dots-hexagon"></i>
-                                        </span>
-                                        <span class="sidebar-text">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Configurations.Units"))
-                                        </span>
-                                    </a>
-                                </li>
-
-                                <li class="sidebar-item with-submenu">
-                                    <a asp-controller="OperationsConfiguration" asp-action="Users" asp-area="Operations" class="disabled-link">
-                                        <span class="menu-icon">
-                                            <i class="mdi mdi-account-box-multiple-outline"></i>
-                                        </span>
-                                        <span class="sidebar-text">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Configurations.Users"))
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="sidebar-item with-submenu">
-                                    <a asp-controller="OperationsConfiguration" asp-action="Guests" asp-area="Operations" class="disabled-link">
-                                        <span class="menu-icon">
-                                            <i class="mdi mdi-account-switch-outline"></i>
-                                        </span>
-                                        <span class="sidebar-text">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("Operations.Menu.Configurations.Guests"))
-                                        </span>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-
+                       
                     </ul>
 
                 </nav>
@@ -354,7 +288,7 @@
                                             <hr class="dropdown-divider">
                                         </li>
                                         <li>
-                                            <a href="" class="dropdown-item" onclick="performLogout(event)">
+                                            <a href="" class="dropdown-item" onclick="operationsLogout(event)">
                                                 <span>
                                                     <i class="mdi mdi-logout"></i>
                                                 </span>
@@ -397,7 +331,7 @@
     @await RenderSectionAsync("Scripts", required: false)
     
     <script>
-        window.ADMIN_LOGOUT_URL = '@Url.Action("Logout", "Support", new { area = "Admin" })';
+        window.OPS_LOGOUT_URL = '@Url.Action("Logout", "OperationWorkflow", new { area = "Operations" })';
     </script>
 
 </body>

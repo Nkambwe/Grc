@@ -226,8 +226,9 @@ namespace Grc.Middleware.Api.Services.Operations {
                     UnchangedProcesses = CountByUnit(c => c == ServiceProcessCategories.Unchanged),
                     ProcessesDueForReview = CountByUnit(c => c == ServiceProcessCategories.Due),
                     DormantProcesses = CountByUnit(c => c == ServiceProcessCategories.Dormant),
+                    ReviewProcesses = CountByUnit(c => c == ServiceProcessCategories.Review),
                     CancelledProcesses = CountByUnit(c => c == ServiceProcessCategories.Cancelled),
-                    UnclassifiedProcesses = CountByUnit(c => c == ServiceProcessCategories.Draft)
+                    NewProcesses = CountByUnit(c => c == ServiceProcessCategories.Draft)
                 },
                 ProcessCategories = new ServiceProcessCategoryStatisticsResponse {
                     CashProcesses = CountByCategory(ServiceOperationUnit.Cash),
@@ -925,8 +926,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             }
         }
 
-        public async Task<bool> DeleteAsync(IdRequest request)
-        {
+        public async Task<bool> DeleteAsync(IdRequest request) {
             using var uow = UowFactory.Create();
             try
             {
@@ -984,6 +984,66 @@ namespace Grc.Middleware.Api.Services.Operations {
                 throw;
             }
 
+        }
+
+        public async Task<bool> LockProcessAsync(long id, bool isLocked, string username) {
+            using var uow = UowFactory.Create();
+            try {
+                
+                var process = await uow.OperationProcessRepository.GetAsync(t => t.Id == id);
+                if (process != null) {
+                    process.IsLockProcess = isLocked;
+                    process.LastModifiedOn = DateTime.UtcNow;
+                    process.LastModifiedBy = username;
+                    //..lock process
+                    _ = await uow.OperationProcessRepository.UpdateAsync(process, true);
+
+                    //..check entity state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(process).State;
+                    Logger.LogActivity($"Entity state after locking: {entityState}", "DEBUG");
+
+                    var result = await uow.SaveChangesAsync();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to lock  OperationProcess : {ex.Message}", "ERROR");
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteProcessAsync(long id, bool isDeleted, string username) {
+            using var uow = UowFactory.Create();
+            try {
+                
+                var process = await uow.OperationProcessRepository.GetAsync(t => t.Id == id);
+                if (process != null) {
+                    process.IsDeleted = isDeleted;
+                    process.LastModifiedOn = DateTime.UtcNow;
+                    process.LastModifiedBy = username;
+                    //..lock process
+                    _ = await uow.OperationProcessRepository.UpdateAsync(process, true);
+
+                    //..check entity state
+                    var entityState = ((UnitOfWork)uow).Context.Entry(process).State;
+                    Logger.LogActivity($"Entity state after deletion: {entityState}", "DEBUG");
+
+                    var result = await uow.SaveChangesAsync();
+                    Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
+                    return result > 0;
+                }
+
+                return false;
+            } catch (Exception ex) {
+                Logger.LogActivity($"Failed to delete  OperationProcess : {ex.Message}", "ERROR");
+                //..save error object to the database
+                _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
+                throw;
+            }
         }
 
         public async Task<bool> BulkyInsertAsync(ProcessRequest[] requestItems)
@@ -1456,9 +1516,9 @@ namespace Grc.Middleware.Api.Services.Operations {
                 ["Draft"] = ServiceProcessCategories.Draft.ToString().ToUpper(),
                 ["UpToDate"] = ServiceProcessCategories.UpToDate.ToString().ToUpper(),
                 ["Unchanged"] = ServiceProcessCategories.Unchanged.ToString().ToUpper(),
-                ["Unclassified"] = ServiceProcessCategories.Proposed.ToString().ToUpper(),
-                ["Obsolete"] = ServiceProcessCategories.Due.ToString().ToUpper(),
-                ["Cancelled"] = ServiceProcessCategories.Cancelled.ToString().ToUpper(),
+                ["Proposed"] = ServiceProcessCategories.Proposed.ToString().ToUpper(),
+                ["Due"] = ServiceProcessCategories.Due.ToString().ToUpper(),
+                ["Obsolete"] = ServiceProcessCategories.Cancelled.ToString().ToUpper(),
                 ["Dormant"] = ServiceProcessCategories.Dormant.ToString().ToUpper(),
                 ["On Hold"] = ServiceProcessCategories.OnHold.ToString().ToUpper(),
                 ["Review"] = "INREVIEW"

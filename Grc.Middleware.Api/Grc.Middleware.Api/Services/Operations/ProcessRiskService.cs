@@ -2,12 +2,12 @@
 using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Utils;
 
-namespace Grc.Middleware.Api.Services {
-    public class ProcessWorkflowService : BaseService, IProcessWorkflowService {
-        public ProcessWorkflowService(
+namespace Grc.Middleware.Api.Services.Operations {
+    public class ProcessRiskService : BaseService, IProcessRiskService {
+        public ProcessRiskService(
             IServiceLoggerFactory loggerFactory,
             IUnitOfWorkFactory uowFactory,
-            IMapper mapper) 
+            IMapper mapper)
             : base(loggerFactory, uowFactory, mapper) {
         }
     }

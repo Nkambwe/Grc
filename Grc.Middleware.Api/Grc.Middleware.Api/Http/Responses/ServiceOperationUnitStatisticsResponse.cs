@@ -39,9 +39,15 @@ namespace Grc.Middleware.Api.Http.Responses {
         public ServiceUnitCountResponse CancelledProcesses { get; set; }
 
         /// <summary>
-        /// Get or set processes that are nolonger in use
+        /// Get or set processes that are in review
         /// </summary>
-        [JsonPropertyName("unclassifiedProcesses")]
-        public ServiceUnitCountResponse UnclassifiedProcesses { get; set; }
+        [JsonPropertyName("reviewProcesses")]
+        public ServiceUnitCountResponse ReviewProcesses { get; set; }
+        
+        /// <summary>
+        /// Get or set processes that are new
+        /// </summary>
+        [JsonPropertyName("newProcesses")]
+        public ServiceUnitCountResponse NewProcesses { get; set; }
     }
 }

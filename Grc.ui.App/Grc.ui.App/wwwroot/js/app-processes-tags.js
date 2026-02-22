@@ -254,8 +254,8 @@ function openProcessTagEditor(title, tag, isEdit) {
 
     //..show overlay panel
     $('#tagPanelTitle').text(title);
-    $('.process-overlay').addClass('active');
-    $('#collapsePanel').addClass('active');
+    $('#processTagOverlay').addClass('active');
+    $('#processTagPanel').addClass('active');
 }
 
 function saveProcessTagRecord(e) {
@@ -411,8 +411,126 @@ function deleteProcessTag(id) {
 }
 
 function closeProcessTagPanel() {
-    $('.process-overlay').removeClass('active');
-    $('#collapsePanel').removeClass('active');
+    $('#processTagOverlay').removeClass('active');
+    $('#processTagPanel').removeClass('active');
+}
+
+//..name input validation
+function validateTagNameInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightProcessTagField('#tagName', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightProcessTagField('#tagName', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightProcessTagField('#tagName', false);
+        return true;
+    }
+
+}
+
+function handleTagNamePaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightProcessTagField('#tagName', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightProcessTagField('#tagName', false);
+    }
+}
+
+//..decscription input validation
+function validateTagDescrInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightProcessTagField('#tagDescription', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightProcessTagField('#tagDescription', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightProcessTagField('#tagDescription', false);
+        return true;
+    }
+
+}
+
+function handleTagDescrPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightProcessTagField('#tagDescription', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightProcessTagField('#tagDescription', false);
+    }
 }
 
 function highlightProcessTagField(selector, hasError, message) {
@@ -448,4 +566,103 @@ $(document).ready(function () {
         e.preventDefault();
     });
 
+    //..tag name validation 
+    $('#tagName').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightProcessTagField('#tagName', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessTagField('#tagName', true, 'Invalid characters detected');
+        } else {
+            highlightProcessTagField('#tagName', false);
+        }
+    });
+
+    $('#tagName').on('focus', function () {
+        highlightProcessTagField('#tagName', false);
+    });
+
+    $('#tagName').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightProcessTagField('#tagName', true, 'Tag name is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessTagField('#tagName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightProcessTagField('#tagName', false);
+        }
+    });
+
+    $('#tagName').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightProcessTagField('#tagName', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightProcessTagField('#tagName', false);
+                }, 2000);
+            }
+        }
+    });
+
+    //..tag description validation 
+    $('#tagDescription').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightProcessTagField('#processDescription', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessTagField('#processDescription', true, 'Invalid characters detected');
+        } else {
+            highlightProcessTagField('#processDescription', false);
+        }
+    });
+
+    $('#tagDescription').on('focus', function () {
+        highlightProcessTagField('#tagDescription', false);
+    });
+
+    $('#tagDescription').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightProcessTagField('#tagDescription', true, 'Tag description is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessTagField('#tagDescription', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightProcessTagField('#tagDescription', false);
+        }
+    });
+
+    $('#tagDescription').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightProcessTagField('#tagDescription', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightProcessTagField('#tagDescription', false);
+                }, 2000);
+            }
+        }
+    });
 });

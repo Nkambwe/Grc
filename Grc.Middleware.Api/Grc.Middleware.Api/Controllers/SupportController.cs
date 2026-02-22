@@ -190,12 +190,12 @@ namespace Grc.Middleware.Api.Controllers {
                 if(result){
                     response.Status = true;
                     response.StatusCode = (int)ResponseCodes.SUCCESS;
-                    response.Message = "Registration completed successfully";    
+                    response.Message = "Activity recorded successfully";    
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
                 } else { 
                     response.Status = true;
                     response.StatusCode = (int)ResponseCodes.FAILED;
-                    response.Message = "Failed to complete regiatration. An error occurrred";  
+                    response.Message = "Failed to save user activity. An error occurrred";  
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
                 }
 

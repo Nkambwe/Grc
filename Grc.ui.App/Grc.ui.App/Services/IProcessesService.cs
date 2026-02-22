@@ -42,7 +42,8 @@ namespace Grc.ui.App.Services
         Task<GrcResponse<ServiceResponse>> UpdateProcessAsync(ProcessViewModel request, long userId, string ipAddress);
 
         Task<GrcResponse<ServiceResponse>> DeleteProcessAsync(GrcIdRequest request);
-
+        Task<GrcResponse<ServiceResponse>> LockProcessAsync(GrcLockRequest request);
+        Task<GrcResponse<ServiceResponse>> MarkAsDeletedAsync(GrcDeleteRequest request);
         #endregion
 
         #region Process Groups

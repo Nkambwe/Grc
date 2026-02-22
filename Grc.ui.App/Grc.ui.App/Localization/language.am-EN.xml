@@ -285,6 +285,9 @@
 	<LocaleResource Name="Component.Key.ProcessReviews">
 		<Value>Process Reviews</Value>
 	</LocaleResource>
+    <LocaleResource Name="Component.Table.Process.OnHoldReason">
+        <Value>Reason Process in on hold</Value>
+    </LocaleResource>
 	<LocaleResource Name="Component.Key.PolicyRegister">
 		<Value>Policies and Procedures</Value>
 	</LocaleResource>
@@ -1776,8 +1779,14 @@
 		<Value>Dormant</Value>
 	</LocaleResource>
 	<LocaleResource Name="App.Menu.Dashboard.Labels.Cancelled">
-		<Value>Cancelled</Value>
+		<Value>No longer in user</Value>
 	</LocaleResource>
+    <LocaleResource Name="App.Menu.Dashboard.Labels.NewProcesses">
+        <Value>New Processes</Value>
+    </LocaleResource>
+    <LocaleResource Name="App.Menu.Dashboard.Labels.InReview">
+        <Value>In Review</Value>
+    </LocaleResource>
 	<LocaleResource Name="App.Menu.Dashboard.Labels.TotalProcesses">
 		<Value>Total Processes</Value>
 	</LocaleResource>

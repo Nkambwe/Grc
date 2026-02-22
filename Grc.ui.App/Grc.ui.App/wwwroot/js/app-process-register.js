@@ -88,7 +88,9 @@ function initProcessRegisterTable() {
                 widthGrow: 2,
                 headerSort: true,
                 headerFilter: "input",
-                formatter: (cell) => `<span class="clickable-title" onclick="viewProcess(${cell.getRow().getData().id})">${cell.getValue()}</span>`
+                formatter: function(cell){
+                    return `<span class="clickable-title" onclick="viewProcess(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
+                }
             },
             {
                 title: "PROCESS DESCRIPTION",
@@ -104,82 +106,152 @@ function initProcessRegisterTable() {
                 field: "ownerName",
                 headerSort: true,
                 headerFilter: "input",
-                minWidth: 200
+                minWidth: 250
             },
             {
                 title: "STATUS",
                 field: "processStatus",
-                minWidth: 150,
-                formatter: statusBadgeFormatter
+                minWidth: 200,
+                headerFilter: "list",
+                headerFilterParams: {
+                    values: {
+                        "": "All",
+                        "DRAFT": "Draft",
+                        "INREVIEW": "Under review",
+                        "UPTODATE": "Uptodate",
+                        "NEEDREVIEW": "Need Review",
+                        "PROPOSED": "Newly Proposed",
+                        "OBSOLETE": "No longer in use",
+                    }
+                },
+                formatter: function (cell) {
+                    const value = cell.getValue();
+                    const cellEl = cell.getElement();
+        
+                    // Professional color scheme with better contrast
+                    let bg = "#f8f9fa";      // Light gray background for default
+                    let clr = "#212529";      // Dark gray text for readability
+                    let border = "2px solid #dee2e6";          // Optional border accent
+        
+                    switch(value) {
+                        case "UPTODATE":
+                            bg = "#d4edda";    // Soft green
+                            clr = "#155724";    // Dark green text
+                            border = "2px solid #28a745";
+                            break;
+                        case "PROPOSED":
+                            bg = "#fff3cd";    // Soft yellow
+                            clr = "#856404";    // Dark yellow/brown text
+                            border = "2px solid #ffc107";
+                            break;
+                        case "INREVIEW":
+                            bg = "#cce5ff";    // Soft blue
+                            clr = "#004085";    // Dark blue text
+                            border = "2px solid #007bff";
+                            break;
+                        case "DRAFT":
+                            bg = "#e2e3e5";    // Soft gray
+                            clr = "#383d41";    // Dark gray text
+                            border = "2px solid #6c757d";
+                            break;
+                        case "NEEDREVIEW":
+                            bg = "#f8d7da";    // Soft red/pink
+                            clr = "#721c24";    // Dark red text
+                            border = "2px solid #dc3545";
+                            break;
+                        case "OBSOLETE":
+                            bg = "#343a40";    // Dark gray
+                            clr = "#ffffff";    // White text
+                            border = "2px solid #1d2124";
+                            break;
+                        default:
+                            bg = "#f8f9fa";    // Light gray
+                            clr = "#212529";    // Dark gray
+                    }
+        
+                    cellEl.style.backgroundColor = bg;
+                    cellEl.style.color = clr;
+                    cellEl.style.fontWeight = "600";
+                    cellEl.style.textAlign = "center";
+                    cellEl.style.padding = "4px 8px";
+                    cellEl.style.borderRadius = "4px";
+                    if (border) cellEl.style.border = border;
+        
+                    return value;
+                }
             },
             {
-                title: "CURRENT STAGE",
+                title: "REVIEW STATUS",
                 field: "workflowStage",
-                minWidth: 200
+                minWidth: 250,
+                headerFilter: "list",
+                headerFilterParams: {
+                    values: {
+                        "": "All",
+                        "INPROGRESS": "In Progress",
+                        "PENDING": "Pending",
+                        "ONHOLD": "On Hold",
+                        "COMPLETED": "Completed",
+                    }
+                },
+                formatter: function (cell) {
+                    const value = cell.getValue();
+                    const cellEl = cell.getElement();
+        
+                    // Professional color scheme for workflow stages
+                    let bg = "#f8f9fa";      // Light gray background for default
+                    let clr = "#212529";      // Dark gray text for readability
+                    let border = "2px solid #dee2e6";
+        
+                    switch(value) {
+                        case "INPROGRESS":
+                            bg = "#cce5ff";    // Soft blue
+                            clr = "#004085";    // Dark blue text
+                            border = "2px solid #007bff";
+                            break;
+                        case "PENDING":
+                            bg = "#fff3cd";    // Soft yellow
+                            clr = "#856404";    // Dark yellow/brown text
+                            border = "2px solid #ffc107";
+                            break;
+                        case "ONHOLD":
+                            bg = "#f8d7da";    // Soft red/pink
+                            clr = "#721c24";    // Dark red text
+                            border = "2px solid #dc3545";
+                            break;
+                        case "COMPLETED":
+                            bg = "#d4edda";    // Soft green
+                            clr = "#155724";    // Dark green text
+                            border = "2px solid #28a745";
+                            break;
+                        default:
+                            bg = "#f8f9fa";    // Light gray
+                            clr = "#212529";    // Dark gray
+                    }
+        
+                    cellEl.style.backgroundColor = bg;
+                    cellEl.style.color = clr;
+                    cellEl.style.fontWeight = "600";
+                    cellEl.style.textAlign = "center";
+                    cellEl.style.padding = "4px 8px";
+                    cellEl.style.borderRadius = "4px";
+                    if (border) cellEl.style.border = border;
+        
+                    return value;
+                }
             },
             {
                 title: "VERSION",
                 field: "version",
-                hozAlign: "center",
+                hozAlign: "left",
                 minWidth: 120
-            },
-            {
-                title: "RISK",
-                field: "riskRating",
-                minWidth: 120,
-                hozAlign: "center",
-                formatter: riskFormatter
-            },
-            {
-                title: "LAST UPDATED",
-                field: "lastReviewDate",
-                minWidth: 180
-            },
-            {
-                title: "ACTIONS",
-                formatter: processActionsFormatter,
-                width: 260,
-                hozAlign: "center",
-                headerSort: false
             }
         ]
     });
 }
-function statusBadgeFormatter(cell) {
-    let val = cell.getValue();
-    let map = {
-        Draft: "secondary",
-        UnderReview: "warning",
-        Approved: "success",
-        Archived: "dark"
-    };
-    return `<span class="badge bg-${map[val] || 'primary'}">${val}</span>`;
-}
-
-function processActionsFormatter(cell) {
-    let row = cell.getRow().getData();
-
-    let btns = `<button class="grc-table-btn grc-table-btn-open" onclick="viewProcess(${row.id})">VIEW</button>`;
-    if (row.status === "DRAFT") {
-        btns += `<button class="grc-table-btn grc-btn-edit" onclick="editProcess(${row.id})">EDIT</button>
-                 <button class="grc-table-btn grc-btn-submit" onclick="submitProcess(${row.id})">SUBMIT</button>`;
-    }
-
-    return btns;
-}
-
-function riskFormatter(cell) {
-    let val = cell.getValue();
-    let map = {
-        Low: "success",
-        Medium: "warning",
-        High: "danger"
-    };
-    return `<span class="badge bg-${map[val] || 'secondary'}">${val}</span>`;
-}
 
 function createProcess() {
-    openProcessEditor('New Process', {
+    openProcessEditor('Create new process', {
         // Populate form fields
         id:0,
         isEdit:false,
@@ -233,6 +305,8 @@ function findProcess(id) {
 function openProcessEditor(title, process, isEdit) {
     var isLocked = process?.isLockProcess;
     var status = process?.processStatus;
+    console.log("STATUS >> " + status);
+
     // Populate form fields
     $("#processId").val(process?.id || "");
     $("#isEdit").val(isEdit);
@@ -241,49 +315,13 @@ function openProcessEditor(title, process, isEdit) {
     $("#typeId").val(process?.typeId || 0).trigger('change.select2');
     $('#isDeleted').prop('checked', process?.isDeleted || false);
     $("#effectiveDate").val(process?.effectiveDate);
-    $('#isLockProcess').prop('checked', isLocked);
-    $("#onholdReason").val(process?.onholdReason || "");
-    $("#processStatus").val(status).trigger('change.select2');
-    $("#comment").val(process?.comment || "");
-    $("#fileName").val(process?.fileName || "");
-    $("#fileVersion").val(process?.currentVersion || "");
     $("#unitId").val(process?.unitId || 0).trigger('change.select2');
     $("#ownerId").val(process?.ownerId || 0).trigger('change.select2');
     $("#assigneedId").val(process?.assigneedId || 0).trigger('change.select2');
-    $("#hodApprovalOn").val(process?.hodApprovalOn || "");
-    $("#hodApprovalStatus").val(process?.hodApprovalStatus || "PENDING").trigger('change.select2');
-    $("#hoApprovalComment").val(process?.hoApprovalComment || "");
-    $("#riskApprovalOn").val(process?.riskApprovalOn || "");
-    $("#riskApprovalStatus").val(process?.riskApprovalStatus || "PENDING").trigger('change.select2');
-    $("#riskApprovalComment").val(process?.riskApprovalComment || "");
-    $("#complianceApprovalOn").val(process?.complianceApprovalOn || "");
-    $("#complianceApprovalStatus").val(process?.complianceApprovalStatus || "PENDING").trigger('change.select2');
-    $("#complianceApprovalComment").val(process?.complianceApprovalComment || "");
-    $('#needsBranchOperations').prop('checked', process?.needsBranchOperations || false);
-    $("#branchOpsApprovalOn").val(process?.branchOpsApprovalOn || "");
-    $("#branchOpsApprovalStatus").val(process?.branchOpsApprovalStatus || "PENDING").trigger('change.select2');
-    $("#branchOpsApprovalComment").val(process?.branchOpsApprovalComment || "");
-    $('#needsCreditReview').prop('checked', process?.needsCreditReview || false);
-    $("#creditApprovalOn").val(process?.creditApprovalOn || "");
-    $("#creditApprovalStatus").val(process?.creditApprovalStatus || "PENDING").trigger('change.select2');
-    $("#creditApprovalComment").val(process?.creditApprovalComment || "");
-    $('#needsTreasuryReview').prop('checked', process?.needsTreasuryReview || false);
-    $("#treasuryApprovalOn").val(process?.treasuryApprovalOn || "");
-    $("#treasuryApprovalStatus").val(process?.treasuryApprovalStatus || "PENDING").trigger('change.select2');
-    $("#treasuryApprovalComment").val(process?.treasuryApprovalComment || "");
-    $('#needsFintechReview').prop('checked', process?.needsFintechReview || false);
-    $("#fintechApprovalOn").val(process?.fintechApprovalOn || "");
-    $("#fintechApprovalStatus").val(process?.fintechApprovalStatus || "PENDING").trigger('change.select2');
-    $("#fintechApprovalComment").val(process?.fintechApprovalComment || "");
+    $("#comments").val(process?.comment || "");
 
-    // Hide "on-hold reason" if status = 3
-    if (status === 3) {
-        $("#onHoldBox").hide();
-    } else {
-        $("#onHoldBox").show();
-    }
-
-    //..hide lock process checkbox if not edit mode
+    $('#isLockProcess').prop('checked', isLocked);
+     //..hide lock process checkbox if not edit mode
     if (!isEdit) {
         $("#lockProcess").hide(); 
         $("#IsDeletedBox").hide(); 
@@ -291,6 +329,92 @@ function openProcessEditor(title, process, isEdit) {
         $("#lockProcess").show();
         $("#IsDeletedBox").show(); 
     }
+
+    //..review tab
+    $("#processStatus").val(status).trigger('change.select2');
+    $("#onholdReason").val(process?.onholdReason || "");
+
+    // Hide "on-hold reason" if status = 3
+    if (status === "ONHOLD") {
+        $("#onHoldBox").hide();
+    } else {
+        $("#onHoldBox").show();
+    }
+
+    let hodStatus = process?.hodApprovalStatus;
+    $("#hodApprovalOn").val(process?.hodApprovalOn || "");
+    $("#hodApprovalStatus").val(process?.hodApprovalStatus || "PENDING").trigger('change.select2');
+    $("#hoApprovalComment").val(process?.hoApprovalComment || "");
+    
+    let riskStatus = process?.riskApprovalStatus;
+    $("#riskApprovalOn").val(process?.riskApprovalOn || "");
+    $("#riskApprovalStatus").val(process?.riskApprovalStatus || "PENDING").trigger('change.select2');
+    $("#riskApprovalComment").val(process?.riskApprovalComment || "");
+    if (hodStatus === "APPROVED") {
+        $("#riskBox").show();
+    } else {
+         $("#riskBox").hide();
+    }
+
+    let compStatus = process?.complianceApprovalStatus;
+    $("#complianceApprovalOn").val(process?.complianceApprovalOn || "");
+    $("#complianceApprovalStatus").val(process?.complianceApprovalStatus || "PENDING").trigger('change.select2');
+    $("#complianceApprovalComment").val(process?.complianceApprovalComment || "");
+    if (riskStatus === "APPROVED") {
+        $("#compBox").show();
+    } else {
+         $("#compBox").hide();
+    }
+
+    let bopStatus = process?.branchOpsApprovalStatus;
+    let needsBop = process?.needsBranchOperations;
+    $('#needsBranchOperations').prop('checked', process?.needsBranchOperations || false);
+    $("#branchOpsApprovalOn").val(process?.branchOpsApprovalOn || "");
+    $("#branchOpsApprovalStatus").val(process?.branchOpsApprovalStatus || "PENDING").trigger('change.select2');
+    $("#branchOpsApprovalComment").val(process?.branchOpsApprovalComment || "");
+    if (needsBop && compStatus === "APPROVED") {
+        $("#branchBox").show();
+    } else {
+         $("#branchBox").hide();
+    }
+   
+    let needsCredit = process?.needsCreditReview;
+    let creditStatus = process?.creditApprovalStatus;
+    $('#needsCreditReview').prop('checked', process?.needsCreditReview || false);
+    $("#creditApprovalOn").val(process?.creditApprovalOn || "");
+    $("#creditApprovalStatus").val(process?.creditApprovalStatus || "PENDING").trigger('change.select2');
+    $("#creditApprovalComment").val(process?.creditApprovalComment || "");
+    if (needsCredit && bopStatus === "APPROVED") {
+         $("#creditBox").show();
+    } else {
+         $("#creditBox").hide();
+    }
+
+    let needsTreasury = process?.needsTreasuryReview;
+    let treasuryStatus = process?.creditApprovalStatus;
+    $('#needsTreasuryReview').prop('checked', process?.needsTreasuryReview || false);
+    $("#treasuryApprovalOn").val(process?.treasuryApprovalOn || "");
+    $("#treasuryApprovalStatus").val(process?.treasuryApprovalStatus || "PENDING").trigger('change.select2');
+    $("#treasuryApprovalComment").val(process?.treasuryApprovalComment || "");
+    if (needsTreasury && creditStatus === "APPROVED") {
+         $("#treasuryBox").show();
+    } else {
+         $("#treasuryBox").hide();
+    }
+    
+    let needsFintech = process?.needsFintechReview;
+    $('#needsFintechReview').prop('checked', process?.needsFintechReview || false);
+    $("#fintechApprovalOn").val(process?.fintechApprovalOn || "");
+    $("#fintechApprovalStatus").val(process?.fintechApprovalStatus || "PENDING").trigger('change.select2');
+    $("#fintechApprovalComment").val(process?.fintechApprovalComment || "");
+    if (needsFintech && treasuryStatus === "APPROVED"){
+         $("#fintechBox").show();
+    } else {
+         $("#fintechBox").hide();
+    }
+
+    $("#fileName").val(process?.fileName || "");
+    $("#fileVersion").val(process?.currentVersion || "");
 
     //..disable all fields if editing a locked process
     if (isLocked) {
@@ -305,9 +429,668 @@ function openProcessEditor(title, process, isEdit) {
     }
 
     //..show overlay panel
-    $('#processPanelTitle').text(title);
-    $('.process-overlay').addClass('active');
-    $('#collapsePanel').addClass('active');
+    $('#processTitle').text(title);
+    $('#processOverlay').addClass('active');
+    $('#processPanel').addClass('active');
+}
+
+//..name input validation
+function validateProcessNameInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightProcessField('#processName', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightProcessField('#processName', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightProcessField('#processName', false);
+        return true;
+    }
+
+}
+
+function handleProcessNamePaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightProcessField('#processName', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightProcessField('#processName', false);
+    }
+}
+
+//..description input validation
+function validateProcessDescriptionInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightProcessField('#processDescription', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightProcessField('#processDescription', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightProcessField('#processDescription', false);
+        return true;
+    }
+
+}
+
+function handleProcessDescriptionPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightProcessField('#processDescription', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightProcessField('#processDescription', false);
+    }
+}
+
+//..comments input validation
+function validateCommentInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightProcessField('#comments', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightProcessField('#comments', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightProcessField('#comments', false);
+        return true;
+    }
+
+}
+
+function validateOnHoldInput(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightProcessField('#comments', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightProcessField('#comments', false);
+    }
+}
+
+//..comments input validation
+function validateCommentInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightProcessField('#onholdReason', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightProcessField('#onholdReason', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightProcessField('#onholdReason', false);
+        return true;
+    }
+
+}
+
+function handleOnHoldPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightProcessField('#onholdReason', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightProcessField('#onholdReason', false);
+    }
+}
+
+//..comments input validation
+function validateHodInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightProcessField('#hoApprovalComment', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightProcessField('#hoApprovalComment', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightProcessField('#hoApprovalComment', false);
+        return true;
+    }
+
+}
+
+function handleHodPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightProcessField('#hoApprovalComment', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightProcessField('#hoApprovalComment', false);
+    }
+}
+
+//..hod comments input validation
+function validateHodInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightProcessField('#hoApprovalComment', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightProcessField('#hoApprovalComment', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightProcessField('#hoApprovalComment', false);
+        return true;
+    }
+
+}
+
+function handleHodPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightProcessField('#hoApprovalComment', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightProcessField('#hoApprovalComment', false);
+    }
+}
+
+//..risk comments input validation
+function validateApprovalInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightProcessField('#riskApprovalComment', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightProcessField('#riskApprovalComment', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightProcessField('#riskApprovalComment', false);
+        return true;
+    }
+
+}
+
+function handleApprovalPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightProcessField('#riskApprovalComment', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightProcessField('#riskApprovalComment', false);
+    }
+}
+
+//..compliance comments input validation
+function validateComplianceInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightProcessField('#riskApprovalComment', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightProcessField('#riskApprovalComment', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightProcessField('#riskApprovalComment', false);
+        return true;
+    }
+
+}
+
+function handleCompliancePaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightProcessField('#riskApprovalComment', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightProcessField('#riskApprovalComment', false);
+    }
+}
+
+//..branch ops comments input validation
+function validateBranchOpsInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightProcessField('#branchOpsApprovalComment', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightProcessField('#branchOpsApprovalComment', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightProcessField('#branchOpsApprovalComment', false);
+        return true;
+    }
+
+}
+
+function handleBranchOpsPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightProcessField('#branchOpsApprovalComment', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightProcessField('#branchOpsApprovalComment', false);
+    }
+}
+
+//..credit comments input validation
+function validateCreditInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightProcessField('#creditApprovalComment', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightProcessField('#creditApprovalComment', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightProcessField('#creditApprovalComment', false);
+        return true;
+    }
+
+}
+
+function handleCreditPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightProcessField('#creditApprovalComment', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightProcessField('#creditApprovalComment', false);
+    }
+}
+
+//..credit comments input validation
+function validateTreasuryInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightProcessField('#treasuryApprovalComment', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightProcessField('#treasuryApprovalComment', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightProcessField('#treasuryApprovalComment', false);
+        return true;
+    }
+
+}
+
+function handleTreasuryPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightProcessField('#treasuryApprovalComment', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightProcessField('#treasuryApprovalComment', false);
+    }
 }
 
 function initiateReview(data) {
@@ -471,8 +1254,8 @@ function initProcessSearch() {
 }
 
 function closeProcessPanel() {
-    $('.process-overlay').removeClass('active');
-    $('#collapsePanel').removeClass('active');
+    $('#processOverlay').removeClass('active');
+    $('#processPanel').removeClass('active');
 }
 
 function saveProcessRecord(e) {
@@ -492,12 +1275,14 @@ function saveProcessRecord(e) {
         onholdReason: $('#onholdReason').val()?.trim(),
         fileName: $('#fileName').val()?.trim(),
         currentVersion: $('#fileVersion').val()?.trim(),
-        comments: $('#comment').val()?.trim(),
+        comments: $('#comments').val()?.trim(),
         needsBranchReview: $('#needsBranchOperations').prop('checked'),
         needsCreditReview: $('#needsCreditReview').prop('checked'),
         needsTreasuryReview: $('#needsTreasuryReview').prop('checked'),
         needsFintechReview: $('#needsFintechReview').prop('checked')
     };
+
+    console.log(recordData);
 
     // --- validate required fields ---
     let errors = [];
@@ -713,13 +1498,62 @@ function toggleSection(header) {
     toggle.classList.toggle('expanded');
 }
 
-function initEffectiveDatePickers() {
-    dateList["effectiveDate"] = flatpickr("#effectiveDate", {
+function initDatePickers() {
+    flatpickr("#effectiveDate", {
         dateFormat: "Y-m-d",
         allowInput: true,
         altInput: true,
-        altFormat: "d M Y",
-        defaultDate: null
+        altFormat: "d M Y"
+    });
+
+     flatpickr("#fintechApprovalOn", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y"
+    });
+
+     flatpickr("#treasuryApprovalOn", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y"
+    });
+
+     flatpickr("#creditApprovalOn", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y"
+    });
+
+     flatpickr("#branchOpsApprovalOn", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y"
+    });
+
+     flatpickr("#complianceApprovalOn", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y"
+    });
+
+    
+     flatpickr("#riskApprovalOn", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y"
+    });
+
+     flatpickr("#hodApprovalOn", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y"
     });
 }
 
@@ -790,30 +1624,191 @@ function updateFileNameField() {
     }
 }
 
+function setProcessReadOnly(isLocked) {
+
+    const $form = $("#processForm");
+
+    //..disable all standard inputs
+    $form.find("input:not(#isLocked), textarea, select").prop("disabled", isLocked);
+
+    //..allow hidden fields
+    $form.find("input[type='hidden']").prop("disabled", false);
+
+    //..flatpickr
+    Object.values(flatpickrInstances).forEach(fp => {
+        if (!fp) return;
+        fp.set("clickOpens", !isLocked);
+        fp.input.disabled = isLocked;
+    });
+
+    //..disable switches explicitly
+    $("#isDeleted, #isAligned").prop("disabled", isLocked);
+
+    //..disable Save button
+    $form.find("button[onclick='saveProcessRecord()']")
+        .prop("disabled", isLocked)
+        .toggleClass("disabled", isLocked);
+}
+
+function lockProcess(id, isLocked) {
+    let payload = {
+        id: id,
+        isLocked: isLocked
+    };
+
+    const url = "/operations/workflow/processes/registers/lock-process";
+    Swal.fire({
+        title: isLocked ? "Locking process record..." : "Unlocking process record...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(payload),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getPolicyAnti2ForgeryToken()
+        },
+        success: function (res) {
+            Swal.close();
+            if (!res.success) {
+                //..error from the server
+                Swal.fire({
+                    title: "Invalid record",
+                    html: res.message.replaceAll("; ", "<br>")
+                });
+                return;
+            }
+
+            if (res && res.data) {
+                if (isEdit) {
+                    processRegisterTable.updateData([res.data]);
+                } else {
+                    processRegisterTable.addData([res.data], true);
+                }
+            }
+
+            Swal.fire({
+                title: isLocked ? "Locking process record" : "Unlocking process record",
+                text: res.message || "Saved successfully.",
+                timer: 2000,
+                showConfirmButton: false
+            });
+
+            closePolicyPanel();
+        },
+        error: function (xhr) {
+            Swal.close();
+
+            let errorMessage = "Unexpected error occurred.";
+            try {
+                let response = JSON.parse(xhr.responseText);
+                if (response.message) errorMessage = response.message;
+            } catch (e) { }
+
+            Swal.fire({
+                title: isEdit ? "Update Failed" : "Save Failed",
+                text: errorMessage
+            });
+        }
+    });
+}
+
+function deleteProcessRecord(id, isDeleted) {
+    let payload = {
+        id: id,
+        isDeleted: isDeleted
+    };
+
+    const url = "/operations/workflow/processes/registers/delete-process";
+    Swal.fire({
+        title: isDeleted ? "Deleting process record..." : "Restoring process record...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(payload),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getPolicyAnti2ForgeryToken()
+        },
+        success: function (res) {
+            Swal.close();
+            if (!res.success) {
+                //..error from the server
+                Swal.fire({
+                    title: "Invalid record",
+                    html: res.message.replaceAll("; ", "<br>")
+                });
+                return;
+            }
+
+            if (res && res.data) {
+                if (isEdit) {
+                    processRegisterTable.updateData([res.data]);
+                } else {
+                    processRegisterTable.addData([res.data], true);
+                }
+            }
+
+            Swal.fire({
+                title: isLocked ? "Deleting process" : "Restoring process",
+                text: res.message || "Request completed successfully.",
+                timer: 2000,
+                showConfirmButton: false
+            });
+
+            closePolicyPanel();
+        },
+        error: function (xhr) {
+            Swal.close();
+
+            let errorMessage = "Unexpected error occurred.";
+            try {
+                let response = JSON.parse(xhr.responseText);
+                if (response.message) errorMessage = response.message;
+            } catch (e) { }
+
+            Swal.fire({
+                title: isEdit ? "Update Failed" : "Save Failed",
+                text: errorMessage
+            });
+        }
+    });
+}
+
 $(document).ready(function () {
 
     initProcessRegisterTable();
-    initEffectiveDatePickers();
+    initDatePickers();
 
     $("#onHoldBox").addClass("d-none");
 
     $('#typeId, #processStatus, #unitId, #ownerId, #assigneedId, #complianceStatus, #branchManagerStatus, #approvalStatus').select2({
         width: '100%',
-        dropdownParent: $('#collapsePanel')
-    });
-
-    //..initialize Flatpickr
-    flatpickr("#effectiveDate", {
-        dateFormat: "Y-m-d",
-        allowInput: true
+        dropdownParent: $('#processPanel')
     });
 
     $('.action-btn-process-new').on('click', function () {
         createProcess();
     });
 
-    $('#btnExportProcess').on('click', function () {
-        console.log("Exporting Processes");
+    $('.action-btn-excel-export').on('click', function () {
         $.ajax({
             url: '/operations/workflow/processes/registers/retrieve/export-all',
             type: 'POST',
@@ -914,6 +1909,562 @@ $(document).ready(function () {
 
     $('#processForm').on('submit', function (e) {
         e.preventDefault();
+    });
+
+    //..render process readonly
+    const $isLocked = $('#isLockProcess');
+
+    //..toggle on change
+    $isLocked.on('change', function () {
+        const isLocked = this.checked;
+        const id = $('#processId').val();
+
+        setProcessReadOnly(isLocked);
+        lockProcess(id, isLocked);
+    });
+
+     //..render process readonly
+    const $isDeleted = $('#isDeleted');
+
+    //..toggle on change
+    $isDeleted.on('change', function () {
+        const isDeleted = this.checked;
+        const id = $('#processId').val();
+        deleteProcessRecord(id, isLocked);
+    });
+
+    //..category name validation 
+    $('#processName').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightProcessField('#processName', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#processName', true, 'Invalid characters detected');
+        } else {
+            highlightProcessField('#processName', false);
+        }
+    });
+
+    $('#processName').on('focus', function () {
+        highlightProcessField('#processName', false);
+    });
+
+    $('#processName').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightProcessField('#processName', true, 'Process name is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#processName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightProcessField('#processName', false);
+        }
+    });
+
+    $('#processName').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightProcessField('#processName', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightProcessField('#processName', false);
+                }, 2000);
+            }
+        }
+    });
+
+    //..process description validation 
+    $('#processDescription').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightProcessField('#processDescription', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#processDescription', true, 'Invalid characters detected');
+        } else {
+            highlightProcessField('#processDescription', false);
+        }
+    });
+
+    $('#processDescription').on('focus', function () {
+        highlightProcessField('#processDescription', false);
+    });
+
+    $('#processDescription').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightProcessField('#processDescription', true, 'process description is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#processDescription', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightProcessField('#processDescription', false);
+        }
+    });
+
+    $('#processDescription').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightProcessField('#processDescription', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightProcessField('#processDescription', false);
+                }, 2000);
+            }
+        }
+    });
+
+    //..comments validation 
+    $('#comments').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightProcessField('#comments', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#comments', true, 'Invalid characters detected');
+        } else {
+            highlightProcessField('#comments', false);
+        }
+    });
+
+    $('#comments').on('focus', function () {
+        highlightProcessField('#comments', false);
+    });
+
+    $('#comments').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightProcessField('#comments', true, 'Comments is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#comments', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightProcessField('#comments', false);
+        }
+    });
+
+    $('#comments').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightProcessField('#comments', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightProcessField('#comments', false);
+                }, 2000);
+            }
+        }
+    });
+
+    //..on hold reason validation 
+    $('#onholdReason').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightProcessField('#onholdReason', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#onholdReason', true, 'Invalid characters detected');
+        } else {
+            highlightProcessField('#onholdReason', false);
+        }
+    });
+
+    $('#onholdReason').on('focus', function () {
+        highlightProcessField('#onholdReason', false);
+    });
+
+    $('#onholdReason').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value && !/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#onholdReason', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightProcessField('#onholdReason', false);
+        }
+    });
+
+    $('#onholdReason').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightProcessField('#onholdReason', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightProcessField('#onholdReason', false);
+                }, 2000);
+            }
+        }
+    });
+
+    //..hod comments validation 
+    $('#hoApprovalComment').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightProcessField('#hoApprovalComment', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#hoApprovalComment', true, 'Invalid characters detected');
+        } else {
+            highlightProcessField('#hoApprovalComment', false);
+        }
+    });
+
+    $('#hoApprovalComment').on('focus', function () {
+        highlightProcessField('#hoApprovalComment', false);
+    });
+
+    $('#hoApprovalComment').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value && !/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#hoApprovalComment', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightProcessField('#hoApprovalComment', false);
+        }
+    });
+
+    $('#hoApprovalComment').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightProcessField('#hoApprovalComment', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightProcessField('#hoApprovalComment', false);
+                }, 2000);
+            }
+        }
+    });
+    
+    //..hod comments validation 
+    $('#riskApprovalComment').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightProcessField('#riskApprovalComment', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#riskApprovalComment', true, 'Invalid characters detected');
+        } else {
+            highlightProcessField('#riskApprovalComment', false);
+        }
+    });
+
+    $('#riskApprovalComment').on('focus', function () {
+        highlightProcessField('#riskApprovalComment', false);
+    });
+
+    $('#riskApprovalComment').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value && !/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#riskApprovalComment', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightProcessField('#riskApprovalComment', false);
+        }
+    });
+
+    $('#riskApprovalComment').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightProcessField('#riskApprovalComment', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightProcessField('#riskApprovalComment', false);
+                }, 2000);
+            }
+        }
+    });
+    
+    //..comp comments validation 
+    $('#complianceApprovalComment').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightProcessField('#complianceApprovalComment', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#complianceApprovalComment', true, 'Invalid characters detected');
+        } else {
+            highlightProcessField('#complianceApprovalComment', false);
+        }
+    });
+
+    $('#complianceApprovalComment').on('focus', function () {
+        highlightProcessField('#complianceApprovalComment', false);
+    });
+
+    $('#complianceApprovalComment').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value && !/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#complianceApprovalComment', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightProcessField('#complianceApprovalComment', false);
+        }
+    });
+
+    $('#complianceApprovalComment').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightProcessField('#complianceApprovalComment', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightProcessField('#complianceApprovalComment', false);
+                }, 2000);
+            }
+        }
+    });
+    
+    //..comp comments validation 
+    $('#branchOpsApprovalComment').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightProcessField('#branchOpsApprovalComment', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#branchOpsApprovalComment', true, 'Invalid characters detected');
+        } else {
+            highlightProcessField('#branchOpsApprovalComment', false);
+        }
+    });
+
+    $('#branchOpsApprovalComment').on('focus', function () {
+        highlightProcessField('#branchOpsApprovalComment', false);
+    });
+
+    $('#branchOpsApprovalComment').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value && !/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#branchOpsApprovalComment', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightProcessField('#branchOpsApprovalComment', false);
+        }
+    });
+
+    $('#branchOpsApprovalComment').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightProcessField('#branchOpsApprovalComment', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightProcessField('#branchOpsApprovalComment', false);
+                }, 2000);
+            }
+        }
+    });
+    
+    //..credit comments validation 
+    $('#creditApprovalComment').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightProcessField('#creditApprovalComment', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#creditApprovalComment', true, 'Invalid characters detected');
+        } else {
+            highlightProcessField('#creditApprovalComment', false);
+        }
+    });
+
+    $('#creditApprovalComment').on('focus', function () {
+        highlightProcessField('#creditApprovalComment', false);
+    });
+
+    $('#creditApprovalComment').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value && !/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#creditApprovalComment', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightProcessField('#creditApprovalComment', false);
+        }
+    });
+
+    $('#creditApprovalComment').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightProcessField('#creditApprovalComment', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightProcessField('#creditApprovalComment', false);
+                }, 2000);
+            }
+        }
+    });
+    
+    //..treasury comments validation 
+    $('#treasuryApprovalComment').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightProcessField('#treasuryApprovalComment', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#treasuryApprovalComment', true, 'Invalid characters detected');
+        } else {
+            highlightProcessField('#treasuryApprovalComment', false);
+        }
+    });
+
+    $('#treasuryApprovalComment').on('focus', function () {
+        highlightProcessField('#treasuryApprovalComment', false);
+    });
+
+    $('#treasuryApprovalComment').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value && !/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#treasuryApprovalComment', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightProcessField('#treasuryApprovalComment', false);
+        }
+    });
+
+    $('#treasuryApprovalComment').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightProcessField('#treasuryApprovalComment', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightProcessField('#treasuryApprovalComment', false);
+                }, 2000);
+            }
+        }
+    });
+    
+    //..fintech comments validation 
+    $('#fintechApprovalComment').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightProcessField('#fintechApprovalComment', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#fintechApprovalComment', true, 'Invalid characters detected');
+        } else {
+            highlightProcessField('#fintechApprovalComment', false);
+        }
+    });
+
+    $('#fintechApprovalComment').on('focus', function () {
+        highlightProcessField('#fintechApprovalComment', false);
+    });
+
+    $('#fintechApprovalComment').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value && !/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessField('#fintechApprovalComment', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightProcessField('#fintechApprovalComment', false);
+        }
+    });
+
+    $('#fintechApprovalComment').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightProcessField('#fintechApprovalComment', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightProcessField('#fintechApprovalComment', false);
+                }, 2000);
+            }
+        }
     });
 
 });

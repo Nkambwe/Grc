@@ -4,11 +4,9 @@ using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using System.Linq.Expressions;
 
-namespace Grc.Middleware.Api.Services
-{
+namespace Grc.Middleware.Api.Services.Operations {
 
-    public interface IProcessApprovalService
-    {
+    public interface IProcessApprovalService {
         int Count();
         int Count(Expression<Func<OperationProcess, bool>> predicate);
         Task<int> CountAsync(CancellationToken cancellationToken = default);
@@ -22,6 +20,6 @@ namespace Grc.Middleware.Api.Services
         bool Delete(IdRequest request);
         Task<bool> DeleteAsync(IdRequest request);
         Task<PagedResult<ProcessApproval>> PageProcessApprovalStatusAsync(int pageIndex, int pageSize, bool includeDeleted, params Expression<Func<ProcessApproval, object>>[] includes);
-       
+
     }
 }

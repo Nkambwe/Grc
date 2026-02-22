@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
+using Grc.Middleware.Api.Data.Entities.Support;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
@@ -941,7 +942,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     RegulatoryTypes = new(),
                     Departments = new(),
                     ReturnTypes = new(),
-                    EnforcementLaws = new()
+                    EnforcementLaws = new(),
+                    ProcessTypes = new()
                 };
 
                 
@@ -959,6 +961,9 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
 
                 // get return types
                 var returnTypes = await uow.ReturnTypeRepository.GetAllAsync(false);
+
+                // get return types
+                var processTypes = await uow.ProcessTypeRepository.GetAllAsync(false);
 
                 //..get department details
                 var departments = await uow.DepartmentRepository.GetAllAsync(false, d => d.Responsibilities);
@@ -996,8 +1001,33 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                                 });
                             Logger.LogActivity($"Department Responsibilities found: {owners.Count}", "DEBUG");
                         }
+
                     }
                     
+                }
+
+                
+                //..operations units
+                var opsDepts = await uow.DepartmentRepository.GetAllAsync(
+                    d => d.DepartmentName.Contains("Operations"), 
+                    false, 
+                    d => d.Units
+                );
+
+                if (opsDepts != null && opsDepts.Any())  {
+                    var operationUnits = opsDepts
+                        .Where(dept => dept.Units != null && dept.Units.Any())
+                        .SelectMany(dept => dept.Units)
+                        .Select(unit => new DepartmentUnitItemResponse 
+                        {
+                            Id = unit.Id,
+                            Name = unit.UnitName
+                        })
+                        .ToList();
+
+                    response.OperationUnits.AddRange(operationUnits);
+    
+                    Logger.LogActivity($"Operation Units found: {operationUnits.Count}", "DEBUG");
                 }
 
                 //..authorities
@@ -1036,6 +1066,18 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                         });
                     Logger.LogActivity($"Return types found: {returnTypes.Count}", "DEBUG");
                 }
+
+                //..process types
+                if (processTypes != null && processTypes.Count > 0) {
+                    response.ProcessTypes.AddRange(
+                        from type in returnTypes
+                        select new ProcessTypeResponse {
+                            Id = type.Id,
+                            TypeName = type.TypeName
+                        });
+                    Logger.LogActivity($"Process types found: {returnTypes.Count}", "DEBUG");
+                }
+
 
                 //..enabling laws
                 if (acts != null && acts.Count > 0) {

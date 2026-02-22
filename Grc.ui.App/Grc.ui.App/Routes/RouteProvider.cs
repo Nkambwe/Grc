@@ -707,9 +707,27 @@
             );
 
             routeBuilder.MapControllerRoute(
-                name: "app-operations-processes-register-initiate-review",
-                pattern: "/operations/workflow/processes/registers/initiate-review",
-                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "InitiateReview" }
+                name: "app-operations-processes-update-lock",
+                pattern: "/operations/workflow/processes/registers/lock-process",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "LockProcess" }
+            );
+            
+            routeBuilder.MapControllerRoute(
+                name: "app-operations-processes-update-lock",
+                pattern: "/operations/workflow/processes/registers/delete-process",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "DeleteProcess" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                name: "app-operations-processes-register-export-register-all",
+                pattern: "/operations/workflow/processes/registers/retrieve/export-all",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ExportProcessRegisterAll" }
+            );
+
+            routeBuilder.MapControllerRoute(
+                name: "app-operations-system-logout",
+                pattern: "/operations/workflow/system/logout",
+                defaults: new { area = "Operations", controller = "OperationWorkflow", action = "Logout" }
             );
 
             /*----------------------- Operations process groups routes*/

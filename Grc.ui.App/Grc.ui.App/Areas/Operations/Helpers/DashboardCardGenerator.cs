@@ -19,6 +19,22 @@ namespace Grc.ui.App.Areas.Operations.Helpers {
             });
 
             chart.ProcessCards.Add(new StatCardViewModel {
+                Title = localizationService.GetLocalizedLabel("App.Menu.Dashboard.Labels.NewProcesses"),
+                Value = stats.UnitProcesses.NewProcesses.TotalProcesses,
+                CssClass = "stat-separator-primary",
+                Controller = "OperationDashboard",
+                Action = "AddedProcesses"
+            });
+            
+            chart.ProcessCards.Add(new StatCardViewModel {
+                Title = localizationService.GetLocalizedLabel("App.Menu.Dashboard.Labels.NewProcesses"),
+                Value = stats.UnitProcesses.ReviewProcesses.TotalProcesses,
+                CssClass = "stat-separator-primary",
+                Controller = "OperationDashboard",
+                Action = "ReviewProcesses"
+            });
+
+            chart.ProcessCards.Add(new StatCardViewModel {
                 Title = localizationService.GetLocalizedLabel("App.Menu.Dashboard.Labels.Proposed"),
                 Value = stats.UnitProcesses.ProposedProcesses.TotalProcesses,
                 CssClass = "stat-separator-primary",

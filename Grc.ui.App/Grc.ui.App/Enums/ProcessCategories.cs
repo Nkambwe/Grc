@@ -9,7 +9,7 @@ namespace Grc.ui.App.Enums
         UpToDate = 1,
         [Description("Unchanged")]
         Unchanged = 2,
-        [Description("Unclassified")]
+        [Description("Proposed")]
         Proposed = 3,
         [Description("Need Review")]
         Due = 4,
@@ -22,6 +22,8 @@ namespace Grc.ui.App.Enums
         [Description("On Hold")]
         OnHold = 8,
         [Description("Review")]
-        Review = 9
+        Review = 9,
+        [Description("Obsolete")]
+        Obsolete = 10
     }
 }
