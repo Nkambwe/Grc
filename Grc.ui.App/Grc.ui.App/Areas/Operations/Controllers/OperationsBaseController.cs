@@ -10,7 +10,7 @@ using System.Text.Json;
 
 namespace Grc.ui.App.Areas.Operations.Controllers {
 
-    //[AreaAuthorization("OPERATIONSERVICES", "OPERATIONADMIN", "OPERATIONGUESTS")]
+    [AreaAuthorization("OPERATIONSERVICES", "OPERATIONADMIN", "OPERATIONGUESTS")]
     public class OperationsBaseController : Controller {
         protected readonly IErrorService ErrorService;
         protected readonly IGrcErrorFactory ErrorFactory;

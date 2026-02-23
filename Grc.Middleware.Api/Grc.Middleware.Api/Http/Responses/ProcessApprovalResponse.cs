@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Grc.Middleware.Api.Http.Responses
-{
+namespace Grc.Middleware.Api.Http.Responses {
     public class ProcessApprovalResponse
     {
         [JsonPropertyName("id")]

@@ -31,6 +31,7 @@ namespace Grc.Middleware.Api.Controllers {
         private readonly IProcessApprovalService _approvalService;
         private readonly IMailTaskQueue _mailTask;
         private readonly IResponsebilityService _officersService;
+        private readonly IDepartmentUnitService _unitService;
 
         public OperationProcessesController(IObjectCypher cypher, 
                                             IServiceLoggerFactory loggerFactory, 
@@ -45,6 +46,7 @@ namespace Grc.Middleware.Api.Controllers {
                                             IProcessApprovalService approvalService,
                                             ISystemAccessService accessService,
                                             IMailTaskQueue mailTask,
+                                            IDepartmentUnitService unitService,
                                             IResponsebilityService officersService
                                             ) 
                                             : base(cypher, 
@@ -61,6 +63,7 @@ namespace Grc.Middleware.Api.Controllers {
             _accessService = accessService;
             _approvalService = approvalService;
             _officersService = officersService;
+            _unitService = unitService;
         }
 
         #region Statistics Endpoints
@@ -268,7 +271,13 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                var processes = await _processService.GetAllAsync(false,p => p.Unit, p => p.Owner, p => p.Responsible, p => p.ProcessType);
+                var processes = await _processService.GetAllAsync(false,p => p.Unit, 
+                    p => p.Owner, 
+                    p => p.Responsible, 
+                    p => p.ProcessType, 
+                    p=>p.RiskAssessments,
+                    p=>p.Workflows,
+                    p=>p.Versions);
 
                 if (processes == null || !processes.Any())
                 {
@@ -293,6 +302,9 @@ namespace Grc.Middleware.Api.Controllers {
                     LastUpdated = register.LastUpdated,
                     FileName = register.FileName ?? string.Empty,
                     ProcessStatus = register.ProcessStatus ?? string.Empty,
+                    WorkflowStage = register.Workflows != null && register.Workflows.Any()
+                    ? register.Workflows.FirstOrDefault(f => f.CreatedOn == register.Workflows.Max(w => w.CreatedOn))?.Status ?? string.Empty
+                    : string.Empty,
                     Comments = register.Comments ?? string.Empty,
                     OnholdReason = register.ReasonOnhold ?? string.Empty,
                     TypeId = register.TypeId,
@@ -303,12 +315,16 @@ namespace Grc.Middleware.Api.Controllers {
                     OwnerName = register.Owner != null ? register.Owner.ContactPosition : string.Empty,
                     ResponsibilityId = register.ResponsibilityId,
                     Responsibile = register.Responsible != null ? register.Responsible.ContactPosition : string.Empty,
+                    RiskLevel = register.RiskAssessments != null &&
+                    register.RiskAssessments.Any() ? 
+                    register.RiskAssessments.FirstOrDefault(r => r.IsCurrent)?.RiskLevel??string.Empty : string.Empty,
                     IsLockProcess = register.IsLockProcess,
                     UnlockReason = register.UnlockReason,
                     NeedsBranchReview = register.NeedsBranchReview,
                     NeedsCreditReview = register.NeedsCreditReview,
                     NeedsTreasuryReview = register.NeedsTreasuryReview,
                     NeedsFintechReview = register.NeedsFintechReview,
+                    Version = register.CurrentVersion,
                     IsDeleted = register.IsDeleted,
                     CreatedOn = register.CreatedOn,
                     CreatedBy = register.CreatedBy ?? string.Empty,
@@ -430,7 +446,10 @@ namespace Grc.Middleware.Api.Controllers {
                                                                     p => p.Unit,
                                                                     p => p.Owner,
                                                                     p => p.Responsible,
-                                                                    p => p.ProcessType);
+                                                                    p => p.ProcessType,
+                                                                    p => p.RiskAssessments,
+                                                                    p => p.Workflows,
+                                                                    p => p.Versions);
 
                 if (pageResult.Entities == null || !pageResult.Entities.Any())
                 {
@@ -471,6 +490,13 @@ namespace Grc.Middleware.Api.Controllers {
                         OwnerName = register.Owner != null ? register.Owner.ContactPosition : string.Empty,
                         ResponsibilityId = register.ResponsibilityId,
                         Responsibile = register.Responsible != null ? register.Responsible.ContactPosition : string.Empty,
+                        WorkflowStage = register.Workflows != null && register.Workflows.Any()
+                        ? register.Workflows.FirstOrDefault(f => f.CreatedOn == register.Workflows.Max(w => w.CreatedOn))?.Status ?? "PENDING"
+                        : "UPTODATE",
+                        RiskLevel = register.RiskAssessments != null &&
+                        register.RiskAssessments.Any() ? 
+                        register.RiskAssessments.FirstOrDefault(r => r.IsCurrent)?.RiskLevel??string.Empty : string.Empty,
+                        Version = register.CurrentVersion,
                         IsLockProcess = register.IsLockProcess,
                         UnlockReason = register.UnlockReason,
                         NeedsBranchReview = register.NeedsBranchReview,
@@ -695,6 +721,152 @@ namespace Grc.Middleware.Api.Controllers {
                 Logger.LogActivity($"Error deleting operation process by user {request.UserId}: {ex.Message}", "ERROR");
                 var error = await HandleErrorAsync(ex);
                 return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("processes/lock-process")]
+        public async Task<IActionResult> LockProcessRecord([FromBody] LockRequest request) {
+            try {
+                Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IpAddress}", "INFO");
+
+                //..check if record exists
+                var response = new GeneralResponse();
+                if (!await _processService.ExistsAsync(r => r.Id == request.RecordId))
+                {
+                    response.Status = false;
+                    response.StatusCode = (int)ResponseCodes.NOTFOUND;
+                    response.Message = $"Process Not Found!! No Process record found";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    return Ok(new GrcResponse<GeneralResponse>(response));
+                }
+                
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                var userRecord = await _accessService.GetByIdAsync(request.RecordId);
+                if (userRecord == null){
+                    var error = new ResponseError(ResponseCodes.NOTFOUND,"Record Not Found","User record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleResponse>(error));
+                }
+
+                userRecord = Cypher.DecryptProperties(userRecord, new[]{ "FirstName", "LastName","EmailAddress"});
+                var firstName = userRecord.FirstName;
+                var email = userRecord.EmailAddress;
+                var accountName = userRecord.Username;
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username;
+                if (currentUser != null) {
+                    username = currentUser.Username;
+                } else {
+                    username= $"{request.UserId}";
+                }
+
+                //..delete operation process
+                var status = await _processService.LockProcessAsync(request.RecordId, request.IsLocked, username);
+                if (!status) {
+                    var error = new ResponseError( ResponseCodes.FAILED,"Failed to lock operation process", "An error occurred! could lock operation process");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse() { Status = status }));
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error locking operation process by user {request.UserId}: {ex.Message}", "ERROR");
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("processes/mark-deleted")]
+        public async Task<IActionResult> MarkDeletedRecord([FromBody] DeleteRequest request) {
+            try {
+                Logger.LogActivity($"ACTION - {request.Action} on IP Address {request.IpAddress}", "INFO");
+                
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                var userRecord = await _accessService.GetByIdAsync(request.RecordId);
+                if (userRecord == null){
+                    var error = new ResponseError(ResponseCodes.NOTFOUND,"Record Not Found","User record not found in the database");
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<RoleResponse>(error));
+                }
+
+                userRecord = Cypher.DecryptProperties(userRecord, new[]{ "FirstName", "LastName","EmailAddress"});
+                var firstName = userRecord.FirstName;
+                var email = userRecord.EmailAddress;
+                var accountName = userRecord.Username;
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username;
+                if (currentUser != null) {
+                    username = currentUser.Username;
+                } else {
+                    username= $"{request.UserId}";
+                }
+
+                //..check if record exists
+                var response = new GeneralResponse();
+                if (!await _processService.ExistsAsync(r => r.Id == request.RecordId))
+                {
+                    response.Status = false;
+                    response.StatusCode = (int)ResponseCodes.NOTFOUND;
+                    response.Message = $"Process Not Found!! No Process record found";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    return Ok(new GrcResponse<GeneralResponse>(response));
+                }
+
+                //..delete operation process
+                var status = await _processService.DeleteProcessAsync(request.RecordId, request.IsDeleted, username);
+                if (!status) {
+                    var error = new ResponseError(
+                        ResponseCodes.FAILED,
+                        "Failed to delete operation process",
+                        "An error occurred! could delete operation process");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+                return Ok(new GrcResponse<GeneralResponse>(new GeneralResponse() { Status = status }));
+            } catch (Exception ex) {
+                Logger.LogActivity($"Error deleting operation process by user {request.UserId}: {ex.Message}", "ERROR");
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+
+        [HttpPost("processes/unt-category-processes")]
+        public async Task<IActionResult> GetUnitCategoryProcesses([FromBody] UnitProcessRequest request) {
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body" );
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<ProcessRegisterResponse>>(error));
+                }
+
+                var unit = await _unitService.GetUnitByNameAsync(GetUnitName(request.Unit));
+                if(unit == null) { 
+                     return Ok(new GrcResponse<List<MiniProcessResponse>>(new List<MiniProcessResponse>()));
+                }
+
+                var processes = await _processService.GetAllAsync(p=>p.UnitId == unit.Id && p.ProcessStatus == request.Category);
+                if (processes == null || !processes.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data","No operation process records found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<List<MiniProcessResponse>>(new List<MiniProcessResponse>()));
+                }
+
+                List<MiniProcessResponse> processList = new();
+                var records = processes.ToList();
+                records.ForEach(register => processList.Add(new(){
+                    Id = register.Id,
+                    ProcessName = register.ProcessName ?? string.Empty,
+                    Description = register.Description ?? string.Empty,
+                    CurrentVersion = register.CurrentVersion ?? string.Empty,
+                    Status = register.ProcessStatus ?? string.Empty
+                }));
+
+                return Ok(new GrcResponse<List<MiniProcessResponse>>(processList));
+            }  catch (Exception ex)  {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<List<MiniProcessResponse>>(error));
             }
         }
 
@@ -2650,6 +2822,35 @@ namespace Grc.Middleware.Api.Controllers {
             };
         }
         
+        private static string GetUnitName(string unit) {
+            string name = unit switch {
+                "Cash" => "Cash and Treasury Operations",
+                "Channels" => "Channel Operations",
+                "AccountServices" => "Account Services",
+                "CustomerExp" => "Customer Experience",
+                "Reconciliation" => "Reconciliation And Support",
+                "RecordsMgt" => "Records Management",
+                "Payments" => "Trade And Payments",
+                _ => "E-Wallets",
+            };
+            return name;
+        }
+
+        private static string GetCategory(string category) {
+            string name = category switch {
+                "Draft" => "DRAFT",
+                "UpToDate" => "UPTODATE",
+                "Unchanged" => "UNCHANGED",
+                "Proposed" => "PROPOSED",
+                "Dormant" => "DORMANT",
+                "Cancelled" => "CANCELLED",
+                "On Hold" => "ONHOLD",
+                "Obsolete" => "OBSOLETE",
+                _ => "INREVIEW",
+            };
+            return name;
+        }
+
         #endregion
 
     }

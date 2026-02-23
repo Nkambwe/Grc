@@ -256,8 +256,8 @@ function openProcessGroupEditor(title, group, isEdit) {
     
     //..show overlay panel
     $('#groupPanelTitle').text(title);
-    $('.process-overlay').addClass('active');
-    $('#collapsePanel').addClass('active');
+    $('#processTagOverlay').addClass('active');
+    $('#processTagPanel').addClass('active');
 }
 
 function saveProcessGroupRecord(e) {
@@ -357,6 +357,124 @@ function saveGroup(isEdit, payload) {
     });
 }
 
+//..name input validation
+function validateGroupNameInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightProcessGroupField('#groupName', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightProcessGroupField('#groupName', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightProcessGroupField('#groupName', false);
+        return true;
+    }
+
+}
+
+function handleGroupNamePaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightProcessGroupField('#groupName', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightProcessGroupField('#groupName', false);
+    }
+}
+
+//..decscription input validation
+function validateGroupDescrInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightProcessGroupField('#groupDescription', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightProcessGroupField('#groupDescription', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightProcessGroupField('#groupDescription', false);
+        return true;
+    }
+
+}
+
+function handleGroupDescrPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightProcessGroupField('#groupDescription', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightProcessGroupField('#groupDescription', false);
+    }
+}
+
 function highlightProcessGroupField(selector, hasError, message) {
     const $field = $(selector);
     const $formGroup = $field.closest('.form-group, .mb-3, .col-sm-8');
@@ -383,8 +501,8 @@ function createGroup() {
 }
 
 function closeProcessGroupPanel() {
-    $('.process-overlay').removeClass('active');
-    $('#collapsePanel').removeClass('active');
+    $('#processTagOverlay').removeClass('active');
+    $('#processTagPanel').removeClass('active');
 }
 
 function deleteProcessGroup(id) {
@@ -447,5 +565,104 @@ $(document).ready(function () {
     $('#processGroupForm').on('submit', function (e) {
         e.preventDefault();
     });
+    
+    //..group name validation 
+    $('#groupName').on('keyup', function () {
+        var value = $(this).val();
 
+        // Clear error if field is empty
+        if (!value) {
+            highlightProcessGroupField('#groupName', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessGroupField('#groupName', true, 'Invalid characters detected');
+        } else {
+            highlightProcessGroupField('#groupName', false);
+        }
+    });
+
+    $('#groupName').on('focus', function () {
+        highlightProcessGroupField('#groupName', false);
+    });
+
+    $('#groupName').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightProcessGroupField('#groupName', true, 'Group name is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessGroupField('#groupName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightProcessGroupField('#groupName', false);
+        }
+    });
+
+    $('#groupName').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightProcessGroupField('#groupName', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightProcessGroupField('#groupName', false);
+                }, 2000);
+            }
+        }
+    });
+
+    //..group description validation 
+    $('#tagDescription').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightProcessGroupField('#processDescription', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessGroupField('#processDescription', true, 'Invalid characters detected');
+        } else {
+            highlightProcessGroupField('#processDescription', false);
+        }
+    });
+
+    $('#groupDescription').on('focus', function () {
+        highlightProcessGroupField('#groupDescription', false);
+    });
+
+    $('#groupDescription').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightProcessGroupField('#groupDescription', true, 'Group description is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightProcessGroupField('#groupDescription', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightProcessGroupField('#groupDescription', false);
+        }
+    });
+
+    $('#groupDescription').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightProcessGroupField('#groupDescription', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightProcessGroupField('#groupDescription', false);
+                }, 2000);
+            }
+        }
+    });
 });

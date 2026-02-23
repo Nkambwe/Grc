@@ -1,4 +1,4 @@
-﻿namespace Grc.Middleware.Api.Services {
+﻿namespace Grc.Middleware.Api.Services.Operations {
     public interface IProcessWorkflowStepService : IBaseService {
 
     }

@@ -42,9 +42,14 @@ namespace Grc.ui.App.Http.Responses
         /// <summary>
         /// Get or set processes that are nolonger in use
         /// </summary>
-        [JsonPropertyName("unclassifiedProcesses")]
-        public UnitCountResponse UnclassifiedProcesses { get; set; }
-
+        [JsonPropertyName("reviewProcesses")]
+        public UnitCountResponse ReviewProcesses { get; set; }
+        
+        /// <summary>
+        /// Get or set processes that are new
+        /// </summary>
+        [JsonPropertyName("newProcesses")]
+        public UnitCountResponse NewProcesses { get; set; }
 
     }
 }

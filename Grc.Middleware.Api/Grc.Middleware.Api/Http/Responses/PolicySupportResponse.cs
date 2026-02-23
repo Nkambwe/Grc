@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Grc.Middleware.Api.Http.Responses
-{
+namespace Grc.Middleware.Api.Http.Responses {
     public class PolicySupportResponse {
 
         [JsonPropertyName("frequencies")]
@@ -9,6 +8,9 @@ namespace Grc.Middleware.Api.Http.Responses
 
         [JsonPropertyName("departments")]
         public List<PolicyDepartmentResponse> Departments { get; set; } = new();
+        
+        [JsonPropertyName("operationUnits")]
+        public List<DepartmentUnitItemResponse> OperationUnits { get; set; } = new();
 
         [JsonPropertyName("authorities")]
         public List<RegulatoryAuthorityResponse> Authorities { get; set; } = new();
@@ -21,6 +23,9 @@ namespace Grc.Middleware.Api.Http.Responses
 
         [JsonPropertyName("returnTypes")]
         public List<ReturnTypeResponse> ReturnTypes { get; set; } = new();
+        
+        [JsonPropertyName("processTypes")]
+        public List<ProcessTypeResponse> ProcessTypes { get; set; } = new();
 
         [JsonPropertyName("enforcementLaws")]
         public List<MiniObligationActResponse> EnforcementLaws { get; set; } = new();

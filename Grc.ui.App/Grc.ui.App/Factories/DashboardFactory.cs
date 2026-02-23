@@ -182,6 +182,26 @@ namespace Grc.ui.App.Factories {
                 );
             }
 
+            if (supportItems.ProcessTypes != null && supportItems.ProcessTypes.Any()) {
+                policyModel.ProcessTypes.AddRange(
+                    from type in supportItems.ProcessTypes
+                    select new ProcessTypeViewModel {
+                        Id = type.Id,
+                        TypeName = type.TypeName
+                    }
+                );
+            }
+
+            if (supportItems.OperationUnits != null && supportItems.OperationUnits.Any()) {
+                policyModel.OperationUnits.AddRange(
+                    from type in supportItems.OperationUnits
+                    select new DepartmentUnitViewModel {
+                        Id = type.Id,
+                        UnitName = type.Name
+                    }
+                );
+            }
+
             //..get return types
             if (supportItems.ReturnTypes != null && supportItems.ReturnTypes.Any()) {
                 policyModel.ReturnTypes.AddRange(

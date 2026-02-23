@@ -21,6 +21,12 @@ namespace Grc.ui.App.Http.Responses {
 
         [JsonPropertyName("returnTypes")]
         public List<GrcReturnTypeResponse> ReturnTypes { get; set; } = new();
+        
+        [JsonPropertyName("processTypes")]
+        public List<GrcProcessTypeResponse> ProcessTypes { get; set; } = new();
+        
+        [JsonPropertyName("operationUnits")]
+        public List<GrcDepartmentUnitItemResponse> OperationUnits { get; set; } = new();
 
         [JsonPropertyName("enforcementLaws")]
         public List<GrcMiniObligationActResponse> EnforcementLaws { get; set; } = new();

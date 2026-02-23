@@ -12,8 +12,11 @@
         ComponentKey = "Universe",
         LeftActions = new List<ComponentAction>
         {
-            new ComponentAction { ActionKey = ActionKey.OpsHome.GetDescription(), Icon = "mdi mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home") },
-            new ComponentAction { ActionKey = ActionKey.ProcessNew.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") }
+             new ComponentAction { ActionKey = ActionKey.OpsHome.GetDescription(), Icon = "mdi mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home") },
+             new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
+             new ComponentAction { ActionKey = ActionKey.ProcessNew.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") },
+             new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()},
+             new ComponentAction { ActionKey = ActionKey.ExportActivityExcelToExcel.GetDescription(), Icon = "mdi mdi mdi-download", Tooltip = "Export to Excel"}
         }
     };
 }

@@ -23,33 +23,27 @@ namespace Grc.ui.App.Http.Responses {
 
         [JsonPropertyName("fileName")]
         public string FileName { get; set; }
-
-        [JsonPropertyName("onFile")]
-        public bool OriginalOnFile { get; set; }
-
-        [JsonPropertyName("processStatus")]
-        public string ProcessStatus { get; set; }
+        
+        [JsonPropertyName("originalOnFile")]
+        public string OriginalOnFile { get; set; }
 
         [JsonPropertyName("workflowStage")]
         public string WorkflowStage { get; set; }
-
-        [JsonPropertyName("version")]
-        public string Version { get; set; }
-
-        [JsonPropertyName("riskRating")]
-        public int RiskRating { get; set; }
+        
+        [JsonPropertyName("processStatus")]
+        public string ProcessStatus { get; set; }
+        
+        [JsonPropertyName("riskLevel")]
+        public string RiskLevel { get; set; }
 
         [JsonPropertyName("comments")]
         public string Comments { get; set; }
 
+        [JsonPropertyName("onholdReason")]
+        public string OnholdReason { get; set; }
+
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
-
-        [JsonPropertyName("isLockProcess")]
-        public bool IsLockProcess { get; set; }
-
-        [JsonPropertyName("unlockReason")]
-        public string UnlockReason { get; set; }
 
         [JsonPropertyName("typeId")]
         public long TypeId { get; set; }
@@ -68,27 +62,33 @@ namespace Grc.ui.App.Http.Responses {
 
         [JsonPropertyName("ownerName")]
         public string OwnerName { get; set; }
+        
+        [JsonPropertyName("version")]
+        public string Version { get; set; }
 
         [JsonPropertyName("responsibilityId")]
         public long ResponsibilityId { get; set; }
 
         [JsonPropertyName("responsible")]
-        public string Responsible { get; set; }
+        public string Responsibile { get; set; }
 
-        [JsonPropertyName("onholdReason")]
-        public string OnholdReason { get; set; }
+        [JsonPropertyName("isLockProcess")]
+        public bool? IsLockProcess { get; set; }
+
+        [JsonPropertyName("nnlockReason")]
+        public string UnlockReason { get; set; }
 
         [JsonPropertyName("needsBranchReview")]
-        public bool NeedsBranchReview { get; set; }
+        public bool? NeedsBranchReview { get; set; }
 
         [JsonPropertyName("needsCreditReview")]
-        public bool NeedsCreditReview { get; set; }
+        public bool? NeedsCreditReview { get; set; }
 
         [JsonPropertyName("needsTreasuryReview")]
-        public bool NeedsTreasuryReview { get; set; }
+        public bool? NeedsTreasuryReview { get; set; }
 
         [JsonPropertyName("needsFintechReview")]
-        public bool NeedsFintechReview { get; set; }
+        public bool? NeedsFintechReview { get; set; }
 
         [JsonPropertyName("isAssigned")]
         public bool IsAssigned { get; set; }
@@ -99,18 +99,23 @@ namespace Grc.ui.App.Http.Responses {
         [JsonPropertyName("createdOn")]
         public DateTime CreatedOn { get; set; }
 
-        [JsonPropertyName("lastReviewDate")]
-        public DateTime LastReviewDate { get; set; }
-
         [JsonPropertyName("modifiedBy")]
         public string ModifiedBy { get; set; }
 
         [JsonPropertyName("modifiedOn")]
-        public DateTime? ModifiedOn { get; set; }
+        public DateTime ModifiedOn { get; set; }
+
+        [JsonPropertyName("versions")]
+        public List<GrcProcessVersionResponse> Versions { get; set; } = new();
+        
+        [JsonPropertyName("riskAssessments")]
+        public List<GrcProcessRiskResponse> RiskAssessments { get; set; } = new();
+        
+        [JsonPropertyName("processActivities")]
+        public List<GrcProcessActivityResponse> ProcessActivities { get; set; } = new();
 
         [JsonPropertyName("approvals")]
         public GrcProcessApproval Approvals { get; set; }
 
     }
-
 }

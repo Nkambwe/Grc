@@ -10,11 +10,11 @@ using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Grc.Middleware.Api.Services {
+namespace Grc.Middleware.Api.Services.Operations {
 
     public class ProcessApprovalService : BaseService, IProcessApprovalService {
 
-        public ProcessApprovalService(IServiceLoggerFactory loggerFactory, IUnitOfWorkFactory uowFactory, IMapper mapper) 
+        public ProcessApprovalService(IServiceLoggerFactory loggerFactory, IUnitOfWorkFactory uowFactory, IMapper mapper)
             : base(loggerFactory, uowFactory, mapper) { }
 
         public int Count() {
@@ -23,9 +23,7 @@ namespace Grc.Middleware.Api.Services {
 
             try {
                 return uow.ProcessApprovalRepository.Count();
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to count approved processes in the database: {ex.Message}", "ERROR");
                 _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 uow.SaveChanges();
@@ -33,17 +31,13 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public int Count(Expression<Func<OperationProcess, bool>> predicate)
-        {
+        public int Count(Expression<Func<OperationProcess, bool>> predicate) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Count number of approved processes in the database", "INFO");
 
-            try
-            {
+            try {
                 return uow.OperationProcessRepository.Count(predicate);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to count approved processes in the database: {ex.Message}", "ERROR");
                 _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 uow.SaveChanges();
@@ -51,17 +45,13 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<int> CountAsync(CancellationToken cancellationToken = default)
-        {
+        public async Task<int> CountAsync(CancellationToken cancellationToken = default) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Count number of approved processes in the database", "INFO");
 
-            try
-            {
+            try {
                 return await uow.OperationProcessRepository.CountAsync(cancellationToken);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to count Processes in the database: {ex.Message}", "ERROR");
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 await uow.SaveChangesAsync();
@@ -69,17 +59,13 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<int> CountAsync(bool excludeDeleted = true, CancellationToken cancellationToken = default)
-        {
+        public async Task<int> CountAsync(bool excludeDeleted = true, CancellationToken cancellationToken = default) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Count number of  Processes in the database", "INFO");
 
-            try
-            {
+            try {
                 return await uow.ProcessApprovalRepository.CountAsync(excludeDeleted, cancellationToken);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to count approved processes in the database: {ex.Message}", "ERROR");
                 //..save error object to the database
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
@@ -88,17 +74,13 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<bool> ExistsAsync(Expression<Func<ProcessApproval, bool>> predicate, bool excludeDeleted = false, CancellationToken token = default)
-        {
+        public async Task<bool> ExistsAsync(Expression<Func<ProcessApproval, bool>> predicate, bool excludeDeleted = false, CancellationToken token = default) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Check if an Processes approval exists in the database that fit predicate >> '{predicate}'", "INFO");
 
-            try
-            {
+            try {
                 return await uow.ProcessApprovalRepository.ExistsAsync(predicate, excludeDeleted, token);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to check for Processes Approval in the database: {ex.Message}", "ERROR");
                 //..save error object to the database
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
@@ -110,12 +92,9 @@ namespace Grc.Middleware.Api.Services {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get approved process with ID '{id}'", "INFO");
 
-            try
-            {
+            try {
                 return await uow.ProcessApprovalRepository.GetAsync(id, includeDeleted);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve approved process : {ex.Message}", "ERROR");
                 //..save error object to the database
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
@@ -124,59 +103,47 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<ProcessApproval> GetAsync(Expression<Func<ProcessApproval, bool>> predicate, bool includeDeleted = false, params Expression<Func<ProcessApproval, object>>[] includes)
-        {
+        public async Task<ProcessApproval> GetAsync(Expression<Func<ProcessApproval, bool>> predicate, bool includeDeleted = false, params Expression<Func<ProcessApproval, object>>[] includes) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get Process TAT that fit predicate '{predicate}'", "INFO");
 
-            try
-            {
+            try {
                 return await uow.ProcessApprovalRepository.GetAsync(predicate, includeDeleted, includes);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve Process TAT : {ex.Message}", "ERROR");
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
 
-        public async Task<IList<ProcessApproval>> GetAllAsync(bool includeDeleted = false, params Expression<Func<ProcessApproval, object>>[] includes)
-        {
+        public async Task<IList<ProcessApproval>> GetAllAsync(bool includeDeleted = false, params Expression<Func<ProcessApproval, object>>[] includes) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Get all Processes that fit predicate '{includes}'", "INFO");
 
-            try
-            {
+            try {
                 return await uow.ProcessApprovalRepository.GetAllAsync(includeDeleted, includes);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve Processes : {ex.Message}", "ERROR");
                 //..save error object to the database
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
             }
         }
-       
-        public async Task<bool> InsertAsync(ProcessApprovalRequest request)
-        {
+
+        public async Task<bool> InsertAsync(ProcessApprovalRequest request) {
             using var uow = UowFactory.Create();
-            try
-            {
+            try {
                 var approval = Mapper.Map<ProcessApprovalRequest, ProcessApproval>(request);
 
                 //..log the Process Approval data being saved
-                var approvalJson = JsonSerializer.Serialize(approval, new JsonSerializerOptions
-                {
+                var approvalJson = JsonSerializer.Serialize(approval, new JsonSerializerOptions {
                     WriteIndented = true,
                     ReferenceHandler = ReferenceHandler.IgnoreCycles
                 });
                 Logger.LogActivity($"Process Approval data: {approvalJson}", "DEBUG");
 
                 var added = await uow.ProcessApprovalRepository.InsertAsync(approval);
-                if (added)
-                {
+                if (added) {
                     //..check object state
                     var entityState = ((UnitOfWork)uow).Context.Entry(approval).State;
                     Logger.LogActivity($"Entity state after insert: {entityState}", "DEBUG");
@@ -187,9 +154,7 @@ namespace Grc.Middleware.Api.Services {
                 }
 
                 return false;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to save Process Approval : {ex.Message}", "ERROR");
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 await uow.SaveChangesAsync();
@@ -198,9 +163,9 @@ namespace Grc.Middleware.Api.Services {
         }
 
         public async Task<(bool, ApprovalStage)> ApproveProcessAsync(ApprovalRequest request, bool includeDeleted = false) {
-            
+
             using var uow = UowFactory.Create();
-           
+
             Logger.LogActivity($"Update Process Approval", "INFO");
             var stage = ApprovalStage.NONE;
 
@@ -215,7 +180,7 @@ namespace Grc.Middleware.Api.Services {
                 if (!string.IsNullOrEmpty(request.HodStatus)) {
                     if (request.HodStatus == "APPROVED" || request.HodStatus == "REJECTED") {
 
-                        if(!approval.HeadOfDepartmentStart.HasValue) 
+                        if (!approval.HeadOfDepartmentStart.HasValue)
                             approval.HeadOfDepartmentStart = approval.RequestDate;
 
                         approval.HeadOfDepartmentStatus = request.HodStatus;
@@ -226,7 +191,7 @@ namespace Grc.Middleware.Api.Services {
                             approval.RiskStart = DateTime.Now;
                             approval.RiskStatus = "PENDING";
                         }
-                            
+
                     }
                 }
 
@@ -269,13 +234,12 @@ namespace Grc.Middleware.Api.Services {
 
                 //..update BOP only if required and Compliance is approved
                 if (request.BopRequired && approval.ComplianceStatus == "APPROVED" && !string.IsNullOrEmpty(request.BopStatus)) {
-                    if (request.BopStatus == "APPROVED" || request.BopStatus == "REJECTED")
-                    {
+                    if (request.BopStatus == "APPROVED" || request.BopStatus == "REJECTED") {
                         approval.BranchOperationsStatus = request.BopStatus;
                         approval.BranchManagerComment = request.BopComment;
                         stage = ApprovalStage.BOM;
                         if (!approval.BranchOperationsStatusEnd.HasValue) {
-                            approval.BranchOperationsStatusEnd = DateTime.Now;  
+                            approval.BranchOperationsStatusEnd = DateTime.Now;
                         }
 
                         //..approval stages completed, set process to uptodate stage
@@ -289,16 +253,15 @@ namespace Grc.Middleware.Api.Services {
                         }
                     }
                 } else {
-                    if (request.TreasuryRequired)
-                    {
+                    if (request.TreasuryRequired) {
                         stage = ApprovalStage.TREA;
                         approval.TreasuryStart = DateTime.Now;
                         approval.TreasuryStatus = "PENDING";
                     }
                 }
 
-                    //..check if BOP is complete or not required
-                    bool bopComplete = !request.BopRequired || approval.BranchOperationsStatus == "APPROVED";
+                //..check if BOP is complete or not required
+                bool bopComplete = !request.BopRequired || approval.BranchOperationsStatus == "APPROVED";
 
                 //..update Treasury only if required and all previous are approved
                 if (request.TreasuryRequired && approval.ComplianceStatus == "APPROVED" && bopComplete && !string.IsNullOrEmpty(request.TreasuryStatus)) {
@@ -320,11 +283,8 @@ namespace Grc.Middleware.Api.Services {
                             approval.CreditStatus = "PENDING";
                         }
                     }
-                }
-                else
-                {
-                    if (request.CreditRequired)
-                    {
+                } else {
+                    if (request.CreditRequired) {
                         stage = ApprovalStage.CRT;
                         approval.CreditStart = DateTime.Now;
                         approval.CreditStatus = "PENDING";
@@ -354,11 +314,8 @@ namespace Grc.Middleware.Api.Services {
                             approval.FintechStatus = "PENDING";
                         }
                     }
-                }
-                else
-                {
-                    if (request.FintechRequired)
-                    {
+                } else {
+                    if (request.FintechRequired) {
                         stage = ApprovalStage.FIN;
                         approval.FintechStart = DateTime.Now;
                         approval.FintechStatus = "PENDING";
@@ -402,8 +359,7 @@ namespace Grc.Middleware.Api.Services {
         public bool Delete(IdRequest request) {
             using var uow = UowFactory.Create();
             try {
-                var processJson = JsonSerializer.Serialize(request, new JsonSerializerOptions
-                {
+                var processJson = JsonSerializer.Serialize(request, new JsonSerializerOptions {
                     WriteIndented = true,
                     ReferenceHandler = ReferenceHandler.IgnoreCycles
                 });
@@ -424,30 +380,24 @@ namespace Grc.Middleware.Api.Services {
                 }
 
                 return false;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to delete process approval : {ex.Message}", "ERROR");
                 _ = uow.SystemErrorRespository.Insert(HandleError(uow, ex));
                 throw;
             }
         }
 
-        public async Task<bool> DeleteAsync(IdRequest request)
-        {
+        public async Task<bool> DeleteAsync(IdRequest request) {
             using var uow = UowFactory.Create();
-            try
-            {
-                var processJson = JsonSerializer.Serialize(request, new JsonSerializerOptions
-                {
+            try {
+                var processJson = JsonSerializer.Serialize(request, new JsonSerializerOptions {
                     WriteIndented = true,
                     ReferenceHandler = ReferenceHandler.IgnoreCycles
                 });
                 Logger.LogActivity($"Process approval data: {processJson}", "DEBUG");
 
                 var approval = await uow.ProcessApprovalRepository.GetAsync(t => t.Id == request.RecordId);
-                if (approval != null)
-                {
+                if (approval != null) {
                     //..mark as delete this Process Approval
                     _ = await uow.ProcessApprovalRepository.DeleteAsync(approval, request.MarkAsDeleted);
 
@@ -461,9 +411,7 @@ namespace Grc.Middleware.Api.Services {
                 }
 
                 return false;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to delete Process Approval : {ex.Message}", "ERROR");
                 //..save error object to the database
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
@@ -486,11 +434,9 @@ namespace Grc.Middleware.Api.Services {
 
         #region Private Methods
 
-        private SystemError HandleError(IUnitOfWork uow, Exception ex)
-        {
+        private SystemError HandleError(IUnitOfWork uow, Exception ex) {
             var innerEx = ex.InnerException;
-            while (innerEx != null)
-            {
+            while (innerEx != null) {
                 Logger.LogActivity($"Service Inner Exception: {innerEx.Message}", "ERROR");
                 innerEx = innerEx.InnerException;
             }
@@ -498,8 +444,7 @@ namespace Grc.Middleware.Api.Services {
 
             var company = uow.CompanyRepository.GetAll(false).FirstOrDefault();
             long companyId = company != null ? company.Id : 1;
-            return new()
-            {
+            return new() {
                 ErrorMessage = innerEx != null ? innerEx.Message : ex.Message,
                 ErrorSource = "PROCESSES-APPROVAL-SERVICE",
                 StackTrace = ex.StackTrace,

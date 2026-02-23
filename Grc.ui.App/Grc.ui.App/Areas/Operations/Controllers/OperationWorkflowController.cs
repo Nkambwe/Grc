@@ -1,5 +1,5 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Wordprocessing;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Grc.ui.App.Defaults;
 using Grc.ui.App.Enums;
 using Grc.ui.App.Extensions;
@@ -12,7 +12,9 @@ using Grc.ui.App.Infrastructure;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace Grc.ui.App.Areas.Operations.Controllers {
@@ -20,6 +22,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
     [Area("Operations")]
     public class OperationWorkflowController : OperationsBaseController {
         private readonly IAuthenticationService _authService;
+        private readonly ISystemAccessService _accessService;
         private readonly IOperationsDashboardFactory _dDashboardFactory;
         private readonly IProcessesService _processService;
         public OperationWorkflowController(IApplicationLoggerFactory loggerFactory, 
@@ -31,12 +34,14 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                                            IAuthenticationService authService,
                                            IGrcErrorFactory errorFactory,
                                            IProcessesService processService,
+                                           ISystemAccessService accessService,
                                            SessionManager sessionManager) 
                                         : base(loggerFactory, environment, webHelper, localizationService, 
                                               errorService, errorFactory, sessionManager) {
-                                        _dDashboardFactory = dDashboardFactory;
-                                        _authService = authService;
-                                        _processService = processService;
+            _dDashboardFactory = dDashboardFactory;
+            _authService = authService;
+            _processService = processService;
+            _accessService = accessService;
         }
 
         #region Process Registers
@@ -157,10 +162,10 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                         currentVersion = process.CurrentVersion ?? "0.0.0",
                         fileName = process.FileName,
                         originalOnFile = process.OriginalOnFile,
-                        processStatus = process.ProcessStatus ?? "UNDEFINED",
-                        workflowStage = process.WorkflowStage ?? "UNDEFINED",
+                        processStatus = process.ProcessStatus ?? "DRAFT",
+                        workflowStage = process.WorkflowStage ?? "COMPLETE",
                         onholdReason = process.OnholdReason ?? string.Empty,
-                        riskRating = process.RiskRating,
+                        riskRating = process.RiskLevel,
                         version = process.Version ?? string.Empty,
                         comment = process.Comments ?? string.Empty,
                         typeId = process.TypeId,
@@ -170,14 +175,15 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                         ownerId = process.OwnerId,
                         ownerName = process.OwnerName ?? string.Empty,
                         assigneedId = process.ResponsibilityId,
-                        assigneeName = process.Responsible ?? string.Empty,
+                        assigneeName = process.Responsibile ?? string.Empty,
                         isDeleted = process.IsDeleted,
                         isLockProcess = process.IsLockProcess,
                         unlockReason = process.UnlockReason,
                         effectiveDate = process.EffectiveDate,
+                        lastReviewDate = process.LastUpdated,
                         createdOn = process.CreatedOn,
                         createdBy = process.CreatedBy ?? string.Empty,
-                        modifiedOn = process.ModifiedOn ?? process.CreatedOn,
+                        modifiedOn = process.ModifiedOn,
                         modifiedBy = process.ModifiedBy ?? string.Empty
                     }).ToList();
 
@@ -222,14 +228,6 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
 
                 var process = result.Data;
 
-                int status = 0;
-                if (!string.IsNullOrWhiteSpace(process.ProcessStatus))
-                {
-                    if (Enum.TryParse(process.ProcessStatus, out ProcessCategories appStatus))
-                    {
-                        status = (int)appStatus;
-                    }
-                }
                
                 var processRecord = new {
                     id = process.Id,
@@ -238,7 +236,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                     currentVersion = process.CurrentVersion ?? "0.0.0",
                     fileName = process.FileName,
                     originalOnFile = process.OriginalOnFile,
-                    processStatus = status,
+                    processStatus = process.ProcessStatus,
                     onholdReason = process.OnholdReason ?? string.Empty,
                     comment = process.Comments ?? string.Empty,
                     typeId = process.TypeId,
@@ -248,7 +246,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                     ownerId = process.OwnerId,
                     ownerName = process.OwnerName ?? string.Empty,
                     assigneedId = process.ResponsibilityId,
-                    assigneeName = process.Responsible ?? string.Empty,
+                    assigneeName = process.Responsibile ?? string.Empty,
                     needsBranchOperations = process.NeedsBranchReview,
                     needsCreditReview = process.NeedsCreditReview,
                     needsTreasuryReview = process.NeedsTreasuryReview,
@@ -281,7 +279,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                     effectiveDate = process.EffectiveDate,
                     createdOn = process.CreatedOn,
                     createdBy = process.CreatedBy ?? string.Empty,
-                    modifiedOn = process.ModifiedOn ?? process.CreatedOn,
+                    modifiedOn = process.ModifiedOn,
                     modifiedBy = process.ModifiedBy ?? string.Empty
                 };
 
@@ -479,8 +477,75 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         [HttpPost]
+        public async Task<IActionResult> LockProcess([FromBody] ProcessLockViewModel model) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                if (model.Id == 0) return BadRequest(new { success = false, message = "Process Id is required" });
+
+                var currentUser = userResponse.Data;
+                GrcLockRequest request = new() {
+                    RecordId = model.Id,
+                    UserId = currentUser.UserId,
+                    Action = "Lock process record",
+                    IpAddress = ipAddress,
+                    IsLocked = model.IsLocked
+                };
+
+                var result = await _processService.LockProcessAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to delete process record" });
+
+                return Ok(new { success = result.Data.Status, message = result.Data.Message });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error deleting process record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
+                return Json(new { success = false, message= "System Error! Unable to complete process" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteProcess([FromBody] ProcessDeleteViewModel model) {
+            try {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                if (model.Id == 0) return BadRequest(new { success = false, message = "Process Id is required" });
+
+                var currentUser = userResponse.Data;
+                GrcDeleteRequest request = new() {
+                    RecordId = model.Id,
+                    UserId = currentUser.UserId,
+                    Action = Activity.PROCESSES_DELETED_PROCESS.GetDescription(),
+                    IpAddress = ipAddress,
+                    IsDeleted = true
+                };
+
+                var result = await _processService.MarkAsDeletedAsync(request);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to delete process record" });
+
+                return Ok(new { success = result.Data.Status, message = result.Data.Message });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error locking process record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
+                return Json(new { success = false, message= "System Error! Unable to complete process" });
+            }
+        }
+
+        [HttpPost]
         [LogActivityResult("Export Process Registers", "User exported process registers to excel", ActivityTypeDefaults.PROCESSES_EXPORT_PROCESS, "OperationProcess")]
-        public async Task<IActionResult> ExportProcessRegisterAll() {
+        public async Task<IActionResult> ExportProcessRegisterAll()
+        {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
             if (userResponse.HasError || userResponse.Data == null)
@@ -502,31 +567,84 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             using var workbook = new XLWorkbook();
             var ws = workbook.Worksheets.Add("PROCESS UNIVERSE");
 
-            ws.Cell(1, 1).Value = "PROCESS NAME";
-            ws.Cell(1, 2).Value = "UNIT";
-            ws.Cell(1, 3).Value = "PROCESS MGR";
-            ws.Cell(1, 4).Value = "PROCESS OWNER";
-            ws.Cell(1, 5).Value = "PROCESS DESCRIPTION";
-            ws.Cell(1, 6).Value = "LAST UPDATED";
-            ws.Cell(1, 7).Value = "STATUS";
+            // ===== HEADERS =====
+            var headers = new[]
+            {
+                "PROCESS NAME", "UNIT", "PROCESS MGR", "PROCESS OWNER",
+                "PROCESS DESCRIPTION", "LAST UPDATED", "STATUS"
+            };
 
+            for (int i = 0; i < headers.Length; i++)
+                ws.Cell(1, i + 1).Value = headers[i];
+
+            var headerRange = ws.Range(1, 1, 1, headers.Length);
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            headerRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+            headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            headerRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+            ws.Row(1).Height = 30;
+
+            // ===== DATA =====
             int row = 2;
             foreach (var p in result.Data.Entities)
             {
                 ws.Cell(row, 1).Value = p.ProcessName;
                 ws.Cell(row, 2).Value = p.UnitName;
-                ws.Cell(row, 3).Value = p.Responsible;
+                ws.Cell(row, 3).Value = p.Responsibile;
                 ws.Cell(row, 4).Value = p.OwnerName;
                 ws.Cell(row, 5).Value = p.Description ?? string.Empty;
-                ws.Cell(row, 6).Value = p.LastReviewDate.ToString("MM-dd-yyyy");
+
+                SetSafeDate(ws.Cell(row, 6), p.LastUpdated);
+
                 ws.Cell(row, 7).Value = p.ProcessStatus ?? "DRAFT";
 
                 row++;
             }
 
+            var dataRange = ws.Range(1, 1, row - 1, headers.Length);
+            dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            dataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+            dataRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
+
+            // ===== CONDITIONAL STATUS COLORS =====
+            var statusRange = ws.Range(2, 7, row - 1, 7);
+            statusRange.AddConditionalFormat().WhenEquals("NEEDREVIEW").Fill.SetBackgroundColor(XLColor.Red);
+            statusRange.AddConditionalFormat().WhenEquals("DORMANT").Fill.SetBackgroundColor(XLColor.Orange);
+            statusRange.AddConditionalFormat().WhenEquals("DRAFT").Fill.SetBackgroundColor(XLColor.LimeGreen);
+            statusRange.AddConditionalFormat().WhenEquals("INREVIEW").Fill.SetBackgroundColor(XLColor.LightGreen);
+            statusRange.AddConditionalFormat().WhenEquals("UPTODATE").Fill.SetBackgroundColor(XLColor.Green);
+            statusRange.AddConditionalFormat().WhenEquals("PROPOSED").Fill.SetBackgroundColor(XLColor.Amber);
+
+            // ===== FILTER + FREEZE =====
+            ws.Range(1, 1, 1, headers.Length).SetAutoFilter();
+            ws.SheetView.FreezeRows(1);
+
+            // ===== TEXT WRAPPING =====
+            ws.Column(1).Style.Alignment.WrapText = true;
+            ws.Column(5).Style.Alignment.WrapText = true;
+
+            // ===== AUTO-SIZE THEN SMART RESIZE =====
+            ws.Columns().AdjustToContents();
+
+            ws.Column(1).Width = 40;  // PROCESS NAME
+            ws.Column(5).Width = 60;  // DESCRIPTION
+
+            ws.Column(2).Width = Math.Max(ws.Column(2).Width, 18);
+            ws.Column(3).Width = Math.Max(ws.Column(3).Width, 20);
+            ws.Column(4).Width = Math.Max(ws.Column(4).Width, 20);
+            ws.Column(6).Width = 18;
+            ws.Column(7).Width = 15;
+
+            // ===== AUTO ROW HEIGHT =====
+            ws.Rows().AdjustToContents();
+
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);
-            stream.Seek(0, SeekOrigin.Begin);
+            stream.Position = 0;
+
             return File(stream.ToArray(),
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 "PROCESS_UNIVERSE.xlsx");
@@ -1273,8 +1391,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
             if (userResponse.HasError || userResponse.Data == null)
                 return Ok(new { success = false, message = "Unable to resolve current user" });
 
-            var request = new GrcRequest
-            {
+            var request = new GrcRequest {
                 UserId = userResponse.Data.UserId,
                 IPAddress = ipAddress,
                 Action = Activity.PROCESS_EXPORT.GetDescription(),
@@ -1287,47 +1404,106 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 return Ok(new { success = false, message = "Failed to retrieve processes" });
 
             using var workbook = new XLWorkbook();
-            var ws = workbook.Worksheets.Add("PROCESS UNIVERSE");
+            var ws = workbook.Worksheets.Add("PROCESS TAT REPORT");
 
-            ws.Cell(1, 1).Value = "PROCESS NAME";
-            ws.Cell(1, 2).Value = "PROCESS STATUS";
-            ws.Cell(1, 3).Value = "REQUEST DATE";
-            ws.Cell(1, 4).Value = "HOD";
-            ws.Cell(1, 5).Value = "RISK";
-            ws.Cell(1, 6).Value = "COMP";
-            ws.Cell(1, 7).Value = "BOP NEEDED";
-            ws.Cell(1, 8).Value = "BOP";
-            ws.Cell(1, 9).Value = "TREASURY APP";
-            ws.Cell(1, 10).Value = "TREASURY";
-            ws.Cell(1, 11).Value = "FINTECH APP";
-            ws.Cell(1, 12).Value = "FINTECH";
-            ws.Cell(1, 13).Value = "CREDIT APP";
-            ws.Cell(1, 14).Value = "CREDIT";
-            ws.Cell(1, 15).Value = "TOTAL";
+            // ===== HEADERS =====
+            var headers = new[] {
+                "PROCESS NAME", "STATUS", "REQUEST DATE", "HOD", "RISK", "COMPLIANCE",
+                "BOP NEEDED", "BOP", "TREASURY APP", "TREASURY",
+                "FINTECH APP", "FINTECH", "CREDIT APP", "CREDIT", "TOTAL"
+            };
 
+            for (int i = 0; i < headers.Length; i++)
+                ws.Cell(1, i + 1).Value = headers[i];
+
+            var headerRange = ws.Range(1, 1, 1, headers.Length);
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            headerRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+            headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            headerRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+            ws.Row(1).Height = 30;
+
+            // ===== DATA =====
             int row = 2;
-            foreach (var tat in result.Data) {
+            foreach (var tat in result.Data)
+            {
                 ws.Cell(row, 1).Value = tat.ProcessName;
                 ws.Cell(row, 2).Value = tat.ProcessStatus;
-                ws.Cell(row, 3).Value = tat.RequestDate.ToString("MM-dd-yyyy");
+                ws.Cell(row, 3).Value = tat.RequestDate;
+
                 ws.Cell(row, 4).Value = tat.HodCount;
                 ws.Cell(row, 5).Value = tat.RiskCount;
                 ws.Cell(row, 6).Value = tat.ComplianceCount;
+
                 ws.Cell(row, 7).Value = tat.NeedBropsApproval ? "YES" : "NA";
                 ws.Cell(row, 8).Value = tat.BopCount;
+
                 ws.Cell(row, 9).Value = tat.NeedTreasuryApproval ? "YES" : "NA";
                 ws.Cell(row, 10).Value = tat.TreasuryCount;
+
                 ws.Cell(row, 11).Value = tat.NeedFintechApproval ? "YES" : "NA";
                 ws.Cell(row, 12).Value = tat.FintechCount;
+
                 ws.Cell(row, 13).Value = tat.NeedCreditApproval ? "YES" : "NA";
                 ws.Cell(row, 14).Value = tat.CreditCount;
+
                 ws.Cell(row, 15).Value = tat.TotalCount;
+
                 row++;
             }
 
+            var dataRange = ws.Range(1, 1, row - 1, headers.Length);
+            dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            dataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+            dataRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            // ===== DATE FORMAT =====
+            ws.Column(3).Style.DateFormat.Format = "dd-MMM-yyyy";
+
+            // ===== ALIGNMENT =====
+            ws.Columns(4, 15).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            // ===== CONDITIONAL FORMATTING =====
+            ws.Range(2, 7, row - 1, 7)
+              .AddConditionalFormat().WhenEquals("YES")
+              .Fill.SetBackgroundColor(XLColor.LightGreen);
+
+            ws.Range(2, 9, row - 1, 9)
+              .AddConditionalFormat().WhenEquals("YES")
+              .Fill.SetBackgroundColor(XLColor.LightGreen);
+
+            ws.Range(2, 11, row - 1, 11)
+              .AddConditionalFormat().WhenEquals("YES")
+              .Fill.SetBackgroundColor(XLColor.LightGreen);
+
+            ws.Range(2, 13, row - 1, 13)
+              .AddConditionalFormat().WhenEquals("YES")
+              .Fill.SetBackgroundColor(XLColor.LightGreen);
+
+            // ===== FILTER + FREEZE =====
+            ws.Range(1, 1, 1, headers.Length).SetAutoFilter();
+            ws.SheetView.FreezeRows(1);
+
+            // ===== TEXT WRAPPING =====
+            ws.Column(1).Style.Alignment.WrapText = true;
+
+            // ===== AUTO-SIZE + SMART WIDTH =====
+            ws.Columns().AdjustToContents();
+
+            ws.Column(1).Width = 40;
+            ws.Column(2).Width = 18;
+            ws.Column(3).Width = 16;
+
+            // ===== ROW HEIGHT =====
+            ws.Rows().AdjustToContents();
+
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);
-            stream.Seek(0, SeekOrigin.Begin);
+            stream.Position = 0;
+
             return File(stream.ToArray(),
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 "TAT_REPORT.xlsx");
@@ -1660,14 +1836,14 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                         ownerId = process.OwnerId,
                         ownerName = process.OwnerName ?? string.Empty,
                         assigneedId = process.ResponsibilityId,
-                        assigneeName = process.Responsible ?? string.Empty,
+                        assigneeName = process.Responsibile ?? string.Empty,
                         isDeleted = process.IsDeleted,
                         isLockProcess = process.IsLockProcess,
                         unlockReason = process.UnlockReason,
                         effectiveDate = process.EffectiveDate,
                         createdOn = process.CreatedOn,
                         createdBy = process.CreatedBy ?? string.Empty,
-                        modifiedOn = process.ModifiedOn ?? process.CreatedOn,
+                        modifiedOn = process.ModifiedOn,
                         modifiedBy = process.ModifiedBy ?? string.Empty
                     }).ToList();
 
@@ -1744,22 +1920,20 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                         ownerId = process.OwnerId,
                         ownerName = process.OwnerName ?? string.Empty,
                         assigneedId = process.ResponsibilityId,
-                        assigneeName = process.Responsible ?? string.Empty,
+                        assigneeName = process.Responsibile ?? string.Empty,
                         isDeleted = process.IsDeleted,
                         isLockProcess = process.IsLockProcess,
                         unlockReason = process.UnlockReason,
                         effectiveDate = process.EffectiveDate,
                         createdOn = process.CreatedOn,
                         createdBy = process.CreatedBy ?? string.Empty,
-                        modifiedOn = process.ModifiedOn ?? process.CreatedOn,
+                        modifiedOn = process.ModifiedOn,
                         modifiedBy = process.ModifiedBy ?? string.Empty
                     }).ToList();
 
                 var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
                 return Ok(new { last_page = totalPages, total_records = list.TotalCount, data = pagedEntities });
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Error retrieving Operation processes: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
                 return Ok(new { last_page = 0, data = new List<object>() });
@@ -1801,5 +1975,74 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
 
         #endregion
 
+        #region System
+
+        [HttpPost]
+        [LogActivityResult("User Logout", "User logged out of the system", ActivityTypeDefaults.USER_LOGOUT, "SystemUser")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var username = User.Identity?.Name;
+                Logger.LogActivity($"Operation user logging out: {username}", "INFO");
+
+                long id = 0;
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    _ = long.TryParse(userId, out id);
+                    await _accessService.UpdateLoggedInStatusAsync(id, false, ipAddress);
+                }
+
+                //..sign out from cookie authentication
+                await _authService.SignOutAsync(new LogoutModel() { UserId = id, IPAddress = ipAddress });
+
+                // Return JSON response for AJAX
+                return Json(new
+                {
+                    success = true,
+                    redirectUrl = Url.Action("Login", "Application", new { area = "" }),
+                    message = "Logged out successfully"
+                });
+
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error during admin logout: {ex.Message}", "ERROR");
+                Logger.LogActivity($"{ex.StackTrace}", "ERROR");
+
+                //..capture error to bug tracker
+                _ = await ProcessErrorAsync(ex.Message, "WORKFLOWCONTROLLER-LOGOUT", ex.StackTrace);
+                return Json(new {
+                    success = false,
+                    message = LocalizationService.GetLocalizedLabel("Error.Occurance"),
+                    error = new { message = "Logout failed. Please try again." }
+                });
+            }
+        }
+
+        #endregion
+
+        #region Private methods
+        private static void SetSafeDate(IXLCell cell, DateTime? date) {
+            if (!date.HasValue) {
+                cell.Value = string.Empty;
+                return;
+            }
+
+            var value = date.Value;
+            //..excel-safe date range
+            if (value.Year < 1900 || value.Year > 9999) {
+                cell.Value = string.Empty;
+                return;
+            }
+
+            cell.Value = value;
+            cell.Style.DateFormat.Format = "dd-MMM-yyyy";
+        }
+
+        #endregion
     }
 }

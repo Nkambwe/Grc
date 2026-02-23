@@ -72,6 +72,77 @@ async function performLogout(event) {
     }
 }
 
+async function operationsLogout(event) {
+    event.preventDefault();
+    // Show loading state
+    const logoutLink = event.currentTarget;
+    const originalHtml = logoutLink.innerHTML;
+    logoutLink.innerHTML = '<span><i class="mdi mdi-loading mdi-spin"></i></span><span>Logging out...</span>';
+    
+    try {
+        const token = getAntiForgeryToken();
+        
+        const response = await $.ajax({
+            url: window.OPS_LOGOUT_URL,
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': token,
+                'Content-Type': 'application/json'
+            },
+            dataType: 'json'
+        });
+        
+        if (response.success) {
+            //..show success message briefly before redirect
+            logoutLink.innerHTML = '<span><i class="mdi mdi-check"></i></span><span>Logged out!</span>';
+            
+            //..redirect after short delay
+            setTimeout(() => {
+                const redirectUrl = response.redirectUrl || '/operations/workflow/system/logout';
+                window.location.href = redirectUrl;
+            }, 1000);
+            
+        } else {
+            //..show error message
+            let errorMessage = 'Logout failed. Please try again.';
+            if (response.error && response.error.message) {
+                errorMessage = response.error.message;
+            } else if (response.message) {
+                errorMessage = response.message;
+            }
+            
+            showToast(errorMessage, 'error');
+            logoutLink.innerHTML = originalHtml; 
+        }
+    } catch (error) {
+        let errorMessage = 'Logout failed. Please try again.';
+        
+        //..error handling
+        if (error.responseJSON) {
+            if (error.responseJSON.error && error.responseJSON.error.message) {
+                errorMessage = error.responseJSON.error.message;
+            } else if (error.responseJSON.message) {
+                errorMessage = error.responseJSON.message;
+            }
+        } else if (error.responseText) {
+            try {
+                const errorData = JSON.parse(error.responseText);
+                if (errorData.error && errorData.error.message) {
+                    errorMessage = errorData.error.message;
+                } else if (errorData.message) {
+                    errorMessage = errorData.message;
+                }
+            } catch (parseError) {
+                errorMessage = "Logout error - check console for details";
+                console.log('Error parsing logout response');
+            }
+        }
+        
+        showToast(errorMessage, 'error');
+        logoutLink.innerHTML = originalHtml; 
+    }
+}
+
 function getAntiForgeryToken() {
     //..get token from meta tag
     let token = $('meta[name="csrf-token"]').attr('content');

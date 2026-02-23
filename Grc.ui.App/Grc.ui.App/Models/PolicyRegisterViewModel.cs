@@ -8,5 +8,7 @@ namespace Grc.ui.App.Models {
         public List<RegulatoryTypeViewModel> RegulatoryTypes { get; set; } = new();
         public List<StatuteMinViewModel> EnforcementLaws { get; set; } = new();
         public List<ReturnTypeViewModel> ReturnTypes { get; set; } = new();
+        public List<ProcessTypeViewModel> ProcessTypes { get; set; } = new();
+        public List<DepartmentUnitViewModel> OperationUnits { get; set; } = new();
     }
 }

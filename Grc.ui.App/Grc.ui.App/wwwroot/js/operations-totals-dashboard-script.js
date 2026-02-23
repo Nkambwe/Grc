@@ -2,10 +2,9 @@
 // category color mapping
 const cardColors = {
     "UpToDate": { bg: "#10B981", class: "card-uptodate" },
-    "Unclassified": { bg: "#3B82F6", class: "card-proposed" },
-    "Cancelled": { bg: "#5CC8C9", class: "card-cancelled" },
+    "Obsolete": { bg: "#5CC8C9", class: "card-cancelled" },
     "Unchanged": { bg: "#8B5CF6", class: "card-unchanged" },
-    "Obsolete": { bg: "#9E1D08", class: "card-due" },
+    "Due": { bg: "#9E1D08", class: "card-due" },
     "Review": { bg: "#7CF0AC", class: "card-review" },
     "Dormant": { bg: "#EF4444", class: "card-dormant" },
     "Draft": { bg: "#72319E", class: "card-draft" },

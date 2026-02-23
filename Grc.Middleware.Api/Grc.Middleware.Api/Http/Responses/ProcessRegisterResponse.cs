@@ -1,10 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Grc.Middleware.Api.Http.Responses
-{
+namespace Grc.Middleware.Api.Http.Responses {
 
-    public class ProcessRegisterResponse
-    {
+    public class ProcessRegisterResponse {
 
         [JsonPropertyName("id")]
         public long Id { get; set; }
@@ -56,13 +54,25 @@ namespace Grc.Middleware.Api.Http.Responses
 
         [JsonPropertyName("ownerName")]
         public string OwnerName { get; set; }
+        
+        [JsonPropertyName("version")]
+        public string Version { get; set; }
 
         [JsonPropertyName("responsibilityId")]
         public long ResponsibilityId { get; set; }
 
         [JsonPropertyName("responsible")]
         public string Responsibile { get; set; }
-
+        
+        [JsonPropertyName("riskLevel")]
+        public string RiskLevel { get; set; }
+        
+        [JsonPropertyName("originalOnFile")]
+        public string OriginalOnFile { get; set; }
+        
+        [JsonPropertyName("workflowStage")]
+        public string WorkflowStage { get; set; }
+        
         [JsonPropertyName("isLockProcess")]
         public bool? IsLockProcess { get; set; }
 
@@ -98,5 +108,14 @@ namespace Grc.Middleware.Api.Http.Responses
 
         [JsonPropertyName("approvals")]
         public ProcessApprovalResponse Approvals { get; set; }
+
+        [JsonPropertyName("versions")]
+        public List<ProcessVersionResponse> Versions { get; set; } = new();
+        
+        [JsonPropertyName("riskAssessments")]
+        public List<ProcessRiskResponse> RiskAssessments { get; set; } = new();
+        
+        [JsonPropertyName("processActivities")]
+        public List<ProcessActivityResponse> ProcessActivities { get; set; } = new();
     }
 }

@@ -51,6 +51,8 @@ namespace Grc.Middleware.Api.Services.Operations {
         bool Delete(IdRequest request);
         Task<bool> DeleteAsync(IdRequest request);
         Task<bool> DeleteAllAsync(IList<long> requestIds, bool markAsDeleted = false);
+        Task<bool> DeleteProcessAsync(long id, bool isDeleted, string username) ;
+        Task<bool> LockProcessAsync(long id, bool isLocked, string username);
         Task<bool> BulkyInsertAsync(ProcessRequest[] requestItems);
         Task<bool> BulkyUpdateAsync(ProcessRequest[] requestItems);
         Task<bool> BulkyUpdateAsync(ProcessRequest[] requestItems, params Expression<Func<OperationProcess, object>>[] propertySelectors);
