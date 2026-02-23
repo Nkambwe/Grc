@@ -17,10 +17,10 @@ namespace Grc.Middleware.Api.Data.Repositories {
                 MailRecord record = null;
 
                 record = type switch {
-                    "Policy" => await Context.MailRecords
-                                                .Where(m => m.DocumentId == id)
-                                                .OrderByDescending(m => m.CreatedOn)
-                                                .FirstOrDefaultAsync(),
+                    //"Policy" => await Context.MailRecords
+                    //                            .Where(m => m.DocumentId == id)
+                    //                            .OrderByDescending(m => m.CreatedOn)
+                    //                            .FirstOrDefaultAsync(),
                     "Return" => await Context.MailRecords
                                                 .Where(m => m.ReturnId == id)
                                                 .OrderByDescending(m => m.CreatedOn)
