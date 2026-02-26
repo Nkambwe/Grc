@@ -1070,7 +1070,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 //..process types
                 if (processTypes != null && processTypes.Count > 0) {
                     response.ProcessTypes.AddRange(
-                        from type in returnTypes
+                        from type in processTypes
                         select new ProcessTypeResponse {
                             Id = type.Id,
                             TypeName = type.TypeName

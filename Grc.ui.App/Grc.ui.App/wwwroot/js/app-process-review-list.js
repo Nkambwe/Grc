@@ -218,7 +218,7 @@ function openNewEditor(title, approval) {
 
     updateSectionExpansion(bopRequired, creditRequired, treasuryRequired, fintechRequired, hodStatus, riskStatus, compStatus, bopStatus, creditStatus, treasuryStatus, fintechStatus);
     $('#approvalPanelTitle').text(title);
-    $('.process-overlay').addClass('active');
+    $('#revOverlay').addClass('active');
     $('#collapsePanel').addClass('active');
 }
 
@@ -365,7 +365,7 @@ function toggleSection(header) {
 }
 
 function closeApprovalPanel() {
-    $('.process-overlay').removeClass('active');
+    $('#revOverlay').removeClass('active');
     $('#collapsePanel').removeClass('active');
 }
 
