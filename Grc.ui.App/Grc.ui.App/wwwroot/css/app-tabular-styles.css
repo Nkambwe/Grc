@@ -13,7 +13,12 @@
 .regulatory-container {
     position: relative;
 }
-
+.tab-pane,
+.tab-content,
+.tab-page-content,
+.tab-page-content-inner {
+    overflow: visible !important;
+}
 .grc-permission-alert,
 .grc-error-alert {
     display: flex;

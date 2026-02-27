@@ -1579,6 +1579,13 @@ li.no-report-items {
     color: var(--amber-dark);
 }
 
+.tab-pane,
+.tab-content,
+.tab-page-content,
+.tab-page-content-inner {
+    overflow: visible !important;
+}
+
 /* Responsive - 2 columns on tablets */
 @media (max-width: 992px) {
     .permission-set-body {

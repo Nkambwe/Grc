@@ -1499,61 +1499,19 @@ function toggleSection(header) {
 }
 
 function initDatePickers() {
-    flatpickr("#effectiveDate", {
-        dateFormat: "Y-m-d",
-        allowInput: true,
-        altInput: true,
-        altFormat: "d M Y"
-    });
 
-     flatpickr("#fintechApprovalOn", {
-        dateFormat: "Y-m-d",
-        allowInput: true,
-        altInput: true,
-        altFormat: "d M Y"
-    });
+    $(".datepicker").each(function () {
 
-     flatpickr("#treasuryApprovalOn", {
-        dateFormat: "Y-m-d",
-        allowInput: true,
-        altInput: true,
-        altFormat: "d M Y"
-    });
+        if (!this._flatpickr) {
+            flatpickr(this, {
+                dateFormat: "Y-m-d",
+                allowInput: true,
+                altInput: true,
+                altFormat: "d M Y",
+                defaultDate: null
+            });
+        }
 
-     flatpickr("#creditApprovalOn", {
-        dateFormat: "Y-m-d",
-        allowInput: true,
-        altInput: true,
-        altFormat: "d M Y"
-    });
-
-     flatpickr("#branchOpsApprovalOn", {
-        dateFormat: "Y-m-d",
-        allowInput: true,
-        altInput: true,
-        altFormat: "d M Y"
-    });
-
-     flatpickr("#complianceApprovalOn", {
-        dateFormat: "Y-m-d",
-        allowInput: true,
-        altInput: true,
-        altFormat: "d M Y"
-    });
-
-    
-     flatpickr("#riskApprovalOn", {
-        dateFormat: "Y-m-d",
-        allowInput: true,
-        altInput: true,
-        altFormat: "d M Y"
-    });
-
-     flatpickr("#hodApprovalOn", {
-        dateFormat: "Y-m-d",
-        allowInput: true,
-        altInput: true,
-        altFormat: "d M Y"
     });
 }
 
@@ -1795,7 +1753,7 @@ function deleteProcessRecord(id, isDeleted) {
 $(document).ready(function () {
 
     initProcessRegisterTable();
-    initDatePickers();
+  
 
     $("#onHoldBox").addClass("d-none");
 
@@ -2467,4 +2425,9 @@ $(document).ready(function () {
         }
     });
 
+    initDatePickers();
+
+     $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function () {
+        initDatePickers();
+    });
 });

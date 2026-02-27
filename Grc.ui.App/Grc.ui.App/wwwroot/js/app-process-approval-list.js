@@ -597,7 +597,7 @@ function openApprovalEditor(title, approval) {
     updateSectionExpansion(bopRequired, creditRequired, treasuryRequired, fintechRequired, hodStatus,
         riskStatus, compStatus, bopStatus, creditStatus, treasuryStatus, fintechStatus);
     $('#approvalPanelTitle').text(title);
-    $('.process-overlay').addClass('active');
+    $('#proOverlay').addClass('active');
     $('#collapsePanel').addClass('active');
 }
 
@@ -824,7 +824,7 @@ function getApprovalAntiForgeryToken() {
 }
 
 function closeApprovalPanel() {
-    $('.process-overlay').removeClass('active');
+    $('#proOverlay').removeClass('active');
     $('#collapsePanel').removeClass('active');
 }
 
@@ -862,7 +862,7 @@ function openHoldEditor(title, approval) {
     $("#holdDescription").val(approval?.processDescription || "");
     
     $('#holdPanelTitle').text(title);
-    $('.hold-overlay').addClass('active');
+    $('#holdOverlay').addClass('active');
     $('#holdePanel').addClass('active');
 }
 
@@ -957,7 +957,7 @@ function saveProcessHold(data) {
 }
 
 function closeHoldPanel() {
-    $('.hold-overlay').removeClass('active');
+    $('$holdOverlay').removeClass('active');
     $('#holdePanel').removeClass('active');
 }
 
