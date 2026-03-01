@@ -1,5 +1,4 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Office2010.Excel;
 using Grc.ui.App.Defaults;
 using Grc.ui.App.Dtos;
 using Grc.ui.App.Enums;
@@ -346,8 +345,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
             return View(model);
         }
-
-       
+    
         public async Task<IActionResult> PermissionSets()
         {
             var model = new AdminDashboardModel();
@@ -4112,7 +4110,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         [HttpPost]
         [LogActivityResult("Permission set Added", "User added Permission Set", ActivityTypeDefaults.PERMISSION_SET_ADDED, "SystemPermissionSet")]
-        [PermissionAuthorization(true, "CANADDPERMISSIONSET", "CreatePermissionSet")]
+        [PermissionAuthorization(false, "CANADDPERMISSIONSET", "CreatePermissionSet")]
         public async Task<IActionResult> CreatePermissionSet([FromBody] GrcPermissionSetViewModel request)
         {
             try
@@ -4170,7 +4168,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         [HttpPost]
         [LogActivityResult("Permission set Edited", "User updated Permission Set", ActivityTypeDefaults.PERMISSION_SET_EDITED, "SystemPermissionSet")]
-        [PermissionAuthorization(true, "EditPermissionSet", "CANMODIFYPERMISSIONSET")]
+        [PermissionAuthorization(false, "EditPermissionSet", "CANMODIFYPERMISSIONSET")]
         public async Task<IActionResult> UpdatePermissionSet([FromBody] GrcPermissionSetViewModel request) {
             try
             {
@@ -4210,7 +4208,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         [HttpPost]
         [LogActivityResult("Permission set Deleted", "User deleted Permission Set", ActivityTypeDefaults.PERMISSION_SET_DELETED, "SystemPermissionSet")]
-        [PermissionAuthorization(true, "CANDELETEPERMISSIONSET", "DeletePermissionSet")]
+        [PermissionAuthorization(false, "CANDELETEPERMISSIONSET", "DeletePermissionSet")]
         public async Task<IActionResult> DeletePermissionSet(long id)
         {
             try
