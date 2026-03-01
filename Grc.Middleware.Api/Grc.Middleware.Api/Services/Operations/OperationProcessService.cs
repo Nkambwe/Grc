@@ -1304,7 +1304,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             }
         }
 
-        public async Task<bool> InitiateReviewAsync(InitiateRequest request) {
+        public async Task<(bool, string, string)> InitiateReviewAsync(InitiateRequest request) {
             using var uow = UowFactory.Create();
             Logger.LogActivity($"Initiate Process review", "INFO");
             try {
@@ -1337,10 +1337,13 @@ namespace Grc.Middleware.Api.Services.Operations {
 
                     var result = uow.SaveChanges();
                     Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
-                    return result > 0;
+                    return (result > 0, null, null);
                 }
 
-                return false;
+                //..get responsible manage
+                var manager = await uow.ResponsebilityRepository.GetAsync(r=>r.Id == process.ResponsibilityId);
+
+                return (false, manager.ContactName, manager.ContactEmail);
             }
             catch (Exception ex)
             {

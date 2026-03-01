@@ -2191,7 +2191,7 @@ namespace Grc.Middleware.Api.Controllers {
                 var response = new GeneralResponse();
 
                 //..initiate operations process review
-                var isInitiated = await _processService.InitiateReviewAsync(initiate);
+                var (isInitiated, contactName, contactEmail) = await _processService.InitiateReviewAsync(initiate);
                 if (!isInitiated) {
                     response.Status = false;
                     response.StatusCode = (int)ResponseCodes.FAILED;
@@ -2213,19 +2213,18 @@ namespace Grc.Middleware.Api.Controllers {
                         msg += ". Mail settings not found. No mail sent";
                         Logger.LogActivity($"Could not send process approval mail. Mail sendings not found", "INFO");
                     } else {
-
-                        //..get Head of operations details
-                        var officer = await _officersService.GetAsync(o => o.ContactPosition == "Head of Operation & Services");
-                        if (officer is null) {
-                            msg += ". Head Of Operations Contacts not found. Mail not sent";
-                            Logger.LogActivity($"Head Of Operations Contacts not found. Mail not sent", "INFO");
+                        //..send to managers
+                        //var officer = await _officersService.GetAsync(o => o.ContactPosition == "Head of Operation & Services");
+                        if (string.IsNullOrWhiteSpace(contactName)) {
+                            msg += ". No responsible manager attached to this process. Mail not sent";
+                            Logger.LogActivity(msg, "INFO");
                         } else {
-                            var officerName = (officer.ContactName ?? string.Empty).Trim();
-                            var officerEmail = (officer.ContactEmail ?? string.Empty).Trim();
+                            var officerName = (contactName?? string.Empty).Trim();
+                            var officerEmail = (contactEmail ?? string.Empty).Trim();
                             if (!string.IsNullOrEmpty(officerName) && !string.IsNullOrEmpty(officerEmail)) {
-                                //await SendMailAsync(Logger, mailService, officerName, officerEmail, request.Id, request.ProcessName);
+                                await SendMailAsync(Logger, mailService, officerName, officerEmail, request.Id, request.ProcessName);
                             } else {
-                                msg += ". Head Of Operations Contacts not found. Mail not sent";
+                                msg += ". No responsible manager attached to this process. Mail not sent";
                             }
                         }
                     }
