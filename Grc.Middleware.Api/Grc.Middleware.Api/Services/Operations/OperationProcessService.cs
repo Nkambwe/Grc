@@ -1322,8 +1322,8 @@ namespace Grc.Middleware.Api.Services.Operations {
                     process.Approvals.Add(new ProcessApproval() {
                         ProcessId = request.Id,
                         RequestDate = DateTime.Now,
-                        HeadOfDepartmentStart = DateTime.Now,
-                        HeadOfDepartmentStatus = "PENDING",
+                        ManagerialStart = DateTime.Now,
+                        ManagerialStatus = "PENDING",
                         CreatedBy = request.ModifiedBy,
                         CreatedOn = request.ModifiedOn,
                         LastModifiedBy = request.ModifiedBy,

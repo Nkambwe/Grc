@@ -11,6 +11,12 @@ namespace Grc.ui.App.Http.Requests {
 
         [JsonPropertyName("processName")]
         public string ProcessName { get; set; }
+        
+        [JsonPropertyName("mgrStatus")]
+        public string MgrStatus { get; set; }
+
+        [JsonPropertyName("mgrComment")]
+        public string MgrComment { get; set; }
 
         [JsonPropertyName("hodStatus")]
         public string HodStatus { get; set; }

@@ -13,9 +13,6 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("description")]
         public string Description { get; set; }
 
-        [JsonPropertyName("currentVersion")]
-        public string CurrentVersion { get; set; }
-
         [JsonPropertyName("effectiveDate")]
         public DateTime? EffectiveDate { get; set; }
 
@@ -24,7 +21,10 @@ namespace Grc.Middleware.Api.Http.Responses {
 
         [JsonPropertyName("fileName")]
         public string FileName { get; set; }
-
+        
+        [JsonPropertyName("currentVersion")]
+        public string CurrentVersion {get;set;}
+        
         [JsonPropertyName("processStatus")]
         public string ProcessStatus { get; set; }
 

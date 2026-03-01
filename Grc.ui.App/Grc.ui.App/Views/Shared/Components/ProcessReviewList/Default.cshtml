@@ -24,17 +24,17 @@
 </div>
 
 <!-- Overlay -->
-<div id="revOverlay" class="permission-set-overlay" onclick="closeApprovalPanel()"></div>
+<div id="revOverlay" class="permission-set-overlay" style="z-index:1040!important;"></div>
 
 
 <!-- Process Panel -->
-<div id="processPanel" class="law-side-panel" onclick="event.stopPropagation()">
+<div id="collapsePanel" class="law-side-panel" onclick="event.stopPropagation()">
 
     <div class="law-side-panel-header">
         <h5 id="processTitle">
             PROCESS REVIEW
         </h5>
-        <button class="panel-close" onclick="closeProcessPanel()">
+        <button class="panel-close" onclick="closeReviewPanel()">
             <i class="mdi mdi-close"></i>
         </button>
     </div>
@@ -42,8 +42,8 @@
     <div class="law-side-panel-body p-0">
 
         <form id="processForm" class="grc-law-form">
+            <input type="hidden" id="id" name="id">
             <input type="hidden" id="processId" name="processId">
-            <input type="hidden" id="isEdit" name="isEdit">
 
             <!-- Tabs header -->
             <ul class="nav nav-tabs" id="reportTabs" role="tablist">
@@ -102,7 +102,7 @@
                                         <div class="col-6">
 
                                             <div class="row mb-3">
-                                                <label for="typeId" class="col-sm-12 col-form-label">
+                                                <label for="processType" class="col-sm-12 col-form-label">
                                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Type"))
                                                 </label>
                                                 <div class="col-sm-12">
@@ -126,9 +126,9 @@
                                         <div class="col-6">
 
                                             <div class="row mb-3">
-                                                <label for="processOwner" class="col-sm-12 col-form-label">Process Owner</label>
+                                                <label for="ownerName" class="col-sm-12 col-form-label">Process Owner</label>
                                                 <div class="col-sm-12">
-                                                    <input type="text" id="processOwner" name="processOwner" class="form-control" readonly />
+                                                    <input type="text" id="ownerName" name="ownerName" class="form-control" readonly />
                                                 </div>
                                             </div>
 
@@ -148,9 +148,9 @@
                                         <div class="col-6">
 
                                             <div class="row mb-3">
-                                                <label for="assigneedTo" class="col-sm-12 col-form-label">Person Responsible For Process</label>
+                                                <label for="assigneeName" class="col-sm-12 col-form-label">Person Responsible For Process</label>
                                                 <div class="col-sm-12">
-                                                    <input type="text" id="assigneedTo" name="assigneedTo" class="form-control" readonly />
+                                                    <input type="text" id="assigneeName" name="assigneeName" class="form-control" readonly />
                                                 </div>
                                             </div>
 
@@ -214,7 +214,7 @@
                                                     Process Comment
                                                 </label>
                                                 <div class="col-sm-12">
-                                                    <textarea id="comments" name="comments" class="form-control" rows="3" onkeypress="return validateCommentInput(event)" onpaste="handleCommentPaste(event)"></textarea>
+                                                    <textarea id="comments" name="comments" class="form-control" rows="3" readonly></textarea>
                                                 </div>
                                             </div>
 
@@ -261,9 +261,21 @@
                                                     Current File Version
                                                 </label>
                                                 <div class="col-12">
-                                                    <input type="text" id="fileVersion" name="fileVersion" class="form-control">
+                                                    <input type="text" id="fileVersion" name="fileVersion" class="form-control" onkeypress="return validateVersionInput(event)" onpaste="handleVersionPaste(event)">
                                                 </div>
                                             </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div class="row mb-3">
+                                                <label for="assigneeComments" class="col-sm-12 col-form-label text-sm-start">
+                                                   Notes
+                                                </label>
+                                                <div class="col-sm-12">
+                                                    <textarea id="assigneeComments" name="assigneeComments" class="form-control" rows="3" onkeypress="return validateCommentInput(event)" onpaste="handleCommentPaste(event)"></textarea>
+                                                </div>
+                                            </div>
+
                                         </div>
 
                                     </div>
@@ -281,10 +293,10 @@
                 <div class="tab-footer p-3">
                     <div class="row mb-3">
                         <div class="col-3">
-                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveProcessRecord()">Save</button>
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveReviewRecord(e)">Save</button>
                         </div>
                         <div class="col-3">
-                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeProcessPanel()">Cancle</button>
+                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeReviewPanel()">Cancle</button>
                         </div>
                         <div class="col-6"></div>
                     </div>

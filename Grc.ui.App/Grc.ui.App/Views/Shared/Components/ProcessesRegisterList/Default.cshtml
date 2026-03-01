@@ -113,6 +113,29 @@
                                         <div class="col-6">
 
                                             <div class="row mb-3">
+                                                <label for="processStatus" class="col-sm-12 col-form-label text-sm-start">
+                                                    Current Approval Status
+                                                </label>
+                                                <div class="col-sm-12">
+                                                    <select class="js-act-is-approved form-control" id="processStatus" name="processStatus">
+                                                        <option value="DRAFT">Draft</option>
+                                                        <option value="UPTODATE">Uptodate</option>
+                                                        <option value="UNCHANGED">Unchanged</option>
+                                                        <option value="ONHOLD">On Hold</option>
+                                                        <option value="PROPOSED">Proposed</option>
+                                                        <option value="DUE">Due</option>
+                                                        <option value="INREVIEW">In Review</option>
+                                                        <option value="DORMANT">Dormant</option>
+                                                        <option value="OBSOLETE">Obsolete</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-6">
+
+                                            <div class="row mb-3">
                                                 <label for="typeId" class="col-sm-12 col-form-label">
                                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Type"))
                                                 </label>
@@ -288,29 +311,6 @@
                                 <div class="tab-page-content-inner">
 
                                     <div class="row">
-
-                                        <div class="col-6">
-
-                                            <div class="row mb-3">
-                                                <label for="processStatus" class="col-sm-12 col-form-label text-sm-start">
-                                                    Current Approval Status
-                                                </label>
-                                                <div class="col-sm-12">
-                                                    <select class="js-act-is-approved form-control" id="processStatus" name="processStatus">
-                                                        <option value="DRAFT">Draft</option>
-                                                        <option value="UPTODATE">Uptodate</option>
-                                                        <option value="UNCHANGED">Unchanged</option>
-                                                        <option value="ONHOLD">On Hold</option>
-                                                        <option value="PROPOSED">Proposed</option>
-                                                        <option value="DUE">Due</option>
-                                                        <option value="INREVIEW">In Review</option>
-                                                        <option value="DORMANT">Dormant</option>
-                                                        <option value="OBSOLETE">Obsolete</option>
-                                                    </select>
-                                                </div>
-                                            </div>  
-
-                                        </div>
 
                                         <div class="col-6"></div>
 

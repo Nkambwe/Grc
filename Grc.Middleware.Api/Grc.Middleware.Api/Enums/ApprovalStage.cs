@@ -17,6 +17,8 @@ namespace Grc.Middleware.Api.Enums {
         [Description("Head Of Department Credit")]
         CRT = 6,
         [Description("Head Of Department Fintech")]
-        FIN = 7
+        FIN = 7,
+        [Description("Unit Manager")]
+        MGR = 8,
     }
 }

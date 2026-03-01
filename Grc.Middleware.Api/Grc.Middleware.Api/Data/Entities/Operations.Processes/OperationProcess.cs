@@ -1,5 +1,6 @@
 ﻿using Grc.Middleware.Api.Data.Entities.Org;
 using Grc.Middleware.Api.Data.Entities.Support;
+using System.Text.Json.Serialization;
 
 namespace Grc.Middleware.Api.Data.Entities.Operations.Processes {
     

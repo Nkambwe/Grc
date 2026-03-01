@@ -3,6 +3,10 @@
 namespace Grc.Middleware.Api.Data.Entities.Operations.Processes {
     public class ProcessApproval: BaseEntity {
         public DateTime RequestDate { get; set; }
+        public DateTime? ManagerialStart { get; set; }
+        public DateTime? ManagerialEnd { get; set; }
+        public string ManagerialStatus { get; set; }
+        public string ManagerialComment { get; set; }
         public DateTime? HeadOfDepartmentStart { get; set; }
         public DateTime? HeadOfDepartmentEnd { get; set; }
         public string HeadOfDepartmentStatus { get; set; }

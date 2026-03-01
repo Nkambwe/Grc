@@ -1,4 +1,5 @@
-﻿using Grc.Middleware.Api.Data.Entities.Operations.Processes;
+﻿using Azure.Core;
+using Grc.Middleware.Api.Data.Entities.Operations.Processes;
 using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
@@ -16,7 +17,7 @@ namespace Grc.Middleware.Api.Services.Operations {
         Task<ProcessApproval> GetAsync(Expression<Func<ProcessApproval, bool>> predicate, bool includeDeleted = false, params Expression<Func<ProcessApproval, object>>[] includes);
         Task<IList<ProcessApproval>> GetAllAsync(bool includeDeleted = false, params Expression<Func<ProcessApproval, object>>[] includes);
         Task<bool> InsertAsync(ProcessApprovalRequest request);
-        Task<(bool, ApprovalStage)> ApproveProcessAsync(ApprovalRequest request, bool includeDeleted = false);
+        Task<(bool, ApprovalStage)> ApproveProcessAsync(ApprovalRequest request, bool includeDeleted = false, string fileName="", string fileVersion="");
         bool Delete(IdRequest request);
         Task<bool> DeleteAsync(IdRequest request);
         Task<PagedResult<ProcessApproval>> PageProcessApprovalStatusAsync(int pageIndex, int pageSize, bool includeDeleted, params Expression<Func<ProcessApproval, object>>[] includes);

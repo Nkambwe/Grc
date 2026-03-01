@@ -16,6 +16,7 @@ using Grc.Middleware.Api.Services.Organization;
 using Grc.Middleware.Api.TaskHandler;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using System.Text.Json;
 
 namespace Grc.Middleware.Api.Controllers {
@@ -1576,7 +1577,11 @@ namespace Grc.Middleware.Api.Controllers {
                 }
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
 
-                var approval = await _approvalService.GetAsync(p => p.Id == request.RecordId, true, p => p.Process);
+                var approval = await _approvalService.GetAsync(p => p.Id == request.RecordId, 
+                    true, 
+                    p => p.Process,
+                    p => p.Process.Owner,
+                    p => p.Process.Responsible);
                 if (approval == null)
                 {
                     var error = new ResponseError(
@@ -1959,7 +1964,12 @@ namespace Grc.Middleware.Api.Controllers {
                 }
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
 
-                var process = await _processService.GetAsync(p => p.Id == request.RecordId, false);
+                var process = await _processService.GetAsync(p => p.Id == request.RecordId,
+                    false,
+                    p => p.Owner, 
+                    p => p.Responsible, 
+                    p => p.Unit, 
+                    p => p.ProcessType);
                 if (process == null) {
                     var error = new ResponseError(
                         ResponseCodes.FAILED,
@@ -1979,6 +1989,17 @@ namespace Grc.Middleware.Api.Controllers {
                         RequestDate = DateTime.Now,
                         ProcessName = process.ProcessName ?? string.Empty,
                         ProcessDescription = process.Description ?? string.Empty,
+                        Comments = process.Comments ?? string.Empty,
+                        FileName = process.FileName ?? string.Empty,
+                        CurrentVersion = process.CurrentVersion ?? string.Empty,
+                        OwnerName = process?.Owner?.ContactName ?? string.Empty,
+                        UnitName = process?.Unit?.UnitName ?? string.Empty,
+                        TypeName = process?.ProcessType?.TypeName ?? string.Empty,
+                        Responsibile = process?.Responsible?.ContactName ?? string.Empty,
+                        ManagerStart = DateTime.Now,
+                        ManagerEnd = null,
+                        ManagerStatus = null,
+                        ManagerComment = "Review record not found",
                         HeadOfDepartmentStart = DateTime.Now,
                         HeadOfDepartmentEnd = null,
                         HeadOfDepartmentStatus = null,
@@ -1991,18 +2012,22 @@ namespace Grc.Middleware.Api.Controllers {
                         ComplianceEnd = null,
                         ComplianceStatus = "UNCLASSIFIED",
                         ComplianceComment = "Approval record not found",
+                        RequiresBopApproval = process.NeedsBranchReview??false,
                         BranchOperationsStatusStart = null,
                         BranchOperationsStatusEnd = null,
                         BranchOperationsStatus = "UNCLASSIFIED",
                         BranchManagerComment = "Approval record not found",
+                        RequiresCreditApproval = process.NeedsCreditReview ??false,
                         CreditStart = null,
                         CreditEnd = null,
                         CreditStatus = "UNCLASSIFIED",
                         CreditComment = "Approval record not found",
+                        RequiresTreasuryApproval = process.NeedsFintechReview??false,
                         TreasuryStart = null,
                         TreasuryEnd = null,
                         TreasuryStatus = "UNCLASSIFIED",
                         TreasuryComment = "Approval record not found",
+                        RequiresFintechApproval = process.NeedsFintechReview??false,
                         FintechStart = null,
                         FintechEnd = null,
                         FintechStatus = "UNCLASSIFIED",
@@ -2016,6 +2041,17 @@ namespace Grc.Middleware.Api.Controllers {
                         RequestDate = approval.RequestDate,
                         ProcessName = process.ProcessName ?? string.Empty,
                         ProcessDescription = process.Description ?? string.Empty,
+                        Comments = process.Comments ?? string.Empty,
+                        FileName = process.FileName ?? string.Empty,
+                        CurrentVersion = process.CurrentVersion ?? string.Empty,
+                        OwnerName = process?.Owner?.ContactName ?? string.Empty,
+                        UnitName = process?.Unit?.UnitName ?? string.Empty,
+                        TypeName = process?.ProcessType?.TypeName ?? string.Empty,
+                        Responsibile = process?.Responsible?.ContactName ?? string.Empty,
+                        ManagerStart = approval.ManagerialStart,
+                        ManagerEnd = approval.ManagerialEnd,
+                        ManagerStatus =  approval.ManagerialStatus ?? string.Empty,
+                        ManagerComment = approval.ManagerialComment ?? string.Empty,
                         HeadOfDepartmentStart = approval.HeadOfDepartmentStart,
                         HeadOfDepartmentEnd = approval.HeadOfDepartmentEnd,
                         HeadOfDepartmentStatus = approval.HeadOfDepartmentStatus ?? string.Empty,
@@ -2028,18 +2064,22 @@ namespace Grc.Middleware.Api.Controllers {
                         ComplianceEnd = approval.ComplianceEnd,
                         ComplianceStatus = approval.ComplianceStatus ?? string.Empty,
                         ComplianceComment = approval.ComplianceComment ?? string.Empty,
+                        RequiresBopApproval = process.NeedsBranchReview??false,
                         BranchOperationsStatusStart = approval.BranchOperationsStatusStart,
                         BranchOperationsStatusEnd = approval.BranchOperationsStatusEnd,
                         BranchOperationsStatus = approval.BranchOperationsStatus ?? string.Empty,
                         BranchManagerComment = approval.BranchManagerComment ?? string.Empty,
+                        RequiresCreditApproval = process.NeedsCreditReview ??false,
                         CreditStart = approval.CreditStart,
                         CreditEnd = approval.CreditEnd,
                         CreditStatus = approval.CreditStatus ?? string.Empty,
                         CreditComment = approval.CreditComment ?? string.Empty,
+                        RequiresTreasuryApproval = process.NeedsFintechReview??false,
                         TreasuryStart = approval.TreasuryStart,
                         TreasuryEnd = approval.TreasuryEnd,
                         TreasuryStatus = approval.TreasuryStatus ?? string.Empty,
                         TreasuryComment = approval.TreasuryComment ?? string.Empty,
+                        RequiresFintechApproval = process.NeedsFintechReview??false,
                         FintechStart = approval.FintechStart,
                         FintechEnd = approval.FintechEnd,
                         FintechStatus = approval.FintechStatus ?? string.Empty,
@@ -2407,7 +2447,11 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                var pageResult = await _approvalService.PageProcessApprovalStatusAsync(request.PageIndex, request.PageSize, true, p => p.Process);
+                var pageResult = await _approvalService.PageProcessApprovalStatusAsync(request.PageIndex, request.PageSize, true, 
+                    p => p.Process, 
+                    p=> p.Process.Owner,
+                    p=> p.Process.Responsible);
+
                 if (pageResult.Entities == null || !pageResult.Entities.Any())
                 {
                     var error = new ResponseError(
@@ -2520,7 +2564,11 @@ namespace Grc.Middleware.Api.Controllers {
                 }
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
 
-                var approval = await _approvalService.GetAsync(p => p.Id == request.RecordId, true, p => p.Process);
+                var approval = await _approvalService.GetAsync(p => p.Id == request.RecordId,
+                    true, 
+                    p => p.Process,
+                    p => p.Process.Owner,
+                    p => p.Process.Responsible);
                 if (approval == null)
                 {
                     var error = new ResponseError(
@@ -2539,6 +2587,10 @@ namespace Grc.Middleware.Api.Controllers {
                     RequestDate = approval.RequestDate,
                     ProcessName = approval.Process.ProcessName ?? string.Empty,
                     ProcessDescription = approval.Process.Description ?? string.Empty,
+                    ManagerStart = approval.ManagerialStart,
+                    ManagerEnd = approval.ManagerialEnd,
+                    ManagerStatus =  approval.ManagerialStatus ?? string.Empty,
+                    ManagerComment = approval.ManagerialComment ?? string.Empty,
                     HeadOfDepartmentStart = approval.HeadOfDepartmentStart,
                     HeadOfDepartmentEnd = approval.HeadOfDepartmentEnd,
                     HeadOfDepartmentStatus = approval.HeadOfDepartmentStatus ?? string.Empty,
@@ -2579,6 +2631,102 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
+        [HttpPost("processes/manager-review")]
+        public async Task<IActionResult> ManagerReview([FromBody] ManagerReviewRequest request)
+        {
+            try
+            {
+                Logger.LogActivity("Update process approval", "INFO");
+                if (request == null)
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.BADREQUEST,
+                        "Request record cannot be empty",
+                        "The process approval record cannot be null"
+                    );
+
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
+                if (!await _approvalService.ExistsAsync(r => r.Id == request.Id))
+                {
+                    var error = new ResponseError(
+                        ResponseCodes.NOTFOUND,
+                        "Record Not Found",
+                        "Process approval record not found in the database"
+                    );
+
+                    Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                string username = currentUser != null ? currentUser.Username : $"{request.UserId}";
+
+                //..update process approval
+                var (isApproved, stage) = await _approvalService.ApproveProcessAsync(new ApprovalRequest(){ 
+                        Id = request.Id,
+                        ProcessId = request.ProcessId,
+                        MgrStatus = "REVIEWED",
+                        MgrComment = request.ManagerComments,
+                        ModifiedBy = username,
+                        ModifiedOn = DateTime.Now
+
+                    }, true, request.FileName, request.FileVersion);
+                var response = new GeneralResponse();
+                if (isApproved) {
+                    string msg = "";
+                    _mailTask.Enqueue(async (sp, token) => {
+                        //..get services
+                        var mailService = sp.GetRequiredService<IMailService>();
+                        var logger = sp.GetRequiredService<IServiceLoggerFactory>().CreateLogger();
+
+                        //..get mail settings
+                        var mailSettings = await mailService.GetMailSettingsAsync();
+                        if (mailSettings is null) {
+                            msg += ". Mail settings not found. No mail sent";
+                            Logger.LogActivity($"Could not send process approval mail. Mail sendings not found", "INFO");
+                        } else {
+
+                            //..get Head of operations details
+                            var officer = await _officersService.GetAsync(o => o.ContactPosition == "Head of Operation & Services");
+                            if (officer is null) {
+                                msg += ". Head Of Operations Contacts not found. Mail not sent";
+                                Logger.LogActivity($"Head Of Operations Contacts not found. Mail not sent", "INFO");
+                            } else {
+                                //..get resposible manager
+                                var (receiverName, receiverMail) = await GetMailReceiverInfo(stage, _officersService);
+                                if (!string.IsNullOrEmpty(receiverName) && !string.IsNullOrEmpty(receiverMail)) {
+                                    //await SendMailAsync(Logger, mailService, receiverName, receiverMail, request.Id, request.ProcessName);
+                                } else {
+                                    msg += ". Head Of Operations Contacts not found. Mail not sent";
+                                }
+                            }
+                        }
+                    });
+                    
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.SUCCESS;
+                    response.Message = msg;
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                } else {
+                    response.Status = true;
+                    response.StatusCode = (int)ResponseCodes.FAILED;
+                    response.Message = "Failed to update process tag record. An error occurrred";
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                }
+
+                return Ok(new GrcResponse<GeneralResponse>(response));
+            } catch (Exception ex)
+            {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<GeneralResponse>(error));
+            }
+        }
+        
         [HttpPost("processes/update-approval")]
         public async Task<IActionResult> UpdateApproval([FromBody] ApprovalRequest request)
         {
@@ -2781,6 +2929,15 @@ namespace Grc.Middleware.Api.Controllers {
                 RequestDate = approval.RequestDate,
                 ProcessName = approval.Process?.ProcessName ?? string.Empty,
                 ProcessDescription = approval.Process?.Description ?? string.Empty,
+                FileName  = approval.Process?.FileName ?? string.Empty,
+                CurrentVersion  = approval.Process?.CurrentVersion ?? string.Empty,
+                OwnerName = approval.Process?.Owner?.ContactName ?? string.Empty,
+                Responsibile = approval.Process.Responsible?.ContactName ?? string.Empty,
+
+                ManagerStart = approval.ManagerialStart,
+                ManagerEnd = approval.ManagerialEnd,
+                ManagerStatus =  approval.ManagerialStatus ?? string.Empty,
+                ManagerComment = approval.ManagerialComment ?? string.Empty,
 
                 HeadOfDepartmentStart = approval.HeadOfDepartmentStart,
                 HeadOfDepartmentEnd = approval.HeadOfDepartmentEnd,
@@ -2797,21 +2954,25 @@ namespace Grc.Middleware.Api.Controllers {
                 ComplianceStatus = approval.ComplianceStatus ?? string.Empty,
                 ComplianceComment = approval.ComplianceComment ?? string.Empty,
 
+                RequiresBopApproval = approval.Process?.NeedsBranchReview??false,
                 BranchOperationsStatusStart = approval.BranchOperationsStatusStart,
                 BranchOperationsStatusEnd = approval.BranchOperationsStatusEnd,
                 BranchOperationsStatus = approval.BranchOperationsStatus ?? string.Empty,
                 BranchManagerComment = approval.BranchManagerComment ?? string.Empty,
 
+                RequiresCreditApproval = approval.Process?.NeedsCreditReview??false,
                 CreditStart = approval.CreditStart,
                 CreditEnd = approval.CreditEnd,
                 CreditStatus = approval.CreditStatus ?? string.Empty,
                 CreditComment = approval.CreditComment ?? string.Empty,
 
+                RequiresTreasuryApproval = approval.Process?.NeedsTreasuryReview??false,
                 TreasuryStart = approval.TreasuryStart,
                 TreasuryEnd = approval.TreasuryEnd,
                 TreasuryStatus = approval.TreasuryStatus ?? string.Empty,
                 TreasuryComment = approval.TreasuryComment ?? string.Empty,
 
+                RequiresFintechApproval= approval.Process?.NeedsFintechReview??false,
                 FintechStart = approval.FintechStart,
                 FintechEnd = approval.FintechEnd,
                 FintechStatus = approval.FintechStatus ?? string.Empty,

@@ -5,6 +5,18 @@ namespace Grc.ui.App.Http.Responses {
 
         [JsonPropertyName("id")]
         public long Id { get; set; }
+        
+        [JsonPropertyName("managerStart")]
+        public DateTime? ManagerStart { get; set; }
+
+        [JsonPropertyName("managerEnd")]
+        public DateTime? ManagerEnd { get; set; }
+
+        [JsonPropertyName("managerStatus")]
+        public string ManagerStatus { get; set; }
+
+        [JsonPropertyName("managerComment")]
+        public string ManagerComment { get; set; }
 
         [JsonPropertyName("headOfDepartmentStart")]
         public DateTime? HeadOfDepartmentStart { get; set; }

@@ -887,7 +887,11 @@
                 pattern: "/operations/workflow/processes/approval/new-request/{id:long}",
                 defaults: new { area = "Operations", controller = "OperationWorkflow", action = "NewProcessApproval" }
             );
-
+            routeBuilder.MapControllerRoute(
+               name: "app-operations-processes-mgr-review",
+               pattern: "/operations/workflow/processes/mgr-review",
+               defaults: new { area = "Operations", controller = "OperationWorkflow", action = "ManagerialReview" }
+            );
             /*----------------------- Compliance application routes*/
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-access-denied",

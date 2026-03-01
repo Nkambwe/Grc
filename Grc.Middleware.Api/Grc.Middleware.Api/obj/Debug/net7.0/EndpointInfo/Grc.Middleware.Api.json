@@ -1207,6 +1207,37 @@
         }
       }
     },
+    "/grc/processes/manager-review": {
+      "post": {
+        "tags": [
+          "OperationProcesses"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ManagerReviewRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ManagerReviewRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Grc.Middleware.Api.Http.Requests.ManagerReviewRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/grc/processes/update-approval": {
       "post": {
         "tags": [
@@ -8881,6 +8912,24 @@
             "type": "string",
             "nullable": true
           },
+          "mgrStart": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "mgrEnd": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "mgrStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "mgrComment": {
+            "type": "string",
+            "nullable": true
+          },
           "hodStatus": {
             "type": "string",
             "nullable": true
@@ -10877,6 +10926,44 @@
             "items": {
               "type": "string"
             },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Grc.Middleware.Api.Http.Requests.ManagerReviewRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "processId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "fileName": {
+            "type": "string",
+            "nullable": true
+          },
+          "fileVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "managerComments": {
+            "type": "string",
+            "nullable": true
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "action": {
+            "type": "string",
             "nullable": true
           }
         },

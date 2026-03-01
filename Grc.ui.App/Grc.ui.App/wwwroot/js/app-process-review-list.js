@@ -144,9 +144,9 @@ function viewRecord(id) {
         .then(record => {
             Swal.close();
             if (record) {
-                openNewEditor('Approve Process', record);
+                openReviewEditor('INREVIEW PROCESS', record);
             } else {
-                Swal.fire({ title: 'NOT FOUND', text: 'Approval record found' });
+                Swal.fire({ title: 'NOT FOUND', text: 'Process record found' });
             }
         })
         .catch(() => {
@@ -155,179 +155,155 @@ function viewRecord(id) {
         });
 }
 
-function openNewEditor(title, approval) {
+function openReviewEditor(title, approval) {
     var bopRequired = approval?.requiresBopApproval || false;
-    $("#bopRequired").val(bopRequired);
     var creditRequired = approval?.requiresCreditApproval || false;
-    $("#creditRequired").val(creditRequired);
     var treasuryRequired = approval?.requiresTreasuryApproval || false;
-    $("#treasuryRequired").val(treasuryRequired);
     var fintechRequired = approval?.requiresFintechApproval || false;
-    $("#fintechRequired").val(fintechRequired);
 
     var tStr = approval?.processName || "";
-    var hodStatus = approval?.hodStatus || "";
-    var riskStatus = approval?.riskStatus || "";
-    var compStatus = approval?.complianceStatus || "";
-    var bopStatus = approval?.bopStatus || "";
-    var creditStatus = approval?.creditStatus || "";
-    var treasuryStatus = approval?.treasuryStatus || "";
-    var fintechStatus = approval?.fintechStatus || "";
-
+   
     if (tStr)
-        title = tStr;
+        title = `INREVIEW PROCESS - ${tStr}`;
 
     const date = new Date(approval?.requestDate);
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    const formattedDate = `${day}-${month}-${year}`;
 
     //..populate form fields
-    $("#approvalId").val(approval?.id || 0);
     $("#processId").val(approval?.processId || 0);
     $("#processName").val(tStr);
     $("#processDescription").val(approval?.processDescription || "");
-    $('#isDeleted').prop('checked', approval?.isDeleted || false);
-    $("#requestDate").val(formattedDate);
-    $("#hodStatus").val(hodStatus).trigger('change.select2');
-    $("#hodComment").val(approval?.hodComment || "");
-    $("#hodEnd").val(approval?.hodEnd || "");
-    $("#riskStatus").val(riskStatus).trigger('change.select2');
-    $("#riskComment").val(approval?.riskComment || "");
-    $("#riskEnd").val(approval?.riskEnd || "");
-    $("#complianceStatus").val(compStatus).trigger('change.select2');
-    $("#complianceComment").val(approval?.complianceComment || "");
-    $("#complianceEnd").val(approval?.complianceEnd || "");
+    
+   
+    $("#assigneeComments").val(approval?.assigneeComments || "");
+    $("#ownerName").val(approval?.ownerName || "");
+    $("#unitName").val(approval?.unitName || "");
+    $("#assigneeName").val(approval?.assigneeName || "");
+    $("#comments").val(approval?.comments || "");
     $('#requiresBopApproval').prop('checked', bopRequired);
-    $("#bopStatus").val(bopStatus).trigger('change.select2');
-    $("#bopComment").val(approval?.bopComment || "");
-    $("#bopStatusEnd").val(approval?.bopStatusEnd || "");
     $('#requiresCreditApproval').prop('checked', creditRequired);
-    $("#creditStatus").val(creditStatus).trigger('change.select2');
-    $("#creditComment").val(approval?.creditComment || "");
-    $("#creditEnd").val(approval?.creditEnd || "");
     $('#requiresTreasuryApproval').prop('checked', treasuryRequired);
-    $("#treasuryStatus").val(treasuryStatus).trigger('change.select2');
-    $("#treasuryComment").val(approval?.treasuryComment || "");
-    $("#treasuryEnd").val(approval?.treasuryEnd || "");
     $('#requiresFintechApproval').prop('checked', fintechRequired);
-    $("#fintechStatus").val(fintechStatus).trigger('change.select2');
-    $("#fintechComment").val(approval?.fintechComment || "");
-    $("#fintechEnd").val(approval?.fintechEnd || "");
-
-    updateSectionExpansion(bopRequired, creditRequired, treasuryRequired, fintechRequired, hodStatus, riskStatus, compStatus, bopStatus, creditStatus, treasuryStatus, fintechStatus);
+    $("#processType").val(approval?.processType || "");
+    $("#fileName").val(approval?.fileName || "");
+    $("#fileVersion").val(approval?.fileVersion || "");
+    $("#assigneeComments").val(approval?.assigneeComments || "");
     $('#approvalPanelTitle').text(title);
     $('#revOverlay').addClass('active');
     $('#collapsePanel').addClass('active');
 }
 
-function updateSectionExpansion(bopRequired, creditRequired, treasuryRequired, fintechRequired, hodStatus, riskStatus, compStatus, bopStatus, creditStatus, treasuryStatus, fintechStatus) {
-    //..check if status needs attention
-    function needsAttention(status) {
-        return status === "" || status === "REJECTED" || status === "PENDING";
+function saveReviewRecord(e) {
+    e.preventDefault();
+    let fileName = $('#fileName').val()?.trim();
+    let fileVersion = $('#fileVersion').val()?.trim();
+    let managerComments = $('#assigneeComments').val()?.trim();
+
+    let isValid = true;
+    let errors = [];
+    if (!fileName) {
+        highlightReviewField('#fileName', true, 'File name field is required');
+        isValid = false;
+        errors.push("File name field is required");
+    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(typeName)) {
+        highlightReviewField('#fileName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+        errors.push("Only letters, numbers, commas, periods, and spaces allowed");
     }
 
-    //..toggle section
-    function setSectionExpanded(sectionId, shouldExpand) {
-        $('#' + sectionId + ' .section-content').toggleClass('expanded', shouldExpand);
-        $('#' + sectionId + ' .section-toggle').toggleClass('expanded', shouldExpand);
+    if (!fileVersion) {
+        highlightReviewField('#fileVersion', true, 'File version field is required');
+        isValid = false;
+        errors.push("File version field is required");
+    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(fileVersion)) {
+        highlightReviewField('#fileVersion', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+        errors.push("Only letters, numbers, commas, periods, and spaces allowed");
     }
 
-    //...expand HOD Section if needs attention
-    setSectionExpanded('hodSection', needsAttention(hodStatus));
-    if (hodStatus === "APPROVED") {
-        $("#hodStatus").prop("disabled", true);
-        $("#hodComment").prop("disabled", true);
-    } else {
-        $("#hodStatus").prop("disabled", false);
-        $("#hodComment").prop("disabled", false);
+     if (!managerComments && !/^[a-zA-Z0-9\s,.]*$/.test(managerComments)) {
+        highlightReviewField('#assigneeComments', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        isValid = false;
+        errors.push("Only letters, numbers, commas, periods, and spaces allowed");
+    }
+    
+    if (!isValid) {
+         Swal.fire({
+            title: "Review Validation",
+            html: `<div style="text-align:left;">${errors.join("<br>")}</div>`,
+        });
+        //..stop submission
+        return;
     }
 
-    //...expand Risk Section if HOD approved but risk needs attention
-    setSectionExpanded('riskSection', hodStatus === "APPROVED" && needsAttention(riskStatus));
-    if (hodStatus !== "APPROVED" || (hodStatus === "APPROVED" && riskStatus === "APPROVED")) {
-        $("#riskStatus").prop("disabled", true);
-        $("#riskComment").prop("disabled", true);
-    } else {
-        $("#riskStatus").prop("disabled", false);
-        $("#riskComment").prop("disabled", false);
-    }
+    // --- validate required fields ---
+    let recordData = {
+        id: parseInt($('#id').val()) || 0,
+        processId: parseInt($('#processId').val()) || 0,
+        fileName: fileName,
+        fileVersion:fileVersion,
+        managerComments: managerComments,
+        status: "REVIEWED"
+    };
 
-    //...expand  Compliance Section if risk approved but compliance needs attention
-    setSectionExpanded('complianceSection', riskStatus === "APPROVED" && needsAttention(compStatus));
-    if (riskStatus !== "APPROVED" || (riskStatus === "APPROVED" && compStatus === "APPROVED")) {
-        $("#complianceStatus").prop("disabled", true);
-        $("#complianceComment").prop("disabled", true);
-    } else {
-        $("#complianceStatus").prop("disabled", false);
-        $("#complianceComment").prop("disabled", false);
-    }
+    saveReview(recordData)
+}
 
-    //...expand  BOP Section if compliance approved, BOP required, and needs attention
-    if (bopRequired) {
-        setSectionExpanded('bopSection', compStatus === "APPROVED" && needsAttention(bopStatus));
-        if (!compStatus) {
-            $("#bopStatus").prop("disabled", true);
-            $("#bopComment").prop("disabled", true);
-        } else {
-            $("#bopStatus").prop("disabled", false);
-            $("#bopComment").prop("disabled", false);
+function saveReview(record) {
+    const url ="/grc/compliance/audits/types/type-create";
+
+    Swal.fire({
+        title: "Sending request to HOD for approval...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
         }
-    } else {
-        $("#bopSection").hide();
-    }
+    });
 
-    //..determine which section should expand next after BOP
-    var bopApprovedOrNotRequired = !bopRequired || bopStatus === "APPROVED";
-    var complianceComplete = compStatus === "APPROVED";
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(record),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getAuditToken()
+        },
+        success: function (res) {
+            Swal.close();
+            if (!res.success) {
+                Swal.fire({
+                    title: "Invalid record",
+                    html: res.message.replaceAll("; ", "<br>")
+                });
+                return;
+            }
 
-    //..treasury Section
-    if (treasuryRequired) {
-        setSectionExpanded('treasurySection', complianceComplete && bopApprovedOrNotRequired && needsAttention(treasuryStatus));
-        if (!complianceComplete || !bopApprovedOrNotRequired) {
-            $("#treasuryStatus").prop("disabled", true);
-            $("#treasuryComment").prop("disabled", true);
-        } else {
-            $("#treasuryStatus").prop("disabled", false);
-            $("#treasuryComment").prop("disabled", false);
+            Swal.fire(res.message || "Approval request sent to HOD")
+                .then(() => {
+                    //..close panel
+                    closeAuditCategory();
+                    window.location.reload();
+                });
+        },
+        error: function (xhr) {
+            Swal.close();
+
+            let errorMessage = "Unexpected error occurred.";
+            try {
+                let response = JSON.parse(xhr.responseText);
+                if (response.message) errorMessage = response.message;
+            } catch (e) { }
+
+            Swal.fire({
+                title: "Request Failed",
+                text: errorMessage
+            });
         }
-    } else {
-        $("#treasurySection").hide();
-    }
-
-
-    // Credit Section
-    var treasuryApprovedOrNotRequired = !treasuryRequired || treasuryStatus === "APPROVED";
-    if (creditRequired) {
-        setSectionExpanded('creditSection', complianceComplete && bopApprovedOrNotRequired && treasuryApprovedOrNotRequired && needsAttention(creditStatus));
-        if (!complianceComplete || !bopApprovedOrNotRequired || !treasuryApprovedOrNotRequired) {
-            $("#creditStatus").prop("disabled", true);
-            $("#creditComment").prop("disabled", true);
-        } else {
-            $("#creditStatus").prop("disabled", false);
-            $("#creditComment").prop("disabled", false);
-        }
-    } else {
-        $("#creditSection").hide();
-    }
-
-
-    // Fintech Section
-    var creditApprovedOrNotRequired = !creditRequired || creditStatus === "APPROVED";
-    if (fintechRequired) {
-        setSectionExpanded('fintechSection', complianceComplete && bopApprovedOrNotRequired && treasuryApprovedOrNotRequired && creditApprovedOrNotRequired && needsAttention(fintechStatus));
-        if (!complianceComplete || !bopApprovedOrNotRequired || !treasuryApprovedOrNotRequired || !creditApprovedOrNotRequired) {
-            $("#fintechStatus").prop("disabled", true);
-            $("#fintechComment").prop("disabled", true);
-        } else {
-            $("#fintechStatus").prop("disabled", false);
-            $("#fintechComment").prop("disabled", false);
-        }
-    } else {
-        $("#fintechSection").hide();
-    }
-
+    });
 }
 
 function initProcessReviewSearch() {
@@ -364,9 +340,146 @@ function toggleSection(header) {
     toggle.classList.toggle('expanded');
 }
 
-function closeApprovalPanel() {
+function closeReviewPanel() {
     $('#revOverlay').removeClass('active');
     $('#collapsePanel').removeClass('active');
+}
+
+//..comments input validation
+function validateVersionInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightReviewField('#comments', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightReviewField('#comments', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightReviewField('#comments', false);
+        return true;
+    }
+
+}
+
+function handleVersionPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightReviewField('#fileVersion', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightReviewField('#fileVersion', false);
+    }
+}
+
+//..comments input validation
+function validateCommentInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightReviewField('#comments', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightReviewField('#comments', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightReviewField('#comments', false);
+        return true;
+    }
+
+}
+
+function handleCommentPaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightReviewField('#comments', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightReviewField('#comments', false);
+    }
+}
+
+
+function highlightReviewField(selector, hasError, message) {
+    const $field = $(selector);
+    const $formGroup = $field.closest('.form-group, .mb-3, .col-sm-8');
+
+    // Remove existing error
+    $field.removeClass('is-invalid');
+    $formGroup.find('.field-error').remove();
+
+    if (hasError) {
+        $field.addClass('is-invalid');
+        if (message) {
+            $formGroup.append(`<div class="field-error text-danger small mt-1">${message}</div>`);
+        }
+    }
 }
 
 $(document).ready(function () {
@@ -375,5 +488,103 @@ $(document).ready(function () {
     $('#processReviewForm').on('submit', function (e) {
         e.preventDefault();
     });
+    
+    //..category name validation 
+    $('#fileVersion').on('keyup', function () {
+        var value = $(this).val();
 
+        // Clear error if field is empty
+        if (!value) {
+            highlightReviewField('#fileVersion', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightReviewField('#fileVersion', true, 'Invalid characters detected');
+        } else {
+            highlightReviewField('#fileVersion', false);
+        }
+    });
+
+    $('#fileVersion').on('focus', function () {
+        highlightReviewField('#fileVersion', false);
+    });
+
+    $('#fileVersion').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightReviewField('#fileVersion', true, 'File version is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightReviewField('#fileVersion', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightReviewField('#fileVersion', false);
+        }
+    });
+
+    $('#fileVersion').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightReviewField('#fileVersion', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightReviewField('#fileVersion', false);
+                }, 2000);
+            }
+        }
+    });
+     //..comments validation 
+    $('#comments').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightReviewField('#comments', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightReviewField('#comments', true, 'Invalid characters detected');
+        } else {
+            highlightReviewField('#comments', false);
+        }
+    });
+
+    $('#comments').on('focus', function () {
+        highlightReviewField('#comments', false);
+    });
+
+    $('#comments').on('blur', function () {
+        var value = $(this).val().trim();
+
+        if (!value) {
+            highlightReviewField('#comments', true, 'Comments is required');
+        } else if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightReviewField('#comments', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightReviewField('#comments', false);
+        }
+    });
+
+    $('#comments').on('blur', function () {
+        var value = $(this).val();
+        if (value) {
+            var cleaned = value.replace(/[^a-zA-Z0-9\s,.]/g, '');
+            if (value !== cleaned) {
+                $(this).val(cleaned);
+                highlightReviewField('#comments', true, 'Removed invalid characters');
+
+                // Clear error after 2 seconds
+                setTimeout(function () {
+                    highlightReviewField('#comments', false);
+                }, 2000);
+            }
+        }
+    });
 });
