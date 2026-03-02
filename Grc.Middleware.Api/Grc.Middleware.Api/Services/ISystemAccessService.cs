@@ -27,7 +27,7 @@ namespace Grc.Middleware.Api.Services {
 
         Task<bool> ChangePasswordAsync(string passwordHash, string username);
 
-        Task<bool> ResetPasswordAsync(long recordId, string passwordHash, string username);
+        Task<(bool, long)> ResetPasswordAsync(long recordId, string passwordHash, string username);
 
         Task<bool> SuspendAccountAsync(long recordId, string username);
 

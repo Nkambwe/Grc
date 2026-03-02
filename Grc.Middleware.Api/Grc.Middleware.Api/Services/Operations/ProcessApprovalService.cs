@@ -460,7 +460,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             using var uow = UowFactory.Create();
             Logger.LogActivity("Retrieve paged approved processes", "INFO");
             try {
-                return await uow.ProcessApprovalRepository.PageAllAsync(page, size, includeDeleted, null, includes);
+                return await uow.ProcessApprovalRepository.PageAllAsync(page, size, includeDeleted, p => p.ManagerialStatus != "PENDING", includes);
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve approved processes: {ex.Message}", "ERROR");
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));

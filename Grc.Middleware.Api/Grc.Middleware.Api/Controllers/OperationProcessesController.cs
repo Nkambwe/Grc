@@ -2408,7 +2408,7 @@ namespace Grc.Middleware.Api.Controllers {
                             var officerName = (officer.ContactName ?? string.Empty).Trim();
                             var officerEmail = (officer.ContactEmail ?? string.Empty).Trim();
                             if (!string.IsNullOrEmpty(officerName) && !string.IsNullOrEmpty(officerEmail)) {
-                                //await SendMailAsync(Logger, mailService, officerName, officerEmail, request.RecordId, processName);
+                                await SendMailAsync(Logger, mailService, officerName, officerEmail, request.RecordId, processName);
                             } else {
                                 msg += ". Head Of Operations Contacts not found. Mail not sent";
                             }
@@ -2836,9 +2836,9 @@ namespace Grc.Middleware.Api.Controllers {
                 string subject, mail;
                  (sent, subject, mail) = MailHandler.SendReviewMail(
                                                 Logger,
-                                                mailSettings.MailSender, 
+                                                mailSettings.MailSender,
+                                                email,
                                                 sendToName,
-                                                email, 
                                                 mailSettings.CopyTo, 
                                                 pocesssName,
                                                 mailSettings.NetworkPort, 

@@ -882,6 +882,12 @@
                 pattern: "/operations/workflow/processes/approval/request/{id:long}",
                 defaults: new { area = "Operations", controller = "OperationWorkflow", action = "RequestApproval" }
             );
+
+            routeBuilder.MapControllerRoute(
+               name: "app-operations-processes-approval-request",
+               pattern: "/operations/workflow/processes/approval/initiate-review",
+               defaults: new { area = "Operations", controller = "OperationWorkflow", action = "InitiateReview" }
+           );
             routeBuilder.MapControllerRoute(
                 name: "app-operations-processes-approval-new-request",
                 pattern: "/operations/workflow/processes/approval/new-request/{id:long}",

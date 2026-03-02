@@ -4,19 +4,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Grc.Middleware.Api.Data.Entities.Configurations
 {
-    public class ProcessApprovalsEntityConfiguration
-    {
-        public static void Configure(EntityTypeBuilder<ProcessApproval> builder)
-        {
+    public class ProcessApprovalsEntityConfiguration {
+        public static void Configure(EntityTypeBuilder<ProcessApproval> builder) {
             builder.ToTable("TBL_GRC_PROCESS_APPROVAL"); 
             builder.HasKey(p => p.Id).HasName("id");
             builder.Property(p => p.RequestDate).HasColumnName("request_date").IsRequired();
-
             builder.Property(p => p.ManagerialStart).HasColumnName("mgr_startdate").IsRequired(false);
             builder.Property(p => p.ManagerialEnd).HasColumnName("mgr_enddate").IsRequired(false);
             builder.Property(p => p.ManagerialStatus).HasColumnName("mgr_status").HasColumnType("NVARCHAR(50)").IsRequired(false);
             builder.Property(p => p.ManagerialComment).HasColumnName("mgr_comment").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
-
             builder.Property(p => p.HeadOfDepartmentStart).HasColumnName("hod_startdate").IsRequired(false);
             builder.Property(p => p.HeadOfDepartmentEnd).HasColumnName("hod_enddate").IsRequired(false);
             builder.Property(p => p.HeadOfDepartmentStatus).HasColumnName("hod_status").HasColumnType("NVARCHAR(50)").IsRequired(false);

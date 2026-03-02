@@ -229,14 +229,14 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
 
                 var process = result.Data;
 
-               
+
                 var processRecord = new {
                     id = process.Id,
                     processName = process.ProcessName ?? string.Empty,
                     description = process.Description ?? string.Empty,
                     currentVersion = process.CurrentVersion ?? "0.0.0",
                     fileName = process.FileName,
-                    assigneeComments= process.AssigneeComments,
+                    assigneeComments = process.AssigneeComments,
                     originalOnFile = process.OriginalOnFile,
                     processStatus = process.ProcessStatus,
                     onholdReason = process.OnholdReason ?? string.Empty,
@@ -257,7 +257,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                     isAssigned = process.IsAssigned,
                     mgrReviewOn = process.Approvals?.ManagerEnd,
                     mgrReviewStatus = process.Approvals?.ManagerStatus ?? "PENDING",
-                    mgrComments  = process.Approvals?.ManagerComment ?? string.Empty,
+                    mgrComments = process.Approvals?.ManagerComment ?? string.Empty,
                     hodApprovalOn = process.Approvals?.HeadOfDepartmentEnd,
                     hodApprovalStatus = process.Approvals?.HeadOfDepartmentStatus ?? "PENDING",
                     hoApprovalComment = process.Approvals?.HeadOfDepartmentComment ?? string.Empty,
@@ -1570,7 +1570,8 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                         assigneeName = approval.Responsibile ?? string.Empty,
                         assigneeComments = approval.AssigneeComments,
                         typeName = approval.TypeName ?? string.Empty,
-                        hodStatus = string.IsNullOrWhiteSpace(approval.HodStatus) ? "PENDING": approval.HodStatus,
+                        mgrStatus = string.IsNullOrWhiteSpace(approval.MgrStatus) ? "PENDING" : approval.MgrStatus,
+                        hodStatus = (string.IsNullOrWhiteSpace(approval.MgrStatus) || approval.MgrStatus == "INREVIEW") ? "UNDER REVIEW" : (string.IsNullOrWhiteSpace(approval.HodStatus) ? "PENDING" : approval.HodStatus),
                         riskStatus = (string.IsNullOrWhiteSpace(approval.HodStatus) || approval.HodStatus == "PENDING") ? "NOT STARTED" : (string.IsNullOrWhiteSpace(approval.RiskStatus) ? "PENDING" : approval.RiskStatus),
                         complianceStatus = (string.IsNullOrWhiteSpace(approval.RiskStatus) || approval.RiskStatus == "PENDING") ? "NOT STARTED" : approval.ComplianceStatus ?? "PENDING",
                         requiresBopApproval = approval.RequiresBopApproval,

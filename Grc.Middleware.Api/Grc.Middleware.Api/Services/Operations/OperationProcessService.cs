@@ -1337,13 +1337,14 @@ namespace Grc.Middleware.Api.Services.Operations {
 
                     var result = uow.SaveChanges();
                     Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
-                    return (result > 0, null, null);
+
+                    //..get responsible manage
+                    var manager = await uow.ResponsebilityRepository.GetAsync(r => r.Id == process.ResponsibilityId);
+                    return (result > 0, manager.ContactName, manager.ContactEmail);
                 }
 
-                //..get responsible manage
-                var manager = await uow.ResponsebilityRepository.GetAsync(r=>r.Id == process.ResponsibilityId);
+                return (false, null, null);
 
-                return (false, manager.ContactName, manager.ContactEmail);
             }
             catch (Exception ex)
             {
@@ -1408,7 +1409,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             try {
                 var process = await uow.OperationProcessRepository.GetAsync(a => a.Id == recordId, false, a => a.Unit);
                 if (process != null) {
-                    process.ProcessStatus = "PROPOSED";
+                    process.ProcessStatus = "REVIEWED";
                     process.Comments = $"Newly proposed process for {process.Unit?.UnitName??string.Empty} unit";
                     process.IsLockProcess = false;
                     process.IsDeleted = false;
@@ -1419,8 +1420,8 @@ namespace Grc.Middleware.Api.Services.Operations {
                     process.Approvals.Add(new ProcessApproval() {
                         ProcessId = recordId,
                         RequestDate = DateTime.Now,
-                        HeadOfDepartmentStart = DateTime.Now,
-                        HeadOfDepartmentStatus = "PENDING",
+                        ManagerialStart = DateTime.Now,
+                        ManagerialStatus = "PENDING",
                         CreatedBy = (requestedBy ?? string.Empty).Trim(),
                         CreatedOn = DateTime.Now,
                         LastModifiedBy = (requestedBy ?? string.Empty).Trim(),

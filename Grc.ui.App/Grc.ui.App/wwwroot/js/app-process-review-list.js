@@ -162,7 +162,6 @@ function openReviewEditor(title, approval) {
     var fintechRequired = approval?.requiresFintechApproval || false;
 
     var tStr = approval?.processName || "";
-   
     if (tStr)
         title = `INREVIEW PROCESS - ${tStr}`;
 
@@ -175,7 +174,6 @@ function openReviewEditor(title, approval) {
     $("#processName").val(tStr);
     $("#processDescription").val(approval?.processDescription || "");
     
-   
     $("#assigneeComments").val(approval?.assigneeComments || "");
     $("#ownerName").val(approval?.ownerName || "");
     $("#unitName").val(approval?.unitName || "");
@@ -189,7 +187,8 @@ function openReviewEditor(title, approval) {
     $("#fileName").val(approval?.fileName || "");
     $("#fileVersion").val(approval?.fileVersion || "");
     $("#assigneeComments").val(approval?.assigneeComments || "");
-    $('#approvalPanelTitle').text(title);
+
+    $('#processTitle').text(title);
     $('#revOverlay').addClass('active');
     $('#collapsePanel').addClass('active');
 }
@@ -247,63 +246,64 @@ function saveReviewRecord(e) {
         status: "REVIEWED"
     };
 
+    console.log(recordData);
     saveReview(recordData)
 }
 
 function saveReview(record) {
-    const url ="/grc/compliance/audits/types/type-create";
+    //const url ="/operations/workflow/processes/mgr-review";
 
-    Swal.fire({
-        title: "Sending request to HOD for approval...",
-        text: "Please wait while we process your request.",
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        didOpen: () => {
-            Swal.showLoading();
-        }
-    });
+    //Swal.fire({
+    //    title: "Sending request to HOD for approval...",
+    //    text: "Please wait while we process your request.",
+    //    allowOutsideClick: false,
+    //    allowEscapeKey: false,
+    //    didOpen: () => {
+    //        Swal.showLoading();
+    //    }
+    //});
 
-    $.ajax({
-        url: url,
-        type: "POST",
-        contentType: "application/json",
-        data: JSON.stringify(record),
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': getAuditToken()
-        },
-        success: function (res) {
-            Swal.close();
-            if (!res.success) {
-                Swal.fire({
-                    title: "Invalid record",
-                    html: res.message.replaceAll("; ", "<br>")
-                });
-                return;
-            }
+    //$.ajax({
+    //    url: url,
+    //    type: "POST",
+    //    contentType: "application/json",
+    //    data: JSON.stringify(record),
+    //    headers: {
+    //        'X-Requested-With': 'XMLHttpRequest',
+    //        'X-CSRF-TOKEN': getAuditToken()
+    //    },
+    //    success: function (res) {
+    //        Swal.close();
+    //        if (!res.success) {
+    //            Swal.fire({
+    //                title: "Invalid record",
+    //                html: res.message.replaceAll("; ", "<br>")
+    //            });
+    //            return;
+    //        }
 
-            Swal.fire(res.message || "Approval request sent to HOD")
-                .then(() => {
-                    //..close panel
-                    closeAuditCategory();
-                    window.location.reload();
-                });
-        },
-        error: function (xhr) {
-            Swal.close();
+    //        Swal.fire(res.message || "Approval request sent to HOD")
+    //            .then(() => {
+    //                //..close panel
+    //                closeAuditCategory();
+    //                window.location.reload();
+    //            });
+    //    },
+    //    error: function (xhr) {
+    //        Swal.close();
 
-            let errorMessage = "Unexpected error occurred.";
-            try {
-                let response = JSON.parse(xhr.responseText);
-                if (response.message) errorMessage = response.message;
-            } catch (e) { }
+    //        let errorMessage = "Unexpected error occurred.";
+    //        try {
+    //            let response = JSON.parse(xhr.responseText);
+    //            if (response.message) errorMessage = response.message;
+    //        } catch (e) { }
 
-            Swal.fire({
-                title: "Request Failed",
-                text: errorMessage
-            });
-        }
-    });
+    //        Swal.fire({
+    //            title: "Request Failed",
+    //            text: errorMessage
+    //        });
+    //    }
+    //});
 }
 
 function initProcessReviewSearch() {

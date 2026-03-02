@@ -2,6 +2,7 @@
 let dateList = {};
 var uploadedFiles = [];
 var fileCounter = 0;
+
 function initProcessRegisterTable() {
     processRegisterTable = new Tabulator("#processRegisterTable", {
         ajaxURL: "/operations/workflow/processes/register/all",
@@ -418,11 +419,15 @@ function openProcessEditor(title, process, isEdit) {
 
     //..disable all fields if editing a locked process
     if (isLocked) {
-        //..disable all inputs inside form
-        $("#processForm :input").prop("disabled", true); 
+        //..disable form fields but NOT tab buttons
+        $("#processForm")
+            .find("input, textarea, select")
+            .not("#isLockProcess")
+            .prop("disabled", true);
 
-        //..allow cancel/close still usable
-        $("#closeButton, #cancelButton").prop("disabled", false); 
+        //..allow lock toggle & close buttons
+        $('#isLockProcess').prop('disabled', false);
+        $(".panel-close, .btn-grc-secondary").prop("disabled", false);
     } else {
         //..ensure fields are enabled when not locked
         $("#processForm :input").prop("disabled", false); 
@@ -1500,18 +1505,12 @@ function toggleSection(header) {
 
 function initDatePickers() {
 
-    $(".datepicker").each(function () {
-
-        if (!this._flatpickr) {
-            flatpickr(this, {
-                dateFormat: "Y-m-d",
-                allowInput: true,
-                altInput: true,
-                altFormat: "d M Y",
-                defaultDate: null
-            });
-        }
-
+    dateList["effectiveDate"] = flatpickr("#effectiveDate", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y",
+        defaultDate: null
     });
 }
 
@@ -1586,26 +1585,32 @@ function setProcessReadOnly(isLocked) {
 
     const $form = $("#processForm");
 
-    //..disable all standard inputs
-    $form.find("input:not(#isLocked), textarea, select").prop("disabled", isLocked);
+    //..disable ONLY data-entry fields (not buttons, not tab headers)
+    $form.find("input, textarea, select")
+        .not("#isLockProcess")
+        .not("[type='hidden']")
+        .prop("disabled", isLocked);
 
-    //..allow hidden fields
+    // Always allow hidden fields
     $form.find("input[type='hidden']").prop("disabled", false);
 
-    //..flatpickr
-    Object.values(flatpickrInstances).forEach(fp => {
-        if (!fp) return;
-        fp.set("clickOpens", !isLocked);
-        fp.input.disabled = isLocked;
-    });
+    // Flatpickr handling
+    if (window.flatpickrInstances) {
+        Object.values(flatpickrInstances).forEach(fp => {
+            if (!fp) return;
+            fp.set("clickOpens", !isLocked);
+            fp.input.disabled = isLocked;
+        });
+    }
 
-    //..disable switches explicitly
+    // Explicit switches
     $("#isDeleted, #isAligned").prop("disabled", isLocked);
 
-    //..disable Save button
+    // Save button only
     $form.find("button[onclick='saveProcessRecord()']")
         .prop("disabled", isLocked)
         .toggleClass("disabled", isLocked);
+
 }
 
 function lockProcess(id, isLocked) {
@@ -2427,7 +2432,4 @@ $(document).ready(function () {
 
     initDatePickers();
 
-     $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function () {
-        initDatePickers();
-    });
 });
