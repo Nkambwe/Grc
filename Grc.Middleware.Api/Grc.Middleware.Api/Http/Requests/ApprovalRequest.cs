@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Grc.Middleware.Api.Http.Requests
-{
+namespace Grc.Middleware.Api.Http.Requests {
     public class ApprovalRequest
     {
         [JsonPropertyName("id")]
@@ -12,6 +11,18 @@ namespace Grc.Middleware.Api.Http.Requests
 
         [JsonPropertyName("processName")]
         public string ProcessName { get; set; }
+        
+        [JsonPropertyName("mgrStart")]
+        public DateTime? MgrStart { get; set; }
+
+        [JsonPropertyName("mgrEnd")]
+        public DateTime? MgrEnd { get; set; }
+
+        [JsonPropertyName("mgrStatus")]
+        public string MgrStatus { get; set; }
+
+        [JsonPropertyName("mgrComment")]
+        public string MgrComment { get; set; }
 
         [JsonPropertyName("hodStatus")]
         public string HodStatus { get; set; }

@@ -1399,6 +1399,8 @@ namespace Grc.ui.App.Services {
                     Id = approvalModel.Id,
                     ProcessId = approvalModel.ProcessId,
                     ProcessName = approvalModel.ProcessName,
+                    MgrStatus = approvalModel.MgrStatus,
+                    MgrComment = approvalModel.MgrComment,
                     HodStatus = approvalModel.HodStatus,
                     HodComment = approvalModel.HodComment,
                     RiskStatus = approvalModel.RiskStatus,
@@ -1643,6 +1645,50 @@ namespace Grc.ui.App.Services {
                 await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
                 var error = new GrcResponseError(GrcStatusCodes.SERVERERROR,"An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<List<GrcMiniProcessResponse>>(error);
+            }
+        }
+        public async Task<GrcResponse<ServiceResponse>> ManagerialReviewAsync(GrcManagerReviewView model, long userId, string ipAddress) {
+            try {
+
+                if (model == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Review record cannot be null", "Invalid approval record");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ServiceResponse>(error);
+                }
+
+                //..build request object
+                var request = new GrcManagerReviewRequest {
+                    Id = model.Id,
+                    ProcessId = model.ProcessId,
+                    FileName = model.FileName,
+                    FileVersion = model.FileVersion,
+                    ManagerComments = model.ManagerComments,
+                    UserId = userId,
+                    IpAddress = ipAddress,
+                    Action = Activity.PROCESS_APPROVAL_UPDATE.GetDescription(),
+                };
+
+                //..map request
+                Logger.LogActivity($"MANAGER PROCESS REQUEST : {JsonSerializer.Serialize(request)}");
+
+                //..build endpoint
+                var endpoint = $"{EndpointProvider.Operations.ProcessBase}/manager-review";
+                Logger.LogActivity($"Endpoint: {endpoint}");
+
+                return await HttpHandler.PostAsync<GrcManagerReviewRequest, ServiceResponse>(endpoint, request);
+            } catch (HttpRequestException httpEx) {
+                Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
+                Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(httpEx.Message, "PROCESSES-SERVICE", httpEx.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.BADGATEWAY, "Network error occurred", httpEx.Message);
+                return new GrcResponse<ServiceResponse>(error);
+
+            } catch (GRCException ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ServiceResponse>(error);
             }
         }
         #endregion

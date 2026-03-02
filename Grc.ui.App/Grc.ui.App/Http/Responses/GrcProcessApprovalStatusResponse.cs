@@ -14,9 +14,45 @@ namespace Grc.ui.App.Http.Responses {
 
         [JsonPropertyName("processDescription")]
         public string ProcessDescription { get; set; }
-
+        
+        [JsonPropertyName("comments")]
+        public string Comments { get; set; }
+        
+        [JsonPropertyName("assigneeComments")]
+        public string AssigneeComments { get; set; }
+        
+        [JsonPropertyName("fileName")]
+        public string FileName { get; set; }
+        
+        [JsonPropertyName("ownerName")]
+        public string OwnerName { get; set; }
+        
+        [JsonPropertyName("currentVersion")]
+        public string CurrentVersion {get;set;}
+        
+        [JsonPropertyName("responsible")]
+        public string Responsibile { get; set; }
+        
+        [JsonPropertyName("unitName")]
+        public string UnitName { get; set; }
+        
+        [JsonPropertyName("typeName")]
+        public string TypeName {get;set;}
+        
         [JsonPropertyName("requestDate")]
         public DateTime RequestDate { get; set; }
+        
+        [JsonPropertyName("managerStart")]
+        public DateTime? MgrStart { get; set; }
+
+        [JsonPropertyName("managerEnd")]
+        public DateTime? MgrEnd { get; set; }
+
+        [JsonPropertyName("managerStatus")]
+        public string MgrStatus { get; set; }
+
+        [JsonPropertyName("managerComment")]
+        public string MgrComment { get; set; }
 
         [JsonPropertyName("headOfDepartmentStatus")]
         public string HodStatus { get; set; }

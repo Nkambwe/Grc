@@ -162,7 +162,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             }
         }
 
-        public async Task<(bool, ApprovalStage)> ApproveProcessAsync(ApprovalRequest request, bool includeDeleted = false) {
+        public async Task<(bool, ApprovalStage)> ApproveProcessAsync(ApprovalRequest request, bool includeDeleted = false, string fileName="", string fileVersion="") {
 
             using var uow = UowFactory.Create();
 
@@ -176,9 +176,40 @@ namespace Grc.Middleware.Api.Services.Operations {
                     return (false, stage);
                 }
 
+                
+                //..update HOD section
+                if (!string.IsNullOrEmpty(request.MgrStatus)) {
+                    if (request.MgrStatus == "REVIEWED") {
+
+                        if (!approval.ManagerialStart.HasValue)
+                            approval.ManagerialStart = approval.RequestDate;
+
+                        approval.ManagerialStatus = request.MgrStatus;
+                        approval.ManagerialComment = request.MgrComment;
+                        if (!approval.ManagerialEnd.HasValue) {
+                            stage = ApprovalStage.MGR;
+                            approval.ManagerialEnd = DateTime.Now;
+                            approval.HeadOfDepartmentStart = DateTime.Now;
+                            approval.HeadOfDepartmentStatus = "PENDING";
+                            approval.HeadOfDepartmentEnd = null;
+                        }
+
+                        //..get process
+                        var process = await uow.OperationProcessRepository.GetAsync(p=>p.Id == approval.ProcessId, false);
+                        if(process != null) {
+                            process.FileName = fileName;
+                            process.CurrentVersion = fileVersion;
+                            process.LastModifiedBy = request.ModifiedBy;
+                            process.LastModifiedOn = DateTime.Now;
+                             _ = await uow.OperationProcessRepository.UpdateAsync(process, false);
+                        }
+
+                    }
+                }
+
                 //..update HOD section
                 if (!string.IsNullOrEmpty(request.HodStatus)) {
-                    if (request.HodStatus == "APPROVED" || request.HodStatus == "REJECTED") {
+                    if (request.HodStatus == "APPROVED") {
 
                         if (!approval.HeadOfDepartmentStart.HasValue)
                             approval.HeadOfDepartmentStart = approval.RequestDate;
@@ -191,6 +222,12 @@ namespace Grc.Middleware.Api.Services.Operations {
                             approval.RiskStart = DateTime.Now;
                             approval.RiskStatus = "PENDING";
                         }
+
+                    } else if (request.HodStatus == "REJECTED") {
+                        stage = ApprovalStage.MGR;
+                        approval.ManagerialEnd = null;
+                        approval.ManagerialComment = null;
+                        approval.ManagerialStatus = "PENDING";
 
                     }
                 }

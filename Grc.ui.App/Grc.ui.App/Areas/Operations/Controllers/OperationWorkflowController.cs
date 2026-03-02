@@ -14,6 +14,7 @@ using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Win32;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -235,12 +236,14 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                     description = process.Description ?? string.Empty,
                     currentVersion = process.CurrentVersion ?? "0.0.0",
                     fileName = process.FileName,
+                    assigneeComments= process.AssigneeComments,
                     originalOnFile = process.OriginalOnFile,
                     processStatus = process.ProcessStatus,
                     onholdReason = process.OnholdReason ?? string.Empty,
                     comment = process.Comments ?? string.Empty,
                     typeId = process.TypeId,
                     typeName = process.TypeName ?? string.Empty,
+                    processType = process?.TypeName ?? string.Empty,
                     unitId = process.UnitId,
                     unitName = process.UnitName ?? string.Empty,
                     ownerId = process.OwnerId,
@@ -252,6 +255,9 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                     needsTreasuryReview = process.NeedsTreasuryReview,
                     needsFintechReview = process.NeedsFintechReview,
                     isAssigned = process.IsAssigned,
+                    mgrReviewOn = process.Approvals?.ManagerEnd,
+                    mgrReviewStatus = process.Approvals?.ManagerStatus ?? "PENDING",
+                    mgrComments  = process.Approvals?.ManagerComment ?? string.Empty,
                     hodApprovalOn = process.Approvals?.HeadOfDepartmentEnd,
                     hodApprovalStatus = process.Approvals?.HeadOfDepartmentStatus ?? "PENDING",
                     hoApprovalComment = process.Approvals?.HeadOfDepartmentComment ?? string.Empty,
@@ -1559,6 +1565,11 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                         id = approval.Id,
                         processName = approval.ProcessName ?? string.Empty,
                         requestDate = approval.RequestDate,
+                        ownerName = approval.OwnerName ?? string.Empty,
+                        unitName = approval.UnitName ?? string.Empty,
+                        assigneeName = approval.Responsibile ?? string.Empty,
+                        assigneeComments = approval.AssigneeComments,
+                        typeName = approval.TypeName ?? string.Empty,
                         hodStatus = string.IsNullOrWhiteSpace(approval.HodStatus) ? "PENDING": approval.HodStatus,
                         riskStatus = (string.IsNullOrWhiteSpace(approval.HodStatus) || approval.HodStatus == "PENDING") ? "NOT STARTED" : (string.IsNullOrWhiteSpace(approval.RiskStatus) ? "PENDING" : approval.RiskStatus),
                         complianceStatus = (string.IsNullOrWhiteSpace(approval.RiskStatus) || approval.RiskStatus == "PENDING") ? "NOT STARTED" : approval.ComplianceStatus ?? "PENDING",
@@ -1625,7 +1636,18 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                     processId = approval.ProcessId,
                     processName = approval.ProcessName ?? string.Empty,
                     processDescription = approval.ProcessDescription ?? string.Empty,
+                    comments = approval.Comments ?? string.Empty,
+                    assigneeComments= approval.AssigneeComments ?? string.Empty,
+                    ownerName = approval.OwnerName ?? string.Empty,
+                    assigneeName = approval.Responsibile ?? string.Empty,
+                    fileName = approval.FileName ?? string.Empty,
+                    fileVersion = approval.CurrentVersion ?? string.Empty,
+                    unitName = approval?.UnitName ?? string.Empty,
+                    processType = approval?.TypeName ?? string.Empty,
                     requestDate = approval.RequestDate,
+                    mgrReviewStatus = approval.MgrStatus,
+                    mgrComments  = approval.MgrComment?? string.Empty,
+                    mgrEnd =  approval.MgrEnd,
                     hodStatus = approval.HodStatus,
                     hodComment = approval.HodComment ?? string.Empty,
                     hodEnd = approval.HodEnd,
@@ -1666,7 +1688,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
         }
 
         [HttpPost]
-        [LogActivityResult("Process Approval Update", "User update process approval", ActivityTypeDefaults.PROCESSES_UPDATE_APPROVAL, "ProcessTag")]
+        [LogActivityResult("Process Approval Update", "User update process approval", ActivityTypeDefaults.PROCESSES_UPDATE_APPROVAL, "ProcessApproval")]
         public async Task<IActionResult> UpdateApproval([FromBody] GrcProcessApprovalView request)
         {
             try
@@ -1683,6 +1705,46 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                 }
 
                 var result = await _processService.UpdateApprovalAsync(request, currentUser.UserId, ipAddress);
+                if (result.HasError || result.Data == null)
+                    return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update process tag record" });
+
+                var data = result.Data;
+                return Ok(new
+                {
+                    success = data.Status,
+                    message = data.Message,
+                    data = new
+                    {
+                        status = data.Status,
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogActivity($"Error update process group record: {ex.Message}", "ERROR");
+                await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
+                return Json(new { success = false, message = "System Error! Unable to complete request" });
+            }
+        }
+        
+        [HttpPost]
+        [LogActivityResult("Process Review", "User update process approval", ActivityTypeDefaults.PROCESSES_UPDATE_APPROVAL, "ProcessApproval")]
+        public async Task<IActionResult> ManagerialReview([FromBody] GrcManagerReviewView model)
+        {
+            try
+            {
+                var ipAddress = WebHelper.GetCurrentIpAddress();
+                var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+                if (userResponse.HasError || userResponse.Data == null)
+                    return Ok(new { success = false, message = "Unable to resolve current user" });
+
+                var currentUser = userResponse.Data;
+                if (model == null)
+                {
+                    return Ok(new { success = false, message = "Invalid user data" });
+                }
+
+                var result = await _processService.ManagerialReviewAsync(model, currentUser.UserId, ipAddress);
                 if (result.HasError || result.Data == null)
                     return Ok(new { success = false, message = result.Error?.Message ?? "Failed to update process tag record" });
 
@@ -1764,7 +1826,18 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                     processId = approval.ProcessId,
                     processName = approval.ProcessName ?? string.Empty,
                     processDescription = approval.ProcessDescription ?? string.Empty,
+                    comments = approval.Comments ?? string.Empty,
+                    assigneeComments= approval.AssigneeComments ?? string.Empty,
+                    ownerName = approval.OwnerName ?? string.Empty,
+                    assigneeName = approval.Responsibile ?? string.Empty,
+                    fileName = approval.FileName ?? string.Empty,
+                    fileVersion = approval.CurrentVersion ?? string.Empty,
+                    unitName = approval?.UnitName ?? string.Empty,
+                    processType = approval?.TypeName ?? string.Empty,
                     requestDate = approval.RequestDate,
+                    mgrReviewStatus = approval.MgrStatus,
+                    mgrComments  = approval.MgrComment?? string.Empty,
+                    mgrEnd =  approval.MgrEnd,
                     hodStatus = approval.HodStatus,
                     hodComment = approval.HodComment ?? string.Empty,
                     hodEnd = approval.HodEnd,

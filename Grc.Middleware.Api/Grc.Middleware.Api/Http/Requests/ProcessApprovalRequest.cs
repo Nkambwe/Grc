@@ -10,6 +10,18 @@ namespace Grc.Middleware.Api.Http.Requests
         [JsonPropertyName("requestDate")]
         public DateTime RequestDate { get; set; }
 
+        [JsonPropertyName("mgrStart")]
+        public DateTime? MgrStart { get; set; }
+
+        [JsonPropertyName("mgrEnd")]
+        public DateTime? MgrEnd { get; set; }
+
+        [JsonPropertyName("mgrStatus")]
+        public string MgrStatus { get; set; }
+
+        [JsonPropertyName("mgrComment")]
+        public string MgrComment { get; set; }
+
         [JsonPropertyName("hodStart")]
         public DateTime? HODStart { get; set; }
 

@@ -23,6 +23,9 @@ namespace Grc.ui.App.Http.Responses {
 
         [JsonPropertyName("fileName")]
         public string FileName { get; set; }
+
+        [JsonPropertyName("assigneeComments")]
+        public string AssigneeComments { get; set; }
         
         [JsonPropertyName("originalOnFile")]
         public string OriginalOnFile { get; set; }

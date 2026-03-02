@@ -14,9 +14,42 @@ namespace Grc.Middleware.Api.Http.Responses {
 
         [JsonPropertyName("processDescription")]
         public string ProcessDescription { get; set; }
+        
+        [JsonPropertyName("comments")]
+        public string Comments { get; set; }
+        
+        [JsonPropertyName("fileName")]
+        public string FileName { get; set; }
+        
+        [JsonPropertyName("currentVersion")]
+        public string CurrentVersion { get; set; }
 
+        [JsonPropertyName("ownerName")]
+        public string OwnerName { get; set; }
+        
+        [JsonPropertyName("responsible")]
+        public string Responsibile { get; set; }
+        
+        [JsonPropertyName("unitName")]
+        public string UnitName { get; set; }
+
+        [JsonPropertyName("typeName")]
+        public string TypeName {get;set;}
+        
         [JsonPropertyName("requestDate")]
         public DateTime RequestDate { get; set; }
+        
+        [JsonPropertyName("managerStart")]
+        public DateTime? ManagerStart { get; set; }
+
+        [JsonPropertyName("managerEnd")]
+        public DateTime? ManagerEnd { get; set; }
+
+        [JsonPropertyName("managerStatus")]
+        public string ManagerStatus { get; set; }
+
+        [JsonPropertyName("managerComment")]
+        public string ManagerComment { get; set; }
 
         [JsonPropertyName("headOfDepartmentStart")]
         public DateTime? HeadOfDepartmentStart { get; set; }
@@ -53,6 +86,9 @@ namespace Grc.Middleware.Api.Http.Responses {
 
         [JsonPropertyName("complianceComment")]
         public string ComplianceComment { get; set; }
+        
+        [JsonPropertyName("requiresBopApproval")]
+        public bool RequiresBopApproval { get; set; }
 
         [JsonPropertyName("branchOperationsStatusStart")]
         public DateTime? BranchOperationsStatusStart { get; set; }
@@ -65,6 +101,9 @@ namespace Grc.Middleware.Api.Http.Responses {
 
         [JsonPropertyName("branchManagerComment")]
         public string BranchManagerComment { get; set; }
+        
+        [JsonPropertyName("requiresCreditApproval")]
+        public bool RequiresCreditApproval { get; set; }
 
         [JsonPropertyName("creditStart")]
         public DateTime? CreditStart { get; set; }
@@ -77,6 +116,9 @@ namespace Grc.Middleware.Api.Http.Responses {
 
         [JsonPropertyName("creditComment")]
         public string CreditComment { get; set; }
+        
+        [JsonPropertyName("requiresTreasuryApproval")]
+        public bool RequiresTreasuryApproval { get; set; }
 
         [JsonPropertyName("treasuryStart")]
         public DateTime? TreasuryStart { get; set; }
@@ -89,6 +131,9 @@ namespace Grc.Middleware.Api.Http.Responses {
 
         [JsonPropertyName("treasuryComment")]
         public string TreasuryComment { get; set; }
+        
+        [JsonPropertyName("requiresFintechApproval")]
+        public bool RequiresFintechApproval { get; set; }
 
         [JsonPropertyName("fintechStart")]
         public DateTime? FintechStart { get; set; }

@@ -16,7 +16,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
             builder.Property(p => p.CurrentVersion).HasColumnName("current_version").HasColumnType("NVARCHAR(100)").IsRequired();
             builder.Property(p => p.EffectiveDate).HasColumnName("effective_date").IsRequired(false);
             builder.Property(p => p.LastUpdated).HasColumnName("last_updated").IsRequired(false);
-            builder.Property(p => p.FileName).HasColumnName("file_path").HasColumnType("NVARCHAR(MAX)").IsRequired(true);
+            builder.Property(p => p.FileName).HasColumnName("file_path").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(p => p.ProcessStatus).HasColumnName("process_status").HasColumnType("NVARCHAR(50)").IsRequired().HasDefaultValue("Draft");
             builder.Property(p => p.IsLockProcess).HasColumnName("is_lock").IsRequired(false);
             builder.Property(p => p.UnlockReason).HasColumnName("unlock_reason").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
