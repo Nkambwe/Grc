@@ -12,6 +12,9 @@ namespace Grc.ui.App.Http.Requests {
         [JsonPropertyName("processId")]
         public long ProcessId { get; set; }
 
+        [JsonPropertyName("processName")]
+        public string ProcessName { get; set; }
+
         [JsonPropertyName("fileVersion")]
         public string FileVersion { get; set; }
 

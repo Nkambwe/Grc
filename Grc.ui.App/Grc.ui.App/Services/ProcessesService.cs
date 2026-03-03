@@ -1637,6 +1637,7 @@ namespace Grc.ui.App.Services {
                 var request = new GrcManagerReviewRequest {
                     Id = model.Id,
                     ProcessId = model.ProcessId,
+                    ProcessName = model.ProcessName,
                     FileName = model.FileName,
                     FileVersion = model.FileVersion,
                     ManagerComments = model.ManagerComments,

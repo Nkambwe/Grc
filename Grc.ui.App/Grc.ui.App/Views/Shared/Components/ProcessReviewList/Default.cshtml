@@ -1,6 +1,16 @@
 ﻿@model OperationsDashboardModel
+@{
+    var permissionsClaim = User.FindFirst("Permissions")?.Value;
+    var permissions = string.IsNullOrEmpty(permissionsClaim) ? new List<string>()
+    : JsonSerializer.Deserialize<List<string>>(permissionsClaim);
+}
 
 <div class="grc-tabulator-container">
+
+    <div class="grc-permission-alert" id="permissionAlert" style="display: none;">
+        <span><i class="mdi mdi-alert-circle"></i></span>
+        <span>Access Denied! You do not have permissions to view these records</span>
+    </div>
 
     <div class="grc-tabulator-search">
 
@@ -18,7 +28,6 @@
 
 <!-- Overlay -->
 <div id="revOverlay" class="permission-set-overlay" style="z-index:1040!important;"></div>
-
 
 <!-- Process Panel -->
 <div id="collapsePanel" class="law-side-panel" onclick="event.stopPropagation()">
@@ -71,7 +80,7 @@
 
                                         <div class="col-12">
                                             <div class="row mb-3">
-                                                <label for="documentName" class="col-sm-12 col-form-label text-sm-start">
+                                                <label for="processName" class="col-sm-12 col-form-label text-sm-start">
                                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Name"))
                                                 </label>
                                                 <div class="col-12">
@@ -286,10 +295,12 @@
                 <div class="tab-footer p-3">
                     <div class="row mb-3">
                         <div class="col-3">
-                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveReviewRecord(e)">Save</button>
+                            <button type="button" id="btnSaveReview" class="btn btn-grc-primary" style="width:100%;">
+                                Save
+                            </button>
                         </div>
                         <div class="col-3">
-                            <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeReviewPanel()">Cancle</button>
+                            <button type="button" class="btn btn-grc-secondary" style="width:100%;" onclick="closeReviewPanel()">Cancle</button>
                         </div>
                         <div class="col-6"></div>
                     </div>
@@ -302,8 +313,13 @@
 
 </div>
 
-
 @{
     Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
     Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-process-review-list.js");
 }
+
+<script>
+    //..make permissions available globally
+    window.userPermissions = @Html.Raw(JsonSerializer.Serialize(permissions ?? new List<string>()));
+
+</script>

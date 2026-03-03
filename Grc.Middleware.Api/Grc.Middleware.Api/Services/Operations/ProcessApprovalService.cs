@@ -6,6 +6,7 @@ using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Utils;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -162,32 +163,50 @@ namespace Grc.Middleware.Api.Services.Operations {
             }
         }
 
-        public async Task<(bool, ApprovalStage)> ApproveProcessAsync(ApprovalRequest request, bool includeDeleted = false, string fileName="", string fileVersion="") {
-
+        public async Task<(bool, ApprovalStage, long)> ApproveProcessAsync(ApprovalRequest request, bool includeDeleted = false, string fileName="", string fileVersion="") {
+            long responsibleId=0;
             using var uow = UowFactory.Create();
 
             Logger.LogActivity($"Update Process Approval", "INFO");
             var stage = ApprovalStage.NONE;
 
             try {
-                var approval = await uow.ProcessApprovalRepository.GetAsync(a => a.Id == request.Id, false, a => a.Process);
-                if (approval == null) {
-                    Logger.LogActivity($"Record not found: ID={request.Id}", "DEBUG");
-                    return (false, stage);
+
+                ProcessApproval approval;
+                if(request.MgrStatus == "COMPLETE") {
+                    approval = new() { 
+                        ProcessId = request.ProcessId,
+                        RequestDate = DateTime.Now,
+                        IsDeleted = false,
+                        CreatedOn = DateTime.Now,
+                        CreatedBy = request.ModifiedBy,
+                        LastModifiedBy = request.ModifiedBy,
+                        LastModifiedOn = DateTime.Now
+                    };
+
+                    //..save record
+                    _ = await uow.ProcessApprovalRepository.InsertAsync(approval);
+                    uow.SaveChanges();
+                } else {
+                    approval = await uow.ProcessApprovalRepository.GetAsync(a => a.Id == request.Id, false, a => a.Process);
+                    if (approval == null) {
+                        Logger.LogActivity($"Record not found: ID={request.Id}", "DEBUG");
+                        return (false, stage, responsibleId);
+                    }
                 }
 
-                
                 //..update HOD section
                 if (!string.IsNullOrEmpty(request.MgrStatus)) {
-                    if (request.MgrStatus == "REVIEWED") {
+                    if (request.MgrStatus == "COMPLETE") {
 
+                        //..determin state
                         if (!approval.ManagerialStart.HasValue)
                             approval.ManagerialStart = approval.RequestDate;
 
                         approval.ManagerialStatus = request.MgrStatus;
                         approval.ManagerialComment = request.MgrComment;
                         if (!approval.ManagerialEnd.HasValue) {
-                            stage = ApprovalStage.MGR;
+                            stage = ApprovalStage.HOD;
                             approval.ManagerialEnd = DateTime.Now;
                             approval.HeadOfDepartmentStart = DateTime.Now;
                             approval.HeadOfDepartmentStatus = "PENDING";
@@ -195,14 +214,18 @@ namespace Grc.Middleware.Api.Services.Operations {
                         }
 
                         //..get process
-                        var process = await uow.OperationProcessRepository.GetAsync(p=>p.Id == approval.ProcessId, false);
+                        var process = await uow.OperationProcessRepository.GetAsync(p=>p.Id == request.ProcessId, false);
                         if(process != null) {
                             process.FileName = fileName;
                             process.CurrentVersion = fileVersion;
+                            process.ProcessStatus = "PROPOSED";
                             process.LastModifiedBy = request.ModifiedBy;
                             process.LastModifiedOn = DateTime.Now;
                              _ = await uow.OperationProcessRepository.UpdateAsync(process, false);
                         }
+
+                        //..responsible ID
+                        responsibleId = process.ResponsibilityId;
 
                     }
                 }
@@ -217,41 +240,62 @@ namespace Grc.Middleware.Api.Services.Operations {
                         approval.HeadOfDepartmentStatus = request.HodStatus;
                         approval.HeadOfDepartmentComment = request.HodComment;
                         if (!approval.HeadOfDepartmentEnd.HasValue) {
-                            stage = ApprovalStage.HOD;
+                            stage = ApprovalStage.RISK;
                             approval.HeadOfDepartmentEnd = DateTime.Now;
                             approval.RiskStart = DateTime.Now;
                             approval.RiskStatus = "PENDING";
+                            approval.LastModifiedBy = request.ModifiedBy;
+                            approval.LastModifiedOn = DateTime.Now;
                         }
 
                     } else if (request.HodStatus == "REJECTED") {
+                        var process = await uow.OperationProcessRepository.GetAsync(p => p.Id == request.ProcessId, false);
+                        responsibleId = process.ResponsibilityId;
                         stage = ApprovalStage.MGR;
+                        approval.HeadOfDepartmentStatus = "REJECTED";
+                        approval.HeadOfDepartmentComment = request.HodComment;
                         approval.ManagerialEnd = null;
                         approval.ManagerialComment = null;
                         approval.ManagerialStatus = "PENDING";
+                        approval.LastModifiedBy = request.ModifiedBy;
+                        approval.LastModifiedOn = DateTime.Now;
 
                     }
                 }
 
                 //..update Risk only if HOD is approved
                 if (approval.HeadOfDepartmentStatus == "APPROVED" && !string.IsNullOrEmpty(request.RiskStatus)) {
-                    if (request.RiskStatus == "APPROVED" || request.RiskStatus == "REJECTED") {
+                    if (request.RiskStatus == "APPROVED") {
                         approval.RiskStatus = request.RiskStatus;
                         approval.RiskComment = request.RiskComment;
                         if (!approval.RiskEnd.HasValue) {
                             approval.RiskEnd = DateTime.Now;
                         }
-                        stage = ApprovalStage.RISK;
+                        stage = ApprovalStage.COMP;
                         approval.ComplianceStart = DateTime.Now;
                         approval.ComplianceStatus = "PENDING";
+                        approval.LastModifiedBy = request.ModifiedBy;
+                        approval.LastModifiedOn = DateTime.Now;
+                    } else if (request.RiskStatus == "REJECTED") {
+                        var process = await uow.OperationProcessRepository.GetAsync(p => p.Id == request.ProcessId, false);
+                        responsibleId = process.ResponsibilityId;
+                        stage = ApprovalStage.MGR;
+                        approval.RiskStatus = "REJECTED";
+                        approval.RiskComment = request.RiskComment;
+                        approval.ManagerialEnd = null;
+                        approval.ManagerialComment = null;
+                        approval.ManagerialStatus = "PENDING";
+                        approval.LastModifiedBy = request.ModifiedBy;
+                        approval.LastModifiedOn = DateTime.Now;
                     }
                 }
 
                 //..update Compliance only if Risk is approved
                 if (approval.HeadOfDepartmentStatus == "APPROVED" && approval.RiskStatus == "APPROVED" && !string.IsNullOrEmpty(request.ComplianceStatus)) {
-                    if (request.ComplianceStatus == "APPROVED" || request.ComplianceStatus == "REJECTED") {
+                    if (request.ComplianceStatus == "APPROVED") {
                         approval.ComplianceStatus = request.ComplianceStatus;
                         approval.ComplianceComment = request.ComplianceComment;
-                        stage = ApprovalStage.COMP;
+                        stage = ApprovalStage.NONE;
                         if (!approval.ComplianceEnd.HasValue) {
                             approval.ComplianceEnd = DateTime.Now;
                         }
@@ -261,20 +305,37 @@ namespace Grc.Middleware.Api.Services.Operations {
                             approval.Process.ProcessStatus = "UPTODATE";
                             approval.Process.EffectiveDate = DateTime.Now;
                             approval.Process.LastUpdated = DateTime.Now;
+                            approval.LastModifiedBy = request.ModifiedBy;
+                            approval.LastModifiedOn = DateTime.Now;
                         } else if (request.BopRequired) {
+                            stage = ApprovalStage.BOM;
                             approval.BranchOperationsStatusStart = DateTime.Now;
                             approval.BranchOperationsStatus = "PENDING";
+                            approval.LastModifiedBy = request.ModifiedBy;
+                            approval.LastModifiedOn = DateTime.Now;
                         }
+
+                    } else if (request.ComplianceStatus == "REJECTED") {
+                        var process = await uow.OperationProcessRepository.GetAsync(p => p.Id == request.ProcessId, false);
+                        responsibleId = process.ResponsibilityId;
+                        stage = ApprovalStage.MGR;
+                        approval.ComplianceStatus = "REJECTED";
+                        approval.ComplianceComment = request.ComplianceComment;
+                        approval.ManagerialEnd = null;
+                        approval.ManagerialComment = null;
+                        approval.ManagerialStatus = "PENDING";
+                        approval.LastModifiedBy = request.ModifiedBy;
+                        approval.LastModifiedOn = DateTime.Now;
 
                     }
                 }
 
                 //..update BOP only if required and Compliance is approved
                 if (request.BopRequired && approval.ComplianceStatus == "APPROVED" && !string.IsNullOrEmpty(request.BopStatus)) {
-                    if (request.BopStatus == "APPROVED" || request.BopStatus == "REJECTED") {
+                    if (request.BopStatus == "APPROVED") {
                         approval.BranchOperationsStatus = request.BopStatus;
                         approval.BranchManagerComment = request.BopComment;
-                        stage = ApprovalStage.BOM;
+                        stage = ApprovalStage.NONE;
                         if (!approval.BranchOperationsStatusEnd.HasValue) {
                             approval.BranchOperationsStatusEnd = DateTime.Now;
                         }
@@ -284,10 +345,26 @@ namespace Grc.Middleware.Api.Services.Operations {
                             approval.Process.ProcessStatus = "UPTODATE";
                             approval.Process.EffectiveDate = DateTime.Now;
                             approval.Process.LastUpdated = DateTime.Now;
+                            approval.LastModifiedBy = request.ModifiedBy;
+                            approval.LastModifiedOn = DateTime.Now;
                         } else if (request.TreasuryRequired) {
+                            stage = ApprovalStage.TREA;
                             approval.TreasuryStart = DateTime.Now;
                             approval.TreasuryStatus = "PENDING";
+                            approval.LastModifiedBy = request.ModifiedBy;
+                            approval.LastModifiedOn = DateTime.Now;
                         }
+                    } else if (request.BopStatus == "REJECTED") {
+                        var process = await uow.OperationProcessRepository.GetAsync(p => p.Id == request.ProcessId, false);
+                        responsibleId = process.ResponsibilityId;
+                        stage = ApprovalStage.MGR;
+                        approval.BranchOperationsStatus = "REJECTED";
+                        approval.BranchManagerComment = request.BopComment;
+                        approval.ManagerialEnd = null;
+                        approval.ManagerialComment = null;
+                        approval.ManagerialStatus = "PENDING";
+                        approval.LastModifiedBy = request.ModifiedBy;
+                        approval.LastModifiedOn = DateTime.Now;
                     }
                 } else {
                     if (request.TreasuryRequired) {
@@ -302,10 +379,10 @@ namespace Grc.Middleware.Api.Services.Operations {
 
                 //..update Treasury only if required and all previous are approved
                 if (request.TreasuryRequired && approval.ComplianceStatus == "APPROVED" && bopComplete && !string.IsNullOrEmpty(request.TreasuryStatus)) {
-                    if (request.TreasuryStatus == "APPROVED" || request.TreasuryStatus == "REJECTED") {
+                    if (request.TreasuryStatus == "APPROVED") {
                         approval.TreasuryStatus = request.TreasuryStatus;
                         approval.TreasuryComment = request.TreasuryComment;
-                        stage = ApprovalStage.TREA;
+                        stage = ApprovalStage.NONE;
                         if (!approval.TreasuryEnd.HasValue) {
                             approval.TreasuryEnd = DateTime.Now;
                         }
@@ -315,16 +392,32 @@ namespace Grc.Middleware.Api.Services.Operations {
                             approval.Process.ProcessStatus = "UPTODATE";
                             approval.Process.EffectiveDate = DateTime.Now;
                             approval.Process.LastUpdated = DateTime.Now;
+                            approval.LastModifiedBy = request.ModifiedBy;
+                            approval.LastModifiedOn = DateTime.Now;
                         } else if (request.CreditRequired) {
+                            stage = ApprovalStage.CRT;
                             approval.CreditStart = DateTime.Now;
                             approval.CreditStatus = "PENDING";
+                            approval.LastModifiedBy = request.ModifiedBy;
+                            approval.LastModifiedOn = DateTime.Now;
                         }
+                    } else if(request.TreasuryStatus == "REJECTED") {
+                        var process = await uow.OperationProcessRepository.GetAsync(p => p.Id == request.ProcessId, false);
+                        responsibleId = process.ResponsibilityId;
+                        stage = ApprovalStage.MGR;
+                        approval.ManagerialEnd = null;
+                        approval.ManagerialComment = null;
+                        approval.ManagerialStatus = "PENDING";
+                        approval.LastModifiedBy = request.ModifiedBy;
+                        approval.LastModifiedOn = DateTime.Now;
                     }
                 } else {
                     if (request.CreditRequired) {
                         stage = ApprovalStage.CRT;
                         approval.CreditStart = DateTime.Now;
                         approval.CreditStatus = "PENDING";
+                        approval.LastModifiedBy = request.ModifiedBy;
+                        approval.LastModifiedOn = DateTime.Now;
                     }
                 }
 
@@ -333,10 +426,10 @@ namespace Grc.Middleware.Api.Services.Operations {
 
                 //..update Credit section if required and all previous are approved
                 if (request.CreditRequired && approval.ComplianceStatus == "APPROVED" && bopComplete && treasuryComplete && !string.IsNullOrEmpty(request.CreditStatus)) {
-                    if (request.CreditStatus == "APPROVED" || request.CreditStatus == "REJECTED") {
+                    if (request.CreditStatus == "APPROVED") {
                         approval.CreditStatus = request.CreditStatus;
                         approval.CreditComment = request.CreditComment;
-                        stage = ApprovalStage.CRT;
+                        stage = ApprovalStage.NONE;
                         if (!approval.CreditEnd.HasValue) {
                             approval.CreditEnd = DateTime.Now;
                         }
@@ -346,16 +439,32 @@ namespace Grc.Middleware.Api.Services.Operations {
                             approval.Process.ProcessStatus = "UPTODATE";
                             approval.Process.EffectiveDate = DateTime.Now;
                             approval.Process.LastUpdated = DateTime.Now;
+                            approval.LastModifiedBy = request.ModifiedBy;
+                            approval.LastModifiedOn = DateTime.Now;
                         } else if (request.FintechRequired) {
+                            stage = ApprovalStage.FIN;
                             approval.FintechStart = DateTime.Now;
                             approval.FintechStatus = "PENDING";
+                            approval.LastModifiedBy = request.ModifiedBy;
+                            approval.LastModifiedOn = DateTime.Now;
                         }
+                    } else if (request.CreditStatus == "REJECTED") {
+                        var process = await uow.OperationProcessRepository.GetAsync(p => p.Id == request.ProcessId, false);
+                        responsibleId = process.ResponsibilityId;
+                        stage = ApprovalStage.MGR;
+                        approval.ManagerialEnd = null;
+                        approval.ManagerialComment = null;
+                        approval.ManagerialStatus = "PENDING";
+                        approval.LastModifiedBy = request.ModifiedBy;
+                        approval.LastModifiedOn = DateTime.Now;
                     }
                 } else {
                     if (request.FintechRequired) {
                         stage = ApprovalStage.FIN;
                         approval.FintechStart = DateTime.Now;
                         approval.FintechStatus = "PENDING";
+                        approval.LastModifiedBy = request.ModifiedBy;
+                        approval.LastModifiedOn = DateTime.Now;
                     }
                 }
 
@@ -364,13 +473,27 @@ namespace Grc.Middleware.Api.Services.Operations {
 
                 // Update Fintech section - only if required and all previous are approved
                 if (request.FintechRequired && approval.ComplianceStatus == "APPROVED" && bopComplete && treasuryComplete && creditComplete && !string.IsNullOrEmpty(request.FintechStatus)) {
-                    if (request.FintechStatus == "APPROVED" || request.FintechStatus == "REJECTED") {
+                    if (request.FintechStatus == "APPROVED") {
+                        stage = ApprovalStage.NONE;
                         approval.FintechStatus = request.FintechStatus;
                         approval.FintechEnd = DateTime.Now;
                         approval.FintechComment = request.FintechComment;
                         approval.Process.ProcessStatus = "UPTODATE";
                         approval.Process.EffectiveDate = DateTime.Now;
                         approval.Process.LastUpdated = DateTime.Now;
+                        approval.LastModifiedBy = request.ModifiedBy;
+                        approval.LastModifiedOn = DateTime.Now;
+                    } else if(request.FintechStatus == "REJECTED") {
+                        var process = await uow.OperationProcessRepository.GetAsync(p => p.Id == request.ProcessId, false);
+                        responsibleId = process.ResponsibilityId;
+                        stage = ApprovalStage.MGR;
+                        approval.FintechComment = request.FintechComment;
+                        approval.FintechStatus = "REJECTED";
+                        approval.ManagerialEnd = null;
+                        approval.ManagerialComment = null;
+                        approval.ManagerialStatus = "PENDING";
+                        approval.LastModifiedBy = request.ModifiedBy;
+                        approval.LastModifiedOn = DateTime.Now;
                     }
                 }
 
@@ -384,7 +507,7 @@ namespace Grc.Middleware.Api.Services.Operations {
 
                 var result = uow.SaveChanges();
                 Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
-                return (result > 0, stage);
+                return (result > 0, stage, responsibleId);
             } catch (Exception ex) {
                 Logger.LogActivity($"Failed to update process approval record: {ex.Message}", "ERROR");
                 //..save error object to the database

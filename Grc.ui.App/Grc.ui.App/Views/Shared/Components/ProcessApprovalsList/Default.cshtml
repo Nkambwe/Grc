@@ -1,6 +1,16 @@
 ﻿@model OperationsDashboardModel
+@{
+    var permissionsClaim = User.FindFirst("Permissions")?.Value;
+    var permissions = string.IsNullOrEmpty(permissionsClaim) ? new List<string>()
+    : JsonSerializer.Deserialize<List<string>>(permissionsClaim);
+}
 
 <div class="grc-tabulator-container">
+
+    <div class="grc-permission-alert" id="permissionAlert" style="display: none;">
+        <span><i class="mdi mdi-alert-circle"></i></span>
+        <span>Access Denied! You do not have permissions to view these records</span>
+    </div>
 
     <div class="grc-tabulator-search">
 
@@ -82,7 +92,7 @@
             </div>
 
             <!-- HOD Section -->
-            <div id="hodSection" class="form-section">
+            <div id="hodSection" class="form-section" require-permission="CANAPPROVEPROCESS">
 
                 <div class="section-header" onclick="toggleSection(this)">
                     <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Hod"))</h5>
@@ -135,7 +145,7 @@
             </div>
 
             <!-- Risk Section -->
-            <div id="riskSection" class="form-section">
+            <div id="riskSection" class="form-section" require-permission="CANAPPROVEPROCESS">
 
                 <div class="section-header" onclick="toggleSection(this)">
                     <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Risk"))</h5>
@@ -188,7 +198,7 @@
             </div>
 
             <!-- Compliance Section -->
-            <div id="complianceSection" class="form-section">
+            <div id="complianceSection" class="form-section" require-permission="CANAPPROVEPROCESS">
 
                 <div class="section-header" onclick="toggleSection(this)">
                     <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Compliance"))</h5>
@@ -241,7 +251,7 @@
             </div>
 
             <!-- Branch Operations Section -->
-            <div id="bopSection" class="form-section">
+            <div id="bopSection" class="form-section" require-permission="CANAPPROVEPROCESS">
 
                 <div class="section-header" onclick="toggleSection(this)">
                     <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Bop"))</h5>
@@ -294,7 +304,7 @@
             </div>
 
             <!-- Treasury Section -->
-            <div id="treasurySection" class="form-section">
+            <div id="treasurySection" class="form-section" require-permission="CANAPPROVEPROCESS">
 
                 <div class="section-header" onclick="toggleSection(this)">
                     <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Treasury"))</h5>
@@ -347,7 +357,7 @@
             </div>
 
             <!-- Credit Section -->
-            <div id="creditSection" class="form-section">
+            <div id="creditSection" class="form-section" require-permission="CANAPPROVEPROCESS">
 
                 <div class="section-header" onclick="toggleSection(this)">
                     <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Fintech"))</h5>
@@ -401,7 +411,7 @@
             </div>
 
             <!-- Fintech Section -->
-            <div id="fintechSection" class="form-section">
+            <div id="fintechSection" class="form-section" require-permission="CANAPPROVEPROCESS">
 
                 <div class="section-header" onclick="toggleSection(this)">
                     <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Credit"))</h5>
@@ -453,15 +463,15 @@
             </div>
 
             <!-- Button section -->
-            <div class="col-sm-12">
+            <div class="col-sm-12 p-3" require-permission="CANAPPROVEPROCESS">
                 <div class="row mb-3">
-                    <div class="col-sm-1">
+                    <div class="col-sm-2">
                         <button class="btn btn-grc-primary" style="width:100%;" onclick="applyApproval(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
                     </div>
-                    <div class="col-sm-1">
+                    <div class="col-sm-2">
                         <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeApprovalPanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
                     </div>
-                    <div class="col-sm-10"></div>
+                    <div class="col-sm-8"></div>
                 </div>
             </div>
 
@@ -484,7 +494,7 @@
 
     <div class="hold-panel-body">
 
-        <form id="holdForm" class="grc-form row g-3">
+        <form id="holdForm" class="grc-form row g-3 p-5">
             <input type="hidden" id="holdId">
             <input type="hidden" id="holdProcessId">
 
@@ -561,3 +571,9 @@
     Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
     Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-process-approval-list.js");
 }
+
+<script>
+    //..make permissions available globally
+    window.userPermissions = @Html.Raw(JsonSerializer.Serialize(permissions ?? new List<string>()));
+
+</script>

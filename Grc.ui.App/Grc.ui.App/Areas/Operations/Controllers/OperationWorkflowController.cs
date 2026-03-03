@@ -1828,7 +1828,7 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                     processName = approval.ProcessName ?? string.Empty,
                     processDescription = approval.ProcessDescription ?? string.Empty,
                     comments = approval.Comments ?? string.Empty,
-                    assigneeComments= approval.AssigneeComments ?? string.Empty,
+                    assigneeComments= approval.MgrComment ?? string.Empty,
                     ownerName = approval.OwnerName ?? string.Empty,
                     assigneeName = approval.Responsibile ?? string.Empty,
                     fileName = approval.FileName ?? string.Empty,

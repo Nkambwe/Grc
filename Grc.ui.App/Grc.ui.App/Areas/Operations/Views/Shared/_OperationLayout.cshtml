@@ -95,7 +95,7 @@
                                 </span>
                             </a>
 
-                            <ul id="processes-menu" class="sidebar-submenu">
+                            <ul id="processes-menu" class="sidebar-submenu" require-permission="ViewOperationProcesses">
 
                                 <li class="sidebar-item with-submenu">
                                     <a asp-controller="OperationWorkflow" asp-action="RegisterProcess" asp-area="Operations">
@@ -108,7 +108,7 @@
                                     </a>
                                 </li>
 
-                                <li class="sidebar-item with-submenu">
+                                <li class="sidebar-item with-submenu" require-permission="ViewOperationProcessGroups">
                                     <a asp-controller="OperationWorkflow" asp-action="GroupProcesses" asp-area="Operations">
                                         <span class="menu-icon">
                                             <i class="material-icons-round">settings_input_component</i>
@@ -119,7 +119,7 @@
                                     </a>
                                 </li>
 
-                                <li class="sidebar-item with-submenu">
+                                <li class="sidebar-item with-submenu" require-permission="CANVIEWPROCESSTAGS">
                                     <a asp-controller="OperationWorkflow" asp-action="TagProcesses" asp-area="Operations">
                                         <span class="menu-icon">
                                             <i class="mdi mdi-tag-search-outline"></i>
@@ -146,9 +146,10 @@
                                     <i class="mdi mdi-chevron-down"></i>
                                 </span>
                             </a>
+
                             <ul id="approvals-menu" class="sidebar-submenu">
 
-                                <li class="sidebar-item with-submenu">
+                                <li class="sidebar-item with-submenu" require-permission="ViewOperationProcesses">
                                     <a asp-controller="OperationWorkflow" asp-action="Approvals" asp-area="Operations">
                                         <span class="menu-icon">
                                             <i class="mdi mdi-clipboard-check-outline"></i>
@@ -159,7 +160,7 @@
                                     </a>
                                 </li>
 
-                                <li class="sidebar-item with-submenu">
+                                <li class="sidebar-item with-submenu" require-permission="CANREVIEWPROCESS">
                                     <a asp-controller="OperationWorkflow" asp-action="NewProcess" asp-area="Operations">
                                         <span class="menu-icon">
                                             <i class="mdi mdi-clipboard-flow-outline"></i>
@@ -170,7 +171,7 @@
                                     </a>
                                 </li>
 
-                                <li class="sidebar-item with-submenu">
+                                <li class="sidebar-item with-submenu" require-permission="CANREVIEWPROCESS">
                                     <a asp-controller="OperationWorkflow" asp-action="Revisions" asp-area="Operations">
                                         <span class="menu-icon">
                                             <i class="mdi mdi-clipboard-alert-outline"></i>
@@ -184,13 +185,14 @@
                             </ul>
                         </li>
 
-                        <li class="sidebar-separator">
+                        <li class="sidebar-separator" require-permission="CANVIEWPROCESSREPORT">
                             <span class="separator-label">
                                 @Html.Raw(ILocalize.GetLocalizedLabel("App.Menu.Reports"))
                             </span>
                             <span class="separator-line"></span>
                         </li>
-                        <li class="sidebar-item with-submenu">
+
+                        <li class="sidebar-item with-submenu" require-permission="CANVIEWPROCESSREPORT">
                             <a asp-controller="OperationWorkflow" asp-action="TATReport" asp-area="Operations">
                                 <span class="menu-icon">
                                     <i class="mdi mdi-file-table-outline"></i>

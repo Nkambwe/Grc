@@ -6,15 +6,34 @@
 }
 
 @{
+    var permissionsClaim = User.FindFirst("Permissions")?.Value;
+    var permissions = string.IsNullOrEmpty(permissionsClaim)
+        ? new List<string>()
+        : System.Text.Json.JsonSerializer.Deserialize<List<string>>(permissionsClaim) ?? new List<string>();
+
+    var leftActions = new List<ComponentAction> {
+        new ComponentAction {
+            ActionKey = ActionKey.OpsHome.GetDescription(),
+            Icon = "mdi mdi mdi-home-outline",
+            Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home")
+        }
+    };
+
+    if (permissions.Contains("CANADDPROCESSTAGS"))
+    {
+        leftActions.Add(new ComponentAction { ActionKey = ActionKey.Separator.GetDescription()});
+        leftActions.Add(new ComponentAction {
+            ActionKey = ActionKey.ProcessTagNew.GetDescription(),
+            Icon = "mdi mdi-plus",
+            Tooltip = ILocalize.GetLocalizedLabel("App.Label.New")
+        });
+    }
+    
     var component = new PageComponentViewModel
     {
         ComponentId = $"0",
-        ComponentKey = "ProcesseTAT",
-        LeftActions = new List<ComponentAction>
-        {
-            new ComponentAction { ActionKey = ActionKey.OpsHome.GetDescription(), Icon = "mdi mdi-home-outline", Tooltip = ILocalize.GetLocalizedLabel("App.Label.Home") },
-            new ComponentAction { ActionKey = ActionKey.ProcessTagNew.GetDescription(), Icon = "mdi mdi-plus", Tooltip = ILocalize.GetLocalizedLabel("App.Label.New") }
-        }
+        ComponentKey = "ProcesseTags",
+        LeftActions = leftActions
     };
 }
 

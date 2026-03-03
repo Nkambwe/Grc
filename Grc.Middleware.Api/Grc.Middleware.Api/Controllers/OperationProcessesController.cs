@@ -1999,39 +1999,39 @@ namespace Grc.Middleware.Api.Controllers {
                         ManagerStart = DateTime.Now,
                         ManagerEnd = null,
                         ManagerStatus = null,
-                        ManagerComment = "Review record not found",
+                        ManagerComment = string.Empty,
                         HeadOfDepartmentStart = DateTime.Now,
                         HeadOfDepartmentEnd = null,
                         HeadOfDepartmentStatus = null,
-                        HeadOfDepartmentComment = "Approval record not found",
+                        HeadOfDepartmentComment = string.Empty,
                         RiskStart = null,
                         RiskEnd = null,
-                        RiskStatus = "UNCLASSIFIED",
-                        RiskComment = "Approval record not found",
+                        RiskStatus = string.Empty,
+                        RiskComment = string.Empty,
                         ComplianceStart = null,
                         ComplianceEnd = null,
-                        ComplianceStatus = "UNCLASSIFIED",
-                        ComplianceComment = "Approval record not found",
+                        ComplianceStatus = string.Empty,
+                        ComplianceComment = string.Empty,
                         RequiresBopApproval = process.NeedsBranchReview??false,
                         BranchOperationsStatusStart = null,
                         BranchOperationsStatusEnd = null,
-                        BranchOperationsStatus = "UNCLASSIFIED",
-                        BranchManagerComment = "Approval record not found",
+                        BranchOperationsStatus = string.Empty,
+                        BranchManagerComment = string.Empty,
                         RequiresCreditApproval = process.NeedsCreditReview ??false,
                         CreditStart = null,
                         CreditEnd = null,
-                        CreditStatus = "UNCLASSIFIED",
-                        CreditComment = "Approval record not found",
+                        CreditStatus = string.Empty,
+                        CreditComment = string.Empty,
                         RequiresTreasuryApproval = process.NeedsFintechReview??false,
                         TreasuryStart = null,
                         TreasuryEnd = null,
-                        TreasuryStatus = "UNCLASSIFIED",
-                        TreasuryComment = "Approval record not found",
+                        TreasuryStatus = string.Empty,
+                        TreasuryComment = string.Empty,
                         RequiresFintechApproval = process.NeedsFintechReview??false,
                         FintechStart = null,
                         FintechEnd = null,
-                        FintechStatus = "UNCLASSIFIED",
-                        FintechComment = "Approval record not found",
+                        FintechStatus = string.Empty,
+                        FintechComment = string.Empty,
                         IsDeleted = false
                     };
                 } else {
@@ -2632,32 +2632,18 @@ namespace Grc.Middleware.Api.Controllers {
         }
 
         [HttpPost("processes/manager-review")]
-        public async Task<IActionResult> ManagerReview([FromBody] ManagerReviewRequest request)
-        {
-            try
-            {
+        public async Task<IActionResult> ManagerReview([FromBody] ManagerReviewRequest request) {
+            try {
                 Logger.LogActivity("Update process approval", "INFO");
-                if (request == null)
-                {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "The process approval record cannot be null"
-                    );
-
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "The process approval record cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)}", "INFO");
-                if (!await _approvalService.ExistsAsync(r => r.Id == request.Id))
-                {
-                    var error = new ResponseError(
-                        ResponseCodes.NOTFOUND,
-                        "Record Not Found",
-                        "Process approval record not found in the database"
-                    );
-
+                if (!await _processService.ExistsAsync(r => r.Id == request.ProcessId)) {
+                    var error = new ResponseError(ResponseCodes.NOTFOUND, "Record Not Found", "Process record not found in the database");
                     Logger.LogActivity($"RECORD NOT FOUND: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<GeneralResponse>(error));
                 }
@@ -2667,10 +2653,10 @@ namespace Grc.Middleware.Api.Controllers {
                 string username = currentUser != null ? currentUser.Username : $"{request.UserId}";
 
                 //..update process approval
-                var (isApproved, stage) = await _approvalService.ApproveProcessAsync(new ApprovalRequest(){ 
+                var (isApproved, stage, _) = await _approvalService.ApproveProcessAsync(new ApprovalRequest(){ 
                         Id = request.Id,
                         ProcessId = request.ProcessId,
-                        MgrStatus = "REVIEWED",
+                        MgrStatus = "COMPLETE",
                         MgrComment = request.ManagerComments,
                         ModifiedBy = username,
                         ModifiedOn = DateTime.Now
@@ -2691,19 +2677,12 @@ namespace Grc.Middleware.Api.Controllers {
                             Logger.LogActivity($"Could not send process approval mail. Mail sendings not found", "INFO");
                         } else {
 
-                            //..get Head of operations details
-                            var officer = await _officersService.GetAsync(o => o.ContactPosition == "Head of Operation & Services");
-                            if (officer is null) {
-                                msg += ". Head Of Operations Contacts not found. Mail not sent";
-                                Logger.LogActivity($"Head Of Operations Contacts not found. Mail not sent", "INFO");
+                            //..get resposible manager
+                            var (receiverName, receiverMail) = await GetMailReceiverInfo(ApprovalStage.HOD, _officersService);
+                            if (!string.IsNullOrEmpty(receiverName) && !string.IsNullOrEmpty(receiverMail)) {
+                                await SendMailAsync(Logger, mailService, receiverName, receiverMail, request.Id, request.ProcessName);
                             } else {
-                                //..get resposible manager
-                                var (receiverName, receiverMail) = await GetMailReceiverInfo(stage, _officersService);
-                                if (!string.IsNullOrEmpty(receiverName) && !string.IsNullOrEmpty(receiverMail)) {
-                                    //await SendMailAsync(Logger, mailService, receiverName, receiverMail, request.Id, request.ProcessName);
-                                } else {
-                                    msg += ". Head Of Operations Contacts not found. Mail not sent";
-                                }
+                                msg += ". Responsible person not found. Mail not sent";
                             }
                         }
                     });
@@ -2770,7 +2749,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 //..update process approval
-                var (isApproved, stage) = await _approvalService.ApproveProcessAsync(request, true);
+                var (isApproved, stage, managerId) = await _approvalService.ApproveProcessAsync(request, true);
                 var response = new GeneralResponse();
                 if (isApproved) {
                     string msg = "";
@@ -2786,20 +2765,27 @@ namespace Grc.Middleware.Api.Controllers {
                             Logger.LogActivity($"Could not send process approval mail. Mail sendings not found", "INFO");
                         } else {
 
-                            //..get Head of operations details
-                            var officer = await _officersService.GetAsync(o => o.ContactPosition == "Head of Operation & Services");
-                            if (officer is null) {
-                                msg += ". Head Of Operations Contacts not found. Mail not sent";
-                                Logger.LogActivity($"Head Of Operations Contacts not found. Mail not sent", "INFO");
+                            if(stage == ApprovalStage.MGR) {
+                                //..send rejection mail
+                                var owner = await _officersService.GetAsync(r => r.Id == managerId);
+                                if (owner != null) {
+                                    var (receiverName, receiverMail) = (owner.ContactName, owner.ContactEmail);
+                                    if (!string.IsNullOrEmpty(receiverName) && !string.IsNullOrEmpty(receiverMail)) {
+                                        await SendRejectMailAsync(Logger, mailService, receiverName, receiverMail, request.Id, request.ProcessName);
+                                    }
+                                } else {
+                                    msg += ". Responsible person not found. Mail not sent";
+                                }
                             } else {
-                                //..get resposible manager
+                                //..get Head of operations details
                                 var (receiverName, receiverMail) = await GetMailReceiverInfo(stage, _officersService);
                                 if (!string.IsNullOrEmpty(receiverName) && !string.IsNullOrEmpty(receiverMail)) {
-                                    //await SendMailAsync(Logger, mailService, receiverName, receiverMail, request.Id, request.ProcessName);
+                                    await SendMailAsync(Logger, mailService, receiverName, receiverMail, request.Id, request.ProcessName);
                                 } else {
-                                    msg += ". Head Of Operations Contacts not found. Mail not sent";
+                                    msg += ". Responsible person not found. Mail not sent";
                                 }
                             }
+                               
                         }
                     });
                     
@@ -2860,7 +2846,42 @@ namespace Grc.Middleware.Api.Controllers {
                 }
             } 
          }
+        
+        private async Task SendRejectMailAsync(IServiceLogger logger, IMailService mailService, string sendToName, string email, long approvalId, string pocesssName) {
 
+            var mailSettings = await mailService.GetMailSettingsAsync();
+            if (mailSettings is null) {
+                Logger.LogActivity($"Could not send mail to user mail. Mail sendings not found", "INFO");
+            } else {
+                bool sent;
+                string subject, mail;
+                (sent, subject, mail) = MailHandler.SendRejectMail(
+                                               Logger,
+                                               mailSettings.MailSender,
+                                               email,
+                                               sendToName,
+                                               mailSettings.CopyTo,
+                                               pocesssName,
+                                               mailSettings.NetworkPort,
+                                               mailSettings.SystemPassword);
+                if (sent) {
+                    Logger.LogActivity($"Mail saved to the database", "INFO");
+                    await mailService.InsertMailAsync(new MailRecord() {
+                        SentToEmail = email,
+                        CCMail = mailSettings.CopyTo,
+                        Subject = subject,
+                        Mail = mail,
+                        ApprovalId = approvalId,
+                        IsDeleted = false,
+                        CreatedBy = "SYSTEM",
+                        CreatedOn = DateTime.Now,
+                        LastModifiedBy = "SYSTEM",
+                        LastModifiedOn = DateTime.Now,
+                    });
+                }
+            }
+        }
+        
         private static async Task<(string, string)> GetMailReceiverInfo(ApprovalStage stage, IResponsebilityService respService) {
             Responsebility responsible = stage switch {
                 ApprovalStage.HOD => await respService.GetAsync(o => o.ContactPosition == "Head of Operation & Services"),
@@ -2868,8 +2889,8 @@ namespace Grc.Middleware.Api.Controllers {
                 ApprovalStage.COMP => await respService.GetAsync(o => o.ContactPosition == "Head Compliance"),
                 ApprovalStage.BOM => await respService.GetAsync(o => o.ContactPosition == "Branch Operations"),
                 ApprovalStage.TREA => await respService.GetAsync(o => o.ContactPosition == "Head Treasury"),
-                ApprovalStage.CRT => await respService.GetAsync(o => o.ContactPosition == "Head Of Department Credit"),
-                ApprovalStage.FIN => await respService.GetAsync(o => o.ContactPosition == "Head Of Department Fintech"),
+                ApprovalStage.CRT => await respService.GetAsync(o => o.ContactPosition == "Head Credit"),
+                ApprovalStage.FIN => await respService.GetAsync(o => o.ContactPosition == "Head Fintech"),
                 _ => null,
             };
 

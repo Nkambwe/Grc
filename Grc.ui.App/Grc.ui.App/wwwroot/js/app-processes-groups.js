@@ -1,5 +1,21 @@
 ﻿let processGroupTable;
 
+//..check permissions
+console.log(window.userPermissions);
+window.hasPermission = function (permissionName) {
+    return window.userPermissions.some(p => p.toLowerCase() === permissionName.toLowerCase());
+};
+
+//..check if user has ANY of the permissions
+window.hasAnyPermission = function (...permissionNames) {
+    return permissionNames.some(p => window.hasPermission(p));
+};
+
+//..check if user has ALL of the permissions
+window.hasAllPermissions = function (...permissionNames) {
+    return permissionNames.every(p => window.hasPermission(p));
+};
+
 function initProcessGroupListTable() {
     processGroupTable = new Tabulator("#processGroupTable", {
         ajaxURL: "/operations/workflow/processes/groups/all",
@@ -60,7 +76,28 @@ function initProcessGroupListTable() {
                     },
                     error: function (xhr, status, error) {
                         console.error("AJAX Error:", error);
+                        //..hide permission alert
+                        $('#permissionAlert').hide();
+
+                        if (xhr.status === 401) {
+                            window.location = "/login/userlogin";
+                        }
+
+                        if (xhr.status === 403) {
+                            $('#permissionAlert').show();
+
+                            //..return empty dataset
+                            resolve({
+                                data: [],
+                                last_page: 1,
+                                total_records: 0
+                            });
+
+                            return;
+                        }
+
                         reject(error);
+                        return;
                     }
                 });
             });
@@ -74,7 +111,32 @@ function initProcessGroupListTable() {
         },
         ajaxError: function (error) {
             console.error("Tabulator AJAX Error:", error);
-            alert("Failed to load process groups. Please try again.");
+
+            //..hide permission alert
+            $('#permissionAlert').hide();
+
+            //..determine error message
+            let errorMessage = "Failed to load data. Please try again.";
+            if (error.status === 403) {
+                //..permission error,show permission alert instead
+                $('#permissionAlert').show();
+            } else if (error.status === 404) {
+                errorMessage = "The requested resource was not found.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else if (error.status === 500) {
+                errorMessage = "Server error occurred. Please contact support.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else if (error.status === 0) {
+                errorMessage = "Network error. Please check your connection.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else {
+                //..generic error - show error alert
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            }
         },
         layout: "fitColumns",
         responsiveLayout: "hide",
@@ -86,7 +148,14 @@ function initProcessGroupListTable() {
                 widthGrow: 2,
                 headerSort: true,
                 frozen: true,
-                formatter: (cell) => `<span class="clickable-title" onclick="viewProcessGroup(${cell.getRow().getData().id})">${cell.getValue()}</span>`
+                formatter: function (cell) {
+                    if (hasPermission("EditOperationProcessGroups")) {
+                        return `<span class="clickable-title" onclick="viewProcessGroup(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
+                    } else {
+                        return `<span >${cell.getValue()}</span>`
+                    }  
+                   
+                }
             },
             { title: "GROUP DESCRIPTION", field: "groupDescription", widthGrow: 1, minWidth: 400, frozen: true, headerSort: false },
             {
@@ -117,10 +186,18 @@ function initProcessGroupListTable() {
                 title: "ACTION",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                    return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteProcessGroup(${rowData.id})">
-                    <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
-                    <span>DELETE</span>
-                </button>`;
+
+                    if (hasPermission("DeleteOperationProcessGroups")) {
+                        return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteProcessGroup(${rowData.id})">
+                                    <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                                    <span>DELETE</span>
+                                </button>`;
+                    } else {
+                        return `<button class="grc-table-btn grc-btn-delete grc-delete-action disabled" disabled>
+                                    <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
+                                    <span>DELETE</span>
+                                </button>`;
+                    } 
                 },
                 width: 150,
                 hozAlign: "center",

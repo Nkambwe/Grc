@@ -1,5 +1,20 @@
 ﻿let processReviewTable;
 
+//..check permissions
+window.hasPermission = function (permissionName) {
+    return window.userPermissions.some(p => p.toLowerCase() === permissionName.toLowerCase());
+};
+
+//..check if user has ANY of the permissions
+window.hasAnyPermission = function (...permissionNames) {
+    return permissionNames.some(p => window.hasPermission(p));
+};
+
+//..check if user has ALL of the permissions
+window.hasAllPermissions = function (...permissionNames) {
+    return permissionNames.every(p => window.hasPermission(p));
+};
+
 function initProcessReviewListTable() {
     processReviewTable = new Tabulator("#processReviewTable", {
         ajaxURL: "/operations/workflow/processes/review-list",
@@ -94,10 +109,19 @@ function initProcessReviewListTable() {
                 title: "VIEW",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                    return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="viewRecord(${rowData.id})">
-                                <span><i class="mdi mdi-eye-arrow-right-outline" aria-hidden="true"></i></span>
-                                <span>VIEW</span>
+                    if (hasPermission("ManageOperationProcesses")) {
+                        return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="viewRecord(${rowData.id})">
+                                <span><i class="mdi mdi_share-all-outline" aria-hidden="true"></i></span>
+                                <span>REQUEST APPROVAL</span>
                             </button>`;
+                    } else {
+                        return `<button class="grc-table-btn grc-btn-view grc-view-action disabled" disabled>
+                                <span><i class="mdi mdi_share-all-outline" aria-hidden="true"></i></span>
+                                <span>REQUEST APPROVAL</span>
+                            </button>`;
+                    }
+
+                   
                 },
                 width: 200,
                 hozAlign: "center",
@@ -170,11 +194,11 @@ function openReviewEditor(title, approval) {
     const month = String(date.getMonth() + 1).padStart(2, "0");
 
     //..populate form fields
+    $("#id").val(approval?.id || 0);
     $("#processId").val(approval?.processId || 0);
     $("#processName").val(tStr);
     $("#processDescription").val(approval?.processDescription || "");
-    
-    $("#assigneeComments").val(approval?.assigneeComments || "");
+
     $("#ownerName").val(approval?.ownerName || "");
     $("#unitName").val(approval?.unitName || "");
     $("#assigneeName").val(approval?.assigneeName || "");
@@ -193,8 +217,10 @@ function openReviewEditor(title, approval) {
     $('#collapsePanel').addClass('active');
 }
 
-function saveReviewRecord(e) {
-    e.preventDefault();
+function saveReviewRecord() {
+    let id = parseInt($('#id').val()) || 0;
+    let processId = parseInt($('#processId').val()) || 0;
+    let processName = $('#processName').val()?.trim();
     let fileName = $('#fileName').val()?.trim();
     let fileVersion = $('#fileVersion').val()?.trim();
     let managerComments = $('#assigneeComments').val()?.trim();
@@ -205,10 +231,12 @@ function saveReviewRecord(e) {
         highlightReviewField('#fileName', true, 'File name field is required');
         isValid = false;
         errors.push("File name field is required");
-    } else if (!/^[a-zA-Z0-9\s,.]*$/.test(typeName)) {
-        highlightReviewField('#fileName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+    } 
+
+    const fileRegex = /^(\/?[a-zA-Z0-9_\-\/\s]+)\.(pdf|doc|docx|xls|xlsx)$/i;
+    if (!fileRegex.test(fileName)) {
+        highlightReviewField('#fileName', true, 'Invalid file path format. Example: /docs/processes/file_v1.0.pdf');
         isValid = false;
-        errors.push("Only letters, numbers, commas, periods, and spaces allowed");
     }
 
     if (!fileVersion) {
@@ -238,12 +266,13 @@ function saveReviewRecord(e) {
 
     // --- validate required fields ---
     let recordData = {
-        id: parseInt($('#id').val()) || 0,
-        processId: parseInt($('#processId').val()) || 0,
+        id: id,
+        processId: processId,
+        processName: processName,
         fileName: fileName,
         fileVersion:fileVersion,
         managerComments: managerComments,
-        status: "REVIEWED"
+        status: "COMPLETE"
     };
 
     console.log(recordData);
@@ -251,59 +280,59 @@ function saveReviewRecord(e) {
 }
 
 function saveReview(record) {
-    //const url ="/operations/workflow/processes/mgr-review";
+    const url ="/operations/workflow/processes/mgr-review";
 
-    //Swal.fire({
-    //    title: "Sending request to HOD for approval...",
-    //    text: "Please wait while we process your request.",
-    //    allowOutsideClick: false,
-    //    allowEscapeKey: false,
-    //    didOpen: () => {
-    //        Swal.showLoading();
-    //    }
-    //});
+    Swal.fire({
+        title: "Sending request to HOD for approval...",
+        text: "Please wait while we process your request.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
 
-    //$.ajax({
-    //    url: url,
-    //    type: "POST",
-    //    contentType: "application/json",
-    //    data: JSON.stringify(record),
-    //    headers: {
-    //        'X-Requested-With': 'XMLHttpRequest',
-    //        'X-CSRF-TOKEN': getAuditToken()
-    //    },
-    //    success: function (res) {
-    //        Swal.close();
-    //        if (!res.success) {
-    //            Swal.fire({
-    //                title: "Invalid record",
-    //                html: res.message.replaceAll("; ", "<br>")
-    //            });
-    //            return;
-    //        }
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(record),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': getReviewAntiForgeryToken()
+        },
+        success: function (res) {
+            Swal.close();
+            if (!res.success) {
+                Swal.fire({
+                    title: "Invalid record",
+                    html: res.message.replaceAll("; ", "<br>")
+                });
+                return;
+            }
 
-    //        Swal.fire(res.message || "Approval request sent to HOD")
-    //            .then(() => {
-    //                //..close panel
-    //                closeAuditCategory();
-    //                window.location.reload();
-    //            });
-    //    },
-    //    error: function (xhr) {
-    //        Swal.close();
+            Swal.fire(res.message || "Approval request sent to HOD")
+                .then(() => {
+                    //..close panel
+                    closeAuditCategory();
+                    window.location.reload();
+                });
+        },
+        error: function (xhr) {
+            Swal.close();
 
-    //        let errorMessage = "Unexpected error occurred.";
-    //        try {
-    //            let response = JSON.parse(xhr.responseText);
-    //            if (response.message) errorMessage = response.message;
-    //        } catch (e) { }
+            let errorMessage = "Unexpected error occurred.";
+            try {
+                let response = JSON.parse(xhr.responseText);
+                if (response.message) errorMessage = response.message;
+            } catch (e) { }
 
-    //        Swal.fire({
-    //            title: "Request Failed",
-    //            text: errorMessage
-    //        });
-    //    }
-    //});
+            Swal.fire({
+                title: "Request Failed",
+                text: errorMessage
+            });
+        }
+    });
 }
 
 function initProcessReviewSearch() {
@@ -345,7 +374,67 @@ function closeReviewPanel() {
     $('#collapsePanel').removeClass('active');
 }
 
-//..comments input validation
+//..file input validation
+function validateFileInput(event) {
+    var key = event.keyCode || event.which;
+    var keyChar = String.fromCharCode(key);
+
+    //..allow backspace, tab, enter, delete, arrows, etc.
+    if (key == 8 || key == 9 || key == 13 || key == 46 ||
+        key == 37 || key == 39 || (key >= 35 && key <= 40)) {
+        return true;
+    }
+
+    //..allow alphanumeric (a-z, A-Z, 0-9)
+    if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
+        // Clear any existing error when user starts typing valid chars
+        highlightReviewField('#fileName', false);
+        return true;
+    }
+
+    //..allow commas and periods
+    if (keyChar == ',' || keyChar == '.') {
+        highlightReviewField('#fileName', false);
+        return true;
+    }
+
+    //..allow space
+    if (keyChar == ' ') {
+        highlightReviewField('#fileName', false);
+        return true;
+    }
+
+}
+
+function handleFilePaste(event) {
+    event.preventDefault();
+
+    // Get pasted content
+    var pastedText = (event.clipboardData || window.clipboardData).getData('text');
+
+    // Clean the pasted content - remove any disallowed characters
+    var cleanedText = pastedText.replace(/[^a-zA-Z0-9\s,.]/g, '');
+
+    // Insert cleaned text at cursor position
+    var input = event.target;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    var currentValue = input.value;
+
+    input.value = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+
+    // Move cursor to end of inserted text
+    input.selectionStart = input.selectionEnd = start + cleanedText.length;
+
+    // Show warning if content was modified (using the field error)
+    if (pastedText !== cleanedText) {
+        highlightReviewField('#fileName', true, 'Some characters were removed - only letters, numbers, commas, periods, and spaces allowed');
+    } else {
+        highlightReviewField('#fileName', false);
+    }
+}
+
+//..version input validation
 function validateVersionInput(event) {
     var key = event.keyCode || event.which;
     var keyChar = String.fromCharCode(key);
@@ -359,19 +448,19 @@ function validateVersionInput(event) {
     //..allow alphanumeric (a-z, A-Z, 0-9)
     if (/[^a-zA-Z0-9\s,.]/.test(keyChar)) {
         // Clear any existing error when user starts typing valid chars
-        highlightReviewField('#comments', false);
+        highlightReviewField('#fileVersion', false);
         return true;
     }
 
     //..allow commas and periods
     if (keyChar == ',' || keyChar == '.') {
-        highlightReviewField('#comments', false);
+        highlightReviewField('#fileVersion', false);
         return true;
     }
 
     //..allow space
     if (keyChar == ' ') {
-        highlightReviewField('#comments', false);
+        highlightReviewField('#fileVersion', false);
         return true;
     }
 
@@ -465,7 +554,6 @@ function handleCommentPaste(event) {
     }
 }
 
-
 function highlightReviewField(selector, hasError, message) {
     const $field = $(selector);
     const $formGroup = $field.closest('.form-group, .mb-3, .col-sm-8');
@@ -481,15 +569,65 @@ function highlightReviewField(selector, hasError, message) {
         }
     }
 }
+function getReviewAntiForgeryToken() {
+    return $('meta[name="csrf-token"]').attr('content');
+
+}
 
 $(document).ready(function () {
 
     initProcessReviewListTable();
-    $('#processReviewForm').on('submit', function (e) {
-        e.preventDefault();
+    $('#processForm').on('submit', function (e) {
+        e.preventDefault();  
     });
-    
-    //..category name validation 
+
+    $('#btnSaveReview').on('click', function () {
+        saveReviewRecord();
+    });
+
+    //..file name validation 
+    $('#fileName').on('keyup', function () {
+        var value = $(this).val();
+
+        // Clear error if field is empty
+        if (!value) {
+            highlightReviewField('#fileName', false);
+            return;
+        }
+
+        // Show real-time feedback but don't block typing
+        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+            highlightReviewField('#fileName', true, 'Invalid characters detected');
+        } else {
+            highlightReviewField('#fileName', false);
+        }
+    });
+
+    $('#fileName').on('focus', function () {
+        highlightReviewField('#fileName', false);
+    });
+
+    $('#fileName').on('blur', function () {
+
+        var value = $(this).val();
+
+        if (!value) return;
+
+        const allowedChars = /[^a-zA-Z0-9_\-\/\s\.]/g;
+        var cleaned = value.replace(allowedChars, '');
+
+        if (value !== cleaned) {
+            $(this).val(cleaned);
+            highlightReviewField('#fileName', true, 'Removed invalid characters');
+
+            setTimeout(function () {
+                highlightReviewField('#fileName', false);
+            }, 2000);
+        }
+
+    });
+
+    //..file version validation 
     $('#fileVersion').on('keyup', function () {
         var value = $(this).val();
 
@@ -538,6 +676,7 @@ $(document).ready(function () {
             }
         }
     });
+
      //..comments validation 
     $('#comments').on('keyup', function () {
         var value = $(this).val();

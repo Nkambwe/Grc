@@ -1,4 +1,15 @@
-﻿<div class="grc-tabulator-container">
+﻿@{
+    var permissionsClaim = User.FindFirst("Permissions")?.Value;
+    var permissions = string.IsNullOrEmpty(permissionsClaim) ? new List<string>()
+    : JsonSerializer.Deserialize<List<string>>(permissionsClaim);
+}
+
+<div class="grc-tabulator-container">
+
+    <div class="grc-permission-alert" id="permissionAlert" style="display: none;">
+        <span><i class="mdi mdi-alert-circle"></i></span>
+        <span>Access Denied! You do not have permissions to view these records</span>
+    </div>
 
     <div id="processTagTable"></div>
 
@@ -81,3 +92,9 @@
     Html.AddScriptParts(ResourceLocation.Footer, "~/lib/jquery/dist/jquery.js");
     Html.AddScriptParts(ResourceLocation.Footer, "~/js/app-processes-tags.js");
 }
+
+<script>
+    //..make permissions available globally
+    window.userPermissions = @Html.Raw(JsonSerializer.Serialize(permissions ?? new List<string>()));
+
+</script>
