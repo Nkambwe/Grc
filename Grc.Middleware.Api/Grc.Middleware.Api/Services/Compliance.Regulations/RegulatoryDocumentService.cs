@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
 using Grc.Middleware.Api.Data.Entities.Support;
@@ -9,7 +8,6 @@ using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
 using Grc.Middleware.Api.TaskHandler;
 using Grc.Middleware.Api.Utils;
-using Microsoft.Win32;
 using System.Linq.Expressions;
 using System.Net.Mail;
 using System.Text.Json;

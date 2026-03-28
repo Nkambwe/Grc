@@ -16,6 +16,7 @@ using Grc.Middleware.Api.Services.Organization;
 using Grc.Middleware.Api.TaskHandler;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 using System.Text.Json;
 
@@ -33,6 +34,7 @@ namespace Grc.Middleware.Api.Controllers {
         private readonly IMailTaskQueue _mailTask;
         private readonly IResponsebilityService _officersService;
         private readonly IDepartmentUnitService _unitService;
+        private readonly IDepartmentsService _deptService;
 
         public OperationProcessesController(IObjectCypher cypher, 
                                             IServiceLoggerFactory loggerFactory, 
@@ -47,6 +49,7 @@ namespace Grc.Middleware.Api.Controllers {
                                             IProcessApprovalService approvalService,
                                             ISystemAccessService accessService,
                                             IMailTaskQueue mailTask,
+                                            IDepartmentsService deptService,
                                             IDepartmentUnitService unitService,
                                             IResponsebilityService officersService
                                             ) 
@@ -64,6 +67,7 @@ namespace Grc.Middleware.Api.Controllers {
             _accessService = accessService;
             _approvalService = approvalService;
             _officersService = officersService;
+            _deptService = deptService;
             _unitService = unitService;
         }
 
@@ -1836,35 +1840,22 @@ namespace Grc.Middleware.Api.Controllers {
         #region New Process Endpoints
 
         [HttpPost("processes/processes-new")]
-        public async Task<IActionResult> GetNewProcess([FromBody] ListRequest request)
-        {
+        public async Task<IActionResult> GetNewProcess([FromBody] ListRequest request) {
 
-            try
-            {
+            try {
                 Logger.LogActivity($"{request.Action}", "INFO");
-                if (request == null)
-                {
-                    var error = new ResponseError(
-                        ResponseCodes.BADREQUEST,
-                        "Request record cannot be empty",
-                        "Invalid request body"
-                    );
+                if (request == null){
+                    var error = new ResponseError(ResponseCodes.BADREQUEST,"Request record cannot be empty","Invalid request body");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return Ok(new GrcResponse<PagedResponse<ProcessRegisterResponse>>(error));
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
                 var pageResult = await _processService.PageNewProcessesAsync(request.PageIndex, 
-                    request.PageSize, false, p => p.Unit, p => p.Owner, p => p.Responsible, p => p.ProcessType);
-                if (pageResult.Entities == null || !pageResult.Entities.Any())
-                {
-                    var error = new ResponseError(
-                        ResponseCodes.SUCCESS,
-                        "No data",
-                        "No new process records found"
-                    );
+                    request.PageSize, false, p => p.Unit, p => p.Owner, p => p.Responsible, p => p.ProcessType, p=>p.Approvals);
+                if (pageResult.Entities == null || !pageResult.Entities.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No new process records found" );
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
-
                     return Ok(new GrcResponse<PagedResponse<ProcessRegisterResponse>>(new PagedResponse<ProcessRegisterResponse>(
                         new List<ProcessRegisterResponse>(),
                         0,
@@ -1873,64 +1864,162 @@ namespace Grc.Middleware.Api.Controllers {
                     )));
                 }
 
-                List<ProcessRegisterResponse> processes = new();
-                var records = pageResult.Entities;
-                if (records != null && records.Any())
-                {
-                    records.ForEach(register => processes.Add(new()
-                    {
-                        Id = register.Id,
-                        ProcessName = register.ProcessName ?? string.Empty,
-                        Description = register.Description ?? string.Empty,
-                        CurrentVersion = register.CurrentVersion ?? string.Empty,
-                        EffectiveDate = register.EffectiveDate,
-                        LastUpdated = register.LastUpdated,
-                        FileName = register.FileName ?? string.Empty,
-                        ProcessStatus = register.ProcessStatus ?? string.Empty,
-                        Comments = register.Comments ?? string.Empty,
-                        OnholdReason = register.ReasonOnhold ?? string.Empty,
-                        TypeId = register.TypeId,
-                        TypeName = register.ProcessType != null ? register.ProcessType.TypeName : string.Empty,
-                        UnitId = register.UnitId,
-                        UnitName = register.Unit != null ? register.Unit.UnitName : string.Empty,
-                        OwnerId = register.OwnerId,
-                        OwnerName = register.Owner != null ? register.Owner.ContactPosition : string.Empty,
-                        ResponsibilityId = register.ResponsibilityId,
-                        Responsibile = register.Responsible != null ? register.Responsible.ContactPosition : string.Empty,
-                        IsLockProcess = register.IsLockProcess,
-                        UnlockReason = register.UnlockReason,
-                        NeedsBranchReview = register.NeedsBranchReview,
-                        NeedsCreditReview = register.NeedsCreditReview,
-                        NeedsTreasuryReview = register.NeedsTreasuryReview,
-                        NeedsFintechReview = register.NeedsFintechReview,
-                        IsDeleted = register.IsDeleted,
-                        CreatedOn = register.CreatedOn,
-                        CreatedBy = register.CreatedBy ?? string.Empty,
-                        ModifiedOn = register.LastModifiedOn ?? register.CreatedOn,
-                        ModifiedBy = register.LastModifiedBy ?? string.Empty
-                    }));
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser != null) {
+                    var roleName = currentUser.Role?.RoleName ?? string.Empty;
+                    if (!roleName.IsNullOrEmpty()) {
+                        List<ProcessRegisterResponse> processes = new();
+                        var records = pageResult.Entities;
+                        if (records != null && records.Any()) {
+                            records.ForEach(register => processes.Add(new() {
+                                Id = register.Id,
+                                ProcessName = register.ProcessName ?? string.Empty,
+                                Description = register.Description ?? string.Empty,
+                                CurrentVersion = register.CurrentVersion ?? string.Empty,
+                                EffectiveDate = register.EffectiveDate,
+                                LastUpdated = register.LastUpdated,
+                                FileName = register.FileName ?? string.Empty,
+                                ProcessStatus = register.ProcessStatus ?? string.Empty,
+                                Comments = register.Comments ?? string.Empty,
+                                OnholdReason = register.ReasonOnhold ?? string.Empty,
+                                TypeId = register.TypeId,
+                                TypeName = register.ProcessType != null ? register.ProcessType.TypeName : string.Empty,
+                                UnitId = register.UnitId,
+                                UnitName = register.Unit != null ? register.Unit.UnitName : string.Empty,
+                                OwnerId = register.OwnerId,
+                                OwnerName = register.Owner != null ? register.Owner.ContactPosition : string.Empty,
+                                ResponsibilityId = register.ResponsibilityId,
+                                Responsibile = register.Responsible != null ? register.Responsible.ContactPosition : string.Empty,
+                                IsLockProcess = register.IsLockProcess,
+                                UnlockReason = register.UnlockReason,
+                                NeedsBranchReview = register.NeedsBranchReview,
+                                NeedsCreditReview = register.NeedsCreditReview,
+                                NeedsTreasuryReview = register.NeedsTreasuryReview,
+                                NeedsFintechReview = register.NeedsFintechReview,
+                                IsDeleted = register.IsDeleted,
+                                CreatedOn = register.CreatedOn,
+                                CreatedBy = register.CreatedBy ?? string.Empty,
+                                ModifiedOn = register.LastModifiedOn ?? register.CreatedOn,
+                                ModifiedBy = register.LastModifiedBy ?? string.Empty
+                            }));
+
+                            //..filter by current user ID
+                            if (roleName.Equals("HeadOps")) {
+                                //..get only those owned by the Head of department 
+                                processes = processes.Where(p => p.OwnerId == request.UserId).ToList();
+
+                            } else if (roleName.Equals("UserOps")) {
+                                //..get only those assigned to them
+                                processes = processes.Where(p => p.ResponsibilityId == request.UserId).ToList();
+                            } else if (roleName.Equals("GuestOps")) {
+                                var dept = await _deptService.GetDepartmentByIdAsync(currentUser.DepartmentId);
+
+                                if (dept != null) {
+                                    var deptName = (dept.DepartmentName ?? string.Empty).Trim();
+
+                                    var filtered = records.Where(p => {
+                                        var a = p.Approvals?.OrderByDescending(a => a.RequestDate).FirstOrDefault();
+                                        if (a == null) return false;
+
+                                        //..risk
+                                        if (deptName.Contains("Risk", StringComparison.OrdinalIgnoreCase)) {
+                                            return IsPending(a.RiskStatus);
+                                        }
+
+                                        //..compliance
+                                        if (deptName.Contains("Compliance", StringComparison.OrdinalIgnoreCase)) {
+                                            return IsPending(a.ComplianceStatus);
+                                        }
+
+                                        //..credit
+                                        if (deptName.Contains("Credit", StringComparison.OrdinalIgnoreCase)) {
+                                            return p.NeedsCreditReview == true && IsPending(a.CreditStatus);
+                                        }
+
+                                        //..treasury
+                                        if (deptName.Contains("Treasury", StringComparison.OrdinalIgnoreCase)) {
+                                            return p.NeedsTreasuryReview == true && IsPending(a.TreasuryStatus);
+                                        }
+
+                                        //..internal controlsL (Branch Ops)
+                                        if (deptName.Contains("Internal", StringComparison.OrdinalIgnoreCase)) {
+                                            return p.NeedsBranchReview == true && IsPending(a.BranchOperationsStatus);
+                                        }
+
+                                        return false;
+                                    });
+
+                                    //..map after filtering
+                                    processes = filtered.Select(register => new ProcessRegisterResponse {
+                                        Id = register.Id,
+                                        ProcessName = register.ProcessName ?? string.Empty,
+                                        Description = register.Description ?? string.Empty,
+                                        CurrentVersion = register.CurrentVersion ?? string.Empty,
+                                        EffectiveDate = register.EffectiveDate,
+                                        LastUpdated = register.LastUpdated,
+                                        FileName = register.FileName ?? string.Empty,
+                                        ProcessStatus = register.ProcessStatus ?? string.Empty,
+                                        Comments = register.Comments ?? string.Empty,
+                                        OnholdReason = register.ReasonOnhold ?? string.Empty,
+                                        TypeId = register.TypeId,
+                                        TypeName = register.ProcessType?.TypeName ?? string.Empty,
+                                        UnitId = register.UnitId,
+                                        UnitName = register.Unit?.UnitName ?? string.Empty,
+                                        OwnerId = register.OwnerId,
+                                        OwnerName = register.Owner?.ContactPosition ?? string.Empty,
+                                        ResponsibilityId = register.ResponsibilityId,
+                                        Responsibile = register.Responsible?.ContactPosition ?? string.Empty,
+                                        IsLockProcess = register.IsLockProcess,
+                                        UnlockReason = register.UnlockReason,
+                                        NeedsBranchReview = register.NeedsBranchReview,
+                                        NeedsCreditReview = register.NeedsCreditReview,
+                                        NeedsTreasuryReview = register.NeedsTreasuryReview,
+                                        NeedsFintechReview = register.NeedsFintechReview,
+                                        IsDeleted = register.IsDeleted,
+                                        CreatedOn = register.CreatedOn,
+                                        CreatedBy = register.CreatedBy ?? string.Empty,
+                                        ModifiedOn = register.LastModifiedOn ?? register.CreatedOn,
+                                        ModifiedBy = register.LastModifiedBy ?? string.Empty
+                                    }).ToList();
+                                }
+                            }
+                            }
+
+                        if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                            var searchTerm = request.SearchTerm.ToLower();
+                            processes = processes.Where(u =>
+                                (u.ProcessName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                (u.Description?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                (u.TypeName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                (u.UnitName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                (u.OwnerName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                (u.Responsibile?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                            ).ToList();
+                        }
+
+                        return Ok(new GrcResponse<PagedResponse<ProcessRegisterResponse>>(
+                            new PagedResponse<ProcessRegisterResponse>(
+                            processes,
+                            pageResult.Count,
+                            pageResult.Page,
+                            pageResult.Size
+                        )));
+
+
+
+                    } else {
+                        var error = new ResponseError(ResponseCodes.UNAUTHORIZED,"User role cannot be determined","Unauthorized! User role cannot b e determined");
+                        Logger.LogActivity($"UNAUTHORIZED: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<PagedResponse<ProcessRegisterResponse>>(error));
+                    }
+
+
+                } else {
+                    //..user does don't exist
+                    return Ok(new GrcResponse<PagedResponse<ProcessRegisterResponse>>(new PagedResponse<ProcessRegisterResponse>(new List<ProcessRegisterResponse>(), 0, 0,0)));
                 }
 
-                if (!string.IsNullOrWhiteSpace(request.SearchTerm))
-                {
-                    var searchTerm = request.SearchTerm.ToLower();
-                    processes = processes.Where(u =>
-                        (u.ProcessName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (u.Description?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (u.TypeName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (u.UnitName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (u.OwnerName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (u.Responsibile?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
-                    ).ToList();
-                }
-
-                return Ok(new GrcResponse<PagedResponse<ProcessRegisterResponse>>(
-                    new PagedResponse<ProcessRegisterResponse>(
-                    processes,
-                    pageResult.Count,
-                    pageResult.Page,
-                    pageResult.Size
-                )));
             }
             catch (Exception ex)
             {
@@ -2116,7 +2205,7 @@ namespace Grc.Middleware.Api.Controllers {
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
                 var pageResult = await _processService.PageReviewProcessesAsync(request.PageIndex, 
-                    request.PageSize, true, p => p.Unit, p => p.Owner, p => p.Responsible,p => p.ProcessType);
+                    request.PageSize, true, p => p.Unit, p => p.Owner, p => p.Responsible,p => p.ProcessType, p => p.Approvals);
                 if (pageResult.Entities == null || !pageResult.Entities.Any()) {
                     var error = new ResponseError(
                         ResponseCodes.SUCCESS,
@@ -2131,62 +2220,162 @@ namespace Grc.Middleware.Api.Controllers {
                         0,pageResult.Page, pageResult.Size)));
                 }
 
-                List<ProcessRegisterResponse> processes = new();
-                var records = pageResult.Entities;
-                if (records != null && records.Any()) {
-                    records.ForEach(register => processes.Add(new() {
-                        Id = register.Id,
-                        ProcessName = register.ProcessName ?? string.Empty,
-                        Description = register.Description ?? string.Empty,
-                        CurrentVersion = register.CurrentVersion ?? string.Empty,
-                        EffectiveDate = register.EffectiveDate,
-                        LastUpdated = register.LastUpdated,
-                        FileName = register.FileName ?? string.Empty,
-                        ProcessStatus = register.ProcessStatus ?? string.Empty,
-                        Comments = register.Comments ?? string.Empty,
-                        OnholdReason = register.ReasonOnhold ?? string.Empty,
-                        TypeId = register.TypeId,
-                        TypeName = register.ProcessType != null ? register.ProcessType.TypeName : string.Empty,
-                        UnitId = register.UnitId,
-                        UnitName = register.Unit != null ? register.Unit.UnitName : string.Empty,
-                        OwnerId = register.OwnerId,
-                        OwnerName = register.Owner != null ? register.Owner.ContactPosition : string.Empty,
-                        ResponsibilityId = register.ResponsibilityId,
-                        Responsibile = register.Responsible != null ? register.Responsible.ContactPosition : string.Empty,
-                        IsLockProcess = register.IsLockProcess,
-                        UnlockReason = register.UnlockReason,
-                        NeedsBranchReview = register.NeedsBranchReview,
-                        NeedsCreditReview = register.NeedsCreditReview,
-                        NeedsTreasuryReview = register.NeedsTreasuryReview,
-                        NeedsFintechReview = register.NeedsFintechReview,
-                        IsDeleted = register.IsDeleted,
-                        CreatedOn = register.CreatedOn,
-                        CreatedBy = register.CreatedBy ?? string.Empty,
-                        ModifiedOn = register.LastModifiedOn ?? register.CreatedOn,
-                        ModifiedBy = register.LastModifiedBy ?? string.Empty
-                    }));
-                }
+                //..get username
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser != null) {
 
-                if (!string.IsNullOrWhiteSpace(request.SearchTerm))
-                {
-                    var searchTerm = request.SearchTerm.ToLower();
-                    processes = processes.Where(u =>
-                        (u.ProcessName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (u.Description?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (u.TypeName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (u.UnitName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (u.OwnerName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (u.Responsibile?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
-                    ).ToList();
-                }
+                    var roleName = currentUser.Role?.RoleName ?? string.Empty;
+                    if (!roleName.IsNullOrEmpty()) {
 
-                return Ok(new GrcResponse<PagedResponse<ProcessRegisterResponse>>(
-                    new PagedResponse<ProcessRegisterResponse>(
-                    processes,
-                    pageResult.Count,
-                    pageResult.Page,
-                    pageResult.Size
-                )));
+
+                        List<ProcessRegisterResponse> processes = new();
+                        var records = pageResult.Entities;
+                        if (records != null && records.Any()) {
+                            records.ForEach(register => processes.Add(new() {
+                                Id = register.Id,
+                                ProcessName = register.ProcessName ?? string.Empty,
+                                Description = register.Description ?? string.Empty,
+                                CurrentVersion = register.CurrentVersion ?? string.Empty,
+                                EffectiveDate = register.EffectiveDate,
+                                LastUpdated = register.LastUpdated,
+                                FileName = register.FileName ?? string.Empty,
+                                ProcessStatus = register.ProcessStatus ?? string.Empty,
+                                Comments = register.Comments ?? string.Empty,
+                                OnholdReason = register.ReasonOnhold ?? string.Empty,
+                                TypeId = register.TypeId,
+                                TypeName = register.ProcessType != null ? register.ProcessType.TypeName : string.Empty,
+                                UnitId = register.UnitId,
+                                UnitName = register.Unit != null ? register.Unit.UnitName : string.Empty,
+                                OwnerId = register.OwnerId,
+                                OwnerName = register.Owner != null ? register.Owner.ContactPosition : string.Empty,
+                                ResponsibilityId = register.ResponsibilityId,
+                                Responsibile = register.Responsible != null ? register.Responsible.ContactPosition : string.Empty,
+                                IsLockProcess = register.IsLockProcess,
+                                UnlockReason = register.UnlockReason,
+                                NeedsBranchReview = register.NeedsBranchReview,
+                                NeedsCreditReview = register.NeedsCreditReview,
+                                NeedsTreasuryReview = register.NeedsTreasuryReview,
+                                NeedsFintechReview = register.NeedsFintechReview,
+                                IsDeleted = register.IsDeleted,
+                                CreatedOn = register.CreatedOn,
+                                CreatedBy = register.CreatedBy ?? string.Empty,
+                                ModifiedOn = register.LastModifiedOn ?? register.CreatedOn,
+                                ModifiedBy = register.LastModifiedBy ?? string.Empty
+                            }));
+
+                            //..filter by current user ID
+                            if (roleName.Equals("HeadOps")) {
+                                //..get only those owned by the Head of department 
+                                processes = processes.Where(p => p.OwnerId == request.UserId).ToList();
+
+                            } else if (roleName.Equals("UserOps")) {
+                                //..get only those assigned to them
+                                processes = processes.Where(p => p.ResponsibilityId == request.UserId).ToList();
+                            } else if (roleName.Equals("GuestOps")) {
+                                var dept = await _deptService.GetDepartmentByIdAsync(currentUser.DepartmentId);
+
+                                if (dept != null) {
+                                    var deptName = (dept.DepartmentName ?? string.Empty).Trim();
+
+                                    var filtered = records.Where(p => {
+                                        var a = p.Approvals?.OrderByDescending(a => a.RequestDate).FirstOrDefault();
+                                        if (a == null) return false;
+
+                                        //..risk
+                                        if (deptName.Contains("Risk", StringComparison.OrdinalIgnoreCase)) {
+                                            return IsPending(a.RiskStatus);
+                                        }
+
+                                        //..compliance
+                                        if (deptName.Contains("Compliance", StringComparison.OrdinalIgnoreCase)) {
+                                            return IsPending(a.ComplianceStatus);
+                                        }
+
+                                        //..credit
+                                        if (deptName.Contains("Credit", StringComparison.OrdinalIgnoreCase)) {
+                                            return p.NeedsCreditReview == true && IsPending(a.CreditStatus);
+                                        }
+
+                                        //..treasury
+                                        if (deptName.Contains("Treasury", StringComparison.OrdinalIgnoreCase)) {
+                                            return p.NeedsTreasuryReview == true && IsPending(a.TreasuryStatus);
+                                        }
+
+                                        //..internal controlsL (Branch Ops)
+                                        if (deptName.Contains("Internal", StringComparison.OrdinalIgnoreCase)) {
+                                            return p.NeedsBranchReview == true && IsPending(a.BranchOperationsStatus);
+                                        }
+
+                                        return false;
+                                    });
+
+                                    //..map after filtering
+                                    processes = filtered.Select(register => new ProcessRegisterResponse {
+                                        Id = register.Id,
+                                        ProcessName = register.ProcessName ?? string.Empty,
+                                        Description = register.Description ?? string.Empty,
+                                        CurrentVersion = register.CurrentVersion ?? string.Empty,
+                                        EffectiveDate = register.EffectiveDate,
+                                        LastUpdated = register.LastUpdated,
+                                        FileName = register.FileName ?? string.Empty,
+                                        ProcessStatus = register.ProcessStatus ?? string.Empty,
+                                        Comments = register.Comments ?? string.Empty,
+                                        OnholdReason = register.ReasonOnhold ?? string.Empty,
+                                        TypeId = register.TypeId,
+                                        TypeName = register.ProcessType?.TypeName ?? string.Empty,
+                                        UnitId = register.UnitId,
+                                        UnitName = register.Unit?.UnitName ?? string.Empty,
+                                        OwnerId = register.OwnerId,
+                                        OwnerName = register.Owner?.ContactPosition ?? string.Empty,
+                                        ResponsibilityId = register.ResponsibilityId,
+                                        Responsibile = register.Responsible?.ContactPosition ?? string.Empty,
+                                        IsLockProcess = register.IsLockProcess,
+                                        UnlockReason = register.UnlockReason,
+                                        NeedsBranchReview = register.NeedsBranchReview,
+                                        NeedsCreditReview = register.NeedsCreditReview,
+                                        NeedsTreasuryReview = register.NeedsTreasuryReview,
+                                        NeedsFintechReview = register.NeedsFintechReview,
+                                        IsDeleted = register.IsDeleted,
+                                        CreatedOn = register.CreatedOn,
+                                        CreatedBy = register.CreatedBy ?? string.Empty,
+                                        ModifiedOn = register.LastModifiedOn ?? register.CreatedOn,
+                                        ModifiedBy = register.LastModifiedBy ?? string.Empty
+                                    }).ToList();
+                                }
+                            }
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(request.SearchTerm)) {
+                            var searchTerm = request.SearchTerm.ToLower();
+                            processes = processes.Where(u =>
+                                (u.ProcessName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                (u.Description?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                (u.TypeName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                (u.UnitName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                (u.OwnerName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                (u.Responsibile?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                            ).ToList();
+                        }
+
+                        return Ok(new GrcResponse<PagedResponse<ProcessRegisterResponse>>(
+                            new PagedResponse<ProcessRegisterResponse>(
+                            processes,
+                            pageResult.Count,
+                            pageResult.Page,
+                            pageResult.Size
+                        )));
+                    } else {
+                        var error = new ResponseError(ResponseCodes.UNAUTHORIZED, "User role cannot be determined", "Unauthorized! User role cannot b e determined");
+                        Logger.LogActivity($"UNAUTHORIZED: {JsonSerializer.Serialize(error)}");
+                        return Ok(new GrcResponse<PagedResponse<ProcessRegisterResponse>>(error));
+                    }
+                    
+
+                } else {
+                    //..user does don't exist
+                    return Ok(new GrcResponse<PagedResponse<ProcessRegisterResponse>>(new PagedResponse<ProcessRegisterResponse>(new List<ProcessRegisterResponse>(), 0, 0, 0)));
+                }
+                
             }
             catch (Exception ex)
             {
@@ -2811,6 +3000,12 @@ namespace Grc.Middleware.Api.Controllers {
         #endregion
 
         #region Private Methods
+
+        private bool IsPending(string status) {
+            return string.IsNullOrEmpty(status) ||
+                   (!status.Equals("APPROVED", StringComparison.OrdinalIgnoreCase) &&
+                    !status.Equals("COMPLETE", StringComparison.OrdinalIgnoreCase));
+        }
 
         private async Task SendMailAsync(IServiceLogger logger, IMailService mailService, string sendToName, string email, long approvalId, string pocesssName) {
             

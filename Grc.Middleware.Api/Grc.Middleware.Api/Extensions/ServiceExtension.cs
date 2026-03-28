@@ -224,7 +224,6 @@ namespace Grc.Middleware.Api.Extensions {
 
                         //Retrieve the connection string from environment variables
                         string connectionString = Environment.GetEnvironmentVariable(connectionVar);
-
                         if (!string.IsNullOrEmpty(connectionString)) {
                             string decryptedString = HashGenerator.DecryptString(connectionString);
 

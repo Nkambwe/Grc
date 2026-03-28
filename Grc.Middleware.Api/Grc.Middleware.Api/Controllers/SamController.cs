@@ -473,7 +473,7 @@ namespace Grc.Middleware.Api.Controllers {
                     request.DecryptFields = new string[] { "FirstName", "LastName", "MiddleName", "EmailAddress", "PhoneNumber", "PFNumber" };
                     userRecord = Cypher.DecryptProperties(userRecord, request.DecryptFields);
                     userRecord.DisplayName = userRecord.FirstName ?? string.Empty;
-                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(userRecord)}");
                     return Ok(new GrcResponse<UserResponse>(userRecord));
                 } else {
                     var error = new ResponseError(

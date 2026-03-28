@@ -4,11 +4,13 @@
     "Projects": [
       {
         "Path": "..\\Grc.Middleware.Api\\Grc.Middleware.Api\\Grc.Middleware.Api.csproj",
-        "Action": "Start"
+        "Action": "Start",
+        "DebugTarget": "https"
       },
       {
         "Path": "Grc.ui.App\\Grc.ui.App.csproj",
-        "Action": "Start"
+        "Action": "Start",
+        "DebugTarget": "https"
       }
     ]
   }

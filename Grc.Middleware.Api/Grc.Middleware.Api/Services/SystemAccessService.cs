@@ -811,7 +811,7 @@ namespace Grc.Middleware.Api.Services {
             try {
 
                 Logger.LogActivity($"User ID: {id}", "DEBUG");
-                var user = await uow.UserRepository.GetAsync(id);
+                var user = await uow.UserRepository.GetAsync(u=>u.Id == id, true, u => u.Role);
 
                 //..log user record
                 var companyJson = JsonSerializer.Serialize(user, new JsonSerializerOptions
