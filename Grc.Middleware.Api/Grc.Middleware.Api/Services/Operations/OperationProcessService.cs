@@ -1213,18 +1213,42 @@ namespace Grc.Middleware.Api.Services.Operations {
             }
         }
 
-        public async Task<PagedResult<OperationProcess>> PageNewProcessesAsync(int page, int size, bool includeDeleted, params Expression<Func<OperationProcess, object>>[] includes) {
+        public async Task<PagedResult<OperationProcess>> PageNewProcessesAsync( int page,int size,bool includeDeleted, params Expression<Func<OperationProcess, object>>[] includes) {
             using var uow = UowFactory.Create();
             Logger.LogActivity("Retrieve paged Processes", "INFO");
+
             try {
-                var result = await uow.OperationProcessRepository.PageAllAsync(page,
-                    size,includeDeleted, p => p.ProcessStatus == "DRAFT", 
-                    includes);
+                var result = await uow.OperationProcessRepository.PageAllAsync(page, size, includeDeleted, p => p.ProcessStatus == "DRAFT" &&
+
+                        //..ensure process has at least one approval
+                        p.Approvals.Any() &&
+
+                        //..ensure latest approval has at least one pending stage
+                        p.Approvals.OrderByDescending(a => a.RequestDate).Take(1).Any(a =>
+
+                                // Risk
+                                (string.IsNullOrEmpty(a.RiskStatus) ||(a.RiskStatus != "APPROVED" && a.RiskStatus != "COMPLETE")) ||
+
+                                // Compliance
+                                (string.IsNullOrEmpty(a.ComplianceStatus) || (a.ComplianceStatus != "APPROVED" && a.ComplianceStatus != "COMPLETE")) ||
+
+                                // Branch (only if needed)
+                                (p.NeedsBranchReview == true && (string.IsNullOrEmpty(a.BranchOperationsStatus) || (a.BranchOperationsStatus != "APPROVED" && a.BranchOperationsStatus != "COMPLETE"))) ||
+
+                                // Credit
+                                (p.NeedsCreditReview == true && (string.IsNullOrEmpty(a.CreditStatus) || (a.CreditStatus != "APPROVED" && a.CreditStatus != "COMPLETE"))) ||
+
+                                // Treasury
+                                (p.NeedsTreasuryReview == true && (string.IsNullOrEmpty(a.TreasuryStatus) || (a.TreasuryStatus != "APPROVED" && a.TreasuryStatus != "COMPLETE"))) ||
+
+                                // Fintech
+                                (p.NeedsFintechReview == true && (string.IsNullOrEmpty(a.FintechStatus) || (a.FintechStatus != "APPROVED" && a.FintechStatus != "COMPLETE")))
+                            ),
+                    includes
+                );
 
                 return result;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Failed to retrieve Processes: {ex.Message}", "ERROR");
                 _ = await uow.SystemErrorRespository.InsertAsync(HandleError(uow, ex));
                 throw;
@@ -1238,8 +1262,34 @@ namespace Grc.Middleware.Api.Services.Operations {
             try
             {
                 var result = await uow.OperationProcessRepository.PageAllAsync(page,
-                    size, includeDeleted, p => p.ProcessStatus == "INREVIEW",
-                    includes);
+                    size, includeDeleted, p => p.ProcessStatus == "INREVIEW" &&
+
+                        //..ensure process has at least one approval
+                        p.Approvals.Any() &&
+
+                        //..ensure latest approval has at least one pending stage
+                        p.Approvals.OrderByDescending(a => a.RequestDate).Take(1).Any(a =>
+
+                                // Risk
+                                (string.IsNullOrEmpty(a.RiskStatus) || (a.RiskStatus != "APPROVED" && a.RiskStatus != "COMPLETE")) ||
+
+                                // Compliance
+                                (string.IsNullOrEmpty(a.ComplianceStatus) || (a.ComplianceStatus != "APPROVED" && a.ComplianceStatus != "COMPLETE")) ||
+
+                                // Branch (only if needed)
+                                (p.NeedsBranchReview == true && (string.IsNullOrEmpty(a.BranchOperationsStatus) || (a.BranchOperationsStatus != "APPROVED" && a.BranchOperationsStatus != "COMPLETE"))) ||
+
+                                // Credit
+                                (p.NeedsCreditReview == true && (string.IsNullOrEmpty(a.CreditStatus) || (a.CreditStatus != "APPROVED" && a.CreditStatus != "COMPLETE"))) ||
+
+                                // Treasury
+                                (p.NeedsTreasuryReview == true && (string.IsNullOrEmpty(a.TreasuryStatus) || (a.TreasuryStatus != "APPROVED" && a.TreasuryStatus != "COMPLETE"))) ||
+
+                                // Fintech
+                                (p.NeedsFintechReview == true && (string.IsNullOrEmpty(a.FintechStatus) || (a.FintechStatus != "APPROVED" && a.FintechStatus != "COMPLETE")))
+                            ),
+                    includes
+                );
 
                 return result;
             }
@@ -1337,13 +1387,14 @@ namespace Grc.Middleware.Api.Services.Operations {
 
                     var result = uow.SaveChanges();
                     Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
-                    return (result > 0, null, null);
+
+                    //..get responsible manage
+                    var manager = await uow.ResponsebilityRepository.GetAsync(r => r.Id == process.ResponsibilityId);
+                    return (result > 0, manager.ContactName, manager.ContactEmail);
                 }
 
-                //..get responsible manage
-                var manager = await uow.ResponsebilityRepository.GetAsync(r=>r.Id == process.ResponsibilityId);
+                return (false, null, null);
 
-                return (false, manager.ContactName, manager.ContactEmail);
             }
             catch (Exception ex)
             {
@@ -1408,7 +1459,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             try {
                 var process = await uow.OperationProcessRepository.GetAsync(a => a.Id == recordId, false, a => a.Unit);
                 if (process != null) {
-                    process.ProcessStatus = "PROPOSED";
+                    process.ProcessStatus = "REVIEWED";
                     process.Comments = $"Newly proposed process for {process.Unit?.UnitName??string.Empty} unit";
                     process.IsLockProcess = false;
                     process.IsDeleted = false;
@@ -1419,8 +1470,8 @@ namespace Grc.Middleware.Api.Services.Operations {
                     process.Approvals.Add(new ProcessApproval() {
                         ProcessId = recordId,
                         RequestDate = DateTime.Now,
-                        HeadOfDepartmentStart = DateTime.Now,
-                        HeadOfDepartmentStatus = "PENDING",
+                        ManagerialStart = DateTime.Now,
+                        ManagerialStatus = "PENDING",
                         CreatedBy = (requestedBy ?? string.Empty).Trim(),
                         CreatedOn = DateTime.Now,
                         LastModifiedBy = (requestedBy ?? string.Empty).Trim(),

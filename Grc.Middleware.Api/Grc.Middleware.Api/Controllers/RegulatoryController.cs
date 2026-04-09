@@ -712,9 +712,9 @@ namespace Grc.Middleware.Api.Controllers {
 
                 var pageResult = await _regulatoryDocuments.PageAllAsync(request.PageIndex, 
                                                                          request.PageSize,
-                                                                         includeDeleted, 
+                                                                         includeDeleted,
                                                                          d => d.Owner,
-                                                                         d => d.Owner.Department, 
+                                                                         d => d.Owner.Department,
                                                                          d => d.DocumentType, 
                                                                          d => d.Frequency);
                 if (pageResult.Entities == null || !pageResult.Entities.Any()) {

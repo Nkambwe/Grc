@@ -460,7 +460,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpGet]
-        [PermissionAuthorization(false, "CANVIEWCOMPLIANCESETTINGS")]
+        //[PermissionAuthorization(false, "CANVIEWCOMPLIANCESETTINGS")]
         public async Task<IActionResult> ComplianceSettings() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var response = await _authService.GetCurrentUserAsync(ipAddress);
@@ -472,7 +472,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
-        [PermissionAuthorization(false, "CANVIEWCOMPLIANCESETTINGS", "CANMODIFYCOMPLIANCESETTINGS")]
+        //[PermissionAuthorization(false, "CANVIEWCOMPLIANCESETTINGS", "CANMODIFYCOMPLIANCESETTINGS")]
         public async Task<IActionResult> SaveGeneralConfigurations([FromBody] GeneralConfigurationModel model) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -517,7 +517,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
-        [PermissionAuthorization(false, "CANVIEWCOMPLIANCESETTINGS", "CANMODIFYCOMPLIANCESETTINGS")]
+        //[PermissionAuthorization(false, "CANVIEWCOMPLIANCESETTINGS", "CANMODIFYCOMPLIANCESETTINGS")]
         public async Task<IActionResult> SavePolicyConfigurations([FromBody] PolicyConfigurationsModel model) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();

@@ -2,6 +2,22 @@
 let dateList = {};
 var uploadedFiles = [];
 var fileCounter = 0;
+
+//..check permissions
+window.hasPermission = function (permissionName) {
+    return window.userPermissions.some(p => p.toLowerCase() === permissionName.toLowerCase());
+};
+
+//..check if user has ANY of the permissions
+window.hasAnyPermission = function (...permissionNames) {
+    return permissionNames.some(p => window.hasPermission(p));
+};
+
+//..check if user has ALL of the permissions
+window.hasAllPermissions = function (...permissionNames) {
+    return permissionNames.every(p => window.hasPermission(p));
+};
+
 function initProcessRegisterTable() {
     processRegisterTable = new Tabulator("#processRegisterTable", {
         ajaxURL: "/operations/workflow/processes/register/all",
@@ -61,8 +77,28 @@ function initProcessRegisterTable() {
                         resolve(response);
                     },
                     error: function (xhr, status, error) {
-                        console.error("AJAX Error:", error);
+                        //..hide permission alert
+                        $('#permissionAlert').hide();
+
+                        if (xhr.status === 401) {
+                            window.location = "/login/userlogin";
+                        }
+
+                        if (xhr.status === 403) {
+                            $('#permissionAlert').show();
+
+                            //..return empty dataset
+                            resolve({
+                                data: [],
+                                last_page: 1,
+                                total_records: 0
+                            });
+
+                            return;
+                        }
+
                         reject(error);
+                        return;
                     }
                 });
             });
@@ -76,7 +112,32 @@ function initProcessRegisterTable() {
         },
         ajaxError: function (error) {
             console.error("Tabulator AJAX Error:", error);
-            alert("Failed to load processes. Please try again.");
+
+            //..hide permission alert
+            $('#permissionAlert').hide();
+
+            //..determine error message
+            let errorMessage = "Failed to load data. Please try again.";
+            if (error.status === 403) {
+                //..permission error,show permission alert instead
+                $('#permissionAlert').show();
+            } else if (error.status === 404) {
+                errorMessage = "The requested resource was not found.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else if (error.status === 500) {
+                errorMessage = "Server error occurred. Please contact support.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else if (error.status === 0) {
+                errorMessage = "Network error. Please check your connection.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else {
+                //..generic error - show error alert
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            }
         },
         layout: "fitColumns",
         responsiveLayout: "hide",
@@ -88,8 +149,14 @@ function initProcessRegisterTable() {
                 widthGrow: 2,
                 headerSort: true,
                 headerFilter: "input",
-                formatter: function(cell){
-                    return `<span class="clickable-title" onclick="viewProcess(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
+                formatter: function (cell) {
+                    //..check if user has edit permissions
+                    if (hasPermission("EditOperationProcesses")) {
+                        return `<span class="clickable-title" onclick="viewProcess(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
+                    } else {
+                        return `<span >${cell.getValue()}</span>`
+                    }
+                    
                 }
             },
             {
@@ -418,11 +485,15 @@ function openProcessEditor(title, process, isEdit) {
 
     //..disable all fields if editing a locked process
     if (isLocked) {
-        //..disable all inputs inside form
-        $("#processForm :input").prop("disabled", true); 
+        //..disable form fields but NOT tab buttons
+        $("#processForm")
+            .find("input, textarea, select")
+            .not("#isLockProcess")
+            .prop("disabled", true);
 
-        //..allow cancel/close still usable
-        $("#closeButton, #cancelButton").prop("disabled", false); 
+        //..allow lock toggle & close buttons
+        $('#isLockProcess').prop('disabled', false);
+        $(".panel-close, .btn-grc-secondary").prop("disabled", false);
     } else {
         //..ensure fields are enabled when not locked
         $("#processForm :input").prop("disabled", false); 
@@ -1500,18 +1571,12 @@ function toggleSection(header) {
 
 function initDatePickers() {
 
-    $(".datepicker").each(function () {
-
-        if (!this._flatpickr) {
-            flatpickr(this, {
-                dateFormat: "Y-m-d",
-                allowInput: true,
-                altInput: true,
-                altFormat: "d M Y",
-                defaultDate: null
-            });
-        }
-
+    dateList["effectiveDate"] = flatpickr("#effectiveDate", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d M Y",
+        defaultDate: null
     });
 }
 
@@ -1586,26 +1651,32 @@ function setProcessReadOnly(isLocked) {
 
     const $form = $("#processForm");
 
-    //..disable all standard inputs
-    $form.find("input:not(#isLocked), textarea, select").prop("disabled", isLocked);
+    //..disable ONLY data-entry fields (not buttons, not tab headers)
+    $form.find("input, textarea, select")
+        .not("#isLockProcess")
+        .not("[type='hidden']")
+        .prop("disabled", isLocked);
 
-    //..allow hidden fields
+    // Always allow hidden fields
     $form.find("input[type='hidden']").prop("disabled", false);
 
-    //..flatpickr
-    Object.values(flatpickrInstances).forEach(fp => {
-        if (!fp) return;
-        fp.set("clickOpens", !isLocked);
-        fp.input.disabled = isLocked;
-    });
+    // Flatpickr handling
+    if (window.flatpickrInstances) {
+        Object.values(flatpickrInstances).forEach(fp => {
+            if (!fp) return;
+            fp.set("clickOpens", !isLocked);
+            fp.input.disabled = isLocked;
+        });
+    }
 
-    //..disable switches explicitly
+    // Explicit switches
     $("#isDeleted, #isAligned").prop("disabled", isLocked);
 
-    //..disable Save button
+    // Save button only
     $form.find("button[onclick='saveProcessRecord()']")
         .prop("disabled", isLocked)
         .toggleClass("disabled", isLocked);
+
 }
 
 function lockProcess(id, isLocked) {
@@ -1632,7 +1703,7 @@ function lockProcess(id, isLocked) {
         data: JSON.stringify(payload),
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': getPolicyAnti2ForgeryToken()
+            'X-CSRF-TOKEN': getProcessAntiForgeryToken()
         },
         success: function (res) {
             Swal.close();
@@ -1753,7 +1824,6 @@ function deleteProcessRecord(id, isDeleted) {
 $(document).ready(function () {
 
     initProcessRegisterTable();
-  
 
     $("#onHoldBox").addClass("d-none");
 
@@ -2427,7 +2497,4 @@ $(document).ready(function () {
 
     initDatePickers();
 
-     $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function () {
-        initDatePickers();
-    });
 });

@@ -9,6 +9,9 @@ namespace Grc.ui.App.Helpers {
         [JsonPropertyName("processId")]
         public long ProcessId { get; set; }
 
+        [JsonPropertyName("processName")]
+        public string ProcessName { get; set; }
+
         [JsonPropertyName("fileName")]
         public string FileName { get; set; }
         

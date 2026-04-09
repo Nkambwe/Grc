@@ -811,7 +811,7 @@ namespace Grc.Middleware.Api.Services {
             try {
 
                 Logger.LogActivity($"User ID: {id}", "DEBUG");
-                var user = await uow.UserRepository.GetAsync(id);
+                var user = await uow.UserRepository.GetAsync(u=>u.Id == id, true, u => u.Role);
 
                 //..log user record
                 var companyJson = JsonSerializer.Serialize(user, new JsonSerializerOptions
@@ -987,7 +987,7 @@ namespace Grc.Middleware.Api.Services {
             }
         }
 
-        public async Task<bool> ResetPasswordAsync(long recordId, string passwordHash, string username) {
+        public async Task<(bool, long)> ResetPasswordAsync(long recordId, string passwordHash, string username) {
             using var uow = UowFactory.Create();
             Logger.LogActivity("Update System User request", "INFO");
 
@@ -1007,10 +1007,10 @@ namespace Grc.Middleware.Api.Services {
 
                     var result = uow.SaveChanges();
                     Logger.LogActivity($"SaveChanges result: {result}", "DEBUG");
-                    return result > 0;
+                    return (result > 0, user.Id);
                 }
 
-                return false;
+                return (false, 0);
             }
             catch (Exception ex)
             {

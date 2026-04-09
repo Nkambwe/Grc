@@ -810,7 +810,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         #region Departments
 
         [HttpPost]
-        [PermissionAuthorization(false, "ManageDepartments","ManageDepartments")]
+        [PermissionAuthorization(true, "ManageDepartments")]
         public async Task<IActionResult> GetDepartment(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -930,7 +930,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
-        [PermissionAuthorization(false, "ManageDepartments","ManageDepartments")]
+        [PermissionAuthorization(true, "ManageDepartments")]
         public async Task<IActionResult> AllDepartments([FromBody] TableListRequest request) {
 
             try{
@@ -1087,7 +1087,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         #region Department Units
 
         [HttpPost]
-        [PermissionAuthorization(false, "ManageDepartments", "ManageDepartments", "ManageSystemSettings")]
+        [PermissionAuthorization(false, "ManageSystemSettings", "CANMANAGESYSTEMSETTINGSANDCONFIGURATIONS")]
         public async Task<IActionResult> GetUnit(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1181,7 +1181,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpGet]
-        [PermissionAuthorization(false, "ManageDepartments", "ManageDepartments", "ManageSystemSettings")]
+        [PermissionAuthorization(false, "ManageDepartments", "CANMANAGEDEPARTMENTS", "ManageSystemSettings", "CANMANAGESYSTEMSETTINGSANDCONFIGURATIONS")]
         public async Task<IActionResult> GetUnits() { 
             try {
 
@@ -1239,7 +1239,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [HttpPost]
-        [PermissionAuthorization(false, "ManageDepartments", "ManageDepartments", "ManageSystemSettings")]
+        [PermissionAuthorization(false, "ManageDepartments", "CANMANAGEDEPARTMENTS", "ManageSystemSettings", "CANMANAGESYSTEMSETTINGSANDCONFIGURATIONS")]
         public async Task<IActionResult> AllUnits([FromBody] TableListRequest request) {
 
             try{

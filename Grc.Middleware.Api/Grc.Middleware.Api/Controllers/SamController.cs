@@ -473,7 +473,7 @@ namespace Grc.Middleware.Api.Controllers {
                     request.DecryptFields = new string[] { "FirstName", "LastName", "MiddleName", "EmailAddress", "PhoneNumber", "PFNumber" };
                     userRecord = Cypher.DecryptProperties(userRecord, request.DecryptFields);
                     userRecord.DisplayName = userRecord.FirstName ?? string.Empty;
-                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(userRecord)}");
                     return Ok(new GrcResponse<UserResponse>(userRecord));
                 } else {
                     var error = new ResponseError(
@@ -872,7 +872,7 @@ namespace Grc.Middleware.Api.Controllers {
                         var mailService = sp.GetRequiredService<IMailService>();
                         var logger = sp.GetRequiredService<IServiceLoggerFactory>().CreateLogger();
 
-                        await SendMailAsync(Logger, mailService, firstname, email, username, userPwd);
+                        await SendMailAsync(Logger, mailService, firstname, email, username, userPwd, approvalId: 0);
                     });
 
                     //..set response
@@ -996,7 +996,7 @@ namespace Grc.Middleware.Api.Controllers {
                 //..update role
                 var result = await _accessService.ResetPasswordAsync(request.RecordId, passwordHash, username);
                 var response = new GeneralResponse();
-                if (result) {
+                if (result.Item1) {
                     //..send mail for password change
                     _mailTask.Enqueue(async (sp, token) => {
                         var mailService = sp.GetRequiredService<IMailService>();
@@ -4161,7 +4161,7 @@ namespace Grc.Middleware.Api.Controllers {
         #endregion
 
         #region Private methods
-         private async Task SendMailAsync(IServiceLogger logger, IMailService mailService, string sendToName, string email, string username, string password, bool reset=false) {
+         private async Task SendMailAsync(IServiceLogger logger, IMailService mailService, string sendToName, string email, string username, string password, bool reset=false, long approvalId=0) {
             
             var mailSettings = await mailService.GetMailSettingsAsync();
             if (mailSettings is null) {
@@ -4183,6 +4183,7 @@ namespace Grc.Middleware.Api.Controllers {
                 if (sent) {
                     Logger.LogActivity($"Mail saved to the database", "INFO");
                     await mailService.InsertMailAsync(new MailRecord() {
+                        ApprovalId = approvalId,
                         SentToEmail = email,
                         CCMail = mailSettings.CopyTo,
                         Subject = subject,

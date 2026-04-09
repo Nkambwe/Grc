@@ -3232,7 +3232,7 @@ namespace Grc.ui.App.Controllers {
 
         #region support - Departments
 
-        [PermissionAuthorization(true, "ManageDepartments", "ManageDepartments")]
+        [PermissionAuthorization(true, "ManageDepartments")]
         public async Task<IActionResult> ComplianceDepartments() {
             try {
                 if (User.Identity?.IsAuthenticated == true) {

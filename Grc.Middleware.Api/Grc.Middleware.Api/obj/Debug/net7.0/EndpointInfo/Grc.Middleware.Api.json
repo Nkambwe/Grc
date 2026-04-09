@@ -10942,6 +10942,10 @@
             "type": "integer",
             "format": "int64"
           },
+          "processName": {
+            "type": "string",
+            "nullable": true
+          },
           "fileName": {
             "type": "string",
             "nullable": true

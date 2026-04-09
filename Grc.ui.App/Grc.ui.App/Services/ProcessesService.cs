@@ -368,29 +368,18 @@ namespace Grc.ui.App.Services {
         public async Task<GrcResponse<PagedResponse<GrcProcessRegisterResponse>>> GetReviewProcessAsync(TableListRequest request) {
             try {
                 if (request == null) {
-                    var error = new GrcResponseError(
-                        GrcStatusCodes.BADREQUEST,
-                        "Invalid Request object",
-                        "Request object cannot be null"
-                    );
-
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object", "Request object cannot be null");
                     Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
                     return new GrcResponse<PagedResponse<GrcProcessRegisterResponse>>(error);
                 }
 
                 var endpoint = $"{EndpointProvider.Operations.ProcessBase}/processes-reviews";
                 return await HttpHandler.PostAsync<TableListRequest, PagedResponse<GrcProcessRegisterResponse>>(endpoint, request);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
                 await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
-                var error = new GrcResponseError(
-                    GrcStatusCodes.SERVERERROR,
-                    "An unexpected error occurred",
-                    "Cannot proceed! An error occurred, please try again later"
-                );
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<PagedResponse<GrcProcessRegisterResponse>>(error);
             }
         }
@@ -1497,30 +1486,18 @@ namespace Grc.ui.App.Services {
                 Logger.LogActivity($"Endpoint: {endpoint}");
 
                 return await HttpHandler.PostAsync<ProcessReviewRequest, ServiceResponse>(endpoint, request);
-            }
-            catch (HttpRequestException httpEx)
-            {
+            } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"HTTP Request Error: {httpEx.Message}", "ERROR");
                 Logger.LogActivity(httpEx.StackTrace, "STACKTRACE");
                 await ProcessErrorAsync(httpEx.Message, "PROCESSES-SERVICE", httpEx.StackTrace);
-                var error = new GrcResponseError(
-                    GrcStatusCodes.BADGATEWAY,
-                    "Network error occurred",
-                    httpEx.Message
-                );
+                var error = new GrcResponseError( GrcStatusCodes.BADGATEWAY,"Network error occurred",httpEx.Message);
                 return new GrcResponse<ServiceResponse>(error);
 
-            }
-            catch (GRCException ex)
-            {
+            } catch (GRCException ex) {
                 Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
                 Logger.LogActivity(ex.StackTrace, "STACKTRACE");
                 await ProcessErrorAsync(ex.Message, "PROCESSES-SERVICE", ex.StackTrace);
-                var error = new GrcResponseError(
-                    GrcStatusCodes.SERVERERROR,
-                    "An unexpected error occurred",
-                    "Cannot proceed! An error occurred, please try again later"
-                );
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR,"An unexpected error occurred","Cannot proceed! An error occurred, please try again later");
                 return new GrcResponse<ServiceResponse>(error);
             }
         }
@@ -1660,6 +1637,7 @@ namespace Grc.ui.App.Services {
                 var request = new GrcManagerReviewRequest {
                     Id = model.Id,
                     ProcessId = model.ProcessId,
+                    ProcessName = model.ProcessName,
                     FileName = model.FileName,
                     FileVersion = model.FileVersion,
                     ManagerComments = model.ManagerComments,

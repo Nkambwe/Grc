@@ -4,9 +4,8 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 using System.Text.Json;
 
 namespace Grc.ui.App.Infrastructure.MvcHelpers {
-    [HtmlTargetElement("div", Attributes = "require-permission")]
-    [HtmlTargetElement("a", Attributes = "require-permission")]
-    [HtmlTargetElement("button", Attributes = "require-permission")]
+
+    [HtmlTargetElement(Attributes = "require-permission")]
     public class PermissionTagHelper : TagHelper {
         [HtmlAttributeName("require-permission")]
         public string RequiredPermission { get; set; }
@@ -23,7 +22,8 @@ namespace Grc.ui.App.Infrastructure.MvcHelpers {
                 return;
             }
 
-            var permissions = JsonSerializer.Deserialize<List<string>>(permissionsClaim) ?? new List<string>();
+            var permissions = JsonSerializer.Deserialize<List<string>>(permissionsClaim)
+                              ?? new List<string>();
 
             if (!permissions.Contains(RequiredPermission, StringComparer.OrdinalIgnoreCase)) {
                 output.SuppressOutput();

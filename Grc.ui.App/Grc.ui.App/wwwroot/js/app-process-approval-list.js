@@ -1,4 +1,20 @@
 ﻿let processApprovalsTable;
+
+//..check permissions
+window.hasPermission = function (permissionName) {
+    return window.userPermissions.some(p => p.toLowerCase() === permissionName.toLowerCase());
+};
+
+//..check if user has ANY of the permissions
+window.hasAnyPermission = function (...permissionNames) {
+    return permissionNames.some(p => window.hasPermission(p));
+};
+
+//..check if user has ALL of the permissions
+window.hasAllPermissions = function (...permissionNames) {
+    return permissionNames.every(p => window.hasPermission(p));
+};
+
 function initProcessApprovalListTable() {
     processApprovalsTable = new Tabulator("#processApprovalsTable", {
         ajaxURL: "/operations/workflow/processes/approvals-all",
@@ -59,7 +75,28 @@ function initProcessApprovalListTable() {
                     },
                     error: function (xhr, status, error) {
                         console.error("AJAX Error:", error);
+                        //..hide permission alert
+                        $('#permissionAlert').hide();
+
+                        if (xhr.status === 401) {
+                            window.location = "/login/userlogin";
+                        }
+
+                        if (xhr.status === 403) {
+                            $('#permissionAlert').show();
+
+                            //..return empty dataset
+                            resolve({
+                                data: [],
+                                last_page: 1,
+                                total_records: 0
+                            });
+
+                            return;
+                        }
+
                         reject(error);
+                        return;
                     }
                 });
             });
@@ -73,7 +110,32 @@ function initProcessApprovalListTable() {
         },
         ajaxError: function (error) {
             console.error("Tabulator AJAX Error:", error);
-            alert("Failed to load tasks. Please try again.");
+
+            //..hide permission alert
+            $('#permissionAlert').hide();
+
+            //..determine error message
+            let errorMessage = "Failed to load data. Please try again.";
+            if (error.status === 403) {
+                //..permission error,show permission alert instead
+                $('#permissionAlert').show();
+            } else if (error.status === 404) {
+                errorMessage = "The requested resource was not found.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else if (error.status === 500) {
+                errorMessage = "Server error occurred. Please contact support.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else if (error.status === 0) {
+                errorMessage = "Network error. Please check your connection.";
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            } else {
+                //..generic error - show error alert
+                $('#errorAlertMessage').text(errorMessage);
+                $('#errorAlert').show();
+            }
         },
         layout: "fitColumns",
         responsiveLayout: "hide",
@@ -85,7 +147,15 @@ function initProcessApprovalListTable() {
                 widthGrow: 2,
                 headerSort: true,
                 frozen: true,
-                formatter: (cell) => `<span class="clickable-title" onclick="viewApproval(${cell.getRow().getData().id})">${cell.getValue()}</span>`
+                formatter: function (cell) {
+
+                    if (hasPermission("EditOperationProcesses")) {
+                        return `<span class="clickable-title" onclick="viewApproval(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
+                    } else {
+                        return `<span >${cell.getValue()}</span>`
+                    }
+                    
+                }
             },
             {
                 title: "HOD STATUS",
@@ -403,10 +473,19 @@ function initProcessApprovalListTable() {
                 title: "HOLD PROCESS",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                    return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="viewHold(${rowData.id})">
-                        <span><i class="mdi mdi-cog-pause-outline" aria-hidden="true"></i></span>
-                        <span>ON HOLD</span>
-                    </button>`;
+                    if (hasPermission("ManageOperationProcesses")) {
+                        return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="viewHold(${rowData.id})">
+                                    <span><i class="mdi mdi-cog-pause-outline" aria-hidden="true"></i></span>
+                                    <span>ON HOLD</span>
+                                </button>`;
+                    } else {
+                        return `<button class="grc-table-btn grc-btn-view grc-view-action disabled" disabled>
+                                    <span><i class="mdi mdi-cog-pause-outline" aria-hidden="true"></i></span>
+                                    <span>ON HOLD</span>
+                                </button>`;
+                    }
+
+                   
                 },
                 width: 200,
                 hozAlign: "center",
@@ -417,10 +496,19 @@ function initProcessApprovalListTable() {
                 title: "APPROVE PROCESS",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                    return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="approvalProcess(${rowData.id})">
-                        <span><i class="mdi mdi-cog-transfer-outline" aria-hidden="true"></i></span>
-                        <span>APPROVE</span>
-                    </button>`;
+                    if (hasPermission("CANAPPROVEPROCESS")) {
+                        return `<button class="grc-table-btn grc-btn-view grc-view-action" onclick="approvalProcess(${rowData.id})">
+                                    <span><i class="mdi mdi-cog-transfer-outline" aria-hidden="true"></i></span>
+                                    <span>APPROVE</span>
+                                </button>`;
+                    } else {
+                        return `<button class="grc-table-btn grc-btn-view grc-view-action disabled" disabled>
+                                    <span><i class="mdi mdi-cog-transfer-outline" aria-hidden="true"></i></span>
+                                    <span>APPROVE</span>
+                                </button>`;
+                    }
+
+                    
                 },
                 width: 200,
                 hozAlign: "center",
@@ -853,9 +941,6 @@ function viewHold(id) {
 }
 
 function openHoldEditor(title, approval) {
-
-    console.log("Approval ID >> " + approval?.id);
-    console.log("Process ID >> " + approval?.processId);
     $("#holdId").val(approval?.id || 0);
     $("#holdProcessId").val(approval?.processId || 0);
     $("#holdName").val(approval.processName);
@@ -957,7 +1042,7 @@ function saveProcessHold(data) {
 }
 
 function closeHoldPanel() {
-    $('$holdOverlay').removeClass('active');
+    $('#holdOverlay').removeClass('active');
     $('#holdePanel').removeClass('active');
 }
 
