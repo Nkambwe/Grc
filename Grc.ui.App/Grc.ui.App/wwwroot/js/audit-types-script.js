@@ -130,8 +130,8 @@ function initAuditType2Table() {
                     } else {
                         return `<span >${cell.getValue()}</span>`
                     }
-                },
-                formatter: (cell) => 
+                }
+                
             },
             { title: "DESCRIPTION", field: "description", minWidth: 200, widthGrow: 3 },
             {

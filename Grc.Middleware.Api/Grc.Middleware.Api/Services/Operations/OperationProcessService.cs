@@ -1218,34 +1218,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             Logger.LogActivity("Retrieve paged Processes", "INFO");
 
             try {
-                var result = await uow.OperationProcessRepository.PageAllAsync(page, size, includeDeleted, p => p.ProcessStatus == "DRAFT" &&
-
-                        //..ensure process has at least one approval
-                        p.Approvals.Any() &&
-
-                        //..ensure latest approval has at least one pending stage
-                        p.Approvals.OrderByDescending(a => a.RequestDate).Take(1).Any(a =>
-
-                                // Risk
-                                (string.IsNullOrEmpty(a.RiskStatus) ||(a.RiskStatus != "APPROVED" && a.RiskStatus != "COMPLETE")) ||
-
-                                // Compliance
-                                (string.IsNullOrEmpty(a.ComplianceStatus) || (a.ComplianceStatus != "APPROVED" && a.ComplianceStatus != "COMPLETE")) ||
-
-                                // Branch (only if needed)
-                                (p.NeedsBranchReview == true && (string.IsNullOrEmpty(a.BranchOperationsStatus) || (a.BranchOperationsStatus != "APPROVED" && a.BranchOperationsStatus != "COMPLETE"))) ||
-
-                                // Credit
-                                (p.NeedsCreditReview == true && (string.IsNullOrEmpty(a.CreditStatus) || (a.CreditStatus != "APPROVED" && a.CreditStatus != "COMPLETE"))) ||
-
-                                // Treasury
-                                (p.NeedsTreasuryReview == true && (string.IsNullOrEmpty(a.TreasuryStatus) || (a.TreasuryStatus != "APPROVED" && a.TreasuryStatus != "COMPLETE"))) ||
-
-                                // Fintech
-                                (p.NeedsFintechReview == true && (string.IsNullOrEmpty(a.FintechStatus) || (a.FintechStatus != "APPROVED" && a.FintechStatus != "COMPLETE")))
-                            ),
-                    includes
-                );
+                var result = await uow.OperationProcessRepository.PageAllAsync(page, size, includeDeleted, p => p.ProcessStatus == "DRAFT",includes);
 
                 return result;
             } catch (Exception ex) {

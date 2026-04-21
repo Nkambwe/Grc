@@ -149,5 +149,9 @@ namespace Grc.Middleware.Api.Http.Responses {
 
         [JsonPropertyName("isDeleted")]
         public bool IsDeleted { get; set; }
+
+        [JsonPropertyName("responsibilityId")]
+        public long ResponsibilityId { get; set; }
+
     }
 }

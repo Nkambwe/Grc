@@ -67,15 +67,15 @@ function loadAuditTree() {
             }).on("select_node.jstree", function (e, data) {
                 const tree = $(this).jstree(true);
                 const node = data.node;
-
                 //..expand node if it has children
                 if (node.children.length > 0) {
                     tree.toggle_node(node);
                 }
 
                 //..category logic
+               
                 if (hasPermission("CANVIEWCOMPLIANCEAUDITS")) {
-                    if (node.type === "category") {
+                    if (node.type === "category" || node.type === "default") {
                         selectedCategory = parseInt(node.id.replace("C_", ""));
                         selectedAudit = null;
 
@@ -89,6 +89,7 @@ function loadAuditTree() {
                     }
 
                     //..audit logic
+                   
                     if (node.type === "audit") {
                         selectedAudit = parseInt(node.id.replace("L_", ""));
                         selectedCategory = parseInt(node.parent.replace("C_", ""));

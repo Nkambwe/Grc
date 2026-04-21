@@ -18,6 +18,10 @@ $('.action-btn-returns-home').on('click', function () {
     }
 });
 
+$('.action-btn action-btn-excel-export').on('click', function () {
+     alert("Button clicked")
+});
+
 $('#processReviewForm').on('submit', function (e) {
     e.preventDefault();
 });

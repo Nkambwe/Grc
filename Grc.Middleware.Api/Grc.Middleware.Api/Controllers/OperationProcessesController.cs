@@ -18,6 +18,7 @@ using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Text.Json;
 
 namespace Grc.Middleware.Api.Controllers {
@@ -409,7 +410,7 @@ namespace Grc.Middleware.Api.Controllers {
                     TypeName = register.ProcessType != null ? register.ProcessType.TypeName : string.Empty,
                     UnitId = register.UnitId,
                     UnitName = register.Unit != null ? register.Unit.UnitName : string.Empty,
-                    OwnerId = register.ResponsibilityId,
+                    OwnerId = register.OwnerId,
                     OwnerName = register.Owner != null ? register.Owner.ContactName : string.Empty,
                     ResponsibilityId = register.ResponsibilityId,
                     Responsibile = register.Responsible != null ? register.Responsible.ContactName : string.Empty,
@@ -1868,6 +1869,7 @@ namespace Grc.Middleware.Api.Controllers {
                 var currentUser = await _accessService.GetByIdAsync(request.UserId);
                 if (currentUser != null) {
                     var roleName = currentUser.Role?.RoleName ?? string.Empty;
+                    var unitCode = currentUser.DepartmentUnit ?? string.Empty;
                     if (!roleName.IsNullOrEmpty()) {
                         List<ProcessRegisterResponse> processes = new();
                         var records = pageResult.Entities;
@@ -1905,13 +1907,34 @@ namespace Grc.Middleware.Api.Controllers {
                             }));
 
                             //..filter by current user ID
+                            Responsebility resp = null;
                             if (roleName.Equals("HeadOps")) {
                                 //..get only those owned by the Head of department 
-                                processes = processes.Where(p => p.OwnerId == request.UserId).ToList();
-
+                                resp = await _officersService.GetAsync(r => r.ContactPosition.Contains("Head of Operation") || r.ContactPosition.Contains("Head Operations"));
+                                processes = resp == null ? processes : processes.Where(p => p.OwnerId == resp.Id).ToList();
                             } else if (roleName.Equals("UserOps")) {
+                                switch (unitCode) {
+                                    case "RECON":
+                                        resp = await _officersService.GetAsync(r => r.ContactPosition.Contains("Reconciliation"));
+                                        break;
+                                    case "ACCSV":
+                                        resp = await _officersService.GetAsync(r => r.ContactPosition.Contains("Account Service"));
+                                        break;
+                                    case "CASTO":
+                                        resp = await _officersService.GetAsync(r => r.ContactPosition.Contains("Cash"));
+                                        break;
+                                    case "CHNOP":
+                                        resp = await _officersService.GetAsync(r => r.ContactPosition.Contains("Channel"));
+                                        break;
+                                    case "CUEXE":
+                                        resp = await _officersService.GetAsync(r => r.ContactPosition.Contains("Experience"));
+                                        break;
+                                    case "EWALT":
+                                        resp = await _officersService.GetAsync(r => r.ContactPosition.Contains("E-WALLET"));
+                                        break;
+                                }
                                 //..get only those assigned to them
-                                processes = processes.Where(p => p.ResponsibilityId == request.UserId).ToList();
+                                processes = resp != null ? processes.Where(p => p.ResponsibilityId == resp.Id).ToList() : new();
                             } else if (roleName.Equals("GuestOps")) {
                                 var dept = await _deptService.GetDepartmentByIdAsync(currentUser.DepartmentId);
 
@@ -2225,6 +2248,7 @@ namespace Grc.Middleware.Api.Controllers {
                 if (currentUser != null) {
 
                     var roleName = currentUser.Role?.RoleName ?? string.Empty;
+                    var unitCode = currentUser.DepartmentUnit ?? string.Empty;
                     if (!roleName.IsNullOrEmpty()) {
 
 
@@ -2264,13 +2288,36 @@ namespace Grc.Middleware.Api.Controllers {
                             }));
 
                             //..filter by current user ID
+                            Responsebility resp = null;
                             if (roleName.Equals("HeadOps")) {
                                 //..get only those owned by the Head of department 
-                                processes = processes.Where(p => p.OwnerId == request.UserId).ToList();
+                                resp = await _officersService.GetAsync(r => r.ContactPosition.Contains("Head of Operation") || r.ContactPosition.Contains("Head Operations"));
+                                processes = resp == null ? processes : processes.Where(p => p.OwnerId == resp.Id).ToList();
 
                             } else if (roleName.Equals("UserOps")) {
+                               
+                                switch (unitCode) {
+                                    case "RECON":
+                                        resp = await _officersService.GetAsync(r => r.ContactPosition.Contains("Reconciliation"));
+                                        break;
+                                    case "ACCSV":
+                                        resp = await _officersService.GetAsync(r => r.ContactPosition.Contains("Account Service"));
+                                        break;
+                                    case "CASTO":
+                                        resp = await _officersService.GetAsync(r => r.ContactPosition.Contains("Cash"));
+                                        break;
+                                    case "CHNOP":
+                                        resp = await _officersService.GetAsync(r => r.ContactPosition.Contains("Channel"));
+                                        break;
+                                    case "CUEXE":
+                                        resp = await _officersService.GetAsync(r => r.ContactPosition.Contains("Experience"));
+                                        break;
+                                    case "EWALT":
+                                        resp = await _officersService.GetAsync(r => r.ContactPosition.Contains("E-WALLET"));
+                                        break;
+                                }
                                 //..get only those assigned to them
-                                processes = processes.Where(p => p.ResponsibilityId == request.UserId).ToList();
+                                processes = resp != null ? processes.Where(p => p.ResponsibilityId == resp.Id).ToList() : new();
                             } else if (roleName.Equals("GuestOps")) {
                                 var dept = await _deptService.GetDepartmentByIdAsync(currentUser.DepartmentId);
 
@@ -2706,6 +2753,61 @@ namespace Grc.Middleware.Api.Controllers {
                     ).ToList();
                 }
 
+
+                //..get current user
+                var currentUser = await _accessService.GetByIdAsync(request.UserId);
+                if (currentUser != null) {
+                    var unitCode = currentUser.DepartmentUnit ?? string.Empty;
+                    var roleName = currentUser.Role?.RoleName ?? string.Empty;
+                    if (roleName.Equals("UserOps")) {
+                        Responsebility resp = null;
+                        switch (unitCode) { //..unit managers see only their process progress
+                            case "RECON":
+                                resp = await _officersService.GetAsync(r => r.ContactPosition.Contains("Reconciliation"));
+                                break;
+                            case "ACCSV":
+                                resp = await _officersService.GetAsync(r => r.ContactPosition.Contains("Account Service"));
+                                break;
+                            case "CASTO":
+                                resp = await _officersService.GetAsync(r => r.ContactPosition.Contains("Cash"));
+                                break;
+                            case "CHNOP":
+                                resp = await _officersService.GetAsync(r => r.ContactPosition.Contains("Channel"));
+                                break;
+                            case "CUEXE":
+                                resp = await _officersService.GetAsync(r => r.ContactPosition.Contains("Experience"));
+                                break;
+                            case "EWALT":
+                                resp = await _officersService.GetAsync(r => r.ContactPosition.Contains("E-WALLET"));
+                                break;
+                        }
+
+                        approvals = resp != null ? approvals.Where(p => p.ResponsibilityId == resp.Id).ToList() : new();
+                    } else if (roleName.Equals("AdminOps")) {
+                       approvals = approvals.OrderBy(p => p.RequestDate).ToList();
+                    } else {
+                        approvals = unitCode switch {
+                            "RISK" => approvals.Where(p => p.HeadOfDepartmentStatus.Equals("APPROVED") &&
+                                                                                         !p.RiskStatus.Equals("APPROVED")).ToList(),
+                            "COMP01" => approvals.Where(p => p.HeadOfDepartmentStatus.Equals("APPROVED") &&
+                                                                                    p.RiskStatus.Equals("APPROVED") &&
+                                                                                    !p.ComplianceStatus.Equals("APPROVED")).ToList(),
+                            "INCON" => approvals.Where(p => p.RequiresBopApproval &&
+                                                                                    p.HeadOfDepartmentStatus.Equals("APPROVED") &&
+                                                                                    p.RiskStatus.Equals("APPROVED") &&
+                                                                                    p.ComplianceStatus.Equals("APPROVED")).ToList(),
+                            "CRED" => approvals.Where(p => p.RequiresCreditApproval &&
+                                                                                    p.HeadOfDepartmentStatus.Equals("APPROVED") &&
+                                                                                    p.RiskStatus.Equals("APPROVED") &&
+                                                                                    p.ComplianceStatus.Equals("APPROVED")).ToList(),
+                            "FINT" => approvals.Where(p => p.RequiresFintechApproval &&
+                                                                                    p.HeadOfDepartmentStatus.Equals("APPROVED") &&
+                                                                                    p.RiskStatus.Equals("APPROVED") &&
+                                                                                    p.ComplianceStatus.Equals("APPROVED")).ToList(),
+                            _ => approvals.Where(p => !p.HeadOfDepartmentStatus.Equals("APPROVED")).ToList(),
+                        };
+                    }
+                }
 
                 //..response
                 return Ok(new GrcResponse<PagedResponse<ProcessApprovalResponse>>(
@@ -3188,7 +3290,9 @@ namespace Grc.Middleware.Api.Controllers {
                 TreasuryStatus = approval.TreasuryStatus ?? string.Empty,
                 TreasuryComment = approval.TreasuryComment ?? string.Empty,
 
-                RequiresFintechApproval= approval.Process?.NeedsFintechReview??false,
+                ResponsibilityId = approval.Process?.ResponsibilityId ?? 0,
+
+                RequiresFintechApproval = approval.Process?.NeedsFintechReview??false,
                 FintechStart = approval.FintechStart,
                 FintechEnd = approval.FintechEnd,
                 FintechStatus = approval.FintechStatus ?? string.Empty,

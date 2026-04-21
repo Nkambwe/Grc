@@ -233,6 +233,8 @@ namespace Grc.Middleware.Api.Extensions {
                                 _logger.LogActivity($"CONNECTION URL :: {decryptedString}", "INFO");
                             }
 
+                            //TODO ---remove this
+                            decryptedString = "Data Source=TORANSERVERDEV,1439;Initial Catalog=GRC_DB;User ID=uatuser;Password=r7tkm_posta; TrustServerCertificate=True;";
                             options.UseSqlServer(decryptedString);
                             _logger.LogActivity("Data Connection Established", "GRC_CONFIG");
                         } else {

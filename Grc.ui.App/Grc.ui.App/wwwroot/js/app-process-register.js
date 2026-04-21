@@ -373,6 +373,7 @@ function openProcessEditor(title, process, isEdit) {
     var isLocked = process?.isLockProcess;
     var status = process?.processStatus;
     console.log("STATUS >> " + status);
+    console.log("Owner ID " + process?.ownerId);
 
     // Populate form fields
     $("#processId").val(process?.id || "");
@@ -386,6 +387,8 @@ function openProcessEditor(title, process, isEdit) {
     $("#ownerId").val(process?.ownerId || 0).trigger('change.select2');
     $("#assigneedId").val(process?.assigneedId || 0).trigger('change.select2');
     $("#comments").val(process?.comment || "");
+
+    
 
     $('#isLockProcess').prop('checked', isLocked);
      //..hide lock process checkbox if not edit mode
