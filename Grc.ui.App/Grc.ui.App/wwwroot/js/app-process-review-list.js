@@ -172,8 +172,7 @@ function viewRecord(id) {
             } else {
                 Swal.fire({ title: 'NOT FOUND', text: 'Process record found' });
             }
-        })
-        .catch(() => {
+        }).catch(() => {
             Swal.close();
             Swal.fire({ title: 'Error', text: 'Failed to load process details.' });
         });
@@ -207,6 +206,30 @@ function openReviewEditor(title, approval) {
     $('#requiresCreditApproval').prop('checked', creditRequired);
     $('#requiresTreasuryApproval').prop('checked', treasuryRequired);
     $('#requiresFintechApproval').prop('checked', fintechRequired);
+
+
+    $("#hodStatus").val(approval?.hodStatus || "");
+    $("#hodComment").val(approval?.hodComment || "");
+
+    $("#riskStatus").val(approval?.riskStatus || "");
+    $("#riskComment").val(approval?.riskComment || "");
+
+    $("#complianceStatus").val(approval?.complianceStatus || "");
+    $("#complianceComment").val(approval?.complianceComment || "");
+
+    //requiresBopApproval
+    $("#bopStatus").val(approval?.bopStatus || "");
+    $("#bopComment").val(approval?.bopComment || "");
+
+    $("#treasuryStatus").val(approval?.treasuryStatus || "");
+    $("#treasuryComment").val(approval?.treasuryComment || "");
+
+    $("#creditStatus").val(approval?.creditStatus || "");
+    $("#creditComment").val(approval?.creditComment || "");
+
+    $("#fintechStatus").val(approval?.fintechStatus || "");
+    $("#fintechComment").val(approval?.fintechComment || "");
+
     $("#processType").val(approval?.processType || "");
     $("#fileName").val(approval?.fileName || "");
     $("#fileVersion").val(approval?.fileVersion || "");

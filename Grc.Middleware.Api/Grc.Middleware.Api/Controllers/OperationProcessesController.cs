@@ -4,7 +4,6 @@ using Grc.Middleware.Api.Data.Entities.Operations.Processes;
 using Grc.Middleware.Api.Data.Entities.Support;
 using Grc.Middleware.Api.Data.Entities.System;
 using Grc.Middleware.Api.Enums;
-using Grc.Middleware.Api.Extensions;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
 using Grc.Middleware.Api.Http.Responses;
@@ -16,9 +15,6 @@ using Grc.Middleware.Api.Services.Organization;
 using Grc.Middleware.Api.TaskHandler;
 using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.Text.Json;
 
 namespace Grc.Middleware.Api.Controllers {
@@ -1870,7 +1866,7 @@ namespace Grc.Middleware.Api.Controllers {
                 if (currentUser != null) {
                     var roleName = currentUser.Role?.RoleName ?? string.Empty;
                     var unitCode = currentUser.DepartmentUnit ?? string.Empty;
-                    if (!roleName.IsNullOrEmpty()) {
+                    if (!string.IsNullOrEmpty(roleName)) {
                         List<ProcessRegisterResponse> processes = new();
                         var records = pageResult.Entities;
                         if (records != null && records.Any()) {
@@ -2249,7 +2245,7 @@ namespace Grc.Middleware.Api.Controllers {
 
                     var roleName = currentUser.Role?.RoleName ?? string.Empty;
                     var unitCode = currentUser.DepartmentUnit ?? string.Empty;
-                    if (!roleName.IsNullOrEmpty()) {
+                    if (!string.IsNullOrEmpty(roleName)) {
 
 
                         List<ProcessRegisterResponse> processes = new();
@@ -2684,9 +2680,10 @@ namespace Grc.Middleware.Api.Controllers {
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
                 var pageResult = await _approvalService.PageProcessApprovalStatusAsync(request.PageIndex, request.PageSize, true, 
-                    p => p.Process, 
-                    p=> p.Process.Owner,
-                    p=> p.Process.Responsible);
+                    p => p.Process 
+                    //p=> p.Process.Owner,
+                    //p=> p.Process.Responsible
+                    );
 
                 if (pageResult.Entities == null || !pageResult.Entities.Any())
                 {

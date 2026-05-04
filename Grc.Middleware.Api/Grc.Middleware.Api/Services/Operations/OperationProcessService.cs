@@ -274,7 +274,6 @@ namespace Grc.Middleware.Api.Services.Operations {
             return response;
         }
 
-
         public async Task<ServiceUnitExtensionCountResponse> GetUnitStatisticExtensionsAsync(string unitName, bool includeDeleted) {
             using var uow = UowFactory.Create();
             var processes = await uow.OperationProcessRepository.GetAllAsync(p => includeDeleted || !p.IsDeleted, false,p => p.Unit);
@@ -1015,7 +1014,6 @@ namespace Grc.Middleware.Api.Services.Operations {
                 throw;
             }
         }
-
         public async Task<bool> DeleteProcessAsync(long id, bool isDeleted, string username) {
             using var uow = UowFactory.Create();
             try {
@@ -1235,31 +1233,34 @@ namespace Grc.Middleware.Api.Services.Operations {
             try
             {
                 var result = await uow.OperationProcessRepository.PageAllAsync(page,
-                    size, includeDeleted, p => p.ProcessStatus == "INREVIEW" &&
+                    size, includeDeleted, p => (p.ProcessStatus == "INREVIEW" || p.ProcessStatus == "PROPOSED") &&
 
                         //..ensure process has at least one approval
-                        p.Approvals.Any() &&
+                        p.Approvals.Any(a => a.ManagerialStatus != "COMPLETE") &&
 
                         //..ensure latest approval has at least one pending stage
                         p.Approvals.OrderByDescending(a => a.RequestDate).Take(1).Any(a =>
 
-                                // Risk
-                                (string.IsNullOrEmpty(a.RiskStatus) || (a.RiskStatus != "APPROVED" && a.RiskStatus != "COMPLETE")) ||
+                            //..head of department
+                            (string.IsNullOrEmpty(a.HeadOfDepartmentStatus) || a.HeadOfDepartmentStatus == "REJECTED") ||
 
-                                // Compliance
-                                (string.IsNullOrEmpty(a.ComplianceStatus) || (a.ComplianceStatus != "APPROVED" && a.ComplianceStatus != "COMPLETE")) ||
+                            //..risk department
+                            (string.IsNullOrEmpty(a.RiskStatus) || (a.RiskStatus != "APPROVED" && a.RiskStatus != "COMPLETE")) ||
 
-                                // Branch (only if needed)
-                                (p.NeedsBranchReview == true && (string.IsNullOrEmpty(a.BranchOperationsStatus) || (a.BranchOperationsStatus != "APPROVED" && a.BranchOperationsStatus != "COMPLETE"))) ||
+                            //..compliance department
+                            (string.IsNullOrEmpty(a.ComplianceStatus) || (a.ComplianceStatus != "APPROVED" && a.ComplianceStatus != "COMPLETE")) ||
 
-                                // Credit
-                                (p.NeedsCreditReview == true && (string.IsNullOrEmpty(a.CreditStatus) || (a.CreditStatus != "APPROVED" && a.CreditStatus != "COMPLETE"))) ||
+                            //..branch (only if needed)
+                            (p.NeedsBranchReview == true && (string.IsNullOrEmpty(a.BranchOperationsStatus) || (a.BranchOperationsStatus != "APPROVED" && a.BranchOperationsStatus != "COMPLETE"))) ||
 
-                                // Treasury
-                                (p.NeedsTreasuryReview == true && (string.IsNullOrEmpty(a.TreasuryStatus) || (a.TreasuryStatus != "APPROVED" && a.TreasuryStatus != "COMPLETE"))) ||
+                            //..credit department
+                            (p.NeedsCreditReview == true && (string.IsNullOrEmpty(a.CreditStatus) || (a.CreditStatus != "APPROVED" && a.CreditStatus != "COMPLETE"))) ||
 
-                                // Fintech
-                                (p.NeedsFintechReview == true && (string.IsNullOrEmpty(a.FintechStatus) || (a.FintechStatus != "APPROVED" && a.FintechStatus != "COMPLETE")))
+                            //..treasury department
+                            (p.NeedsTreasuryReview == true && (string.IsNullOrEmpty(a.TreasuryStatus) || (a.TreasuryStatus != "APPROVED" && a.TreasuryStatus != "COMPLETE"))) ||
+
+                            //..fintech department
+                            (p.NeedsFintechReview == true && (string.IsNullOrEmpty(a.FintechStatus) || (a.FintechStatus != "APPROVED" && a.FintechStatus != "COMPLETE")))
                             ),
                     includes
                 );
@@ -1341,17 +1342,56 @@ namespace Grc.Middleware.Api.Services.Operations {
                     process.LastModifiedOn = request.ModifiedOn;
                     process.LastModifiedBy = (request.ModifiedBy ?? string.Empty).Trim();
 
+                    var isBopRequired = process.NeedsBranchReview.HasValue && process.NeedsBranchReview.Value == true;
+
                     //..add new approval record
-                    process.Approvals.Add(new ProcessApproval() {
-                        ProcessId = request.Id,
-                        RequestDate = DateTime.Now,
-                        ManagerialStart = DateTime.Now,
-                        ManagerialStatus = "PENDING",
-                        CreatedBy = request.ModifiedBy,
-                        CreatedOn = request.ModifiedOn,
-                        LastModifiedBy = request.ModifiedBy,
-                        LastModifiedOn = request.ModifiedOn,
-                    });
+                    var approval = await uow.ProcessApprovalRepository.GetAsync(a => a.ProcessId == request.Id
+                         && (a.HeadOfDepartmentStatus == null || a.HeadOfDepartmentStatus.Equals("PENDING") || a.HeadOfDepartmentStatus.Equals("REJECTED") ||
+                             a.RiskStatus == null || a.RiskStatus.Equals("PENDING") || a.RiskStatus.Equals("REJECTED") ||
+                             a.ComplianceStatus == null || a.ComplianceStatus.Equals("PENDING") || a.ComplianceStatus.Equals("REJECTED") ||
+                             (isBopRequired && a.BranchOperationsStatus == null || a.BranchOperationsStatus.Equals("PENDING") || a.BranchOperationsStatus.Equals("REJECTED")))
+                         );
+
+                    if(approval != null) {
+
+                        approval.HeadOfDepartmentStatus = approval.HeadOfDepartmentStatus == null ||
+                                                          approval.HeadOfDepartmentStatus.Equals("REJECTED") ? "PENDING" :
+                                                          approval.HeadOfDepartmentStatus;
+
+                        approval.HeadOfDepartmentComment = approval.HeadOfDepartmentStatus == null ||
+                                                           approval.HeadOfDepartmentStatus.Equals("REJECTED") ? null :
+                                                           approval.HeadOfDepartmentComment;
+
+                        approval.RiskStatus = approval.RiskStatus == null ||
+                                              approval.RiskStatus.Equals("REJECTED") ? "PENDING" :
+                                              approval.RiskStatus;
+
+                        approval.RiskStatus = approval.RiskStatus == null ||
+                                              approval.RiskStatus.Equals("REJECTED") ? null :
+                                              approval.RiskComment;
+
+                        approval.ComplianceStatus = approval.ComplianceStatus == null ||
+                                                    approval.ComplianceStatus.Equals("REJECTED") ? "PENDING" :
+                                                    approval.ComplianceStatus;
+
+                        approval.ComplianceStatus = approval.ComplianceStatus == null ||
+                                                    approval.ComplianceStatus.Equals("REJECTED") ? null :
+                                                    approval.ComplianceComment;
+
+                        await uow.ProcessApprovalRepository.UpdateAsync(approval, true);
+                    } else {
+                        process.Approvals.Add(new ProcessApproval() {
+                            ProcessId = request.Id,
+                            RequestDate = DateTime.Now,
+                            ManagerialStart = DateTime.Now,
+                            ManagerialStatus = "COMPLETE",
+                            CreatedBy = request.ModifiedBy,
+                            CreatedOn = request.ModifiedOn,
+                            LastModifiedBy = request.ModifiedBy,
+                            LastModifiedOn = request.ModifiedOn,
+                        });
+                    }
+                        
 
                     //..check entity state
                     _ = await uow.OperationProcessRepository.UpdateAsync(process, true);
