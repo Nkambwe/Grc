@@ -1,7 +1,5 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using Grc.ui.App.Defaults;
+﻿using Grc.ui.App.Defaults;
 using Grc.ui.App.Enums;
-using Grc.ui.App.Extensions.Http;
 using Grc.ui.App.Factories;
 using Grc.ui.App.Filters;
 using Grc.ui.App.Helpers;
@@ -265,7 +263,6 @@ namespace Grc.ui.App.Controllers {
                     Username = model.Username,
                     IPAddress = ipAddress,
                     Action = $"User password change for '{model.Username}'"
-                    
                 };
 
                 var result = await _authService.ChangePasswordAsync(request);
@@ -460,8 +457,8 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpGet]
-        //[PermissionAuthorization(false, "CANVIEWCOMPLIANCESETTINGS")]
-        public async Task<IActionResult> ComplianceSettings() {
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCESETTINGS")]
+        public async Task<IActionResult> ComplianceSettings(){
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var response = await _authService.GetCurrentUserAsync(ipAddress);
             if (response.HasError || response.Data == null) {
@@ -472,7 +469,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
-        //[PermissionAuthorization(false, "CANVIEWCOMPLIANCESETTINGS", "CANMODIFYCOMPLIANCESETTINGS")]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCESETTINGS", "CANMODIFYCOMPLIANCESETTINGS")]
         public async Task<IActionResult> SaveGeneralConfigurations([FromBody] GeneralConfigurationModel model) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -517,7 +514,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
-        //[PermissionAuthorization(false, "CANVIEWCOMPLIANCESETTINGS", "CANMODIFYCOMPLIANCESETTINGS")]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCESETTINGS", "CANMODIFYCOMPLIANCESETTINGS")]
         public async Task<IActionResult> SavePolicyConfigurations([FromBody] PolicyConfigurationsModel model) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();

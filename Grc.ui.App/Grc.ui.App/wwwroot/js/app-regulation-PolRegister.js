@@ -1110,10 +1110,10 @@ function deletePolicy(id) {
 
         $.ajax({
             url: `/grc/compliance/register/policies-delete/${encodeURIComponent(id)}`,
-            type: 'DELETE',
+            type: 'POST',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': getPolicyAntiForgeryToken()
+                'X-CSRF-TOKEN': getPolicyAnti2ForgeryToken()
             },
             success: function (res) {
                 if (res && res.success) {

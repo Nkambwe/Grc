@@ -35,9 +35,15 @@ namespace Grc.ui.App.Filters {
                 return Task.CompletedTask;
             }
 
-            var permissionsClaim = user.FindFirst("Permissions")?.Value;
+            //var permissionsClaim = user.FindFirst("Permissions")?.Value;
+            var json = context.HttpContext.Session.GetString("Permissions");
 
-            if (string.IsNullOrEmpty(permissionsClaim)) {
+            //if (string.IsNullOrEmpty(permissionsClaim)) {
+            //    context.Result = new ForbidResult();
+            //    return Task.CompletedTask;
+            //}
+
+            if (string.IsNullOrEmpty(json)){
                 context.Result = new ForbidResult();
                 return Task.CompletedTask;
             }
@@ -45,7 +51,8 @@ namespace Grc.ui.App.Filters {
             List<string> userPermissions;
 
             try {
-                userPermissions = JsonSerializer.Deserialize<List<string>>(permissionsClaim) ?? new();
+                //userPermissions = JsonSerializer.Deserialize<List<string>>(permissionsClaim) ?? new();
+                userPermissions = JsonSerializer.Deserialize<List<string>>(json) ?? new();
             } catch {
                 userPermissions = new();
             }

@@ -278,9 +278,12 @@ namespace Grc.ui.App.Services {
                     new("DepartmentId", $"{user.DepartmentId}" ?? ""),
             
                     //..permissions as serialized claims
-                    new("Permissions", JsonSerializer.Serialize(user.Permissions ?? new List<string>()))
+                    //new("Permissions", JsonSerializer.Serialize(user.Permissions ?? new List<string>()))
                  };
-         
+
+                //..save permissions to session
+                SessionManager.Save("Permissions",user.Permissions ?? new List<string>());
+
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties {
                     IsPersistent = isPersistent,
@@ -316,6 +319,9 @@ namespace Grc.ui.App.Services {
                 }
                 
                 var httpContext = _httpContextAccessor.HttpContext!;
+
+                //..clear session 
+                SessionManager.Clear(); ;
                 await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             } catch (HttpRequestException httpEx) {
                 Logger.LogActivity($"SignOut failed (network): {httpEx.Message}", "ERROR");

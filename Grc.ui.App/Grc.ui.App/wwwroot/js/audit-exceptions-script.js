@@ -409,6 +409,7 @@ function closeExceptionePanel() {
 
 //..route to home
 $('.action-btn-audit-home').on('click', function () {
+    console.log("Home Export 1 Audit exceptions clicked");
     try {
         window.location.href = '/grc/compliance/audit/dashboard';
     } catch (error) {

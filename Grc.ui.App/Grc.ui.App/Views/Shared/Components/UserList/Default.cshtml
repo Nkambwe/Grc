@@ -1,8 +1,9 @@
 ﻿@model UserSupportViewModel
 @{
-     var permissionsClaim = User.FindFirst("Permissions")?.Value;
-        var permissions = string.IsNullOrEmpty(permissionsClaim) ? new List<string>()
-        : JsonSerializer.Deserialize<List<string>>(permissionsClaim);
+     // var permissionsClaim = User.FindFirst("Permissions")?.Value;
+     //    var permissions = string.IsNullOrEmpty(permissionsClaim) ? new List<string>()
+     //    : JsonSerializer.Deserialize<List<string>>(permissionsClaim);
+    var permissions = PermissionHelper.GetPermissions(Context);
 }
 
 <div class="grc-tabulator-container">

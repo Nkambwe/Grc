@@ -1167,7 +1167,7 @@ namespace Grc.ui.App.Controllers {
         #region Audit Exceptions
 
         [LogActivityResult("Retrieve Audit exception", "User retrieved audit exception", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_EXCEPTIONS, "AuditException")]
-        //[PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITEXCEPTIONS")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITEXCEPTIONS")]
         public async Task<IActionResult> GetAuditException(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1239,7 +1239,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
-        //[PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITEXCEPTIONS")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITEXCEPTIONS")]
         public async Task<IActionResult> GetAuditExceptions([FromBody] TableListRequest request) {
             try {
                 //..get user IP address
@@ -1300,7 +1300,7 @@ namespace Grc.ui.App.Controllers {
 
         [HttpPost]
         [LogActivityResult("Add Audit exception", "User added audit exception", ActivityTypeDefaults.COMPLIANCE_CREATE_EXCEPTION, "AuditException")]
-        //[PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITEXCEPTIONS", "CANCREATECOMPLIANCEAUDITEXCEPTIONS")]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITEXCEPTIONS", "CANCREATECOMPLIANCEAUDITEXCEPTIONS")]
         public async Task<IActionResult> CreateExecption([FromBody] AuditExceptionViewModel request) {
             try {
                 if (!ModelState.IsValid) {
@@ -1829,8 +1829,8 @@ namespace Grc.ui.App.Controllers {
 
         #region Reports
 
-        [HttpPost()]
-        //[PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITREPORTS", "CANCREATECOMPLIANCEAUDITREPORTS")]
+        [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITREPORTS", "CANCREATECOMPLIANCEAUDITREPORTS")]
         public async Task<IActionResult> GetExceptionSummaryReport() {
             var ipAddress = WebHelper.GetCurrentIpAddress();
             var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
@@ -2020,7 +2020,7 @@ namespace Grc.ui.App.Controllers {
             workbook.SaveAs(stream);
             stream.Seek(0, SeekOrigin.Begin);
             return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                 $"CIRCULAR-SUMMERY-{DateTime.Today:MM-yyyy}.xlsx");
+                 $"EXCEPTION-SUMMERY-{DateTime.Today:MM-yyyy}.xlsx");
         }
 
         #endregion

@@ -109,6 +109,9 @@ function loadAuditDashboard(stats) {
 }
 
 $('.action-btn-audit-home').on('click', function () {
+
+    console.log("Home Export 3 Audit exceptions clicked");
+
     try {
         window.location.href = '/grc/compliance/audit/dashboard';
     } catch (error) {
@@ -155,6 +158,9 @@ function viewReport(id) {
 }
 
 function findInnerAuditReport(id) {
+
+    console.log("Home Export 4 Audit exceptions clicked");
+
     return new Promise((resolve, reject) => {
         $.ajax({
             url: `/grc/compliance/audit/exceptions/mini-report-retrieve/${id}`,
@@ -251,7 +257,6 @@ function closeExceptioneInnerPanel() {
     $('#auditOverlay').removeClass('active');
     $('body').css('overflow', '');
 }
-
 
 $(document).ready(function () {
     //..load stats
