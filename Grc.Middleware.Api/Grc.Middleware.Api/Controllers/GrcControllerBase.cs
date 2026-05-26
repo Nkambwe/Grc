@@ -83,8 +83,10 @@ namespace Grc.Middleware.Api.Controllers {
             {
                 response.Status = true;
                 response.StatusCode = (int)ResponseCodes.SUCCESS;
-                response.Message = "Error captured and saved successfully";
+                response.Message = "Record not saved. An error occurred!";
                 Logger.LogActivity($"SUPPORT-MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
+
+                return new ResponseError(ResponseCodes.SUCCESS, response.Message, "Possible partial saving of record.Confirm record is fully saved");
             }
             else
             {
@@ -92,13 +94,9 @@ namespace Grc.Middleware.Api.Controllers {
                 response.StatusCode = (int)ResponseCodes.FAILED;
                 response.Message = "Failed to capture error to database. An error occurrred";
                 Logger.LogActivity($"SUPPORT-MIDDLEWARE-COTROLLER RESPONSE: {JsonSerializer.Serialize(response)}");
+                return new ResponseError(ResponseCodes.SUCCESS, response.Message, "An error occurred during the process");
             }
 
-            return new ResponseError(
-                ResponseCodes.BADREQUEST,
-                "Oops! Something went wrong",
-                $"System Error - {ex.Message}"
-            );
         }
         #endregion
     }

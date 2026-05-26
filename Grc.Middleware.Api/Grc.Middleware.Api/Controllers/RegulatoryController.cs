@@ -5465,23 +5465,22 @@ namespace Grc.Middleware.Api.Controllers {
                                 var sendToName = kv.Key;
                                 var email = kv.Value;
                                 string title = "";
-                                var (sent, subject, mail) = MailHandler.SendSubmissionMail(Logger, mailSettings.MailSender, email, 
-                                    sendToName, mailSettings.CopyTo, "CURCULAR SUBMISSION", title, mailSettings.NetworkPort, mailSettings.SystemPassword);
+                                var (sent, subject, mail) = MailHandler.SendSubmissionMail(Logger, mailSettings.MailSender, email, sendToName, mailSettings.CopyTo, "CURCULAR SUBMISSION", title, mailSettings.NetworkPort, mailSettings.SystemPassword);
                                 if (sent) {
                                     Logger.LogActivity($"Submission notification mail has been sent to {sendToName}", "INFO");
-                                    await _mailService.InsertMailAsync(new Data.Entities.System.MailRecord() {
-                                        CircularId = request.Id,
-                                        SentToEmail = email,
-                                        CCMail = mailSettings.CopyTo,
-                                        Subject = subject,
-                                        Mail = mail,
-                                        ApprovalId = request.Id,
-                                        IsDeleted = false,
-                                        CreatedBy = "SYSTEM",
-                                        CreatedOn = DateTime.Now,
-                                        LastModifiedBy = "SYSTEM",
-                                        LastModifiedOn = DateTime.Now,
-                                    });
+                                    //await _mailService.InsertMailAsync(new Data.Entities.System.MailRecord() {
+                                    //    CircularId = request.Id,
+                                    //    SentToEmail = email,
+                                    //    CCMail = mailSettings.CopyTo,
+                                    //    Subject = subject,
+                                    //    Mail = mail,
+                                    //    ApprovalId = request.Id,
+                                    //    IsDeleted = false,
+                                    //    CreatedBy = "SYSTEM",
+                                    //    CreatedOn = DateTime.Now,
+                                    //    LastModifiedBy = "SYSTEM",
+                                    //    LastModifiedOn = DateTime.Now,
+                                    //});
                                 } else {
                                     msg += ". Notification email not sent. Something went erong";
                                     Logger.LogActivity($"Failed to send submission notification mail to {sendToName}", "INFO");

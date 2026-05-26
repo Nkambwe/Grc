@@ -1513,6 +1513,7 @@ namespace Grc.ui.App.Controllers {
         #endregion
 
         #region Circular
+
         [PermissionAuthorization(true, "CANVIEWCIRCULARS")]
         public async Task<IActionResult> GetCircularRecord(long id) {
             try {

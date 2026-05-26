@@ -13,9 +13,7 @@ using Grc.Middleware.Api.Services;
 using Grc.Middleware.Api.Services.Organization;
 using Grc.Middleware.Api.TaskHandler;
 using Grc.Middleware.Api.Utils;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Concurrent;
 using System.Text.Json;
 
@@ -2921,8 +2919,7 @@ namespace Grc.Middleware.Api.Controllers {
         #region System Permissions
 
         [HttpPost("sam/permissions/get-permissions")]
-        public async Task<IActionResult> GetAllPermissions([FromBody] GeneralRequest request)
-        {
+        public async Task<IActionResult> GetAllPermissions([FromBody] GeneralRequest request) {
             try
             {
                 Logger.LogActivity($"{request.Action}", "INFO");
@@ -2969,8 +2966,7 @@ namespace Grc.Middleware.Api.Controllers {
         }
 
         [HttpPost("sam/permissions/paged-permissions")]
-        public async Task<IActionResult> GetPagedPermissions([FromBody] ListRequest request)
-        {
+        public async Task<IActionResult> GetPagedPermissions([FromBody] ListRequest request) {
             try
             {
                 Logger.LogActivity($"{request.Action}", "INFO");
@@ -3413,8 +3409,7 @@ namespace Grc.Middleware.Api.Controllers {
         }
 
         [HttpPost("sam/permissions/pagedsets")]
-        public async Task<IActionResult> GetPagedPermissionSets([FromBody] ListRequest request)
-        {
+        public async Task<IActionResult> GetPagedPermissionSets([FromBody] ListRequest request) {
             try
             {
                 Logger.LogActivity($"{request.Action}", "INFO");
@@ -3539,8 +3534,7 @@ namespace Grc.Middleware.Api.Controllers {
         }
 
         [HttpPost("sam/permissions/update-permissionsets")]
-        public async Task<IActionResult> UpdatePermissionSets([FromBody] PermissionSetRequest request)
-        {
+        public async Task<IActionResult> UpdatePermissionSets([FromBody] PermissionSetRequest request) {
             try
             {
                 Logger.LogActivity("Get permission sets", "INFO");

@@ -536,7 +536,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                 var breachedReports = monthlySubmissions
                     .Where(report => report.Submission.IsBreached == true)
                     .Select(breach => new BreachResponse {
-                        ReportName = breach.Report.ReturnType?.TypeName ?? string.Empty,
+                        ReportName = breach.Report.ReturnName?? string.Empty,
                         Frequency = breach.Report.Frequency?.FrequencyName ?? string.Empty,
                         Department = breach.Report.Owner?.ContactPosition ?? string.Empty,
                         DueDate = breach.Submission.PeriodEnd,
@@ -591,7 +591,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     .Select(breach => {
                         var daysOverdue = CalculateDaysOverdue(breach.Submission.PeriodEnd, breach.Submission.SubmissionDate,now);
                         return new BreachAgeResponse {
-                            ReportName = breach.Report.ReturnType?.TypeName ?? string.Empty,
+                            ReportName = breach.Report.ReturnName?? string.Empty,
                             Frequency = breach.Report.Frequency?.FrequencyName ?? string.Empty,
                             Department = breach.Report.Owner?.ContactPosition ?? string.Empty,
                             DueDate = breach.Submission.PeriodEnd,

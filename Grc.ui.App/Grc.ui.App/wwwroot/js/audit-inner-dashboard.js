@@ -1,6 +1,6 @@
-﻿
+﻿let auditException1Table;
 function initReportsTable(reports) {
-    new Tabulator("#exceptionsTable", {
+    auditException1Table = new Tabulator("#exceptionsTable", {
         data: reports,
         layout: "fitColumns",
         pagination: "local",
@@ -120,6 +120,24 @@ $('.action-btn-audit-home').on('click', function () {
     }
 });
 
+$('.action-btn-excel-export').on('click', function () {
+    $.ajax({
+        url: '/grc/compliance/audits/exceptions/reports-summary',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(auditException1Table.getData()),
+        xhrFields: { responseType: 'blob' },
+        success: function (blob) {
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Exceptions_report.xlsx";
+            link.click();
+        },
+        error: function () {
+            toastr.error("Export failed. Please try again.");
+        }
+    });
+});
 function viewReport(id) {
     Swal.fire({
         title: 'Loading...',
@@ -209,9 +227,9 @@ function addInnerExceptions(exceptions) {
         const tr = document.createElement('tr');
 
         let statusColor = "#FF2413";
-        if (report.status === "CLOSED") {
+        if (report.status === "CLOSED" || report.status === "Closed") {
             statusColor = "#09B831";
-        } else if (report.status === "OPEN") {
+        } else if (report.status === "OPEN" || report.status === "Open") {
             statusColor = "#FF8503";
         } else {
             statusColor = "#FF2413";

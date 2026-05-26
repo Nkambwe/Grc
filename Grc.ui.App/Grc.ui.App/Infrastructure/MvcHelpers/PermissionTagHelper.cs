@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Grc.ui.App.Utils;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using System.Text.Json;
@@ -13,19 +14,27 @@ namespace Grc.ui.App.Infrastructure.MvcHelpers {
         [ViewContext]
         public ViewContext ViewContext { get; set; }
 
+        private readonly SessionManager _sessionManager;
+
+        public PermissionTagHelper(SessionManager sessionManager) {
+            _sessionManager = sessionManager;
+        }
+
         public override void Process(TagHelperContext context, TagHelperOutput output) {
-            var user = ViewContext.HttpContext.User;
-            var permissionsClaim = user.FindFirst("Permissions")?.Value;
+            //var user = ViewContext.HttpContext.User;
+            //var permissionsClaim = user.FindFirst("Permissions")?.Value;
 
-            if (string.IsNullOrEmpty(permissionsClaim)) {
-                output.SuppressOutput();
-                return;
-            }
+            var permissionsClaim = _sessionManager.Get<List<string>>("Permissions")?? new List<string>();
 
-            var permissions = JsonSerializer.Deserialize<List<string>>(permissionsClaim)
-                              ?? new List<string>();
+            //if (string.IsNullOrEmpty(permissionsClaim)) {
+            //    output.SuppressOutput();
+            //    return;
+            //}
 
-            if (!permissions.Contains(RequiredPermission, StringComparer.OrdinalIgnoreCase)) {
+            //var permissions = JsonSerializer.Deserialize<List<string>>(permissionsClaim)
+            //                  ?? new List<string>();
+
+            if (!permissionsClaim.Contains(RequiredPermission, StringComparer.OrdinalIgnoreCase)) {
                 output.SuppressOutput();
             }
         }

@@ -22,7 +22,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations {
             builder.Property(m => m.CreatedBy).HasColumnName("created_by").HasColumnType("NVARCHAR(50)").IsRequired();
             builder.Property(m => m.LastModifiedOn).HasColumnName("modified_on").IsRequired(false);
             builder.Property(m => m.LastModifiedBy).HasColumnName("modified_by").HasColumnType("NVARCHAR(50)").IsRequired(false);
-            builder.HasOne(m => m.Approval).WithMany(a => a.MailRecords).HasForeignKey(m  => m.ApprovalId);
+            builder.HasOne(m => m.Approval).WithMany(a => a.MailRecords).HasForeignKey(m  => m.ApprovalId).IsRequired(false);
         }
     }
 }

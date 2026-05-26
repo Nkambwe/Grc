@@ -333,8 +333,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     const el = cell.getElement();
 
                     let bg = "#FF2413";
-                    if (status === "CLOSED") bg = "#09B831";
-                    else if (status === "OPEN") bg = "#FF8503";
+                    if (status === "CLOSED" || status === "Closed") {
+                        bg = "#09B831";
+                    } else if (status === "OPEN" || status === "Open") {
+                        bg = "#FF8503";
+                    } else {
+                        bg = "#FF2413";
+                    }
 
                     // color the whole cell
                     el.style.backgroundColor = bg;

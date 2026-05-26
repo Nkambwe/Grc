@@ -45,6 +45,7 @@ namespace Grc.Middleware.Api.Services
                 });
                 Logger.LogActivity($"Mail data: {setJson}", "DEBUG");
 
+                mail.CreatedBy = "SYSTEM";
                 var added = await uow.MailRecordRepository.InsertAsync(mail);
                 if (added)
                 {
@@ -60,7 +61,7 @@ namespace Grc.Middleware.Api.Services
                 return false;
             } catch (Exception ex) {
                 await LogErrorAsync(uow, ex);
-                throw;
+                return false;
             }
         }
 
@@ -94,7 +95,9 @@ namespace Grc.Middleware.Api.Services
                 StackTrace = ex.StackTrace,
                 Severity = "CRITICAL",
                 ReportedOn = DateTime.Now,
-                CompanyId = companyId
+                CompanyId = companyId,
+                CreatedBy = "SYSTEM",
+                CreatedOn = DateTime.Now,
             };
 
             uow.SystemErrorRespository.Insert(errorObj);

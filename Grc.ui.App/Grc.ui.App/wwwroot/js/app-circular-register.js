@@ -196,9 +196,9 @@ function initCircularTable() {
                     const el = cell.getElement();
 
                     let bg = "#FF2413";
-                    if (status === "CLOSED") bg = "#28C232";
+                    if (status === "CLOSED" || status === "Closed") bg = "#28C232";
                     else if (status === "ON-GOING") bg = "#C2B70B";
-                    else if (status === "DUE") bg = "#F50C0C";
+                    else if (status === "DUE" || status === "Due") bg = "#F50C0C";
 
                     // color the whole cell
                     el.style.backgroundColor = bg;
