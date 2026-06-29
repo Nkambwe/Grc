@@ -15,6 +15,7 @@ using Grc.Middleware.Api.Utils;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Grc.Middleware.Api.Extensions {
 
@@ -161,10 +162,9 @@ namespace Grc.Middleware.Api.Extensions {
         /// </summary>
         /// <param name="services">Service instance</param>
         public static void ObjectMapper(this IServiceCollection services) {
-
             var mappingConfig = new MapperConfiguration(mc => {
                 mc.AddProfile(new MappingProfile());
-            });
+            }, new NullLoggerFactory());
 
             IMapper mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
@@ -225,8 +225,7 @@ namespace Grc.Middleware.Api.Extensions {
                         //Retrieve the connection string from environment variables
                         string connectionString = Environment.GetEnvironmentVariable(connectionVar);
                         if (!string.IsNullOrEmpty(connectionString)) {
-                            //string decryptedString = HashGenerator.DecryptString(connectionString);
-                            string decryptedString = "Data Source=TORANSERVERDEV,1439;Initial Catalog=GRC_DB_TEST;User ID=uatuser;Password=r7tkm_posta; TrustServerCertificate=True;";
+                            string decryptedString = HashGenerator.DecryptString(connectionString);
                             if (isLive) {
                                 _logger.LogActivity($"CONNECTION URL :: {connectionString}", "INFO");
                             } else {

@@ -481,19 +481,22 @@ namespace Grc.Middleware.Api.Services {
 
                         //..log failed access
                         var type = await uow.ActivityTypeRepository.GetAsync(t => t.Name == "User Login");
-                        _ = await uow.ActivityLogRepository.InsertAsync(new ActivityLog() { 
-                            TypeId = type.Id,
-                            UserId = userId,
-                            EntityName = type.Description,
-                            IpAddress = ipAddress,
-                            Comment = $"Failed system access for user '{username}'. Account has beed locked",
-                            CreatedBy = "SYSTEM",
-                            CreatedOn = DateTime.Now
-                        });
-                        var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
-                        Logger.LogActivity($"Entity state after Update: {entityState}", "DEBUG");
+                        if (type != null) {
+                            _ = await uow.ActivityLogRepository.InsertAsync(new ActivityLog() {
+                                TypeId = type.Id,
+                                UserId = userId,
+                                EntityName = type.Description,
+                                IpAddress = ipAddress,
+                                Comment = $"Failed system access for user '{username}'. Account has beed locked",
+                                CreatedBy = "SYSTEM",
+                                CreatedOn = DateTime.Now
+                            });
+                            var entityState = ((UnitOfWork)uow).Context.Entry(user).State;
+                            Logger.LogActivity($"Entity state after Update: {entityState}", "DEBUG");
 
-                        var result = await uow.SaveChangesAsync();
+                            var result = await uow.SaveChangesAsync();
+                        }
+                       
                         Logger.LogActivity($"User {userId} locked due to {failedAttempts} failed login attempts", "SECURITY");
                     }
 
@@ -616,6 +619,17 @@ namespace Grc.Middleware.Api.Services {
                                 OrgAlias = branch.Company?.ShortName ?? string.Empty
                             };
                         }
+                    }
+
+                    //..get permissions
+                    var role = await uow.RoleRepository.GetRoleWithPermissionsAsync(new IdRequest() {
+                        RecordId = user.RoleId,
+                        MarkAsDeleted = false
+                    });
+
+                    if (role != null) {
+                        workspace.Permissions = role.Permissions == null || role.Permissions.Count == 0 ? new List<string>() :
+                                role.Permissions.Select(p => p.PermissionName);
                     }
 
                     //..get prefferences
