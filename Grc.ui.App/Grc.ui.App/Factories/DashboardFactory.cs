@@ -57,11 +57,16 @@ namespace Grc.ui.App.Factories {
                 stats.Policies = data.Policies;
             }
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var _workspace = _sessionManager.GetWorkspace();
+            _workspace.Permissions = permissions;
+
             var model = new UserDashboardModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = _workspace,
                 Statistics = stats
             };
 
@@ -72,11 +77,16 @@ namespace Grc.ui.App.Factories {
             //..get quick items
             var quickActions = GetComplianceQuickActions();
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var _workspace = _sessionManager.GetWorkspace();
+            _workspace.Permissions = permissions;
+
             var model = new UserDashboardModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = _workspace,
                 //..statistics
                 Statistics = null
             };
@@ -237,11 +247,16 @@ namespace Grc.ui.App.Factories {
                 policyData.Statistics = data.Statistics;
             }
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var _workspace = _sessionManager.GetWorkspace();
+            _workspace.Permissions = permissions;
+
             var model = new PolicyDashboardModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = _workspace,
                 PolicyData = policyData
             };
 
@@ -267,11 +282,16 @@ namespace Grc.ui.App.Factories {
                 stats.Policies = data.Policies;
             }
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var _workspace = _sessionManager.GetWorkspace();
+            _workspace.Permissions = permissions;
+
             var model = new ComplianceGeneralStatisticViewModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = _workspace,
                 //..statistics
                 Statistics = stats
             };
@@ -292,7 +312,11 @@ namespace Grc.ui.App.Factories {
                 pwdSettings.IncludeNumericChar = data.IncludeNumericChar;
             }
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
             var workspace = _sessionManager.GetWorkspace();
+            workspace.Permissions = permissions;
+
             return new PasswordChangeModel {
                 UserId = workspace?.CurrentUser?.UserId ?? currentUser.UserId,
                 Username = workspace?.CurrentUser?.Username ?? currentUser.UserName,
@@ -326,11 +350,16 @@ namespace Grc.ui.App.Factories {
                 stats.BarChart = data.BarChart;
             }
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var workspace = _sessionManager.GetWorkspace();
+            workspace.Permissions = permissions;
+
             var model = new AuditDashboardViewModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = workspace,
                 Statistics = stats
             };
 
@@ -350,11 +379,16 @@ namespace Grc.ui.App.Factories {
                 stats.Reports = data.Reports;
             }
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var workspace = _sessionManager.GetWorkspace();
+            workspace.Permissions = permissions;
+
             var model = new AuditExtensionDashboardModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = new(),
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = workspace,
                 Statistics = stats
             };
 
@@ -378,11 +412,17 @@ namespace Grc.ui.App.Factories {
                 circulars.Authorities = data.Authorities;
                 circulars.Statuses = data.Statuses;
             }
+
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var workspace = _sessionManager.GetWorkspace();
+            workspace.Permissions = permissions;
+
             var model = new CircularDashboardModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = workspace,
                 //..statistics
                 Circulars = new() {
                     Authorities = circulars.Authorities,
@@ -409,11 +449,16 @@ namespace Grc.ui.App.Factories {
                 circulars.Statuses = data.Statuses;
             }
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var workspace = _sessionManager.GetWorkspace();
+            workspace.Permissions = permissions;
+
             var model = new CircularExtensionDashboardModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = workspace,
                 //..statistics
                 Circulars = new() {
                     Statuses = circulars.Statuses,
@@ -443,6 +488,12 @@ namespace Grc.ui.App.Factories {
 
             var grcResponse = await _returnsService.GetAuthorityCircularCountAsync(currentUser.UserId, currentUser.IPAddress, authority);
             CircularDashboardStatistic circulars = new();
+
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var workspace = _sessionManager.GetWorkspace();
+            workspace.Permissions = permissions;
+
             if (grcResponse.HasError) {
                 circulars.Statistics = new();
                 circulars.Reports = new();
@@ -465,7 +516,7 @@ namespace Grc.ui.App.Factories {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = workspace,
                 //..statistics
                 Circulars = circulars
             };
@@ -493,11 +544,16 @@ namespace Grc.ui.App.Factories {
                 returns.Statuses = data.Statuses;
             }
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var workspace = _sessionManager.GetWorkspace();
+            workspace.Permissions = permissions;
+
             var model = new ComplianceReturnStatisticViewModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = workspace,
                 //..statistics
                 Returns = new() {
                     Periods = returns.Periods,
@@ -530,11 +586,16 @@ namespace Grc.ui.App.Factories {
                 returns.Periods = data.Periods;
             }
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var workspace = _sessionManager.GetWorkspace();
+            workspace.Permissions = permissions;
+
             var model = new ComplianceExtensionReturnStatisticViewModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = workspace,
                 //..statistics
                 Returns = new() {
                     Periods = returns.Periods,
@@ -565,11 +626,16 @@ namespace Grc.ui.App.Factories {
                 }).ToList();
             }
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var workspace = _sessionManager.GetWorkspace();
+            workspace.Permissions = permissions;
+
             var model = new ReturnMiniStatisticViewModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = workspace,
                 Returns = returns
             };
 
@@ -607,11 +673,16 @@ namespace Grc.ui.App.Factories {
                 task.Breached = data.Breached;
             }
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var workspace = _sessionManager.GetWorkspace();
+            workspace.Permissions = permissions;
+
             var model = new TaskDashboardModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = workspace,
                 //..statistics
                 Tasks = new() {
                     Total = task.Total,
@@ -646,11 +717,16 @@ namespace Grc.ui.App.Factories {
                 task.Tasks = data.Tasks;
             }
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var workspace = _sessionManager.GetWorkspace();
+            workspace.Permissions = permissions;
+
             var model = new TaskMinDashboardModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = workspace,
                 //..statistics
                 Tasks = task.Tasks
             };

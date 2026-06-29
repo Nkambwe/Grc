@@ -44,8 +44,14 @@ namespace Grc.ui.App.Middleware {
                         //..build workspace
                         var workspaceService = context.RequestServices.GetRequiredService<IWorkspaceService>();
                         workspace = await workspaceService.BuildWorkspaceAsync(userIdLong, ipAddress);
-                        sessionManager.SetWorkspace(workspace);
-                     }
+                        await sessionManager.SetWorkspace(workspace);
+
+                        // ..restore permissions
+                        if (workspace?.Permissions != null) {
+                            await sessionManager.Save("Permissions", workspace.Permissions.ToList());
+                            await context.Session.CommitAsync(); 
+                        }
+                    }
                 } else {
                     //.. we need to check for session timeout
                     var lastActivity = sessionManager.GetLastActivity();
@@ -54,6 +60,15 @@ namespace Grc.ui.App.Middleware {
                         sessionManager.Clear();
                         context.Response.Redirect("/Login/UserLogin?timeout=true");
                         return;
+                    }
+
+                    // ..also check if "Permissions" key got lost even though
+                    // workspace exists
+                    var permissions = sessionManager.Get<List<string>>("Permissions");
+                    if ((permissions == null || !permissions.Any()) &&
+                        workspace.Permissions != null && workspace.Permissions.Any()) {
+                        await sessionManager.Save("Permissions", workspace.Permissions.ToList());
+                        await context.Session.CommitAsync();
                     }
                 }
             }

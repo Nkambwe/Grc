@@ -56,11 +56,16 @@ namespace Grc.ui.App.Factories {
                 stats = grcResponse.Data;
             }
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var _workspace = _sessionManager.GetWorkspace();
+            _workspace.Permissions = permissions;
+
             var model = new OperationsDashboardModel {
                     WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}  - Operations Processes",
                     Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                     QuickActions = quickActions,
-                    Workspace = _sessionManager.GetWorkspace(),
+                    Workspace = _workspace,
                     DashboardStatistics = stats
                 };
 
@@ -87,11 +92,16 @@ namespace Grc.ui.App.Factories {
                 }
             }
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var _workspace = _sessionManager.GetWorkspace();
+            _workspace.Permissions = permissions;
+
             return await Task.FromResult(new OperationsDashboardModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = _workspace
             });
         }
 
@@ -114,11 +124,17 @@ namespace Grc.ui.App.Factories {
             } else {
                 stats = grcResponse.Data;
             }
+
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var _workspace = _sessionManager.GetWorkspace();
+            _workspace.Permissions = permissions;
+
             return new OperationsDashboardModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName} - Operations Processes",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = _workspace,
                 UnitStatistics = stats
             };
         }
@@ -145,12 +161,17 @@ namespace Grc.ui.App.Factories {
                 charts = grcResponse.Data;
             }
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var _workspace = _sessionManager.GetWorkspace();
+            _workspace.Permissions = permissions;
+
             return new TotalExtensionModel
             {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName} - Processes Categories Per Unit",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = _workspace,
                 Charts = charts
             };
         }
@@ -181,10 +202,16 @@ namespace Grc.ui.App.Factories {
             } else {
                 record = grcResponse.Data;
             }
+
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var _workspace = _sessionManager.GetWorkspace();
+            _workspace.Permissions = permissions;
+
             record.WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName} - {category} Processes breakdown";
             record.Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}";
             record.QuickActions = quickActions;
-            record.Workspace = _sessionManager.GetWorkspace();
+            record.Workspace = _workspace;
             return record;
         }
 
@@ -199,6 +226,11 @@ namespace Grc.ui.App.Factories {
                 }
             }
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var _workspace = _sessionManager.GetWorkspace();
+            _workspace.Permissions = permissions;
+
             //..get dashboard statistics
             var model = new CategoryExtensionResponse
             {
@@ -206,7 +238,7 @@ namespace Grc.ui.App.Factories {
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
                 CategoryProcesses = new(),
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = _workspace
             };
             return model;
         }
@@ -227,6 +259,11 @@ namespace Grc.ui.App.Factories {
                 }
             }
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var _workspace = _sessionManager.GetWorkspace();
+            _workspace.Permissions = permissions;
+
             //..get dashboard statistics
             var stats = await _processesService.UnitStatisticAsync(currentUser.UserId, currentUser.IPAddress);
             var model = new TotalExtensionModel
@@ -236,7 +273,7 @@ namespace Grc.ui.App.Factories {
                 QuickActions = quickActions,
                 Charts = new(),
                 //..set workspace into session
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = _workspace
             };
             return model;
         }
@@ -270,12 +307,17 @@ namespace Grc.ui.App.Factories {
                 stats = grcResponse.Data;
             }
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var _workspace = _sessionManager.GetWorkspace();
+            _workspace.Permissions = permissions;
+
             var model = new OperationsDashboardModel {
                 WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName}  - Operations Processes",
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
                 //..set workspace into session
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = _workspace,
                 DashboardStatistics = stats,
                 ChartViewModel = new DashboardChartViewModel()
             };
@@ -305,11 +347,16 @@ namespace Grc.ui.App.Factories {
                 record = grcResponse.Data;
             }
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var _workspace = _sessionManager.GetWorkspace();
+            _workspace.Permissions = permissions;
+
             //..initialize other properties
             record.WelcomeMessage = $"{currentUser?.FirstName} {currentUser?.LastName} - {unit} Processes breakdown";
             record.Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}";
             record.QuickActions = quickActions;
-            record.Workspace = _sessionManager.GetWorkspace();
+            record.Workspace = _workspace;
             return record;
         }
 
@@ -329,6 +376,11 @@ namespace Grc.ui.App.Factories {
                 }
             }
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var _workspace = _sessionManager.GetWorkspace();
+            _workspace.Permissions = permissions;
+
             //..get dashboard statistics
             var model = new UnitExtensionCountResponse
             {
@@ -336,7 +388,7 @@ namespace Grc.ui.App.Factories {
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
                 UnitProcesses = new(),
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = _workspace
             };
             return model;
         }

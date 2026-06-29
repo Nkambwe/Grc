@@ -940,6 +940,8 @@ C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Hum
 C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.AspNetCore.JsonPatch.dll
 C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.AspNetCore.Razor.Language.dll
 C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.Bcl.HashCode.dll
+C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.Bcl.TimeProvider.dll
 C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.Build.dll
 C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.Build.Framework.dll
 C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.CodeAnalysis.AnalyzerUtilities.dll
@@ -955,8 +957,16 @@ C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Mic
 C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.DiaSymReader.dll
 C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.DotNet.PlatformAbstractions.dll
 C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.DotNet.Scaffolding.Shared.dll
+C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.Extensions.DependencyModel.dll
 C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.Extensions.Http.Polly.dll
+C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.Extensions.Options.dll
+C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.Extensions.Primitives.dll
+C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.IdentityModel.Logging.dll
+C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.IdentityModel.Tokens.dll
 C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.NET.StringTools.dll
 C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.VisualStudio.Web.CodeGeneration.dll
 C:\Projects\cs\GRC\github_0902026\Grc\Grc.ui.App\Grc.ui.App\bin\Debug\net7.0\Microsoft.VisualStudio.Web.CodeGeneration.Core.dll

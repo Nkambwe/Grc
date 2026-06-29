@@ -6,6 +6,7 @@ using Grc.ui.App.Routes;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Grc.ui.App.Extensions.Mvc {
 
@@ -70,15 +71,14 @@ namespace Grc.ui.App.Extensions.Mvc {
         /// </summary>
         /// <param name="services">Service Collection</param>
         public static void ObjectMapper(this IServiceCollection services) {
-
             var mappingConfig = new MapperConfiguration(mc => {
                 mc.AddProfile(new MappingProfile());
-            });
+            }, new NullLoggerFactory()); 
 
             IMapper mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
         }
 
-     }
+    }
 
 }

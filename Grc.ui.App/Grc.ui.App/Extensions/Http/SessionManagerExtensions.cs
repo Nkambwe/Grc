@@ -26,7 +26,7 @@ namespace Grc.ui.App.Extensions.Http  {
         /// </summary>
         /// <param name="sessionManager">Session instance</param>
         /// <param name="user">User object to add to</param>
-        public static void SetCurrentUser(this SessionManager sessionManager, CurrentUserModel user)
+        public static Task SetCurrentUser(this SessionManager sessionManager, CurrentUserModel user)
          => sessionManager.Save(GetKey(SessionKeys.CurrentUser), user);
 
         #endregion
@@ -46,7 +46,7 @@ namespace Grc.ui.App.Extensions.Http  {
         /// </summary>
         /// <param name="sessionManager">Session instance</param>
         /// <param name="workspace">Workspace object to add to</param>
-        public static void SetWorkspace(this SessionManager sessionManager, WorkspaceModel workspace)
+        public static Task SetWorkspace(this SessionManager sessionManager, WorkspaceModel workspace)
              => sessionManager.Save(GetKey(SessionKeys.Workspace), workspace);
 
         #endregion
@@ -66,7 +66,7 @@ namespace Grc.ui.App.Extensions.Http  {
         /// </summary>
         /// <param name="sessionManager">Session instance</param>
         /// <param name="branch">Branch object to add to</param>
-        public static void SetBranch(this SessionManager sessionManager, BranchModel branch)
+        public static Task SetBranch(this SessionManager sessionManager, BranchModel branch)
             => sessionManager.Save(GetKey(SessionKeys.Branch), branch);
 
         #endregion
@@ -86,7 +86,7 @@ namespace Grc.ui.App.Extensions.Http  {
         /// </summary>
         /// <param name="sessionManager">Session instance</param>
         /// <param name="preferences">User prefference object to add to session</param>
-        public static void SetUserPreferences(this SessionManager sessionManager, UserPreferenceModel preferences)
+        public static Task SetUserPreferences(this SessionManager sessionManager, UserPreferenceModel preferences)
                => sessionManager.Save(GetKey(SessionKeys.UserPreferences), preferences);
 
         #endregion
@@ -96,7 +96,7 @@ namespace Grc.ui.App.Extensions.Http  {
         public static DateTime? GetLastActivity(this SessionManager sessionManager)
             => sessionManager.Get<DateTime?>(GetKey(SessionKeys.LastActivity));
 
-        public static void SetLastActivity(this SessionManager sessionManager, DateTime lastActivity)
+        public static Task SetLastActivity(this SessionManager sessionManager, DateTime lastActivity)
             => sessionManager.Save(GetKey(SessionKeys.LastActivity), lastActivity);
 
         public static void UpdateLastActivity(this SessionManager sessionManager)

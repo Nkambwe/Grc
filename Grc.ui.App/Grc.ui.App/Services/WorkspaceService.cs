@@ -35,17 +35,22 @@ namespace Grc.ui.App.Services {
                     return new();
                 }
 
+
+                //..add permissions
+                var permissions = SessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+
+
                 //..success response
                 var workspace = new WorkspaceModel {
                     IsLiveEnvironment = Environment.IsLive,
                     CurrentUser = Mapper.Map<CurrentUserModel>(grcResponse.Data.CurrentUser),
-                    Permissions = grcResponse.Data.Permissions,
+                    Permissions = permissions.Count > 0? permissions : grcResponse.Data.Permissions,
                     Role = grcResponse.Data.Role,
                     RoleId = grcResponse.Data.RoleId,
                     AssignedBranch = Mapper.Map<BranchModel>(grcResponse.Data.AssignedBranch)
                 };
 
-                if(grcResponse.Data.UserViews != null && grcResponse.Data.UserViews.Count > 0){ 
+                if (grcResponse.Data.UserViews != null && grcResponse.Data.UserViews.Count > 0){ 
                     workspace.UserViews = (from view in grcResponse.Data.UserViews select Mapper.Map<UserViewModel>(view)).ToList();
                 }
                 

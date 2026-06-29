@@ -19,7 +19,7 @@ namespace Grc.ui.App.Utils {
         /// <typeparam name="T">Type of object to add to session</typeparam>
         /// <param name="key">Session Key</param>
         /// <param name="value">Value to save to session</param>
-        public void Save<T>(string key, T value){ 
+        public async Task Save<T>(string key, T value){ 
 
             if (string.IsNullOrEmpty(key)) 
                 throw new ArgumentException("Key cannot be null or empty", nameof(key));
@@ -44,6 +44,15 @@ namespace Grc.ui.App.Utils {
                 var serialized = JsonSerializer.Serialize(value);
                 session.SetString(key, serialized);
             }
+
+            // Commit after every write
+            await _httpContextAccessor.HttpContext.Session.CommitAsync();
+
+        }
+
+        public async Task CommitAsync() {
+            var session = _httpContextAccessor.HttpContext?.Session ?? throw new InvalidOperationException("Session not available");
+            await session.CommitAsync();
         }
 
         /// <summary>

@@ -282,7 +282,8 @@ namespace Grc.ui.App.Services {
                  };
 
                 //..save permissions to session
-                SessionManager.Save("Permissions",user.Permissions ?? new List<string>());
+                await SessionManager.Save("Permissions",user.Permissions ?? new List<string>());
+                await _httpContextAccessor.HttpContext.Session.CommitAsync();
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties {

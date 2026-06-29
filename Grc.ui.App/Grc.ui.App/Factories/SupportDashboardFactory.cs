@@ -9,6 +9,7 @@ using Grc.ui.App.Http.Responses;
 using Grc.ui.App.Models;
 using Grc.ui.App.Services;
 using Grc.ui.App.Utils;
+using Microsoft.CodeAnalysis;
 
 namespace Grc.ui.App.Factories {
 
@@ -193,6 +194,11 @@ namespace Grc.ui.App.Factories {
                 }
             };
 
+            //..get permissions
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var _workspace = _sessionManager.GetWorkspace();
+            _workspace.Permissions = permissions;
+
             //..generate dashboard model
             return new AdminDashboardModel {
                 MiddlwareUrl = baseUrl,
@@ -200,7 +206,7 @@ namespace Grc.ui.App.Factories {
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 QuickActions = quickActions,
                 LastLogin = DateTime.UtcNow,
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = _workspace,
                 Statistics = statistics
             };
         }
@@ -220,13 +226,16 @@ namespace Grc.ui.App.Factories {
                     }
                 }
             }
-            
+
+            var permissions = _sessionManager.Get<List<string>>("Permissions") ?? new List<string>();
+            var _workspace = _sessionManager.GetWorkspace();
+            _workspace.Permissions = permissions;
             return await Task.FromResult(new AdminDashboardModel {
                 PinnedItems = pins,
                 Recents = recents,
                 Initials = $"{currentUser?.LastName[..1]}{currentUser?.FirstName[..1]}",
                 //..set workspace into seession
-                Workspace = _sessionManager.GetWorkspace(),
+                Workspace = _workspace
             });
         }
 
