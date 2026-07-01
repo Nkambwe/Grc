@@ -518,6 +518,7 @@ $('.action-btn-pol-report-smt-summery').on('click', function () {
         }
    });
 });
+
 function initLastReviewDatePickers() {
     flatpickrInstances["lastReviewDate"] = flatpickr("#lastReviewDate", {
         dateFormat: "Y-m-d",
@@ -1354,6 +1355,8 @@ $(document).ready(function () {
     initLastReviewDatePickers();
     initNextReviewDatePickers();
     initApprovalDatePickers();
+
+    //console.log(window.userPermissions);
 
     $('#documentTypeId, #departmentId, #ownerId, #frequencyId ,#documentStatus, #isApproved, #approver, #intervalType').select2({
         width: '100%',

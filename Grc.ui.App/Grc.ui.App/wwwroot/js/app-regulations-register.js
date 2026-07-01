@@ -1680,6 +1680,9 @@ function init2Dates() {
 $(document).ready(function () {
     loadRegulatoryTree();
     init2Dates();
+
+    //console.log(window.userPermissions);
+
     $('#typeId, #authorityId, #actFrequencyId').select2({
         width: '100%',
         dropdownParent: $('#lawRegulationPanel')

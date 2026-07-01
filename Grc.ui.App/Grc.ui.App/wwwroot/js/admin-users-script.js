@@ -809,7 +809,7 @@ function isValidEmail(email) {
 $(document).ready(function () {
     initUserTable();
 
-    console.log(window.userPermissions);
+    //console.log(window.userPermissions);
 
     $('#userForm').on('submit', function (e) {
         e.preventDefault();
