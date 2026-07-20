@@ -48,7 +48,7 @@
 
     <div class="collapse-panel-body">
 
-        <form id="approvalForm" class="grc-form row g-3">
+        <form id="approvalForm" class="grc-law-form">
             <input id="processId" type="hidden">
             <input id="approvalId" type="hidden">
             <input id="bopRequired" type="hidden">
@@ -56,425 +56,539 @@
             <input id="treasuryRequired" type="hidden">
             <input id="fintechRequired" type="hidden">
 
-            <div class="col-12">
-                <div class="row p-4">
-                    <div class="col-sm-6">
-                        <div class="row mb-3">
-                            <label for="processName" class="col-sm-12 col-form-label text-sm-start">
-                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Processes.Approval.ProcessName"))
-                            </label>
-                            <div class="col-sm-12">
-                                <input type="text" id="processName" name="processName" class="form-control" readonly />
+
+            <!-- Tabs header -->
+            <ul class="nav nav-tabs" id="reportTabs" role="tablist">
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">
+                        PROCESS DETAILS
+                    </button>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="controls-tab" data-bs-toggle="tab" data-bs-target="#documents" type="button" role="tab">
+                        FILES/DOCUMENTS
+                    </button>
+                </li>
+
+            </ul>
+
+            <div class="tab-content"> 
+
+                <div class="tab-pane fade show active" id="details" role="tabpanel">
+
+                    <div class="row">
+
+                        <div class="col-12">
+                            
+                            <div class="tab-page-content">
+
+                                <div class="tab-page-content-inner"> 
+
+                                    <div class="row"> 
+
+                                        <div class="col-sm-12">
+                                            <div class="row mb-3">
+                                                <label for="processName" class="col-sm-12 col-form-label text-sm-start">
+                                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Processes.Approval.ProcessName"))
+                                                </label>
+                                                <div class="col-sm-12">
+                                                    <input type="text" id="processName" name="processName" class="form-control" readonly />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div class="row mt-2">
+                                                <label for="processDescription" class="col-sm-12 form-label">
+                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Description"))
+                                                </label>
+                                                <div class="col-sm-12">
+                                                    <textarea id="processDescription" name="processDescription" class="form-control" rows="3" readonly></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <div class="row mb-3">
+                                                <label for="owner" class="col-sm-12 col-form-label text-sm-start">
+                                                    Process Owner
+                                                </label>
+                                                <div class="col-sm-12">
+                                                    <input type="text" id="owner" name="owner" class="form-control" readonly />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <div class="row mb-3">
+                                                <label for="requestDate" class="col-sm-12 col-form-label text-sm-start">
+                                                    @Html.Raw(ILocalize.GetLocalizedLabel("App.Processes.Approval.RequestDate"))
+                                                </label>
+                                                <div class="col-sm-12">
+                                                    <input type="text" id="requestDate" name="requestDate" class="form-control" readonly />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- HOD Section -->
+                                        <div id="hodSection" class="form-section" require-permission="CANAPPROVEPROCESS">
+
+                                            <div class="section-header" onclick="toggleSection(this)">
+                                                <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Hod"))</h5>
+                                                <span class="section-toggle">
+                                                    <i class="mdi mdi-menu-down"></i>
+                                                </span>
+                                            </div>
+
+                                            <div class="section-content">
+
+                                                <div class="section-body">
+
+                                                    <div class="row g-3">
+                                                        <div class="col-6">
+                                                            <div class="row mb-3">
+                                                                <label for="hodStatus" class="col-sm-12 form-label">
+                                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Type"))
+                                                                </label>
+                                                                <div class="col-sm-12">
+                                                                    <select class="form-select" id="hodStatus" name="hodStatus" aria-labelledby="hodStatus-label" aria-describedby="hodStatus-description">
+                                                                        <option value="UNDEFINED">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Status.Select"))</option>
+                                                                        <option value="APPROVED">Approve</option>
+                                                                        <option value="REJECTED">Needs Change</option>
+                                                                    </select>
+
+                                                                    <span id="hodStatus-description" class="sr-only">
+                                                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-12">
+                                                            <div class="row mb-3">
+                                                                <label for="hodComment" class="col-sm-12 form-label">
+                                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Comments"))
+                                                                </label>
+                                                                <div class="col-sm-12">
+                                                                    <textarea id="hodComment" name="hodComment" class="form-control" rows="3"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <!-- Risk Section -->
+                                        <div id="riskSection" class="form-section" require-permission="CANAPPROVEPROCESS">
+
+                                            <div class="section-header" onclick="toggleSection(this)">
+                                                <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Risk"))</h5>
+                                                <span class="section-toggle">
+                                                    <i class="mdi mdi-menu-down"></i>
+                                                </span>
+                                            </div>
+
+                                            <div class="section-content">
+
+                                                <div class="section-body">
+
+                                                    <div class="row g-3">
+                                                        <div class="col-6">
+                                                            <div class="row mb-3">
+                                                                <label for="riskStatus" class="col-sm-12 form-label">
+                                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Type"))
+                                                                </label>
+                                                                <div class="col-sm-12">
+                                                                    <select class="form-select" id="riskStatus" name="riskStatus" aria-labelledby="riskStatus-label" aria-describedby="riskStatus-description">
+                                                                        <option value="UNDEFINED">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Status.Select"))</option>
+                                                                        <option value="APPROVED">Approve</option>
+                                                                        <option value="REJECTED">Needs Change</option>
+                                                                    </select>
+
+                                                                    <span id="riskStatus-description" class="sr-only">
+                                                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-12">
+                                                            <div class="row mb-3">
+                                                                <label for="riskComment" class="col-sm-12 form-label">
+                                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Comments"))
+                                                                </label>
+                                                                <div class="col-sm-12">
+                                                                    <textarea id="riskComment" name="riskComment" class="form-control" rows="3"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <!-- Compliance Section -->
+                                        <div id="complianceSection" class="form-section" require-permission="CANAPPROVEPROCESS">
+
+                                            <div class="section-header" onclick="toggleSection(this)">
+                                                <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Compliance"))</h5>
+                                                <span class="section-toggle">
+                                                    <i class="mdi mdi-menu-down"></i>
+                                                </span>
+                                            </div>
+
+                                            <div class="section-content">
+
+                                                <div class="section-body">
+
+                                                    <div class="row g-3">
+                                                        <div class="col-6">
+                                                            <div class="row mb-3">
+                                                                <label for="complianceStatus" class="col-sm-12 form-label">
+                                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Type"))
+                                                                </label>
+                                                                <div class="col-sm-12">
+                                                                    <select class="form-select" id="complianceStatus" name="complianceStatus" aria-labelledby="complianceStatus-label" aria-describedby="complianceStatus-description">
+                                                                        <option value="UNDEFINED">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Status.Select"))</option>
+                                                                        <option value="APPROVED">Approve</option>
+                                                                        <option value="REJECTED">Needs Change</option>
+                                                                    </select>
+
+                                                                    <span id="complianceStatus-description" class="sr-only">
+                                                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-12">
+                                                            <div class="row mb-3">
+                                                                <label for="complianceComment" class="col-sm-12 form-label">
+                                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Comments"))
+                                                                </label>
+                                                                <div class="col-sm-12">
+                                                                    <textarea id="complianceComment" name="complianceComment" class="form-control" rows="3"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <!-- Branch Operations Section -->
+                                        <div id="bopSection" class="form-section" require-permission="CANAPPROVEPROCESS">
+
+                                            <div class="section-header" onclick="toggleSection(this)">
+                                                <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Bop"))</h5>
+                                                <span class="section-toggle">
+                                                    <i class="mdi mdi-menu-down"></i>
+                                                </span>
+                                            </div>
+
+                                            <div class="section-content">
+
+                                                <div class="section-body">
+
+                                                    <div class="row g-3">
+                                                        <div class="col-6">
+                                                            <div class="row mb-3">
+                                                                <label for="bopStatus" class="col-sm-12 form-label">
+                                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Type"))
+                                                                </label>
+                                                                <div class="col-sm-12">
+                                                                    <select class="form-select" id="bopStatus" name="bopStatus" aria-labelledby="bopStatus-label" aria-describedby="bopStatus-description">
+                                                                        <option value="UNDEFINED">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Status.Select"))</option>
+                                                                        <option value="APPROVED">Approve</option>
+                                                                        <option value="REJECTED">Needs Change</option>
+                                                                    </select>
+
+                                                                    <span id="bopStatus-description" class="sr-only">
+                                                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-12">
+                                                            <div class="row mb-3">
+                                                                <label for="bopComment" class="col-sm-12 form-label">
+                                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Comments"))
+                                                                </label>
+                                                                <div class="col-sm-12">
+                                                                    <textarea id="bopComment" name="bopComment" class="form-control" rows="3"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <!-- Treasury Section -->
+                                        <div id="treasurySection" class="form-section" require-permission="CANAPPROVEPROCESS">
+
+                                            <div class="section-header" onclick="toggleSection(this)">
+                                                <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Treasury"))</h5>
+                                                <span class="section-toggle">
+                                                    <i class="mdi mdi-menu-down"></i>
+                                                </span>
+                                            </div>
+
+                                            <div class="section-content">
+
+                                                <div class="section-body">
+
+                                                    <div class="row g-3">
+                                                        <div class="col-6">
+                                                            <div class="row mb-3">
+                                                                <label for="treasuryStatus" class="col-sm-12 form-label">
+                                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Type"))
+                                                                </label>
+                                                                <div class="col-sm-12">
+                                                                    <select class="form-select" id="treasuryStatus" name="treasuryStatus" aria-labelledby="treasuryStatus-label" aria-describedby="treasuryStatus-description">
+                                                                        <option value="UNDEFINED">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Status.Select"))</option>
+                                                                        <option value="APPROVED">Approve</option>
+                                                                        <option value="REJECTED">Needs Change</option>
+                                                                    </select>
+
+                                                                    <span id="treasuryStatus-description" class="sr-only">
+                                                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-12">
+                                                            <div class="row mb-3">
+                                                                <label for="treasuryComment" class="col-sm-12 form-label">
+                                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Comments"))
+                                                                </label>
+                                                                <div class="col-sm-12">
+                                                                    <textarea id="treasuryComment" name="treasuryComment" class="form-control" rows="3"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <!-- Credit Section -->
+                                        <div id="creditSection" class="form-section" require-permission="CANAPPROVEPROCESS">
+
+                                            <div class="section-header" onclick="toggleSection(this)">
+                                                <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Fintech"))</h5>
+                                                <span class="section-toggle">
+                                                    <i class="mdi mdi-menu-down"></i>
+                                                </span>
+                                            </div>
+
+                                            <div class="section-content">
+
+                                                <div class="section-body">
+
+                                                    <div class="row g-3">
+
+                                                        <div class="col-6">
+                                                            <div class="row mb-3">
+                                                                <label for="creditStatus" class="col-sm-12 form-label">
+                                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Type"))
+                                                                </label>
+                                                                <div class="col-sm-12">
+                                                                    <select class="form-select" id="creditStatus" name="creditStatus" aria-labelledby="creditStatus-label" aria-describedby="creditStatus-description">
+                                                                        <option value="UNDEFINED">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Status.Select"))</option>
+                                                                        <option value="APPROVED">Approve</option>
+                                                                        <option value="REJECTED">Needs Change</option>
+                                                                    </select>
+
+                                                                    <span id="creditStatus-description" class="sr-only">
+                                                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-12">
+                                                            <div class="row mb-3">
+                                                                <label for="creditComment" class="col-sm-12 form-label">
+                                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Comments"))
+                                                                </label>
+                                                                <div class="col-sm-12">
+                                                                    <textarea id="creditComment" name="creditComment" class="form-control" rows="3"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <!-- Fintech Section -->
+                                        <div id="fintechSection" class="form-section" require-permission="CANAPPROVEPROCESS">
+
+                                            <div class="section-header" onclick="toggleSection(this)">
+                                                <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Credit"))</h5>
+                                                <span class="section-toggle">
+                                                    <i class="mdi mdi-menu-down"></i>
+                                                </span>
+                                            </div>
+
+                                            <div class="section-content">
+
+                                                <div class="section-body">
+
+                                                    <div class="row g-3">
+                                                        <div class="col-6">
+                                                            <div class="row mb-3">
+                                                                <label for="fintechStatus" class="col-sm-12 form-label">
+                                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Type"))
+                                                                </label>
+                                                                <div class="col-sm-12">
+                                                                    <select class="form-select" id="fintechStatus" name="fintechStatus" aria-labelledby="fintechStatus-label" aria-describedby="fintechStatus-description">
+                                                                        <option value="UNDEFINED">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Status.Select"))</option>
+                                                                        <option value="APPROVED">Approve</option>
+                                                                        <option value="REJECTED">Needs Change</option>
+                                                                    </select>
+
+                                                                    <span id="fintechStatus-description" class="sr-only">
+                                                                        @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-12">
+                                                            <div class="row mb-3">
+                                                                <label for="fintechComment" class="col-sm-12 form-label">
+                                                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Comments"))
+                                                                </label>
+                                                                <div class="col-sm-12">
+                                                                    <textarea id="fintechComment" name="fintechComment" class="form-control" rows="3"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="tab-pane fade show" id="documents" role="tabpanel">
+
+                    <div class="row">
+
+                        <div class="col-12">
+
+                            <div class="tab-page-content">
+
+                                <div class="tab-page-content-inner">
+
+                                    <div class="row">
+
+                                        <div class="col-12">
+                                            <div class="row mb-3">
+                                                <label for="fileName" class="col-sm-12 col-form-label text-sm-start">
+                                                    Process File Path
+                                                </label>
+                                                <div class="col-12">
+                                                    <input type="text" id="fileName" name="fileName" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div class="row mb-3">
+                                                <label for="fileVersion" class="col-sm-12 col-form-label text-sm-start">
+                                                    Current File Version
+                                                </label>
+                                                <div class="col-12">
+                                                    <input type="text" id="fileVersion" name="fileVersion" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div class="row mb-3">
+                                                <label for="assigneeComments" class="col-sm-12 col-form-label text-sm-start">
+                                                    Notes
+                                                </label>
+                                                <div class="col-sm-12">
+                                                    <textarea id="assigneeComments" name="assigneeComments" class="form-control" rows="3" readonly></textarea>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="tab-footer p-3">
+                    
+                    <div class="row mb-3">
+                        <!-- Button section -->
+                        <div class="col-sm-12 p-3" require-permission="CANAPPROVEPROCESS">
+                            <div class="row mb-3">
+                                <div class="col-sm-2">
+                                    <button class="btn btn-grc-primary" style="width:100%;" onclick="applyApproval(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                                </div>
+                                <div class="col-sm-2">
+                                    <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeApprovalPanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
+                                </div>
+                                <div class="col-sm-8"></div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-sm-6">
-                        <div class="row mb-3">
-                            <label for="requestDate" class="col-sm-12 col-form-label text-sm-start">
-                                @Html.Raw(ILocalize.GetLocalizedLabel("App.Processes.Approval.RequestDate"))
-                            </label>
-                            <div class="col-sm-12">
-                                <input type="text" id="requestDate" name="requestDate" class="form-control" readonly />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="row mt-2">
-                            <label for="processDescription" class="col-sm-12 form-label">
-                                @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Description"))
-                            </label>
-                            <div class="col-sm-12">
-                                <textarea id="processDescription" name="processDescription" class="form-control" rows="3" readonly></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- HOD Section -->
-            <div id="hodSection" class="form-section" require-permission="CANAPPROVEPROCESS">
-
-                <div class="section-header" onclick="toggleSection(this)">
-                    <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Hod"))</h5>
-                    <span class="section-toggle">
-                        <i class="mdi mdi-menu-down"></i>
-                    </span>
                 </div>
 
-                <div class="section-content">
-
-                    <div class="section-body">
-
-                        <div class="row g-3">
-                            <div class="col-6">
-                                <div class="row mb-3">
-                                    <label for="hodStatus" class="col-sm-12 form-label">
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Type"))
-                                    </label>
-                                    <div class="col-sm-12">
-                                        <select class="form-select" id="hodStatus" name="hodStatus" aria-labelledby="hodStatus-label" aria-describedby="hodStatus-description">
-                                            <option value="UNDEFINED">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Status.Select"))</option>
-                                            <option value="APPROVED">Approve</option>
-                                            <option value="REJECTED">Needs Change</option>
-                                        </select>
-
-                                        <span id="hodStatus-description" class="sr-only">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12">
-                                <div class="row mb-3">
-                                    <label for="hodComment" class="col-sm-12 form-label">
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Comments"))
-                                    </label>
-                                    <div class="col-sm-12">
-                                        <textarea id="hodComment" name="hodComment" class="form-control" rows="3"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- Risk Section -->
-            <div id="riskSection" class="form-section" require-permission="CANAPPROVEPROCESS">
-
-                <div class="section-header" onclick="toggleSection(this)">
-                    <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Risk"))</h5>
-                    <span class="section-toggle">
-                        <i class="mdi mdi-menu-down"></i>
-                    </span>
-                </div>
-
-                <div class="section-content">
-
-                    <div class="section-body">
-
-                        <div class="row g-3">
-                            <div class="col-6">
-                                <div class="row mb-3">
-                                    <label for="riskStatus" class="col-sm-12 form-label">
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Type"))
-                                    </label>
-                                    <div class="col-sm-12">
-                                        <select class="form-select" id="riskStatus" name="riskStatus" aria-labelledby="riskStatus-label" aria-describedby="riskStatus-description">
-                                            <option value="UNDEFINED">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Status.Select"))</option>
-                                            <option value="APPROVED">Approve</option>
-                                            <option value="REJECTED">Needs Change</option>
-                                        </select>
-
-                                        <span id="riskStatus-description" class="sr-only">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12">
-                                <div class="row mb-3">
-                                    <label for="riskComment" class="col-sm-12 form-label">
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Comments"))
-                                    </label>
-                                    <div class="col-sm-12">
-                                        <textarea id="riskComment" name="riskComment" class="form-control" rows="3"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- Compliance Section -->
-            <div id="complianceSection" class="form-section" require-permission="CANAPPROVEPROCESS">
-
-                <div class="section-header" onclick="toggleSection(this)">
-                    <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Compliance"))</h5>
-                    <span class="section-toggle">
-                        <i class="mdi mdi-menu-down"></i>
-                    </span>
-                </div>
-
-                <div class="section-content">
-
-                    <div class="section-body">
-
-                        <div class="row g-3">
-                            <div class="col-6">
-                                <div class="row mb-3">
-                                    <label for="complianceStatus" class="col-sm-12 form-label">
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Type"))
-                                    </label>
-                                    <div class="col-sm-12">
-                                        <select class="form-select" id="complianceStatus" name="complianceStatus" aria-labelledby="complianceStatus-label" aria-describedby="complianceStatus-description">
-                                            <option value="UNDEFINED">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Status.Select"))</option>
-                                            <option value="APPROVED">Approve</option>
-                                            <option value="REJECTED">Needs Change</option>
-                                        </select>
-
-                                        <span id="complianceStatus-description" class="sr-only">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12">
-                                <div class="row mb-3">
-                                    <label for="complianceComment" class="col-sm-12 form-label">
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Comments"))
-                                    </label>
-                                    <div class="col-sm-12">
-                                        <textarea id="complianceComment" name="complianceComment" class="form-control" rows="3"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- Branch Operations Section -->
-            <div id="bopSection" class="form-section" require-permission="CANAPPROVEPROCESS">
-
-                <div class="section-header" onclick="toggleSection(this)">
-                    <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Bop"))</h5>
-                    <span class="section-toggle">
-                        <i class="mdi mdi-menu-down"></i>
-                    </span>
-                </div>
-
-                <div class="section-content">
-
-                    <div class="section-body">
-
-                        <div class="row g-3">
-                            <div class="col-6">
-                                <div class="row mb-3">
-                                    <label for="bopStatus" class="col-sm-12 form-label">
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Type"))
-                                    </label>
-                                    <div class="col-sm-12">
-                                        <select class="form-select" id="bopStatus" name="bopStatus" aria-labelledby="bopStatus-label" aria-describedby="bopStatus-description">
-                                            <option value="UNDEFINED">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Status.Select"))</option>
-                                            <option value="APPROVED">Approve</option>
-                                            <option value="REJECTED">Needs Change</option>
-                                        </select>
-
-                                        <span id="bopStatus-description" class="sr-only">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12">
-                                <div class="row mb-3">
-                                    <label for="bopComment" class="col-sm-12 form-label">
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Comments"))
-                                    </label>
-                                    <div class="col-sm-12">
-                                        <textarea id="bopComment" name="bopComment" class="form-control" rows="3"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- Treasury Section -->
-            <div id="treasurySection" class="form-section" require-permission="CANAPPROVEPROCESS">
-
-                <div class="section-header" onclick="toggleSection(this)">
-                    <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Treasury"))</h5>
-                    <span class="section-toggle">
-                        <i class="mdi mdi-menu-down"></i>
-                    </span>
-                </div>
-
-                <div class="section-content">
-
-                    <div class="section-body">
-
-                        <div class="row g-3">
-                            <div class="col-6">
-                                <div class="row mb-3">
-                                    <label for="treasuryStatus" class="col-sm-12 form-label">
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Type"))
-                                    </label>
-                                    <div class="col-sm-12">
-                                        <select class="form-select" id="treasuryStatus" name="treasuryStatus" aria-labelledby="treasuryStatus-label" aria-describedby="treasuryStatus-description">
-                                            <option value="UNDEFINED">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Status.Select"))</option>
-                                            <option value="APPROVED">Approve</option>
-                                            <option value="REJECTED">Needs Change</option>
-                                        </select>
-
-                                        <span id="treasuryStatus-description" class="sr-only">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12">
-                                <div class="row mb-3">
-                                    <label for="treasuryComment" class="col-sm-12 form-label">
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Comments"))
-                                    </label>
-                                    <div class="col-sm-12">
-                                        <textarea id="treasuryComment" name="treasuryComment" class="form-control" rows="3"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- Credit Section -->
-            <div id="creditSection" class="form-section" require-permission="CANAPPROVEPROCESS">
-
-                <div class="section-header" onclick="toggleSection(this)">
-                    <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Fintech"))</h5>
-                    <span class="section-toggle">
-                        <i class="mdi mdi-menu-down"></i>
-                    </span>
-                </div>
-
-                <div class="section-content">
-
-                    <div class="section-body">
-
-                        <div class="row g-3">
-
-                            <div class="col-6">
-                                <div class="row mb-3">
-                                    <label for="creditStatus" class="col-sm-12 form-label">
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Type"))
-                                    </label>
-                                    <div class="col-sm-12">
-                                        <select class="form-select" id="creditStatus" name="creditStatus" aria-labelledby="creditStatus-label" aria-describedby="creditStatus-description">
-                                            <option value="UNDEFINED">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Status.Select"))</option>
-                                            <option value="APPROVED">Approve</option>
-                                            <option value="REJECTED">Needs Change</option>
-                                        </select>
-
-                                        <span id="creditStatus-description" class="sr-only">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12">
-                                <div class="row mb-3">
-                                    <label for="creditComment" class="col-sm-12 form-label">
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Comments"))
-                                    </label>
-                                    <div class="col-sm-12">
-                                        <textarea id="creditComment" name="creditComment" class="form-control" rows="3"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- Fintech Section -->
-            <div id="fintechSection" class="form-section" require-permission="CANAPPROVEPROCESS">
-
-                <div class="section-header" onclick="toggleSection(this)">
-                    <h5>@Html.Raw(ILocalize.GetLocalizedLabel("Component.Process.CollapsablePane.Credit"))</h5>
-                    <span class="section-toggle">
-                        <i class="mdi mdi-menu-down"></i>
-                    </span>
-                </div>
-
-                <div class="section-content">
-
-                    <div class="section-body">
-
-                        <div class="row g-3">
-                            <div class="col-6">
-                                <div class="row mb-3">
-                                    <label for="fintechStatus" class="col-sm-12 form-label">
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Type"))
-                                    </label>
-                                    <div class="col-sm-12">
-                                        <select class="form-select" id="fintechStatus" name="fintechStatus" aria-labelledby="fintechStatus-label" aria-describedby="fintechStatus-description">
-                                            <option value="UNDEFINED">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Status.Select"))</option>
-                                            <option value="APPROVED">Approve</option>
-                                            <option value="REJECTED">Needs Change</option>
-                                        </select>
-
-                                        <span id="fintechStatus-description" class="sr-only">
-                                            @Html.Raw(ILocalize.GetLocalizedLabel("App.Label.srOnly.ArrowKeys"))
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12">
-                                <div class="row mb-3">
-                                    <label for="fintechComment" class="col-sm-12 form-label">
-                                        @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Process.Comments"))
-                                    </label>
-                                    <div class="col-sm-12">
-                                        <textarea id="fintechComment" name="fintechComment" class="form-control" rows="3"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Button section -->
-            <div class="col-sm-12 p-3" require-permission="CANAPPROVEPROCESS">
-                <div class="row mb-3">
-                    <div class="col-sm-2">
-                        <button class="btn btn-grc-primary" style="width:100%;" onclick="applyApproval(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
-                    </div>
-                    <div class="col-sm-2">
-                        <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeApprovalPanel()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>
-                    </div>
-                    <div class="col-sm-8"></div>
-                </div>
             </div>
 
         </form>

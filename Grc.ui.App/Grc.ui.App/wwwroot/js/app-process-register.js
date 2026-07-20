@@ -1906,6 +1906,8 @@ $(document).ready(function () {
         var fileId = $(this).attr('id');
         var isChecked = $(this).is(':checked');
 
+        console.log(window.userPermissions);
+
         // Uncheck all other checkboxes (only one can be current)
         if (isChecked) {
             $('.file-current-checkbox').not(this).prop('checked', false);

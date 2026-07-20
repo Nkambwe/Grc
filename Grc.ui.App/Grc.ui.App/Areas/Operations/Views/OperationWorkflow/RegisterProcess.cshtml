@@ -7,10 +7,11 @@
 
 @{
     
-    var permissionsClaim = User.FindFirst("Permissions")?.Value;
-    var permissions = string.IsNullOrEmpty(permissionsClaim)
-        ? new List<string>()
-        : System.Text.Json.JsonSerializer.Deserialize<List<string>>(permissionsClaim) ?? new List<string>();
+    // var permissionsClaim = User.FindFirst("Permissions")?.Value;
+    // var permissions = string.IsNullOrEmpty(permissionsClaim)
+    //     ? new List<string>()
+    //     : System.Text.Json.JsonSerializer.Deserialize<List<string>>(permissionsClaim) ?? new List<string>();
+   var permissions = PermissionHelper.GetPermissions(Context);
 
     var leftActions = new List<ComponentAction> {
         new ComponentAction {

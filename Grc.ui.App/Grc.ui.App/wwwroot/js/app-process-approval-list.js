@@ -628,6 +628,8 @@ function openApprovalEditor(title, approval) {
     var fintechRequired = approval?.requiresFintechApproval || false;
     $("#fintechRequired").val(fintechRequired);
 
+    console.log(approval);
+
     var tStr = approval?.processName || "";
     var hodStatus = approval?.hodStatus || "";
     var riskStatus = approval?.riskStatus || "";

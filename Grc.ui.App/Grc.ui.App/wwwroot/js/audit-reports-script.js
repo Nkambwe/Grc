@@ -528,7 +528,7 @@ function saveAuditType(e) {
     if (!typeCode) {
         highlightErrorField('#typeCode', true, 'Type code is required');
         isValid = false;
-    } else if (!/^[a-zA-Z0-9\s_-]*$/.test(categoryName)) {
+    } else if (!/^[a-zA-Z0-9\s_-]*$/.test(typeName)) {
         highlightErrorField('#typeCode', true, 'Only letters, numbers, commas, periods, and spaces allowed');
         isValid = false;
     }
@@ -1420,7 +1420,7 @@ function saveReport(e) {
     if (!reference) {
         highlightAuditField('#reference', true, 'Audit reference field is required');
         isValid = false;
-    } else if (!/^[a-zA-Z0-9\s_-]*$/.test(auditName)) {
+    } else if (!/^[a-zA-Z0-9\s_-]*$/.test(reference)) {  
         highlightAuditField('#reference', true, 'Only letters, numbers, commas, periods, and spaces allowed');
         isValid = false;
     }
@@ -1428,7 +1428,7 @@ function saveReport(e) {
     if (!reportName) {
         highlightAuditField('#reportName', true, 'Report name field is required');
         isValid = false;
-    } else if (!/^[a-zA-Z0-9\s.,]*$/.test(auditName)) {
+    } else if (!/^[a-zA-Z0-9\s.,]*$/.test(reportName)) { 
         highlightAuditField('#reportName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
         isValid = false;
     }
@@ -2909,12 +2909,13 @@ $(document).ready(function () {
 
         //..clear error if field is empty
         if (!value) {
+            console.log(value);
             highlightAuditField('#reference', false);
             return;
         }
 
         //..show real-time feedback but don't block typing
-        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+        if (!/^[a-zA-Z0-9\s_-]*$/.test(value)) {
             highlightAuditField('#reference', true, 'Invalid characters detected');
         } else {
             highlightAuditField('#reference', false);
@@ -2927,43 +2928,40 @@ $(document).ready(function () {
 
     $('#reference').on('blur', function () {
         var value = $(this).val().trim();
+        var originalValue = $(this).val();
 
+        // First: Clean invalid characters (if any)
+        if (originalValue) {
+            var cleaned = originalValue.replace(/[^a-zA-Z0-9\s_-]/g, ''); 
+            if (originalValue !== cleaned) {
+                $(this).val(cleaned);
+                highlightAuditField('#reference', true, 'Removed invalid characters');
+                setTimeout(function () {
+                    highlightAuditField('#reference', false);
+                }, 2000);
+                return; // Stop here - cleaning message takes priority
+            }
+        }
+
+        // Then: Validate
         if (!value) {
             highlightAuditField('#reference', true, 'Type name is required');
-        } else if (!/^[a-zA-Z0-9\s.,]*$/.test(value)) {
+        } else if (!/^[a-zA-Z0-9\s_-]*$/.test(value)) {
             highlightAuditField('#reference', true, 'Only letters, numbers, commas, periods, and spaces allowed');
         } else {
             highlightAuditField('#reference', false);
         }
     });
 
-    $('#reference').on('blur', function () {
-        var value = $(this).val();
-        if (value) {
-            var cleaned = value.replace(/[^a-zA-Z0-9\s_-]/g, '');
-            if (value !== cleaned) {
-                $(this).val(cleaned);
-                highlightAuditField('#reference', true, 'Removed invalid characters');
-
-                // Clear error after 2 seconds
-                setTimeout(function () {
-                    highlightAuditField('#reference', false);
-                }, 2000);
-            }
-        }
-    });
-
     $('#reportName').on('keyup', function () {
         var value = $(this).val();
 
-        //..clear error if field is empty
         if (!value) {
             highlightAuditField('#reportName', false);
             return;
         }
 
-        //..show real-time feedback but don't block typing
-        if (!/^[a-zA-Z0-9\s,.]*$/.test(value)) {
+        if (!/^[a-zA-Z0-9 ,.]*$/.test(value)) {
             highlightAuditField('#reportName', true, 'Invalid characters detected');
         } else {
             highlightAuditField('#reportName', false);
@@ -2976,29 +2974,28 @@ $(document).ready(function () {
 
     $('#reportName').on('blur', function () {
         var value = $(this).val().trim();
+        var originalValue = $(this).val();
 
-        if (!value) {
-            highlightAuditField('#reportName', true, 'Report name is required');
-        } else if (!/^[a-zA-Z0-9\s.,]*$/.test(value)) {
-            highlightAuditField('#reportName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
-        } else {
-            highlightAuditField('#reportName', false);
-        }
-    });
-
-    $('#reportName').on('blur', function () {
-        var value = $(this).val();
-        if (value) {
-            var cleaned = value.replace(/[^a-zA-Z0-9\s_-]/g, '');
-            if (value !== cleaned) {
+        // First: Clean invalid characters
+        if (originalValue) {
+            var cleaned = originalValue.replace(/[^a-zA-Z0-9 ,.]/g, ''); // FIXED: Match your allowed chars
+            if (originalValue !== cleaned) {
                 $(this).val(cleaned);
                 highlightAuditField('#reportName', true, 'Removed invalid characters');
-
-                // Clear error after 2 seconds
                 setTimeout(function () {
                     highlightAuditField('#reportName', false);
                 }, 2000);
+                return; // Stop here
             }
+        }
+
+        // Then: Validate
+        if (!value) {
+            highlightAuditField('#reportName', true, 'Report name is required');
+        } else if (!/^[a-zA-Z0-9 .,]*$/.test(value)) {
+            highlightAuditField('#reportName', true, 'Only letters, numbers, commas, periods, and spaces allowed');
+        } else {
+            highlightAuditField('#reportName', false);
         }
     });
 

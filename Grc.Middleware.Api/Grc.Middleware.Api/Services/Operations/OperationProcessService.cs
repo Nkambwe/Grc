@@ -1233,7 +1233,7 @@ namespace Grc.Middleware.Api.Services.Operations {
             try
             {
                 var result = await uow.OperationProcessRepository.PageAllAsync(page,
-                    size, includeDeleted, p => (p.ProcessStatus == "INREVIEW" || p.ProcessStatus == "PROPOSED") &&
+                    200, includeDeleted, p => (p.ProcessStatus == "INREVIEW" || p.ProcessStatus == "PROPOSED") &&
 
                         //..ensure process has at least one approval
                         p.Approvals.Any(a => a.ManagerialStatus != "COMPLETE") &&
@@ -1245,22 +1245,22 @@ namespace Grc.Middleware.Api.Services.Operations {
                             (string.IsNullOrEmpty(a.HeadOfDepartmentStatus) || a.HeadOfDepartmentStatus == "REJECTED") ||
 
                             //..risk department
-                            (string.IsNullOrEmpty(a.RiskStatus) || (a.RiskStatus != "APPROVED" && a.RiskStatus != "COMPLETE")) ||
+                            (string.IsNullOrEmpty(a.RiskStatus) || a.RiskStatus == "REJECTED") ||
 
                             //..compliance department
-                            (string.IsNullOrEmpty(a.ComplianceStatus) || (a.ComplianceStatus != "APPROVED" && a.ComplianceStatus != "COMPLETE")) ||
+                            (string.IsNullOrEmpty(a.ComplianceStatus) || a.ComplianceStatus == "REJECTED") ||
 
                             //..branch (only if needed)
-                            (p.NeedsBranchReview == true && (string.IsNullOrEmpty(a.BranchOperationsStatus) || (a.BranchOperationsStatus != "APPROVED" && a.BranchOperationsStatus != "COMPLETE"))) ||
+                            (p.NeedsBranchReview == true && (string.IsNullOrEmpty(a.BranchOperationsStatus) || a.BranchOperationsStatus == "REJECTED")) ||
 
                             //..credit department
-                            (p.NeedsCreditReview == true && (string.IsNullOrEmpty(a.CreditStatus) || (a.CreditStatus != "APPROVED" && a.CreditStatus != "COMPLETE"))) ||
+                            (p.NeedsCreditReview == true && (string.IsNullOrEmpty(a.CreditStatus) || a.CreditStatus == "REJECTED")) ||
 
                             //..treasury department
-                            (p.NeedsTreasuryReview == true && (string.IsNullOrEmpty(a.TreasuryStatus) || (a.TreasuryStatus != "APPROVED" && a.TreasuryStatus != "COMPLETE"))) ||
+                            (p.NeedsTreasuryReview == true && (string.IsNullOrEmpty(a.TreasuryStatus) || a.TreasuryStatus == "REJECTED")) ||
 
                             //..fintech department
-                            (p.NeedsFintechReview == true && (string.IsNullOrEmpty(a.FintechStatus) || (a.FintechStatus != "APPROVED" && a.FintechStatus != "COMPLETE")))
+                            (p.NeedsFintechReview == true && (string.IsNullOrEmpty(a.FintechStatus) || a.FintechStatus == "REJECTED"))
                             ),
                     includes
                 );

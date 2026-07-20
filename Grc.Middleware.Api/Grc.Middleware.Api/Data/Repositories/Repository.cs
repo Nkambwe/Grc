@@ -698,8 +698,11 @@ namespace Grc.Middleware.Api.Data.Repositories {
             if (!includeDeleted)
                 baseQuery = baseQuery.Where(m => !m.IsDeleted);
 
+            var v0 = baseQuery.ToList();
             if (predicate != null)
                 baseQuery = baseQuery.Where(predicate);
+
+            var v1 = baseQuery.ToList();
 
             //count before includes
             var totalCount = await baseQuery.CountAsync();
@@ -708,6 +711,7 @@ namespace Grc.Middleware.Api.Data.Repositories {
             IQueryable<T> query = baseQuery;
             if (includes != null) {
                 query = includes.Aggregate(query, (current, include) => current.Include(include));
+                var v2 = query.ToList();
             }
 
             var t3 = query.ToList();

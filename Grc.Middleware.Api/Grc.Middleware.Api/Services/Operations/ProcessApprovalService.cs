@@ -225,7 +225,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                         }
 
                         if (!string.IsNullOrWhiteSpace(approval.ComplianceStatus) && approval.ComplianceStatus == "REJECTED") {
-                            approval.ComplianceStatus = "PENDING";
+                            approval.ComplianceStatus = "REJECTED";
                             approval.ComplianceStart = DateTime.Now;
                             approval.ComplianceEnd = null;
                             approval.ComplianceComment = null;
@@ -326,7 +326,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                         var process = await uow.OperationProcessRepository.GetAsync(p => p.Id == request.ProcessId, false);
                         responsibleId = process.ResponsibilityId;
                         stage = ApprovalStage.MGR;
-                        approval.RiskStatus = "PENDING";
+                        approval.RiskStatus = request.RiskStatus;
                         approval.RiskComment = request.RiskComment;
                         approval.LastModifiedBy = request.ModifiedBy;
                         approval.LastModifiedOn = DateTime.Now;
@@ -362,7 +362,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                         var process = await uow.OperationProcessRepository.GetAsync(p => p.Id == request.ProcessId, false);
                         responsibleId = process.ResponsibilityId;
                         stage = ApprovalStage.MGR;
-                        approval.ComplianceStatus = "PENDING";
+                        approval.ComplianceStatus = request.ComplianceStatus;
                         approval.ComplianceComment = request.ComplianceComment;
                         approval.LastModifiedBy = request.ModifiedBy;
                         approval.LastModifiedOn = DateTime.Now;

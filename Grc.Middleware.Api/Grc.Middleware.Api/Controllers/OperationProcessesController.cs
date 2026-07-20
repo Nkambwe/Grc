@@ -444,7 +444,7 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
-                var pageResult = await _processService.PageAllAsync(request.PageIndex, request.PageSize, false,
+                var pageResult = await _processService.PageAllAsync(request.PageIndex, 200, false,
                                                                     p => p.Unit,
                                                                     p => p.Owner,
                                                                     p => p.Responsible,
@@ -2868,8 +2868,7 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<ProcessApprovalResponse>(error));
                 }
 
-                var tatRecord = new ProcessApprovalResponse
-                {
+                var tatRecord = new ProcessApprovalResponse {
                     Id = approval.Id,
                     ProcessId = approval.ProcessId,
                     RequestDate = approval.RequestDate,
@@ -2877,7 +2876,7 @@ namespace Grc.Middleware.Api.Controllers {
                     ProcessDescription = approval.Process.Description ?? string.Empty,
                     ManagerStart = approval.ManagerialStart,
                     ManagerEnd = approval.ManagerialEnd,
-                    ManagerStatus =  approval.ManagerialStatus ?? string.Empty,
+                    ManagerStatus = approval.ManagerialStatus ?? string.Empty,
                     ManagerComment = approval.ManagerialComment ?? string.Empty,
                     HeadOfDepartmentStart = approval.HeadOfDepartmentStart,
                     HeadOfDepartmentEnd = approval.HeadOfDepartmentEnd,
@@ -2891,18 +2890,22 @@ namespace Grc.Middleware.Api.Controllers {
                     ComplianceEnd = approval.ComplianceEnd,
                     ComplianceStatus = approval.ComplianceStatus ?? string.Empty,
                     ComplianceComment = approval.ComplianceComment ?? string.Empty,
+                    RequiresBopApproval = approval.Process?.NeedsBranchReview ?? false,
                     BranchOperationsStatusStart = approval.BranchOperationsStatusStart,
                     BranchOperationsStatusEnd = approval.BranchOperationsStatusEnd,
                     BranchOperationsStatus = approval.BranchOperationsStatus ?? string.Empty,
                     BranchManagerComment = approval.BranchManagerComment ?? string.Empty,
+                    RequiresCreditApproval = approval.Process?.NeedsCreditReview ?? false,
                     CreditStart = approval.CreditStart,
                     CreditEnd = approval.CreditEnd,
                     CreditStatus = approval.CreditStatus ?? string.Empty,
                     CreditComment = approval.CreditComment ?? string.Empty,
+                    RequiresTreasuryApproval = approval.Process?.NeedsTreasuryReview ?? false,
                     TreasuryStart = approval.TreasuryStart,
                     TreasuryEnd = approval.TreasuryEnd,
                     TreasuryStatus = approval.TreasuryStatus ?? string.Empty,
                     TreasuryComment = approval.TreasuryComment ?? string.Empty,
+                    RequiresFintechApproval = approval.Process?.NeedsFintechReview ?? false,
                     FintechStart = approval.FintechStart,
                     FintechEnd = approval.FintechEnd,
                     FintechStatus = approval.FintechStatus ?? string.Empty,
