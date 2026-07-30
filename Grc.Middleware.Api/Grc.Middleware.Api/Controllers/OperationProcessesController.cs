@@ -2783,23 +2783,11 @@ namespace Grc.Middleware.Api.Controllers {
                        approvals = approvals.OrderBy(p => p.RequestDate).ToList();
                     } else {
                         approvals = unitCode switch {
-                            "RISK" => approvals.Where(p => p.HeadOfDepartmentStatus.Equals("APPROVED") &&
-                                                                                         !p.RiskStatus.Equals("APPROVED")).ToList(),
-                            "COMP01" => approvals.Where(p => p.HeadOfDepartmentStatus.Equals("APPROVED") &&
-                                                                                    p.RiskStatus.Equals("APPROVED") &&
-                                                                                    !p.ComplianceStatus.Equals("APPROVED")).ToList(),
-                            "INCON" => approvals.Where(p => p.RequiresBopApproval &&
-                                                                                    p.HeadOfDepartmentStatus.Equals("APPROVED") &&
-                                                                                    p.RiskStatus.Equals("APPROVED") &&
-                                                                                    p.ComplianceStatus.Equals("APPROVED")).ToList(),
-                            "CRED" => approvals.Where(p => p.RequiresCreditApproval &&
-                                                                                    p.HeadOfDepartmentStatus.Equals("APPROVED") &&
-                                                                                    p.RiskStatus.Equals("APPROVED") &&
-                                                                                    p.ComplianceStatus.Equals("APPROVED")).ToList(),
-                            "FINT" => approvals.Where(p => p.RequiresFintechApproval &&
-                                                                                    p.HeadOfDepartmentStatus.Equals("APPROVED") &&
-                                                                                    p.RiskStatus.Equals("APPROVED") &&
-                                                                                    p.ComplianceStatus.Equals("APPROVED")).ToList(),
+                            "RISK" => approvals.Where(p => p.HeadOfDepartmentStatus.Equals("APPROVED") && !p.RiskStatus.Equals("APPROVED") && !p.RiskStatus.Equals("REJECTED")).ToList(),
+                            "COMP01" => approvals.Where(p => p.HeadOfDepartmentStatus.Equals("APPROVED") && p.RiskStatus.Equals("APPROVED") && !p.ComplianceStatus.Equals("REJECTED")).ToList(),
+                            "INCON" => approvals.Where(p => p.RequiresBopApproval && p.HeadOfDepartmentStatus.Equals("APPROVED") && p.RiskStatus.Equals("APPROVED") && p.ComplianceStatus.Equals("APPROVED") && !p.BranchOperationsStatus.Equals("REJECTED")).ToList(),
+                            "CRED" => approvals.Where(p => p.RequiresCreditApproval && p.HeadOfDepartmentStatus.Equals("APPROVED") &&  p.RiskStatus.Equals("APPROVED") && p.ComplianceStatus.Equals("APPROVED") && !p.CreditStatus.Equals("REJECTED")).ToList(),
+                            "FINT" => approvals.Where(p => p.RequiresFintechApproval && p.HeadOfDepartmentStatus.Equals("APPROVED") && p.RiskStatus.Equals("APPROVED") && p.ComplianceStatus.Equals("APPROVED") && !p.FintechStatus.Equals("REJECTED")).ToList(),
                             _ => approvals.Where(p => !p.HeadOfDepartmentStatus.Equals("APPROVED")).ToList(),
                         };
                     }

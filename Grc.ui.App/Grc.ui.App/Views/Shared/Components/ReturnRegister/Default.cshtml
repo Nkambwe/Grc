@@ -313,15 +313,15 @@
 
                         <div class="col-6">
                             <div class="row mb-3">
-                                <label for="authorityId" class="col-12 col-form-label mb-2">
-                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Authority"))
+                                <label for="ownerId" class="col-12 col-form-label mb-2">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.PolRegister.Owner"))
                                 </label>
                                 <div class="col-12">
-                                    <select class="js-act-authority-id form-control" id="authorityId" name="authorityId">
-                                        <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Select.Authority"))</option>
-                                        @if (Model?.Authorities != null && Model.Authorities.Any()) {
-                                            foreach (var authority in Model.Authorities) {
-                                                <option value="@authority.Id">@authority.AuthorityName</option>
+                                    <select class="js-act-owner-id form-control" id="ownerId" name="ownerId">
+                                        <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.PolRegister.Select.Responsible"))</option>
+                                        @if (Model?.Responsibilities != null && Model.Responsibilities.Any()) {
+                                            foreach (var owner in Model.Responsibilities) {
+                                                <option value="@owner.Id">@owner.ResponsibleRole</option>
                                             }
                                         }
                                     </select>
@@ -348,6 +348,24 @@
                             </div>
                         </div>
 
+                        <div class="col-6">
+                            <div class="row mb-3">
+                                <label for="authorityId" class="col-12 col-form-label mb-2">
+                                    @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Authority"))
+                                </label>
+                                <div class="col-12">
+                                    <select class="js-act-authority-id form-control" id="authorityId" name="authorityId">
+                                        <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Select.Authority"))</option>
+                                        @if (Model?.Authorities != null && Model.Authorities.Any()) {
+                                            foreach (var authority in Model.Authorities) {
+                                                <option value="@authority.Id">@authority.AuthorityName</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
 
                 </div>
@@ -487,7 +505,7 @@
                 <div class="col-sm-12 mt-3">
                     <div class="row mb-3 p-2">
                         <div class="col-sm-2">
-                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveAuditReport(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
+                            <button class="btn btn-grc-primary" style="width:100%;" onclick="saveReturnReport(event)">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Submit"))</button>
                         </div>
                         <div class="col-sm-2">
                             <button class="btn btn-grc-secondary" style="width:100%;" onclick="closeReportPane()">@Html.Raw(ILocalize.GetLocalizedLabel("Button.Cancel"))</button>

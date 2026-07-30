@@ -698,11 +698,8 @@ namespace Grc.Middleware.Api.Data.Repositories {
             if (!includeDeleted)
                 baseQuery = baseQuery.Where(m => !m.IsDeleted);
 
-            var v0 = baseQuery.ToList();
             if (predicate != null)
                 baseQuery = baseQuery.Where(predicate);
-
-            var v1 = baseQuery.ToList();
 
             //count before includes
             var totalCount = await baseQuery.CountAsync();
@@ -714,7 +711,6 @@ namespace Grc.Middleware.Api.Data.Repositories {
                 var v2 = query.ToList();
             }
 
-            var t3 = query.ToList();
             var entities = await query.Skip((page - 1) * size).Take(size).ToListAsync();
             return new PagedResult<T> { Entities = entities, Count = totalCount, Page = page, Size = size };
         }

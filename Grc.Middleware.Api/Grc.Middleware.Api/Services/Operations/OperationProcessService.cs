@@ -1232,39 +1232,38 @@ namespace Grc.Middleware.Api.Services.Operations {
             Logger.LogActivity("Retrieve paged Processes", "INFO");
             try
             {
-                var result = await uow.OperationProcessRepository.PageAllAsync(page,
-                    200, includeDeleted, p => (p.ProcessStatus == "INREVIEW" || p.ProcessStatus == "PROPOSED") &&
 
-                        //..ensure process has at least one approval
-                        p.Approvals.Any(a => a.ManagerialStatus != "COMPLETE") &&
+                var result = await uow.OperationProcessRepository.PageAllAsync(page, size, includeDeleted, p => (p.ProcessStatus == "INREVIEW" || p.ProcessStatus == "PROPOSED")
+                    
+                    //..ensure process has at least one approval
+                    && p.Approvals.Any(a => a.ManagerialStatus == "COMPLETE")
+                    &&
+                    //..ensure latest approval has at least one pending stage
+                    p.Approvals.OrderByDescending(a => a.RequestDate).Take(1).Any(a =>
+                        //..head of department
+                        (string.IsNullOrEmpty(a.HeadOfDepartmentStatus) || a.HeadOfDepartmentStatus == "REJECTED") ||
 
-                        //..ensure latest approval has at least one pending stage
-                        p.Approvals.OrderByDescending(a => a.RequestDate).Take(1).Any(a =>
+                        //..risk department
+                        (string.IsNullOrEmpty(a.RiskStatus) || a.RiskStatus == "REJECTED") ||
 
-                            //..head of department
-                            (string.IsNullOrEmpty(a.HeadOfDepartmentStatus) || a.HeadOfDepartmentStatus == "REJECTED") ||
+                        //..compliance department
+                        (string.IsNullOrEmpty(a.ComplianceStatus) || a.ComplianceStatus == "REJECTED") ||
 
-                            //..risk department
-                            (string.IsNullOrEmpty(a.RiskStatus) || a.RiskStatus == "REJECTED") ||
+                        //..branch (only if needed)
+                        (p.NeedsBranchReview == true && (string.IsNullOrEmpty(a.BranchOperationsStatus) || a.BranchOperationsStatus == "REJECTED")) ||
 
-                            //..compliance department
-                            (string.IsNullOrEmpty(a.ComplianceStatus) || a.ComplianceStatus == "REJECTED") ||
+                        //..credit department
+                        (p.NeedsCreditReview == true && (string.IsNullOrEmpty(a.CreditStatus) || a.CreditStatus == "REJECTED")) ||
 
-                            //..branch (only if needed)
-                            (p.NeedsBranchReview == true && (string.IsNullOrEmpty(a.BranchOperationsStatus) || a.BranchOperationsStatus == "REJECTED")) ||
+                        //..treasury department
+                        (p.NeedsTreasuryReview == true && (string.IsNullOrEmpty(a.TreasuryStatus) || a.TreasuryStatus == "REJECTED")) ||
 
-                            //..credit department
-                            (p.NeedsCreditReview == true && (string.IsNullOrEmpty(a.CreditStatus) || a.CreditStatus == "REJECTED")) ||
-
-                            //..treasury department
-                            (p.NeedsTreasuryReview == true && (string.IsNullOrEmpty(a.TreasuryStatus) || a.TreasuryStatus == "REJECTED")) ||
-
-                            //..fintech department
-                            (p.NeedsFintechReview == true && (string.IsNullOrEmpty(a.FintechStatus) || a.FintechStatus == "REJECTED"))
-                            ),
+                        //..fintech department
+                        (p.NeedsFintechReview == true && (string.IsNullOrEmpty(a.FintechStatus) || a.FintechStatus == "REJECTED"))
+                    ),
                     includes
                 );
-
+               
                 return result;
             }
             catch (Exception ex)

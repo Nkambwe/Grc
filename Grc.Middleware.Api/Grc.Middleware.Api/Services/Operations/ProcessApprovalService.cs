@@ -207,10 +207,10 @@ namespace Grc.Middleware.Api.Services.Operations {
                         approval.LastModifiedOn = DateTime.Now;
 
                         if(!string.IsNullOrWhiteSpace(approval.HeadOfDepartmentStatus) && approval.HeadOfDepartmentStatus == "REJECTED") {
-                            approval.HeadOfDepartmentStatus = "PENDING";
-                            approval.HeadOfDepartmentStart = DateTime.Now;
-                            approval.HeadOfDepartmentEnd = null;
-                            approval.HeadOfDepartmentComment = null;
+                            approval.HeadOfDepartmentStatus = "COMPLETE";
+                            approval.HeadOfDepartmentStart = approval.HeadOfDepartmentStart;
+                            approval.HeadOfDepartmentEnd = approval.HeadOfDepartmentEnd;
+                            approval.HeadOfDepartmentComment = $"Recomended changes for improvement. Changes should be included in the modification made as of {DateTime.Now.ToLongDateString()}";
                             approval.LastModifiedBy = request.ModifiedBy;
                             approval.LastModifiedOn = DateTime.Now;
                         }
@@ -225,7 +225,7 @@ namespace Grc.Middleware.Api.Services.Operations {
                         }
 
                         if (!string.IsNullOrWhiteSpace(approval.ComplianceStatus) && approval.ComplianceStatus == "REJECTED") {
-                            approval.ComplianceStatus = "REJECTED";
+                            approval.ComplianceStatus = "PENDING";
                             approval.ComplianceStart = DateTime.Now;
                             approval.ComplianceEnd = null;
                             approval.ComplianceComment = null;

@@ -2004,12 +2004,20 @@ namespace Grc.ui.App.Areas.Operations.Controllers {
                         modifiedBy = process.ModifiedBy ?? string.Empty
                     }).ToList();
 
-                var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
+                //var totalPages = (int)Math.Ceiling((double)list.TotalCount / list.Size);
+
+                // fallback matches your default paginationSize
+                var pageSize = request.PageSize > 0 ? request.PageSize : 10; 
+                var totalPages = list.TotalCount > 0
+                    ? (int)Math.Ceiling((double)list.TotalCount / pageSize)
+                    : 0;
+
                 return Ok(new { last_page = totalPages, total_records = list.TotalCount, data = pagedEntities });
+                //return Ok(new { last_page = totalPages, total_records = list.TotalCount, data = pagedEntities });
             } catch (Exception ex) {
                 Logger.LogActivity($"Error retrieving Operation processes: {ex.Message}", "ERROR");
                 await ProcessErrorAsync(ex.Message, "PROCESS-WORKFLOW-CONTROLLER", ex.StackTrace);
-                return Ok(new { last_page = 0, data = new List<object>() });
+                return Ok(new { last_page = 0, total_records = 0, data = new List<object>() });
             }
         }
 

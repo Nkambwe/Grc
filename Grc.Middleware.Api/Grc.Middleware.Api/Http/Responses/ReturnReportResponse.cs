@@ -24,6 +24,12 @@ namespace Grc.Middleware.Api.Http.Responses {
         [JsonPropertyName("department")]
         public string Department { get; set; }
 
+        [JsonPropertyName("ownerId")]
+        public long OwnerId { get; set; }
+
+        [JsonPropertyName("owner")]
+        public string Owner { get; set; }
+
         [JsonPropertyName("requiredDate")]
         public DateTime? RequiredDate { get;set; }
 

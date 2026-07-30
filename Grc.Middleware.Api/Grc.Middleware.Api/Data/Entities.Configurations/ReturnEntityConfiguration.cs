@@ -25,6 +25,7 @@ namespace Grc.Middleware.Api.Data.Entities.Configurations
             builder.Property(r => r.ArticleId).HasColumnName("act_id");
             builder.Property(r => r.OwnerId).HasColumnName("owner_id");
             builder.Property(r => r.AuthorityId).HasColumnName("auth_id");
+            builder.Property(r => r.DepartmentId).HasColumnName("dept_id");
             builder.Property(r => r.Comments).HasColumnName("comment").HasColumnType("NVARCHAR(MAX)").IsRequired(false);
             builder.Property(r => r.IsDeleted).HasColumnName("is_deleted");
             builder.Property(r => r.CreatedOn).HasColumnName("created_on").IsRequired();

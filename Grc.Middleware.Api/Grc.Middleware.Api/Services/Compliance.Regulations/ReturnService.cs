@@ -1061,7 +1061,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     TypeId = request.TypeId,
                     AuthorityId = request.AuthorityId,
                     FrequencyId = request.FrequencyId,
-                    OwnerId = request.DepartmentId,
+                    OwnerId = request.OwnerId,
+                    DepartmentId = request.DepartmentId,
                     Risk = request.Risk,
                     Interval = request.Interval,
                     IntervalType = request.IntervalType,
@@ -1115,7 +1116,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     TypeId = request.TypeId,
                     AuthorityId = request.AuthorityId,
                     FrequencyId = request.FrequencyId,
-                    OwnerId = request.DepartmentId,
+                    OwnerId = request.OwnerId,
+                    DepartmentId = request.DepartmentId,
                     Risk = request.Risk,
                     Interval = request.Interval,
                     IntervalType = request.IntervalType,
@@ -1170,7 +1172,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     regReturn.FrequencyId = request.FrequencyId;
                     regReturn.ArticleId = request.ArticleId;
                     regReturn.AuthorityId = request.AuthorityId;
-                    regReturn.OwnerId = request.DepartmentId;
+                    regReturn.DepartmentId = request.DepartmentId;
+                    regReturn.OwnerId = request.OwnerId;
                     regReturn.Risk = request.Risk;
                     regReturn.Interval = request.Interval;
                     regReturn.IntervalType = request.IntervalType;
@@ -1214,7 +1217,8 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                     regReturn.FrequencyId = request.FrequencyId;
                     regReturn.ArticleId = request.ArticleId;
                     regReturn.AuthorityId = request.AuthorityId;
-                    regReturn.OwnerId = request.DepartmentId;
+                    regReturn.OwnerId = request.OwnerId;
+                    regReturn.DepartmentId = request.DepartmentId;
                     regReturn.Risk = request.Risk;
                     regReturn.Interval = request.Interval;
                     regReturn.IntervalType = request.IntervalType;

@@ -18,6 +18,9 @@ namespace Grc.ui.App.Http.Requests {
         [JsonPropertyName("authorityId")]
         public long AuthorityId { get; set; }
 
+        [JsonPropertyName("ownerId")]
+        public long OwnerId { get; set; }
+
         [JsonPropertyName("departmentId")]
         public long DepartmentId { get; set; }
 

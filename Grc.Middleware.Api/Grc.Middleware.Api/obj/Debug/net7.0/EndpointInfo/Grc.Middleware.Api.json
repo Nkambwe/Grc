@@ -12361,6 +12361,10 @@
             "type": "integer",
             "format": "int64"
           },
+          "ownerId": {
+            "type": "integer",
+            "format": "int64"
+          },
           "frequencyId": {
             "type": "integer",
             "format": "int64"

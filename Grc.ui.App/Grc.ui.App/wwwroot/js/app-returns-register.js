@@ -634,6 +634,7 @@ function open2Panel(title, record, isEdit) {
     $('#returnId').val(record.id);
     $('#statuteId').val(record.statuteId || 0).trigger('change');
     $('#returnName').val(record.returnName || '');
+    $('#ownerId').val(record.ownerId || 0).trigger('change');
     $('#returnTypeId').val(record.returnTypeId || 0).trigger('change');
     $('#frequencyId').val(record.frequencyId || 0);
     $('#authorityId').val(record.authorityId || 0).trigger('change');
@@ -687,7 +688,8 @@ $('#btnAddReturn').on('click', function () {
         returnName: '',
         returnTypeId:0,
         frequencyId: selectedFrequency,
-        authorityId:0,
+        authorityId: 0,
+        ownerId:0,
         status: 'UNKNOWN',
         riskAttached: '',
         sendReminder: true,
@@ -701,15 +703,17 @@ $('#btnAddReturn').on('click', function () {
     }, false);
 });
 
-function saveAuditReport(e) {
+function saveReturnReport(e) {
     e.preventDefault();
 
     let isEdit = $('#returnEdit').val();
+
     //..build record payload from form
     let recordData = {
         id: Number($('#returnId').val()) || 0,
         sectionId: Number($('#statuteId').val()) || 0,
         returnName: $('#returnName').val(),
+        ownerId: Number($('#ownerId').val()) || 0,
         returnTypeId: Number($('#returnTypeId').val()) || 0,
         departmentId: Number($('#departmentId').val()) || 0,
         frequencyId: Number($('#frequencyId').val()) || 0,
@@ -721,7 +725,7 @@ function saveAuditReport(e) {
         requiredSubmissionDate: $('#requiredSubmissionDate').val(),
         requiredSubmissionDay: Number($('#submissionDay').val()) || 0,
         reminder: $('#reminderMessage').val(),
-        isDeleted: $('#reportDeleted').prop('checked'),
+        isDeleted:$('#reportDeleted').prop('checked'),
         comments: $('#reportComments').val()
         
     };
@@ -733,6 +737,9 @@ function saveAuditReport(e) {
 
     if (recordData.authorityId === 0)
         errors.push("Return issuing authority is required");
+
+    if (recordData.ownerId === 0)
+        errors.push("Return owner is required");
 
     if (recordData.requiredSubmissionDay === 0)
         errors.push("Day of month for submission is required");
@@ -772,6 +779,7 @@ function saveAuditReport(e) {
     if (errors.length > 0) {
         highlightReturnSubmissionField("#authorityId", recordData.authorityId === 0);
         highlightReturnSubmissionField("#statuteId", recordData.sectionId === 0);
+        highlightReturnSubmissionField("#ownerId", recordData.ownerId === 0);
         highlightReturnSubmissionField("#returnTypeId", recordData.returnTypeId === 0);
         highlightReturnSubmissionField("#departmentId", recordData.departmentId === 0);
         highlightReturnSubmissionField("#frequencyId", recordData.frequencyId === 0);
@@ -1101,7 +1109,7 @@ $(document).ready(function () {
         dropdownParent: $('#returnInnerPanel')
     });
 
-    $('#intervalType, #interval, #departmentId, #authorityId, #statuteId, #returnTypeId').select2({
+    $('#intervalType, #interval, #departmentId, #authorityId, #statuteId, #ownerId, #returnTypeId').select2({
         width: '100%',
         dropdownParent: $('#returnReportPanel')
     });
