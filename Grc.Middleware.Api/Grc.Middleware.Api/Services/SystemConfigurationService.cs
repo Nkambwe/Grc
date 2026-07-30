@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Azure;
-using Azure.Core;
 using Grc.Middleware.Api.Data.Containers;
 using Grc.Middleware.Api.Data.Entities.Support;
 using Grc.Middleware.Api.Data.Entities.System;

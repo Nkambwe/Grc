@@ -389,7 +389,7 @@ $('#frequencyTree').on("select_node.jstree", function (e, data) {
         selectedFrequency = parseInt(node.parent.replace("C_", ""));
 
         showReturnView(node.text);
-        loadSubmissions(selectedLaw);
+        loadSubmissions(selectedReturn);
     }
 });
 
