@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Grc.Middleware.Api.Data.Entities.Compliance.Regulations;
 using Grc.Middleware.Api.Enums;
 using Grc.Middleware.Api.Helpers;
 using Grc.Middleware.Api.Http.Requests;
@@ -636,10 +637,14 @@ namespace Grc.Middleware.Api.Controllers {
                 }
 
                 var status = GetPolicyStatus(request.Filter.Trim());
-                var documents = status switch {
-                    "ALL" => await _regulatoryDocuments.GetAllAsync(includeDeleted, d => d.Owner, d => d.DocumentType, d => d.Frequency),
-                    _ => await _regulatoryDocuments.GetAllAsync(p => p.Status == status, includeDeleted, d => d.Owner,d => d.DocumentType,d => d.Frequency),
-                };
+
+                IList<RegulatoryDocument> documents;
+                if (status.Equals("ALL")) {
+                    documents = await _regulatoryDocuments.GetAllAsync(includeDeleted, d => d.Owner, d => d.DocumentType, d => d.Frequency);
+                } else {
+                    documents = await _regulatoryDocuments.GetAllAsync(p => p.Status == status, includeDeleted, d => d.Owner, d => d.DocumentType, d => d.Frequency);
+                }
+
                 if (documents == null || !documents.Any()) {
                     var error = new ResponseError(ResponseCodes.SUCCESS,"No data","No statutory document records found");
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");

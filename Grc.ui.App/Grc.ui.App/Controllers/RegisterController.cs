@@ -1518,7 +1518,7 @@ namespace Grc.ui.App.Controllers {
 
         #region support - Regulatory Categories
 
-        [PermissionAuthorization(false, "ManageRegulatoryTypes", "ViewRegulatoryTypes")]
+        [PermissionAuthorization(false, "ManageRegulatoryTypes")]
         public async Task<IActionResult> ComplianceRegulatoryCategories() {
             try {
                 if (User.Identity?.IsAuthenticated == true) {
@@ -1556,7 +1556,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Retrieve Category", "User retrieved regulatory category", ActivityTypeDefaults.COMPLIACE_RETRIVE_CATEGORY, "Category")]
-        [PermissionAuthorization(false, "ManageRegulatoryTypes", "ViewRegulatoryTypes")]
+        [PermissionAuthorization(false, "ManageRegulatoryTypes")]
         public async Task<IActionResult> GetRegulatoryCategory(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -1894,7 +1894,7 @@ namespace Grc.ui.App.Controllers {
             );
         }
 
-        [PermissionAuthorization(false, "ManageRegulatoryTypes", "ViewRegulatoryTypes")]
+        [PermissionAuthorization(false, "ManageRegulatoryTypes")]
         public async Task<IActionResult> GetRegulatoryCategories() {
             try {
                 //..get user IP address
@@ -1947,7 +1947,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [HttpPost]
-        [PermissionAuthorization(false, "ManageRegulatoryTypes", "ViewRegulatoryTypes")]
+        [PermissionAuthorization(false, "ManageRegulatoryTypes")]
         public async Task<IActionResult> GetPagedCategories([FromBody] TableListRequest request) {
             try {
                 //..get user IP address
@@ -2042,7 +2042,7 @@ namespace Grc.ui.App.Controllers {
         }
 
         [LogActivityResult("Retrieve Type", "User retrieved regulatory type", ActivityTypeDefaults.COMPLIACE_RETRIVE_TYPE, "Regulatory_Type")]
-        [PermissionAuthorization(false, "ManageRegulatoryTypes", "ViewRegulatoryTypes")]
+        [PermissionAuthorization(false, "ManageRegulatoryTypes")]
         public async Task<IActionResult> GetRegulatoryType(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2111,7 +2111,7 @@ namespace Grc.ui.App.Controllers {
         [HttpPost]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
         [LogActivityResult("Add Type", "User added regulatory type", ActivityTypeDefaults.COMPLIACE_CREATE_TYPE, "Regulatory_Type")]
-        [PermissionAuthorization(true,"CreateRegulatoryTypes")]
+        [PermissionAuthorization(true, "CANCREATEREGULATORYTYPES")]
         public async Task<IActionResult> CreateRegulatoryType([FromBody] RegulatoryViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2168,7 +2168,7 @@ namespace Grc.ui.App.Controllers {
         [HttpPost]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
         [LogActivityResult("Update type", "User modified regulatory type", ActivityTypeDefaults.COMPLIANCE_EDITED_TYPE, "Regulatory_Type")]
-        [PermissionAuthorization(true, "EditRegulatoryTypes")]
+        [PermissionAuthorization(true, "CANUPDATEREGULATORYTYPES")]
         public async Task<IActionResult> UpdateRegulatoryType([FromBody] RegulatoryViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2225,7 +2225,7 @@ namespace Grc.ui.App.Controllers {
         [HttpDelete]
         [ServiceFilter(typeof(GrcAntiForgeryTokenAttribute))]
         [LogActivityResult("Delete type", "User deleted regulatory type", ActivityTypeDefaults.COMPLIANCE_DELETED_TYPE, "Regulatory_Type")]
-        [PermissionAuthorization(true, "EditRegulatoryTypes", "DeleteRegulatoryTypes")]
+        [PermissionAuthorization(true, "CANUPDATEREGULATORYTYPES", "CANDELETEREGULATORYTYPES")]
         public async Task<IActionResult> DeleteRegulatoryType(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -2371,7 +2371,7 @@ namespace Grc.ui.App.Controllers {
             );
         }
 
-        [PermissionAuthorization(false, "ManageRegulatoryTypes", "ViewRegulatoryTypes")]
+        [PermissionAuthorization(false, "ManageRegulatoryTypes")]
         public async Task<IActionResult> AllRegulatoryTypes([FromBody] TableListRequest request) {
             try {
                 //..get user IP address

@@ -150,7 +150,7 @@ function initRegulatoryTypeTable() {
                 headerSort: true,
                 formatter: function (cell) {
                     //..if user has permission to view/edit
-                    if (hasPermission("EditRegulatoryTypes")) {
+                    if (hasPermission("CANMODIFYREGULATORYTYPES")) {
                           return `<span class="clickable-title" onclick="viewRegulatoryTypeRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
                     } else {
                         return `<span >${cell.getValue()}</span>`
@@ -174,7 +174,7 @@ function initRegulatoryTypeTable() {
                 title: "ACTION",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                     if (hasPermission("DeleteRegulatoryTypes")) { 
+                    if (hasPermission("CANDELETEREGULATORYTYPES")) { 
                          return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteRegulatoryTypeRecord(${rowData.id})">
                                 <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
                                 <span>DELETE</span>
@@ -588,6 +588,8 @@ function getRegulationTypeAntiForgeryToken() {
 
 $(document).ready(function () {
     initRegulatoryTypeTable();
+
+    console.log(window.userPermissions);
 
     $('#typeName').on('keyup', function () {
         var value = $(this).val();

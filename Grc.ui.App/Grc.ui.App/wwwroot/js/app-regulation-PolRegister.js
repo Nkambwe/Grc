@@ -387,22 +387,55 @@ $('.action-btn-pol-report-summery').on('click', function () {
 });
 
 $('.action-btn-pol-report-review').on('click', function () {
-   $.ajax({
-        url: '/grc/compliance/register/policies/export/reviews',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(policyRegisterTable.getData()),
-        xhrFields: { responseType: 'blob' },
-        success: function (blob) {
-            let link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = "All_Policies_Review.xlsx";
-            link.click();
-        },
-        error: function () {
-            toastr.error("Export failed. Please try again.");
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/grc/compliance/register/policies/export/reviews');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.responseType = 'blob';
+
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            // Check if it's JSON (error) or Excel file
+            var contentType = xhr.getResponseHeader('content-type');
+
+            if (contentType && contentType.includes('application/json')) {
+                // It's an error response
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    try {
+                        var response = JSON.parse(e.target.result);
+                        toastr.error(response.message || "Export failed. Please try again.");
+                    } catch (parseError) {
+                        toastr.error("Export failed. Please try again.");
+                    }
+                };
+                reader.readAsText(xhr.response);
+            } else {
+                // It's the Excel file
+                let link = document.createElement('a');
+                link.href = window.URL.createObjectURL(xhr.response);
+                link.download = "All_Policies_Review.xlsx";
+                link.click();
+            }
+        } else {
+            // HTTP error (400, 500, etc.)
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    var response = JSON.parse(e.target.result);
+                    toastr.error(response.message || "Export failed. Please try again.");
+                } catch (parseError) {
+                    toastr.error("Export failed. Please try again.");
+                }
+            };
+            reader.readAsText(xhr.response);
         }
-    });
+    };
+
+    xhr.onerror = function () {
+        toastr.error("Export failed. Please try again.");
+    };
+
+    xhr.send(JSON.stringify(policyRegisterTable.getData()));
 });
 
 $('.action-btn-pol-report-uptodate').on('click', function () {

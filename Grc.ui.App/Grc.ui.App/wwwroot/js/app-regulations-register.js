@@ -390,10 +390,9 @@ let actsTable = new Tabulator("#actsTable", {
                 const id = cell.getRow().getData().id;
                 //..if user has permission to view/edit
                 if (hasPermission("CANUPDATESTATUTE")) {
-                    return `<span class="clickable-title"
-                            onclick="viewSection(${id})">
-                        ${cell.getValue()}
-                    </span>`;
+                    return `<span class="clickable-title" onclick="viewSection(${id})">
+                                ${cell.getValue()}
+                            </span>`;
                 } else {
                     return `<span >${cell.getValue()}</span>`
                 }
@@ -492,7 +491,7 @@ function loadActs(lawId) {
     selectedLaw = lawId;
     $("#lawView").removeClass("d-none");
     $("#categoryView").addClass("d-none");
-
+    console.log("Load acts");
     actsTable.setData();
 }
 

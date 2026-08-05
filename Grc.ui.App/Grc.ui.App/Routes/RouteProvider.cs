@@ -2078,13 +2078,13 @@
 
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-settings-support-categories-all",
-                pattern: "grc/compliance/support/categories-all",
+                pattern: "/grc/compliance/support/categories-all",
                 defaults: new { controller = "ComplianceReturn", action = "AllRegulatoryCategories" }
             );
 
             routeBuilder.MapControllerRoute(
                 name: "app-compliance-settings-support-paged-categories-all",
-                pattern: "grc/compliance/support/paged-categories-all",
+                pattern: "/grc/compliance/support/paged-categories-all",
                 defaults: new { controller = "Register", action = "GetPagedCategories" }
             );
 

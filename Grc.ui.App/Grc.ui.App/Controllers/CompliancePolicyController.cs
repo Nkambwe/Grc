@@ -841,6 +841,9 @@ namespace Grc.ui.App.Controllers {
             if (result.HasError || result.Data == null)
                 return Ok(new { success = false, message = result.Error.Message ?? "Failed to retrieve return data" });
 
+            if(result.Data.Count == 0)
+                return Ok(new { success = false, message = result?.Error?.Message ?? "No data found for report" });
+
             using var workbook = new XLWorkbook();
             var ws = workbook.Worksheets.Add("Policies");
 

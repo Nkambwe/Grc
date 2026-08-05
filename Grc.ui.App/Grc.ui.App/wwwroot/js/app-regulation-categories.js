@@ -60,6 +60,8 @@ function initRegulatoryCategoryTable() {
                     requestBody.sortDirection = params.sort[0].dir === "asc" ? "Ascending" : "Descending";
                 }
 
+                console.log("=== REQUEST BODY ===", requestBody); // Log request
+
                 //..handle filtering/search
                 if (params.filter && params.filter.length > 0) {
                     let categoryFilter = params.filter.find(f => f.field === "category");
@@ -78,7 +80,21 @@ function initRegulatoryCategoryTable() {
                         resolve(response);
                     },
                     error: function (xhr, status, error) {
-                        //..hide permission alert
+                        console.log("=== ERROR RESPONSE ===", xhr);
+                        console.log("=== STATUS ===", status);
+                        console.log("=== STATUS CODE ===", xhr.status);
+                        console.log("=== RESPONSE TEXT ===", xhr.responseText);
+
+                        // Try to parse error response
+                        try {
+                            var errorResponse = JSON.parse(xhr.responseText);
+                            console.log("=== PARSED ERROR ===", errorResponse);
+                            console.log("=== ERROR MESSAGE ===", errorResponse.message);
+                        } catch (e) {
+                            console.log("=== COULD NOT PARSE ERROR ===", xhr.responseText);
+                        }
+
+                        //...hide permission alert
                         $('#permissionAlert').hide();
 
                         if (xhr.status === 401) {
@@ -87,6 +103,7 @@ function initRegulatoryCategoryTable() {
 
                         if (xhr.status === 403) {
                             $('#permissionAlert').show();
+                            console.log("=== PERMISSION ERROR - Check required permission ===");
 
                             //..return empty dataset
                             resolve({
@@ -151,7 +168,7 @@ function initRegulatoryCategoryTable() {
                 headerSort: true,
                 formatter: function (cell) {
                     //..if user has permission to view/edit
-                    if (hasPermission("EditRegulatoryTypes")) {
+                    if (hasPermission("CANUPDATEREGULATORYCATEGORIES")) {
                          return `<span class="clickable-title" onclick="viewRegulatoryCategoryRecord(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
                     } else {
                         return `<span >${cell.getValue()}</span>`
@@ -192,7 +209,7 @@ function initRegulatoryCategoryTable() {
                 title: "ACTION",
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
-                     if (hasPermission("DeleteRegulatoryTypes")) { 
+                    if (hasPermission("CANDELETEREGULATORYCATEGORIES")) { 
                          return `
                         <button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteRegulatoryCategoryRecord(${rowData.id})">
                             <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
@@ -673,6 +690,8 @@ function highlightCategoryField(selector, hasError, message) {
 
 $(document).ready(function () {
     initRegulatoryCategoryTable();
+
+    console.log(window.userPermissions);
 
      //..category name validation 
     $('#categoryName').on('keyup', function () {
