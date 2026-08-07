@@ -381,9 +381,7 @@ let actsTable = new Tabulator("#actsTable", {
             field: "sectionNumber",
             headerFilter: "input",
             width: 120,
-            field: "lawName",
-            widthGrow: 4,
-            minWidth: 280,
+            minWidth: 120,
             headerSort: true,
             formatter: function (cell) {
                 console.log(cell.getValue());

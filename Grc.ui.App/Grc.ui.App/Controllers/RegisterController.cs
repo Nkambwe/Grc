@@ -557,7 +557,7 @@ namespace Grc.ui.App.Controllers {
                     var laws = statutes.Select(l => new {
                         id = l.Id,
                         sectionNumber = l.Section,
-                        title = l.Summery,
+                        title = l.Obligation,
                         coverage = l.Coverage,
                         isCovered = l.IsCovered,
                         assurance = l.ComplianceAssurance,
@@ -657,7 +657,7 @@ namespace Grc.ui.App.Controllers {
                             sections = law.Sections.Select(section => new {
                                 sectionId = section.Id,
                                 section = section.Section,
-                                requirement = section.Requirement,
+                                requirement = $"{section.Section} {section.Requirement}",
                                 coverage = section.Coverage,
                                 isCovered = section.IsCovered,
                                 assurance = section.Assurance,

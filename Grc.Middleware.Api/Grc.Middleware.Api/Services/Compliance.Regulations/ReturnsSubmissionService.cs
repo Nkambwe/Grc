@@ -1004,7 +1004,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                         d => d.Users);
 
                     string compUsers = compliance != null && compliance.Any()
-                        ? string.Join(";", compliance
+                        ? string.Join(",", compliance
                             .SelectMany(d => d.Users)
                             .Select(u => u.EmailAddress)
                             .Where(e => !string.IsNullOrEmpty(e))
@@ -1164,7 +1164,7 @@ namespace Grc.Middleware.Api.Services.Compliance.Regulations {
                         d => d.Users);
 
                     string compUsers = compliance != null && compliance.Any()
-                        ? string.Join(";", compliance
+                        ? string.Join(",", compliance
                             .SelectMany(d => d.Users)
                             .Select(u => u.EmailAddress)
                             .Where(e => !string.IsNullOrEmpty(e))
