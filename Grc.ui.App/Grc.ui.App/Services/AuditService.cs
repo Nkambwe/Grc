@@ -486,6 +486,26 @@ namespace Grc.ui.App.Services {
             }
         }
 
+        public async Task<GrcResponse<ListResponse<GrcAuditExceptionResponse>>> GetAuditIssuesReportAsync(GrcIdRequest request) {
+            try {
+
+                if (request == null) {
+                    var error = new GrcResponseError(GrcStatusCodes.BADREQUEST, "Invalid Request object", "Request object cannot be null");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return new GrcResponse<ListResponse<GrcAuditExceptionResponse>>(error);
+                }
+
+                var endpoint = $"{EndpointProvider.Compliance.AuditBase}/paged-audit-issues";
+                return await HttpHandler.PostAsync<GrcIdRequest, ListResponse<GrcAuditExceptionResponse>>(endpoint, request);
+            } catch (Exception ex) {
+                Logger.LogActivity($"Unexpected Error: {ex.Message}", "ERROR");
+                Logger.LogActivity(ex.StackTrace, "STACKTRACE");
+                await ProcessErrorAsync(ex.Message, "AUDIT-SERVICE", ex.StackTrace);
+                var error = new GrcResponseError(GrcStatusCodes.SERVERERROR, "An unexpected error occurred", "Cannot proceed! An error occurred, please try again later");
+                return new GrcResponse<ListResponse<GrcAuditExceptionResponse>>(error);
+            }
+        }
+
         public async Task<GrcResponse<PagedResponse<GrcAuditReportResponse>>> GetAuditReportsAsync(TableListRequest request) {
             try {
 

@@ -208,7 +208,7 @@ namespace Grc.ui.App.Controllers {
             return Redirect(Url.Action("Login", "Application"));
         }
 
-        [LogActivityResult("Retrieve Act", "User retrieved legal act", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_EXCEPTIONS, "AuditException")]
+        [LogActivityResult("Retrieve Exception", "User retrieved Audit Exception report", ActivityTypeDefaults.COMPLIANCE_RETRIEVE_EXCEPTIONS, "AuditException")]
         public async Task<IActionResult> GetAuditExceptionReport(long id) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -241,7 +241,7 @@ namespace Grc.ui.App.Controllers {
 
                 var response = result.Data;
                 var exceRecord = new {
-                    id = response.Id,
+                    id,
                     reference = response.Reference ?? string.Empty,
                     reportName = response.ReportName ?? string.Empty,
                     auditedOn = response.AuditedOn,
@@ -2023,6 +2023,154 @@ namespace Grc.ui.App.Controllers {
                  $"EXCEPTION-SUMMERY-{DateTime.Today:MM-yyyy}.xlsx");
         }
 
+        [HttpPost]
+        [PermissionAuthorization(true, "CANVIEWCOMPLIANCEAUDITREPORTS", "CANCREATECOMPLIANCEAUDITREPORTS")]
+        public async Task<IActionResult> GetAuditIssuesReport(long id) {
+            var ipAddress = WebHelper.GetCurrentIpAddress();
+            var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
+            if (userResponse.HasError || userResponse.Data == null)
+                return Ok(new { success = false, message = "Unable to resolve current user" });
+
+            if (id == 0) {
+                return BadRequest(new { success = false, message = "Report Id is required", data = new { } });
+            }
+
+            var currentUser = userResponse.Data;
+            GrcIdRequest request = new() {
+                RecordId = id,
+                UserId = currentUser.UserId,
+                IPAddress = ipAddress,
+                IsDeleted = false
+            };
+
+            var result = await _auditService.GetAuditIssuesReportAsync(request);
+            if (result.HasError || result.Data == null) {
+                var errMsg = result.Error?.Message ?? "Error occurred while retrieving audit report";
+                Logger.LogActivity(errMsg);
+                return Ok(new { success = false, message = errMsg, data = new { } });
+            }
+
+            var data = result.Data.Data;
+            if (data == null || data.Count == 0) {
+                Logger.LogActivity("No data");
+                return Ok(new { success = false, message = "No data found for this report", data = new { } });
+            }
+
+            // Generate Excel file
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("Audit Issues Report");
+
+            // Headers based on your finding format
+            string[] headers = {
+                "FINDING",
+                "PROPOSED ACTION",
+                "STATUS",
+                "RISK",
+                "DEPARTMENT",
+                "EXECUTIONER"
+            };
+
+            // Set headers
+            for (int col = 0; col < headers.Length; col++) {
+                ws.Cell(1, col + 1).Value = headers[col];
+            }
+
+            // Header styling
+            var header = ws.Range(1, 1, 1, headers.Length);
+            header.Style.Font.Bold = true;
+            header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            header.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            header.Style.Fill.BackgroundColor = XLColor.LightGray;
+            header.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
+            header.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+            // Header height
+            ws.Row(1).Height = 30;
+
+            // Add data
+            int row = 2;
+            foreach (var item in data) {
+                // Finding column - combine Finding with Recommendations
+                string findingText = item.Finding;
+                if (!string.IsNullOrEmpty(item.Recomendations)) {
+                    findingText += "\n\nRECOMMENDATIONS:\n" + item.Recomendations;
+                }
+                ws.Cell(row, 1).Value = findingText;
+                ws.Cell(row, 1).Style.Alignment.WrapText = true;
+
+                // Proposed Action
+                ws.Cell(row, 2).Value = item.ProposedAction ?? "";
+                ws.Cell(row, 2).Style.Alignment.WrapText = true;
+
+                // Status
+                ws.Cell(row, 3).Value = item.Status ?? "PENDING";
+
+                // Risk Rating
+                ws.Cell(row, 4).Value = item.RiskRating;
+                ws.Cell(row, 4).Style.NumberFormat.Format = "0.00";
+
+                // Department - use Responsible field as department
+                ws.Cell(row, 5).Value = item.Responsible ?? "";
+
+                // Executioner
+                ws.Cell(row, 6).Value = item.Executioner ?? "Pending executed";
+
+                row++;
+            }
+
+            int lastDataRow = row - 1;
+
+            // Style columns
+            ws.Column(1).Width = 80;  // Finding column - wider for detailed text
+            ws.Column(2).Width = 60;  // Proposed Action column
+            ws.Column(3).Width = 15;  // Status
+            ws.Column(4).Width = 12;  // Risk
+            ws.Column(5).Width = 25;  // Department
+            ws.Column(6).Width = 20;  // Executioner
+
+            // Apply word wrap to all data cells
+            var dataRange = ws.Range(2, 1, lastDataRow, headers.Length);
+            dataRange.Style.Alignment.WrapText = true;
+            dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            dataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+            // Alternate row coloring for better readability
+            for (int r = 2; r <= lastDataRow; r++) {
+                if (r % 2 == 0) {
+                    ws.Row(r).Style.Fill.BackgroundColor = XLColor.FromHtml("#F5F5F5");
+                }
+            }
+
+            // Conditional formatting for Status column (Column 3)
+            var statusRange = ws.Range(2, 3, lastDataRow, 3);
+            statusRange.AddConditionalFormat().WhenEquals("CLOSED").Fill.SetBackgroundColor(XLColor.Green).Font.SetFontColor(XLColor.White);
+            statusRange.AddConditionalFormat().WhenEquals("OPEN").Fill.SetBackgroundColor(XLColor.Orange);
+            statusRange.AddConditionalFormat().WhenEquals("PENDING").Fill.SetBackgroundColor(XLColor.Yellow);
+            statusRange.AddConditionalFormat().WhenEquals("DUE").Fill.SetBackgroundColor(XLColor.Orange);
+            statusRange.AddConditionalFormat().WhenEquals("DIE").Fill.SetBackgroundColor(XLColor.Red).Font.SetFontColor(XLColor.White);
+            statusRange.AddConditionalFormat().WhenEquals("IN PROGRESS").Fill.SetBackgroundColor(XLColor.LightBlue);
+
+            // Conditional formatting for Risk column (Column 4) - color scale
+            var riskRange = ws.Range(2, 4, lastDataRow, 4);
+            riskRange.AddConditionalFormat().WhenLessThan(1).Fill.SetBackgroundColor(XLColor.Green);
+            riskRange.AddConditionalFormat().WhenBetween(1, 3).Fill.SetBackgroundColor(XLColor.Yellow);
+            riskRange.AddConditionalFormat().WhenGreaterThan(3).Fill.SetBackgroundColor(XLColor.Red).Font.SetFontColor(XLColor.White);
+
+            // Add header filters
+            ws.Range(1, 1, 1, headers.Length).SetAutoFilter();
+
+            // Freeze header row
+            ws.SheetView.FreezeRows(1);
+
+            // Save to stream
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+
+            return File(stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"Audit_Issues_Report_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx");
+        }
         #endregion
     }
 

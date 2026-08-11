@@ -37,6 +37,7 @@ namespace Grc.ui.App.Services {
 
         #region Audit Report
         Task<GrcResponse<GrcAuditReportResponse>> GetAuditReportAsync(GrcIdRequest request);
+        Task<GrcResponse<ListResponse<GrcAuditExceptionResponse>>> GetAuditIssuesReportAsync(GrcIdRequest request);
         Task<GrcResponse<PagedResponse<GrcAuditReportResponse>>> GetAuditReportsAsync(TableListRequest request);
         Task<GrcResponse<PagedResponse<GrcAuditReportResponse>>> GetAuditTentativeReportsAsync(AuditListViewModel request, long userId, string ipAddress);
         Task<GrcResponse<ServiceResponse>> CreateAuditReportAsync(AuditReportViewModel model, long userId, string ipAddress);

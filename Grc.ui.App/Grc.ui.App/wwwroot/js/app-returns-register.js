@@ -15,9 +15,9 @@ function loadFrequencyTree() {
         url: "/grc/returns/compliance-returns/frequency-returns",
         type: "POST",
         contentType: "application/json",
-        data: JSON.stringify(request), 
+        data: JSON.stringify(request),
         success: function (res) {
-            //..destroy previous tree if exists
+            // Destroy previous tree if exists
             if ($('#frequencyTree').jstree(true)) {
                 $('#frequencyTree').jstree("destroy");
             }
@@ -38,12 +38,12 @@ function loadFrequencyTree() {
                 const tree = $(this).jstree(true);
                 const node = data.node;
 
-                //..expand node if it has children
+                // Expand node if it has children
                 if (node.children.length > 0) {
                     tree.toggle_node(node);
                 }
 
-                //..frequency logic
+                // Frequency logic
                 if (node.type === "frequency") {
                     selectedFrequency = parseInt(node.id.replace("C_", ""));
                     selectedReturn = null;
@@ -57,9 +57,8 @@ function loadFrequencyTree() {
                     loadReturns(selectedFrequency);
                 }
 
-                //..feport logic
+                // Report logic
                 if (node.type === "report") {
-
                     selectedReturn = parseInt(node.id.replace("L_", ""));
                     selectedFrequency = parseInt(node.parent.replace("C_", ""));
                     showReturnView(node.text);
@@ -71,11 +70,8 @@ function loadFrequencyTree() {
             console.error("Error loading tree:", error);
             console.error("Response:", xhr.responseText);
         }
-
     });
-
 }
-
 
 let reportsTable = new Tabulator("#returnsTable", {
     ajaxURL: "/grc/returns/compliance-returns/returns-list",
@@ -106,7 +102,6 @@ let reportsTable = new Tabulator("#returnsTable", {
     },
     ajaxRequestFunc: function (url, config, params) {
         return new Promise((resolve, reject) => {
-
             let requestBody = {
                 activityTypeId: selectedFrequency,
                 pageIndex: params.page || 1,
@@ -116,7 +111,7 @@ let reportsTable = new Tabulator("#returnsTable", {
                 sortDirection: "Ascending"
             };
 
-            //..handle sorting
+            // Handle sorting
             if (params.sort && params.sort.length > 0) {
                 requestBody.sortBy = params.sort[0].field;
                 requestBody.sortDirection = params.sort[0].dir === "asc" ? "Ascending" : "Descending";
@@ -137,7 +132,6 @@ let reportsTable = new Tabulator("#returnsTable", {
             });
         });
     },
-
     ajaxResponse: function (url, params, response) {
         return {
             data: response.data || [],
@@ -215,7 +209,7 @@ let submissionsTable = new Tabulator("#submissionsTable", {
                 sortDirection: "Ascending"
             };
 
-            //..handle sorting
+            // Handle sorting
             if (params.sort && params.sort.length > 0) {
                 requestBody.sortBy = params.sort[0].field;
                 requestBody.sortDirection = params.sort[0].dir === "asc" ? "Ascending" : "Descending";
@@ -268,12 +262,10 @@ let submissionsTable = new Tabulator("#submissionsTable", {
             formatter: function (cell) {
                 const value = cell.getValue();
                 if (!value) return "";
-
                 const d = new Date(value);
                 const day = String(d.getDate()).padStart(2, "0");
                 const month = String(d.getMonth() + 1).padStart(2, "0");
                 const year = d.getFullYear();
-
                 return `${day}-${month}-${year}`;
             }
         },
@@ -285,12 +277,10 @@ let submissionsTable = new Tabulator("#submissionsTable", {
             formatter: function (cell) {
                 const value = cell.getValue();
                 if (!value) return "";
-
                 const d = new Date(value);
                 const day = String(d.getDate()).padStart(2, "0");
                 const month = String(d.getMonth() + 1).padStart(2, "0");
                 const year = d.getFullYear();
-
                 return `${day}-${month}-${year}`;
             }
         },
@@ -309,17 +299,13 @@ let submissionsTable = new Tabulator("#submissionsTable", {
             formatter: function (cell) {
                 const status = cell.getValue();
                 const el = cell.getElement();
-
                 let bg = "#FF2413";
                 if (status === "CLOSED") bg = "#09B831";
                 else if (status === "OPEN") bg = "#FF8503";
-
-                // color the whole cell
                 el.style.backgroundColor = bg;
                 el.style.color = "#FFFFFF";
                 el.style.fontWeight = "600";
                 el.style.textAlign = "center";
-
                 return status;
             }
         },
@@ -332,12 +318,10 @@ let submissionsTable = new Tabulator("#submissionsTable", {
             formatter: function (cell) {
                 const value = cell.getValue();
                 if (!value) return "";
-
                 const d = new Date(value);
                 const day = String(d.getDate()).padStart(2, "0");
                 const month = String(d.getMonth() + 1).padStart(2, "0");
                 const year = d.getFullYear();
-
                 return `${day}-${month}-${year}`;
             }
         },
@@ -355,43 +339,13 @@ let submissionsTable = new Tabulator("#submissionsTable", {
             widthGrow: 4,
             minWidth: 280
         }
-
     ]
-
 });
 
-$('#frequencyTree').on("select_node.jstree", function (e, data) {
-
-    let node = data.node;
-    const tree = $('#frequencyTree').jstree(true);
-    if (data.node.children.length > 0) {
-        tree.toggle_node(data.node);
-    }
-
-    if (node.type === "frequency") {
-        selectedFrequency = parseInt(node.id.replace("C_", ""));
-        selectedReturn = null;
-
-        // Show category view
-        $("#returnView").removeClass("d-none");
-        $("#submissionView").addClass("d-none");
-
-        $("#frequencyBreadcrumb").html(`<li class="breadcrumb-item active">${node.text}</li>`);
-
-        reportsTable.setData();
-
-        showFrequencyBreadcrubs(node.text);
-        loadReturns(selectedFrequency);
-    }
-
-    if (node.type === "report") {
-        selectedReturn = parseInt(node.id.replace("L_", ""));
-        selectedFrequency = parseInt(node.parent.replace("C_", ""));
-
-        showReturnView(node.text);
-        loadSubmissions(selectedReturn);
-    }
-});
+// Remove the duplicate event listener - we only need the one in loadFrequencyTree
+// $('#frequencyTree').on("select_node.jstree", function (e, data) {
+//     // This is now handled inside loadFrequencyTree
+// });
 
 $('.action-btn-returns-report-daily').on('click', function () {
     $.ajax({
@@ -598,7 +552,6 @@ function viewReturn(id) {
         .catch(error => {
             console.error('Error loading Return Report:', error);
             Swal.close();
-
             Swal.fire({
                 title: 'Error',
                 text: 'Failed to load Return Report details. Please try again.',
@@ -616,11 +569,12 @@ function find2Report(id) {
             success: function (response) {
                 if (response.success && response.data) {
                     resolve(response.data);
+                } else {
                     resolve(null);
                 }
             },
             error: function (xhr, status, error) {
-                Swal.fire("Error", error);
+                reject(error);
             }
         });
     });
@@ -629,40 +583,42 @@ function find2Report(id) {
 function open2Panel(title, record, isEdit) {
     $('#returnEdit').val(isEdit);
 
-    console.log(record)
-    //..initialize form fields
+    console.log(record);
+
+    // Initialize form fields - using .val() directly without .trigger('change')
     $('#returnId').val(record.id);
-    $('#statuteId').val(record.statuteId || 0).trigger('change');
+    $('#statuteId').val(record.statuteId || 0);
     $('#returnName').val(record.returnName || '');
-    $('#ownerId').val(record.ownerId || 0).trigger('change');
-    $('#returnTypeId').val(record.returnTypeId || 0).trigger('change');
+    $('#ownerId').val(record.ownerId || 0);
+    $('#returnTypeId').val(record.returnTypeId || 0);
     $('#frequencyId').val(record.frequencyId || 0);
-    $('#authorityId').val(record.authorityId || 0).trigger('change');
-    $('#departmentId').val(record.departmentId || 0).trigger('change');
+    $('#authorityId').val(record.authorityId || 0);
+    $('#departmentId').val(record.departmentId || 0);
     $('#returnRisk').val(record.riskAttached || '');
     $('#sendReminder').prop('checked', record.sendReminder);
-    $('#interval').val(record.interval || 'NA').trigger('change');
-    $('#intervalType').val(record.intervalType || 'NA').trigger('change');
-    $('#sendReminder').prop('checked', record.sendReminder).trigger('change');
+    $('#interval').val(record.interval || 'NA');
+    $('#intervalType').val(record.intervalType || 'NA');
     $('#reminderMessage').val(record.reminderMessage || '');
-    $('#reportDeleted').prop('checked', record.isDeleted).trigger('change'); 
+    $('#reportDeleted').prop('checked', record.isDeleted);
     $('#reportComments').val(record.comments || '');
     $('#submissionDay').val(record.requiredSubmissionDay || '0');
 
     if (!record.requiredSubmissionDate) {
-        flatpickrInstances["requiredSubmissionDate"]?.clear(); 
+        if (flatpickrInstances["requiredSubmissionDate"]) {
+            flatpickrInstances["requiredSubmissionDate"].clear();
+        }
         record.requiredSubmissionDate = null;
     } else {
         const submissionDate = normalize3Date(record.requiredSubmissionDate);
-
         if (submissionDate instanceof Date && !isNaN(submissionDate)) {
-            flatpickrInstances["requiredSubmissionDate"]?.setDate(submissionDate, true);
-        
+            if (flatpickrInstances["requiredSubmissionDate"]) {
+                flatpickrInstances["requiredSubmissionDate"].setDate(submissionDate, true);
+            }
         }
     }
-    //..load dialog window
+
+    // Load dialog window
     closeReportPane();
-    
     $('#returnReportTitle').text(title);
     $('#returnReportPanel').addClass('active');
     $('#returnInnerOverlay').addClass('active');
@@ -671,7 +627,6 @@ function open2Panel(title, record, isEdit) {
 
 function normalize3Date(value) {
     if (!value) return null;
-
     const d = new Date(value);
     return isNaN(d) ? null : d;
 }
@@ -679,6 +634,7 @@ function normalize3Date(value) {
 function closeReportPane() {
     $('#returnReportPanel').removeClass('active');
     $('#returnInnerOverlay').removeClass('active');
+    $('body').css('overflow', '');
 }
 
 $('#btnAddReturn').on('click', function () {
@@ -686,20 +642,20 @@ $('#btnAddReturn').on('click', function () {
         id: 0,
         statuteId: 0,
         returnName: '',
-        returnTypeId:0,
+        returnTypeId: 0,
         frequencyId: selectedFrequency,
         authorityId: 0,
-        ownerId:0,
+        ownerId: 0,
         status: 'UNKNOWN',
         riskAttached: '',
         sendReminder: true,
         interval: 'NA',
         intervalType: 'NA',
-        reminderMessage:'',
+        reminderMessage: '',
         isDeleted: false,
         requiredSubmissionDay: 0,
-        requiredSubmissionDate:'',
-        comments:''
+        requiredSubmissionDate: '',
+        comments: ''
     }, false);
 });
 
@@ -708,12 +664,12 @@ function saveReturnReport(e) {
 
     let isEdit = $('#returnEdit').val();
 
-    //..build record payload from form
+    // Build record payload from form
     let recordData = {
         id: Number($('#returnId').val()) || 0,
         sectionId: Number($('#statuteId').val()) || 0,
         returnName: $('#returnName').val(),
-        ownerId: Number($('#ownerId').val()) || 0,
+        ownerId: Number($('#ownerReturnId').val()) || 0,
         returnTypeId: Number($('#returnTypeId').val()) || 0,
         departmentId: Number($('#departmentId').val()) || 0,
         frequencyId: Number($('#frequencyId').val()) || 0,
@@ -725,19 +681,22 @@ function saveReturnReport(e) {
         requiredSubmissionDate: $('#requiredSubmissionDate').val(),
         requiredSubmissionDay: Number($('#submissionDay').val()) || 0,
         reminder: $('#reminderMessage').val(),
-        isDeleted:$('#reportDeleted').prop('checked'),
+        isDeleted: $('#reportDeleted').prop('checked'),
         comments: $('#reportComments').val()
-        
     };
 
-    //..validate required fields
+    console.log(recordData);
+
+    // Validate required fields
     let errors = [];
     if (!recordData.requiredSubmissionDate)
         errors.push("Submission date is required");
 
+    console.log(`Authority ID >> ${recordData.authorityId}`);
     if (recordData.authorityId === 0)
         errors.push("Return issuing authority is required");
 
+    console.log(`Owner ID >> ${recordData.ownerId}`);
     if (recordData.ownerId === 0)
         errors.push("Return owner is required");
 
@@ -745,12 +704,12 @@ function saveReturnReport(e) {
         errors.push("Day of month for submission is required");
 
     if (recordData.sectionId === 0) {
-        errors.push("Enforcing law field is required"); 
+        errors.push("Enforcing law field is required");
     }
 
     if (recordData.returnTypeId === 0) {
         errors.push("Return type field is required");
-    }  
+    }
 
     if (recordData.departmentId === 0) {
         errors.push("Responsible department field is required");
@@ -765,21 +724,25 @@ function saveReturnReport(e) {
     if (!recordData.riskAttached)
         errors.push("Provide risk resulting from breach of submission");
 
+    console.log(`Remider Msg >> ${recordData.sendReminder}`);
     if (recordData.sendReminder) {
+        console.log(`Remider Msg >> ${recordData.reminder}`);
         if (!recordData.reminder)
             errors.push("Reminder message field is required");
 
+        console.log(`Internal Type >> ${recordData.intervalType}`);
         if (!recordData.intervalType || recordData.intervalType === 'NA')
             errors.push("Interval type is required.");
 
-        if (!recordData.interval || recordData.intervalType === 'NA')
+        console.log(`Internal Field >> ${recordData.interval}`);
+        if (!recordData.interval || recordData.interval === 'NA')
             errors.push("Interval field is required.");
     }
 
     if (errors.length > 0) {
         highlightReturnSubmissionField("#authorityId", recordData.authorityId === 0);
         highlightReturnSubmissionField("#statuteId", recordData.sectionId === 0);
-        highlightReturnSubmissionField("#ownerId", recordData.ownerId === 0);
+        highlightReturnSubmissionField("#ownerReturnId", recordData.ownerId === 0);
         highlightReturnSubmissionField("#returnTypeId", recordData.returnTypeId === 0);
         highlightReturnSubmissionField("#departmentId", recordData.departmentId === 0);
         highlightReturnSubmissionField("#frequencyId", recordData.frequencyId === 0);
@@ -790,17 +753,17 @@ function saveReturnReport(e) {
         if (recordData.sendReminder) {
             highlightReturnSubmissionField("#reminderMessage", !recordData.reminder);
             highlightReturnSubmissionField("#intervalType", !recordData.intervalType || recordData.intervalType === 'NA');
-            highlightReturnSubmissionField("#interval", !recordData.interval);
+            highlightReturnSubmissionField("#interval", !recordData.interval || recordData.interval === 'NA');
         }
 
         Swal.fire({
-            title: "Return validation Validation",
+            title: "Return Validation",
             html: `<div style="text-align:left;">${errors.join("<br>")}</div>`,
         });
         return;
     }
 
-    //..call backend
+    // Call backend
     saveReturnReportRecord(isEdit, recordData);
 }
 
@@ -836,8 +799,6 @@ function saveReturnReportRecord(isEdit, payload) {
 
             Swal.fire(res.message || (isEdit ? "Return report updated successfully" : "Return report created successfully"));
             closeReportPane();
-
-            // reload table
             reportsTable.replaceData();
         },
         error: function (xhr, status, error) {
@@ -848,10 +809,8 @@ function saveReturnReportRecord(isEdit, payload) {
                     errorMessage = response.message;
                 }
             } catch (e) {
-                //..if parsing fails, use the default error
                 errorMessage = "Unexpected error occurred";
             }
-
             Swal.fire(isEdit ? "Update return report" : "Save return report", errorMessage);
         }
     });
@@ -876,7 +835,7 @@ function viewSubmission(id) {
                     openSubmissionPanel(record);
                 } catch (err) {
                     console.error("openSubmissionPanel failed:", err);
-                    throw err; 
+                    throw err;
                 }
             } else {
                 Swal.fire({
@@ -897,14 +856,12 @@ function viewSubmission(id) {
 }
 
 function findReturnSubmission(id) {
-
     return new Promise((resolve, reject) => {
         $.ajax({
             url: `/grc/returns/compliance-returns/submissions/retrieve/${id}`,
             type: "GET",
             dataType: "json",
             success: function (response) {
-
                 console.log(`Response >> `, response);
                 if (response.success && response.data) {
                     resolve(response.data);
@@ -923,15 +880,15 @@ function findReturnSubmission(id) {
 function closeSubmissionPane() {
     $('#returnInnerOverlay').removeClass('active');
     $('#returnInnerPanel').removeClass('active');
+    $('body').css('overflow', '');
 }
 
 function openSubmissionPanel(record) {
-
     $('#submissionId').val(record.id);
     $('#title').val(record.title || '');
     $('#period').val(record.period || '');
-    $('#ownerId').val(record.period || '0');
-    $('#status').val(record.status || 'UNKNOWN').trigger('change');
+    $('#ownerReturnId').val(record.period || '0');
+    $('#status').val(record.status || 'UNKNOWN');
     $('#isBreached').prop('checked', record.isBreached);
     $('#submissionBreach').val(record.isBreached ? 'YES' : 'NO');
     $('#riskAttached').val(record.riskAttached || '');
@@ -947,7 +904,7 @@ function openSubmissionPanel(record) {
         $('#period').addClass('breach-marker');
     }
 
-    //..load dialog window
+    // Load dialog window
     closeSubmissionPane();
     $('#returnInnerOverlay').addClass('active');
     $('#returnInnerPanel').addClass('active');
@@ -957,10 +914,10 @@ function openSubmissionPanel(record) {
 function updateSubmission(e) {
     e.preventDefault();
 
-    //..build record payload from form
+    // Build record payload from form
     let recordData = {
         id: Number($('#submissionId').val()) || 0,
-        ownerId: Number($('#ownerId').val()) || 0,
+        ownerId: Number($('#ownerReturnId').val()) || 0,
         submissionBreach: $('#submissionBreach').val(),
         isBreached: $('#isBreached').is(':checked') ? true : false,
         comments: $('#comments').val(),
@@ -971,7 +928,7 @@ function updateSubmission(e) {
         submittedOn: $('#submittedOn').val()
     };
 
-    //..validate required fields
+    // Validate required fields
     let errors = [];
     if (recordData.submissionBreach === 'YES') {
         if (!recordData.reason)
@@ -993,7 +950,6 @@ function updateSubmission(e) {
             if (!recordData.reason)
                 highlightReturnSubmissionField("#reason", !recordData.reason);
         }
-
         highlightReturnSubmissionField("#comments", !recordData.comments);
         Swal.fire({
             title: "Submission Validation",
@@ -1002,7 +958,7 @@ function updateSubmission(e) {
         return;
     }
 
-    //..call backend
+    // Call backend
     saveReturnSubmissionRecord(recordData);
 }
 
@@ -1031,7 +987,6 @@ function saveReturnSubmissionRecord(payload) {
                 Swal.fire(res?.message || "Operation failed");
                 return;
             }
-
             Swal.fire(res.message || "Return/Report updated successfully")
                 .then(() => {
                     closeSubmissionPane();
@@ -1040,17 +995,14 @@ function saveReturnSubmissionRecord(payload) {
         },
         error: function (xhr, status, error) {
             var errorMessage = error;
-
             try {
                 var response = JSON.parse(xhr.responseText);
                 if (response.message) {
                     errorMessage = response.message;
                 }
             } catch (e) {
-                // If parsing fails, use the default error
                 errorMessage = "Unexpected error occurred";
             }
-
             Swal.fire("Report/Return Submission Update", errorMessage);
         }
     });
@@ -1059,7 +1011,6 @@ function saveReturnSubmissionRecord(payload) {
 let flatpickrInstances = {};
 
 function initReturnSubmissionDate() {
-
     flatpickrInstances["submittedOn"] = flatpickr("#submittedOn", {
         dateFormat: "Y-m-d",
         allowInput: true,
@@ -1077,7 +1028,7 @@ function initReturnSubmissionDate() {
     });
 }
 
-//..get antiforegery token from meta tag
+// Get antiforgery token from meta tag
 function getReturnSubmissionToken() {
     return $('meta[name="csrf-token"]').attr('content');
 }
@@ -1101,31 +1052,20 @@ function highlightReturnSubmissionField(selector, hasError, message) {
 $(document).ready(function () {
     loadFrequencyTree();
     initReturnSubmissionDate();
-    //..hide breach box
     $('#breachBox').hide();
-
-    $('#status').select2({
-        width: '100%',
-        dropdownParent: $('#returnInnerPanel')
-    });
-
-    $('#intervalType, #interval, #departmentId, #authorityId, #statuteId, #ownerId, #returnTypeId').select2({
-        width: '100%',
-        dropdownParent: $('#returnReportPanel')
-    });
 
     $('#innerSubForm').on('submit', function (e) {
         e.preventDefault();
     });
 
-    //..hide update message reminder
+    // Hide update message reminder
     const $sendReminders = $('#sendReminder');
     const $notificationBox = $('#notificationBox');
 
-    //..ensure initial state
+    // Ensure initial state
     $notificationBox.toggle($sendReminders.is(':checked'));
 
-    //..toggle on change
+    // Toggle on change
     $sendReminders.on('change', function () {
         if (this.checked) {
             $notificationBox.slideDown(200);
@@ -1133,6 +1073,4 @@ $(document).ready(function () {
             $notificationBox.slideUp(200);
         }
     });
-
 });
-

@@ -6044,6 +6044,54 @@ namespace Grc.Middleware.Api.Controllers {
             }
         }
 
+        [HttpPost("audits/paged-audit-issues")]
+        public async Task<IActionResult> GetAuditIssuesReport([FromBody] IdRequest request) {
+
+            try {
+                Logger.LogActivity($"{request.Action}", "INFO");
+                if (request == null) {
+                    var error = new ResponseError(ResponseCodes.BADREQUEST, "Request record cannot be empty", "Invalid request body");
+                    Logger.LogActivity($"BAD REQUEST: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<PagedResponse<AuditReportResponse>>(error));
+                }
+
+                Logger.LogActivity($"Request >> {JsonSerializer.Serialize(request)} from IP Address {request.IPAddress}", "INFO");
+                var issues = await _auditExceptionService.GetAllAsync(r => r.AuditReportId == request.RecordId, false, r => r.Responseability);
+                if (issues == null || !issues.Any()) {
+                    var error = new ResponseError(ResponseCodes.SUCCESS, "No data", "No audit report issues found");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<ListResponse<AuditExceptionResponse>>(new ListResponse<AuditExceptionResponse>()));
+                }
+
+                List<AuditExceptionResponse> reports = new();
+                var records = issues.ToList();
+                if (records != null && records.Any()) {
+                    records.ForEach(report => reports.Add(new() {
+                        Id = report.Id,
+                        ReportId = report.AuditReportId,
+                        Finding = report.AuditFinding ?? string.Empty,
+                        ProposedAction = report.RemediationPlan ?? string.Empty,
+                        CorrectiveAction = report.CorrectiveAction ?? string.Empty,
+                        Notes = report.ExceptionNotes ?? string.Empty,
+                        TargetDate = report.TargetDate,
+                        RiskRating = report.RiskRating,
+                        RiskStatement = report.RiskAssessment ?? string.Empty,
+                        ResponsibleId = report.ResponsabilityId,
+                        Responsible = report.Responseability?.ContactPosition ?? string.Empty,
+                        Executioner = report.Executioner ?? string.Empty,
+                        Status = report.Status ?? string.Empty,
+                        IsDeleted = report.IsDeleted
+                    }));
+                }
+
+                return Ok(new GrcResponse<ListResponse<AuditExceptionResponse>>(new ListResponse<AuditExceptionResponse>() { Data = reports }));
+            } catch (Exception ex) {
+                var error = await HandleErrorAsync(ex);
+                return Ok(new GrcResponse<ListResponse<AuditExceptionResponse>>(error));
+            }
+        }
+
+
         [HttpPost("audits/paged-reports-list")]
         public async Task<IActionResult> GetPagedAuditReportList([FromBody] ListRequest request) {
 

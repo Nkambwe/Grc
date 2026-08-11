@@ -59,7 +59,7 @@
 
     </div>
 
- </div>
+</div>
 
 <!-- Inner-Overlay -->
 <div id="returnInnerOverlay" class="obligation-panel-overlay"></div>
@@ -128,7 +128,8 @@
                             @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Submitted.Select"))
                         </label>
                         <div class="col-sm-12">
-                            <select class="js-status form-control" id="status" name="status">
+                            <!-- REMOVED Select2 class -->
+                            <select class="form-control" id="status" name="status">
                                 <option value="UNKNOWN">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Submitted.Select.Status"))</option>
                                 <option value="CLOSED">Submitted</option>
                                 <option value="OPEN">Pending Submission</option>
@@ -161,13 +162,10 @@
 
                 <!-- reason -->
                 <div class="col-sm-12 mt-3 mb-3">
-
                     <label for="reason" class="form-label m-3">
                         @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Submitted.Reason"))
                     </label>
-
                     <textarea class="form-control" id="reason" name="reason" rows="2"></textarea>
-
                 </div>
 
                 <!-- submitted -->
@@ -192,21 +190,18 @@
                                 </label>
                                 <input class="form-control" id="submittedBy" name="submittedBy" />
                             </div>
-                            
+
                         </div>
                     </div>
-                    
+
                 </div>
 
                 <!-- Comments -->
                 <div class="col-sm-12 mt-3 mb-3">
-
                     <label for="comments" class="form-label m-3">
                         @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Returns.Comments"))
                     </label>
-
                     <textarea class="form-control" id="comments" name="comments" rows="2"></textarea>
-
                 </div>
 
                 <div class="col-sm-12">
@@ -271,7 +266,8 @@
                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Returns.Label.Type"))
                                 </label>
                                 <div class="col-12">
-                                    <select class="js-act-return-type-id form-control" id="returnTypeId" name="returnTypeId">
+                                    <!-- REMOVED Select2 class -->
+                                    <select class="form-control" id="returnTypeId" name="returnTypeId">
                                         <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Returns.Label.Type.Select"))</option>
                                         @if (Model?.ReturnTypes != null && Model.ReturnTypes.Any()) {
                                             foreach (var type in Model.ReturnTypes) {
@@ -290,7 +286,8 @@
                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Returns.Statute"))
                                 </label>
                                 <div class="col-12">
-                                    <select class="js-act-statute-id form-control" id="statuteId" name="statuteId">
+                                    <!-- REMOVED Select2 class -->
+                                    <select class="form-control" id="statuteId" name="statuteId">
                                         <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Returns.Label.Statute.Select"))</option>
                                         @if (Model?.EnforcementLaws != null && Model.EnforcementLaws.Any()) {
                                             foreach (var Statute in Model.EnforcementLaws) {
@@ -313,11 +310,12 @@
 
                         <div class="col-6">
                             <div class="row mb-3">
-                                <label for="ownerId" class="col-12 col-form-label mb-2">
+                                <label for="ownerReturnId" class="col-12 col-form-label mb-2">
                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.PolRegister.Owner"))
                                 </label>
                                 <div class="col-12">
-                                    <select class="js-act-owner-id form-control" id="ownerId" name="ownerId">
+                                    <!-- REMOVED Select2 class -->
+                                    <select class="form-control" id="ownerReturnId" name="ownerReturnId">
                                         <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.PolRegister.Select.Responsible"))</option>
                                         @if (Model?.Responsibilities != null && Model.Responsibilities.Any()) {
                                             foreach (var owner in Model.Responsibilities) {
@@ -336,7 +334,8 @@
                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Department.Name"))
                                 </label>
                                 <div class="col-12">
-                                    <select class="js-act-department-id form-control" id="departmentId" name="departmentId">
+                                    <!-- REMOVED Select2 class -->
+                                    <select class="form-control" id="departmentId" name="departmentId">
                                         <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Policy.Department.Select"))</option>
                                         @if (Model?.Departments != null && Model.Departments.Any()) {
                                             foreach (var department in Model.Departments) {
@@ -354,7 +353,8 @@
                                     @Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Label.Authority"))
                                 </label>
                                 <div class="col-12">
-                                    <select class="js-act-authority-id form-control" id="authorityId" name="authorityId">
+                                    <!-- REMOVED Select2 class -->
+                                    <select class="form-control" id="authorityId" name="authorityId">
                                         <option value="0">@Html.Raw(ILocalize.GetLocalizedLabel("Component.Table.Select.Authority"))</option>
                                         @if (Model?.Authorities != null && Model.Authorities.Any()) {
                                             foreach (var authority in Model.Authorities) {
@@ -462,7 +462,8 @@
                                 <div class="row mb-1">
                                     <label for="interval" class="col-sm-12 col-form-label m-1">Number of times to send mail</label>
                                     <div class="col-12">
-                                        <select class="js-interval form-control" id="interval" name="interval">
+                                        <!-- REMOVED Select2 class -->
+                                        <select class="form-control" id="interval" name="interval">
                                             <option value="NA">Select interval...</option>
                                             <option value="ONCE">One</option>
                                             <option value="TWICE">Two</option>
@@ -475,7 +476,8 @@
                                 <div class="row mb-1">
                                     <label for="intervalType" class="col-sm-12 col-form-label m-1">Interval Type</label>
                                     <div class="col-12">
-                                        <select class="js-interval-type-id form-control" id="intervalType" name="intervalType">
+                                        <!-- REMOVED Select2 class -->
+                                        <select class="form-control" id="intervalType" name="intervalType">
                                             <option value="NA">Select reminder interval...</option>
                                             <option value="HOURS">Hour(s)</option>
                                             <option value="DAYS">Day(s)</option>

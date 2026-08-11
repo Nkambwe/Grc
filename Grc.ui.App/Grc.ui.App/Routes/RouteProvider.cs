@@ -2294,6 +2294,11 @@
                 pattern: "/grc/compliance/audits/exceptions/reports-summary",
                 defaults: new { controller = "ComplianceAudit", action = "GetExceptionSummaryReport" }
             );
+            routeBuilder.MapControllerRoute(
+               name: "app-compliance-audits-mini-report-retrieve",
+               pattern: "/grc/compliance/audit/exceptions/issues_report/{id:long}",
+               defaults: new { controller = "ComplianceAudit", action = "GetAuditIssuesReport" }
+            );
 
             /*----------------------- Application login routes*/
             routeBuilder.MapControllerRoute(

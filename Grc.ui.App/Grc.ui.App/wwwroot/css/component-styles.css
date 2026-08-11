@@ -1127,8 +1127,13 @@ div:where(.swal2-container).swal2-center > .swal2-popup {
         display: flex;
         width: 100%;
         font-size: 1.2em;
+        flex-grow:1;
         padding: 10px;
         text-shadow: 2px 4px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .report-excption-header button {
+        width: 200px;
     }
 
 .exception-dashboard-container {

@@ -138,6 +138,46 @@ $('.action-btn-excel-export').on('click', function () {
         }
     });
 });
+
+function downloadReport() {
+    let id = $('#reportId').val();
+    console.log(`Report ID >> ${id}`);
+
+    $.ajax({
+        url: `/grc/compliance/audit/exceptions/issues_report/${id}`,
+        type: 'POST',
+        contentType: 'application/json',
+        xhrFields: { responseType: 'blob' },
+        success: function (blob, status, xhr) {
+            let filename = `Audit_Issues_${id}.xlsx`;
+            let contentDisposition = xhr.getResponseHeader('Content-Disposition');
+
+            if (contentDisposition && contentDisposition.indexOf('filename=') !== -1) {
+                let matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
+                if (matches && matches[1]) {
+                    filename = matches[1].replace(/['"]/g, '');
+                }
+            }
+
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Clean up object URL
+            setTimeout(function () {
+                window.URL.revokeObjectURL(link.href);
+            }, 1000);
+        },
+        error: function (xhr, status, error) {
+            console.error("Export failed:", error);
+            toastr.error("Export failed. Please try again.");
+        }
+    });
+}
+
 function viewReport(id) {
     Swal.fire({
         title: 'Loading...',
