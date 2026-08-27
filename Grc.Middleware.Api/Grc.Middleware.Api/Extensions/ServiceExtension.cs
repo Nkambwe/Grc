@@ -225,8 +225,8 @@ namespace Grc.Middleware.Api.Extensions {
                         //Retrieve the connection string from environment variables
                         string connectionString = Environment.GetEnvironmentVariable(connectionVar);
                         if (!string.IsNullOrEmpty(connectionString)) {
-                            string decryptedString = HashGenerator.DecryptString(connectionString);
-                            //decryptedString = "Data Source=TORANSERVERDEV,1439;Initial Catalog=GRC_DB_TEST;User ID=uatuser;Password=r7tkm_posta; TrustServerCertificate=True;";
+                            //string decryptedString = HashGenerator.DecryptString(connectionString);
+                            string decryptedString = "Data Source=TORANSERVERDEV,1439;Initial Catalog=GRC_DB_TEST;User ID=uatuser;Password=r7tkm_posta; TrustServerCertificate=True;";
                             if (isLive) {
                                 _logger.LogActivity($"CONNECTION URL :: {connectionString}", "INFO");
                             } else {
