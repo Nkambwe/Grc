@@ -2106,8 +2106,8 @@ namespace Grc.ui.App.Controllers {
                 ws.Cell(row, 3).Value = item.Status ?? "PENDING";
 
                 // Risk Rating
-                ws.Cell(row, 4).Value = item.RiskRating;
-                ws.Cell(row, 4).Style.NumberFormat.Format = "0.00";
+                ws.Cell(row, 4).Value = item.RiskStatement;
+                //ws.Cell(row, 4).Style.NumberFormat.Format = "0.00";
 
                 // Department - use Responsible field as department
                 ws.Cell(row, 5).Value = item.Responsible ?? "";
@@ -2152,9 +2152,9 @@ namespace Grc.ui.App.Controllers {
 
             // Conditional formatting for Risk column (Column 4) - color scale
             var riskRange = ws.Range(2, 4, lastDataRow, 4);
-            riskRange.AddConditionalFormat().WhenLessThan(1).Fill.SetBackgroundColor(XLColor.Green);
-            riskRange.AddConditionalFormat().WhenBetween(1, 3).Fill.SetBackgroundColor(XLColor.Yellow);
-            riskRange.AddConditionalFormat().WhenGreaterThan(3).Fill.SetBackgroundColor(XLColor.Red).Font.SetFontColor(XLColor.White);
+            riskRange.AddConditionalFormat().WhenEquals("LOW").Fill.SetBackgroundColor(XLColor.Green).Font.SetFontColor(XLColor.White);
+            riskRange.AddConditionalFormat().WhenEquals("MEDIUM").Fill.SetBackgroundColor(XLColor.Yellow);
+            riskRange.AddConditionalFormat().WhenEquals("HIGH").Fill.SetBackgroundColor(XLColor.Red).Font.SetFontColor(XLColor.White);
 
             // Add header filters
             ws.Range(1, 1, 1, headers.Length).SetAutoFilter();

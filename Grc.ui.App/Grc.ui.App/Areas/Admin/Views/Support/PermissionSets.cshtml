@@ -4,10 +4,11 @@
 }
 @model AdminDashboardModel
 @{
-    var permissionsClaim = User.FindFirst("Permissions")?.Value;
-    var permissions = string.IsNullOrEmpty(permissionsClaim)
-        ? new List<string>()
-        : System.Text.Json.JsonSerializer.Deserialize<List<string>>(permissionsClaim) ?? new List<string>();
+    // var permissionsClaim = User.FindFirst("Permissions")?.Value;
+    // var permissions = string.IsNullOrEmpty(permissionsClaim)
+    //     ? new List<string>()
+    //     : System.Text.Json.JsonSerializer.Deserialize<List<string>>(permissionsClaim) ?? new List<string>();
+    var permissions = PermissionHelper.GetPermissions(Context);
 
     var leftActions = new List<ComponentAction> {
         new ComponentAction {
@@ -17,7 +18,7 @@
         }
     };
 
-    if (permissions.Contains("CreatePermissionSet") || permissions.Contains("CANADDPERMISSIONSET"))
+    if (permissions.Contains("CANADDPERMISSIONSET"))
     {
         leftActions.Add(new ComponentAction { ActionKey = ActionKey.Separator.GetDescription() });
         leftActions.Add(new ComponentAction

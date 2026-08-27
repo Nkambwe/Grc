@@ -171,7 +171,7 @@ function initGroupTable() {
 
                         
                         //..if user has permission to view/edit
-                        if (hasPermission("CANMODIFYROLEGROUPS") || hasPermission("EditRoleGroup")) {
+                        if (hasPermission("CANMODIFYROLEGROUPS")) {
                             return `<span class="clickable-title" onclick="editGroupPermission(${data.id})">
                                     ${data.groupName}
                                 </span>`;
@@ -244,7 +244,7 @@ function initGroupTable() {
 
                     //..for parent rows, role groups
                     if (data.permissionSets) {
-                        if (hasPermission("CANDELETEPERMISSIONSET") || hasPermission("DeletePermissionSet")) {
+                        if (hasPermission("CANDELETEPERMISSIONSET")) {
                              return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteGroup(${data.id})">
                                     <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
                                     <span>DELETE GROUP</span>
@@ -259,7 +259,7 @@ function initGroupTable() {
                     }
 
                     //..for child rows, permission sets
-                    if (hasPermission("CANMODIFYPERMISSIONSET") || hasPermission("EditPermissionSet")) {
+                    if (hasPermission("CANMODIFYPERMISSIONSET")) {
                         return `<button class="grc-table-btn grc-btn-edit grc-edit-action" onclick="editPermissionSet(${data.id})">
                                 <span><i class="mdi mdi-pencil" aria-hidden="true"></i></span>
                                 <span>EDIT SET</span>

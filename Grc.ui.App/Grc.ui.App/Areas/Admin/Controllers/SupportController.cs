@@ -3014,7 +3014,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         #endregion
 
         #region System Role Permissions
-        [PermissionAuthorization(true, "CANVIEWROLES", "ViewRoles")]
+        [PermissionAuthorization(true, "CANVIEWROLES")]
         public async Task<IActionResult> RolePermissions() {
             var model = new AdminDashboardModel();
             try
@@ -3047,7 +3047,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [LogActivityResult("Role Permissions", "User retrieved role record with related permissions", ActivityTypeDefaults.ROLE_PERMISSIONS_RETRIEVED, "SystemRole")]
-        [PermissionAuthorization(true, "CANVIEWROLES", "ViewRoles")]
+        [PermissionAuthorization(true, "CANVIEWROLES")]
         public async Task<IActionResult> GetRoleWithPermissions(long id)
         {
             try
@@ -3113,7 +3113,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [LogActivityResult("Role Permission sets", "User retrieved role record with related permission set", ActivityTypeDefaults.ROLE_PERMISSION_SETS_RETRIEVED, "SystemRole")]
-        [PermissionAuthorization(true, "CANVIEWROLES", "ViewRoles")]
+        [PermissionAuthorization(true, "CANVIEWROLES")]
         public async Task<IActionResult> GetRoleWithPermissionSets(long id)
         {
             try
@@ -3172,7 +3172,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [LogActivityResult("Role Users", "User retrieved role record with related users", ActivityTypeDefaults.ROLE_USERS_RETRIEVED, "SystemRole")]
-        [PermissionAuthorization(true, "CANVIEWROLES", "ViewRoles")]
+        [PermissionAuthorization(true, "CANVIEWROLES")]
         public async Task<IActionResult> GetRoleWithUsers(long id)
         {
             try
@@ -3238,7 +3238,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         #region System Role Groups
 
         [LogActivityResult("Role Group", "User retrieved role group", ActivityTypeDefaults.ROLE_GROUP_RETRIEVED, "SystemRoleGroup")]
-        [PermissionAuthorization(false, "CANVIEWROLES", "CANVIEWROLEGROUPS", "ViewRoles", "ViewRoleGroups")]
+        [PermissionAuthorization(false, "CANVIEWROLES", "CANVIEWROLEGROUPS")]
         public async Task<IActionResult> GetRoleGroupWithRoles(long id)
         {
             try
@@ -3353,7 +3353,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             }
         }
 
-        [PermissionAuthorization(false, "CANVIEWROLES", "CANVIEWROLEGROUPS", "ViewRoles", "ViewRoleGroups")]
+        [PermissionAuthorization(false, "CANVIEWROLES", "CANVIEWROLEGROUPS")]
         public async Task<IActionResult> GetRoleGroups() {
             try {
                 //..get user IP address
@@ -3428,7 +3428,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             }
         }
 
-        [PermissionAuthorization(false, "CANVIEWROLES", "CANVIEWROLEGROUPS", "ViewRoles", "ViewRoleGroups")]
+        [PermissionAuthorization(false, "CANVIEWROLES", "CANVIEWROLEGROUPS")]
         public async Task<IActionResult> GetPagedRoleGroups([FromBody] TableListRequest request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -3499,7 +3499,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         [HttpPost]
         [LogActivityResult("Role Group Added", "User added system role group", ActivityTypeDefaults.ROLE_GROUP_ADDED, "SystemRoleGroup")]
-        [PermissionAuthorization(false, "CreateRoleGroup","CANADDROLEGROUPS")]
+        [PermissionAuthorization(true, "CANADDROLEGROUPS")]
         public async Task<IActionResult> CreateRoleGroup([FromBody] RoleGroupViewModel request) {
 
             try {
@@ -3554,7 +3554,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         [HttpPost]
         [LogActivityResult("Role Group Edited", "User updated system role group", ActivityTypeDefaults.ROLE_GROUP_EDITED, "SystemRoleGroup")]
-        [PermissionAuthorization(false, "CANMODIFYROLEGROUPS","EditRoleGroup")]
+        [PermissionAuthorization(true, "CANMODIFYROLEGROUPS")]
         public async Task<IActionResult> UpdateRoleGroup([FromBody] RoleGroupViewModel request)
         {
             try
@@ -3595,7 +3595,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         [HttpPost]
         [LogActivityResult("Role Group Deleted", "User deleted System Role Group", ActivityTypeDefaults.ROLE_GROUP_DELETED, "SystemRoleGroup")]
-        [PermissionAuthorization(false, "DeleteRoleGroup", "CANDELETEROLE")]
+        [PermissionAuthorization(true, "CANDELETEROLE")]
         public async Task<IActionResult> DeleteRoleGroup(long id)
         {
             try
@@ -3635,7 +3635,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         #region System Role Group permission sets
 
-        [PermissionAuthorization(false, "ViewRoleGroups", "CANVIEWROLEGROUPS", "CANVIEWPERMISSIONSETS")]
+        [PermissionAuthorization(false, "CANVIEWROLEGROUPS", "CANVIEWPERMISSIONSETS")]
         public async Task<IActionResult> RoleGroupPermissions()
         {
             var model = new AdminDashboardModel();
@@ -3668,7 +3668,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
         }
 
         [LogActivityResult("Role Group Retrieved", "User retrieved role group", ActivityTypeDefaults.ROLE_GROUP_RETRIEVED, "SystemRoleGroup")]
-        [PermissionAuthorization(false, "ViewRoleGroups", "CANVIEWROLEGROUPS", "CANVIEWPERMISSIONSETS")]
+        [PermissionAuthorization(false, "CANVIEWROLEGROUPS", "CANVIEWPERMISSIONSETS")]
         public async Task<IActionResult> GetRoleGroupWithPermissions(long id)
         {
             try
@@ -3727,7 +3727,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
             }
         }
 
-        [PermissionAuthorization(false, "ViewRoleGroups", "CANVIEWROLEGROUPS", "CANVIEWPERMISSIONSETS")]
+        [PermissionAuthorization(false, "CANVIEWROLEGROUPS", "CANVIEWPERMISSIONSETS")]
         public async Task<IActionResult> GetPagedRoleGroupWithPermissionSets([FromBody] TableListRequest request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -3794,7 +3794,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         [HttpPost]
         [LogActivityResult("Role Group Permissions Added", "User added system role group permissions", ActivityTypeDefaults.ROLE_GROUP_ADDED_WITH_PERMISSIONS, "SystemRoleGroup")]
-        [PermissionAuthorization(false, "CreateRoleGroup", "CANADDROLEGROUPS")]
+        [PermissionAuthorization(true, "CANADDROLEGROUPS")]
         public async Task<IActionResult> CreateRoleGroupPermissions([FromBody] RoleGroupViewModel request) {
             try {
                 if (!ModelState.IsValid) {
@@ -3845,7 +3845,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         [HttpPost]
         [LogActivityResult("Role Group Permissions Edited", "User updated system role group permissions", ActivityTypeDefaults.ROLE_GROUP_EDITED, "SystemRoleGroup")]
-        [PermissionAuthorization(false, "CANMODIFYROLEGROUPS", "EditRoleGroup")]
+        [PermissionAuthorization(true, "CANMODIFYROLEGROUPS")]
         public async Task<IActionResult> UpdateRoleGroupPermissions([FromBody] RoleGroupViewModel request) {
             try {
                 var ipAddress = WebHelper.GetCurrentIpAddress();
@@ -4110,7 +4110,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         [HttpPost]
         [LogActivityResult("Permission set Added", "User added Permission Set", ActivityTypeDefaults.PERMISSION_SET_ADDED, "SystemPermissionSet")]
-        [PermissionAuthorization(false, "CANADDPERMISSIONSET", "CreatePermissionSet")]
+        [PermissionAuthorization(false, "CANADDPERMISSIONSET")]
         public async Task<IActionResult> CreatePermissionSet([FromBody] GrcPermissionSetViewModel request)
         {
             try
@@ -4168,7 +4168,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         [HttpPost]
         [LogActivityResult("Permission set Edited", "User updated Permission Set", ActivityTypeDefaults.PERMISSION_SET_EDITED, "SystemPermissionSet")]
-        [PermissionAuthorization(false, "EditPermissionSet", "CANMODIFYPERMISSIONSET")]
+        [PermissionAuthorization(false, "CANMODIFYPERMISSIONSET")]
         public async Task<IActionResult> UpdatePermissionSet([FromBody] GrcPermissionSetViewModel request) {
             try
             {
@@ -4208,7 +4208,7 @@ namespace Grc.ui.App.Areas.Admin.Controllers {
 
         [HttpPost]
         [LogActivityResult("Permission set Deleted", "User deleted Permission Set", ActivityTypeDefaults.PERMISSION_SET_DELETED, "SystemPermissionSet")]
-        [PermissionAuthorization(false, "CANDELETEPERMISSIONSET", "DeletePermissionSet")]
+        [PermissionAuthorization(false, "CANDELETEPERMISSIONSET")]
         public async Task<IActionResult> DeletePermissionSet(long id)
         {
             try

@@ -156,7 +156,7 @@ function initGroupTable() {
                 minWidth: 250,
                 formatter: function (cell) {
                     //..if user has permission to view/edit
-                    if (hasPermission("CANMODIFYROLEGROUPS") || hasPermission("EditRoleGroup")) {
+                    if (hasPermission("CANMODIFYROLEGROUPS")) {
                         return `<span class="clickable-title" onclick="editGroup(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
                     } else {
                             `<span class="clickable-title">${cell.getValue()}</span>`

@@ -583,8 +583,6 @@ function find2Report(id) {
 function open2Panel(title, record, isEdit) {
     $('#returnEdit').val(isEdit);
 
-    console.log(record);
-
     // Initialize form fields - using .val() directly without .trigger('change')
     $('#returnId').val(record.id);
     $('#statuteId').val(record.statuteId || 0);
@@ -768,6 +766,9 @@ function saveReturnReport(e) {
 }
 
 function saveReturnReportRecord(isEdit, payload) {
+    console.log('Payload >>>>>>>>>>>> ');
+    console.log(payload);
+
     let url = isEdit === true || isEdit === "true"
         ? "/grc/returns/compliance-returns/update-return"
         : "/grc/returns/compliance-returns/create-return";

@@ -5947,6 +5947,16 @@ namespace Grc.Middleware.Api.Controllers {
                     return Ok(new GrcResponse<GeneralResponse>(response));
                 }
 
+                //...check if audit has any reports attached
+                var count = await _auditReportService.CountAsync(r => r.AuditId == request.RecordId, false);
+                if (count > 0) {
+                    var error = new ResponseError(ResponseCodes.FORBIDEN,
+                        "Invalid Action",
+                        "Audit has audit reports attached to it and cannot be deleted");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
+                }
+
                 //..delete audit type
                 var status = await _auditService.DeleteAsync(request);
                 if (!status) {
@@ -6090,7 +6100,6 @@ namespace Grc.Middleware.Api.Controllers {
                 return Ok(new GrcResponse<ListResponse<AuditExceptionResponse>>(error));
             }
         }
-
 
         [HttpPost("audits/paged-reports-list")]
         public async Task<IActionResult> GetPagedAuditReportList([FromBody] ListRequest request) {
@@ -6389,6 +6398,16 @@ namespace Grc.Middleware.Api.Controllers {
                     response.Message = $"Audi report Not Found!";
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
                     return Ok(new GrcResponse<GeneralResponse>(response));
+                }
+
+                //...check if report has any reports exceptions
+                var count = await _auditExceptionService.CountAsync(e => e.AuditReportId == request.RecordId, false);
+                if (count > 0) {
+                    var error = new ResponseError(ResponseCodes.FORBIDEN,
+                        "Invalid Action",
+                        "Audit Report has issues attached to it and cannot be deleted");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
                 //..delete audit report
@@ -7397,6 +7416,16 @@ namespace Grc.Middleware.Api.Controllers {
                     response.Message = $"Audi type Not Found!";
                     Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(response)}");
                     return Ok(new GrcResponse<GeneralResponse>(response));
+                }
+
+                //...check if type has any reports attached
+                var count = await _auditService.CountAsync(r => r.AuditTypeId == request.RecordId, false);
+                if (count > 0) {
+                    var error = new ResponseError(ResponseCodes.FORBIDEN,
+                        "Invalid Action",
+                        "Audit type has audits attached to it and cannot be deleted");
+                    Logger.LogActivity($"MIDDLEWARE RESPONSE: {JsonSerializer.Serialize(error)}");
+                    return Ok(new GrcResponse<GeneralResponse>(error));
                 }
 
                 //..delete audit type

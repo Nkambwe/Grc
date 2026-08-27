@@ -164,7 +164,7 @@ function initRolePermissionTable() {
                 frozen: true,
                 formatter: function (cell) {
                     //..if user has permission to view/edit
-                    if (hasPermission("CANMODIFYPERMISSIONSET") || hasPermission("EditPermissionSet")) {
+                    if (hasPermission("CANMODIFYPERMISSIONSET")) {
                         return  `<span class="clickable-title" onclick="viewRolePermissions(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
                     } else {
                             `<span class="clickable-title">${cell.getValue()}</span>`

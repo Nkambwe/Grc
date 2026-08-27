@@ -167,7 +167,7 @@ function initRoleTable() {
                 frozen: true,
                 formatter: function (cell) {
                     //..if user has permission to view/edit
-                    if (hasPermission("CANMODIFYROLE") || hasPermission("EditRole")) {
+                    if (hasPermission("CANMODIFYROLE")) {
                         return  `<span class="clickable-title" onclick="editRole(${cell.getRow().getData().id})">${cell.getValue()}</span>`;
                     } else {
                             `<span class="clickable-title">${cell.getValue()}</span>`
@@ -191,7 +191,7 @@ function initRoleTable() {
                 headerFilter: "input",
                 formatter: function (cell) {
                     //..if user has permission to view/edit
-                    if (hasPermission("CANMODIFYROLEGROUPS") || hasPermission("EditRoleGroup")) {
+                    if (hasPermission("CANMODIFYROLEGROUPS")) {
                         return  `<span class="clickable-title" onclick="viewGroup(${cell.getRow().getData().groupId})">${cell.getValue()}</span>`;
                     } else {
                             `<span class="clickable-title">${cell.getValue()}</span>`
@@ -277,7 +277,7 @@ function initRoleTable() {
                 formatter: function (cell) {
                     let rowData = cell.getRow().getData();
 
-                     if (hasPermission("CANDELETEROLE") || hasPermission("DeleteRole")) { 
+                     if (hasPermission("CANDELETEROLE")) { 
                          return `<button class="grc-table-btn grc-btn-delete grc-delete-action" onclick="deleteRole(${rowData.id})">
                             <span><i class="mdi mdi-delete-circle" aria-hidden="true"></i></span>
                             <span>DELETE</span>
