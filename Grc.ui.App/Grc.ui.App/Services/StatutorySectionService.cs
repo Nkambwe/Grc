@@ -44,6 +44,7 @@ namespace Grc.ui.App.Services {
 
         public async Task<GrcResponse<GrcRequirementResponse>> GetObligationAsyncAsync(GrcIdRequest request) {
             try {
+                Logger.LogActivity($"GET STATUTORY ACT RECORD", "INFO");
                 var endpoint = $"{EndpointProvider.Compliance.RegisterBase}/obligation-retrieve";
                 return await HttpHandler.PostAsync<GrcIdRequest, GrcRequirementResponse>(endpoint, request);
             } catch (Exception ex) {

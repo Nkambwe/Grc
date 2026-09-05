@@ -222,11 +222,10 @@ namespace Grc.Middleware.Api.Extensions {
                     var isLive = Configuration.GetValue<bool>("EnvironmentOptions:IsLive");
                     services.AddDbContextFactory<GrcContext>(options => {
 
-                        //Retrieve the connection string from environment variables
+                        //..retrieve the connection string from environment variables
                         string connectionString = Environment.GetEnvironmentVariable(connectionVar);
                         if (!string.IsNullOrEmpty(connectionString)) {
-                            //string decryptedString = HashGenerator.DecryptString(connectionString);
-                            string decryptedString = "Data Source=TORANSERVERDEV,1439;Initial Catalog=GRC_DB_TEST;User ID=uatuser;Password=r7tkm_posta; TrustServerCertificate=True;";
+                            string decryptedString = HashGenerator.DecryptString(connectionString);
                             if (isLive) {
                                 _logger.LogActivity($"CONNECTION URL :: {connectionString}", "INFO");
                             } else {
@@ -240,7 +239,6 @@ namespace Grc.Middleware.Api.Extensions {
                             _logger.LogActivity(msg, "DB_ERROR");
                             throw new Exception(msg);
                         }
-
                     });
                     _logger.LogActivity($"DB Connection Established...", "GRC_CONFIG");
                 } else {

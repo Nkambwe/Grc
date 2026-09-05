@@ -578,7 +578,7 @@ namespace Grc.ui.App.Controllers {
 
         #region Obligations
 
-        [PermissionAuthorization(false, "CANVIEWCOMPLIANCERETURNS", "CANMANAGECOMPLIANCERETURNS", "CANVIEWSTATUTE")]
+        [PermissionAuthorization(false, "CANVIEWCOMPLIANCERETURNS")]
         public async Task<IActionResult> RegulationObligations() {
             try {
                 if (User.Identity?.IsAuthenticated == true) {
@@ -684,6 +684,7 @@ namespace Grc.ui.App.Controllers {
         [PermissionAuthorization(false, "CANVIEWCOMPLIANCERETURNS", "CANMANAGECOMPLIANCERETURNS", "CANVIEWSTATUTE")]
         public async Task<IActionResult> GetObligation(long id) {
             try {
+                Logger.LogActivity($"GET STATUTORY ACT RECORD FOR ID {id}", "INFO");
                 var ipAddress = WebHelper.GetCurrentIpAddress();
                 var userResponse = await _authService.GetCurrentUserAsync(ipAddress);
                 if (userResponse.HasError || userResponse.Data == null) {
@@ -712,6 +713,7 @@ namespace Grc.ui.App.Controllers {
                     return Ok(new { success = false, message = errMsg, data = new { } });
                 }
 
+                Logger.LogActivity($"STATUTORY ACT RECORD FOR ID {id} FOUND", "INFO");
                 var response = result.Data;
                 var obligation = new {
                     id = response.Id,
